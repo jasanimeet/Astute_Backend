@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>D:\Projects\publishedCode</_PublishTargetUrl>
+    <History>True|2023-06-28T06:04:33.7406394Z;True|2023-06-27T17:20:25.9963562+05:30;True|2023-06-27T16:48:43.8518863+05:30;True|2023-06-27T15:30:49.5598349+05:30;True|2023-06-27T14:12:51.7025447+05:30;True|2023-06-27T13:58:56.8785229+05:30;False|2023-06-27T13:58:29.9527542+05:30;True|2023-06-27T13:53:57.6817356+05:30;True|2023-06-27T13:52:02.6302091+05:30;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+</Project>
