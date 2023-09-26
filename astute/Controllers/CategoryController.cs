@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using OfficeOpenXml;
 
 namespace astute.Controllers
 {   
@@ -562,6 +563,33 @@ namespace astute.Controllers
             EpExcelExport.CreateExcel(dt.DefaultView.ToTable(), filePath, filePath + filename, colorType: "Fancy");
             var excelPath = _configuration["LocalPath"] + "Files/CategoryExcel/" + filename;
             return Ok(excelPath);
+        }
+
+        [HttpPost]
+        [Route("readexcelhiperlink")]
+        public async Task<IActionResult> ReadExcelHiperLink()
+        {
+            string filename = "SRK.xlsx";
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Files/LoaderImages/");
+            string filePath = Path.Combine(folderPath, filename);
+            using var package = new ExcelPackage(new FileInfo(filePath));
+            var worksheet = package.Workbook.Worksheets[0];
+            
+            string cellAddress = "B2";
+
+            // Retrieve the hyperlink from the cell
+            ExcelHyperLink hyperlink = (ExcelHyperLink)worksheet.Cells[cellAddress].Hyperlink;
+            string linkUrl = string.Empty;
+            if (hyperlink != null)
+            {
+                linkUrl = hyperlink.AbsoluteUri;
+            }
+            return Ok(new 
+            {
+                StatusCode = HttpStatusCode.OK,
+                message = CoreCommonMessage.DataSuccessfullyFound,
+                URL = linkUrl
+            });
         }
         #endregion
         #endregion

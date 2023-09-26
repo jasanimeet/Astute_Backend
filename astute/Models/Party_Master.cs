@@ -29,6 +29,7 @@ namespace astute.Models
         public string? Email_2 { get; set; }
         public int? Comp_Bank { get; set; }
         public string? Bank_Name { get; set; }
+        public string? Branch_Name { get; set; }
         public string? Party_Name { get; set; }
         public int? Ship_PartyId { get; set; }
         public string? Ship_Party_Name { get; set; }
