@@ -2,23 +2,15 @@
 using astute.CoreServices;
 using astute.Models;
 using astute.Repository;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlTypes;
-using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace astute.Controllers
@@ -381,8 +373,7 @@ namespace astute.Controllers
                 if (response == null)
                     return BadRequest(new { message = "Username or password is incorrect" });
                 else
-                {
-
+                {   
                     var auth_user = await _jWTAuthentication.Get_Employee_JWT_Token(response.Id);
                     if (auth_user != null)
                     {

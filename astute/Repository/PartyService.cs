@@ -267,11 +267,11 @@ namespace astute.Repository
         {
             var party_Id = new SqlParameter("@Party_Id", party_Master.Party_Id);
             var party_Type = new SqlParameter("@Party_Type", party_Master.Party_Type);
-            var party_Code = new SqlParameter("@Party_Code", party_Master.Party_Code);
-            var party_Address1 = new SqlParameter("@Adress_1", party_Master.Adress_1);
+            var party_Code = !string.IsNullOrEmpty(party_Master.Party_Code) ? new SqlParameter("@Party_Code", party_Master.Party_Code) : new SqlParameter("@Party_Code", DBNull.Value);
+            var party_Address1 = !string.IsNullOrEmpty(party_Master.Adress_1) ? new SqlParameter("@Adress_1", party_Master.Adress_1) : new SqlParameter("@Adress_1", DBNull.Value);
             var party_Address2 = !string.IsNullOrEmpty(party_Master.Adress_2) ? new SqlParameter("@Adress_2", party_Master.Adress_2) : new SqlParameter("@Adress_2", DBNull.Value);
             var party_Address3 = !string.IsNullOrEmpty(party_Master.Adress_3) ? new SqlParameter("@Adress_3", party_Master.Adress_3) : new SqlParameter("@Adress_3", DBNull.Value);
-            var city_Id = new SqlParameter("@City_Id", party_Master.City_Id);
+            var city_Id = party_Master.City_Id > 0 ? new SqlParameter("@City_Id", party_Master.City_Id) : new SqlParameter("@City_Id", DBNull.Value);
             var pin_Code = !string.IsNullOrEmpty(party_Master.PinCode) ? new SqlParameter("@PinCode", party_Master.PinCode) : new SqlParameter("@PinCode", DBNull.Value);
             var mobile_No1 = !string.IsNullOrEmpty(party_Master.Mobile_1) ? new SqlParameter("@Mobile_1", party_Master.Mobile_1) : new SqlParameter("@Mobile_1", DBNull.Value);
             var mobile_No2 = !string.IsNullOrEmpty(party_Master.Mobile_2) ? new SqlParameter("@Mobile_2", party_Master.Mobile_2) : new SqlParameter("@Mobile_2", DBNull.Value);

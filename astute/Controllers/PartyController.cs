@@ -214,7 +214,7 @@ namespace astute.Controllers
                             dataTable.Columns.Add("Designation_Id", typeof(int));
                             dataTable.Columns.Add("Mobile_No", typeof(string));
                             dataTable.Columns.Add("Email", typeof(string));
-                            dataTable.Columns.Add("Birth_Date", typeof(DateTime));
+                            dataTable.Columns.Add("Birth_Date", typeof(string));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
 
                             DataTable dataTable1 = new DataTable();
@@ -231,13 +231,12 @@ namespace astute.Controllers
                                 dataTable1.Columns.Add("Designation_Id", typeof(int));
                                 dataTable1.Columns.Add("Mobile_No", typeof(string));
                                 dataTable1.Columns.Add("Email", typeof(string));
-                                dataTable1.Columns.Add("Birth_Date", typeof(DateTime));
+                                dataTable1.Columns.Add("Birth_Date", typeof(string));
                             }
 
                             foreach (var item in party_Master.Party_Contact_List)
-                            {
-                                DateTime? birth_Date = !string.IsNullOrEmpty(item.Birth_Date) ? Convert.ToDateTime(item.Birth_Date) : null;
-                                dataTable.Rows.Add(item.Contact_Id, party_Id, item.Contact_Name, item.Sex, item.Designation_Id, item.Mobile_No, item.Email, birth_Date, item.QueryFlag);
+                            {   
+                                dataTable.Rows.Add(item.Contact_Id, party_Id, item.Contact_Name, item.Sex, item.Designation_Id, item.Mobile_No, item.Email, item.Birth_Date, item.QueryFlag);
                                 if (CoreService.Enable_Trace_Records(_configuration))
                                 {
                                     dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Contact_Name, item.Sex, item.Designation_Id, item.Mobile_No, item.Email, item.Birth_Date, false);
@@ -262,6 +261,7 @@ namespace astute.Controllers
                             dataTable.Columns.Add("Per_2", typeof(decimal));
                             dataTable.Columns.Add("Assist_3", typeof(int));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
+                            dataTable.Columns.Add("Date", typeof(string));
 
                             DataTable dataTable1 = new DataTable();
                             if (CoreService.Enable_Trace_Records(_configuration))
@@ -281,7 +281,7 @@ namespace astute.Controllers
                             }
                             foreach (var item in party_Master.Party_Assist_List)
                             {
-                                dataTable.Rows.Add(item.Assist_Id, party_Id, item.Diamond_Type, item.Assist_1, item.Per_1, item.Assist_2, item.Per_2, item.Assist_3, item.QueryFlag);
+                                dataTable.Rows.Add(item.Assist_Id, party_Id, item.Diamond_Type, item.Assist_1, item.Per_1, item.Assist_2, item.Per_2, item.Assist_3, item.QueryFlag, item.Date);
 
                                 if (CoreService.Enable_Trace_Records(_configuration))
                                 {
@@ -304,6 +304,7 @@ namespace astute.Controllers
                             dataTable.Columns.Add("Account_No", typeof(string));
                             dataTable.Columns.Add("Status", typeof(bool));
                             dataTable.Columns.Add("Account_Type", typeof(int));
+                            dataTable.Columns.Add("Default_Bank", typeof(bool));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
 
                             DataTable dataTable1 = new DataTable();
@@ -323,7 +324,7 @@ namespace astute.Controllers
 
                             foreach (var item in party_Master.Party_Bank_List)
                             {
-                                dataTable.Rows.Add(item.Account_Id, party_Id, item.Bank_Name, item.Account_No, item.Status, item.Account_Type, item.QueryFlag);
+                                dataTable.Rows.Add(item.Account_Id, party_Id, item.Bank_Id, item.Account_No, item.Status, item.Account_Type, item.Default_Bank, item.QueryFlag);
                                 if (CoreService.Enable_Trace_Records(_configuration))
                                 {
                                     dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Bank_Id, item.Account_No, item.Status, item.Account_Type);
@@ -344,8 +345,8 @@ namespace astute.Controllers
                             dataTable.Columns.Add("Document_Type", typeof(int));
                             dataTable.Columns.Add("Document_No", typeof(string));
                             dataTable.Columns.Add("Upload_Path", typeof(string));
-                            dataTable.Columns.Add("Valid_From", typeof(DateTime));
-                            dataTable.Columns.Add("Valid_To", typeof(DateTime));
+                            dataTable.Columns.Add("Valid_From", typeof(string));
+                            dataTable.Columns.Add("Valid_To", typeof(string));
                             dataTable.Columns.Add("Kyc_Grade", typeof(int));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
 
@@ -385,13 +386,11 @@ namespace astute.Controllers
                                     }
                                     item.Upload_Path = strFile;
                                 }
-                                DateTime? valid_from = !string.IsNullOrEmpty(item.Valid_From) ? Convert.ToDateTime(item.Valid_From) : null;
-                                DateTime? valid_to = !string.IsNullOrEmpty(item.Valid_To) ? Convert.ToDateTime(item.Valid_To) : null;
-                                dataTable.Rows.Add(item.Document_Id, party_Id, item.Document_Type, item.Document_No, item.Upload_Path, valid_from, valid_to, item.Kyc_Grade, item.QueryFlag);
+                                dataTable.Rows.Add(item.Document_Id, party_Id, item.Document_Type, item.Document_No, item.Upload_Path, item.Valid_From, item.Valid_To, item.Kyc_Grade, item.QueryFlag);
 
                                 if (CoreService.Enable_Trace_Records(_configuration))
                                 {
-                                    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Document_Type, item.Document_No, item.Upload_Path, valid_from, valid_to, item.Kyc_Grade);
+                                    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Document_Type, item.Document_No, item.Upload_Path, item.Valid_From, item.Valid_To, item.Kyc_Grade);
                                 }
                             }
                             if (CoreService.Enable_Trace_Records(_configuration))

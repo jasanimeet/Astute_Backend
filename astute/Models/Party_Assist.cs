@@ -19,6 +19,7 @@ namespace astute.Models
         public decimal? Per_2 { get; set; }
         public int? Assist_3 { get; set; }
         public string? Assist_Value_3 { get; set; }
+        public string? Date { get; set; }
         [NotMapped]
         public string? QueryFlag { get; set; }
     }

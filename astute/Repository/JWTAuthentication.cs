@@ -98,10 +98,12 @@ namespace astute.Repository
         }
         public async Task<Employee_JWT_Token> Get_Employee_JWT_Token(int employee_Id)
         {
+            var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
             var _employee_Id = employee_Id > 0 ? new SqlParameter("@Employee_Id", employee_Id) : new SqlParameter("@Employee_Id", DBNull.Value);
+            var _ip_Address = !string.IsNullOrEmpty(ip_Address) ? new SqlParameter("@IP_Address", ip_Address) : new SqlParameter("@IP_Address", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Employee_JWT_Token
-                            .FromSqlRaw(@"exec Employee_JWT_Token_Select @Employee_Id", _employee_Id)
+                            .FromSqlRaw(@"exec Employee_JWT_Token_Select @Employee_Id, @IP_Address", _employee_Id, _ip_Address)
                             .AsEnumerable()
                             .FirstOrDefault());
 

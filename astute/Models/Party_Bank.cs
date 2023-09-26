@@ -18,6 +18,7 @@ namespace astute.Models
         public bool? Status { get; set; }
         public int? Account_Type { get; set; } 
         public string? Account_Type_Value { get; set; }
+        public bool? Default_Bank { get; set; }
         [NotMapped]
         public string? QueryFlag { get; set; }
     }
