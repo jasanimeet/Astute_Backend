@@ -417,13 +417,6 @@ namespace astute.Controllers
             return Ok();
         }
 
-        //[HttpPost]
-        //[Route("employeelogout")]
-        //public async Task<IActionResult> EmployeeLogout()
-        //{   
-        //    return Ok();
-        //}
-
         [HttpPost]
         [Route("changepassword")]
         [Authorize]
@@ -451,7 +444,7 @@ namespace astute.Controllers
                 {
                     StatusCode = HttpStatusCode.Unauthorized,
                     message = CoreCommonMessage.OldPasswordNotMatched
-                }); ;
+                });
             }
             return NoContent();
         }

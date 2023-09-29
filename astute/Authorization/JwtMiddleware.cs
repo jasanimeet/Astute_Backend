@@ -28,15 +28,14 @@ namespace astute.Authorization
 
             if (loginUserId != null)
             {
+                // Get the client's IP address
                 var ipAddress = await CoreService.GetIP_Address(_httpContextAccessor);
+
                 // Fetch user information based on the validated token
                 var employee = await userService.Get_Employee_JWT_Token(loginUserId.Value);
 
                 if (employee != null)
                 {
-                    // Get the client's IP address
-                    
-
                     // Check if the token and IP address match the user's stored values
                     if (employee.Token.Equals(token) && employee.IP_Address.Equals(ipAddress))
                     {

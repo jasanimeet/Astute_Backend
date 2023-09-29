@@ -22,6 +22,17 @@ namespace astute.Repository
         #endregion
 
         #region Methods
+        public async Task<int> Insert_Update_Holiday(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@tblHoliday", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Holiday_Master_Table_Type",
+                Value = dataTable
+            };
+
+            var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Holiday_Mas_Insert_Update @tblHoliday", parameter);
+            return result;
+        }
         public async Task<int> InsertHoliday(Holiday_Master holiday_Mas)
         {
             var date = !holiday_Mas.Date.Equals(null) ? new SqlParameter("@Date", holiday_Mas.Date) : new SqlParameter("@Date", DBNull.Value);
@@ -66,6 +77,14 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Holiday_Master
                             .FromSqlRaw(@"EXEC Holiday_Mas_Select @Holiday_Id", _holiday_Id).ToListAsync());
+            return result;
+        }
+        public async Task<IList<Holiday_Master>> Get_Holidays(string date)
+        {
+            var _date = !string.IsNullOrEmpty(date) ? new SqlParameter("@Date", date) : new SqlParameter("@Date", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Holiday_Master
+                            .FromSqlRaw(@"EXEC Holiday_Mas_Select @Date", _date).ToListAsync());
             return result;
         }
         #endregion

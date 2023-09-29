@@ -380,13 +380,15 @@ namespace astute.Repository
             var short_Code = !string.IsNullOrEmpty(party_Api.Short_Code) ? new SqlParameter("@Short_Code", party_Api.Short_Code) : new SqlParameter("@Short_Code", DBNull.Value);
             var stock_Api_Method = !string.IsNullOrEmpty(party_Api.Stock_Api_Method) ? new SqlParameter("@Stock_Api_Method", party_Api.Stock_Api_Method) : new SqlParameter("@Stock_Api_Method", DBNull.Value);
             var method_Type = !string.IsNullOrEmpty(party_Api.Method_Type) ? new SqlParameter("@Method_Type", party_Api.Method_Type) : new SqlParameter("@Method_Type", DBNull.Value);
+            var format = !string.IsNullOrEmpty(party_Api.Format) ? new SqlParameter("@Format", party_Api.Format) : new SqlParameter("@Format", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_Api_Insert_Update @API_Id, @Party_Id, @API_URL, @API_User, @API_Password, @API_Method, @API_Response, @API_Status,
-                        @Disc_Inverse, @Auto_Ref_No, @RepeateveryType, @repeatevery, @Lab, @Overseas, @Stock_Url, @User_Id, @User_Caption, @Password_Caption, @Action_Caption, @Action_Value,
-                        @Action_Caption_1, @Action_Value_1, @Action_Caption_2, @Action_Value_2, @Short_Code, @Stock_Api_Method, @Method_Type", api_Id, _party_Id, api_Url, api_User, api_Password, api_Method, api_Response, api_Status, 
-                        api_Inverse, auto_Ref_No, repeateveryType, repeatevery, lab, overseas, stock_Url, user_Id, user_Caption, password_Caption, action_Caption, action_Value, action_Caption_1, 
-                        action_Value_1, action_Caption_2, action_Value_2, short_Code, stock_Api_Method, method_Type));
+                        @Disc_Inverse, @Auto_Ref_No, @RepeateveryType, @repeatevery, @Lab, @Overseas, @Stock_Url, @User_Id, @User_Caption, @Password_Caption, @Action_Caption, 
+                        @Action_Value,@Action_Caption_1, @Action_Value_1, @Action_Caption_2, @Action_Value_2, @Short_Code, @Stock_Api_Method, @Method_Type, @Format", api_Id, 
+                        _party_Id, api_Url, api_User, api_Password, api_Method, api_Response, api_Status, api_Inverse, auto_Ref_No, repeateveryType, repeatevery, lab, overseas, 
+                        stock_Url, user_Id, user_Caption, password_Caption, action_Caption, action_Value, action_Caption_1, action_Value_1, action_Caption_2, action_Value_2, 
+                        short_Code, stock_Api_Method, method_Type, format));
 
             return result;
         }
@@ -427,11 +429,12 @@ namespace astute.Repository
             var overseas = new SqlParameter("@Overseas", party_FTP.Overseas);
             var secure_Ftp = new SqlParameter("@Secure_Ftp", party_FTP.Secure_Ftp);
             var short_Code = !string.IsNullOrEmpty(party_FTP.Short_Code) ? new SqlParameter("@Short_Code", party_FTP.Short_Code) : new SqlParameter("@Short_Code", DBNull.Value);
+            var format = !string.IsNullOrEmpty(party_FTP.Format) ? new SqlParameter("@Format", party_FTP.Format) : new SqlParameter("@Format", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_FTP_Insert_Update @FTP_Id, @Party_Id, @Host, @Ftp_Port, @Ftp_User, @Ftp_Password, @Ftp_File_Name, @Ftp_File_Type,
-                        @Disc_Inverse, @Auto_Ref_No, @RepeateveryType, @Repeatevery, @Lab, @Overseas, @Secure_Ftp, @Short_Code", ftp_Id, _party_Id, host, ftp_Port, ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Type, 
-                        api_Inverse, auto_Ref_No, repeateveryType, repeatevery, lab, overseas, secure_Ftp, short_Code));
+                        @Disc_Inverse, @Auto_Ref_No, @RepeateveryType, @Repeatevery, @Lab, @Overseas, @Secure_Ftp, @Short_Code, @Format", ftp_Id, _party_Id, host, ftp_Port, 
+                        ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Type, api_Inverse, auto_Ref_No, repeateveryType, repeatevery, lab, overseas, secure_Ftp, short_Code, format));
 
             return result;
         }

@@ -2367,11 +2367,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("getholiday")]
         [Authorize]
-        public async Task<IActionResult> GetHoliday(int holiday_Id)
+        public async Task<IActionResult> GetHoliday(string date)
         {
             try
             {
-                var result = await _holidayService.GetHolidays(holiday_Id);
+                var result = await _holidayService.Get_Holidays(date);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -2394,22 +2394,39 @@ namespace astute.Controllers
         }
 
         [HttpPost]
-        [Route("createholiday")]
+        [Route("create_update_holiday")]
         [Authorize]
-        public async Task<IActionResult> CreateHoliday(Holiday_Master holiday_Mas)
+        public async Task<IActionResult> Create_Update_Holiday([FromForm] IList<Holiday_Master> holiday_Masters)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _holidayService.InsertHoliday(holiday_Mas);
-                    if (result > 0)
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Holiday_Id", typeof(int));
+                    dataTable.Columns.Add("Date", typeof(string));
+                    dataTable.Columns.Add("Start_Time", typeof(string));
+                    dataTable.Columns.Add("End_Time", typeof(string));
+                    dataTable.Columns.Add("Holiday_Flag", typeof(bool));
+                    dataTable.Columns.Add("Description", typeof(string));
+                    dataTable.Columns.Add("QueryFlag", typeof(string));
+
+                    if (holiday_Masters != null && holiday_Masters.Count > 0)
                     {
-                        return Ok(new
+                        foreach (var item in holiday_Masters)
                         {
-                            statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.HolidayMasterCreated,
-                        });
+                            dataTable.Rows.Add(item.Holiday_Id, item.Date, item.Start_Time, item.End_Time, item.Holiday_Flag, item.Description, item.QueryFlag);
+                        }
+
+                        var result = await _holidayService.Insert_Update_Holiday(dataTable);
+                        if (result > 0)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.HolidayMasterCreated,
+                            });
+                        }
                     }
                 }
                 return BadRequest(ModelState);

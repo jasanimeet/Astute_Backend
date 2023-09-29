@@ -32,5 +32,6 @@ namespace astute.Models
         public string? Short_Code { get; set; }
         public string? Stock_Api_Method { get; set; }
         public string? Method_Type { get; set; }
+        public string? Format { get; set; }
     }
 }

@@ -67,8 +67,8 @@ namespace astute.Repository
             var contractStartDate = !string.IsNullOrEmpty(employee_Master.Contract_Start_Date) ? new SqlParameter("@contractStartDate", employee_Master.Contract_Start_Date) : new SqlParameter("@contractStartDate", DBNull.Value);
             var contractEndDate = !string.IsNullOrEmpty(employee_Master.Contract_End_Date) ? new SqlParameter("@contractEndDate", employee_Master.Contract_End_Date) : new SqlParameter("@contractEndDate", DBNull.Value);
             var approveHolidays = employee_Master.Approve_Holidays > 0 ? new SqlParameter("@approveHolidays", employee_Master.Approve_Holidays) : new SqlParameter("@approveHolidays", DBNull.Value);
-            var orderNo = new SqlParameter("@orderNo", employee_Master.Order_No);
-            var sortNo = new SqlParameter("@sortNo", employee_Master.Sort_No);
+            var orderNo = employee_Master.Order_No > 0 ? new SqlParameter("@orderNo", employee_Master.Order_No) : new SqlParameter("@orderNo", DBNull.Value);
+            var sortNo = employee_Master.Sort_No > 0 ? new SqlParameter("@sortNo", employee_Master.Sort_No) : new SqlParameter("@sortNo", DBNull.Value);
             var photo_Upload = !string.IsNullOrEmpty(employee_Master.Photo_Upload) ? new SqlParameter("@photoUpload", employee_Master.Photo_Upload) : new SqlParameter("@photoUpload", DBNull.Value);
             var userName = new SqlParameter("@userName", employee_Master.User_Name);
             var password = new SqlParameter("@password", encryptPassword);
