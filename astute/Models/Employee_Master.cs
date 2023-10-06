@@ -39,17 +39,22 @@ namespace astute.Models
         public Int16? Approve_Holidays { get; set; }
         public Int16? Order_No { get; set; }
         public Int16? Sort_No { get;set; }
-        [NotMapped]
-        public IFormFile? Upload_Path_Name { get; set; }
-        public string? Photo_Upload { get; set; }
         public string? User_Name { get; set; }
         public string? Password { get; set; }
         public bool? IsDelete { get; set; }
         public string? Employee_Code { get; set; }
         public bool? Status { get; set; }
+        public string? Marital_Status { get; set; }
+        public string? Mobile_Country_Code { get; set; }
+        public string? Mobile_1_Country_Code { get; set; }
+        public string? Probation_End_Date { get; set; }
+        public string? Personal_Mobile_No { get; set; }
         [NotMapped]
         public IList<Employee_Document> Employee_Document_List { get; set; } = new List<Employee_Document>();
         [NotMapped]
         public IList<Employee_Salary> Employee_Salary_List { get; set; } = new List<Employee_Salary>();
+
+        [NotMapped]
+        public IList<Emergency_Contact_Detail> Emergency_Contact_Detail_List { get; set; } = new List<Emergency_Contact_Detail>();
     }
 }

@@ -69,11 +69,15 @@ namespace astute.Repository
             var approveHolidays = employee_Master.Approve_Holidays > 0 ? new SqlParameter("@approveHolidays", employee_Master.Approve_Holidays) : new SqlParameter("@approveHolidays", DBNull.Value);
             var orderNo = employee_Master.Order_No > 0 ? new SqlParameter("@orderNo", employee_Master.Order_No) : new SqlParameter("@orderNo", DBNull.Value);
             var sortNo = employee_Master.Sort_No > 0 ? new SqlParameter("@sortNo", employee_Master.Sort_No) : new SqlParameter("@sortNo", DBNull.Value);
-            var photo_Upload = !string.IsNullOrEmpty(employee_Master.Photo_Upload) ? new SqlParameter("@photoUpload", employee_Master.Photo_Upload) : new SqlParameter("@photoUpload", DBNull.Value);
             var userName = new SqlParameter("@userName", employee_Master.User_Name);
             var password = new SqlParameter("@password", encryptPassword);
             var employeeCode = !string.IsNullOrEmpty(employee_Master.Employee_Code) ? new SqlParameter("@employee_Code", employee_Master.Employee_Code) : new SqlParameter("@employee_Code", DBNull.Value);
             var status = new SqlParameter("@status", employee_Master.Status);
+            var marital_Status = !string.IsNullOrEmpty(employee_Master.Marital_Status) ? new SqlParameter("@marital_Status", employee_Master.Marital_Status) : new SqlParameter("@marital_Status", DBNull.Value);
+            var mobile_Country_Code = !string.IsNullOrEmpty(employee_Master.Mobile_Country_Code) ? new SqlParameter("@mobile_Country_Code", employee_Master.Mobile_Country_Code) : new SqlParameter("@mobile_Country_Code", DBNull.Value);
+            var mobile_1_Country_Code = !string.IsNullOrEmpty(employee_Master.Mobile_1_Country_Code) ? new SqlParameter("@mobile_1_Country_Code", employee_Master.Mobile_1_Country_Code) : new SqlParameter("@mobile_1_Country_Code", DBNull.Value);
+            var probation_End_Date = !string.IsNullOrEmpty(employee_Master.Probation_End_Date) ? new SqlParameter("@probation_End_Date", employee_Master.Probation_End_Date) : new SqlParameter("@probation_End_Date", DBNull.Value);
+            var personal_Mobile_No = !string.IsNullOrEmpty(employee_Master.Personal_Mobile_No) ? new SqlParameter("@personal_Mobile_No", employee_Master.Personal_Mobile_No) : new SqlParameter("@personal_Mobile_No", DBNull.Value);
 
             var isExistUserName = new SqlParameter("@IsExistUserName", System.Data.SqlDbType.Bit)
             {
@@ -95,11 +99,11 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
             .ExecuteSqlRawAsync(@"exec Employee_Master_Insert_Update @employeeId, @initial, @firstName, @middleName, @lastName,
             @chineseName, @address1, @address2, @address3, @cityId, @joindate, @employeeType, @birthDate, @gender, @mobileNo, @personalEmail, @companyEmail,
-            @leaveDate, @pSNID, @bloodGroup, @contractStartDate, @contractEndDate, @approveHolidays, @orderNo, @sortNo, @photoUpload, @userName, @password, @employee_Code, @status,
-            @IsExistUserName OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT",
+            @leaveDate, @pSNID, @bloodGroup, @contractStartDate, @contractEndDate, @approveHolidays, @orderNo, @sortNo, @userName, @password, @employee_Code, @status,
+            @marital_Status, @mobile_Country_Code, @mobile_1_Country_Code, @probation_End_Date, @personal_Mobile_No, @IsExistUserName OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT",
             employeeId, initial, firstName, middleName, lastName, chineseName, address1, address2, address3, cityId, joinDate, employeeType, birthDate, gender, mobileNo,
-            personalEmail, companyEmail, leaveDate, pSNID, bloodGroup, contractStartDate, contractEndDate, approveHolidays, orderNo, sortNo, photo_Upload, userName, password,
-            employeeCode, status, isExistUserName, isExistOrderNo, isExistSortNo, insertedId));
+            personalEmail, companyEmail, leaveDate, pSNID, bloodGroup, contractStartDate, contractEndDate, approveHolidays, orderNo, sortNo, userName, password,
+            employeeCode, status, marital_Status, mobile_Country_Code, mobile_1_Country_Code, probation_End_Date, personal_Mobile_No, isExistUserName, isExistOrderNo, isExistSortNo, insertedId));
 
             bool _isExistUserName = (bool)isExistUserName.Value;
             if (_isExistUserName)
@@ -133,7 +137,6 @@ namespace astute.Repository
             if (employee_Master != null)
             {
                 employee_Master.Password = CoreService.Decrypt(employee_Master.Password);
-                employee_Master.Photo_Upload = !string.IsNullOrEmpty(employee_Master.Photo_Upload) ? _configuration["BaseUrl"] + CoreCommonFilePath.EmployeeIconImagesPath + employee_Master.Photo_Upload : employee_Master.Photo_Upload;
                 if (employee_Master.Employee_Id > 0)
                 {
                     var _emp_Id = employee_Master.Employee_Id > 0 ? new SqlParameter("@employeeId", employee_Master.Employee_Id) : new SqlParameter("@employeeId", DBNull.Value);
@@ -151,6 +154,9 @@ namespace astute.Repository
 
                     employee_Master.Employee_Salary_List = await Task.Run(() => _dbContext.Employee_Salary
                                                             .FromSqlRaw(@"exec Employee_Salary_Select @employeeId", _emp_Id).ToListAsync());
+
+                    employee_Master.Emergency_Contact_Detail_List = await Task.Run(() => _dbContext.Emergency_Contact_Detail
+                                                                    .FromSqlRaw(@"exec Emergency_Contact_Detail_Select @Emergency_Contact_Detail_Id, @employeeId", new SqlParameter("@Emergency_Contact_Detail_Id", DBNull.Value), _emp_Id).ToListAsync());
                 }
             }
 
@@ -185,7 +191,6 @@ namespace astute.Repository
             var approveHolidays = employee_Master.Approve_Holidays > 0 ? new SqlParameter("@approveHolidays", employee_Master.Approve_Holidays) : new SqlParameter("@approveHolidays", DBNull.Value);
             var orderNo = new SqlParameter("@orderNo", employee_Master.Order_No);
             var sortNo = new SqlParameter("@sortNo", employee_Master.Sort_No);
-            var photo_Upload = !string.IsNullOrEmpty(employee_Master.Photo_Upload) ? new SqlParameter("@photoUpload", employee_Master.Photo_Upload) : new SqlParameter("@photoUpload", DBNull.Value);
             var userName = new SqlParameter("@userName", employee_Master.User_Name);
             var password = new SqlParameter("@password", encryptPassword);
             var employeeCode = !string.IsNullOrEmpty(employee_Master.Employee_Code) ? new SqlParameter("@employee_Code", employee_Master.Employee_Code) : new SqlParameter("@employee_Code", DBNull.Value);
@@ -211,7 +216,7 @@ namespace astute.Repository
             @leaveDate, @pSNID, @bloodGroup, @contractStartDate, @contractEndDate, @approveHolidays, @orderNo, @sortNo, @photoUpload, @userName, @password, @employee_Code, @status, @recordType,
             @IsExistUserName OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @IsForceInsert",
             employeeId, initial, firstName, middleName, lastName, chineseName, address1, address2, address3, cityId, joinDate, employeeType, birthDate, gender, mobileNo,
-            personalEmail, companyEmail, leaveDate, pSNID, bloodGroup, contractStartDate, contractEndDate, approveHolidays, orderNo, sortNo, photo_Upload, userName, password,
+            personalEmail, companyEmail, leaveDate, pSNID, bloodGroup, contractStartDate, contractEndDate, approveHolidays, orderNo, sortNo, userName, password,
             employeeCode, status, recordType, isExistUserName, isExistOrderNo, isExistSortNo));
 
             bool _isExistUserName = (bool)isExistUserName.Value;
@@ -256,13 +261,6 @@ namespace astute.Repository
 
             var employees = await Task.Run(() => _dbContext.Employee_Master
                             .FromSqlRaw(@"exec Employee_Master_Select @employeeId, @userName, @email", empId, uName, email).ToListAsync());
-            if(employees != null && employees.Count > 0)
-            {
-                foreach (var employee in employees)
-                {
-                    employee.Photo_Upload = !string.IsNullOrEmpty(employee.Photo_Upload) ? _configuration["BaseUrl"] + CoreCommonFilePath.EmployeeIconImagesPath + employee.Photo_Upload : null;
-                }
-            }
 
             return employees;
         }
@@ -281,7 +279,6 @@ namespace astute.Repository
 
             return result;
         }
-
         public async Task<AuthenticateResponse> AuthenticateEmployee(UserModel userModel)
         {
             var password = CoreService.Encrypt(userModel.Password);
@@ -386,6 +383,20 @@ namespace astute.Repository
         public async Task<int> DeleteEmployeeMail(int employeeId)
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Employee_Mail_Delete {employeeId}"));
+        }
+        #endregion
+
+        #region Emergency Contact Detail
+        public async Task<int> Insert_Emergency_Contact_Detail(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@emergency_Contact_Detail", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Emergency_Contact_Detail_Table_Type",
+                Value = dataTable
+            };
+
+            var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Emergency_Contact_Detail_Insert_Update @emergency_Contact_Detail", parameter);
+            return result;
         }
         #endregion
         #endregion

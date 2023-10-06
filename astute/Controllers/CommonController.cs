@@ -3115,7 +3115,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_update_exchange_rate")]
         [Authorize]
-        public async Task<IActionResult> Create_Update_Exchange_Rate(IList<Exchange_Rate_Master> exchange_Rate_Masters)
+        public async Task<IActionResult> Create_Update_Exchange_Rate([FromForm]IList<Exchange_Rate_Master> exchange_Rate_Masters)
         {
             try
             {
@@ -3123,7 +3123,7 @@ namespace astute.Controllers
                 {
                     DataTable dataTable = new DataTable();
                     dataTable.Columns.Add("Exchange_Id", typeof(int));
-                    dataTable.Columns.Add("Trans_date", typeof(DateTime));
+                    dataTable.Columns.Add("Trans_date", typeof(string));
                     dataTable.Columns.Add("Currency_Id", typeof(int));
                     dataTable.Columns.Add("Bank_Rate", typeof(decimal));
                     dataTable.Columns.Add("Custom_Rate", typeof(decimal));

@@ -114,24 +114,6 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (employee_Master.Upload_Path_Name != null && employee_Master.Upload_Path_Name.Length > 0)
-                    {
-                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/EmployeeIconImages");
-                        if (!(Directory.Exists(filePath)))
-                        {
-                            Directory.CreateDirectory(filePath);
-                        }
-
-                        string fileName = Path.GetFileNameWithoutExtension(employee_Master.Upload_Path_Name.FileName);
-                        string fileExt = Path.GetExtension(employee_Master.Upload_Path_Name.FileName);
-                        string strFile = fileName + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + fileExt;
-                        using (var fileStream = new FileStream(Path.Combine(filePath, strFile), FileMode.Create))
-                        {
-                            await employee_Master.Upload_Path_Name.CopyToAsync(fileStream);
-                        }
-                        employee_Master.Photo_Upload = strFile;
-                    }
-
                     var (message, employee_Id) = await _employeeService.AddUpdateEmployee(employee_Master);
                     if (message == "success" && employee_Id > 0)
                     {
@@ -187,6 +169,23 @@ namespace astute.Controllers
                             }
                             await _employeeService.InsertEmployeeSalary(dataTable);
                         }
+                        if(employee_Master.Emergency_Contact_Detail_List != null && employee_Master.Emergency_Contact_Detail_List.Count > 0)
+                        {
+                            DataTable dataTable = new DataTable();
+                            dataTable.Columns.Add("Emergency_Contact_Detail_Id", typeof(int));
+                            dataTable.Columns.Add("Employee_Id", typeof(int));
+                            dataTable.Columns.Add("Name", typeof(string));
+                            dataTable.Columns.Add("Relation", typeof(string));
+                            dataTable.Columns.Add("Mobile", typeof(string));
+                            dataTable.Columns.Add("Address", typeof(string));
+                            dataTable.Columns.Add("QueryFlag", typeof(string));
+
+                            foreach (var item in employee_Master.Emergency_Contact_Detail_List)
+                            {
+                                dataTable.Rows.Add(item.Emergency_Contact_Detail_Id, employee_Id, item.Name, item.Relation, item.Mobile, item.Address, item.QueryFlag);
+                            }
+                            await _employeeService.Insert_Emergency_Contact_Detail(dataTable);
+                        }
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
@@ -238,24 +237,7 @@ namespace astute.Controllers
             try
             {
                 if (ModelState.IsValid)
-                {
-                    if (Icon_Upload != null && Icon_Upload.Length > 0)
-                    {
-                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/EmployeeIconImages");
-                        if (!(Directory.Exists(filePath)))
-                        {
-                            Directory.CreateDirectory(filePath);
-                        }
-                        string fileName = Path.GetFileNameWithoutExtension(Icon_Upload.FileName);
-                        string fileExt = Path.GetExtension(Icon_Upload.FileName);
-
-                        string strFile = fileName + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + fileExt;
-                        using (var fileStream = new FileStream(Path.Combine(filePath, strFile), FileMode.Create))
-                        {
-                            await Icon_Upload.CopyToAsync(fileStream);
-                        }
-                        employee_Master.Photo_Upload = strFile;
-                    }
+                {   
                     var result = await _employeeService.UpdateEmployee(employee_Master);
                     if (result > 0)
                     {

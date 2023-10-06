@@ -31,5 +31,9 @@ namespace astute.Repository
         Task<int> UpdateEmployeeMail(Employee_Mail employee_Mail);
         Task<int> DeleteEmployeeMail(int employeeId);
         #endregion
+
+        #region Emergency Contact Detail
+        Task<int> Insert_Emergency_Contact_Detail(DataTable dataTable);
+        #endregion
     }
 }

@@ -75,5 +75,6 @@ namespace astute.Models
         public DbSet<Exchange_Rate_Master> Exchange_Rate_Master { get; set; }
         public DbSet<Bank_Dropdown_Model> Bank_Dropdown_Model { get; set; }
         public DbSet<Employee_JWT_Token> Employee_JWT_Token { get; set; }
+        public DbSet<Emergency_Contact_Detail> Emergency_Contact_Detail { get; set; }
     }
 }
