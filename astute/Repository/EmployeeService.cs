@@ -148,8 +148,11 @@ namespace astute.Repository
                     if (employee_Master.Employee_Document_List != null && employee_Master.Employee_Document_List.Count > 0)
                     {
                         foreach (var item in employee_Master.Employee_Document_List)
-                        {
+                        {   
                             item.Document_Url = !string.IsNullOrEmpty(item.Document_Url) ? _configuration["BaseUrl"] + CoreCommonFilePath.EmployeeDocumentsPath + item.Document_Url : item.Document_Url;
+                            item.Document_Url_2 = !string.IsNullOrEmpty(item.Document_Url_2) ? _configuration["BaseUrl"] + CoreCommonFilePath.EmployeeDocumentsPath + item.Document_Url_2 : item.Document_Url_2;
+                            item.Document_Url_3 = !string.IsNullOrEmpty(item.Document_Url_3) ? _configuration["BaseUrl"] + CoreCommonFilePath.EmployeeDocumentsPath + item.Document_Url_3 : item.Document_Url_3;
+                            item.Document_Url_4 = !string.IsNullOrEmpty(item.Document_Url_4) ? _configuration["BaseUrl"] + CoreCommonFilePath.EmployeeDocumentsPath + item.Document_Url_4 : item.Document_Url_4;
                         }
                     }
 

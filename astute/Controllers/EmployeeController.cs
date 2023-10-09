@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace astute.Controllers
             _jWTAuthentication = jWTAuthentication;
         }
         #endregion
-        
+
         #region Methods
         #region Employee Master
         [HttpGet]
@@ -108,7 +109,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_employee_details")]
         [Authorize]
-        public async Task<IActionResult> Create_Employee_Details([FromForm]Employee_Master employee_Master)
+        public async Task<IActionResult> Create_Employee_Details([FromForm] Employee_Master employee_Master)
         {
             try
             {
@@ -118,7 +119,7 @@ namespace astute.Controllers
                     if (message == "success" && employee_Id > 0)
                     {
                         //Employee Documents
-                        if(employee_Master.Employee_Document_List != null && employee_Master.Employee_Document_List.Count > 0)
+                        if (employee_Master.Employee_Document_List != null && employee_Master.Employee_Document_List.Count > 0)
                         {
                             DataTable dataTable = new DataTable();
                             dataTable.Columns.Add("Employee_Document_Id", typeof(int));
@@ -146,9 +147,60 @@ namespace astute.Controllers
                                     }
                                     item.Document_Url = strFile;
                                 }
+                                if (item.Document_Url_Name_2 != null && item.Document_Url_Name_2.Length > 0)
+                                {
+                                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/EmployeeDocuments");
+                                    if (!(Directory.Exists(filePath)))
+                                    {
+                                        Directory.CreateDirectory(filePath);
+                                    }
+
+                                    string fileName = Path.GetFileNameWithoutExtension(item.Document_Url_Name_2.FileName);
+                                    string fileExt = Path.GetExtension(item.Document_Url_Name_2.FileName);
+                                    string strFile = fileName + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + fileExt;
+                                    using (var fileStream = new FileStream(Path.Combine(filePath, strFile), FileMode.Create))
+                                    {
+                                        await item.Document_Url_Name_2.CopyToAsync(fileStream);
+                                    }
+                                    item.Document_Url_2 = strFile;
+                                }
+                                if (item.Document_Url_Name_3 != null && item.Document_Url_Name_3.Length > 0)
+                                {
+                                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/EmployeeDocuments");
+                                    if (!(Directory.Exists(filePath)))
+                                    {
+                                        Directory.CreateDirectory(filePath);
+                                    }
+
+                                    string fileName = Path.GetFileNameWithoutExtension(item.Document_Url_Name_3.FileName);
+                                    string fileExt = Path.GetExtension(item.Document_Url_Name_3.FileName);
+                                    string strFile = fileName + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + fileExt;
+                                    using (var fileStream = new FileStream(Path.Combine(filePath, strFile), FileMode.Create))
+                                    {
+                                        await item.Document_Url_Name_3.CopyToAsync(fileStream);
+                                    }
+                                    item.Document_Url_3 = strFile;
+                                }
+                                if (item.Document_Url_Name_4 != null && item.Document_Url_Name_4.Length > 0)
+                                {
+                                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/EmployeeDocuments");
+                                    if (!(Directory.Exists(filePath)))
+                                    {
+                                        Directory.CreateDirectory(filePath);
+                                    }
+
+                                    string fileName = Path.GetFileNameWithoutExtension(item.Document_Url_Name_4.FileName);
+                                    string fileExt = Path.GetExtension(item.Document_Url_Name_4.FileName);
+                                    string strFile = fileName + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + fileExt;
+                                    using (var fileStream = new FileStream(Path.Combine(filePath, strFile), FileMode.Create))
+                                    {
+                                        await item.Document_Url_Name_4.CopyToAsync(fileStream);
+                                    }
+                                    item.Document_Url_4 = strFile;
+                                }
                                 string document_Expiry_Date = !string.IsNullOrEmpty(item.Document_Expiry_Date) ? item.Document_Expiry_Date : null;
 
-                                dataTable.Rows.Add(item.Employee_Document_Id, employee_Id, item.Document_Type, document_Expiry_Date, item.Document_Url, item.QueryFlag);
+                                dataTable.Rows.Add(item.Employee_Document_Id, employee_Id, item.Document_Type, document_Expiry_Date, item.Document_Url, item.Document_Url_2, item.Document_Url_3, item.Document_Url_4, item.QueryFlag);
                             }
                             await _employeeService.InsertEmployeeDocument(dataTable);
 
@@ -164,12 +216,12 @@ namespace astute.Controllers
                             dataTable.Columns.Add("QueryFlag", typeof(string));
 
                             foreach (var item in employee_Master.Employee_Salary_List)
-                            {   
+                            {
                                 dataTable.Rows.Add(item.Employee_Salary_Id, employee_Id, item.Salary, item.Start_Date, item.Salary_Type, item.QueryFlag);
                             }
                             await _employeeService.InsertEmployeeSalary(dataTable);
                         }
-                        if(employee_Master.Emergency_Contact_Detail_List != null && employee_Master.Emergency_Contact_Detail_List.Count > 0)
+                        if (employee_Master.Emergency_Contact_Detail_List != null && employee_Master.Emergency_Contact_Detail_List.Count > 0)
                         {
                             DataTable dataTable = new DataTable();
                             dataTable.Columns.Add("Emergency_Contact_Detail_Id", typeof(int));
@@ -237,7 +289,7 @@ namespace astute.Controllers
             try
             {
                 if (ModelState.IsValid)
-                {   
+                {
                     var result = await _employeeService.UpdateEmployee(employee_Master);
                     if (result > 0)
                     {
@@ -276,7 +328,7 @@ namespace astute.Controllers
                         message = "Employee deleted successfully."
                     });
                 }
-                else if(message == "_reference_found" && result == (int)HttpStatusCode.Conflict)
+                else if (message == "_reference_found" && result == (int)HttpStatusCode.Conflict)
                 {
                     return Conflict(new
                     {
@@ -383,7 +435,7 @@ namespace astute.Controllers
                 if (response == null)
                     return BadRequest(new { message = "Username or password is incorrect" });
                 else
-                {   
+                {
                     var auth_user = await _jWTAuthentication.Get_Employee_JWT_Token(response.Id);
                     if (auth_user != null)
                     {
@@ -459,7 +511,7 @@ namespace astute.Controllers
             return NoContent();
         }
         #endregion
-        
+
         #region Forget Password
         [HttpPost]
         [Route("forgetpassword")]
@@ -484,11 +536,11 @@ namespace astute.Controllers
         [Route("userverification")]
         public async Task<IActionResult> UserVerification(string encryptCode)
         {
-            if(!string.IsNullOrEmpty(encryptCode))
+            if (!string.IsNullOrEmpty(encryptCode))
             {
                 var decryptCode = CoreService.Decrypt(encryptCode);
                 var employee = await _employeeService.GetEmployees(0, decryptCode, null);
-                if(employee != null && employee.Count > 0)
+                if (employee != null && employee.Count > 0)
                 {
                     return Ok(new
                     {
@@ -532,10 +584,10 @@ namespace astute.Controllers
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     var result = await _empRightsService.InsertUpdateEmpRights(emp_Rights_Model);
-                    if(result > 0)
+                    if (result > 0)
                     {
                         return Ok(new
                         {
@@ -564,7 +616,7 @@ namespace astute.Controllers
             try
             {
                 var result = await _empRightsService.Copy_Emp_Rights(fromEmployeeId, toEmployeeId);
-                if(result > 0)
+                if (result > 0)
                 {
                     return Ok(new
                     {
@@ -589,7 +641,7 @@ namespace astute.Controllers
             try
             {
                 var result = await _employeeService.GetEmployeeMail(employeeId);
-                if(result != null && result.Count > 0)
+                if (result != null && result.Count > 0)
                 {
                     return Ok(new
                     {
@@ -616,10 +668,10 @@ namespace astute.Controllers
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     var result = await _employeeService.InsertEmployeeMail(employee_Mail);
-                    if(result > 0)
+                    if (result > 0)
                     {
                         return Ok(new
                         {
@@ -676,16 +728,16 @@ namespace astute.Controllers
         {
             try
             {
-                var result = await _employeeService.DeleteEmployeeMail(employeeId); 
+                var result = await _employeeService.DeleteEmployeeMail(employeeId);
                 if (result > 0)
                 {
-                    return Ok(new 
+                    return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.EmployeeMailDeleted,
                     });
                 }
-                return BadRequest(new 
+                return BadRequest(new
                 {
                     statusCode = HttpStatusCode.BadRequest,
                     message = CoreCommonMessage.ParameterMismatched,

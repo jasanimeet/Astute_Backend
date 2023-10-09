@@ -71,25 +71,37 @@ namespace astute.Repository
         public async Task<int> Add_Update_Value_Config(Value_Config value_Config)
         {
             var valueMap_ID = new SqlParameter("@ValueMap_ID", value_Config.ValueMap_ID);
-            var length = value_Config.Length > 0 ? new SqlParameter("@Length", value_Config.Length) : new SqlParameter("@Length", DBNull.Value);
-            var width = value_Config.Width > 0 ? new SqlParameter("@Width", value_Config.Width) : new SqlParameter("@Width", DBNull.Value);
-            var depth_Per = value_Config.Depth_Per > 0 ? new SqlParameter("@Depth_Per", value_Config.Depth_Per) : new SqlParameter("@Depth_Per", DBNull.Value);
-            var table_Per = value_Config.Table_Per > 0 ? new SqlParameter("@Table_Per", value_Config.Table_Per) : new SqlParameter("@Table_Per", DBNull.Value);
-            var crown_Angle = value_Config.Crown_Angle > 0 ? new SqlParameter("@Crown_Angle", value_Config.Crown_Angle) : new SqlParameter("@Crown_Angle", DBNull.Value);
-            var crown_Height = value_Config.Crown_Height > 0 ? new SqlParameter("@Crown_Height", value_Config.Crown_Angle) : new SqlParameter("@Crown_Height", DBNull.Value);
-            var pavilion_Angle = value_Config.Pavilion_Angle > 0 ? new SqlParameter("@Pavilion_Angle", value_Config.Pavilion_Angle) : new SqlParameter("@Pavilion_Angle", DBNull.Value);
-            var pavilion_Height = value_Config.Pavilion_Height > 0 ? new SqlParameter("@Pavilion_Height", value_Config.Pavilion_Height) : new SqlParameter("@Pavilion_Height", DBNull.Value);
-            var girdle_Per = value_Config.Girdle_Per > 0 ? new SqlParameter("@Girdle_Per", value_Config.Girdle_Per) : new SqlParameter("@Girdle_Per", DBNull.Value);
-            var lr_Half = value_Config.Lr_Half > 0 ? new SqlParameter("@Lr_Half", value_Config.Lr_Half) : new SqlParameter("@Lr_Half", DBNull.Value);
-            var star_Ln = value_Config.Star_Ln > 0 ? new SqlParameter("@Star_Ln", value_Config.Star_Ln) : new SqlParameter("@Star_Ln", DBNull.Value);
+            var length_From = value_Config.Length_From > 0 ? new SqlParameter("@Length_From", value_Config.Length_From) : new SqlParameter("@Length_From", DBNull.Value);
+            var length_To = value_Config.Length_To > 0 ? new SqlParameter("@Length_To", value_Config.Length_To) : new SqlParameter("@Length_To", DBNull.Value);
+            var width_From = value_Config.Width_From > 0 ? new SqlParameter("@Width_From", value_Config.Width_From) : new SqlParameter("@Width_From", DBNull.Value);
+            var width_To = value_Config.Width_To > 0 ? new SqlParameter("@Width_To", value_Config.Width_To) : new SqlParameter("@Width_To", DBNull.Value);
+            var depth_Per_From = value_Config.Depth_Per_From > 0 ? new SqlParameter("@Depth_Per_From", value_Config.Depth_Per_From) : new SqlParameter("@Depth_Per_From", DBNull.Value);
+            var depth_Per_To = value_Config.Depth_Per_To > 0 ? new SqlParameter("@Depth_Per_To", value_Config.Depth_Per_To) : new SqlParameter("@Depth_Per_To", DBNull.Value);
+            var table_Per_From = value_Config.Table_Per_From > 0 ? new SqlParameter("@Table_Per_From", value_Config.Table_Per_From) : new SqlParameter("@Table_Per_From", DBNull.Value);
+            var table_Per_To = value_Config.Table_Per_To > 0 ? new SqlParameter("@Table_Per_To", value_Config.Table_Per_To) : new SqlParameter("@Table_Per_To", DBNull.Value);
+            var crown_Angle_From = value_Config.Crown_Angle_From > 0 ? new SqlParameter("@Crown_Angle_From", value_Config.Crown_Angle_From) : new SqlParameter("@Crown_Angle_From", DBNull.Value);
+            var crown_Angle_To = value_Config.Crown_Angle_To > 0 ? new SqlParameter("@Crown_Angle_To", value_Config.Crown_Angle_To) : new SqlParameter("@Crown_Angle_To", DBNull.Value);
+            var crown_Height_From = value_Config.Crown_Height_From > 0 ? new SqlParameter("@Crown_Height_From", value_Config.Crown_Height_From) : new SqlParameter("@Crown_Height_From", DBNull.Value);
+            var crown_Height_To = value_Config.Crown_Height_To > 0 ? new SqlParameter("@Crown_Height_To", value_Config.Crown_Height_To) : new SqlParameter("@Crown_Height_To", DBNull.Value);
+            var pavilion_Angle_From = value_Config.Pavilion_Angle_From > 0 ? new SqlParameter("@Pavilion_Angle_From", value_Config.Pavilion_Angle_From) : new SqlParameter("@Pavilion_Angle_From", DBNull.Value);
+            var pavilion_Angle_To = value_Config.Pavilion_Angle_To > 0 ? new SqlParameter("@Pavilion_Angle_To", value_Config.Pavilion_Angle_To) : new SqlParameter("@Pavilion_Angle_To", DBNull.Value);
+            var pavilion_Height_From = value_Config.Pavilion_Height_From > 0 ? new SqlParameter("@Pavilion_Height_From", value_Config.Pavilion_Height_From) : new SqlParameter("@Pavilion_Height_From", DBNull.Value);
+            var pavilion_Height_To = value_Config.Pavilion_Height_To > 0 ? new SqlParameter("@Pavilion_Height_To", value_Config.Pavilion_Height_To) : new SqlParameter("@Pavilion_Height_To", DBNull.Value);
+            var girdle_Per_From = value_Config.Girdle_Per_From > 0 ? new SqlParameter("@Girdle_Per_From", value_Config.Girdle_Per_From) : new SqlParameter("@Girdle_Per_From", DBNull.Value);
+            var girdle_Per_To = value_Config.Girdle_Per_To > 0 ? new SqlParameter("@Girdle_Per_To", value_Config.Girdle_Per_To) : new SqlParameter("@Girdle_Per_To", DBNull.Value);
+            var lr_Half_From = value_Config.Lr_Half_From > 0 ? new SqlParameter("@Lr_Half_From", value_Config.Lr_Half_From) : new SqlParameter("@Lr_Half_From", DBNull.Value);
+            var lr_Half_To = value_Config.Lr_Half_To > 0 ? new SqlParameter("@Lr_Half_To", value_Config.Lr_Half_To) : new SqlParameter("@Lr_Half_To", DBNull.Value);
+            var star_Ln_From = value_Config.Star_Ln_From > 0 ? new SqlParameter("@Star_Ln_From", value_Config.Star_Ln_From) : new SqlParameter("@Star_Ln_From", DBNull.Value);
+            var star_Ln_To = value_Config.Star_Ln_To > 0 ? new SqlParameter("@Star_Ln_To", value_Config.Star_Ln_To) : new SqlParameter("@Star_Ln_To", DBNull.Value);
             var shape_Group = !string.IsNullOrEmpty(value_Config.Shape_Group) ? new SqlParameter("@Shape_Group", value_Config.Shape_Group) : new SqlParameter("@Shape_Group", DBNull.Value);
             var shape = !string.IsNullOrEmpty(value_Config.Shape) ? new SqlParameter("@Shape", value_Config.Shape) : new SqlParameter("@Shape", DBNull.Value);
-            var trans_Date = !string.IsNullOrEmpty(value_Config.Trans_Date) ? new SqlParameter("@Trans_Date", value_Config.Trans_Date) : new SqlParameter("@Trans_Date", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Value_Config_Insert_Update @ValueMap_ID, @Length, @Width, @Depth_Per, @Table_Per, @Crown_Angle, @Crown_Height, @Pavilion_Angle, 
-                        @Pavilion_Height, @Girdle_Per, @Lr_Half, @Star_Ln, @Shape_Group, @Shape, @Trans_Date", valueMap_ID, length, width, depth_Per, table_Per, crown_Angle, crown_Height,
-                        pavilion_Angle, pavilion_Height, girdle_Per, lr_Half, star_Ln, shape_Group, shape, trans_Date));
+                        .ExecuteSqlRawAsync(@"EXEC Value_Config_Insert_Update @ValueMap_ID, @Length_From, @Length_To, @Width_From, @Width_To, @Depth_Per_From, @Depth_Per_To, @Table_Per_From,
+                        @Table_Per_To, @Crown_Angle_From, @Crown_Angle_To, @Crown_Height_From, @Crown_Height_To, @Pavilion_Angle_From, @Pavilion_Angle_To, @Pavilion_Height_From,
+                        @Pavilion_Height_To, @Girdle_Per_From, @Girdle_Per_To, @Lr_Half_From, @Lr_Half_To, @Star_Ln_From, @Star_Ln_To, @Shape_Group, @Shape", valueMap_ID, length_From, length_To, 
+                        width_From, width_To, depth_Per_From, depth_Per_To, table_Per_From, table_Per_To, crown_Angle_From, crown_Angle_To, crown_Height_From, crown_Height_To, pavilion_Angle_From,
+                        pavilion_Angle_To, pavilion_Height_From, pavilion_Height_To, girdle_Per_From, girdle_Per_To, lr_Half_From, lr_Half_To, star_Ln_From, star_Ln_To, shape_Group, shape));
 
             return result;
         }

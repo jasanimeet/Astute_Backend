@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,7 +16,16 @@ namespace astute.Models
         public string? Document_Expiry_Date { get; set; }
         [NotMapped]
         public IFormFile? Document_Url_Name { get; set; }
-        public string? Document_Url { get; set; }
+        public string? Document_Url { get; set; }        
+        [NotMapped]
+        public IFormFile? Document_Url_Name_2 { get; set; }
+        public string? Document_Url_2 { get; set; }
+        [NotMapped]
+        public IFormFile? Document_Url_Name_3 { get; set; }
+        public string? Document_Url_3 { get; set; }
+        [NotMapped]
+        public IFormFile? Document_Url_Name_4 { get; set; }
+        public string? Document_Url_4 { get; set; }
         [NotMapped]
         public string? QueryFlag { get; set; }
     }
