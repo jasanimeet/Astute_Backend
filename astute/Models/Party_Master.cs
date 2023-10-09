@@ -33,6 +33,12 @@ namespace astute.Models
         public string? Party_Name { get; set; }
         public int? Ship_PartyId { get; set; }
         public string? Ship_Party_Name { get; set; }
+        public int? Final_Customer_Id { get; set; }
+        public string? Website { get; set; }
+        public string? Bank_Currency { get; set; }
+        public int? Payment_Terms { get; set; }
+        public string? Payment_Terms_Value { get; set; }
+        public string? Cust_Freight_Account_No { get; set; }
         [NotMapped]
         public IList<Party_Contact> Party_Contact_List { get; set; } = new List<Party_Contact>();
         [NotMapped]
@@ -41,6 +47,8 @@ namespace astute.Models
         public IList<Party_Bank> Party_Bank_List { get; set; } = new List<Party_Bank>();
         [NotMapped]
         public IList<Party_Document> Party_Document_List { get; set; } = new List<Party_Document>();
+        [NotMapped]
+        public IList<Party_Media> Party_Media_List { get; set; } = new List<Party_Media>();
         [NotMapped]
         public IList<Party_Shipping> Party_Shipping_List { get; set; } = new List<Party_Shipping>();
     }

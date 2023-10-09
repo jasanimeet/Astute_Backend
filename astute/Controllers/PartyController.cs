@@ -399,6 +399,22 @@ namespace astute.Controllers
                             }
                             await _partyService.AddUpdatePartyDocument(dataTable);
                         }
+                        //Party Media
+                        if(party_Master.Party_Media_List != null && party_Master.Party_Media_List.Count > 0)
+                        {
+                            DataTable dataTable = new DataTable();
+                            dataTable.Columns.Add("Party_Media_Id", typeof(int));
+                            dataTable.Columns.Add("Party_Id", typeof(int));
+                            dataTable.Columns.Add("Cat_val_Id", typeof(int));
+                            dataTable.Columns.Add("ID", typeof(string));
+                            dataTable.Columns.Add("QueryFlag", typeof(string));
+
+                            foreach (var item in party_Master.Party_Media_List)
+                            {
+                                dataTable.Rows.Add(party_Id, item.Cat_val_Id, item.ID, item.QueryFlag);
+                            }
+                            await _partyService.AddUpdatePartyMedia(dataTable);
+                        }
                         // Party Shipping Detail
                         if (party_Master.Party_Shipping_List != null && party_Master.Party_Shipping_List.Count > 0)
                         {

@@ -592,6 +592,131 @@ namespace astute.Controllers
             });
         }
         #endregion
+
+        #region Value Config
+        [HttpGet]
+        [Route("get_value_config")]
+        [Authorize]
+        public async Task<IActionResult> Get_Value_Config(int valueMap_ID)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Value_Config(valueMap_ID);
+                if(result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Value_Config", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("create_value_config")]
+        [Authorize]
+        public async Task<IActionResult> Create_Value_Config(Value_Config value_Config)
+        {
+            try
+            {
+                if(ModelState.IsValid)
+                {
+                    var result = await _supplierService.Add_Update_Value_Config(value_Config);
+                    if(result > 0)
+                    {
+                        return Ok(new 
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.ValueConfigCreated
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Value_Config", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPut]
+        [Route("update_value_config")]
+        [Authorize]
+        public async Task<IActionResult> Update_Value_Config(Value_Config value_Config)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _supplierService.Add_Update_Value_Config(value_Config);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.ValueConfigUpdated
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Value_Config", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_value_config")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Value_Config(int valueMap_ID)
+        {
+            try
+            {
+                var result = await _supplierService.Delete_Value_Config(valueMap_ID);
+                if(result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.ValueConfigDeleted
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Value_Config", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
         #endregion
     }
 }

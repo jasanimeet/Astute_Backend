@@ -260,6 +260,21 @@ namespace astute.Repository
             return result;
         }
         #endregion
+
+        #region Party Media
+        public async Task<int> AddUpdatePartyMedia(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@tblPartyMedia", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Party_Media_Table_Type",
+                Value = dataTable
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Party_Media_Insert_Update @tblPartyMedia", parameter));
+            return result;
+        }
+        #endregion
         #endregion
 
         #region Party Details
@@ -283,6 +298,11 @@ namespace astute.Repository
             var comp_Bank = party_Master.Comp_Bank > 0 ? new SqlParameter("@Comp_Bank", party_Master.Comp_Bank) : new SqlParameter("@Comp_Bank", DBNull.Value);
             var party_Name = new SqlParameter("@Party_Name", party_Master.Party_Name);
             var ship_PartyId = party_Master.Ship_PartyId > 0 ? new SqlParameter("@Ship_PartyId", party_Master.Ship_PartyId) : new SqlParameter("@Ship_PartyId", DBNull.Value);
+            var final_Customer_Id = party_Master.Final_Customer_Id > 0 ? new SqlParameter("@Final_Customer_Id", party_Master.Final_Customer_Id) : new SqlParameter("@Final_Customer_Id", DBNull.Value);
+            var website = !string.IsNullOrEmpty(party_Master.Website) ? new SqlParameter("@Website", party_Master.Website) : new SqlParameter("@Website", DBNull.Value);
+            var bank_currency = !string.IsNullOrEmpty(party_Master.Bank_Currency) ? new SqlParameter("@Bank_Currency", party_Master.Bank_Currency) : new SqlParameter("@Bank_Currency", DBNull.Value);
+            var payment_Terms = party_Master.Payment_Terms > 0 ? new SqlParameter("@Payment_Terms", party_Master.Payment_Terms) : new SqlParameter("@Payment_Terms", DBNull.Value);
+            var cust_Freight_Account_No = !string.IsNullOrEmpty(party_Master.Cust_Freight_Account_No) ? new SqlParameter("@Cust_Freight_Account_No", party_Master.Cust_Freight_Account_No) : new SqlParameter("@Cust_Freight_Account_No", DBNull.Value);
             var insertedId = new SqlParameter("@InsertedId", System.Data.SqlDbType.Int)
             {
                 Direction = System.Data.ParameterDirection.Output
@@ -290,8 +310,9 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_Master_Insert_Update @Party_Id, @Party_Type, @Party_Code, @Adress_1, @Adress_2, @Adress_3, @City_Id, @PinCode, @Mobile_1,
-                        @Mobile_2, @Phone_1, @Phone_2, @Fax, @Email_1, @Email_2, @Comp_Bank, @Party_Name, @Ship_PartyId, @InsertedId OUT", party_Id, party_Type, party_Code, party_Address1, party_Address2,
-                        party_Address3, city_Id, pin_Code, mobile_No1, mobile_No2, phone_No1, phone_No2, fax, email_1, email_2, comp_Bank, party_Name, ship_PartyId, insertedId));
+                        @Mobile_2, @Phone_1, @Phone_2, @Fax, @Email_1, @Email_2, @Comp_Bank, @Party_Name, @Ship_PartyId, @Final_Customer_Id, @Website, @Bank_Currency, @Payment_Terms,
+                        @Cust_Freight_Account_No, @InsertedId OUT", party_Id, party_Type, party_Code, party_Address1, party_Address2, party_Address3, city_Id, pin_Code, mobile_No1, mobile_No2, 
+                        phone_No1, phone_No2, fax, email_1, email_2, comp_Bank, party_Name, ship_PartyId, final_Customer_Id, website, bank_currency, payment_Terms, cust_Freight_Account_No, insertedId));
 
             if (result > 0)
             {
@@ -343,6 +364,9 @@ namespace astute.Repository
 
                     result.Party_Assist_List = await Task.Run(() => _dbContext.Party_Assist
                             .FromSqlRaw(@"exec Party_Assist_Select @Assist_Id, @PartyId", new SqlParameter("@Assist_Id", DBNull.Value), _partyId).ToListAsync());
+
+                    result.Party_Media_List = await Task.Run(() => _dbContext.Party_Media
+                                            .FromSqlRaw(@"exec Party_Media_Select @PartyId", _partyId).ToListAsync());
                 }
             }
 

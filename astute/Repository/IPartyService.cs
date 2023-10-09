@@ -42,6 +42,10 @@ namespace astute.Repository
         Task<int> AddUpdatePartyAssist(DataTable dataTable);
         #endregion
 
+        #region Party Media
+        Task<int> AddUpdatePartyMedia(DataTable dataTable);
+        #endregion
+
         #region Party Details
         Task<(string, int)> Add_Update_Party(Party_Master party_Master);
         Task<Party_Master> Get_Party_Details(int party_Id);

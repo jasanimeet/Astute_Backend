@@ -11,7 +11,7 @@ namespace astute.Models
         public string? Conditions { get; set; }
         public int? Process_Id { get; set; }
         public string? Process_Name { get; set; }
-        public DateTime? Start_Date { get; set; }
+        public string? Start_Date { get; set; }
         public Int16? Order_No { get; set; }
         public Int16? Sort_No { get; set; }
         public bool? Status { get; set; }

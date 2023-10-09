@@ -12,6 +12,7 @@ using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 
 namespace astute.Repository
@@ -42,7 +43,7 @@ namespace astute.Repository
         #region Employee Master
         public async Task<(string, int)> AddUpdateEmployee(Employee_Master employee_Master)
         {
-            var encryptPassword = CoreService.Encrypt(employee_Master.Password);
+            var encryptPassword = !string.IsNullOrEmpty(employee_Master.Password) ? CoreService.Encrypt(employee_Master.Password) : string.Empty;
 
             var employeeId = new SqlParameter("@employeeId", employee_Master.Employee_Id);
             var initial = !string.IsNullOrEmpty(employee_Master.Initial) ? new SqlParameter("@initial", employee_Master.Initial) : new SqlParameter("@initial", DBNull.Value);
@@ -69,8 +70,8 @@ namespace astute.Repository
             var approveHolidays = employee_Master.Approve_Holidays > 0 ? new SqlParameter("@approveHolidays", employee_Master.Approve_Holidays) : new SqlParameter("@approveHolidays", DBNull.Value);
             var orderNo = employee_Master.Order_No > 0 ? new SqlParameter("@orderNo", employee_Master.Order_No) : new SqlParameter("@orderNo", DBNull.Value);
             var sortNo = employee_Master.Sort_No > 0 ? new SqlParameter("@sortNo", employee_Master.Sort_No) : new SqlParameter("@sortNo", DBNull.Value);
-            var userName = new SqlParameter("@userName", employee_Master.User_Name);
-            var password = new SqlParameter("@password", encryptPassword);
+            var userName = !string.IsNullOrEmpty(employee_Master.User_Name) ? new SqlParameter("@userName", employee_Master.User_Name) : new SqlParameter("@userName", DBNull.Value);
+            var password = !string.IsNullOrEmpty(employee_Master.Password) ? new SqlParameter("@password", encryptPassword) : new SqlParameter("@password", DBNull.Value);
             var employeeCode = !string.IsNullOrEmpty(employee_Master.Employee_Code) ? new SqlParameter("@employee_Code", employee_Master.Employee_Code) : new SqlParameter("@employee_Code", DBNull.Value);
             var status = new SqlParameter("@status", employee_Master.Status);
             var marital_Status = !string.IsNullOrEmpty(employee_Master.Marital_Status) ? new SqlParameter("@marital_Status", employee_Master.Marital_Status) : new SqlParameter("@marital_Status", DBNull.Value);
@@ -136,7 +137,7 @@ namespace astute.Repository
                                 .FirstOrDefault());
             if (employee_Master != null)
             {
-                employee_Master.Password = CoreService.Decrypt(employee_Master.Password);
+                employee_Master.Password = !string.IsNullOrEmpty(employee_Master.Password) ? CoreService.Decrypt(employee_Master.Password) : string.Empty;
                 if (employee_Master.Employee_Id > 0)
                 {
                     var _emp_Id = employee_Master.Employee_Id > 0 ? new SqlParameter("@employeeId", employee_Master.Employee_Id) : new SqlParameter("@employeeId", DBNull.Value);
@@ -298,6 +299,24 @@ namespace astute.Repository
             var jwt_Token = _jWTAuthentication.Generate_Jwt_Token(employee);
 
             return new AuthenticateResponse(employee, jwt_Token);
+        }
+        public async Task<int> Get_Employee_Code()
+        {
+            var employeeCodeParam = new SqlParameter("@EmployeeCode", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            await _dbContext.Database.ExecuteSqlRawAsync("exec Employee_Code_Select @EmployeeCode OUTPUT", employeeCodeParam);
+
+            if (int.TryParse(employeeCodeParam.Value?.ToString(), out int employeeCode))
+            {
+                return employeeCode;
+            }
+            else
+            {
+                return 0;
+            }
         }
         #endregion
 

@@ -45,7 +45,7 @@ namespace astute.Repository
                 issuer: _configuration["JwtToken:Issuer"]!,
                 audience: _configuration["JwtToken:Audience"],
                 claims: clims,
-                expires: DateTime.Now.AddHours(5),
+                expires: DateTime.UtcNow.AddHours(5),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
             );
 
@@ -109,7 +109,6 @@ namespace astute.Repository
 
             return result;
         }
-
         public async Task<int> Delete_Employee_JWT_Token(int user_Id)
         {
             var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);

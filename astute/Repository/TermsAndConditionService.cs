@@ -27,7 +27,7 @@ namespace astute.Repository
             var condition_Id = new SqlParameter("@Condition_Id", termsAndCondition.Condition_Id);
             var conditions = !string.IsNullOrEmpty(termsAndCondition.Conditions) ? new SqlParameter("@Conditions", termsAndCondition.Conditions) : new SqlParameter("@Conditions", DBNull.Value);
             var process_Id = termsAndCondition.Process_Id > 0 ? new SqlParameter("@Process_Id", termsAndCondition.Process_Id) : new SqlParameter("@Process_Id", DBNull.Value);
-            var start_Date = !termsAndCondition.Start_Date.Equals(null) ? new SqlParameter("@Start_Date", termsAndCondition.Start_Date) : new SqlParameter("@Start_Date", DBNull.Value);
+            var start_Date = !string.IsNullOrEmpty(termsAndCondition.Start_Date) ? new SqlParameter("@Start_Date", termsAndCondition.Start_Date) : new SqlParameter("@Start_Date", DBNull.Value);
             var order_No = termsAndCondition.Order_No > 0 ? new SqlParameter("@Order_No", termsAndCondition.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
             var sort_No = termsAndCondition.Sort_No > 0 ? new SqlParameter("@Sort_No", termsAndCondition.Sort_No) : new SqlParameter("@Sort_No", DBNull.Value);
             var status = new SqlParameter("@Status", termsAndCondition.Status);

@@ -273,5 +273,12 @@ namespace astute.CoreModel
         public static string ExchangeRateUpdated = ExchangeRate + DeletedSuccessfully;
         public static string ExchangeRateDeleted = ExchangeRate + DeletedSuccessfully;
         #endregion
+
+        #region Value Config
+        public static string ValueConfig = "Value config";
+        public static string ValueConfigCreated = ValueConfig + AddedSuccessfully;
+        public static string ValueConfigUpdated = ValueConfig + UpdatedSuccessfully;
+        public static string ValueConfigDeleted = ValueConfig + DeletedSuccessfully;
+        #endregion
     }
 }

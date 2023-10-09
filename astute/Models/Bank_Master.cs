@@ -22,5 +22,8 @@ namespace astute.Models
         public Int16? Order_No { get; set; }
         public Int16? Sort_No { get; set; }
         public bool? Status { get; set; }
+        public int? Currency_Id { get; set; }
+        public string? Currency { get; set; }
+        public string? Currency_Name { get; set; }
     }
 }
