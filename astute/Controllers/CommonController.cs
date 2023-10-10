@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
@@ -487,18 +488,19 @@ namespace astute.Controllers
         [HttpGet]
         [Route("getcities")]
         [Authorize]
-        public async Task<IActionResult> GetCities(int cityId, string city, int stateId)
+        public async Task<IActionResult> GetCities(int cityId, string city, int stateId, int iPgNo, int iPgSize)
         {
             try
             {
-                var result = await _commonService.GetCity(cityId, city, stateId);
+                var result = await _commonService.GetCity(cityId, city, stateId, iPgNo, iPgSize);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.DataSuccessfullyFound,
-                        data = result
+                        data = result,
+                        total_Records = result.Select(x => x.iTotalRec).FirstOrDefault()
                     });
                 }
                 return NoContent();

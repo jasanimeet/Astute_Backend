@@ -17,6 +17,7 @@ namespace astute.Models
         public int? Sort_No { get;set; }
         public bool Status { get; set; }
         public string? Std_Code { get; set; }
+        public int? iTotalRec { get; set; }
         [NotMapped]
         public bool IsForceInsert { get; set; }
     }

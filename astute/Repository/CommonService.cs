@@ -328,16 +328,16 @@ namespace astute.Repository
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"City_Mas_Delete {cityId}"));
         }
-        public async Task<IList<City_Master>> GetCity(int cityId, string city, int stateId)
+        public async Task<IList<City_Master>> GetCity(int cityId, string city, int stateId, int iPgNo, int iPgSize)
         {
             var CityId = cityId > 0 ? new SqlParameter("@cityId", cityId) : new SqlParameter("@cityId", DBNull.Value);
             var City = !string.IsNullOrEmpty(city) ? new SqlParameter("@city", city) : new SqlParameter("@city", DBNull.Value);
             var StateId = stateId > 0 ? new SqlParameter("@stateId", stateId) : new SqlParameter("@stateId", DBNull.Value);
-            //var pageIndex = page_Index > 0 ? new SqlParameter("@PageIndex", page_Index) : new SqlParameter("@PageIndex", DBNull.Value);
-            //var pageSize = page_Size > 0 ? new SqlParameter("@PageSize", page_Size) : new SqlParameter("@PageSize", DBNull.Value);
+            var pageIndex = iPgNo > 0 ? new SqlParameter("@iPgNo", iPgNo) : new SqlParameter("@iPgNo", DBNull.Value);
+            var pageSize = iPgSize > 0 ? new SqlParameter("@iPgSize", iPgSize) : new SqlParameter("@iPgSize", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.City_Master
-                           .FromSqlRaw(@"exec City_Mas_Select @cityId, @city, @stateId", CityId, City, StateId).ToListAsync());
+                           .FromSqlRaw(@"exec City_Mas_Select @cityId, @city, @stateId, @iPgNo, @iPgSize", CityId, City, StateId, pageIndex, pageSize).ToListAsync());
 
             return result;
         }

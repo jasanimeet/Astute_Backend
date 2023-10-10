@@ -28,7 +28,7 @@ namespace astute.Repository
         Task<int> InsertCity(City_Master city_Mas);
         Task<int> UpdateCity(City_Master city_Mas);
         Task<int> DeleteCity(int cityId);
-        Task<IList<City_Master>> GetCity(int cityId, string city, int stateId);
+        Task<IList<City_Master>> GetCity(int cityId, string city, int stateId, int iPgNo, int iPgSize);
         Task<int> CityChangeStatus(int city_Id, bool status);
         #endregion
 

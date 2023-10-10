@@ -241,7 +241,7 @@ namespace astute.Controllers
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.EmployeeMasterCreated
+                            message = employee_Master.Employee_Id == 0 ? CoreCommonMessage.EmployeeMasterCreated : CoreCommonMessage.EmployeeMasterUpdated
                         });
                     }
                     else if (message == "_error_username_exist")
@@ -274,37 +274,6 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Employee_Details", ex.StackTrace);
-                return Ok(new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-
-        [HttpPut]
-        [Route("updateemployee")]
-        [Authorize]
-        public async Task<IActionResult> UpdateEmployee([FromForm] Employee_Master employee_Master, IFormFile Icon_Upload)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var result = await _employeeService.UpdateEmployee(employee_Master);
-                    if (result > 0)
-                    {
-                        return Ok(new
-                        {
-                            statusCode = HttpStatusCode.OK,
-                            message = "Employee Updated successfully."
-                        });
-                    }
-                }
-                return BadRequest(ModelState);
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "UpdateEmployee", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

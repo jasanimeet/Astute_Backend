@@ -6,8 +6,8 @@ namespace astute.Models
     {
         [Key]
         public int ValueMap_ID { get; set; }
-        public decimal Length_From { get; set; }
-        public decimal Length_To { get; set; }
+        public decimal? Length_From { get; set; }
+        public decimal? Length_To { get; set; }
         public decimal? Width_From { get; set; }
         public decimal? Width_To { get; set; }
         public decimal? Depth_Per_From { get; set; }
