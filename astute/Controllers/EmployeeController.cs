@@ -127,6 +127,9 @@ namespace astute.Controllers
                             dataTable.Columns.Add("Document_Type", typeof(int));
                             dataTable.Columns.Add("Document_Expiry_Date", typeof(string));
                             dataTable.Columns.Add("Document_Url", typeof(string));
+                            dataTable.Columns.Add("Document_Url_2", typeof(string));
+                            dataTable.Columns.Add("Document_Url_3", typeof(string));
+                            dataTable.Columns.Add("Document_Url_4", typeof(string));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
                             foreach (var item in employee_Master.Employee_Document_List)
                             {
