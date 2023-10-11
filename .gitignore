@@ -2,4 +2,36 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/astute/Files/LoaderImages/diamonds_07-08-2023-8V57.xlsx
+/astute/Files
+/.vs
+/obj/Debug
+/astute/obj/Debug/net6.0/ref/astute.dll
+/astute/obj/Debug/net6.0/refint/astute.dll
+/astute/obj/Debug/net6.0/astute.assets.cache
+/astute/obj/Debug/net6.0/astute.csproj.CoreCompileInputs.cache
+/astute/obj/Debug/net6.0/astute.csproj.FileListAbsolute.txt
+/astute/obj/Debug/net6.0/astute.csproj.GenerateResource.cache
+/astute/obj/Debug/net6.0/astute.dll
+/astute/obj/Debug/net6.0/astute.GeneratedMSBuildEditorConfig.editorconfig
+/astute/obj/Debug/net6.0/astute.genruntimeconfig.cache
+/astute/obj/Debug/net6.0/astute.pdb
+/astute/obj/astute.csproj.nuget.dgspec.json
+/astute/obj/project.assets.json
+/astute/obj/project.nuget.cache
+/astute/obj/Release/net6.0/PubTmp/Out/astute.dll
+/astute/obj/Release/net6.0/PubTmp/Out/astute.pdb
+/astute/obj/Release/net6.0/ref/astute.dll
+/astute/obj/Release/net6.0/astute.assets.cache
+/astute/obj/Release/net6.0/astute.csproj.CoreCompileInputs.cache
+/astute/obj/Release/net6.0/astute.csproj.FileListAbsolute.txt
+/astute/obj/Release/net6.0/astute.csproj.GenerateResource.cache
+/astute/obj/Release/net6.0/astute.dll
+/astute/obj/Release/net6.0/astute.GeneratedMSBuildEditorConfig.editorconfig
+/astute/obj/Release/net6.0/astute.genruntimeconfig.cache
+/astute/obj/Release/net6.0/astute.pdb
+/astute/obj/Release/net6.0/PublishOutputs.9a9ff11d02.txt
+/astute/bin/Debug/net6.0/astute.dll
+/astute/bin/Debug/net6.0/astute.pdb
+/astute/obj/Release/net6.0/refint/astute.dll
+/astute/Properties/PublishProfiles/FolderProfile.pubxml.user
+/astute/Properties/PublishProfiles/FolderProfile1.pubxml.user
