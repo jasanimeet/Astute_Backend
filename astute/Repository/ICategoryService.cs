@@ -18,6 +18,7 @@ namespace astute.Repository
         Task<int> DeleteCategoryValue(int id);
         Task<Category_Value> GetCategoryValueByCatValId(int catValId);
         Task<IList<CategoryValueModel>> GetCategoryValuesByCatId(int catId);
+        Task<IList<CategoryValueModel>> Get_Active_Category_Values(int catId);
         Task<int> ChangeStatus(int cat_val_Id, bool status);
         Task<DataTable> GetCategororyValues(int catId);
         #endregion

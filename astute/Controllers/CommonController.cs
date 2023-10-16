@@ -80,10 +80,10 @@ namespace astute.Controllers
         {
             try
             {
-                if (!string.IsNullOrEmpty(isd_Code))
-                {
-                    isd_Code = "+" + isd_Code;
-                }
+                //if (!string.IsNullOrEmpty(isd_Code))
+                //{
+                //    isd_Code = "+" + isd_Code;
+                //}
                 var result = await _commonService.GetCountry(country_Id, country, isd_Code, short_Code);
                 if (result != null && result.Count > 0)
                 {
@@ -103,6 +103,39 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetCountries", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_active_countries")]
+        [Authorize]
+        public async Task<IActionResult> Get_Active_Countries()
+        {
+            try
+            {   
+                var result = await _commonService.Get_Active_Country();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NotFound(new
+                {
+                    statusCode = HttpStatusCode.NotFound,
+                    message = CoreCommonMessage.DataNotFound
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Active_Countries", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
@@ -322,6 +355,39 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_active_states")]
+        [Authorize]
+        public async Task<IActionResult> Get_Active_States()
+        {
+            try
+            {
+                var result = await _commonService.Get_Active_State();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NotFound(new
+                {
+                    statusCode = HttpStatusCode.NotFound,
+                    message = CoreCommonMessage.DataNotFound
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Active_States", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         [HttpPost]
         [Route("createstate")]
         [Authorize]
@@ -338,6 +404,14 @@ namespace astute.Controllers
                         {
                             statusCode = HttpStatusCode.OK,
                             message = CoreCommonMessage.StateCreated
+                        });
+                    }
+                    else if (result == 4)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.StateExists
                         });
                     }
                     else if (result == 2)
@@ -387,6 +461,14 @@ namespace astute.Controllers
                             {
                                 statusCode = HttpStatusCode.OK,
                                 message = CoreCommonMessage.StateUpdated
+                            });
+                        }
+                        else if (result == 4)
+                        {
+                            return Conflict(new
+                            {
+                                statusCode = HttpStatusCode.Conflict,
+                                message = CoreCommonMessage.StateExists
                             });
                         }
                         else if (result == 2)
@@ -508,6 +590,39 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetCities", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_active_cities")]
+        [Authorize]
+        public async Task<IActionResult> Get_Active_Cities()
+        {
+            try
+            {
+                var result = await _commonService.Get_Active_Cities();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NotFound(new
+                {
+                    statusCode = HttpStatusCode.NotFound,
+                    message = CoreCommonMessage.DataNotFound
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Active_Cities", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
@@ -1374,6 +1489,35 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_active_currency")]
+        [Authorize]
+        public async Task<IActionResult> Get_Active_Currency(int currency_Id)
+        {
+            try
+            {
+                var result = await _currencyService.Get_Active_Currency(currency_Id);
+                if (result != null)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Active_Currency", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         [HttpPost]
         [Route("createcurrency")]
         [Authorize]
@@ -1390,6 +1534,14 @@ namespace astute.Controllers
                         {
                             statusCode = HttpStatusCode.OK,
                             message = CoreCommonMessage.CurrencyCreated
+                        });
+                    }
+                    else if (result == 4)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.CurrencyExists
                         });
                     }
                     else if (result == 2)
@@ -1437,6 +1589,14 @@ namespace astute.Controllers
                         {
                             statusCode = HttpStatusCode.OK,
                             message = CoreCommonMessage.CurrencyUpdated
+                        });
+                    }
+                    else if (result == 4)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.CurrencyExists
                         });
                     }
                     else if (result == 2)
@@ -1630,6 +1790,14 @@ namespace astute.Controllers
                         {
                             statusCode = HttpStatusCode.OK,
                             message = CoreCommonMessage.PointerMasterCreated
+                        });
+                    }
+                    else if (message == "_error_pointer_name")
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.PointerMasterAlreadyExist
                         });
                     }
                     else if (message == "_error_order_no")
@@ -1840,6 +2008,14 @@ namespace astute.Controllers
                         {
                             statusCode = HttpStatusCode.OK,
                             message = CoreCommonMessage.BGMCreated,
+                        });
+                    }
+                    else if (result == 5)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.IsExistShade_Milky
                         });
                     }
                     else if (result == 3)

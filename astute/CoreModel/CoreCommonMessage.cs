@@ -78,6 +78,7 @@ namespace astute.CoreModel
         public static string StateCreated = State + AddedSuccessfully;
         public static string StateUpdated = State + UpdatedSuccessfully;
         public static string StateDeleted = State + DeletedSuccessfully;
+        public static string StateExists = State + AlreadyExists;
         #endregion
 
         #region City
@@ -107,6 +108,7 @@ namespace astute.CoreModel
         public static string CurrencyCreated = Currency + AddedSuccessfully;
         public static string CurrencyUpdated = Currency + UpdatedSuccessfully;
         public static string CurrencyDeleted = Currency + DeletedSuccessfully;
+        public static string CurrencyExists = Currency + AlreadyExists;
         #endregion
 
         #region BGM
@@ -115,6 +117,7 @@ namespace astute.CoreModel
         public static string BGMUpdated = BGM + UpdatedSuccessfully;
         public static string BGMDeleted = BGM + DeletedSuccessfully;
         public static string IsExistBGM = BGM + AlreadyExists;
+        public static string IsExistShade_Milky = "Shade and milky" + AlreadyExists;
         #endregion
 
         #region Menu Master
@@ -200,6 +203,7 @@ namespace astute.CoreModel
         public static string PointerMasterCreated = PointerMaster + AddedSuccessfully;
         public static string PointerMasterUpdated = PointerMaster + UpdatedSuccessfully;
         public static string PointerMasterDeleted = PointerMaster + DeletedSuccessfully;
+        public static string PointerMasterAlreadyExist = "Pointer Name" + AlreadyExists;
         #endregion
 
         #region Pointer Detail
@@ -279,6 +283,13 @@ namespace astute.CoreModel
         public static string ValueConfigCreated = ValueConfig + AddedSuccessfully;
         public static string ValueConfigUpdated = ValueConfig + UpdatedSuccessfully;
         public static string ValueConfigDeleted = ValueConfig + DeletedSuccessfully;
+        #endregion
+
+        #region Supplier Pricing
+        public static string SupplierPricing = "Supplier pricing";
+        public static string SupplierPricingCreated = SupplierPricing + AddedSuccessfully;
+        public static string SupplierPricingUpdated = SupplierPricing + UpdatedSuccessfully;
+        public static string SupplierPricingDeleted = SupplierPricing + DeletedSuccessfully;
         #endregion
     }
 }

@@ -36,7 +36,7 @@ namespace astute.Repository
         #region Country Master
         public async Task<int> InsertCountry(Country_Master country_Mas)
         {
-            country_Mas.Isd_Code = "+" + country_Mas.Isd_Code;
+            //country_Mas.Isd_Code = "+" + country_Mas.Isd_Code;
             var countryId = new SqlParameter("@countryId", country_Mas.Country_Id);
             var country = new SqlParameter("@country", country_Mas.Country);
             var isdCode = new SqlParameter("@isdCode", country_Mas.Isd_Code);
@@ -79,7 +79,7 @@ namespace astute.Repository
         }
         public async Task<int> UpdateCountry(Country_Master country_Mas)
         {
-            country_Mas.Isd_Code = "+" + country_Mas.Isd_Code;
+            //country_Mas.Isd_Code = "+" + country_Mas.Isd_Code;
             var countryId = new SqlParameter("@countryId", country_Mas.Country_Id);
             var country = new SqlParameter("@country", country_Mas.Country);
             var isdCode = new SqlParameter("@isdCode", country_Mas.Isd_Code);
@@ -136,16 +136,24 @@ namespace astute.Repository
             result = await Task.Run(() => _dbContext.Country_Master
                  .FromSqlRaw(@"exec Country_Mas_Select @countryId, @countryName, @isdCode, @shortCode", CountryId, CountryName, IsdCode, ShortCode).ToListAsync());
 
-            if (result != null && result.Count > 0)
-            {
-                foreach (var item in result)
-                {
-                    if (!string.IsNullOrEmpty(item.Isd_Code))
-                    {
-                        item.Isd_Code = item.Isd_Code.Replace("+", "");
-                    }
-                }
-            }
+            //if (result != null && result.Count > 0)
+            //{
+            //    foreach (var item in result)
+            //    {
+            //        if (!string.IsNullOrEmpty(item.Isd_Code))
+            //        {
+            //            item.Isd_Code = item.Isd_Code.Replace("+", "");
+            //        }
+            //    }
+            //}
+
+            return result;
+        }
+
+        public async Task<IList<Country_Master>> Get_Active_Country()
+        {   
+            var result = await Task.Run(() => _dbContext.Country_Master
+                 .FromSqlRaw(@"exec Country_Mas_Active_Select").ToListAsync());
 
             return result;
         }
@@ -171,6 +179,10 @@ namespace astute.Repository
             var status = new SqlParameter("@status", state_Mas.Status);
             var recordType = new SqlParameter("@recordType", "Insert");
             var isForce_Insert = new SqlParameter("@IsForceInsert", state_Mas.IsForceInsert);
+            var isExistState = new SqlParameter("@IsExistState", System.Data.SqlDbType.Bit)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
             var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
             {
                 Direction = System.Data.ParameterDirection.Output
@@ -181,8 +193,13 @@ namespace astute.Repository
             };
 
             var result = await Task.Run(() => _dbContext.Database
-            .ExecuteSqlRawAsync(@"exec State_Mas_Insert_Update @stateId, @state, @countryId, @orderNo, @sortNo, @status, @recordType, @IsExistOrderNo OUT, @IsExistSortNo OUT, @IsForceInsert",
-            stateId, state, countryId, orderNo, sortNo, status, recordType, isExistOrderNo, isExistSortNo, isForce_Insert));
+            .ExecuteSqlRawAsync(@"exec State_Mas_Insert_Update @stateId, @state, @countryId, @orderNo, @sortNo, @status, @recordType, @IsExistState OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT,
+            @IsForceInsert",
+            stateId, state, countryId, orderNo, sortNo, status, recordType, isExistState, isExistOrderNo, isExistSortNo, isForce_Insert));
+
+            bool stateIsExist = (bool)isExistState.Value;
+            if (stateIsExist)
+                return 4;
 
             bool orderNoIsExist = (bool)isExistOrderNo.Value;
             if (orderNoIsExist)
@@ -206,6 +223,10 @@ namespace astute.Repository
             var status = new SqlParameter("@status", state_Mas.Status);
             var recordType = new SqlParameter("@recordType", "Update");
             var isForce_Insert = new SqlParameter("@IsForceInsert", state_Mas.IsForceInsert);
+            var isExistState = new SqlParameter("@IsExistState", System.Data.SqlDbType.Bit)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
             var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
             {
                 Direction = System.Data.ParameterDirection.Output
@@ -216,8 +237,12 @@ namespace astute.Repository
             };
 
             var result = await Task.Run(() => _dbContext.Database
-            .ExecuteSqlRawAsync(@"exec State_Mas_Insert_Update @stateId, @state, @countryId, @orderNo, @sortNo, @status, @recordType, @IsExistOrderNo OUT, @IsExistSortNo OUT, @IsForceInsert",
-            stateId, state, countryId, orderNo, sortNo, status, recordType, isExistOrderNo, isExistSortNo, isForce_Insert));
+            .ExecuteSqlRawAsync(@"exec State_Mas_Insert_Update @stateId, @state, @countryId, @orderNo, @sortNo, @status, @recordType, @IsExistState OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @IsForceInsert",
+            stateId, state, countryId, orderNo, sortNo, status, recordType, isExistState, isExistOrderNo, isExistSortNo, isForce_Insert));
+
+            bool stateIsExist = (bool)isExistState.Value;
+            if (stateIsExist)
+                return 4;
 
             bool orderNoIsExist = (bool)isExistOrderNo.Value;
             if (orderNoIsExist)
@@ -241,6 +266,14 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.State_Master
                         .FromSqlRaw(@"exec State_Mas_Select @stateId, @state, @countryId", StateId, State, CountryId).ToListAsync());
+
+            return result;
+        }
+
+        public async Task<IList<State_Master>> Get_Active_State()
+        {
+            var result = await Task.Run(() => _dbContext.State_Master
+                 .FromSqlRaw(@"exec State_Master_Active_Select").ToListAsync());
 
             return result;
         }
@@ -338,6 +371,14 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.City_Master
                            .FromSqlRaw(@"exec City_Mas_Select @cityId, @city, @stateId, @iPgNo, @iPgSize", CityId, City, StateId, pageIndex, pageSize).ToListAsync());
+
+            return result;
+        }
+
+        public async Task<IList<City_Master>> Get_Active_Cities()
+        {
+            var result = await Task.Run(() => _dbContext.City_Master
+                 .FromSqlRaw(@"exec City_Mas_Active_Select").ToListAsync());
 
             return result;
         }

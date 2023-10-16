@@ -208,6 +208,24 @@ namespace astute.Controllers
         }
 
         [HttpGet]
+        [Route("get_active_category_values")]
+        [Authorize]
+        public async Task<IActionResult> Get_Active_Category_Values(int catId)
+        {
+            var result = await _categoryService.Get_Active_Category_Values(catId);
+            if (result != null && result.Count > 0)
+            {
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    message = CoreCommonMessage.DataSuccessfullyFound,
+                    data = result
+                });
+            }
+            return NoContent();
+        }
+
+        [HttpGet]
         [Route("getcategoryvaluebycatvalid")]
         [Authorize]
         public async Task<IActionResult> GetCategoryValueByCatValId(int catValId)

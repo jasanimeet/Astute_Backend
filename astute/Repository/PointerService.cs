@@ -77,6 +77,10 @@ namespace astute.Repository
             var sortNo = pointer_Mas.Sort_No > 0 ? new SqlParameter("@Sort_No", pointer_Mas.Sort_No) : new SqlParameter("@Sort_No", DBNull.Value);
             var status = new SqlParameter("@Status", pointer_Mas.Status);
             var recordType = new SqlParameter("@recordType", "Insert");
+            var isExistPointer_Name = new SqlParameter("@IsExistPointer_Name", System.Data.SqlDbType.Bit)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
             var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
             {
                 Direction = System.Data.ParameterDirection.Output
@@ -92,8 +96,12 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"exec Pointer_Mas_Insert_Update @Pointer_Id, @Pointer_Name, @From_Cts, @To_Cts, @Pointer_Type, @Order_No, @Sort_No, 
-                        @Status, @recordType, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT", pointerId, pointerName, fromCts, toCts, pointerType, orderNo, sortNo,
-                        status, recordType, isExistOrderNo, isExistSortNo, insertedId));
+                        @Status, @recordType, @IsExistPointer_Name OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT", pointerId, pointerName, fromCts, toCts, pointerType, orderNo, sortNo,
+                        status, recordType, isExistPointer_Name, isExistOrderNo, isExistSortNo, insertedId));
+
+            bool pointer_NameIsExist = (bool)isExistPointer_Name.Value;
+            if (pointer_NameIsExist)
+                return ("_error_pointer_name", 0);
 
             bool orderNoIsExist = (bool)isExistOrderNo.Value;
             if (orderNoIsExist)

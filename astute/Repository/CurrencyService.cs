@@ -34,6 +34,10 @@ namespace astute.Repository
             var status = new SqlParameter("@status", currency_Mas.status);
             var recordType = new SqlParameter("@recordType", "Insert");
             var isForce_Insert = new SqlParameter("@IsForceInsert", currency_Mas.IsForceInsert);
+            var isExistCurrency = new SqlParameter("@IsExistCurrency", System.Data.SqlDbType.Bit)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
             var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
             {
                 Direction = System.Data.ParameterDirection.Output
@@ -44,8 +48,12 @@ namespace astute.Repository
             };
 
             var result = await Task.Run(() => _dbContext.Database
-                               .ExecuteSqlRawAsync(@"exec Currency_Mas_Insert_Update @Currency_Id, @Currency, @Currency_Name, @Symbol, @Order_No, @Sort_No, @status, @recordType, @IsExistOrderNo OUT, @IsExistSortNo OUT, @IsForceInsert",
-                               currency_Id, currency, currencyName, symbol, orderNo, sortNo, status, recordType, isExistOrderNo, isExistSortNo, isForce_Insert));
+                               .ExecuteSqlRawAsync(@"exec Currency_Mas_Insert_Update @Currency_Id, @Currency, @Currency_Name, @Symbol, @Order_No, @Sort_No, @status, @recordType, @IsExistCurrency OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @IsForceInsert",
+                               currency_Id, currency, currencyName, symbol, orderNo, sortNo, status, recordType, isExistCurrency, isExistOrderNo, isExistSortNo, isForce_Insert));
+
+            bool currencyIsExist = (bool)isExistCurrency.Value;
+            if (currencyIsExist)
+                return 4;
 
             bool orderNoIsExist = (bool)isExistOrderNo.Value;
             if (orderNoIsExist)
@@ -68,6 +76,10 @@ namespace astute.Repository
             var status = new SqlParameter("@status", currency_Mas.status);
             var recordType = new SqlParameter("@recordType", "Update");
             var isForce_Insert = new SqlParameter("@IsForceInsert", currency_Mas.IsForceInsert);
+            var isExistCurrency = new SqlParameter("@IsExistCurrency", System.Data.SqlDbType.Bit)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
             var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
             {
                 Direction = System.Data.ParameterDirection.Output
@@ -78,8 +90,12 @@ namespace astute.Repository
             };
 
             var result = await Task.Run(() => _dbContext.Database
-                               .ExecuteSqlRawAsync(@"exec Currency_Mas_Insert_Update @Currency_Id, @Currency, @Currency_Name, @Symbol, @Order_No, @Sort_No, @status, @recordType, @IsExistOrderNo OUT, @IsExistSortNo OUT, @IsForceInsert",
-                               currency_Id, currency, currencyName, symbol, orderNo, sortNo, status, recordType, isExistOrderNo, isExistSortNo, isForce_Insert));
+                               .ExecuteSqlRawAsync(@"exec Currency_Mas_Insert_Update @Currency_Id, @Currency, @Currency_Name, @Symbol, @Order_No, @Sort_No, @status, @recordType, @IsExistCurrency OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @IsForceInsert",
+                               currency_Id, currency, currencyName, symbol, orderNo, sortNo, status, recordType, isExistCurrency, isExistOrderNo, isExistSortNo, isForce_Insert));
+
+            bool currencyIsExist = (bool)isExistCurrency.Value;
+            if (currencyIsExist)
+                return 4;
 
             bool orderNoIsExist = (bool)isExistOrderNo.Value;
             if (orderNoIsExist)
@@ -114,6 +130,15 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Currency_Master
                             .FromSqlRaw(@"exec Currency_Mas_Select @Currency_Id", param)
+                            .ToListAsync());
+            return result;
+        }
+        public async Task<IList<Currency_Master>> Get_Active_Currency(int currency_Id)
+        {
+            var param = currency_Id > 0 ? new SqlParameter("@Currency_Id", currency_Id) : new SqlParameter("@Currency_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Currency_Master
+                            .FromSqlRaw(@"exec Currency_Mas_Select_Active_Currency @Currency_Id", param)
                             .ToListAsync());
             return result;
         }

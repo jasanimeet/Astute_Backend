@@ -10,6 +10,8 @@ namespace astute.Models
         public decimal? Length_To { get; set; }
         public decimal? Width_From { get; set; }
         public decimal? Width_To { get; set; }
+        public decimal? Depth_From { get; set; }
+        public decimal? Depth_To { get; set; }
         public decimal? Depth_Per_From { get; set; }
         public decimal? Depth_Per_To { get; set; }
         public decimal? Table_Per_From { get; set; }

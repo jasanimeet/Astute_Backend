@@ -740,6 +740,35 @@ namespace astute.Controllers
         }
 
         [HttpGet]
+        [Route("get_party_type_customer")]
+        [Authorize]
+        public async Task<IActionResult> Get_Party_Type_Customer()
+        {
+            try
+            {
+                var result = await _partyService.Get_Party_Type_Customer();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Party_Type_Customer", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
         [Route("get_supplier_column_mapping")]
         [Authorize]
         public async Task<IActionResult> Get_Supplier_Column_Mapping(int party_Id)
@@ -893,5 +922,65 @@ namespace astute.Controllers
             }
         }
         #endregion
+
+        [HttpGet]
+        [Route("get_supplier_pricing")]
+        [Authorize]
+        public async Task<IActionResult> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id)
+        {
+            try
+            {
+                var result = await _partyService.Get_Supplier_Pricing(supplier_Pricing_Id, supplier_Id);
+                if (result != null)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_Pricing", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("create_supplier_pricing")]
+        [Authorize]
+        public async Task<IActionResult> Create_Supplier_Pricing(Supplier_Pricing supplier_Pricing)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _partyService.Add_Update_Supplier_Pricing(supplier_Pricing);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = supplier_Pricing.Supplier_Pricing_Id == 0 ? CoreCommonMessage.SupplierPricingCreated : CoreCommonMessage.SupplierPricingUpdated,
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Supplier_Pricing", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
     }
 }

@@ -61,6 +61,10 @@ namespace astute.Repository
             var status = new SqlParameter("@Status", bGM_Mas.Status);
             var recordType = new SqlParameter("@recordType", "Insert");
 
+            var isExistShade_Milky = new SqlParameter("@IsExistShade_Milky", System.Data.SqlDbType.Bit)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
             var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
             {
                 Direction = System.Data.ParameterDirection.Output
@@ -71,8 +75,12 @@ namespace astute.Repository
             };
 
             var result = await Task.Run(() => _dbContext.Database
-            .ExecuteSqlRawAsync(@"EXEC BGM_Mas_Insert_Update @Bgm_Id, @Bgm, @Shade, @Milky, @Sort_No, @Order_No, @Status, @recordType, @IsExistOrderNo OUT, @IsExistSortNo OUT",
-            bgmId, bgm, shade, milky, sortNo, orderNo, status, recordType, isExistOrderNo, isExistSortNo));
+            .ExecuteSqlRawAsync(@"EXEC BGM_Mas_Insert_Update @Bgm_Id, @Bgm, @Shade, @Milky, @Sort_No, @Order_No, @Status, @recordType, @IsExistShade_Milky OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT",
+            bgmId, bgm, shade, milky, sortNo, orderNo, status, recordType, isExistShade_Milky, isExistOrderNo, isExistSortNo));
+
+            bool Shade_MilkyIsExist = (bool)isExistShade_Milky.Value;
+            if (Shade_MilkyIsExist)
+                return 5;
 
             bool orderNoIsExist = (bool)isExistOrderNo.Value;
             if (orderNoIsExist)
@@ -100,6 +108,10 @@ namespace astute.Repository
             var status = new SqlParameter("@Status", bGM_Mas.Status);
             var recordType = new SqlParameter("@recordType", "Update");
 
+            var isExistShade_Milky = new SqlParameter("@IsExistShade_Milky", System.Data.SqlDbType.Bit)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
             var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
             {
                 Direction = System.Data.ParameterDirection.Output
@@ -110,8 +122,12 @@ namespace astute.Repository
             };
 
             var result = await Task.Run(() => _dbContext.Database
-            .ExecuteSqlRawAsync(@"EXEC BGM_Mas_Insert_Update @Bgm_Id, @Bgm, @Shade, @Milky, @Sort_No, @Order_No, @Status, @recordType, @IsExistOrderNo OUT, @IsExistSortNo OUT",
-            bgmId, bgm, shade, milky, sortNo, orderNo, status, recordType, isExistOrderNo, isExistSortNo));
+            .ExecuteSqlRawAsync(@"EXEC BGM_Mas_Insert_Update @Bgm_Id, @Bgm, @Shade, @Milky, @Sort_No, @Order_No, @Status, @recordType, @IsExistShade_Milky OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT",
+            bgmId, bgm, shade, milky, sortNo, orderNo, status, recordType, isExistShade_Milky, isExistOrderNo, isExistSortNo));
+
+            bool Shade_MilkyIsExist = (bool)isExistShade_Milky.Value;
+            if (Shade_MilkyIsExist)
+                return 5;
 
             bool orderNoIsExist = (bool)isExistOrderNo.Value;
             if (orderNoIsExist)

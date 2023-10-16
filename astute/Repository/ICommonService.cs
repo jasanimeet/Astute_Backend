@@ -13,6 +13,7 @@ namespace astute.Repository
         Task<int> UpdateCountry(Country_Master country_Mas);
         Task<int> DeleteCountry(int countryId);
         Task<IList<Country_Master>> GetCountry(int country_Id, string country, string isd_Code, string short_Code);
+        Task<IList<Country_Master>> Get_Active_Country();
         Task<int> CountryChangeStatus(int country_Id, bool status);
         #endregion
 
@@ -21,6 +22,7 @@ namespace astute.Repository
         Task<int> UpdateState(State_Master state_Mas);
         Task<int> DeleteState(int stateId);
         Task<IList<State_Master>> GetStates(int state_Id, string state, int country_Id);
+        Task<IList<State_Master>> Get_Active_State();
         Task<int> StateChangeStatus(int state_Id, bool status);
         #endregion
 
@@ -29,6 +31,7 @@ namespace astute.Repository
         Task<int> UpdateCity(City_Master city_Mas);
         Task<int> DeleteCity(int cityId);
         Task<IList<City_Master>> GetCity(int cityId, string city, int stateId, int iPgNo, int iPgSize);
+        Task<IList<City_Master>> Get_Active_Cities();
         Task<int> CityChangeStatus(int city_Id, bool status);
         #endregion
 

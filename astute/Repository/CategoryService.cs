@@ -315,6 +315,38 @@ namespace astute.Repository
             }
             return model;
         }
+
+        public async Task<IList<CategoryValueModel>> Get_Active_Category_Values(int catId)
+        {
+            var model = new List<CategoryValueModel>();
+            var param = catId > 0 ? new SqlParameter("@catId", catId) : new SqlParameter("@catId", DBNull.Value);
+
+            var categoryValue = await Task.Run(() => _dbContext.Category_Value
+                            .FromSqlRaw(@"exec Category_Values_Active_Select @catId", param).ToListAsync());
+            if (categoryValue != null && categoryValue.Count > 0)
+            {
+                foreach (var x in categoryValue)
+                {
+                    model.Add(new CategoryValueModel()
+                    {
+                        Cat_val_Id = x.Cat_val_Id,
+                        Cat_Name = x.Cat_Name,
+                        Group_Name = x.Group_Name,
+                        Rapaport_Name = x.Rapaport_Name,
+                        Rapnet_name = x.Rapnet_name,
+                        Synonyms = x.Synonyms,
+                        Order_No = x.Order_No,
+                        Sort_No = x.Sort_No,
+                        Status = x.Status,
+                        Icon_Url = !string.IsNullOrEmpty(x.Icon_Url) ? _configuration["BaseUrl"] + CoreCommonFilePath.CategoryIcomFilePath + x.Icon_Url : null,
+                        Cat_Id = catId,
+                        Display_Name = x.Display_Name,
+                        Short_Name = x.Short_Name
+                    });
+                }
+            }
+            return model;
+        }
         public async Task<int> ChangeStatus(int cat_val_Id, bool status)
         {
             var catvalId = new SqlParameter("@Cat_Val_Id", cat_val_Id);
