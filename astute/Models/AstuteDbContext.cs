@@ -78,5 +78,7 @@ namespace astute.Models
         public DbSet<Emergency_Contact_Detail> Emergency_Contact_Detail { get; set; }
         public DbSet<Party_Media> Party_Media { get; set; }
         public DbSet<Value_Config> Value_Config { get; set; }
+        public DbSet<Ac_Group_Master> Ac_Group_Master { get; set; }
+        public DbSet<Ac_Group_Detail> Ac_Group_Detail { get; set; }
     }
 }

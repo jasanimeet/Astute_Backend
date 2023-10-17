@@ -146,7 +146,7 @@ namespace astute.Controllers
                                 {
                                     var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/CompanyDocuments");
                                     if (!(Directory.Exists(filePath)))
-                                    {
+                                    {   
                                         Directory.CreateDirectory(filePath);
                                     }
                                     string fileName = Path.GetFileNameWithoutExtension(item.Upload_Path_Name.FileName);
@@ -312,7 +312,7 @@ namespace astute.Controllers
                 return Ok(new
                 {
                     StatusCode = HttpStatusCode.BadRequest,
-                    message = "Parameter mismatched."
+                    message = CoreCommonMessage.ParameterMismatched
                 });
             }
             catch (Exception ex)

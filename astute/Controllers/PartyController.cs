@@ -5,6 +5,7 @@ using astute.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Data;
@@ -195,7 +196,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_party_detils")]
         [Authorize]
-        public async Task<IActionResult> Create_Party_Detils([FromForm]Party_Master party_Master)
+        public async Task<IActionResult> Create_Party_Detils([FromForm] Party_Master party_Master)
         {
             try
             {
@@ -237,7 +238,7 @@ namespace astute.Controllers
                             }
 
                             foreach (var item in party_Master.Party_Contact_List)
-                            {   
+                            {
                                 dataTable.Rows.Add(item.Contact_Id, party_Id, item.Contact_Name, item.Sex, item.Designation_Id, item.Mobile_No, item.Email, item.Birth_Date, item.QueryFlag);
                                 if (CoreService.Enable_Trace_Records(_configuration))
                                 {
@@ -402,7 +403,7 @@ namespace astute.Controllers
                             await _partyService.AddUpdatePartyDocument(dataTable);
                         }
                         //Party Media
-                        if(party_Master.Party_Media_List != null && party_Master.Party_Media_List.Count > 0)
+                        if (party_Master.Party_Media_List != null && party_Master.Party_Media_List.Count > 0)
                         {
                             DataTable dataTable = new DataTable();
                             dataTable.Columns.Add("Party_Media_Id", typeof(int));
@@ -483,11 +484,22 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
+                //if (ex.Number == 2624 || ex.Number == 2601)
+                //{
+                //    return Conflict(new
+                //    {
+                //        statusCode = HttpStatusCode.Conflict,
+                //        message = "Party Code already exists."
+                //    });
+                //}
+                //else
+                //{
                 await _commonService.InsertErrorLog(ex.Message, "Create_Party_Detils", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
                 });
+                //}
             }
         }
         #endregion
@@ -520,7 +532,7 @@ namespace astute.Controllers
                         {
                             success = true;
                         }
-                    }                    
+                    }
                     if (supplier_Details.Party_File != null)
                     {
                         if (File_Location != null && File_Location.Length > 0)

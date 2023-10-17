@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.FileSystemGlobbing.Internal;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace astute.CoreServices
 {
@@ -19,7 +19,6 @@ namespace astute.CoreServices
     {
         private static Byte[] Key_64 = { 42, 16, 93, 156, 78, 4, 218, 32 };
         private static Byte[] Iv_64 = { 55, 103, 246, 79, 36, 99, 167, 3 };
-
         
         public static string Encrypt(string cValue, bool isFile = false)
         {
@@ -28,8 +27,8 @@ namespace astute.CoreServices
                 return cValue;
             //if (!isFile)
             //{
-            //    cValue = cValue.Replace("'", "•");//Tejas Add On 16/09/2011
-            //    if (cValue.IsNumeric())
+            //    cValue = cValue.Replace("'", "•");
+            //    if (IsNumeric(cValue))
             //        cValue = "A_°" + cValue;
             //}
             DESCryptoServiceProvider CryptoProvidor = new DESCryptoServiceProvider();
@@ -42,6 +41,11 @@ namespace astute.CoreServices
             ms.Flush();
             return Convert.ToBase64String(ms.GetBuffer(), 0, Convert.ToInt32(ms.Length));
         }
+        //public static bool IsNumeric(this string value)
+        //{
+        //    double number;
+        //    return double.TryParse(value, out number);
+        //}
         public static string Decrypt(string cValue, bool isFile = false)
         {
             try
@@ -68,132 +72,6 @@ namespace astute.CoreServices
             }
             return cValue;
         }
-
-        //public static string Encrypt(string clearText)
-        //{
-        //    string encryptionKey = "F1597423-9641-4734-A9B4-14F6DB99B4C4";
-        //    byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
-        //    using (Aes encryptor = Aes.Create())
-        //    {
-        //        Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(encryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
-        //        encryptor.Key = pdb.GetBytes(32);
-        //        encryptor.IV = pdb.GetBytes(16);
-        //        using (MemoryStream ms = new MemoryStream())
-        //        {
-        //            using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
-        //            {
-        //                cs.Write(clearBytes, 0, clearBytes.Length);
-        //                cs.Close();
-        //            }
-        //            clearText = Convert.ToBase64String(ms.ToArray());
-        //        }
-        //    }
-        //    return clearText;
-        //}
-        //public static string Decrypt(string cipherText)
-        //{
-        //    string encryptionKey = "F1597423-9641-4734-A9B4-14F6DB99B4C4";
-        //    byte[] cipherBytes = Convert.FromBase64String(cipherText);
-        //    using (Aes encryptor = Aes.Create())
-        //    {
-        //        Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(encryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
-        //        encryptor.Key = pdb.GetBytes(32);
-        //        encryptor.IV = pdb.GetBytes(16);
-        //        using (MemoryStream ms = new MemoryStream())
-        //        {
-        //            using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
-        //            {
-        //                cs.Write(cipherBytes, 0, cipherBytes.Length);
-        //                cs.Close();
-        //            }
-        //            cipherText = Encoding.Unicode.GetString(ms.ToArray());
-        //        }
-        //    }
-        //    return cipherText;
-        //}
-
-        //public static string Encrypt(string cipherText)
-        //{
-        //    string key = "0123456789ABCDEF0123456789ABCDEF";
-
-        //    byte[] encrypted;
-
-        //    using (Aes aes = Aes.Create())
-        //    {
-        //        aes.Key = Encoding.UTF8.GetBytes(key);
-        //        aes.Mode = CipherMode.CFB;
-
-        //        aes.GenerateIV();
-
-        //        ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-
-        //        using (MemoryStream ms = new MemoryStream())
-        //        {
-        //            ms.Write(aes.IV, 0, aes.IV.Length);
-
-        //            using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-        //            using (StreamWriter sw = new StreamWriter(cs))
-        //            {
-        //                sw.Write(cipherText);
-        //            }
-
-        //            encrypted = ms.ToArray();
-        //        }
-        //    }
-        //    string encryptedHex = BytesToHex(encrypted);
-        //    return encryptedHex;
-        //}
-
-        //public static string Decrypt(string cipherText)
-        //{
-        //    string key = "0123456789ABCDEF0123456789ABCDEF";
-
-        //    byte[] hexdata = HexToBytes(cipherText);
-
-        //    byte[] decrypted;
-        //    using (Aes aes = Aes.Create())
-        //    {
-        //        aes.Key = Encoding.UTF8.GetBytes(key);
-        //        aes.Mode = CipherMode.CFB;
-
-        //        // Extract the IV from the beginning of the cipherText
-        //        byte[] iv = new byte[aes.IV.Length];
-        //        Array.Copy(hexdata, 0, iv, 0, aes.IV.Length);
-        //        aes.IV = iv;
-
-        //        ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-
-        //        using (MemoryStream ms = new MemoryStream(hexdata, aes.IV.Length, cipherText.Length - aes.IV.Length))
-        //        using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-        //        using (StreamReader sr = new StreamReader(cs))
-        //        {
-        //            decrypted = Encoding.UTF8.GetBytes(sr.ReadToEnd());
-        //        }
-        //    }
-        //    string decryptedText = Encoding.UTF8.GetString(decrypted);
-        //    return decryptedText;
-        //}
-
-        //static string BytesToHex(byte[] bytes)
-        //{
-        //    StringBuilder sb = new StringBuilder();
-        //    foreach (byte b in bytes)
-        //    {
-        //        sb.Append(b.ToString("X2"));
-        //    }
-        //    return sb.ToString();
-        //}
-
-        //static byte[] HexToBytes(string hex)
-        //{
-        //    byte[] bytes = new byte[hex.Length / 2];
-        //    for (int i = 0; i < hex.Length; i += 2)
-        //    {
-        //        bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
-        //    }
-        //    return bytes;
-        //}
-
         public static string ConvertModelListToJson<T>(List<T> data)
         {
             return System.Text.Json.JsonSerializer.Serialize(data, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
@@ -271,6 +149,23 @@ namespace astute.CoreServices
                 isEnable = Convert.ToBoolean(_configuration["Enable_Trace_Record"]);
 
             return isEnable;
+        }
+        public static void Remove_File_From_Folder(string file_Path)
+        {   
+            if (File.Exists(file_Path))
+            {
+                File.Delete(file_Path);
+            }
+        }
+        public static void Remove_Files_From_Folder(IList<string> files, string root_folder)
+        {
+            foreach (var file in files)
+            {
+                if (File.Exists(Path.Combine(root_folder, file)))
+                {
+                    File.Delete(file);
+                }
+            }
         }
     }
 }
