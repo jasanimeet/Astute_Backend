@@ -27,6 +27,8 @@ namespace astute.CoreModel
         public static string SortNoAlreadyExist = "Sort no already exist.";
         public static string ReferenceFoundError = "Reference found, you can not delete this record.";
         public static string SupplierDetailSavedSuccessfully = "Supplier detail saved successfully.";
+        public static string UserRegisteredSuccessfully = "User registered successfully";
+        public static string UserUpdatedSuccessfully = "User updated successfully";
 
         #region Email Subjects
         public static string ForgetPasswordSubject = "Forget Password Email";

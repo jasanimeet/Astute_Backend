@@ -35,3 +35,6 @@
 /astute/obj/Release/net6.0/refint/astute.dll
 /astute/Properties/PublishProfiles/FolderProfile.pubxml.user
 /astute/Properties/PublishProfiles/FolderProfile1.pubxml.user
+/astute/bin/Release/net6.0/astute.dll
+/astute/bin/Release/net6.0/astute.pdb
+/astute/Properties/PublishProfiles/FolderProfile10.pubxml.user

@@ -589,10 +589,11 @@ namespace astute.Controllers
                         dataTable.Columns.Add("Col_Id", typeof(int));
                         dataTable.Columns.Add("Supp_Col_Name", typeof(string));
                         dataTable.Columns.Add("Column_Type", typeof(string));
+                        dataTable.Columns.Add("Column_Synonym", typeof(string));
 
                         foreach (var item in supplier_Details.Supplier_Column_Mapping_List)
                         {
-                            dataTable.Rows.Add(item.Supp_Col_Id, supplier_Details.Party_Id, item.Col_Id, item.Supp_Col_Name, item.Column_Type);
+                            dataTable.Rows.Add(item.Supp_Col_Id, supplier_Details.Party_Id, item.Col_Id, item.Supp_Col_Name, item.Column_Type, item.Column_Synonym);
                         }
                         var result = await _partyService.Add_Update_Supplier_Column_Mapping(dataTable);
                         if (result > 0)

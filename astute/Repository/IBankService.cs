@@ -12,6 +12,6 @@ namespace astute.Repository
         Task<IList<Bank_Master>> GetBank(int bankId);
         Task<int> BankChangeStatus(int bank_Id, bool status);
         Task<IList<Bank_Dropdown_Model>> Get_Bank_Distinct();
-        Task<IList<DropdownModel>> Get_Bank_Branch(string bank_Name);
+        Task<List<Dictionary<string, object>>> Get_Bank_Branch(string bank_Name);
     }
 }

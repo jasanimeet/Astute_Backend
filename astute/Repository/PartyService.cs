@@ -604,7 +604,14 @@ namespace astute.Repository
                         var dict = new Dictionary<string, object>();
                         foreach (DataColumn col in dataTable.Columns)
                         {
-                            dict[col.ColumnName] = row[col];
+                            if (row[col] == DBNull.Value)
+                            {
+                                dict[col.ColumnName] = null;
+                            }
+                            else
+                            {
+                                dict[col.ColumnName] = row[col];
+                            }
                         }
                         result.Add(dict);
                     }

@@ -11,6 +11,6 @@ namespace astute.Models
         public string? Column_Type { get; set; }
         public int? Supp_Col_Id { get; set; }
         public int? Supp_Id { get; set; }
-        
+        public string Column_Synonym { get; set; }
     }
 }
