@@ -1,8 +1,6 @@
 ﻿using astute.CoreModel;
 using astute.Models;
 using astute.Repository;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Data;
@@ -244,6 +242,34 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Ac_Group", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_active_ac_group")]
+        public virtual async Task<IActionResult> Get_Active_Ac_Group(int ac_Group_Id)
+        {
+            try
+            {
+                var result = await _ac_group_service.Get_Active_Ac_Group(ac_Group_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Active_Ac_Group", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

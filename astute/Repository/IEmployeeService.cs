@@ -16,6 +16,7 @@ namespace astute.Repository
         Task<Employee_Master> EmployeeLogin(UserModel userModel);
         Task<AuthenticateResponse> AuthenticateEmployee(UserModel userModel);
         Task<int> Get_Employee_Code();
+        Task<IList<Employee_Master>> Get_Active_Employees(int employeeId, string userName, string personalEmail);
         #endregion
 
         #region Employee Document

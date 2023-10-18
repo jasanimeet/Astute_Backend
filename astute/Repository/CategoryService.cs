@@ -9,8 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using System.Threading.Tasks;
 
 namespace astute.Repository
@@ -153,19 +151,19 @@ namespace astute.Repository
             var shortName = !string.IsNullOrEmpty(category_Value.Short_Name) ? new SqlParameter("@ShortName", category_Value.Short_Name) : new SqlParameter("@ShortName", DBNull.Value);
             var recordType = new SqlParameter("@RecordType", "Insert");
             var isForce_Insert = new SqlParameter("@IsForceInsert", category_Value.IsForceInsert);
-            var isExistCatVal = new SqlParameter("@IsExistsCatVal", System.Data.SqlDbType.Bit)
+            var isExistCatVal = new SqlParameter("@IsExistsCatVal", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
-            var isExistOrderNo = new SqlParameter("@IsExistsOrderNo", System.Data.SqlDbType.Bit)
+            var isExistOrderNo = new SqlParameter("@IsExistsOrderNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
-            var isExistSortNo = new SqlParameter("@IsExistsSortNo", System.Data.SqlDbType.Bit)
+            var isExistSortNo = new SqlParameter("@IsExistsSortNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -209,19 +207,19 @@ namespace astute.Repository
             var shortName = !string.IsNullOrEmpty(category_Value.Short_Name) ? new SqlParameter("@ShortName", category_Value.Short_Name) : new SqlParameter("@ShortName", DBNull.Value);
             var recordType = new SqlParameter("@RecordType", "Update");
             var isForce_Insert = new SqlParameter("@IsForceInsert", category_Value.IsForceInsert);
-            var isExistCatVal = new SqlParameter("@IsExistsCatVal", System.Data.SqlDbType.Bit)
+            var isExistCatVal = new SqlParameter("@IsExistsCatVal", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
-            var isExistOrderNo = new SqlParameter("@IsExistsOrderNo", System.Data.SqlDbType.Bit)
+            var isExistOrderNo = new SqlParameter("@IsExistsOrderNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
-            var isExistSortNo = new SqlParameter("@IsExistsSortNo", System.Data.SqlDbType.Bit)
+            var isExistSortNo = new SqlParameter("@IsExistsSortNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -315,7 +313,6 @@ namespace astute.Repository
             }
             return model;
         }
-
         public async Task<IList<CategoryValueModel>> Get_Active_Category_Values(int catId)
         {
             var model = new List<CategoryValueModel>();

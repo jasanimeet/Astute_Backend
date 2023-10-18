@@ -1,5 +1,4 @@
 ﻿using astute.CoreModel;
-using astute.CoreServices;
 using astute.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
@@ -300,13 +299,13 @@ namespace astute.Repository
             var stdCode = !string.IsNullOrEmpty(city_Mas.Std_Code) ? new SqlParameter("@std_Code", city_Mas.Std_Code) : new SqlParameter("@std_Code", DBNull.Value);
             var recordType = new SqlParameter("@recordType", "Insert");
             var isForce_Insert = new SqlParameter("@IsForceInsert", city_Mas.IsForceInsert);
-            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
+            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistSortNo = new SqlParameter("@IsExistSortNo", System.Data.SqlDbType.Bit)
+            var isExistSortNo = new SqlParameter("@IsExistSortNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -374,7 +373,6 @@ namespace astute.Repository
 
             return result;
         }
-
         public async Task<IList<City_Master>> Get_Active_Cities()
         {
             var result = await Task.Run(() => _dbContext.City_Master

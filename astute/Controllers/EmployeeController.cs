@@ -78,6 +78,35 @@ namespace astute.Controllers
         }
 
         [HttpGet]
+        [Route("get_active_employees")]
+        [Authorize]
+        public async Task<IActionResult> Get_Active_Employees(int employeeId, string userName)
+        {
+            try
+            {
+                var result = await _employeeService.Get_Active_Employees(employeeId, userName, "");
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Active_Employees", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
         [Route("get_employee_details")]
         [Authorize]
         public async Task<IActionResult> Get_Employee_Details(int employee_Id)
@@ -429,6 +458,7 @@ namespace astute.Controllers
                         statusCode = HttpStatusCode.OK,
                         user_Id = response.Id,
                         user_Name = response.Username,
+                        is_Admin = response.Is_Admin,
                         token = response.Token
                     });
                 }

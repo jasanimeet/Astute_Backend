@@ -54,6 +54,14 @@ namespace astute.Repository
 
             return result;
         }
+        public virtual async Task<IList<Ac_Group_Master>> Get_Active_Ac_Group(int ac_Group_Id)
+        {
+            var _ac_Group_Id = ac_Group_Id > 0 ? new SqlParameter("@Ac_Group_Id", ac_Group_Id) : new SqlParameter("@Ac_Group_Id", DBNull.Value);
+            var result = await Task.Run(() => _dbContext.Ac_Group_Master
+                            .FromSqlRaw(@"exec Ac_Group_Master_Active_Select @Ac_Group_Id", _ac_Group_Id).ToListAsync());
+
+            return result;
+        }
         public virtual async Task<int> Add_Update_Ac_Group_Detail(DataTable dataTable)
         {
             var parameter = new SqlParameter("@tblAc_Group_Det", SqlDbType.Structured)

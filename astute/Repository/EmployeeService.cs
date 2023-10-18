@@ -4,15 +4,11 @@ using astute.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 
 namespace astute.Repository
@@ -320,6 +316,17 @@ namespace astute.Repository
             {
                 return 0;
             }
+        }
+        public async Task<IList<Employee_Master>> Get_Active_Employees(int employeeId, string userName, string personalEmail)
+        {
+            var empId = employeeId > 0 ? new SqlParameter("@employeeId", employeeId) : new SqlParameter("@employeeId", DBNull.Value);
+            var uName = !string.IsNullOrEmpty(userName) ? new SqlParameter("@userName", userName) : new SqlParameter("@userName", DBNull.Value);
+            var email = !string.IsNullOrEmpty(personalEmail) ? new SqlParameter("@email", personalEmail) : new SqlParameter("@email", DBNull.Value);
+
+            var employees = await Task.Run(() => _dbContext.Employee_Master
+                            .FromSqlRaw(@"exec Employee_Master_Active_Select @employeeId, @userName, @email", empId, uName, email).ToListAsync());
+
+            return employees;
         }
         #endregion
 

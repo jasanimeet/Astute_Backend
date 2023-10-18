@@ -646,6 +646,7 @@ namespace astute.Controllers
                 supplier_detail.Party_Api = await _partyService.Get_Party_API(0, party_Id);
                 supplier_detail.Party_FTP = await _partyService.Get_Party_FTP(0, party_Id);
                 supplier_detail.Party_File = await _partyService.Get_Party_File(0, party_Id);
+                supplier_detail.Supplier_Column_Mapping_List = await _partyService.Get_Supplier_Column_Mapping(party_Id);
                 if (supplier_detail.Party_File != null)
                 {
                     supplier_detail.Party_File.File_Location = !string.IsNullOrEmpty(supplier_detail.Party_File.File_Location) ? _configuration["BaseUrl"] + CoreCommonFilePath.SupplierFilePath + supplier_detail.Party_File.File_Location : null;
@@ -659,9 +660,13 @@ namespace astute.Controllers
                     data = supplier_detail
                 });
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_Detail", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -802,7 +807,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Party_Type_Courier", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_Column_Mapping", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

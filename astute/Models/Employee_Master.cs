@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -49,6 +47,7 @@ namespace astute.Models
         public string? Mobile_1_Country_Code { get; set; }
         public string? Probation_End_Date { get; set; }
         public string? Personal_Mobile_No { get; set; }
+        public bool? Is_Admin { get; set; }
         [NotMapped]
         public IList<Employee_Document> Employee_Document_List { get; set; } = new List<Employee_Document>();
         [NotMapped]

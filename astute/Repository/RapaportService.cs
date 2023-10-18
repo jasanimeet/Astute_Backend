@@ -1,12 +1,9 @@
-﻿using astute.CoreServices;
-using astute.Models;
+﻿using astute.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 
 namespace astute.Repository
@@ -143,8 +140,7 @@ namespace astute.Repository
 
         #region Rapaport User
         public async Task<int> InsertRapaportUser(Rapaport_User rapaport_User)
-        {
-            //var encrypt_Password = CoreService.Encrypt(rapaport_User.Rap_Password);
+        {   
             var rap_User = !string.IsNullOrEmpty(rapaport_User.Rap_User) ? new SqlParameter("@Rap_User", rapaport_User.Rap_User) : new SqlParameter("@Rap_User", DBNull.Value);
             var rap_Password = !string.IsNullOrEmpty(rapaport_User.Rap_Password) ? new SqlParameter("@Rap_Password", rapaport_User.Rap_Password) : new SqlParameter("@Rap_User", DBNull.Value);
             var recordType = new SqlParameter("@recordType", "Insert");
@@ -155,8 +151,7 @@ namespace astute.Repository
             return result;
         }
         public async Task<int> UpdateRapaportUser(Rapaport_User rapaport_User)
-        {
-            //var encrypt_Password = CoreService.Encrypt(rapaport_User.Rap_Password);
+        {   
             var rap_User = !string.IsNullOrEmpty(rapaport_User.Rap_User) ? new SqlParameter("@Rap_User", rapaport_User.Rap_User) : new SqlParameter("@Rap_User", DBNull.Value);
             var rap_Password = !string.IsNullOrEmpty(rapaport_User.Rap_Password) ? new SqlParameter("@Rap_Password", rapaport_User.Rap_Password) : new SqlParameter("@Rap_User", DBNull.Value);
             var recordType = new SqlParameter("@recordType", "Update");
