@@ -43,6 +43,16 @@ namespace astute.Repository
 
             return result;
         }
+        public async Task Insert_Exchange_Rate_Trace(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@tblExchange_Rate_Master_Trace", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Exchange_Rate_Master_Trace_Table_Type",
+                Value = dataTable
+            };
+
+            await _dbContext.Database.ExecuteSqlRawAsync("EXEC Exchange_Rate_Trace_Insert @tblExchange_Rate_Master_Trace", parameter);
+        }
         #endregion
     }
 }

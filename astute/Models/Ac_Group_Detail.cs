@@ -13,6 +13,7 @@ namespace astute.Models
         public string? Basic_Group { get; set; }
         public int? Opp_Group_Det_Id { get; set; }
         public int? Parent_Group { get; set; }
+        public bool? Status { get; set; }
         [NotMapped]
         public string? QueryFlag { get; set; }
     }

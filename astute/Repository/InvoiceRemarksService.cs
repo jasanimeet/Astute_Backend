@@ -1,8 +1,13 @@
-﻿using astute.Models;
+﻿using astute.CoreServices;
+using astute.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -12,12 +17,37 @@ namespace astute.Repository
     {
         #region Fields
         private readonly AstuteDbContext _dbContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IConfiguration _configuration;
         #endregion
 
         #region Ctor
-        public InvoiceRemarksService(AstuteDbContext dbContext)
+        public InvoiceRemarksService(AstuteDbContext dbContext,
+            IHttpContextAccessor httpContextAccessor,
+            IConfiguration configuration)
         {
             _dbContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
+            _configuration = configuration;
+        }
+        #endregion
+
+        #region Utilities
+        private async Task Insert_Invoice_Remarks_Trace(Invoice_Remarks invoice_Remarks, string recordType)
+        {
+            var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
+            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
+
+            var processId = invoice_Remarks.Process_Id > 0 ? new SqlParameter("@Process_Id", invoice_Remarks.Process_Id) : new SqlParameter("@Process_Id", DBNull.Value);
+            var remarks = !string.IsNullOrEmpty(invoice_Remarks.Remarks) ? new SqlParameter("@Remarks", invoice_Remarks.Remarks) : new SqlParameter("@Remarks", DBNull.Value);
+            var startDate = new SqlParameter("@Start_Date", invoice_Remarks.Start_Date);
+            var orderNo = invoice_Remarks.Order_No > 0 ? new SqlParameter("@Order_No", invoice_Remarks.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
+            var sortNo = invoice_Remarks.Sort_No > 0 ? new SqlParameter("@Sort_No", invoice_Remarks.Sort_No) : new SqlParameter("@Sort_No", DBNull.Value);
+            var status = new SqlParameter("@Status", invoice_Remarks.Status);
+
+            await Task.Run(() => _dbContext.Database
+            .ExecuteSqlRawAsync(@"EXEC Bank_Master_Trace_Insert @Employee_Id, @IP_Address,@Trace_Date, @Trace_Time, @Record_Type, @Process_Id, @Remarks, @Start_Date,
+            @Order_No, @Sort_No, @Status", empId, ipaddress, date, time, record_Type, processId, remarks, startDate, orderNo, sortNo, status));
         }
         #endregion
 
@@ -53,6 +83,11 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                await Insert_Invoice_Remarks_Trace(invoice_Remarks, "Insert");
+            }
+
             return result;
         }
         public async Task<int> UpdateInvoiceRemarks(Invoice_Remarks invoice_Remarks)
@@ -86,6 +121,11 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                await Insert_Invoice_Remarks_Trace(invoice_Remarks, "Update");
+            }
+
             return result;
         }
         public async Task<int> DeleteInvoiceRemarks(int processId, DateTime startDate)
@@ -94,6 +134,17 @@ namespace astute.Repository
             parameter.Add(new SqlParameter("@Process_Id", processId));
             parameter.Add(new SqlParameter("@Start_Date", startDate));
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                var invoice_Remarks = await Task.Run(() => _dbContext.Invoice_Remarks
+                                .FromSqlRaw(@"exec Invoice_Remarks_Select @Process_Id, @Start_Date", parameter.ToArray())
+                                .AsEnumerable()
+                                .FirstOrDefault());
+                if (invoice_Remarks != null)
+                {
+                    await Insert_Invoice_Remarks_Trace(invoice_Remarks, "Delete");
+                }
+            }
             var result = await Task.Run(() => _dbContext.Database
                          .ExecuteSqlRawAsync(@"exec Invoice_Remarks_Delete @Process_Id, @Start_Date", parameter.ToArray()));
 

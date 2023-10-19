@@ -1,6 +1,9 @@
-﻿using astute.Models;
+﻿using astute.CoreServices;
+using astute.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,12 +14,37 @@ namespace astute.Repository
     {
         #region Fields
         private readonly AstuteDbContext _dbContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IConfiguration _configuration;
         #endregion
 
         #region Ctor
-        public CurrencyService(AstuteDbContext dbContext)
+        public CurrencyService(AstuteDbContext dbContext,
+            IHttpContextAccessor httpContextAccessor,
+            IConfiguration configuration)
         {
             _dbContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
+            _configuration = configuration;
+        }
+        #endregion
+
+        #region Utilities
+        private async Task Insert_Currency_Master_Trace(Currency_Master currency_Master, string recordType)
+        {
+            var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
+            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
+
+            var currency = new SqlParameter("@Currency", currency_Master.Currency);
+            var currencyName = new SqlParameter("@Currency_Name", currency_Master.Currency_Name);
+            var symbol = new SqlParameter("@Symbol", currency_Master.Symbol);
+            var orderNo = new SqlParameter("@Order_No", currency_Master.Order_No);
+            var sortNo = new SqlParameter("@Sort_No", currency_Master.Sort_No);
+            var status = new SqlParameter("@status", currency_Master.status);
+
+            await Task.Run(() => _dbContext.Database
+                                .ExecuteSqlRawAsync(@"EXEC Currency_Master_Trace_Insert @Employee_Id, @IP_Address,@Trace_Date, @Trace_Time, @Record_Type, @Currency, @Currency_Name, 
+                                @Symbol, @Order_No, @Sort_No, @status", empId, ipaddress, date, time, record_Type, currency, currencyName, symbol, orderNo, sortNo, status));
         }
         #endregion
 
@@ -61,6 +89,11 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                await Insert_Currency_Master_Trace(currency_Mas, "Insert");
+            }
+
             return result;
         }
         public async Task<int> UpdateCurrency(Currency_Master currency_Mas)
@@ -102,6 +135,11 @@ namespace astute.Repository
             bool sortNoIsExist = (bool)isExistSortNo.Value;
             if (sortNoIsExist)
                 return 3;
+
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                await Insert_Currency_Master_Trace(currency_Mas, "Update");
+            }
 
             return result;
         }

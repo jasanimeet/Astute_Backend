@@ -133,7 +133,8 @@ namespace astute.Repository
                                 .FirstOrDefault());
             if (employee_Master != null)
             {
-                employee_Master.Password = !string.IsNullOrEmpty(employee_Master.Password) ? CoreService.Decrypt(employee_Master.Password) : string.Empty;
+                var password = !string.IsNullOrEmpty(employee_Master.Password) ? CoreService.Decrypt(employee_Master.Password) : string.Empty;
+                employee_Master.Password = password;
                 if (employee_Master.Employee_Id > 0)
                 {
                     var _emp_Id = employee_Master.Employee_Id > 0 ? new SqlParameter("@employeeId", employee_Master.Employee_Id) : new SqlParameter("@employeeId", DBNull.Value);

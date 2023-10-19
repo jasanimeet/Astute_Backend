@@ -1,8 +1,12 @@
-﻿using astute.Models;
+﻿using astute.CoreServices;
+using astute.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace astute.Repository
@@ -11,12 +15,36 @@ namespace astute.Repository
     {
         #region Fields
         private readonly AstuteDbContext _dbContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IConfiguration _configuration;
         #endregion
 
         #region Ctor
-        public TermsService(AstuteDbContext dbContext)
+        public TermsService(AstuteDbContext dbContext,
+            IHttpContextAccessor httpContextAccessor,
+            IConfiguration configuration)
         {
             _dbContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
+            _configuration = configuration;
+        }
+        #endregion
+
+        #region Utilities
+        private async Task Insert_Terms_Master_Trace(Terms_Master terms_Master, string recordType)
+        {
+            var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
+            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
+
+            var terms = new SqlParameter("@Terms", terms_Master.Terms);
+            var termDays = new SqlParameter("@Term_Days", terms_Master.Term_Days);
+            var orderNo = new SqlParameter("@Order_No", terms_Master.Order_No);
+            var sortNo = new SqlParameter("@Sort_No", terms_Master.Sort_No);
+            var status = new SqlParameter("@Status", terms_Master.Status);
+
+            await Task.Run(() => _dbContext.Database
+            .ExecuteSqlRawAsync(@"EXEC Terms_Master_Trace_Insert @Employee_Id, @IP_Address, @Trace_Date, @Trace_Time, @Record_Type, @Terms, @Term_Days, @Order_No, @Sort_No, @Status",
+            empId, ipaddress, date, time, record_Type, terms, termDays, orderNo, sortNo, status));
         }
         #endregion
 
@@ -60,6 +88,11 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 4;
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                await Insert_Terms_Master_Trace(terms_Mas, "Insert");
+            }
+
             return result;
         }
         public async Task<int> UpdateTerms(Terms_Master terms_Mas)
@@ -101,10 +134,28 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 4;
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                await Insert_Terms_Master_Trace(terms_Mas, "Update");
+            }
+
             return result;
         }
         public async Task<int> DeleteTerms(int terms_Id)
         {
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                var _terms_Id = terms_Id > 0 ? new SqlParameter("@terms_Id", terms_Id) : new SqlParameter("@terms_Id", DBNull.Value);
+                var result = await Task.Run(() => _dbContext.Terms_Master
+                                .FromSqlRaw(@"exec Terms_Mas_Select @terms_Id", _terms_Id)
+                                .AsEnumerable()
+                                .FirstOrDefault());
+                if (result != null)
+                {
+                    await Insert_Terms_Master_Trace(result, "Delete");
+                }
+            }
+
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Terms_Mas_Delete {terms_Id}"));
         }
         public async Task<IList<Terms_Master>> GetTerms(int terms_Id)
@@ -112,6 +163,14 @@ namespace astute.Repository
             var _terms_Id = terms_Id > 0 ? new SqlParameter("@terms_Id", terms_Id) : new SqlParameter("@terms_Id", DBNull.Value);
             var result = await Task.Run(() => _dbContext.Terms_Master
                             .FromSqlRaw(@"exec Terms_Mas_Select @terms_Id", _terms_Id)
+                            .ToListAsync());
+            return result;
+        }
+        public async Task<IList<Terms_Master>> Get_Active_Terms(int terms_Id)
+        {
+            var _terms_Id = terms_Id > 0 ? new SqlParameter("@terms_Id", terms_Id) : new SqlParameter("@terms_Id", DBNull.Value);
+            var result = await Task.Run(() => _dbContext.Terms_Master
+                            .FromSqlRaw(@"exec Terms_Mas_Active_Select @terms_Id", _terms_Id)
                             .ToListAsync());
             return result;
         }

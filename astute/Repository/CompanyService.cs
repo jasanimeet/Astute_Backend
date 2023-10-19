@@ -58,18 +58,6 @@ namespace astute.Repository
         }
         public async Task Insert_Company_Document_Trace(DataTable dataTable)
         {
-            //var cat_val_Id = new SqlParameter("@Cat_Val_Id", company_Document.Cat_Val_Id);
-            //var start_Date = new SqlParameter("@Start_Date", company_Document.Start_Date);
-            //var expiry_Date = !company_Document.Expiry_Date.Equals(null) ? new SqlParameter("@Expiry_Date", company_Document.Expiry_Date) : new SqlParameter("@Expiry_Date", DBNull.Value);
-            //var upload_Path = !string.IsNullOrEmpty(company_Document.Upload_Path) ? new SqlParameter("@Upload_Path", company_Document.Upload_Path) : new SqlParameter("@Upload_Path", DBNull.Value);
-
-            //var ip_Address = CoreService.GetIP_Address(_httpContextAccessor);
-            //var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParametr_Value(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
-
-            //var result = await Task.Run(() => _dbContext.Database
-            //.ExecuteSqlRawAsync(@"exec Company_Document_Trace_Insert @Employee_Id, @IP_Address, @Trace_Date, @Trace_Time, @RecordType, @Cat_Val_Id, @Start_Date, @Expiry_Date, @Upload_Path, @recordType",
-            //empId, ipaddress, date, time, record_Type, cat_val_Id, start_Date, expiry_Date, upload_Path));
-
             var parameter = new SqlParameter("@Struct_Company_Document_Trace", SqlDbType.Structured)
             {
                 TypeName = "dbo.Company_Document_Trace_Data_Type",
@@ -79,16 +67,7 @@ namespace astute.Repository
             await _dbContext.Database.ExecuteSqlRawAsync("EXEC Company_Document_Trace_Insert @Struct_Company_Document_Trace", parameter);
         }
         public async Task Insert_Company_Media_Trace(DataTable dataTable)
-        {
-            //var company_Id = new SqlParameter("@Company_Id", company_Media.Company_Id);
-            //var cat_val_Id = new SqlParameter("@Cat_Val_Id", company_Media.Cat_Val_Id);
-            //var media_Details = new SqlParameter("@Media_Detail", company_Media.Media_Detail);
-
-            //var ip_Address = CoreService.GetIP_Address(_httpContextAccessor);
-            //var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParametr_Value(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
-
-            //var result = await Task.Run(() => _dbContext.Database
-            //.ExecuteSqlRawAsync(@"exec Company_Media_Insert_Update @Employee_Id, @IP_Address, @Trace_Date, @Trace_Time, @RecordType, @Company_Id, @Cat_Val_Id, @Media_Detail", empId, ipaddress, date, time, record_Type, company_Id, cat_val_Id, media_Details));
+        {   
             var parameter = new SqlParameter("@Struct_Company_Media_Trace", SqlDbType.Structured)
             {
                 TypeName = "dbo.Company_Media_Trace_Data_Type",
@@ -250,8 +229,7 @@ namespace astute.Repository
             };
 
             var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Company_Document_Insert_Update @company_Document", parameter);
-
-            //await Insert_Company_Media_Trace(company_Media, "Insert");
+            
             return result;
         }
         #endregion
@@ -267,7 +245,6 @@ namespace astute.Repository
 
             var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Company_Media_Insert_Update @company_Media", parameter);
 
-            //await Insert_Company_Media_Trace(company_Media, "Insert");
             return result;
         }
         #endregion

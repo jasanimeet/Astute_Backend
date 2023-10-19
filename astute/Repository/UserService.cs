@@ -73,7 +73,6 @@ namespace astute.Repository
 
             return ("success", result);
         }
-
         public virtual async Task<List<Dictionary<string, object>>> Get_User(int user_Id)
         {
             var result = new List<Dictionary<string, object>>();

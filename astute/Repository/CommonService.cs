@@ -1,4 +1,5 @@
 ﻿using astute.CoreModel;
+using astute.CoreServices;
 using astute.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
@@ -28,6 +29,58 @@ namespace astute.Repository
             _dbContext = dbContext;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
+        }
+        #endregion
+
+        #region Utilities
+        private async Task Insert_City_Trace(City_Master city_Master, string recordType)
+        {
+            var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
+            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
+
+            var city = !string.IsNullOrWhiteSpace(city_Master.City) ? new SqlParameter("@City", city_Master.City) : new SqlParameter("@City", DBNull.Value);
+            var stateId = city_Master.State_Id > 0 ? new SqlParameter("@State_Id", city_Master.State_Id) : new SqlParameter("@State_Id", DBNull.Value);
+            var orderNo = city_Master.Order_No > 0 ? new SqlParameter("@Order_No", city_Master.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
+            var sortNo = city_Master.Sort_No > 0 ? new SqlParameter("@Sort_No", city_Master.Sort_No) : new SqlParameter("@Sort_No", DBNull.Value);
+            var status = new SqlParameter("@Status", city_Master.Status);
+            var stdCode = !string.IsNullOrEmpty(city_Master.Std_Code) ? new SqlParameter("@Std_Code", city_Master.Std_Code) : new SqlParameter("@Std_Code", DBNull.Value);
+
+            await Task.Run(() => _dbContext.Database
+                                .ExecuteSqlRawAsync(@"EXEC City_Master_Trace_Insert @Employee_Id, @IP_Address,@Trace_Date, @Trace_Time, @Record_Type, @City, @State_Id, @Order_No, @Sort_No,
+                                @Status, @Std_Code", empId, ipaddress, date, time, record_Type, city, stateId, orderNo, sortNo, status, stdCode));
+        }
+
+        private async Task Insert_Country_Trace(Country_Master country_Master, string recordType)
+        {
+            var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
+            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
+
+            var country = new SqlParameter("@Country", country_Master.Country);
+            var isdCode = new SqlParameter("@Isd_Code", country_Master.Isd_Code);
+            var orderNo = country_Master.Order_No > 0 ? new SqlParameter("@Order_No", country_Master.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
+            var sortNo = country_Master.Sort_No > 0 ? new SqlParameter("@Sort_No", country_Master.Sort_No) : new SqlParameter("@Sort_No", DBNull.Value);
+            var status = new SqlParameter("@Status", country_Master.Status);
+            var shortCode = !string.IsNullOrEmpty(country_Master.Short_Code) ? new SqlParameter("@Short_Code", country_Master.Short_Code) : new SqlParameter("@Short_Code", DBNull.Value);
+
+            await Task.Run(() => _dbContext.Database
+                                .ExecuteSqlRawAsync(@"EXEC Country_Master_Trace_Insert @Employee_Id, @IP_Address,@Trace_Date, @Trace_Time, @Record_Type, @Country, @Isd_Code, @Order_No,
+                                @Sort_No, @Status, @Short_Code", empId, ipaddress, date, time, record_Type, country, isdCode, orderNo, sortNo, status, shortCode));
+        }
+
+        private async Task Insert_State_Trace(State_Master state_Master, string recordType)
+        {
+            var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
+            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
+
+            var state = new SqlParameter("@State", state_Master.State);
+            var countryId = new SqlParameter("@Country_Id", state_Master.Country_Id);
+            var orderNo = state_Master.Order_No > 0 ? new SqlParameter("@Order_No", state_Master.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
+            var sortNo = state_Master.Sort_No > 0 ? new SqlParameter("@Sort_No", state_Master.Sort_No) : new SqlParameter("@Sort_No", DBNull.Value);
+            var status = new SqlParameter("@Status", state_Master.Status);
+
+            await Task.Run(() => _dbContext.Database
+                                .ExecuteSqlRawAsync(@"EXEC State_Master_Trace_Insert @Employee_Id, @IP_Address, @Trace_Date, @Trace_Time, @Record_Type, @State, @Country_id, @Order_No, 
+                                @Sort_No, @Status", empId, ipaddress, date, time, record_Type, state, countryId, orderNo, sortNo, status));
         }
         #endregion
 
@@ -74,6 +127,11 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 4;
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                await Insert_Country_Trace(country_Mas, "Insert");
+            }
+
             return result;
         }
         public async Task<int> UpdateCountry(Country_Master country_Mas)
@@ -117,10 +175,32 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 4;
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                await Insert_Country_Trace(country_Mas, "Update");
+            }
+
             return result;
         }
         public async Task<int> DeleteCountry(int countryId)
         {
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                var CountryId = countryId > 0 ? new SqlParameter("@countryId", countryId) : new SqlParameter("@countryId", DBNull.Value);
+                var CountryName = new SqlParameter("@countryName", DBNull.Value);
+                var IsdCode = new SqlParameter("@isdCode", DBNull.Value);
+                var ShortCode = new SqlParameter("@shortCode", DBNull.Value);
+
+                var result = await Task.Run(() => _dbContext.Country_Master
+                             .FromSqlRaw(@"exec Country_Mas_Select @countryId, @countryName, @isdCode, @shortCode", CountryId, CountryName, IsdCode, ShortCode)
+                             .AsEnumerable()
+                             .FirstOrDefault());
+                if (result != null)
+                {
+                    await Insert_Country_Trace(result, "Delete");
+                }
+            }
+
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Country_Mas_Delete {countryId}"));
         }
         public async Task<IList<Country_Master>> GetCountry(int country_Id, string country, string isd_Code, string short_Code)
@@ -148,9 +228,8 @@ namespace astute.Repository
 
             return result;
         }
-
         public async Task<IList<Country_Master>> Get_Active_Country()
-        {   
+        {
             var result = await Task.Run(() => _dbContext.Country_Master
                  .FromSqlRaw(@"exec Country_Mas_Active_Select").ToListAsync());
 
@@ -208,6 +287,11 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                await Insert_State_Trace(state_Mas, "Insert");
+            }
+
             return result;
         }
         public async Task<int> UpdateState(State_Master state_Mas)
@@ -251,10 +335,30 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                await Insert_State_Trace(state_Mas, "Update");
+            }
+
             return result;
         }
         public async Task<int> DeleteState(int stateId)
         {
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                var StateId = stateId > 0 ? new SqlParameter("@stateId", stateId) : new SqlParameter("@stateId", DBNull.Value);
+                var State = new SqlParameter("@state", DBNull.Value);
+                var CountryId = new SqlParameter("@countryId", DBNull.Value);
+
+                var result = await Task.Run(() => _dbContext.State_Master
+                            .FromSqlRaw(@"exec State_Mas_Select @stateId, @state, @countryId", StateId, State, CountryId)
+                            .AsEnumerable()
+                            .FirstOrDefault());
+                if(result != null)
+                {
+                    await Insert_State_Trace(result, "Delete");
+                }
+            }
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"State_Mas_Delete {stateId}"));
         }
         public async Task<IList<State_Master>> GetStates(int state_Id, string state, int country_Id)
@@ -268,7 +372,6 @@ namespace astute.Repository
 
             return result;
         }
-
         public async Task<IList<State_Master>> Get_Active_State()
         {
             var result = await Task.Run(() => _dbContext.State_Master
@@ -320,6 +423,11 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                await Insert_City_Trace(city_Mas, "Insert");
+            }
+
             return result;
         }
         public async Task<int> UpdateCity(City_Master city_Mas)
@@ -354,10 +462,34 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                await Insert_City_Trace(city_Mas, "Update");
+            }
+
             return result;
         }
         public async Task<int> DeleteCity(int cityId)
         {
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                var CityId = new SqlParameter("@cityId", cityId);
+                var City = new SqlParameter("@city", DBNull.Value);
+                var StateId = new SqlParameter("@stateId", DBNull.Value);
+                var pageIndex = new SqlParameter("@iPgNo", DBNull.Value);
+                var pageSize = new SqlParameter("@iPgSize", DBNull.Value);
+
+                var result = await Task.Run(() => _dbContext.City_Master
+                               .FromSqlRaw(@"exec City_Mas_Select @cityId, @city, @stateId, @iPgNo, @iPgSize", CityId, City, StateId, pageIndex, pageSize)
+                               .AsEnumerable()
+                               .FirstOrDefault());
+
+                if (result != null)
+                {
+                    await Insert_City_Trace(result, "Delete");
+                }
+            }
+
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"City_Mas_Delete {cityId}"));
         }
         public async Task<IList<City_Master>> GetCity(int cityId, string city, int stateId, int iPgNo, int iPgSize)

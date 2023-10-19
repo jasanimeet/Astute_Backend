@@ -13,5 +13,6 @@ namespace astute.Repository
         Task<int> Add_Update_Ac_Group_Detail(DataTable dataTable);
         Task<Ac_Group_Master> Get_Ac_Group_Detail(int ac_Group_Id);
         Task<int> Delete_Ac_Group(int ac_Group_Id);
+        Task Insert_Ac_Group_Detail_Trace(DataTable dataTable);
     }
 }

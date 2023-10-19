@@ -941,6 +941,7 @@ namespace astute.Controllers
         }
         #endregion
 
+        #region Supplier Pricing
         [HttpGet]
         [Route("get_supplier_pricing")]
         [Authorize]
@@ -1000,5 +1001,6 @@ namespace astute.Controllers
                 });
             }
         }
+        #endregion
     }
 }

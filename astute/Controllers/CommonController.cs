@@ -13,7 +13,6 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 
 
@@ -116,7 +115,7 @@ namespace astute.Controllers
         public async Task<IActionResult> Get_Active_Countries()
         {
             try
-            {   
+            {
                 var result = await _commonService.Get_Active_Country();
                 if (result != null && result.Count > 0)
                 {
@@ -810,11 +809,40 @@ namespace astute.Controllers
                         data = result
                     });
                 }
-                return NotFound();
+                return NoContent();
             }
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetTerms", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_active_terms")]
+        [Authorize]
+        public async Task<IActionResult> Get_Active_Terms(int terms_Id)
+        {
+            try
+            {
+                var result = await _termsService.Get_Active_Terms(terms_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Active_Terms", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
@@ -1732,7 +1760,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("add_update_pointer_detail")]
         [Authorize]
-        public async Task<IActionResult> Add_Update_Pointer_Detail([FromForm]Pointer_Master pointer_Mas)
+        public async Task<IActionResult> Add_Update_Pointer_Detail([FromForm] Pointer_Master pointer_Mas)
         {
             try
             {
@@ -2160,6 +2188,24 @@ namespace astute.Controllers
         public async Task<IActionResult> GetBank(int bankId)
         {
             var result = await _bankService.GetBank(bankId);
+            if (result != null && result.Count > 0)
+            {
+                return Ok(new
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    message = CoreCommonMessage.DataSuccessfullyFound,
+                    data = result
+                });
+            }
+            return NoContent();
+        }
+
+        [HttpGet]
+        [Route("get_active_bank")]
+        [Authorize]
+        public async Task<IActionResult> Get_Active_Bank(int bankId)
+        {
+            var result = await _bankService.Get_Active_Bank(bankId);
             if (result != null && result.Count > 0)
             {
                 return Ok(new
@@ -3269,12 +3315,12 @@ namespace astute.Controllers
             try
             {
                 var result = await _exchange_Rate_Service.Get_Exchange_Rate(exchange_Id);
-                if(result != null && result.Count > 0)
+                if (result != null && result.Count > 0)
                 {
-                    return Ok(new 
+                    return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.DataSuccessfullyFound, 
+                        message = CoreCommonMessage.DataSuccessfullyFound,
                         data = result
                     });
                 }
@@ -3293,12 +3339,13 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_update_exchange_rate")]
         [Authorize]
-        public async Task<IActionResult> Create_Update_Exchange_Rate([FromForm]IList<Exchange_Rate_Master> exchange_Rate_Masters)
+        public async Task<IActionResult> Create_Update_Exchange_Rate([FromForm] IList<Exchange_Rate_Master> exchange_Rate_Masters)
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
+                    var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
                     DataTable dataTable = new DataTable();
                     dataTable.Columns.Add("Exchange_Id", typeof(int));
                     dataTable.Columns.Add("Trans_date", typeof(string));
@@ -3307,13 +3354,33 @@ namespace astute.Controllers
                     dataTable.Columns.Add("Custom_Rate", typeof(decimal));
                     dataTable.Columns.Add("QueryFlag", typeof(string));
 
+                    #region Exchange Rate Log
+                    DataTable dataTable1 = new DataTable();
+                    dataTable1.Columns.Add("Employee_Id", typeof(int));
+                    dataTable1.Columns.Add("IP_Address", typeof(string));
+                    dataTable1.Columns.Add("Trace_Date", typeof(DateTime));
+                    dataTable1.Columns.Add("Trace_Time", typeof(TimeSpan));
+                    dataTable1.Columns.Add("Record_Type", typeof(string));
+                    dataTable1.Columns.Add("Trans_date", typeof(string));
+                    dataTable1.Columns.Add("Currency_Id", typeof(int));
+                    dataTable1.Columns.Add("Bank_Rate", typeof(decimal));
+                    dataTable1.Columns.Add("Custom_Rate", typeof(decimal));
+                    #endregion
+
                     foreach (var item in exchange_Rate_Masters)
                     {
                         dataTable.Rows.Add(item.Exchange_Id, item.Trans_date, item.Currency_Id, item.Bank_Rate, item.Custom_Rate, item.QueryFlag);
+                        if (CoreService.Enable_Trace_Records(_configuration))
+                        {
+                            dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, item.Trans_date, item.Currency_Id, item.Bank_Rate, item.Custom_Rate);
+                        }
                     }
-
+                    if (CoreService.Enable_Trace_Records(_configuration))
+                    {
+                        await _exchange_Rate_Service.Insert_Exchange_Rate_Trace(dataTable1);
+                    }
                     var result = await _exchange_Rate_Service.Insert_Update_Exchange_Rate(dataTable);
-                    if(result > 0)
+                    if (result > 0)
                     {
                         return Ok(new
                         {

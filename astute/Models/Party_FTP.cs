@@ -11,7 +11,7 @@ namespace astute.Models
         public int FTP_Id { get; set; }
         public int? Party_Id { get; set; }
         public string? Host { get; set; }
-        public Int16? Ftp_Port { get; set; }
+        public int? Ftp_Port { get; set; }
         public string? Ftp_User { get; set; }
         public string? Ftp_Password { get; set; }
         public string? Ftp_File_Name { get; set; }

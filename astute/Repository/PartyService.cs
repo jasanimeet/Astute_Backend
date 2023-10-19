@@ -443,13 +443,13 @@ namespace astute.Repository
             var ftp_Pasword = !string.IsNullOrEmpty(party_FTP.Ftp_Password) ? new SqlParameter("@Ftp_Password", party_FTP.Ftp_Password) : new SqlParameter("@Ftp_Password", DBNull.Value);
             var ftp_File_Name = !string.IsNullOrEmpty(party_FTP.Ftp_File_Name) ? new SqlParameter("@Ftp_File_Name", party_FTP.Ftp_File_Name) : new SqlParameter("@Ftp_File_Name", DBNull.Value);
             var ftp_File_Type = !string.IsNullOrEmpty(party_FTP.Ftp_File_Type) ? new SqlParameter("@Ftp_File_Type", party_FTP.Ftp_File_Type) : new SqlParameter("@Ftp_File_Type", DBNull.Value);
-            var api_Inverse = new SqlParameter("@Disc_Inverse", party_FTP.Disc_Inverse);
-            var auto_Ref_No = new SqlParameter("@Auto_Ref_No", party_FTP.Auto_Ref_No);
+            var api_Inverse = new SqlParameter("@Disc_Inverse", party_FTP.Disc_Inverse ?? false);
+            var auto_Ref_No = new SqlParameter("@Auto_Ref_No", party_FTP.Auto_Ref_No ?? false);
             var repeateveryType = !string.IsNullOrEmpty(party_FTP.RepeateveryType) ? new SqlParameter("@RepeateveryType", party_FTP.RepeateveryType) : new SqlParameter("@RepeateveryType", DBNull.Value);
             var repeatevery = !string.IsNullOrEmpty(party_FTP.Repeatevery) ? new SqlParameter("@Repeatevery", party_FTP.Repeatevery) : new SqlParameter("@Repeatevery", DBNull.Value);
-            var lab = new SqlParameter("@Lab", party_FTP.Lab);
-            var overseas = new SqlParameter("@Overseas", party_FTP.Overseas);
-            var secure_Ftp = new SqlParameter("@Secure_Ftp", party_FTP.Secure_Ftp);
+            var lab = new SqlParameter("@Lab", party_FTP.Lab ?? false);
+            var overseas = new SqlParameter("@Overseas", party_FTP.Overseas ?? false);
+            var secure_Ftp = new SqlParameter("@Secure_Ftp", party_FTP.Secure_Ftp ?? false);
             var short_Code = !string.IsNullOrEmpty(party_FTP.Short_Code) ? new SqlParameter("@Short_Code", party_FTP.Short_Code) : new SqlParameter("@Short_Code", DBNull.Value);
             var format = !string.IsNullOrEmpty(party_FTP.Format) ? new SqlParameter("@Format", party_FTP.Format) : new SqlParameter("@Format", DBNull.Value);
 

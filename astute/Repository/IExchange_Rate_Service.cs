@@ -9,5 +9,6 @@ namespace astute.Repository
     {
         Task<int> Insert_Update_Exchange_Rate(DataTable dataTable);
         Task<IList<Exchange_Rate_Master>> Get_Exchange_Rate(int exchange_Id);
+        Task Insert_Exchange_Rate_Trace(DataTable dataTable);
     }
 }
