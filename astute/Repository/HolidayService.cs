@@ -87,6 +87,16 @@ namespace astute.Repository
                             .FromSqlRaw(@"EXEC Holiday_Mas_Select @Date", _date).ToListAsync());
             return result;
         }
+        public async Task Insert_Holiday_Trace(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@tblHoliday_Master_Trace", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Holiday_Master_Trace_Table_Type",
+                Value = dataTable
+            };
+
+            await _dbContext.Database.ExecuteSqlRawAsync("EXEC Holiday_Master_Trace_Insert @tblHoliday_Master_Trace", parameter);
+        }
         #endregion
     }
 }

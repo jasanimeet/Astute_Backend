@@ -113,6 +113,16 @@ namespace astute.Repository
 
             await _dbContext.Database.ExecuteSqlRawAsync("EXEC Party_Shipping_Trace_Insert @Struct_Party_Shipping_Trace", parameter);
         }
+        public async Task Insert_Party_Media_Trace(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@tblParty_Media_Trace", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Party_Media_Trace_Table_Type",
+                Value = dataTable
+            };
+
+            await _dbContext.Database.ExecuteSqlRawAsync("EXEC Party_Media_Trace_Insert @tblParty_Media_Trace", parameter);
+        }
         #endregion
 
         #region Methods

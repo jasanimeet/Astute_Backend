@@ -1,6 +1,7 @@
 ﻿using astute.CoreModel;
 using astute.CoreServices;
 using astute.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,21 +18,105 @@ namespace astute.Repository
     {
         #region Fields
         private readonly AstuteDbContext _dbContext;
-        private readonly ICommonService _commonService;
         private readonly IConfiguration _configuration;
         private readonly IJWTAuthentication _jWTAuthentication;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         #endregion
 
         #region Ctor
         public EmployeeService(AstuteDbContext dbContext,
-            ICommonService commonService,
             IConfiguration configuration,
-            IJWTAuthentication jWTAuthentication)
+            IJWTAuthentication jWTAuthentication,
+            IHttpContextAccessor httpContextAccessor)
         {
             _dbContext = dbContext;
-            _commonService = commonService;
             _configuration = configuration;
             _jWTAuthentication = jWTAuthentication;
+            _httpContextAccessor = httpContextAccessor;
+        }
+        #endregion
+
+        #region Utilities
+        private async Task Insert_Employee_Trace(Employee_Master employee_Master, string recordType)
+        {
+            var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
+            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
+
+            var encryptPassword = !string.IsNullOrEmpty(employee_Master.Password) ? CoreService.Encrypt(employee_Master.Password) : string.Empty;
+
+            var employeeId = new SqlParameter("@employeeId", employee_Master.Employee_Id);
+            var initial = !string.IsNullOrEmpty(employee_Master.Initial) ? new SqlParameter("@initial", employee_Master.Initial) : new SqlParameter("@initial", DBNull.Value);
+            var firstName = new SqlParameter("@firstName", employee_Master.First_Name);
+            var middleName = !string.IsNullOrEmpty(employee_Master.Middle_Name) ? new SqlParameter("@middleName", employee_Master.Middle_Name) : new SqlParameter("@middleName", DBNull.Value);
+            var lastName = !string.IsNullOrEmpty(employee_Master.Last_Name) ? new SqlParameter("@lastName", employee_Master.Last_Name) : new SqlParameter("@lastName", DBNull.Value);
+            var chineseName = !string.IsNullOrEmpty(employee_Master.Chinese_Name) ? new SqlParameter("@chineseName", employee_Master.Chinese_Name) : new SqlParameter("@chineseName", DBNull.Value);
+            var address1 = !string.IsNullOrEmpty(employee_Master.Address_1) ? new SqlParameter("@address1", employee_Master.Address_1) : new SqlParameter("@address1", DBNull.Value);
+            var address2 = !string.IsNullOrEmpty(employee_Master.Address_2) ? new SqlParameter("@address2", employee_Master.Address_2) : new SqlParameter("@address2", DBNull.Value);
+            var address3 = !string.IsNullOrEmpty(employee_Master.Address_3) ? new SqlParameter("@address3", employee_Master.Address_3) : new SqlParameter("@address3", DBNull.Value);
+            var cityId = new SqlParameter("@cityId", employee_Master.City_Id);
+            var joinDate = !string.IsNullOrEmpty(employee_Master.Join_date) ? new SqlParameter("@joindate", employee_Master.Join_date) : new SqlParameter("@joindate", DBNull.Value);
+            var employeeType = !string.IsNullOrEmpty(employee_Master.Employee_Type) ? new SqlParameter("@employeeType", employee_Master.Employee_Type) : new SqlParameter("@employeeType", DBNull.Value);
+            var birthDate = !string.IsNullOrEmpty(employee_Master.Birth_Date) ? new SqlParameter("@birthDate", employee_Master.Birth_Date) : new SqlParameter("@birthDate", DBNull.Value);
+            var gender = !string.IsNullOrEmpty(employee_Master.Gender) ? new SqlParameter("@gender", employee_Master.Gender) : new SqlParameter("@gender", DBNull.Value);
+            var mobileNo = !string.IsNullOrEmpty(employee_Master.Mobile_No) ? new SqlParameter("@mobileNo", employee_Master.Mobile_No) : new SqlParameter("@mobileNo", DBNull.Value);
+            var personalEmail = !string.IsNullOrEmpty(employee_Master.Personal_Email) ? new SqlParameter("@personalEmail", employee_Master.Personal_Email) : new SqlParameter("@personalEmail", DBNull.Value);
+            var companyEmail = !string.IsNullOrEmpty(employee_Master.Company_Email) ? new SqlParameter("@companyEmail", employee_Master.Company_Email) : new SqlParameter("@companyEmail", DBNull.Value);
+            var leaveDate = !string.IsNullOrEmpty(employee_Master.Leave_Date) ? new SqlParameter("@leaveDate", employee_Master.Leave_Date) : new SqlParameter("@leaveDate", DBNull.Value);
+            var pSNID = !string.IsNullOrEmpty(employee_Master.PSN_ID) ? new SqlParameter("@pSNID", employee_Master.PSN_ID) : new SqlParameter("@pSNID", DBNull.Value);
+            var bloodGroup = !string.IsNullOrEmpty(employee_Master.Blood_Group) ? new SqlParameter("@bloodGroup", employee_Master.Blood_Group) : new SqlParameter("@bloodGroup", DBNull.Value);
+            var contractStartDate = !string.IsNullOrEmpty(employee_Master.Contract_Start_Date) ? new SqlParameter("@contractStartDate", employee_Master.Contract_Start_Date) : new SqlParameter("@contractStartDate", DBNull.Value);
+            var contractEndDate = !string.IsNullOrEmpty(employee_Master.Contract_End_Date) ? new SqlParameter("@contractEndDate", employee_Master.Contract_End_Date) : new SqlParameter("@contractEndDate", DBNull.Value);
+            var approveHolidays = employee_Master.Approve_Holidays > 0 ? new SqlParameter("@approveHolidays", employee_Master.Approve_Holidays) : new SqlParameter("@approveHolidays", DBNull.Value);
+            var orderNo = employee_Master.Order_No > 0 ? new SqlParameter("@orderNo", employee_Master.Order_No) : new SqlParameter("@orderNo", DBNull.Value);
+            var sortNo = employee_Master.Sort_No > 0 ? new SqlParameter("@sortNo", employee_Master.Sort_No) : new SqlParameter("@sortNo", DBNull.Value);
+            var userName = !string.IsNullOrEmpty(employee_Master.User_Name) ? new SqlParameter("@userName", employee_Master.User_Name) : new SqlParameter("@userName", DBNull.Value);
+            var password = !string.IsNullOrEmpty(employee_Master.Password) ? new SqlParameter("@password", encryptPassword) : new SqlParameter("@password", DBNull.Value);
+            var employeeCode = !string.IsNullOrEmpty(employee_Master.Employee_Code) ? new SqlParameter("@employee_Code", employee_Master.Employee_Code) : new SqlParameter("@employee_Code", DBNull.Value);
+            var status = new SqlParameter("@status", employee_Master.Status);
+            var marital_Status = !string.IsNullOrEmpty(employee_Master.Marital_Status) ? new SqlParameter("@marital_Status", employee_Master.Marital_Status) : new SqlParameter("@marital_Status", DBNull.Value);
+            var mobile_Country_Code = !string.IsNullOrEmpty(employee_Master.Mobile_Country_Code) ? new SqlParameter("@mobile_Country_Code", employee_Master.Mobile_Country_Code) : new SqlParameter("@mobile_Country_Code", DBNull.Value);
+            var mobile_1_Country_Code = !string.IsNullOrEmpty(employee_Master.Mobile_1_Country_Code) ? new SqlParameter("@mobile_1_Country_Code", employee_Master.Mobile_1_Country_Code) : new SqlParameter("@mobile_1_Country_Code", DBNull.Value);
+            var probation_End_Date = !string.IsNullOrEmpty(employee_Master.Probation_End_Date) ? new SqlParameter("@probation_End_Date", employee_Master.Probation_End_Date) : new SqlParameter("@probation_End_Date", DBNull.Value);
+            var personal_Mobile_No = !string.IsNullOrEmpty(employee_Master.Personal_Mobile_No) ? new SqlParameter("@personal_Mobile_No", employee_Master.Personal_Mobile_No) : new SqlParameter("@personal_Mobile_No", DBNull.Value);
+
+            await Task.Run(() => _dbContext.Database
+            .ExecuteSqlRawAsync(@"exec Employee_Master_Trace_Insert @Employee_Id, @IP_Address,@Trace_Date, @Trace_Time, @Record_Type, @employeeId, @initial, @firstName, @middleName, @lastName,
+            @chineseName, @address1, @address2, @address3, @cityId, @joindate, @employeeType, @birthDate, @gender, @mobileNo, @personalEmail, @companyEmail,
+            @leaveDate, @pSNID, @bloodGroup, @contractStartDate, @contractEndDate, @approveHolidays, @orderNo, @sortNo, @userName, @password, @employee_Code, @status,
+            @marital_Status, @mobile_Country_Code, @mobile_1_Country_Code, @probation_End_Date, @personal_Mobile_No",
+            empId, ipaddress, date, time, record_Type, employeeId, initial, firstName, middleName, lastName, chineseName, address1, address2, address3, cityId, joinDate, employeeType, 
+            birthDate, gender, mobileNo, personalEmail, companyEmail, leaveDate, pSNID, bloodGroup, contractStartDate, contractEndDate, approveHolidays, orderNo, sortNo, userName, password,
+            employeeCode, status, marital_Status, mobile_Country_Code, mobile_1_Country_Code, probation_End_Date, personal_Mobile_No));
+        }
+        public async Task Insert_Employee_Document_Trace(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@tblEmployee_Document_Trace", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Employee_Document_Trace_Table_Type",
+                Value = dataTable
+            };
+
+            await _dbContext.Database.ExecuteSqlRawAsync("EXEC Employee_Document_Trace_Insert @tblEmployee_Document_Trace", parameter);
+        }
+        public async Task Insert_Employee_Salary_Trace(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@tblEmployee_Salary_Trace", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Employee_Salary_Trace_Data_Type",
+                Value = dataTable
+            };
+
+            await _dbContext.Database.ExecuteSqlRawAsync("EXEC Employee_Salary_Trace_Insert @tblEmployee_Salary_Trace", parameter);
+        }
+        public async Task Insert_Emergency_Contact_Detail_Trace(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@tblEmergency_Contact_Detail_Trace", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Emergency_Contact_Detail_Trace_Table_Type",
+                Value = dataTable
+            };
+
+            await _dbContext.Database.ExecuteSqlRawAsync("EXEC Emergency_Contact_Detail_Trace_Insert @tblEmergency_Contact_Detail_Trace", parameter);
         }
         #endregion
 
@@ -117,6 +202,13 @@ namespace astute.Repository
             if (result > 0)
             {
                 int _insertedId = (int)insertedId.Value;
+                if (employee_Master.Employee_Id > 0)
+                    await Insert_Employee_Trace(employee_Master, "Update");
+                else
+                {
+                    employee_Master.Employee_Id = _insertedId;
+                    await Insert_Employee_Trace(employee_Master, "Insert");
+                }
                 return ("success", _insertedId);
             }
             return ("error", 0);

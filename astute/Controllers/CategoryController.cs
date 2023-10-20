@@ -16,12 +16,12 @@ using Microsoft.Extensions.Configuration;
 using OfficeOpenXml;
 
 namespace astute.Controllers
-{   
+{
     [Route("api/[controller]")]
     [ApiController]
     public partial class CategoryController : ControllerBase
     {
-        
+
         #region Fields
         private readonly ICategoryService _categoryService;
         private readonly ISupplierService _supplierService;
@@ -194,17 +194,28 @@ namespace astute.Controllers
         [Authorize]
         public async Task<IActionResult> GetAllCategoryValues(int catId)
         {
-            var result = await _categoryService.GetCategoryValuesByCatId(catId);
-            if (result != null && result.Count > 0)
+            try
             {
+                var result = await _categoryService.GetCategoryValuesByCatId(catId);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "GetAllCategoryValues", ex.StackTrace);
                 return Ok(new
                 {
-                    statusCode = HttpStatusCode.OK,
-                    message = CoreCommonMessage.DataSuccessfullyFound,
-                    data = result
+                    message = ex.Message
                 });
             }
-            return NoContent();
         }
 
         [HttpGet]
@@ -212,17 +223,28 @@ namespace astute.Controllers
         [Authorize]
         public async Task<IActionResult> Get_Active_Category_Values(int catId)
         {
-            var result = await _categoryService.Get_Active_Category_Values(catId);
-            if (result != null && result.Count > 0)
+            try
             {
+                var result = await _categoryService.Get_Active_Category_Values(catId);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Active_Category_Values", ex.StackTrace);
                 return Ok(new
                 {
-                    statusCode = HttpStatusCode.OK,
-                    message = CoreCommonMessage.DataSuccessfullyFound,
-                    data = result
+                    message = ex.Message
                 });
             }
-            return NoContent();
         }
 
         [HttpGet]
@@ -447,11 +469,11 @@ namespace astute.Controllers
             try
             {
                 var result = await _categoryService.ChangeStatus(cat_Val_Id, status);
-                if(result > 0)
+                if (result > 0)
                 {
-                    return Ok(new 
+                    return Ok(new
                     {
-                        statusCode= HttpStatusCode.OK,
+                        statusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.StatusChangedSuccessMessage
                     });
                 }
@@ -465,6 +487,19 @@ namespace astute.Controllers
                     message = ex.Message
                 });
             }
+        }
+
+        [HttpGet]
+        [Route("get_category_value_max_order_no")]
+        public async Task<IActionResult> Get_Category_Value_Max_Order_No()
+        {
+            var result = await _categoryService.Get_Category_Value_Max_Order_No();
+
+            return Ok(new
+            {
+                statusCode = HttpStatusCode.OK,
+                order_no = result
+            });
         }
         #endregion
 
@@ -592,7 +627,7 @@ namespace astute.Controllers
             string filePath = Path.Combine(folderPath, filename);
             using var package = new ExcelPackage(new FileInfo(filePath));
             var worksheet = package.Workbook.Worksheets[0];
-            
+
             string cellAddress = "B2";
 
             // Retrieve the hyperlink from the cell
@@ -602,7 +637,7 @@ namespace astute.Controllers
             {
                 linkUrl = hyperlink.AbsoluteUri;
             }
-            return Ok(new 
+            return Ok(new
             {
                 StatusCode = HttpStatusCode.OK,
                 message = CoreCommonMessage.DataSuccessfullyFound,

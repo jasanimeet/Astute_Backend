@@ -14,5 +14,6 @@ namespace astute.Repository
         Task<int> DeleteHoliday(int holiday_Id);
         Task<IList<Holiday_Master>> GetHolidays(int holiday_Id);
         Task<IList<Holiday_Master>> Get_Holidays(string date);
+        Task Insert_Holiday_Trace(DataTable dataTable);
     }
 }

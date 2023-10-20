@@ -412,9 +412,29 @@ namespace astute.Controllers
                             dataTable.Columns.Add("ID", typeof(string));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
 
+                            #region Party Media Log
+                            DataTable dataTable1 = new DataTable();
+                            dataTable1.Columns.Add("Employee_Id", typeof(int));
+                            dataTable1.Columns.Add("IP_Address", typeof(string));
+                            dataTable1.Columns.Add("Trace_Date", typeof(DateTime));
+                            dataTable1.Columns.Add("Trace_Time", typeof(TimeSpan));
+                            dataTable1.Columns.Add("Record_Type", typeof(string));
+                            dataTable1.Columns.Add("Party_Id", typeof(int));
+                            dataTable1.Columns.Add("Cat_val_Id", typeof(int));
+                            dataTable1.Columns.Add("ID", typeof(string));
+                            #endregion
+
                             foreach (var item in party_Master.Party_Media_List)
                             {
                                 dataTable.Rows.Add(party_Id, item.Cat_val_Id, item.ID, item.QueryFlag);
+                                if (CoreService.Enable_Trace_Records(_configuration))
+                                {
+                                    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Cat_val_Id, item.ID);
+                                }
+                            }
+                            if (CoreService.Enable_Trace_Records(_configuration))
+                            {
+                                await _partyService.Insert_Party_Media_Trace(dataTable1);
                             }
                             await _partyService.AddUpdatePartyMedia(dataTable);
                         }
@@ -484,22 +504,11 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                //if (ex.Number == 2624 || ex.Number == 2601)
-                //{
-                //    return Conflict(new
-                //    {
-                //        statusCode = HttpStatusCode.Conflict,
-                //        message = "Party Code already exists."
-                //    });
-                //}
-                //else
-                //{
                 await _commonService.InsertErrorLog(ex.Message, "Create_Party_Detils", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
                 });
-                //}
             }
         }
         #endregion

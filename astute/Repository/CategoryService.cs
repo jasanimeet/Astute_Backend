@@ -142,8 +142,8 @@ namespace astute.Repository
             var rapaportName = !string.IsNullOrEmpty(category_Value.Rapaport_Name) ? new SqlParameter("@RapaportName", category_Value.Rapaport_Name) : new SqlParameter("@RapaportName", DBNull.Value);
             var rapnetname = !string.IsNullOrEmpty(category_Value.Rapnet_name) ? new SqlParameter("@Rapnetname", category_Value.Rapnet_name) : new SqlParameter("@Rapnetname", DBNull.Value);
             var synonyms = !string.IsNullOrEmpty(category_Value.Synonyms) ? new SqlParameter("@Synonyms", category_Value.Synonyms) : new SqlParameter("@Synonyms", DBNull.Value);
-            var orderNo = new SqlParameter("@OrderNo", category_Value.Order_No);
-            var sortNo = new SqlParameter("@SortNo", category_Value.Sort_No);
+            var orderNo = category_Value.Order_No > 0 ? new SqlParameter("@OrderNo", category_Value.Order_No) : new SqlParameter("@OrderNo", DBNull.Value);
+            var sortNo = category_Value.Sort_No > 0 ? new SqlParameter("@SortNo", category_Value.Sort_No) : new SqlParameter("@SortNo", DBNull.Value);
             var status = new SqlParameter("@Status", category_Value.Status);
             var icon_Url = !string.IsNullOrEmpty(category_Value.Icon_Url) ? new SqlParameter("@Icon_Url", category_Value.Icon_Url) : new SqlParameter("@Icon_Url", DBNull.Value);
             var catId = category_Value.Cat_Id > 0 ? new SqlParameter("@CatId", category_Value.Cat_Id) : new SqlParameter("@CatId", DBNull.Value);
@@ -198,8 +198,8 @@ namespace astute.Repository
             var rapaportName = !string.IsNullOrEmpty(category_Value.Rapaport_Name) ? new SqlParameter("@RapaportName", category_Value.Rapaport_Name) : new SqlParameter("@RapaportName", DBNull.Value);
             var rapnetname = !string.IsNullOrEmpty(category_Value.Rapnet_name) ? new SqlParameter("@Rapnetname", category_Value.Rapnet_name) : new SqlParameter("@Rapnetname", DBNull.Value);
             var synonyms = !string.IsNullOrEmpty(category_Value.Synonyms) ? new SqlParameter("@Synonyms", category_Value.Synonyms) : new SqlParameter("@Synonyms", DBNull.Value);
-            var orderNo = new SqlParameter("@OrderNo", category_Value.Order_No);
-            var sortNo = new SqlParameter("@SortNo", category_Value.Sort_No);
+            var orderNo = category_Value.Order_No > 0 ? new SqlParameter("@OrderNo", category_Value.Order_No) : new SqlParameter("@OrderNo", DBNull.Value);
+            var sortNo = category_Value.Sort_No > 0 ? new SqlParameter("@SortNo", category_Value.Sort_No) : new SqlParameter("@SortNo", DBNull.Value);
             var status = new SqlParameter("@Status", category_Value.Status);
             var icon_Url = !string.IsNullOrEmpty(category_Value.Icon_Url) ? new SqlParameter("@Icon_Url", category_Value.Icon_Url) : new SqlParameter("@Icon_Url", DBNull.Value);
             var catId = category_Value.Cat_Id > 0 ? new SqlParameter("@CatId", category_Value.Cat_Id) : new SqlParameter("@CatId", DBNull.Value);
@@ -301,9 +301,9 @@ namespace astute.Repository
                         Rapaport_Name = x.Rapaport_Name,
                         Rapnet_name = x.Rapnet_name,
                         Synonyms = x.Synonyms,
-                        Order_No = x.Order_No,
-                        Sort_No = x.Sort_No,
-                        Status = x.Status,
+                        Order_No = x.Order_No ?? 0,
+                        Sort_No = x.Sort_No ?? 0,
+                        Status = x.Status ?? false,
                         Icon_Url = !string.IsNullOrEmpty(x.Icon_Url) ? _configuration["BaseUrl"] + CoreCommonFilePath.CategoryIcomFilePath + x.Icon_Url : null,
                         Cat_Id = catId,
                         Display_Name = x.Display_Name,
@@ -332,9 +332,9 @@ namespace astute.Repository
                         Rapaport_Name = x.Rapaport_Name,
                         Rapnet_name = x.Rapnet_name,
                         Synonyms = x.Synonyms,
-                        Order_No = x.Order_No,
-                        Sort_No = x.Sort_No,
-                        Status = x.Status,
+                        Order_No = x.Order_No ?? 0,
+                        Sort_No = x.Sort_No ?? 0,
+                        Status = x.Status ?? false,
                         Icon_Url = !string.IsNullOrEmpty(x.Icon_Url) ? _configuration["BaseUrl"] + CoreCommonFilePath.CategoryIcomFilePath + x.Icon_Url : null,
                         Cat_Id = catId,
                         Display_Name = x.Display_Name,
@@ -370,6 +370,16 @@ namespace astute.Repository
             da.Fill(ds);
 
             return ds.Tables[ds.Tables.Count - 1];
+        }
+        public async Task<int> Get_Category_Value_Max_Order_No()
+        {
+            var result = await _dbContext.Category_Value.Select(x => x.Order_No).MaxAsync();
+            if (result > 0)
+            {
+                var maxValue = checked((int)result + 1);
+                return maxValue;
+            }
+            return 1;
         }
         #endregion
         #endregion

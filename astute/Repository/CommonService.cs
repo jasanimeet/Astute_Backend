@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 
 namespace astute.Repository
@@ -49,7 +50,6 @@ namespace astute.Repository
                                 .ExecuteSqlRawAsync(@"EXEC City_Master_Trace_Insert @Employee_Id, @IP_Address,@Trace_Date, @Trace_Time, @Record_Type, @City, @State_Id, @Order_No, @Sort_No,
                                 @Status, @Std_Code", empId, ipaddress, date, time, record_Type, city, stateId, orderNo, sortNo, status, stdCode));
         }
-
         private async Task Insert_Country_Trace(Country_Master country_Master, string recordType)
         {
             var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
@@ -66,7 +66,6 @@ namespace astute.Repository
                                 .ExecuteSqlRawAsync(@"EXEC Country_Master_Trace_Insert @Employee_Id, @IP_Address,@Trace_Date, @Trace_Time, @Record_Type, @Country, @Isd_Code, @Order_No,
                                 @Sort_No, @Status, @Short_Code", empId, ipaddress, date, time, record_Type, country, isdCode, orderNo, sortNo, status, shortCode));
         }
-
         private async Task Insert_State_Trace(State_Master state_Master, string recordType)
         {
             var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
@@ -81,6 +80,21 @@ namespace astute.Repository
             await Task.Run(() => _dbContext.Database
                                 .ExecuteSqlRawAsync(@"EXEC State_Master_Trace_Insert @Employee_Id, @IP_Address, @Trace_Date, @Trace_Time, @Record_Type, @State, @Country_id, @Order_No, 
                                 @Sort_No, @Status", empId, ipaddress, date, time, record_Type, state, countryId, orderNo, sortNo, status));
+        }
+        private async Task Insert_Year_Trace(Year_Master year_Master, string recordType)
+        {
+            var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
+            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
+
+            var year = new SqlParameter("@Year", year_Master.Year);
+            var current_status = new SqlParameter("@Current_Status", year_Master.Current_Status);
+            var status = new SqlParameter("@Status", year_Master.Status);
+            var from_date = new SqlParameter("@From_Date", year_Master.From_Date);
+            var to_date = new SqlParameter("@To_Date", year_Master.To_Date);
+
+            await Task.Run(() => _dbContext.Database
+            .ExecuteSqlRawAsync(@"EXEC State_Master_Trace_Insert @Employee_Id, @IP_Address, @Trace_Date, @Trace_Time, @Record_Type, @Year, @Current_Status, @Status, @From_Date, @To_Date",
+            empId, ipaddress, date, time, record_Type, year, current_status, status, from_date, to_date));
         }
         #endregion
 
@@ -354,7 +368,7 @@ namespace astute.Repository
                             .FromSqlRaw(@"exec State_Mas_Select @stateId, @state, @countryId", StateId, State, CountryId)
                             .AsEnumerable()
                             .FirstOrDefault());
-                if(result != null)
+                if (result != null)
                 {
                     await Insert_State_Trace(result, "Delete");
                 }
@@ -505,10 +519,12 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<IList<City_Master>> Get_Active_Cities()
+        public async Task<IList<City_Master>> Get_Active_Cities(string city)
         {
+            var _city = !string.IsNullOrEmpty(city) ? new SqlParameter("@city", city) : new SqlParameter("@city", DBNull.Value);
+
             var result = await Task.Run(() => _dbContext.City_Master
-                 .FromSqlRaw(@"exec City_Mas_Active_Select").ToListAsync());
+                 .FromSqlRaw(@"exec City_Mas_Active_Select @city", _city).ToListAsync());
 
             return result;
         }
@@ -563,6 +579,11 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Year_Mas_Insert_Update @Year_Id, @Year, @Current_Status, @Status, @From_Date, @To_Date, @recordType", parametar.ToArray()));
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                await Insert_Year_Trace(year_Mas, "Insert");
+            }
+
             return result;
         }
         public async Task<int> UpdateYears(Year_Master year_Mas)
@@ -579,10 +600,28 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Year_Mas_Insert_Update @Year_Id, @Year, @Current_Status, @Status, @From_Date, @To_Date, @recordType", parametar.ToArray()));
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                await Insert_Year_Trace(year_Mas, "Update");
+            }
+
             return result;
         }
         public async Task<int> DeleteYears(int yearId)
         {
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                var year_Id = yearId > 0 ? new SqlParameter("@YearId", yearId) : new SqlParameter("@YearId", DBNull.Value);
+
+                var result = await Task.Run(() => _dbContext.Year_Master
+                                .FromSqlRaw(@"exec Year_Mas_Select @YearId", year_Id)
+                                .AsEnumerable()
+                                .FirstOrDefault());
+                if(result != null)
+                {
+                    await Insert_Year_Trace(result, "Delete");
+                }
+            }
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Year_Mas_Delete {yearId}"));
         }
         #endregion

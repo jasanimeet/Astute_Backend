@@ -17,6 +17,9 @@ namespace astute.Repository
         Task<AuthenticateResponse> AuthenticateEmployee(UserModel userModel);
         Task<int> Get_Employee_Code();
         Task<IList<Employee_Master>> Get_Active_Employees(int employeeId, string userName, string personalEmail);
+        Task Insert_Employee_Document_Trace(DataTable dataTable);
+        Task Insert_Employee_Salary_Trace(DataTable dataTable);
+        Task Insert_Emergency_Contact_Detail_Trace(DataTable dataTable);
         #endregion
 
         #region Employee Document

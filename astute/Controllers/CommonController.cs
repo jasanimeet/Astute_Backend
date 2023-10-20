@@ -599,11 +599,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_active_cities")]
         [Authorize]
-        public async Task<IActionResult> Get_Active_Cities()
+        public async Task<IActionResult> Get_Active_Cities(string city)
         {
             try
             {
-                var result = await _commonService.Get_Active_Cities();
+                var result = await _commonService.Get_Active_Cities(city);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -2626,6 +2626,7 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
                     DataTable dataTable = new DataTable();
                     dataTable.Columns.Add("Holiday_Id", typeof(int));
                     dataTable.Columns.Add("Date", typeof(string));
@@ -2635,14 +2636,36 @@ namespace astute.Controllers
                     dataTable.Columns.Add("Description", typeof(string));
                     dataTable.Columns.Add("QueryFlag", typeof(string));
 
+                    #region Holiday Master Log
+                    DataTable dataTable1 = new DataTable();
+                    dataTable1.Columns.Add("Employee_Id", typeof(int));
+                    dataTable1.Columns.Add("IP_Address", typeof(string));
+                    dataTable1.Columns.Add("Trace_Date", typeof(DateTime));
+                    dataTable1.Columns.Add("Trace_Time", typeof(TimeSpan));
+                    dataTable1.Columns.Add("Record_Type", typeof(string));
+                    dataTable1.Columns.Add("Date", typeof(string));
+                    dataTable1.Columns.Add("Start_Time", typeof(string));
+                    dataTable1.Columns.Add("End_Time", typeof(string));
+                    dataTable1.Columns.Add("Holiday_Flag", typeof(bool));
+                    dataTable1.Columns.Add("Description", typeof(string));
+                    #endregion
+
                     if (holiday_Masters != null && holiday_Masters.Count > 0)
                     {
                         foreach (var item in holiday_Masters)
                         {
                             dataTable.Rows.Add(item.Holiday_Id, item.Date, item.Start_Time, item.End_Time, item.Holiday_Flag, item.Description, item.QueryFlag);
+                            if (CoreService.Enable_Trace_Records(_configuration))
+                            {
+                                dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, item.Date, item.Start_Time, item.End_Time, item.Holiday_Flag, item.Description);
+                            }
                         }
 
                         var result = await _holidayService.Insert_Update_Holiday(dataTable);
+                        if (CoreService.Enable_Trace_Records(_configuration))
+                        {
+                            await _holidayService.Insert_Holiday_Trace(dataTable1);
+                        }
                         if (result > 0)
                         {
                             return Ok(new
