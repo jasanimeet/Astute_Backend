@@ -33,6 +33,20 @@ namespace astute.Repository
         #endregion
 
         #region Utilities
+        private async Task Insert_Category_Master_Trace(Category_Master category_Master, string recordType)
+        {
+            var columnName = new SqlParameter("@ColumnName", category_Master.Column_Name);
+            var displayName = new SqlParameter("@DisplayName", category_Master.Display_Name);
+            var status = new SqlParameter("@Status", category_Master.Status);
+            var colId = new SqlParameter("@ColId", category_Master.Col_Id);
+            var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
+
+            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
+            await Task.Run(() => _dbContext.Database
+            .ExecuteSqlRawAsync(@"EXEC Category_Master_Trace_Insert @Employee_Id, @IP_Address, @Trace_Date, @Trace_Time, @RecordType, @ColumnName, @DisplayName, @Status, ColId",
+            empId, ipaddress, date, time, record_Type, columnName, displayName, status, colId));
+        }
+
         private async Task Insert_Category_Trace(Category_Value category_Value, string recordType)
         {
             var catName = new SqlParameter("@CatName", category_Value.Cat_Name);
@@ -80,6 +94,10 @@ namespace astute.Repository
             if (isExist)
                 result = 2;
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                await Insert_Category_Master_Trace(category_Master, "Insert");
+            }
             return result;
         }
         public async Task<int> UpdateCategory(Category_Master category_Master)
@@ -103,6 +121,10 @@ namespace astute.Repository
             if (isExist)
                 result = 2;
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                await Insert_Category_Master_Trace(category_Master, "Update");
+            }
             return result;
         }
         public async Task<int> DeleteCategory(int id)
@@ -112,6 +134,19 @@ namespace astute.Repository
                 Direction = System.Data.ParameterDirection.Output
             };
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                var _id = id > 0 ? new SqlParameter("@CatId", id) : new SqlParameter("@CatId", DBNull.Value);
+
+                var result_cat = await Task.Run(() => _dbContext.Category_Master
+                                .FromSqlRaw(@"exec Category_Master_Select @CatId", _id).AsEnumerable()
+                                .FirstOrDefault());
+
+                if (result_cat != null)
+                {
+                    await Insert_Category_Master_Trace(result_cat, "Delete");
+                }
+            }
             var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Category_Master_Delete @CatId, @IsReferenced OUT",
                                         new SqlParameter("@CatId", id),
                                         isReferencedParameter);

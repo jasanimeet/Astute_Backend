@@ -1,8 +1,12 @@
-﻿using astute.Models;
+﻿using astute.CoreServices;
+using astute.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,15 +16,42 @@ namespace astute.Repository
     {
         #region Fields
         private readonly AstuteDbContext _dbContext;
+        private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         #endregion
 
         #region Ctor
-        public MenuService(AstuteDbContext dbContext)
+        public MenuService(AstuteDbContext dbContext,
+           IConfiguration configuration,
+           IHttpContextAccessor httpContextAccessor)
         {
             _dbContext = dbContext;
+            _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
         #endregion
 
+        #region Utilities
+        private async Task Insert_Menu_Trace(Menu_Mas menu_Mas, string recordType)
+        {           
+            var menuName = !string.IsNullOrEmpty(menu_Mas.Menu_Name) ? new SqlParameter("@Menu_Name", menu_Mas.Menu_Name) : new SqlParameter("@Menu_Name", DBNull.Value);
+            var caption = !string.IsNullOrEmpty(menu_Mas.Caption) ? new SqlParameter("@Caption", menu_Mas.Caption) : new SqlParameter("@Caption", DBNull.Value);
+            var parentId = menu_Mas.Parent_Id > 0 ? new SqlParameter("@Parent_Id", menu_Mas.Parent_Id) : new SqlParameter("@Parent_Id", DBNull.Value);
+            var menuType = !string.IsNullOrEmpty(menu_Mas.Menu_type) ? new SqlParameter("@Menu_type", menu_Mas.Menu_type) : new SqlParameter("@Menu_type", DBNull.Value);
+            var shortKey = !string.IsNullOrEmpty(menu_Mas.Short_Key) ? new SqlParameter("@Short_Key", menu_Mas.Short_Key) : new SqlParameter("@Short_Key", DBNull.Value);
+            var orderNo = menu_Mas.Order_No > 0 ? new SqlParameter("@Order_No", menu_Mas.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
+            var status = new SqlParameter("@Status", menu_Mas.Status);
+            var modulePath = !string.IsNullOrEmpty(menu_Mas.Module_Path) ? new SqlParameter("@Module_Path", menu_Mas.Module_Path) : new SqlParameter("@Module_Path", DBNull.Value);
+
+            var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
+            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
+
+            var result = await Task.Run(() => _dbContext.Database
+            .ExecuteSqlRawAsync(@"EXEC Menu_Mas_Trace_Insert @Employee_Id, @IP_Address, @Trace_Date, @Trace_Time, @RecordType, @Menu_Name, @Caption, @Parent_Id, @Menu_type, @Short_Key, @Order_No,
+                            @Status, @Module_Path", empId, ipaddress, date, time, record_Type, menuName, caption, parentId, menuType, shortKey, orderNo, status, modulePath));
+        }
+
+        #endregion
         #region Methods
         public async Task<int> InsertMenu(Menu_Mas menu_Mas)
         {
@@ -45,8 +76,15 @@ namespace astute.Repository
 
             var isExist = (bool)isExistParameter.Value;
             if (isExist)
-                result = 2;
+                return 2;
 
+
+            string record_Type = string.Empty;
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                record_Type = "Insert";
+                await Insert_Menu_Trace(menu_Mas, record_Type);
+            }
             return result;
         }
         public async Task<int> UpdateMenu(Menu_Mas menu_Mas)
@@ -72,8 +110,12 @@ namespace astute.Repository
 
             var isExist = (bool)isExistParameter.Value;
             if (isExist)
-                result = 2;
+                return 2;
 
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                await Insert_Menu_Trace(menu_Mas, "Update");
+            }
             return result;
         }
         public async Task<int> DeleteMenu(int menuId)
@@ -82,6 +124,20 @@ namespace astute.Repository
             {
                 Direction = System.Data.ParameterDirection.Output
             };
+
+            if (CoreService.Enable_Trace_Records(_configuration))
+            {
+                var _menuId = menuId > 0 ? new SqlParameter("@Menu_Id", menuId) : new SqlParameter("@Menu_Id", DBNull.Value);
+
+                var result_menu = await Task.Run(() => _dbContext.Menu_Mas
+                                .FromSqlRaw(@"exec Menu_Mas_Select @Menu_Id", _menuId).AsEnumerable()
+                                .FirstOrDefault());
+
+                if (result_menu != null)
+                {
+                    await Insert_Menu_Trace(result_menu, "Delete");
+                }
+            }
 
             var result = await _dbContext.Database
                                 .ExecuteSqlRawAsync("EXEC Menu_Mas_Delete @Menu_Id, @IsExists OUT", new SqlParameter("@Menu_Id", menuId),
