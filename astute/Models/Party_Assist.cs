@@ -17,8 +17,8 @@ namespace astute.Models
         public int? Assist_2 { get; set; }
         public string? Assist_Value_2 { get; set; }
         public decimal? Per_2 { get; set; }
-        public int? Assist_3 { get; set; }
-        public string? Assist_Value_3 { get; set; }
+        public int? Viewing_Rights_To { get; set; }
+        public string? Viewing_Rights_To_Values { get; set; }
         public string? Date { get; set; }
         [NotMapped]
         public string? QueryFlag { get; set; }

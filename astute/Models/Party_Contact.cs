@@ -9,15 +9,16 @@ namespace astute.Models
     {
         [Key]
         public int Contact_Id { get; set; }
-        public string? Contact_Name { get; set; }
         public int? Party_Id { get; set; }
+        public string? Prefix { get; set; }
+        public string? First_Name { get; set; }
+        public string? Last_Name { get; set; }
         public string? Party_Name { get; set; }
-        public string? Sex { get; set; }
         public int? Designation_Id { get; set; }
         public string? Designation { get; set; }
+        public string? Phone_No { get; set; }
         public string? Mobile_No { get; set; }
         public string? Email { get; set; }
-        public string? Birth_Date { get; set; }
         [NotMapped]
         public string QueryFlag { get; set; }
     }

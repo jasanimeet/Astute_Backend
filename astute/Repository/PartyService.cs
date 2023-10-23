@@ -283,6 +283,21 @@ namespace astute.Repository
             return result;
         }
         #endregion
+
+        #region Party Print Process
+        public async Task<int> Add_Update_Party_Print_Process(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@tblParty_Print_Process", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Party_Print_Process_Table_Type",
+                Value = dataTable
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Party_Print_Process_Insert_Update @tblParty_Print_Process", parameter));
+            return result;
+        }
+        #endregion
         #endregion
 
         #region Party Details
@@ -311,6 +326,14 @@ namespace astute.Repository
             var bank_currency = !string.IsNullOrEmpty(party_Master.Bank_Currency) ? new SqlParameter("@Bank_Currency", party_Master.Bank_Currency) : new SqlParameter("@Bank_Currency", DBNull.Value);
             var payment_Terms = party_Master.Payment_Terms > 0 ? new SqlParameter("@Payment_Terms", party_Master.Payment_Terms) : new SqlParameter("@Payment_Terms", DBNull.Value);
             var cust_Freight_Account_No = !string.IsNullOrEmpty(party_Master.Cust_Freight_Account_No) ? new SqlParameter("@Cust_Freight_Account_No", party_Master.Cust_Freight_Account_No) : new SqlParameter("@Cust_Freight_Account_No", DBNull.Value);
+            var alias_Name = !string.IsNullOrEmpty(party_Master.Alias_Name) ? new SqlParameter("@Alias_Name", party_Master.Alias_Name) : new SqlParameter("@Alias_Name", DBNull.Value);
+            var wechat_ID = !string.IsNullOrEmpty(party_Master.Wechat_ID) ? new SqlParameter("@Wechat_ID", party_Master.Wechat_ID) : new SqlParameter("@Wechat_ID", DBNull.Value);
+            var skype_ID = !string.IsNullOrEmpty(party_Master.Skype_ID) ? new SqlParameter("@Skype_ID", party_Master.Skype_ID) : new SqlParameter("@Skype_ID", DBNull.Value);
+            var business_Reg_No = !string.IsNullOrEmpty(party_Master.Business_Reg_No) ? new SqlParameter("@Business_Reg_No", party_Master.Business_Reg_No) : new SqlParameter("@Business_Reg_No", DBNull.Value);
+            var default_Remarks = party_Master.Default_Remarks > 0 ? new SqlParameter("@Default_Remarks", party_Master.Default_Remarks) : new SqlParameter("@Default_Remarks", DBNull.Value);
+            var notification = !string.IsNullOrEmpty(party_Master.Notification) ? new SqlParameter("@Notification", party_Master.Notification) : new SqlParameter("@Notification", DBNull.Value);
+            var reference_By = !string.IsNullOrEmpty(party_Master.Reference_By) ? new SqlParameter("@Reference_By", party_Master.Reference_By) : new SqlParameter("@Reference_By", DBNull.Value);
+            var tIN_No = !string.IsNullOrEmpty(party_Master.TIN_No) ? new SqlParameter("@TIN_No", party_Master.TIN_No) : new SqlParameter("@TIN_No", DBNull.Value);
             var insertedId = new SqlParameter("@InsertedId", System.Data.SqlDbType.Int)
             {
                 Direction = System.Data.ParameterDirection.Output
@@ -319,8 +342,10 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_Master_Insert_Update @Party_Id, @Party_Type, @Party_Code, @Adress_1, @Adress_2, @Adress_3, @City_Id, @PinCode, @Mobile_1,
                         @Mobile_2, @Phone_1, @Phone_2, @Fax, @Email_1, @Email_2, @Comp_Bank, @Party_Name, @Ship_PartyId, @Final_Customer_Id, @Website, @Bank_Currency, @Payment_Terms,
-                        @Cust_Freight_Account_No, @InsertedId OUT", party_Id, party_Type, party_Code, party_Address1, party_Address2, party_Address3, city_Id, pin_Code, mobile_No1, mobile_No2, 
-                        phone_No1, phone_No2, fax, email_1, email_2, comp_Bank, party_Name, ship_PartyId, final_Customer_Id, website, bank_currency, payment_Terms, cust_Freight_Account_No, insertedId));
+                        @Cust_Freight_Account_No, @Alias_Name, @Wechat_ID, @Skype_ID, @Business_Reg_No, @Default_Remarks, @Notification, @Reference_By, @TIN_No, @InsertedId OUT", party_Id,
+                        party_Type, party_Code, party_Address1, party_Address2, party_Address3, city_Id, pin_Code, mobile_No1, mobile_No2, phone_No1, phone_No2, fax, email_1, email_2, 
+                        comp_Bank, party_Name, ship_PartyId, final_Customer_Id, website, bank_currency, payment_Terms, cust_Freight_Account_No, alias_Name, wechat_ID, skype_ID, business_Reg_No,
+                        notification, reference_By, tIN_No, insertedId));
 
             if (result > 0)
             {
@@ -573,12 +598,13 @@ namespace astute.Repository
                         .ExecuteSqlRawAsync(@"EXEC Supplier_Column_Mapping_Insert_Update @supplier_column", parameter));
             return result;
         }
-        public async Task<IList<Supplier_Column_Mapping>> Get_Supplier_Column_Mapping(int supp_Id)
+        public async Task<IList<Supplier_Column_Mapping>> Get_Supplier_Column_Mapping(int supp_Id, string map_Flag)
         {
-            var _supp_Id = new SqlParameter("@Supp_Id", supp_Id);
+            var _supp_Id = supp_Id > 0 ? new SqlParameter("@Supp_Id", supp_Id) : new SqlParameter("@Supp_Id", DBNull.Value);
+            var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Supplier_Column_Mapping
-                            .FromSqlRaw(@"exec Supplier_Column_Mapping_Select @Supp_Id", _supp_Id)
+                            .FromSqlRaw(@"exec Supplier_Column_Mapping_Select @Supp_Id, @Map_Flag", _supp_Id, _map_Flag)
                             .ToListAsync());
             return result;
         }

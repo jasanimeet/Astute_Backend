@@ -212,12 +212,13 @@ namespace astute.Controllers
                             DataTable dataTable = new DataTable();
                             dataTable.Columns.Add("Contact_Id", typeof(int));
                             dataTable.Columns.Add("Party_Id", typeof(int));
-                            dataTable.Columns.Add("Contact_Name", typeof(string));
-                            dataTable.Columns.Add("Sex", typeof(string));
+                            dataTable.Columns.Add("Prefix", typeof(string));
+                            dataTable.Columns.Add("First_Name", typeof(string));
+                            dataTable.Columns.Add("Last_Name", typeof(string));
                             dataTable.Columns.Add("Designation_Id", typeof(int));
+                            dataTable.Columns.Add("Phone_No", typeof(string));
                             dataTable.Columns.Add("Mobile_No", typeof(string));
                             dataTable.Columns.Add("Email", typeof(string));
-                            dataTable.Columns.Add("Birth_Date", typeof(string));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
 
                             DataTable dataTable1 = new DataTable();
@@ -239,11 +240,11 @@ namespace astute.Controllers
 
                             foreach (var item in party_Master.Party_Contact_List)
                             {
-                                dataTable.Rows.Add(item.Contact_Id, party_Id, item.Contact_Name, item.Sex, item.Designation_Id, item.Mobile_No, item.Email, item.Birth_Date, item.QueryFlag);
-                                if (CoreService.Enable_Trace_Records(_configuration))
-                                {
-                                    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Contact_Name, item.Sex, item.Designation_Id, item.Mobile_No, item.Email, item.Birth_Date, false);
-                                }
+                                dataTable.Rows.Add(item.Contact_Id, party_Id, item.Prefix, item.First_Name, item.Last_Name, item.Designation_Id, item.Phone_No, item.Mobile_No, item.Email, item.QueryFlag);
+                                //if (CoreService.Enable_Trace_Records(_configuration))
+                                //{
+                                //    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Contact_Name, item.Sex, item.Designation_Id, item.Mobile_No, item.Email, item.Birth_Date, false);
+                                //}
                             }
                             if (CoreService.Enable_Trace_Records(_configuration))
                             {
@@ -262,7 +263,7 @@ namespace astute.Controllers
                             dataTable.Columns.Add("Per_1", typeof(decimal));
                             dataTable.Columns.Add("Assist_2", typeof(int));
                             dataTable.Columns.Add("Per_2", typeof(decimal));
-                            dataTable.Columns.Add("Assist_3", typeof(int));
+                            dataTable.Columns.Add("Viewing_Rights_To", typeof(int));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
                             dataTable.Columns.Add("Date", typeof(string));
 
@@ -284,11 +285,11 @@ namespace astute.Controllers
                             }
                             foreach (var item in party_Master.Party_Assist_List)
                             {
-                                dataTable.Rows.Add(item.Assist_Id, party_Id, item.Diamond_Type, item.Assist_1, item.Per_1, item.Assist_2, item.Per_2, item.Assist_3, item.QueryFlag, item.Date);
+                                dataTable.Rows.Add(item.Assist_Id, party_Id, item.Diamond_Type, item.Assist_1, item.Per_1, item.Assist_2, item.Per_2, item.Viewing_Rights_To, item.QueryFlag, item.Date);
 
                                 if (CoreService.Enable_Trace_Records(_configuration))
                                 {
-                                    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Diamond_Type, item.Assist_1, item.Per_1, item.Assist_2, item.Per_2, item.Assist_3);
+                                    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Diamond_Type, item.Assist_1, item.Per_1, item.Assist_2, item.Per_2, item.Viewing_Rights_To);
                                 }
                             }
                             if (CoreService.Enable_Trace_Records(_configuration))
@@ -452,7 +453,7 @@ namespace astute.Controllers
                             dataTable.Columns.Add("Mobile_No", typeof(string));
                             dataTable.Columns.Add("Phone_No", typeof(string));
                             dataTable.Columns.Add("Contact_Person", typeof(string));
-                            dataTable.Columns.Add("Contact_Email", typeof(string));
+                            dataTable.Columns.Add("TIN_No", typeof(string));
                             dataTable.Columns.Add("Default_Address", typeof(bool));
                             dataTable.Columns.Add("Status", typeof(bool));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
@@ -481,10 +482,10 @@ namespace astute.Controllers
 
                             foreach (var item in party_Master.Party_Shipping_List)
                             {
-                                dataTable.Rows.Add(item.Ship_Id, party_Id, item.Company_Name, item.Address_1, item.Address_2, item.Address_3, item.City_Id, item.Mobile_No, item.Phone_No, item.Contact_Person, item.Contact_Email, item.Default_Address, item.Status, item.QueryFlag);
+                                dataTable.Rows.Add(item.Ship_Id, party_Id, item.Company_Name, item.Address_1, item.Address_2, item.Address_3, item.City_Id, item.Mobile_No, item.Phone_No, item.Contact_Person, item.TIN_No, item.Default_Address, item.Status, item.QueryFlag);
                                 if (CoreService.Enable_Trace_Records(_configuration))
                                 {
-                                    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Company_Name, item.Address_1, item.Address_2, item.Address_3, item.City_Id, item.Mobile_No, item.Phone_No, item.Contact_Person, item.Contact_Email, item.Default_Address, item.Status);
+                                    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Company_Name, item.Address_1, item.Address_2, item.Address_3, item.City_Id, item.Mobile_No, item.Phone_No, item.Contact_Person, item.TIN_No, item.Default_Address, item.Status);
                                 }
                             }
                             if (CoreService.Enable_Trace_Records(_configuration))
@@ -492,6 +493,26 @@ namespace astute.Controllers
                                 await _partyService.Insert_Party_Shipping_Trace(dataTable1);
                             }
                             await _partyService.AddUpdatePartyShipping(dataTable);
+                        }
+                        if(party_Master.Party_Print_Process_List != null && party_Master.Party_Print_Process_List.Count > 0)
+                        {
+                            DataTable dataTable = new DataTable();
+                            dataTable.Columns.Add("Print_Process_Id", typeof(int));
+                            dataTable.Columns.Add("Party_Id", typeof(int));
+                            dataTable.Columns.Add("Start_Date", typeof(string));
+                            dataTable.Columns.Add("Process_Type", typeof(string));
+                            dataTable.Columns.Add("Default_Printing_Type", typeof(int));
+                            dataTable.Columns.Add("Default_Currency", typeof(int));
+                            dataTable.Columns.Add("Default_Bank", typeof(int));
+                            dataTable.Columns.Add("Default_Payment_Terms", typeof(int));
+                            dataTable.Columns.Add("Default_Remarks", typeof(int));
+                            dataTable.Columns.Add("QueryFlag", typeof(string));
+
+                            foreach (var item in party_Master.Party_Print_Process_List)
+                            {
+                                dataTable.Rows.Add(item.Print_Process_Id, party_Id, item.Start_Date, item.Process_Type, item.Default_Printing_Type, item.Default_Currency, item.Default_Bank, item.Default_Payment_Terms, item.Default_Remarks, item.QueryFlag);
+                            }
+                            await _partyService.Add_Update_Party_Print_Process(dataTable);
                         }
                         return Ok(new
                         {
@@ -646,7 +667,7 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_supplier_detail")]
         [Authorize]
-        public async Task<IActionResult> Get_Supplier_Detail(int party_Id)
+        public async Task<IActionResult> Get_Supplier_Detail(int party_Id, string map_Flag)
         {
             try
             {
@@ -655,7 +676,7 @@ namespace astute.Controllers
                 supplier_detail.Party_Api = await _partyService.Get_Party_API(0, party_Id);
                 supplier_detail.Party_FTP = await _partyService.Get_Party_FTP(0, party_Id);
                 supplier_detail.Party_File = await _partyService.Get_Party_File(0, party_Id);
-                supplier_detail.Supplier_Column_Mapping_List = await _partyService.Get_Supplier_Column_Mapping(party_Id);
+                supplier_detail.Supplier_Column_Mapping_List = await _partyService.Get_Supplier_Column_Mapping(party_Id, map_Flag);
                 if (supplier_detail.Party_File != null)
                 {
                     supplier_detail.Party_File.File_Location = !string.IsNullOrEmpty(supplier_detail.Party_File.File_Location) ? _configuration["BaseUrl"] + CoreCommonFilePath.SupplierFilePath + supplier_detail.Party_File.File_Location : null;
@@ -798,11 +819,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_supplier_column_mapping")]
         [Authorize]
-        public async Task<IActionResult> Get_Supplier_Column_Mapping(int party_Id)
+        public async Task<IActionResult> Get_Supplier_Column_Mapping(int party_Id, string map_Flag)
         {
             try
             {
-                var result = await _partyService.Get_Supplier_Column_Mapping(party_Id);
+                var result = await _partyService.Get_Supplier_Column_Mapping(party_Id, map_Flag);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new

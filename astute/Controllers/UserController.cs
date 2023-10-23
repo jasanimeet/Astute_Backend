@@ -248,7 +248,7 @@ namespace astute.Controllers
                         data = result
                     });
                 }
-                return NotFound();
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -277,7 +277,7 @@ namespace astute.Controllers
                         data = result
                     });
                 }
-                return NotFound();
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -380,7 +380,7 @@ namespace astute.Controllers
                         data = result
                     });
                 }
-                return NotFound();
+                return NoContent();
             }
             catch (Exception ex)
             {

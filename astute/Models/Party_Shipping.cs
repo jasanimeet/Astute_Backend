@@ -20,7 +20,7 @@ namespace astute.Models
         public string? Mobile_No { get; set; }
         public string? Phone_No { get; set; }
         public string? Contact_Person { get; set; }
-        public string? Contact_Email { get; set; }
+        public string? TIN_No { get; set; }
         public bool? Default_Address { get; set; }
         public bool? Status { get; set; }
         [NotMapped]

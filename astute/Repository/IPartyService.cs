@@ -46,6 +46,9 @@ namespace astute.Repository
         #region Party Media
         Task<int> AddUpdatePartyMedia(DataTable dataTable);
         #endregion
+        #region Party Print Process
+        Task<int> Add_Update_Party_Print_Process(DataTable dataTable);
+        #endregion
 
         #region Party Details
         Task<(string, int)> Add_Update_Party(Party_Master party_Master);
@@ -75,7 +78,7 @@ namespace astute.Repository
         Task<IList<DropdownModel>> Get_Party_Type_Courier();
         Task<IList<DropdownModel>> Get_Party_Type_Customer();
         Task<int> Add_Update_Supplier_Column_Mapping(DataTable dataTable);
-        Task<IList<Supplier_Column_Mapping>> Get_Supplier_Column_Mapping(int supp_Id);
+        Task<IList<Supplier_Column_Mapping>> Get_Supplier_Column_Mapping(int supp_Id, string map_Flag);
 
         #region Supplier Pricing
         Task<List<Dictionary<string, object>>> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id);

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -39,6 +38,14 @@ namespace astute.Models
         public int? Payment_Terms { get; set; }
         public string? Payment_Terms_Value { get; set; }
         public string? Cust_Freight_Account_No { get; set; }
+        public string? Alias_Name { get; set; }
+        public string? Wechat_ID { get; set; }
+        public string? Skype_ID { get; set; }
+        public string? Business_Reg_No { get; set; }
+        public int? Default_Remarks { get; set; }
+        public string? Notification { get; set; }
+        public string? Reference_By { get; set; }
+        public string? TIN_No { get; set; }
         [NotMapped]
         public IList<Party_Contact> Party_Contact_List { get; set; } = new List<Party_Contact>();
         [NotMapped]
@@ -51,5 +58,7 @@ namespace astute.Models
         public IList<Party_Media> Party_Media_List { get; set; } = new List<Party_Media>();
         [NotMapped]
         public IList<Party_Shipping> Party_Shipping_List { get; set; } = new List<Party_Shipping>();
+        [NotMapped]
+        public IList<Party_Print_Process> Party_Print_Process_List { get; set; } = new List<Party_Print_Process>();
     }
 }
