@@ -119,6 +119,7 @@ namespace astute.Controllers
                             dataTable.Columns.Add("Company_Document_Id", typeof(int));
                             dataTable.Columns.Add("Company_Id", typeof(int));
                             dataTable.Columns.Add("Cat_Val_Id", typeof(int));
+                            dataTable.Columns.Add("Document_No", typeof(string));
                             dataTable.Columns.Add("Start_Date", typeof(string));
                             dataTable.Columns.Add("Expiry_Date", typeof(string));
                             dataTable.Columns.Add("Upload_Path", typeof(string));
@@ -161,7 +162,7 @@ namespace astute.Controllers
                                 }
                                 string start_Date = !string.IsNullOrEmpty(item.Start_Date) ? item.Start_Date : null;
                                 string expire_Date = !string.IsNullOrEmpty(item.Expiry_Date) ? item.Expiry_Date : null;
-                                dataTable.Rows.Add(item.Company_Document_Id, company_Id, item.Cat_Val_Id, start_Date, expire_Date, item.Upload_Path, item.QueryFlag);
+                                dataTable.Rows.Add(item.Company_Document_Id, company_Id, item.Cat_Val_Id, item.Document_No, start_Date, expire_Date, item.Upload_Path, item.QueryFlag);
                                 if (CoreService.Enable_Trace_Records(_configuration))
                                 {
                                     dataTable2.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, item.Cat_Val_Id, item.Start_Date, item.Expiry_Date, item.Upload_Path);

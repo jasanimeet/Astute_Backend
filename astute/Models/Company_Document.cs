@@ -14,6 +14,7 @@ namespace astute.Models
         public string? Company_Name { get; set; }
         public int? Cat_Val_Id { get; set; }
         public string? Cat_Name { get; set; }
+        public string? Document_No { get; set; }
         public string? Start_Date { get; set; }
         public string? Expiry_Date { get; set; }
         [NotMapped]

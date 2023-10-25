@@ -34,7 +34,7 @@ namespace astute.Models
         public string? Ship_Party_Name { get; set; }
         public int? Final_Customer_Id { get; set; }
         public string? Website { get; set; }
-        public string? Bank_Currency { get; set; }
+        public string? Default_Currency { get; set; }
         public int? Payment_Terms { get; set; }
         public string? Payment_Terms_Value { get; set; }
         public string? Cust_Freight_Account_No { get; set; }
