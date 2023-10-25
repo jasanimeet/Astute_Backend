@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -37,14 +39,16 @@ namespace astute.Repository
         {
             var columnName = new SqlParameter("@ColumnName", category_Master.Column_Name);
             var displayName = new SqlParameter("@DisplayName", category_Master.Display_Name);
-            var status = new SqlParameter("@Status", category_Master.Status);
+            var status =     new SqlParameter("@Status", category_Master.Status);
             var colId = new SqlParameter("@ColId", category_Master.Col_Id);
-            var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
 
+            var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
             var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
-            await Task.Run(() => _dbContext.Database
-            .ExecuteSqlRawAsync(@"EXEC Category_Master_Trace_Insert @Employee_Id, @IP_Address, @Trace_Date, @Trace_Time, @RecordType, @ColumnName, @DisplayName, @Status, ColId",
-            empId, ipaddress, date, time, record_Type, columnName, displayName, status, colId));
+
+            var result = await Task.Run(() => _dbContext.Database
+           .ExecuteSqlRawAsync(@"EXEC Category_Master_Trace_Insert @Employee_Id, @IP_Address, @Trace_Date, @Trace_Time, @RecordType, @ColumnName, @DisplayName, @Status, @ColId"
+            , empId, ipaddress, date, time, record_Type, columnName, displayName, status, colId));
+
         }
 
         private async Task Insert_Category_Trace(Category_Value category_Value, string recordType)
@@ -67,7 +71,7 @@ namespace astute.Repository
             await Task.Run(() => _dbContext.Database
             .ExecuteSqlRawAsync(@"EXEC Category_Value_Trace_Insert @Employee_Id, @IP_Address, @Trace_Date, @Trace_Time, @RecordType, @CatName, @GroupName, @RapaportName,
             @Rapnetname, @Synonyms, @OrderNo, @SortNo, @Status, @IconUrl, @CatId, @DisplayName, @ShortName",
-            empId, ipaddress, date, time, recordType, catName, groupName, rapaportName, rapnetname, synonyms, orderNo, sortNo, status, icon_Url, catId, displayName, shortName));
+            empId, ipaddress, date, time, record_Type, catName, groupName, rapaportName, rapnetname, synonyms, orderNo, sortNo, status, icon_Url, catId, displayName, shortName));
         }
         #endregion
 
