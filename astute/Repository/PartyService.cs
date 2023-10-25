@@ -323,7 +323,7 @@ namespace astute.Repository
             var ship_PartyId = party_Master.Ship_PartyId > 0 ? new SqlParameter("@Ship_PartyId", party_Master.Ship_PartyId) : new SqlParameter("@Ship_PartyId", DBNull.Value);
             var final_Customer_Id = party_Master.Final_Customer_Id > 0 ? new SqlParameter("@Final_Customer_Id", party_Master.Final_Customer_Id) : new SqlParameter("@Final_Customer_Id", DBNull.Value);
             var website = !string.IsNullOrEmpty(party_Master.Website) ? new SqlParameter("@Website", party_Master.Website) : new SqlParameter("@Website", DBNull.Value);
-            var bank_currency = !string.IsNullOrEmpty(party_Master.Bank_Currency) ? new SqlParameter("@Bank_Currency", party_Master.Bank_Currency) : new SqlParameter("@Bank_Currency", DBNull.Value);
+            var default_Currency = !string.IsNullOrEmpty(party_Master.Default_Currency) ? new SqlParameter("@Default_Currency", party_Master.Default_Currency) : new SqlParameter("@Default_Currency", DBNull.Value);
             var payment_Terms = party_Master.Payment_Terms > 0 ? new SqlParameter("@Payment_Terms", party_Master.Payment_Terms) : new SqlParameter("@Payment_Terms", DBNull.Value);
             var cust_Freight_Account_No = !string.IsNullOrEmpty(party_Master.Cust_Freight_Account_No) ? new SqlParameter("@Cust_Freight_Account_No", party_Master.Cust_Freight_Account_No) : new SqlParameter("@Cust_Freight_Account_No", DBNull.Value);
             var alias_Name = !string.IsNullOrEmpty(party_Master.Alias_Name) ? new SqlParameter("@Alias_Name", party_Master.Alias_Name) : new SqlParameter("@Alias_Name", DBNull.Value);
@@ -341,10 +341,10 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_Master_Insert_Update @Party_Id, @Party_Type, @Party_Code, @Adress_1, @Adress_2, @Adress_3, @City_Id, @PinCode, @Mobile_1,
-                        @Mobile_2, @Phone_1, @Phone_2, @Fax, @Email_1, @Email_2, @Comp_Bank, @Party_Name, @Ship_PartyId, @Final_Customer_Id, @Website, @Bank_Currency, @Payment_Terms,
+                        @Mobile_2, @Phone_1, @Phone_2, @Fax, @Email_1, @Email_2, @Comp_Bank, @Party_Name, @Ship_PartyId, @Final_Customer_Id, @Website, @Default_Currency, @Payment_Terms,
                         @Cust_Freight_Account_No, @Alias_Name, @Wechat_ID, @Skype_ID, @Business_Reg_No, @Default_Remarks, @Notification, @Reference_By, @TIN_No, @InsertedId OUT", party_Id,
                         party_Type, party_Code, party_Address1, party_Address2, party_Address3, city_Id, pin_Code, mobile_No1, mobile_No2, phone_No1, phone_No2, fax, email_1, email_2, 
-                        comp_Bank, party_Name, ship_PartyId, final_Customer_Id, website, bank_currency, payment_Terms, cust_Freight_Account_No, alias_Name, wechat_ID, skype_ID, business_Reg_No,
+                        comp_Bank, party_Name, ship_PartyId, final_Customer_Id, website, default_Currency, payment_Terms, cust_Freight_Account_No, alias_Name, wechat_ID, skype_ID, business_Reg_No,
                         notification, reference_By, tIN_No, insertedId));
 
             if (result > 0)
