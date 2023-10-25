@@ -847,16 +847,16 @@ namespace astute.Controllers
         }
         #endregion
 
-        #region EmployeeEncryptPassList
+        #region EmployeeDecryptPass
 
         [HttpGet]
         [Route("getemployeesdecryptpass")]
         [Authorize]
-        public async Task<IActionResult> GetEmployeesDecryptPass(int EmployeeId)
+        public async Task<IActionResult> GetEmployeesDecryptPass(int employee_Id)
         {
             try
             {
-                var employees = await _employeeService.GetEmployees(EmployeeId, null, null);
+                var employees = await _employeeService.GetEmployees(employee_Id, null, null);
 
                 if (employees != null && employees.Count > 0)
                 {
@@ -891,6 +891,7 @@ namespace astute.Controllers
         }
 
         #endregion
+
         #endregion
     }
 }
