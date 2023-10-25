@@ -14,6 +14,7 @@ namespace astute.Repository
         Task Insert_Party_Assist_Trace(DataTable dataTable);
         Task Insert_Party_Shipping_Trace(DataTable dataTable);
         Task Insert_Party_Media_Trace(DataTable dataTable);
+        Task Insert_Party_Print_Trace(DataTable dataTable);
         #endregion
 
         #region Party Master        

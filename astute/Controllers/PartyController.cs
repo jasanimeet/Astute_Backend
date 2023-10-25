@@ -494,7 +494,8 @@ namespace astute.Controllers
                             }
                             await _partyService.AddUpdatePartyShipping(dataTable);
                         }
-                        if(party_Master.Party_Print_Process_List != null && party_Master.Party_Print_Process_List.Count > 0)
+
+                        if (party_Master.Party_Print_Process_List != null && party_Master.Party_Print_Process_List.Count > 0)
                         {
                             DataTable dataTable = new DataTable();
                             dataTable.Columns.Add("Print_Process_Id", typeof(int));
@@ -511,6 +512,11 @@ namespace astute.Controllers
                             foreach (var item in party_Master.Party_Print_Process_List)
                             {
                                 dataTable.Rows.Add(item.Print_Process_Id, party_Id, item.Start_Date, item.Process_Type, item.Default_Printing_Type, item.Default_Currency, item.Default_Bank, item.Default_Payment_Terms, item.Default_Remarks, item.QueryFlag);
+                            }
+
+                            if (CoreService.Enable_Trace_Records(_configuration))
+                            {
+                                await _partyService.Insert_Party_Print_Trace(dataTable);
                             }
                             await _partyService.Add_Update_Party_Print_Process(dataTable);
                         }
