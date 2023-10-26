@@ -846,6 +846,52 @@ namespace astute.Controllers
             }
         }
         #endregion
+
+        #region EmployeeDecryptPass
+
+        [HttpGet]
+        [Route("getemployeesdecryptpass")]
+        [Authorize]
+        public async Task<IActionResult> GetEmployeesDecryptPass(int employee_Id)
+        {
+            try
+            {
+                var employees = await _employeeService.GetEmployees(employee_Id, null, null);
+
+                if (employees != null && employees.Count > 0)
+                {
+                    var empMasterList = employees.Where(x => !string.IsNullOrEmpty(x.Password)).ToList();
+                    // Use LINQ to decrypt passwords for all employees in the list
+                    empMasterList.ForEach(empMaster => empMaster.Password = CoreService.Decrypt(empMaster.Password));
+
+                    var resultData = empMasterList.Select(x => new
+                    {
+                        Employee_Id = x.Employee_Id,
+                        User_Name = x.User_Name,
+                        Password = x.Password
+                    });
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = resultData
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "GetEmployeeMail", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
         #endregion
     }
 }
