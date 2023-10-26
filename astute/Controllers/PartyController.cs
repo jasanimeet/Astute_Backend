@@ -494,7 +494,7 @@ namespace astute.Controllers
                             }
                             await _partyService.AddUpdatePartyShipping(dataTable);
                         }
-
+                        //Party Print Process
                         if (party_Master.Party_Print_Process_List != null && party_Master.Party_Print_Process_List.Count > 0)
                         {
                             DataTable dataTable = new DataTable();

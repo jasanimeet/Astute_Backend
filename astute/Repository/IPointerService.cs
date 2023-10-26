@@ -15,6 +15,7 @@ namespace astute.Repository
         Task<int> DeletePointer(int pointerId);
         Task<IList<Pointer_Master>> GetPointer(int pointerId);
         Task<int> PointerChangeStatus(int pointer_Id, bool status);
+        Task<int> Get_Pointer_Master_Max_Order_No();
         #endregion
 
         #region Pointer Detail

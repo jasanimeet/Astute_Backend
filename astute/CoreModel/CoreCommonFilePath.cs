@@ -10,5 +10,6 @@
         public static string EmployeeDocumentsPath = "/Files/EmployeeDocuments/";
         public static string SupplierFilePath = "/Files/SupplierDetailFile/";
         public static string UserDocumentsPath = "/Files/UserDocuments/";
+        public static string CityFilesPath = "/Files/CityFiles/"; 
     }
 }

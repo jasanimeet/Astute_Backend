@@ -202,12 +202,15 @@ namespace astute.Repository
             if (result > 0)
             {
                 int _insertedId = (int)insertedId.Value;
-                if (employee_Master.Employee_Id > 0)
-                    await Insert_Employee_Trace(employee_Master, "Update");
-                else
+                if (CoreService.Enable_Trace_Records(_configuration))
                 {
-                    employee_Master.Employee_Id = _insertedId;
-                    await Insert_Employee_Trace(employee_Master, "Insert");
+                    if (employee_Master.Employee_Id > 0)
+                        await Insert_Employee_Trace(employee_Master, "Update");
+                    else
+                    {
+                        employee_Master.Employee_Id = _insertedId;
+                        await Insert_Employee_Trace(employee_Master, "Insert");
+                    }
                 }
                 return ("success", _insertedId);
             }

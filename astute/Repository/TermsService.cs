@@ -38,8 +38,8 @@ namespace astute.Repository
 
             var terms = new SqlParameter("@Terms", terms_Master.Terms);
             var termDays = new SqlParameter("@Term_Days", terms_Master.Term_Days);
-            var orderNo = new SqlParameter("@Order_No", terms_Master.Order_No);
-            var sortNo = new SqlParameter("@Sort_No", terms_Master.Sort_No);
+            var orderNo = terms_Master.Order_No > 0 ? new SqlParameter("@Order_No", terms_Master.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
+            var sortNo = terms_Master.Sort_No > 0 ? new SqlParameter("@Sort_No", terms_Master.Sort_No) : new SqlParameter("@Sort_No", DBNull.Value);
             var status = new SqlParameter("@Status", terms_Master.Status);
 
             await Task.Run(() => _dbContext.Database
@@ -54,39 +54,22 @@ namespace astute.Repository
             var terms_Id = new SqlParameter("@terms_Id", terms_Mas.Terms_Id);
             var terms = new SqlParameter("@terms", terms_Mas.Terms);
             var termDays = new SqlParameter("@termDays", terms_Mas.Term_Days);
-            var orderNo = new SqlParameter("@orderNo", terms_Mas.Order_No);
-            var sortNo = new SqlParameter("@sortNo", terms_Mas.Sort_No);
+            var orderNo = terms_Mas.Order_No > 0 ? new SqlParameter("@orderNo", terms_Mas.Order_No) : new SqlParameter("@orderNo", DBNull.Value);
+            var sortNo = terms_Mas.Sort_No > 0 ? new SqlParameter("@sortNo", terms_Mas.Sort_No) : new SqlParameter("@sortNo", DBNull.Value);
             var status = new SqlParameter("@status", terms_Mas.Status);
             var recordType = new SqlParameter("@recordType", "Insert");
-            var isForce_Insert = new SqlParameter("@IsForceInsert", terms_Mas.IsForceInsert);
             var isExistTerms = new SqlParameter("@IsExistTerms", System.Data.SqlDbType.Bit)
-            {
-                Direction = System.Data.ParameterDirection.Output
-            };
-            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
-            {
-                Direction = System.Data.ParameterDirection.Output
-            };
-            var isExistSortNo = new SqlParameter("@IsExistSortNo", System.Data.SqlDbType.Bit)
             {
                 Direction = System.Data.ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
-            .ExecuteSqlRawAsync(@"exec Terms_Mas_Insert_Update @terms_Id, @terms, @termDays, @orderNo, @sortNo, @status, @recordType, @IsExistTerms OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @IsForceInsert",
-            terms_Id, terms, termDays, orderNo, sortNo, status, recordType, isExistTerms, isExistOrderNo, isExistSortNo, isForce_Insert));
+            .ExecuteSqlRawAsync(@"exec Terms_Mas_Insert_Update @terms_Id, @terms, @termDays, @orderNo, @sortNo, @status, @recordType, @IsExistTerms OUT",
+            terms_Id, terms, termDays, orderNo, sortNo, status, recordType, isExistTerms));
 
             bool termsIsExist = (bool)isExistTerms.Value;
             if (termsIsExist)
-                return 2;
-
-            bool orderNoIsExist = (bool)isExistOrderNo.Value;
-            if (orderNoIsExist)
-                return 3;
-
-            bool sortNoIsExist = (bool)isExistSortNo.Value;
-            if (sortNoIsExist)
-                return 4;
+                return 5;
 
             if (CoreService.Enable_Trace_Records(_configuration))
             {
@@ -100,39 +83,22 @@ namespace astute.Repository
             var terms_Id = new SqlParameter("@terms_Id", terms_Mas.Terms_Id);
             var terms = new SqlParameter("@terms", terms_Mas.Terms);
             var termDays = new SqlParameter("@termDays", terms_Mas.Term_Days);
-            var orderNo = new SqlParameter("@orderNo", terms_Mas.Order_No);
-            var sortNo = new SqlParameter("@sortNo", terms_Mas.Sort_No);
+            var orderNo = terms_Mas.Order_No > 0 ? new SqlParameter("@orderNo", terms_Mas.Order_No) : new SqlParameter("@orderNo", DBNull.Value);
+            var sortNo = terms_Mas.Sort_No > 0 ? new SqlParameter("@sortNo", terms_Mas.Sort_No) : new SqlParameter("@sortNo", DBNull.Value);
             var status = new SqlParameter("@status", terms_Mas.Status);
             var recordType = new SqlParameter("@recordType", "Update");
-            var isForce_Insert = new SqlParameter("@IsForceInsert", terms_Mas.IsForceInsert);
             var isExistTerms = new SqlParameter("@IsExistTerms", System.Data.SqlDbType.Bit)
-            {
-                Direction = System.Data.ParameterDirection.Output
-            };
-            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
-            {
-                Direction = System.Data.ParameterDirection.Output
-            };
-            var isExistSortNo = new SqlParameter("@IsExistSortNo", System.Data.SqlDbType.Bit)
             {
                 Direction = System.Data.ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
-            .ExecuteSqlRawAsync(@"exec Terms_Mas_Insert_Update @terms_Id, @terms, @termDays, @orderNo, @sortNo, @status, @recordType, @IsExistTerms OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @IsForceInsert",
-            terms_Id, terms, termDays, orderNo, sortNo, status, recordType, isExistTerms, isExistOrderNo, isExistSortNo, isForce_Insert));
+            .ExecuteSqlRawAsync(@"exec Terms_Mas_Insert_Update @terms_Id, @terms, @termDays, @orderNo, @sortNo, @status, @recordType, @IsExistTerms OUT",
+            terms_Id, terms, termDays, orderNo, sortNo, status, recordType, isExistTerms));
 
             bool termsIsExist = (bool)isExistTerms.Value;
             if (termsIsExist)
-                return 2;
-
-            bool orderNoIsExist = (bool)isExistOrderNo.Value;
-            if (orderNoIsExist)
-                return 3;
-
-            bool sortNoIsExist = (bool)isExistSortNo.Value;
-            if (sortNoIsExist)
-                return 4;
+                return 5;
 
             if (CoreService.Enable_Trace_Records(_configuration))
             {

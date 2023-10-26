@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 
@@ -318,6 +320,19 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_country_max_order_no")]
+        public async Task<IActionResult> Get_Country_Max_Order_No()
+        {
+            var result = await _commonService.Get_Country_Master_Max_Order_No();
+
+            return Ok(new
+            {
+                statusCode = HttpStatusCode.OK,
+                order_no = result
+            });
+        }
         #endregion
 
         #region State Master
@@ -563,6 +578,19 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_state_max_order_no")]
+        public async Task<IActionResult> Get_State_Max_Order_No()
+        {
+            var result = await _commonService.Get_State_Master_Max_Order_No();
+
+            return Ok(new
+            {
+                statusCode = HttpStatusCode.OK,
+                order_no = result
+            });
+        }
         #endregion
 
         #region City Master
@@ -789,6 +817,66 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_city_max_order_no")]
+        [Authorize]
+        public async Task<IActionResult> Get_City_Max_Order_No()
+        {
+            var result = await _commonService.Get_City_Master_Max_Order_No();
+
+            return Ok(new
+            {
+                statusCode = HttpStatusCode.OK,
+                order_no = result
+            });
+        }
+
+        [HttpGet]
+        [Route("export_city_excel")]
+        [Authorize]
+        public async Task<IActionResult> Export_City_Excel(CancellationToken cancellationToken)
+        {   
+            var folder = Path.Combine(Directory.GetCurrentDirectory(), "Files/CityFiles");
+            if (!(Directory.Exists(folder)))
+            {
+                Directory.CreateDirectory(folder);
+            }
+            string excelName = $"City_List-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
+            string downloadUrl = _configuration["BaseUrl"] + CoreCommonFilePath.CityFilesPath + excelName;
+            FileInfo file = new FileInfo(Path.Combine(folder, excelName));
+            if (file.Exists)
+            {
+                file.Delete();
+                file = new FileInfo(Path.Combine(folder, excelName));
+            }
+
+            // query data from database  
+            await Task.Yield();
+
+            var list = await _commonService.Get_Cities_Export();
+
+            using (var package = new ExcelPackage(file))
+            {
+                var workSheet = package.Workbook.Worksheets.Add("City");
+                workSheet.Cells.LoadFromCollection(list, true);
+
+                // Get the header row range
+                var headerRow = workSheet.Cells[1, 1, 1, workSheet.Dimension.End.Column];
+                // Apply bold style to the header row
+                headerRow.Style.Font.Bold = true;
+
+                workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
+
+                package.Save();
+            }
+
+            return Ok(new
+            {
+                statusCode = HttpStatusCode.OK,
+                result = downloadUrl
+            });
+        }
         #endregion
 
         #region Terms Master
@@ -868,28 +956,12 @@ namespace astute.Controllers
                             message = CoreCommonMessage.TermsCreated
                         });
                     }
-                    else if (result == 2)
+                    else if (result == 5)
                     {
                         return Conflict(new
                         {
                             statusCode = HttpStatusCode.Conflict,
                             message = CoreCommonMessage.IsExistTerms
-                        });
-                    }
-                    else if (result == 3)
-                    {
-                        return Conflict(new
-                        {
-                            statusCode = HttpStatusCode.Conflict,
-                            message = CoreCommonMessage.OrderNoAlreadyExist
-                        });
-                    }
-                    else if (result == 4)
-                    {
-                        return Conflict(new
-                        {
-                            statusCode = HttpStatusCode.Conflict,
-                            message = CoreCommonMessage.SortNoAlreadyExist
                         });
                     }
                 }
@@ -923,28 +995,12 @@ namespace astute.Controllers
                             message = CoreCommonMessage.TermsUpdated
                         });
                     }
-                    else if (result == 2)
+                    else if (result == 5)
                     {
                         return Conflict(new
                         {
                             statusCode = HttpStatusCode.Conflict,
                             message = CoreCommonMessage.IsExistTerms
-                        });
-                    }
-                    else if (result == 3)
-                    {
-                        return Conflict(new
-                        {
-                            statusCode = HttpStatusCode.Conflict,
-                            message = CoreCommonMessage.OrderNoAlreadyExist
-                        });
-                    }
-                    else if (result == 4)
-                    {
-                        return Conflict(new
-                        {
-                            statusCode = HttpStatusCode.Conflict,
-                            message = CoreCommonMessage.SortNoAlreadyExist
                         });
                     }
                 }
@@ -1999,6 +2055,20 @@ namespace astute.Controllers
                     message = ex.Message
                 });
             }
+        }
+
+        [HttpGet]
+        [Route("get_pointer_max_order_no")]
+        [Authorize]
+        public async Task<IActionResult> Get_Pointer_Max_Order_No()
+        {
+            var result = await _pointerService.Get_Pointer_Master_Max_Order_No();
+
+            return Ok(new
+            {
+                statusCode = HttpStatusCode.OK,
+                order_no = result
+            });
         }
         #endregion
 

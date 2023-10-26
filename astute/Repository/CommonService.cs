@@ -258,6 +258,16 @@ namespace astute.Repository
                                 .ExecuteSqlRawAsync(@"EXEC Country_Master_Update_Status @Country_Id, @Status", countryId, Status));
             return result;
         }
+        public async Task<int> Get_Country_Master_Max_Order_No()
+        {
+            var result = await _dbContext.Country_Master.Select(x => x.Order_No).MaxAsync();
+            if (result > 0)
+            {
+                var maxValue = checked((int)result + 1);
+                return maxValue;
+            }
+            return 1;
+        }
         #endregion
 
         #region State Master
@@ -402,6 +412,16 @@ namespace astute.Repository
                                 .ExecuteSqlRawAsync(@"EXEC State_Master_Update_Status @State_Id, @Status", stateId, Status));
             return result;
         }
+        public async Task<int> Get_State_Master_Max_Order_No()
+        {
+            var result = await _dbContext.State_Master.Select(x => x.Order_No).MaxAsync();
+            if (result > 0)
+            {
+                var maxValue = checked((int)result + 1);
+                return maxValue;
+            }
+            return 1;
+        }
         #endregion
 
         #region City Master
@@ -527,7 +547,7 @@ namespace astute.Repository
                  .FromSqlRaw(@"exec City_Mas_Active_Select @city", _city).ToListAsync());
 
             return result;
-        }
+        }        
         public async Task<int> CityChangeStatus(int city_Id, bool status)
         {
             var cityId = new SqlParameter("@City_Id", city_Id);
@@ -535,6 +555,23 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
                                 .ExecuteSqlRawAsync(@"EXEC City_Master_Update_Status @City_Id, @Status", cityId, Status));
+            return result;
+        }
+        public async Task<int> Get_City_Master_Max_Order_No()
+        {
+            var result = await _dbContext.City_Master.Select(x => x.Order_No).MaxAsync();
+            if (result > 0)
+            {
+                var maxValue = checked((int)result + 1);
+                return maxValue;
+            }
+            return 1;
+        }
+        public async Task<IList<City_Master_Export>> Get_Cities_Export()
+        {
+            var result = await Task.Run(() => _dbContext.City_Master_Export
+                 .FromSqlRaw(@"exec City_Master_Export_Select").ToListAsync());
+
             return result;
         }
         #endregion
@@ -831,9 +868,9 @@ namespace astute.Repository
                 var layout_Column = await GetLayout_Columns(0, layout_det.LayoutDet_ID);
                 if (layout_Column != null && layout_Column.Count > 0)
                 {
-                    result = await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Delete_Layout_Column {layout_Detail_Id}"));
+                    result = await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Layout_Column_Delete {layout_Detail_Id}"));
                 }
-                result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Delete_Layout_Detail @Layout_Id, @LayoutDet_ID",
+                result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Layout_Detail_Delete @Layout_Id, @LayoutDet_ID",
                     new SqlParameter("@Layout_Id", DBNull.Value), new SqlParameter("@LayoutDet_ID", layout_Detail_Id)));
             }
             return result;
@@ -903,43 +940,6 @@ namespace astute.Repository
             });
             return layoutDetail;
         }
-
-        //public async Task<int> UpdateLayoutMas(Layout_Master layout_Master)
-        //{
-        //    int result = 0;
-        //    var layoutId = new SqlParameter("@Layout_Id", layout_Master.Layout_Id);
-        //    var menuId = layout_Master.Menu_id > 0 ? new SqlParameter("@Menu_id", layout_Master.Menu_id) : new SqlParameter("@Menu_id", DBNull.Value);
-        //    var employeeId = layout_Master.Employee_id > 0 ? new SqlParameter("@Employee_id", layout_Master.Employee_id) : new SqlParameter("@Employee_id", DBNull.Value);
-        //    var layout_Type = !string.IsNullOrEmpty(layout_Master.Layout_Type) ? new SqlParameter("@Layout_Type", layout_Master.Layout_Type) : new SqlParameter("@Layout_Type", DBNull.Value);
-        //    var recordType = new SqlParameter("@recordType", "Update");
-        //    var insertedId = new SqlParameter("@InsertedId", System.Data.SqlDbType.Int)
-        //    {
-        //        Direction = System.Data.ParameterDirection.Output
-        //    };
-
-        //    result = await Task.Run(() => _dbContext.Database
-        //                        .ExecuteSqlRawAsync(@"EXEC Layout_Master_Insert_Update @Layout_Id, @Menu_id, @Employee_id, @Layout_Type, @recordType, @InsertedId OUT", layoutId,
-        //                        menuId, employeeId, layout_Type, recordType, insertedId));
-        //    //int inserted_Layout_Id = (int)insertedId.Value;
-
-        //    if (layout_Master.Layout_Details != null && layout_Master.Layout_Details.Count > 0)
-        //    {
-        //        foreach (var item in layout_Master.Layout_Details)
-        //        {
-        //            var layoutDetId = new SqlParameter("@LayoutDet_ID", item.LayoutDet_ID);
-        //            var layout_Id = layoutId; //new SqlParameter("@Layout_Id", layoutId);
-        //            var columnName = !string.IsNullOrEmpty(item.Column_Name) ? new SqlParameter("@Column_Name", item.Column_Name) : new SqlParameter("@Column_Name", DBNull.Value);
-        //            var value = !string.IsNullOrEmpty(item.Value) ? new SqlParameter("@Value", item.Value) : new SqlParameter("@Value", DBNull.Value);
-        //            var status = new SqlParameter("@Status", item.Status);
-        //            var record_Type = new SqlParameter("@recordType", "Update");
-
-        //            result = await Task.Run(() => _dbContext.Database
-        //                        .ExecuteSqlRawAsync(@"EXEC Layout_Detail_Insert_Update @LayoutDet_ID, @Layout_Id, @Column_Name, @Value, @Status, @recordType", layoutDetId,
-        //                        layout_Id, columnName, value, status, record_Type));
-        //        }
-        //    }
-        //    return result;
-        //}
         #endregion
 
         #region Loader Master
