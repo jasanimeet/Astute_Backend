@@ -44,7 +44,6 @@ namespace astute.Models
         public DbSet<Emp_rights> Emp_rights { get; set; }
         public DbSet<Holiday_Master> Holiday_Master { get; set; }
         public DbSet<Quote_Master> Quote_Master { get; set; }
-        public DbSet<Temp_Stock> Temp_Stock { get; set; }
         public DbSet<Employee_Mail> Employee_Mail { get; set; }
         public DbSet<Layout_Master> Layout_Master { get; set; }
         public DbSet<Layout_Detail> Layout_Detail { get; set; }

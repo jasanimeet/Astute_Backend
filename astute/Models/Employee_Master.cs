@@ -48,6 +48,8 @@ namespace astute.Models
         public string? Probation_End_Date { get; set; }
         public string? Personal_Mobile_No { get; set; }
         public bool? Is_Admin { get; set; }
+        public int? Designation_Id { get; set; }
+        public string? Designation { get; set; }
         [NotMapped]
         public IList<Employee_Document> Employee_Document_List { get; set; } = new List<Employee_Document>();
         [NotMapped]

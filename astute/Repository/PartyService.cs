@@ -530,23 +530,13 @@ namespace astute.Repository
             var file_Id = new SqlParameter("@File_Id", party_File.File_Id);
             var _party_Id = party_File.Party_Id > 0 ? new SqlParameter("@Party_Id", party_File.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
             var file_Location = !string.IsNullOrEmpty(party_File.File_Location) ? new SqlParameter("@File_Location", party_File.File_Location) : new SqlParameter("@File_Location", DBNull.Value);
-            var file_Type = !string.IsNullOrEmpty(party_File.File_Type) ? new SqlParameter("@File_Type", party_File.File_Type) : new SqlParameter("@File_Type", DBNull.Value);
-            var offer_Name = !string.IsNullOrEmpty(party_File.Offer_Name) ? new SqlParameter("@Offer_Name", party_File.Offer_Name) : new SqlParameter("@Offer_Name", DBNull.Value);
-            var api_Inverse = new SqlParameter("@Disc_Inverse", party_File.Disc_Inverse);
-            var auto_Ref_No = new SqlParameter("@Auto_Ref_No", party_File.Auto_Ref_No);
-            var file_Location_1 = !string.IsNullOrEmpty(party_File.File_Location_1) ? new SqlParameter("@File_Location_1", party_File.File_Location_1) : new SqlParameter("@File_Location_1", DBNull.Value);
-            var file_Type_1 = !string.IsNullOrEmpty(party_File.File_Type_1) ? new SqlParameter("@File_Type_1", party_File.File_Type_1) : new SqlParameter("@File_Type_1", DBNull.Value);
-            var file_Location_2 = !string.IsNullOrEmpty(party_File.File_Location_2) ? new SqlParameter("@File_Location_2", party_File.File_Location_2) : new SqlParameter("@File_Location_2", DBNull.Value);
-            var file_Type_2 = !string.IsNullOrEmpty(party_File.File_Type_2) ? new SqlParameter("@File_Type_2", party_File.File_Type_2) : new SqlParameter("@File_Type_2", DBNull.Value);
-            var repeateveryType = !string.IsNullOrEmpty(party_File.RepeateveryType) ? new SqlParameter("@RepeateveryType", party_File.RepeateveryType) : new SqlParameter("@RepeateveryType", DBNull.Value);
-            var repeatevery = !string.IsNullOrEmpty(party_File.Repeatevery) ? new SqlParameter("@Repeatevery", party_File.Repeatevery) : new SqlParameter("@Repeatevery", DBNull.Value);
             var short_Code = !string.IsNullOrEmpty(party_File.Short_Code) ? new SqlParameter("@Short_Code", party_File.Short_Code) : new SqlParameter("@Short_Code", DBNull.Value);
             var file_Status = new SqlParameter("@File_Status", party_File.File_Status);
+            var lab = new SqlParameter("@Lab", party_File.Lab);
+            var overseas = new SqlParameter("@Overseas", party_File.Overseas);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Party_File_Insert_Update @File_Id, @Party_Id, @File_Location, @File_Type, @Offer_Name, @Disc_Inverse, @Auto_Ref_No,
-                        @File_Location_1, @File_Type_1, @File_Location_2, @File_Type_2, @RepeateveryType, @Repeatevery, @Short_Code, @File_Status", file_Id, _party_Id, file_Location, file_Type, offer_Name, api_Inverse, auto_Ref_No,
-                        file_Location_1, file_Type_1, file_Location_2, file_Type_2, repeateveryType, repeatevery, short_Code, file_Status));
+                        .ExecuteSqlRawAsync(@"EXEC Party_File_Insert_Update @File_Id, @Party_Id, @File_Location, @Short_Code, @File_Status, @Lab, @Overseas", file_Id, _party_Id, file_Location, short_Code, file_Status, lab, overseas));
 
             return result;
         }

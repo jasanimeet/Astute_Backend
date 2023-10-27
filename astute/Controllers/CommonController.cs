@@ -641,11 +641,7 @@ namespace astute.Controllers
                         data = result
                     });
                 }
-                return NotFound(new
-                {
-                    statusCode = HttpStatusCode.NotFound,
-                    message = CoreCommonMessage.DataNotFound
-                });
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -2291,7 +2287,7 @@ namespace astute.Controllers
             {
                 return Ok(new
                 {
-                    StatusCode = HttpStatusCode.OK,
+                    statusCode = HttpStatusCode.OK,
                     message = CoreCommonMessage.DataSuccessfullyFound,
                     data = result
                 });
@@ -2302,14 +2298,14 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_active_bank")]
         [Authorize]
-        public async Task<IActionResult> Get_Active_Bank(int bankId)
+        public async Task<IActionResult> Get_Active_Bank(int bankId, string bank_Name)
         {
-            var result = await _bankService.Get_Active_Bank(bankId);
+            var result = await _bankService.Get_Active_Bank(bankId, bank_Name);
             if (result != null && result.Count > 0)
             {
                 return Ok(new
                 {
-                    StatusCode = HttpStatusCode.OK,
+                    statusCode = HttpStatusCode.OK,
                     message = CoreCommonMessage.DataSuccessfullyFound,
                     data = result
                 });

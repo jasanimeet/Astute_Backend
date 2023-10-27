@@ -512,7 +512,7 @@ namespace astute.Controllers
                             #region Party Print Process
                             DataTable dataTable1 = new DataTable();
                             if (CoreService.Enable_Trace_Records(_configuration))
-                            {   
+                            {
                                 dataTable1.Columns.Add("Employee_Id", typeof(int));
                                 dataTable1.Columns.Add("IP_Address", typeof(string));
                                 dataTable1.Columns.Add("Trace_Date", typeof(DateTime));
@@ -567,7 +567,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_update_supplier_detail")]
         [Authorize]
-        public async Task<IActionResult> Create_Update_Supplier_Detail([FromForm] Supplier_Details supplier_Details, IFormFile File_Location, IFormFile File_Location_1, IFormFile File_Location_2)
+        public async Task<IActionResult> Create_Update_Supplier_Detail([FromForm] Supplier_Details supplier_Details, IFormFile File_Location)
         {
             try
             {
@@ -610,40 +610,6 @@ namespace astute.Controllers
                                 await File_Location.CopyToAsync(fileStream);
                             }
                             supplier_Details.Party_File.File_Location = strFile;
-                        }
-                        if (File_Location_1 != null && File_Location_1.Length > 0)
-                        {
-                            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/SupplierDetailFile");
-                            if (!(Directory.Exists(filePath)))
-                            {
-                                Directory.CreateDirectory(filePath);
-                            }
-                            string fileName = Path.GetFileNameWithoutExtension(File_Location_1.FileName);
-                            string fileExt = Path.GetExtension(File_Location_1.FileName);
-
-                            string strFile = fileName + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + fileExt;
-                            using (var fileStream = new FileStream(Path.Combine(filePath, strFile), FileMode.Create))
-                            {
-                                await File_Location_1.CopyToAsync(fileStream);
-                            }
-                            supplier_Details.Party_File.File_Location_1 = strFile;
-                        }
-                        if (File_Location_2 != null && File_Location_2.Length > 0)
-                        {
-                            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/SupplierDetailFile");
-                            if (!(Directory.Exists(filePath)))
-                            {
-                                Directory.CreateDirectory(filePath);
-                            }
-                            string fileName = Path.GetFileNameWithoutExtension(File_Location_2.FileName);
-                            string fileExt = Path.GetExtension(File_Location_2.FileName);
-
-                            string strFile = fileName + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + fileExt;
-                            using (var fileStream = new FileStream(Path.Combine(filePath, strFile), FileMode.Create))
-                            {
-                                await File_Location_2.CopyToAsync(fileStream);
-                            }
-                            supplier_Details.Party_File.File_Location_2 = strFile;
                         }
                         supplier_Details.Party_File.Party_Id = supplier_Details.Party_Id;
                         var party_file = await _partyService.Add_Update_Party_File(supplier_Details.Party_File);
@@ -709,8 +675,6 @@ namespace astute.Controllers
                 if (supplier_detail.Party_File != null)
                 {
                     supplier_detail.Party_File.File_Location = !string.IsNullOrEmpty(supplier_detail.Party_File.File_Location) ? _configuration["BaseUrl"] + CoreCommonFilePath.SupplierFilePath + supplier_detail.Party_File.File_Location : null;
-                    supplier_detail.Party_File.File_Location_1 = !string.IsNullOrEmpty(supplier_detail.Party_File.File_Location_1) ? _configuration["BaseUrl"] + CoreCommonFilePath.SupplierFilePath + supplier_detail.Party_File.File_Location_1 : null;
-                    supplier_detail.Party_File.File_Location_2 = !string.IsNullOrEmpty(supplier_detail.Party_File.File_Location_2) ? _configuration["BaseUrl"] + CoreCommonFilePath.SupplierFilePath + supplier_detail.Party_File.File_Location_2 : null;
                 }
                 return Ok(new
                 {

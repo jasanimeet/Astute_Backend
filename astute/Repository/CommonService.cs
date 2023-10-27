@@ -1057,16 +1057,6 @@ namespace astute.Repository
             da.Fill(ds);
 
             return ds.Tables[ds.Tables.Count - 1];
-
-            //var p_for_usercode = new SqlParameter("@p_for_usercode", 1);
-            //var p_for_page = new SqlParameter("@p_for_page", 1);
-            //var UsedFor = new SqlParameter("@UsedFor", "Download");
-            //var p_for_ActivityType = new SqlParameter("@p_for_ActivityType", "Excel Export");
-            //var p_for_FormName = new SqlParameter("@p_for_FormName", "Search Stock");
-
-            //var result = await Task.Run(() => _dbContext.Temp_Stock
-            //    .FromSqlRaw(@"exec sunrise.IPD_Search_Diamonds_Full_stock @p_for_usercode, @p_for_page, @UsedFor, @p_for_ActivityType, @p_for_FormName", p_for_usercode, p_for_page, UsedFor, p_for_ActivityType, p_for_FormName).ToListAsync());
-            //return result;
         }
         #endregion
     }
