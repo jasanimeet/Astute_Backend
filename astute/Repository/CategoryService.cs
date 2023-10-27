@@ -51,7 +51,7 @@ namespace astute.Repository
 
         }
 
-        private async Task Insert_Category_Trace(Category_Value category_Value, string recordType)
+        private async Task Insert_Category_Value_Trace(Category_Value category_Value, string recordType)
         {
             var catName = new SqlParameter("@CatName", category_Value.Cat_Name);
             var groupName = !string.IsNullOrEmpty(category_Value.Group_Name) ? new SqlParameter("@GroupName", category_Value.Group_Name) : new SqlParameter("@GroupName", DBNull.Value);
@@ -96,7 +96,7 @@ namespace astute.Repository
 
             var isExist = (bool)isReferencedParameter.Value;
             if (isExist)
-                result = 2;
+                return 2;
 
             if (CoreService.Enable_Trace_Records(_configuration))
             {
@@ -123,7 +123,7 @@ namespace astute.Repository
 
             var isExist = (bool)isReferencedParameter.Value;
             if (isExist)
-                result = 2;
+                return 2;
 
             if (CoreService.Enable_Trace_Records(_configuration))
             {
@@ -156,7 +156,7 @@ namespace astute.Repository
                                         isReferencedParameter);
             var isReferenced = (bool)isReferencedParameter.Value;
             if (isReferenced)
-                result = 2;
+                return 2;
 
             return result;
         }
@@ -224,7 +224,7 @@ namespace astute.Repository
                 return 4;
             if (CoreService.Enable_Trace_Records(_configuration))
             {
-                await Insert_Category_Trace(category_Value, "Insert");
+                await Insert_Category_Value_Trace(category_Value, "Insert");
             }
 
             return result;
@@ -281,7 +281,7 @@ namespace astute.Repository
 
             if (CoreService.Enable_Trace_Records(_configuration))
             {
-                await Insert_Category_Trace(category_Value, "Update");
+                await Insert_Category_Value_Trace(category_Value, "Update");
             }
 
             return result;
@@ -298,7 +298,7 @@ namespace astute.Repository
                                 .FirstOrDefault());
                 if (categoryValue != null)
                 {
-                    await Insert_Category_Trace(categoryValue, "Delete");
+                    await Insert_Category_Value_Trace(categoryValue, "Delete");
                 }
             }
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Category_Value_Delete {id}"));

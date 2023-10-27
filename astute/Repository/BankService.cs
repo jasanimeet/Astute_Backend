@@ -79,6 +79,7 @@ namespace astute.Repository
             var accountNo = !string.IsNullOrEmpty(bank_Mas.Account_No) ? new SqlParameter("@Account_No", bank_Mas.Account_No) : new SqlParameter("@Account_No", DBNull.Value);
             var correspondentAccountNo = !string.IsNullOrEmpty(bank_Mas.Correspondent_Bank_Account_No) ? new SqlParameter("@Correspondent_Bank_Account_No", bank_Mas.Correspondent_Bank_Account_No) : new SqlParameter("@Correspondent_Bank_Account_No", DBNull.Value);
             var currency_Id = bank_Mas.Currency_Id > 0 ? new SqlParameter("@Currency_Id", bank_Mas.Currency_Id) : new SqlParameter("@Currency_Id", DBNull.Value);
+            var account_Type = bank_Mas.Account_Type > 0 ? new SqlParameter("@Account_Type", bank_Mas.Account_Type) : new SqlParameter("@Account_Type", DBNull.Value);
             var recordType = new SqlParameter("@recordType", "Insert");
             var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
             {
@@ -92,8 +93,8 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                                 .ExecuteSqlRawAsync(@"EXEC Bank_Mas_Insert_Update @Bank_Id, @Bank_Name, @Branch_Name, @Branch_Address, @Ifsc_Code, @Correspondent_Bank, 
                                 @Correspondent_Bank_Addres, @Correspondent_Ifsc_Code, @Order_No, @Sort_No, @Status, @Bank_Code, @Branch_Code, @Account_No, @Correspondent_Bank_Account_No,
-                                @Currency_Id, @recordType, @IsExistOrderNo OUT, @IsExistSortNo OUT", bankId, bankName, branchName, branchAddress, ifscCode, correspondentBank, correspondentBankAddres,
-                                correspondentIfscCode, orderNo, sortNo, status, bankCode, branchCode, accountNo, correspondentAccountNo, currency_Id, recordType, isExistOrderNo, isExistSortNo));
+                                @Currency_Id, @Account_Type, @recordType, @IsExistOrderNo OUT, @IsExistSortNo OUT", bankId, bankName, branchName, branchAddress, ifscCode, correspondentBank, correspondentBankAddres,
+                                correspondentIfscCode, orderNo, sortNo, status, bankCode, branchCode, accountNo, correspondentAccountNo, currency_Id, account_Type, recordType, isExistOrderNo, isExistSortNo));
 
             bool orderNoIsExist = (bool)isExistOrderNo.Value;
             if (orderNoIsExist)
@@ -128,6 +129,7 @@ namespace astute.Repository
             var accountNo = !string.IsNullOrEmpty(bank_Mas.Account_No) ? new SqlParameter("@Account_No", bank_Mas.Account_No) : new SqlParameter("@Account_No", DBNull.Value);
             var correspondentAccountNo = !string.IsNullOrEmpty(bank_Mas.Correspondent_Bank_Account_No) ? new SqlParameter("@Correspondent_Bank_Account_No", bank_Mas.Correspondent_Bank_Account_No) : new SqlParameter("@Correspondent_Bank_Account_No", DBNull.Value);
             var currency_Id = bank_Mas.Currency_Id > 0 ? new SqlParameter("@Currency_Id", bank_Mas.Currency_Id) : new SqlParameter("@Currency_Id", DBNull.Value);
+            var account_Type = bank_Mas.Account_Type > 0 ? new SqlParameter("@Account_Type", bank_Mas.Account_Type) : new SqlParameter("@Account_Type", DBNull.Value);
             var recordType = new SqlParameter("@recordType", "Update");
             var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
             {
@@ -141,8 +143,8 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                                 .ExecuteSqlRawAsync(@"EXEC Bank_Mas_Insert_Update @Bank_Id, @Bank_Name, @Branch_Name, @Branch_Address, @Ifsc_Code, @Correspondent_Bank, 
                                 @Correspondent_Bank_Addres, @Correspondent_Ifsc_Code, @Order_No, @Sort_No, @Status, @Bank_Code, @Branch_Code, @Account_No, @Correspondent_Bank_Account_No,
-                                @Currency_Id, @recordType, @IsExistOrderNo OUT, @IsExistSortNo OUT", bankId, bankName, branchName, branchAddress, ifscCode, correspondentBank, correspondentBankAddres,
-                                correspondentIfscCode, orderNo, sortNo, status, bankCode, branchCode, accountNo, correspondentAccountNo, currency_Id, recordType, isExistOrderNo, isExistSortNo));
+                                @Currency_Id, @Account_Type, @recordType, @IsExistOrderNo OUT, @IsExistSortNo OUT", bankId, bankName, branchName, branchAddress, ifscCode, correspondentBank, correspondentBankAddres,
+                                correspondentIfscCode, orderNo, sortNo, status, bankCode, branchCode, accountNo, correspondentAccountNo, currency_Id, recordType, account_Type, isExistOrderNo, isExistSortNo));
 
             bool orderNoIsExist = (bool)isExistOrderNo.Value;
             if (orderNoIsExist)

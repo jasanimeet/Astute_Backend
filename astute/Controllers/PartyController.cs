@@ -509,16 +509,39 @@ namespace astute.Controllers
                             dataTable.Columns.Add("Default_Remarks", typeof(int));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
 
+                            #region Party Print Process
+                            DataTable dataTable1 = new DataTable();
+                            if (CoreService.Enable_Trace_Records(_configuration))
+                            {   
+                                dataTable1.Columns.Add("Employee_Id", typeof(int));
+                                dataTable1.Columns.Add("IP_Address", typeof(string));
+                                dataTable1.Columns.Add("Trace_Date", typeof(DateTime));
+                                dataTable1.Columns.Add("Trace_Time", typeof(TimeSpan));
+                                dataTable1.Columns.Add("Record_Type", typeof(string));
+                                dataTable1.Columns.Add("Party_Id", typeof(int));
+                                dataTable1.Columns.Add("Start_Date", typeof(string));
+                                dataTable1.Columns.Add("Process_Type", typeof(string));
+                                dataTable1.Columns.Add("Default_Printing_Type", typeof(int));
+                                dataTable1.Columns.Add("Default_Currency", typeof(int));
+                                dataTable1.Columns.Add("Default_Bank", typeof(int));
+                                dataTable1.Columns.Add("Default_Payment_Terms", typeof(int));
+                                dataTable1.Columns.Add("Default_Remarks", typeof(int));
+                            }
+                            #endregion
+
                             foreach (var item in party_Master.Party_Print_Process_List)
                             {
                                 dataTable.Rows.Add(item.Print_Process_Id, party_Id, item.Start_Date, item.Process_Type, item.Default_Printing_Type, item.Default_Currency, item.Default_Bank, item.Default_Payment_Terms, item.Default_Remarks, item.QueryFlag);
-                            }
-
-                            if (CoreService.Enable_Trace_Records(_configuration))
-                            {
-                                await _partyService.Insert_Party_Print_Trace(dataTable);
+                                if (CoreService.Enable_Trace_Records(_configuration))
+                                {
+                                    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Start_Date, item.Process_Type, item.Default_Printing_Type, item.Default_Currency, item.Default_Bank, item.Default_Payment_Terms, item.Default_Remarks);
+                                }
                             }
                             await _partyService.Add_Update_Party_Print_Process(dataTable);
+                            if (CoreService.Enable_Trace_Records(_configuration))
+                            {
+                                await _partyService.Insert_Party_Print_Trace(dataTable1);
+                            }
                         }
                         return Ok(new
                         {

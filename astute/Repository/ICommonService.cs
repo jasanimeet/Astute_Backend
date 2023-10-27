@@ -32,11 +32,12 @@ namespace astute.Repository
         Task<int> InsertCity(City_Master city_Mas);
         Task<int> UpdateCity(City_Master city_Mas);
         Task<int> DeleteCity(int cityId);
-        Task<IList<City_Master>> GetCity(int cityId, string city, int stateId, int iPgNo, int iPgSize);
+        Task<IList<City_Master>> GetCity(int cityId, int stateId, string city, string state, string country, string std_code, int order_no, string common_search, int iPgNo, int iPgSize);
         Task<IList<City_Master>> Get_Active_Cities(string city);
         Task<int> CityChangeStatus(int city_Id, bool status);
         Task<int> Get_City_Master_Max_Order_No();
         Task<IList<City_Master_Export>> Get_Cities_Export();
+        Task<IList<City_Master_Combo>> Get_City_Master_Combo(string city);
         #endregion
 
         #region Error Log

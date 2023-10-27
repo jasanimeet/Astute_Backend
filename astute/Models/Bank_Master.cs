@@ -25,5 +25,7 @@ namespace astute.Models
         public int? Currency_Id { get; set; }
         public string? Currency { get; set; }
         public string? Currency_Name { get; set; }
+        public int? Account_Type { get; set; }
+        public string? Account_Type_Value { get; set; }
     }
 }

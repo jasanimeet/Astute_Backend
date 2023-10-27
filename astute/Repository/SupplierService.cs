@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -73,6 +74,19 @@ namespace astute.Repository
         #endregion
 
         #region Methods
+        public async Task<int> Insert_Update_Supplier_Value_Mapping(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@tblSupplier_Value_Mapping", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Supplier_Value_Mapping_Table_Type",
+                Value = dataTable
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+          .ExecuteSqlRawAsync(@"exec Supplier_Value_Mapping_Insert_Update @tblSupplier_Value_Mapping", parameter));
+
+            return result;
+        }
         public async Task<int> InsertSupplierValueMapping(Supplier_Value_Mapping supplier_Value)
         {
             var parameter = new List<SqlParameter>();

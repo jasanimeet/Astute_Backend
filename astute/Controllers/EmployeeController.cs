@@ -5,6 +5,7 @@ using astute.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,8 @@ namespace astute.Controllers
             ICommonService commonService,
             IEmailSender emailSender,
             IEmpRightsService empRightsService,
-            IJWTAuthentication jWTAuthentication)
+            IJWTAuthentication jWTAuthentication,
+            IHttpContextAccessor httpContextAccessor)
         {
             _employeeService = employeeService;
             _configuration = configuration;
@@ -44,6 +46,7 @@ namespace astute.Controllers
             _emailSender = emailSender;
             _empRightsService = empRightsService;
             _jWTAuthentication = jWTAuthentication;
+            _httpContextAccessor = httpContextAccessor;
         }
         #endregion
 
@@ -371,7 +374,7 @@ namespace astute.Controllers
                 }
                 return BadRequest(ModelState);
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Employee_Details", ex.StackTrace);
                 return Ok(new
@@ -848,7 +851,6 @@ namespace astute.Controllers
         #endregion
 
         #region EmployeeDecryptPass
-
         [HttpGet]
         [Route("getemployeesdecryptpass")]
         [Authorize]
@@ -861,7 +863,6 @@ namespace astute.Controllers
                 if (employees != null && employees.Count > 0)
                 {
                     var empMasterList = employees.Where(x => !string.IsNullOrEmpty(x.Password)).ToList();
-                    // Use LINQ to decrypt passwords for all employees in the list
                     empMasterList.ForEach(empMaster => empMaster.Password = CoreService.Decrypt(empMaster.Password));
 
                     var resultData = empMasterList.Select(x => new
@@ -882,16 +883,14 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "GetEmployeeMail", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "GetEmployeesDecryptPass", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
                 });
             }
         }
-
         #endregion
-
         #endregion
     }
 }

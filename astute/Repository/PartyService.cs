@@ -497,11 +497,12 @@ namespace astute.Repository
             var secure_Ftp = new SqlParameter("@Secure_Ftp", party_FTP.Secure_Ftp ?? false);
             var short_Code = !string.IsNullOrEmpty(party_FTP.Short_Code) ? new SqlParameter("@Short_Code", party_FTP.Short_Code) : new SqlParameter("@Short_Code", DBNull.Value);
             var format = !string.IsNullOrEmpty(party_FTP.Format) ? new SqlParameter("@Format", party_FTP.Format) : new SqlParameter("@Format", DBNull.Value);
+            var ftp_Status = new SqlParameter("@Ftp_Status", party_FTP.Ftp_Status);
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_FTP_Insert_Update @FTP_Id, @Party_Id, @Host, @Ftp_Port, @Ftp_User, @Ftp_Password, @Ftp_File_Name, @Ftp_File_Type,
-                        @Disc_Inverse, @Auto_Ref_No, @RepeateveryType, @Repeatevery, @Lab, @Overseas, @Secure_Ftp, @Short_Code, @Format", ftp_Id, _party_Id, host, ftp_Port, 
-                        ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Type, api_Inverse, auto_Ref_No, repeateveryType, repeatevery, lab, overseas, secure_Ftp, short_Code, format));
+                        @Disc_Inverse, @Auto_Ref_No, @RepeateveryType, @Repeatevery, @Lab, @Overseas, @Secure_Ftp, @Short_Code, @Format, @Ftp_Status", ftp_Id, _party_Id, host, ftp_Port, 
+                        ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Type, api_Inverse, auto_Ref_No, repeateveryType, repeatevery, lab, overseas, secure_Ftp, short_Code, format, ftp_Status));
 
             return result;
         }
@@ -540,11 +541,12 @@ namespace astute.Repository
             var repeateveryType = !string.IsNullOrEmpty(party_File.RepeateveryType) ? new SqlParameter("@RepeateveryType", party_File.RepeateveryType) : new SqlParameter("@RepeateveryType", DBNull.Value);
             var repeatevery = !string.IsNullOrEmpty(party_File.Repeatevery) ? new SqlParameter("@Repeatevery", party_File.Repeatevery) : new SqlParameter("@Repeatevery", DBNull.Value);
             var short_Code = !string.IsNullOrEmpty(party_File.Short_Code) ? new SqlParameter("@Short_Code", party_File.Short_Code) : new SqlParameter("@Short_Code", DBNull.Value);
+            var file_Status = new SqlParameter("@File_Status", party_File.File_Status);
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_File_Insert_Update @File_Id, @Party_Id, @File_Location, @File_Type, @Offer_Name, @Disc_Inverse, @Auto_Ref_No,
-                        @File_Location_1, @File_Type_1, @File_Location_2, @File_Type_2, @RepeateveryType, @Repeatevery, @Short_Code", file_Id, _party_Id, file_Location, file_Type, offer_Name, api_Inverse, auto_Ref_No,
-                        file_Location_1, file_Type_1, file_Location_2, file_Type_2, repeateveryType, repeatevery, short_Code));
+                        @File_Location_1, @File_Type_1, @File_Location_2, @File_Type_2, @RepeateveryType, @Repeatevery, @Short_Code, @File_Status", file_Id, _party_Id, file_Location, file_Type, offer_Name, api_Inverse, auto_Ref_No,
+                        file_Location_1, file_Type_1, file_Location_2, file_Type_2, repeateveryType, repeatevery, short_Code, file_Status));
 
             return result;
         }

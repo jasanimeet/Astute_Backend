@@ -597,11 +597,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("getcities")]
         [Authorize]
-        public async Task<IActionResult> GetCities(int cityId, string city, int stateId, int iPgNo, int iPgSize)
+        public async Task<IActionResult> GetCities(int cityId, int stateId, string city, string state, string country, string std_code, int order_no, string common_search, int iPgNo, int iPgSize)
         {
             try
             {
-                var result = await _commonService.GetCity(cityId, city, stateId, iPgNo, iPgSize);
+                var result = await _commonService.GetCity(cityId, stateId, city, state, country, std_code, order_no, common_search, iPgNo, iPgSize);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -835,7 +835,7 @@ namespace astute.Controllers
         [HttpGet]
         [Route("export_city_excel")]
         [Authorize]
-        public async Task<IActionResult> Export_City_Excel(CancellationToken cancellationToken)
+        public async Task<IActionResult> Export_City_Excel()
         {   
             var folder = Path.Combine(Directory.GetCurrentDirectory(), "Files/CityFiles");
             if (!(Directory.Exists(folder)))
@@ -876,6 +876,35 @@ namespace astute.Controllers
                 statusCode = HttpStatusCode.OK,
                 result = downloadUrl
             });
+        }
+
+        [HttpGet]
+        [Route("get_city_combo")]
+        [Authorize]
+        public async Task<IActionResult> Get_City_Combo(string city)
+        {
+            try
+            {
+                var result = await _commonService.Get_City_Master_Combo(city);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "get_city_combo", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
         }
         #endregion
 

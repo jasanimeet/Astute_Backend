@@ -1,11 +1,13 @@
 ﻿using astute.Models;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace astute.Repository
 {
     public partial interface ISupplierService
     {
+        Task<int> Insert_Update_Supplier_Value_Mapping(DataTable dataTable);
         Task<int> InsertSupplierValueMapping(Supplier_Value_Mapping supplier_Value);
         Task<int> UpdateSupplierValueMapping(Supplier_Value_Mapping supplier_Value);
         Task<int> DeleteSupplierValueMapping(int supId);

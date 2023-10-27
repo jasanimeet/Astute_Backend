@@ -526,16 +526,21 @@ namespace astute.Repository
 
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"City_Mas_Delete {cityId}"));
         }
-        public async Task<IList<City_Master>> GetCity(int cityId, string city, int stateId, int iPgNo, int iPgSize)
+        public async Task<IList<City_Master>> GetCity(int cityId, int stateId, string city, string state, string country, string std_code, int order_no, string common_search, int iPgNo, int iPgSize)
         {
             var CityId = cityId > 0 ? new SqlParameter("@cityId", cityId) : new SqlParameter("@cityId", DBNull.Value);
-            var City = !string.IsNullOrEmpty(city) ? new SqlParameter("@city", city) : new SqlParameter("@city", DBNull.Value);
             var StateId = stateId > 0 ? new SqlParameter("@stateId", stateId) : new SqlParameter("@stateId", DBNull.Value);
+            var City = !string.IsNullOrEmpty(city) ? new SqlParameter("@city", city) : new SqlParameter("@city", DBNull.Value);
+            var _state = !string.IsNullOrEmpty(state) ? new SqlParameter("@state", state) : new SqlParameter("@state", DBNull.Value);
+            var _country = !string.IsNullOrEmpty(country) ? new SqlParameter("@country", country) : new SqlParameter("@country", DBNull.Value);
+            var _std_code = !string.IsNullOrEmpty(std_code) ? new SqlParameter("@std_code", std_code) : new SqlParameter("@std_code", DBNull.Value);
+            var _order_no = order_no > 0 ? new SqlParameter("@order_no", order_no) : new SqlParameter("@order_no", DBNull.Value);
+            var _common_search = !string.IsNullOrEmpty(common_search) ? new SqlParameter("@common_search", common_search) : new SqlParameter("@common_search", DBNull.Value);
             var pageIndex = iPgNo > 0 ? new SqlParameter("@iPgNo", iPgNo) : new SqlParameter("@iPgNo", DBNull.Value);
             var pageSize = iPgSize > 0 ? new SqlParameter("@iPgSize", iPgSize) : new SqlParameter("@iPgSize", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.City_Master
-                           .FromSqlRaw(@"exec City_Mas_Select @cityId, @city, @stateId, @iPgNo, @iPgSize", CityId, City, StateId, pageIndex, pageSize).ToListAsync());
+                           .FromSqlRaw(@"exec City_Mas_Select @cityId, @stateId, @city, @state, @country, @std_code, @order_no, @common_search, @iPgNo, @iPgSize", CityId, StateId, City, _state, _country, _std_code, _order_no, _common_search, pageIndex, pageSize).ToListAsync());
 
             return result;
         }
@@ -571,6 +576,15 @@ namespace astute.Repository
         {
             var result = await Task.Run(() => _dbContext.City_Master_Export
                  .FromSqlRaw(@"exec City_Master_Export_Select").ToListAsync());
+
+            return result;
+        }
+        public async Task<IList<City_Master_Combo>> Get_City_Master_Combo(string city)
+        {
+            var _city = !string.IsNullOrEmpty(city) ? new SqlParameter("@city", city) : new SqlParameter("@city", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.City_Master_Combo
+                 .FromSqlRaw(@"exec City_Mas_Combo_Select @city", _city).ToListAsync());
 
             return result;
         }

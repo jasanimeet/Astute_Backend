@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Net;
@@ -520,6 +521,42 @@ namespace astute.Controllers
                 });
             }
             return NoContent();
+        }
+
+        [HttpPost]
+        [Route("create_update_supplier_value_mapping")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Supplier_Value_Mapping([FromForm] IList<Supplier_Value_Mapping> supplier_Value_Mappings)
+        {
+            try
+            {
+                if(ModelState.IsValid)
+                {
+                    if (supplier_Value_Mappings != null && supplier_Value_Mappings.Count > 0)
+                    {
+                        DataTable dataTable = new DataTable();
+                        dataTable.Columns.Add("Sup_Id", typeof(int));
+                        dataTable.Columns.Add("Supp_Cat_Name", typeof(string));
+                        dataTable.Columns.Add("Cat_val_Id", typeof(int));
+                        dataTable.Columns.Add("Status", typeof(bool));
+
+                        foreach (var item in supplier_Value_Mappings)
+                        {
+                            dataTable.Rows.Add(item.Sup_Id, item.Supp_Cat_Name, item.Cat_val_Id, item.Status);
+                        }
+                        await _supplierService.Insert_Update_Supplier_Value_Mapping(dataTable);
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Supplier_Value_Mapping", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
         }
 
         [HttpPost]

@@ -21,5 +21,6 @@ namespace astute.Models
         public string? RepeateveryType { get; set; }
         public string? Repeatevery { get; set; }
         public string? Short_Code { get; set; }
+        public bool? File_Status { get; set; }
     }
 }

@@ -82,5 +82,6 @@ namespace astute.Models
         public DbSet<Ac_Group_Detail> Ac_Group_Detail { get; set; }
         public DbSet<Party_Print_Process> Party_Print_Process { get; set; }
         public DbSet<City_Master_Export> City_Master_Export { get; set; }
+        public DbSet<City_Master_Combo> City_Master_Combo { get; set; }
     }
 }

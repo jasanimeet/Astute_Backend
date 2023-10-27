@@ -25,5 +25,6 @@ namespace astute.Models
         public bool? Secure_Ftp { get; set; }
         public string? Short_Code { get; set; }
         public string? Format { get; set; }
+        public bool? Ftp_Status { get; set; }
     }
 }
