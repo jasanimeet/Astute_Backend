@@ -12,11 +12,22 @@ namespace astute.Repository
         Task<int> UpdateSupplierValueMapping(Supplier_Value_Mapping supplier_Value);
         Task<int> DeleteSupplierValueMapping(int supId);
         Task<IList<Supplier_Value_Mapping>> Get_Supplier_Value_Mapping(int sup_Id, int cat_val_Id);
+        Task<int> Add_Update_Supplier_Column_Mapping(DataTable dataTable);
+        Task<IList<Supplier_Column_Mapping>> Get_Supplier_Column_Mapping(int supp_Id, string map_Flag);
 
         #region Value Config
         Task<int> Add_Update_Value_Config(Value_Config value_Config);
         Task<int> Delete_Value_Config(int valueMap_ID);
         Task<IList<Value_Config>> Get_Value_Config(int valueMap_ID);
+        #endregion
+
+        #region Supplier Pricing
+        Task<List<Dictionary<string, object>>> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id);
+        Task<int> Add_Update_Supplier_Pricing(Supplier_Pricing supplier_Pricing);
+        #endregion
+
+        #region Supplier Stock
+        Task<(string, int)> Stock_Data_Insert_Update(Stock_Data_Master stock_Data_Master);
         #endregion
     }
 }
