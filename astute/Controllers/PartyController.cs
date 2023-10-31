@@ -1120,7 +1120,7 @@ namespace astute.Controllers
         #region Supplier Stock
         [HttpPost]
         [Route("create_update_supplier_stock")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> Create_Update_Supplier_Stock()
         {
             try
