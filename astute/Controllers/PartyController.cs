@@ -1120,7 +1120,7 @@ namespace astute.Controllers
         #region Supplier Stock
         [HttpPost]
         [Route("create_update_supplier_stock")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Create_Update_Supplier_Stock()
         {
             try
@@ -1160,7 +1160,8 @@ namespace astute.Controllers
                             if (Supplier_Column_Mapping_List != null && Supplier_Column_Mapping_List.Count > 0)
                             {
                                 // Use LINQ to filter and map CSV columns based on matching column names
-                                Supplier_Column_Mapping_List.Where(x => !string.IsNullOrEmpty(x.Supp_Col_Name))
+                                Supplier_Column_Mapping_List = Supplier_Column_Mapping_List.Where(x => !string.IsNullOrEmpty(x.Supp_Col_Name)).ToList();
+                                Supplier_Column_Mapping_List
                                 .Select(mapping => new DataColumn
                                 {
                                     ColumnName = mapping.Display_Name,
@@ -1190,20 +1191,26 @@ namespace astute.Controllers
 
                                     Supplier_Column_Mapping_List.ForEach(mapping =>
                                     {
-                                        var columnName = mapping.Supp_Col_Name;
+                                        var columnNames = mapping.Supp_Col_Name.Split(',').Select(col => col.Trim()).ToArray();
 
-                                        var property = ((JObject)dynamicObject).Properties().FirstOrDefault(p => p.Name == columnName);
-
-                                        if (property != null)
-                                        {
-                                            var column = dt_our_stock_data.Columns[mapping.Display_Name];
-                                            if (column != null)
+                                        var propertyValues = columnNames
+                                            .Select(columnName =>
                                             {
-                                                row[column] = property.Value.ToString();
-                                            }
+                                                var property = ((JObject)dynamicObject).Properties().FirstOrDefault(p => p.Name == columnName);
+                                                return property != null ? property.Value.ToString() : string.Empty;
+                                            }).Where(value => !string.IsNullOrEmpty(value));
+
+                                        var column = dt_our_stock_data.Columns[mapping.Display_Name];
+
+                                        if (column != null)
+                                        {
+                                            row[column] = string.Join(", ", propertyValues);
                                         }
+
                                     });
+
                                     return row;
+
                                 });
 
                                 // Add the rows to the DataTable using DataTable.Merge
@@ -1239,14 +1246,11 @@ namespace astute.Controllers
                         }
                     }
                 }
-                else
+                return BadRequest(new
                 {
-                    return BadRequest(new
-                    {
-                        statusCode = HttpStatusCode.InternalServerError,
-                        message = "Failed to insert/update stock data"
-                    });
-                }
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = "Failed to insert/update stock data"
+                });
             }
             catch (HttpRequestException ex)
             {
