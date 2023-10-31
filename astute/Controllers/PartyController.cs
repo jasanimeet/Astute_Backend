@@ -1160,79 +1160,68 @@ namespace astute.Controllers
                             if (Supplier_Column_Mapping_List != null && Supplier_Column_Mapping_List.Count > 0)
                             {
                                 // Use LINQ to filter and map CSV columns based on matching column names
-                                var columnsToAdd_ = Supplier_Column_Mapping_List.Where(x => !string.IsNullOrEmpty(x.Supp_Col_Name))
-                                    .Select(mapping => new DataColumn
-                                    {
-                                        ColumnName = mapping.Display_Name,
-                                        DataType = typeof(string)
+                                Supplier_Column_Mapping_List.Where(x => !string.IsNullOrEmpty(x.Supp_Col_Name))
+                                .Select(mapping => new DataColumn
+                                {
+                                    ColumnName = mapping.Display_Name,
+                                    DataType = typeof(string)
 
+                                }).ToList();
+
+                                var columnsToAdd = new List<string>
+                                     {
+                                        "SUPPLIER_NO","CERTIFICATE_NO","LAB","SHAPE","CTS","BASE_DISC","BASE_RATE","BASE_AMOUNT","COLOR","CLARITY","CUT","POLISH","SYMM","FLS_COLOR","FLS_INTENSITY","LENGTH","WIDTH","DEPTH","MEASUREMENT","DEPTH_PER","TABLE_PER","CULET","SHADE","LUSTER","MILKY","BGM","LOCATION","STATUS","TABLE_BLACK","SIDE_BLACK","TABLE_WHITE","SIDE_WHITE","TABLE_OPEN","CROWN_OPEN","PAVILION_OPEN","GIRDLE_OPEN","GIRDLE_FROM","GIRDLE_TO","GIRDLE_CONDITION","GIRDLE_TYPE","LASER_INSCRIPTION","CERTIFICATE_DATE","CROWN_ANGLE","CROWN_HEIGHT","PAVILION_ANGLE","PAVILION_HEIGHT","GIRDLE_PER","LR_HALF","STAR_LN","CERT_TYPE","FANCY_COLOR","FANCY_INTENSITY","FANCY_OVERTONE","IMAGE_LINK","Image2","VIDEO_LINK","Video2","CERTIFICATE_LINK","DNA","IMAGE_HEART_LINK","IMAGE_ARROW_LINK","H_A_LINK","CERTIFICATE_TYPE_LINK","KEY_TO_SYMBOL","LAB_COMMENTS","SUPPLIER_COMMENTS","ORIGIN","BOW_TIE","EXTRA_FACET_TABLE","EXTRA_FACET_CROWN","EXTRA_FACET_PAVILION","INTERNAL_GRAINING","H_A","SUPPLIER_DISC","SUPPLIER_AMOUNT","OFFER_DISC","OFFER_VALUE","MAX_SLAB_BASE_DISC","MAX_SLAB_BASE_VALUE","EYE_CLEAN","Supp_Short_Name"
+                                     };
+
+                                var newColumns = columnsToAdd
+                                    .Select(columnName => new DataColumn
+                                    {
+                                        ColumnName = columnName,
+                                        DataType = typeof(string)
                                     }).ToList();
 
-                                if (columnsToAdd_ != null && columnsToAdd_.Count > 0)
+                                // Add the new columns to the DataTable
+                                dt_our_stock_data.Columns.AddRange(newColumns.ToArray());
+
+                                // Project the dynamic objects into a sequence of DataRow objects
+                                var rowsToAdd = list.Select(dynamicObject =>
                                 {
-                                    var columnsToAdd = new List<string>
-                                     {
-                                     "SUPPLIER_NO","CERTIFICATE_NO","LAB","SHAPE","CTS","BASE_DISC","BASE_RATE","BASE_AMOUNT","COLOR","CLARITY","CUT","POLISH","SYMM","FLS_COLOR","FLS_INTENSITY","LENGTH","WIDTH","DEPTH","MEASUREMENT","DEPTH_PER","TABLE_PER","CULET","SHADE","LUSTER","MILKY","BGM","LOCATION","STATUS","TABLE_BLACK","SIDE_BLACK","TABLE_WHITE","SIDE_WHITE","TABLE_OPEN","CROWN_OPEN","PAVILION_OPEN","GIRDLE_OPEN","GIRDLE_FROM","GIRDLE_TO","GIRDLE_CONDITION","GIRDLE_TYPE","LASER_INSCRIPTION","CERTIFICATE_DATE","CROWN_ANGLE","CROWN_HEIGHT","PAVILION_ANGLE","PAVILION_HEIGHT","GIRDLE_PER","LR_HALF","STAR_LN","CERT_TYPE","FANCY_COLOR","FANCY_INTENSITY","FANCY_OVERTONE","IMAGE_LINK","Image2","VIDEO_LINK","Video2","CERTIFICATE_LINK","DNA","IMAGE_HEART_LINK","IMAGE_ARROW_LINK","H_A_LINK","CERTIFICATE_TYPE_LINK","KEY_TO_SYMBOL","LAB_COMMENTS","SUPPLIER_COMMENTS","ORIGIN","BOW_TIE","EXTRA_FACET_TABLE","EXTRA_FACET_CROWN","EXTRA_FACET_PAVILION","INTERNAL_GRAINING","H_A","SUPPLIER_DISC","SUPPLIER_AMOUNT","OFFER_DISC","OFFER_VALUE","MAX_SLAB_BASE_DISC","MAX_SLAB_BASE_VALUE","EYE_CLEAN","Supp_Short_Name"
-                                     };
-                                    //add null condition for columnsToAdd_
-                                    var newColumns = columnsToAdd
-                                        .Select(columnName => new DataColumn
-                                        {
-                                            ColumnName = columnName,
-                                            DataType = typeof(string)
-                                        }).ToList();
+                                    DataRow row = dt_our_stock_data.NewRow();
 
-                                    // Add the new columns to the DataTable
-                                    dt_our_stock_data.Columns.AddRange(newColumns.ToArray());
-
-                                    // Project the dynamic objects into a sequence of DataRow objects
-                                    var rowsToAdd = list.Select(dynamicObject =>
+                                    Supplier_Column_Mapping_List.ForEach(mapping =>
                                     {
-                                        DataRow row = dt_our_stock_data.NewRow();
+                                        var columnName = mapping.Supp_Col_Name;
 
-                                        Supplier_Column_Mapping_List.ForEach(mapping =>
+                                        var property = ((JObject)dynamicObject).Properties().FirstOrDefault(p => p.Name == columnName);
+
+                                        if (property != null)
                                         {
-                                            var columnName = mapping.Supp_Col_Name;
-
-                                            var property = ((JObject)dynamicObject).Properties().FirstOrDefault(p => p.Name == columnName);
-
-                                            if (property != null)
+                                            var column = dt_our_stock_data.Columns[mapping.Display_Name];
+                                            if (column != null)
                                             {
-                                                var column = dt_our_stock_data.Columns[mapping.Display_Name];
-                                                if (column != null)
-                                                {
-                                                    row[column] = property.Value.ToString();
-                                                }
+                                                row[column] = property.Value.ToString();
                                             }
-                                        });
-
-                                        return row;
-
+                                        }
                                     });
+                                    return row;
+                                });
 
-                                    // Add the rows to the DataTable using DataTable.Merge
-                                    dt_our_stock_data.Merge(rowsToAdd.CopyToDataTable(), false, MissingSchemaAction.Ignore);
+                                // Add the rows to the DataTable using DataTable.Merge
+                                dt_our_stock_data.Merge(rowsToAdd.CopyToDataTable(), false, MissingSchemaAction.Ignore);
 
-                                    var result = await _supplierService.Stock_Data_Detail_Insert_Update(dt_our_stock_data, stock_Data_Id);
-
+                                var result = await _supplierService.Stock_Data_Detail_Insert_Update(dt_our_stock_data, stock_Data_Id);
+                                if (result > 0)
+                                {
                                     return Ok(new
                                     {
                                         statusCode = HttpStatusCode.OK,
                                         message = CoreCommonMessage.AddedSuccessfully
                                     });
                                 }
-                                else
-                                {
-                                    return Ok(new
-                                    {
-                                        statusCode = HttpStatusCode.Conflict,
-                                        message = "Supplier column not found on supplier column mapping"
-                                    });
-                                }
                             }
                             else
                             {
-                                return Ok(new
+                                return Conflict(new
                                 {
                                     statusCode = HttpStatusCode.Conflict,
                                     message = "Supplier column not found on supplier column mapping"
