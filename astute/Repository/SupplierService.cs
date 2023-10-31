@@ -366,6 +366,22 @@ namespace astute.Repository
             }
             return ("error", 0);
         }
+        public async Task<int> Stock_Data_Detail_Insert_Update(DataTable dataTable, int Stock_Data_Id)
+        {
+            var parameter = new SqlParameter("@Stock_data", SqlDbType.Structured)
+            {
+                TypeName = "dbo.[Stock_Data_Type]",
+                Value = dataTable
+            };
+            var stock_Data_Id = new SqlParameter("@Stock_Data_Id", Stock_Data_Id);
+
+            var result = await Task.Run(() => _dbContext.Database
+            .ExecuteSqlRawAsync(@"exec [Stock_Data_Details_Insert_Update] @Stock_data,@Stock_Data_Id", parameter, stock_Data_Id));
+
+            return result;
+        }
+
+
         #endregion
     }
 }

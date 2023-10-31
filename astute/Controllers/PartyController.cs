@@ -9,6 +9,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -1114,6 +1115,170 @@ namespace astute.Controllers
                 throw;
             }
         }
+        #endregion
+
+        #region Supplier Stock
+        [HttpPost]
+        [Route("create_update_supplier_stock")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Supplier_Stock()
+        {
+            try
+            {
+                int supplier_Id = 16;
+                var stock_data_master = new Stock_Data_Master()
+                {
+                    Stock_Data_Id = 0,
+                    Supplier_Id = supplier_Id,
+                    Upload_Method = "API",
+                };
+
+                var (message, stock_Data_Id) = await _supplierService.Stock_Data_Insert_Update(stock_data_master);
+
+                if (message == "success" && stock_Data_Id > 0)
+                {
+                    using (HttpClient client = new HttpClient())
+                    {
+                        var request = new HttpRequestMessage(HttpMethod.Post, "http://krinalgems.diamx.net/API/StockSearch?APIToken=e161dd39-44ed-4b67-8a48-8406da883892");
+
+                        var response = await client.SendAsync(request);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            response.EnsureSuccessStatusCode();
+
+                            var json = await response.Content.ReadAsStringAsync();
+
+                            dynamic data = JsonConvert.DeserializeObject<dynamic>(json);
+                            JArray list = data.StoneList;
+
+                            // Create a DataTable
+                            DataTable dt_our_stock_data = new DataTable();
+
+                            List<Supplier_Column_Mapping> Supplier_Column_Mapping_List = (List<Supplier_Column_Mapping>)await _supplierService.Get_Supplier_Column_Mapping(supplier_Id, "C");
+
+                            if (Supplier_Column_Mapping_List != null && Supplier_Column_Mapping_List.Count > 0)
+                            {
+                                // Use LINQ to filter and map CSV columns based on matching column names
+                                var columnsToAdd_ = Supplier_Column_Mapping_List.Where(x => !string.IsNullOrEmpty(x.Supp_Col_Name))
+                                    .Select(mapping => new DataColumn
+                                    {
+                                        ColumnName = mapping.Display_Name,
+                                        DataType = typeof(string)
+
+                                    }).ToList();
+
+                                if (columnsToAdd_ != null && columnsToAdd_.Count > 0)
+                                {
+                                    var columnsToAdd = new List<string>
+                                     {
+                                     "SUPPLIER_NO","CERTIFICATE_NO","LAB","SHAPE","CTS","BASE_DISC","BASE_RATE","BASE_AMOUNT","COLOR","CLARITY","CUT","POLISH","SYMM","FLS_COLOR","FLS_INTENSITY","LENGTH","WIDTH","DEPTH","MEASUREMENT","DEPTH_PER","TABLE_PER","CULET","SHADE","LUSTER","MILKY","BGM","LOCATION","STATUS","TABLE_BLACK","SIDE_BLACK","TABLE_WHITE","SIDE_WHITE","TABLE_OPEN","CROWN_OPEN","PAVILION_OPEN","GIRDLE_OPEN","GIRDLE_FROM","GIRDLE_TO","GIRDLE_CONDITION","GIRDLE_TYPE","LASER_INSCRIPTION","CERTIFICATE_DATE","CROWN_ANGLE","CROWN_HEIGHT","PAVILION_ANGLE","PAVILION_HEIGHT","GIRDLE_PER","LR_HALF","STAR_LN","CERT_TYPE","FANCY_COLOR","FANCY_INTENSITY","FANCY_OVERTONE","IMAGE_LINK","Image2","VIDEO_LINK","Video2","CERTIFICATE_LINK","DNA","IMAGE_HEART_LINK","IMAGE_ARROW_LINK","H_A_LINK","CERTIFICATE_TYPE_LINK","KEY_TO_SYMBOL","LAB_COMMENTS","SUPPLIER_COMMENTS","ORIGIN","BOW_TIE","EXTRA_FACET_TABLE","EXTRA_FACET_CROWN","EXTRA_FACET_PAVILION","INTERNAL_GRAINING","H_A","SUPPLIER_DISC","SUPPLIER_AMOUNT","OFFER_DISC","OFFER_VALUE","MAX_SLAB_BASE_DISC","MAX_SLAB_BASE_VALUE","EYE_CLEAN","Supp_Short_Name"
+                                     };
+                                    //add null condition for columnsToAdd_
+                                    var newColumns = columnsToAdd
+                                        .Select(columnName => new DataColumn
+                                        {
+                                            ColumnName = columnName,
+                                            DataType = typeof(string)
+                                        }).ToList();
+
+                                    // Add the new columns to the DataTable
+                                    dt_our_stock_data.Columns.AddRange(newColumns.ToArray());
+
+                                    // Project the dynamic objects into a sequence of DataRow objects
+                                    var rowsToAdd = list.Select(dynamicObject =>
+                                    {
+                                        DataRow row = dt_our_stock_data.NewRow();
+
+                                        Supplier_Column_Mapping_List.ForEach(mapping =>
+                                        {
+                                            var columnName = mapping.Supp_Col_Name;
+
+                                            var property = ((JObject)dynamicObject).Properties().FirstOrDefault(p => p.Name == columnName);
+
+                                            if (property != null)
+                                            {
+                                                var column = dt_our_stock_data.Columns[mapping.Display_Name];
+                                                if (column != null)
+                                                {
+                                                    row[column] = property.Value.ToString();
+                                                }
+                                            }
+                                        });
+
+                                        return row;
+
+                                    });
+
+                                    // Add the rows to the DataTable using DataTable.Merge
+                                    dt_our_stock_data.Merge(rowsToAdd.CopyToDataTable(), false, MissingSchemaAction.Ignore);
+
+                                    var result = await _supplierService.Stock_Data_Detail_Insert_Update(dt_our_stock_data, stock_Data_Id);
+
+                                    return Ok(new
+                                    {
+                                        statusCode = HttpStatusCode.OK,
+                                        message = CoreCommonMessage.AddedSuccessfully
+                                    });
+                                }
+                                else
+                                {
+                                    return Ok(new
+                                    {
+                                        statusCode = HttpStatusCode.Conflict,
+                                        message = "Supplier column not found on supplier column mapping"
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                return Ok(new
+                                {
+                                    statusCode = HttpStatusCode.Conflict,
+                                    message = "Supplier column not found on supplier column mapping"
+                                });
+                            }
+
+                        }
+                        else
+                        {
+                            return BadRequest(new
+                            {
+                                statusCode = HttpStatusCode.InternalServerError,
+                                message = "Failed to retrieve data from the API"
+                            });
+                        }
+                    }
+                }
+                else
+                {
+                    return BadRequest(new
+                    {
+                        statusCode = HttpStatusCode.InternalServerError,
+                        message = "Failed to insert/update stock data"
+                    });
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP request error: {ex.Message}");
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = "HTTP request error"
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = "An error occurred"
+                });
+            }
+        }
+
         #endregion
     }
 }
