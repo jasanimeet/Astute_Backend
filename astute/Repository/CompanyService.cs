@@ -170,6 +170,9 @@ namespace astute.Repository
                         foreach (var item in result.Company_Document_List)
                         {
                             item.Upload_Path = !string.IsNullOrEmpty(item.Upload_Path) ? _configuration["BaseUrl"] + CoreCommonFilePath.CompanyDocumentsPath + item.Upload_Path : item.Upload_Path;
+                            item.Upload_Path_1 = !string.IsNullOrEmpty(item.Upload_Path_1) ? _configuration["BaseUrl"] + CoreCommonFilePath.CompanyDocumentsPath + item.Upload_Path_1 : item.Upload_Path_1;
+                            item.Upload_Path_2 = !string.IsNullOrEmpty(item.Upload_Path_2) ? _configuration["BaseUrl"] + CoreCommonFilePath.CompanyDocumentsPath + item.Upload_Path_2 : item.Upload_Path_2;
+                            item.Upload_Path_3 = !string.IsNullOrEmpty(item.Upload_Path_3) ? _configuration["BaseUrl"] + CoreCommonFilePath.CompanyDocumentsPath + item.Upload_Path_3 : item.Upload_Path_3;
                         }
                     }
 

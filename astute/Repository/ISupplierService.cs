@@ -11,7 +11,7 @@ namespace astute.Repository
         Task<int> InsertSupplierValueMapping(Supplier_Value_Mapping supplier_Value);
         Task<int> UpdateSupplierValueMapping(Supplier_Value_Mapping supplier_Value);
         Task<int> DeleteSupplierValueMapping(int supId);
-        Task<IList<Supplier_Value_Mapping>> Get_Supplier_Value_Mapping(int sup_Id, int cat_val_Id);
+        Task<IList<Supplier_Value_Mapping>> Get_Supplier_Value_Mapping(int sup_Id, int col_Id);
         Task<int> Add_Update_Supplier_Column_Mapping(DataTable dataTable);
         Task<IList<Supplier_Column_Mapping>> Get_Supplier_Column_Mapping(int supp_Id, string map_Flag);
 

@@ -122,13 +122,13 @@ namespace astute.Repository
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Supplier_Value_Delete {supId}"));
         }
-        public async Task<IList<Supplier_Value_Mapping>> Get_Supplier_Value_Mapping(int sup_Id, int cat_val_Id)
+        public async Task<IList<Supplier_Value_Mapping>> Get_Supplier_Value_Mapping(int sup_Id, int col_Id)
         {
             var _sup_Id = sup_Id > 0 ? new SqlParameter("@Sup_Id", sup_Id) : new SqlParameter("@Sup_Id", DBNull.Value);
-            var _cal_val_Id = cat_val_Id > 0 ? new SqlParameter("@Cal_val_Id", cat_val_Id) : new SqlParameter("@Cal_val_Id", DBNull.Value);
+            var _col_Id = col_Id > 0 ? new SqlParameter("@Col_Id", col_Id) : new SqlParameter("@Col_Id", DBNull.Value);
 
             var categoryValue = await Task.Run(() => _dbContext.Supplier_Value_Mapping
-                            .FromSqlRaw(@"exec Supplier_Value_Mapping_Select @Sup_Id, @Cal_val_Id", _sup_Id, _cal_val_Id).ToListAsync());
+                            .FromSqlRaw(@"exec Supplier_Value_Mapping_Select @Sup_Id, @Col_Id", _sup_Id, _col_Id).ToListAsync());
 
             return categoryValue;
         }

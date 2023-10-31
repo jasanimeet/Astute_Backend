@@ -43,6 +43,7 @@ namespace astute.Models
         public string? Skype_ID { get; set; }
         public string? Business_Reg_No { get; set; }
         public int? Default_Remarks { get; set; }
+        public string? Default_Remarks_Value { get; set; }
         public string? Notification { get; set; }
         public string? Reference_By { get; set; }
         public string? TIN_No { get; set; }

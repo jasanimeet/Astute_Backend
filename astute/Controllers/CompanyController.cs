@@ -123,6 +123,9 @@ namespace astute.Controllers
                             dataTable.Columns.Add("Start_Date", typeof(string));
                             dataTable.Columns.Add("Expiry_Date", typeof(string));
                             dataTable.Columns.Add("Upload_Path", typeof(string));
+                            dataTable.Columns.Add("Upload_Path_1", typeof(string));
+                            dataTable.Columns.Add("Upload_Path_2", typeof(string));
+                            dataTable.Columns.Add("Upload_Path_3", typeof(string));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
 
                             #region Company Document Log
@@ -160,9 +163,60 @@ namespace astute.Controllers
                                     }
                                     item.Upload_Path = strFile;
                                 }
+                                if (item.Upload_Path_Name_1 != null && item.Upload_Path_Name_1.Length > 0)
+                                {
+                                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/CompanyDocuments");
+                                    if (!(Directory.Exists(filePath)))
+                                    {
+                                        Directory.CreateDirectory(filePath);
+                                    }
+                                    string fileName = Path.GetFileNameWithoutExtension(item.Upload_Path_Name_1.FileName);
+                                    string fileExt = Path.GetExtension(item.Upload_Path_Name_1.FileName);
+
+                                    string strFile = fileName + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + fileExt;
+                                    using (var fileStream = new FileStream(Path.Combine(filePath, strFile), FileMode.Create))
+                                    {
+                                        await item.Upload_Path_Name_1.CopyToAsync(fileStream);
+                                    }
+                                    item.Upload_Path_1 = strFile;
+                                }
+                                if (item.Upload_Path_Name_2 != null && item.Upload_Path_Name_2.Length > 0)
+                                {
+                                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/CompanyDocuments");
+                                    if (!(Directory.Exists(filePath)))
+                                    {
+                                        Directory.CreateDirectory(filePath);
+                                    }
+                                    string fileName = Path.GetFileNameWithoutExtension(item.Upload_Path_Name_2.FileName);
+                                    string fileExt = Path.GetExtension(item.Upload_Path_Name_2.FileName);
+
+                                    string strFile = fileName + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + fileExt;
+                                    using (var fileStream = new FileStream(Path.Combine(filePath, strFile), FileMode.Create))
+                                    {
+                                        await item.Upload_Path_Name_2.CopyToAsync(fileStream);
+                                    }
+                                    item.Upload_Path_2 = strFile;
+                                }
+                                if (item.Upload_Path_Name_3 != null && item.Upload_Path_Name_3.Length > 0)
+                                {
+                                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/CompanyDocuments");
+                                    if (!(Directory.Exists(filePath)))
+                                    {
+                                        Directory.CreateDirectory(filePath);
+                                    }
+                                    string fileName = Path.GetFileNameWithoutExtension(item.Upload_Path_Name_3.FileName);
+                                    string fileExt = Path.GetExtension(item.Upload_Path_Name_3.FileName);
+
+                                    string strFile = fileName + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + fileExt;
+                                    using (var fileStream = new FileStream(Path.Combine(filePath, strFile), FileMode.Create))
+                                    {
+                                        await item.Upload_Path_Name_3.CopyToAsync(fileStream);
+                                    }
+                                    item.Upload_Path_3 = strFile;
+                                }
                                 string start_Date = !string.IsNullOrEmpty(item.Start_Date) ? item.Start_Date : null;
                                 string expire_Date = !string.IsNullOrEmpty(item.Expiry_Date) ? item.Expiry_Date : null;
-                                dataTable.Rows.Add(item.Company_Document_Id, company_Id, item.Cat_Val_Id, item.Document_No, start_Date, expire_Date, item.Upload_Path, item.QueryFlag);
+                                dataTable.Rows.Add(item.Company_Document_Id, company_Id, item.Cat_Val_Id, item.Document_No, start_Date, expire_Date, item.Upload_Path, item.Upload_Path_1, item.Upload_Path_2, item.Upload_Path_3, item.QueryFlag);
                                 if (CoreService.Enable_Trace_Records(_configuration))
                                 {
                                     dataTable2.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, item.Cat_Val_Id, item.Start_Date, item.Expiry_Date, item.Upload_Path);

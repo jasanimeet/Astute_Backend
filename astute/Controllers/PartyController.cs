@@ -7,10 +7,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Dynamic;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace astute.Controllers
@@ -1022,6 +1028,90 @@ namespace astute.Controllers
                 {
                     message = ex.Message
                 });
+            }
+        }
+        #endregion
+
+        #region Supplier Value Mapping
+        [HttpGet]
+        [Route("get_supplier_value_mapping")]
+        [Authorize]
+        public async Task<IActionResult> Get_Supplier_Value_Mapping(int sup_Id, int col_Id)
+        {
+            var result = await _supplierService.Get_Supplier_Value_Mapping(sup_Id, col_Id);
+            if (result != null && result.Count > 0)
+            {
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    message = CoreCommonMessage.DataSuccessfullyFound,
+                    data = result
+                });
+            }
+            return NoContent();
+        }
+
+        [HttpPost]
+        [Route("create_update_supplier_value_mapping")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Supplier_Value_Mapping([FromForm] IList<Supplier_Value_Mapping> supplier_Value_Mappings)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    if (supplier_Value_Mappings != null && supplier_Value_Mappings.Count > 0)
+                    {
+                        DataTable dataTable = new DataTable();
+                        dataTable.Columns.Add("Sup_Id", typeof(int));
+                        dataTable.Columns.Add("Supp_Cat_Name", typeof(string));
+                        dataTable.Columns.Add("Cat_val_Id", typeof(int));
+                        dataTable.Columns.Add("Status", typeof(bool));
+
+                        foreach (var item in supplier_Value_Mappings)
+                        {
+                            dataTable.Rows.Add(item.Sup_Id, item.Supp_Cat_Name, item.Cat_val_Id, item.Status);
+                        }
+                        await _supplierService.Insert_Update_Supplier_Value_Mapping(dataTable);
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Supplier_Value_Mapping", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_supplier_value_mapping")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Supplier_Value_Mapping(int sup_Id)
+        {
+            try
+            {
+                var result = await _supplierService.DeleteSupplierValueMapping(sup_Id);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.SupplierValueDeleted
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch
+            {
+                throw;
             }
         }
         #endregion
