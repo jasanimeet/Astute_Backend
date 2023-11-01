@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace astute.Models
 {
@@ -8,5 +10,7 @@ namespace astute.Models
         public int Stock_Data_Id { get; set; }
         public int? Supplier_Id { get; set; }
         public string? Upload_Method { get; set; }
+        [NotMapped]
+        public IList<Stock_Data> Stock_Data_List { get; set; } = new List<Stock_Data>();
     }
 }

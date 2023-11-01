@@ -29,6 +29,7 @@ namespace astute.CoreModel
         public static string SupplierDetailSavedSuccessfully = "Supplier detail saved successfully.";
         public static string UserRegisteredSuccessfully = "User registered successfully";
         public static string UserUpdatedSuccessfully = "User updated successfully";
+        public static string StockUploadedSuccessfully = "Stock uploaded successfully";
 
         #region Email Subjects
         public static string ForgetPasswordSubject = "Forget Password Email";

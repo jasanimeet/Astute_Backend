@@ -1,12 +1,9 @@
 ﻿using astute.CoreServices;
 using astute.Models;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -351,9 +348,9 @@ namespace astute.Repository
             var stock_Data_Id = new SqlParameter("@Stock_Data_Id", stock_Data_Master.Stock_Data_Id);
             var supplier_Id = stock_Data_Master.Supplier_Id > 0 ? new SqlParameter("@Supplier_Id", stock_Data_Master.Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
             var upload_Method = !string.IsNullOrEmpty(stock_Data_Master.Upload_Method) ? new SqlParameter("@Upload_Method", stock_Data_Master.Upload_Method) : new SqlParameter("@Upload_Method", DBNull.Value);
-            var inserted_Id = new SqlParameter("@Inserted_Id", System.Data.SqlDbType.Int)
+            var inserted_Id = new SqlParameter("@Inserted_Id", SqlDbType.Int)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -380,8 +377,15 @@ namespace astute.Repository
 
             return result;
         }
+        public async Task<IList<Stock_Data_Column_Value>> Get_Stock_Data_Distinct_Column_Values(string column_Name)
+        {
+            var _column_Name = !string.IsNullOrEmpty(column_Name) ? new SqlParameter("@Column_Name", column_Name) : new SqlParameter("@Column_Name", DBNull.Value);
 
+            var result = await Task.Run(() => _dbContext.Stock_Data_Column_Value
+                            .FromSqlRaw(@"exec Stock_Data_Distinct_Column_Value_Select @Column_Name", _column_Name).ToListAsync());
 
+            return result;
+        }
         #endregion
     }
 }
