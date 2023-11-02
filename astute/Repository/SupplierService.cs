@@ -384,6 +384,17 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Stock_Data_Column_Value
                             .FromSqlRaw(@"exec Stock_Data_Distinct_Column_Value_Select @Column_Name", _column_Name).ToListAsync());
 
+            if(result != null && result.Count > 0)
+            {
+                foreach (var item in result)
+                {
+                    if(string.IsNullOrEmpty(item.Column_Value))
+                    {
+                        item.Column_Value = "Blank";
+                    }
+                }
+            }
+
             return result;
         }
         #endregion

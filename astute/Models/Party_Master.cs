@@ -26,17 +26,11 @@ namespace astute.Models
         public string? Fax { get; set; }
         public string? Email_1 { get; set; }
         public string? Email_2 { get; set; }
-        public int? Comp_Bank { get; set; }
-        public string? Bank_Name { get; set; }
-        public string? Branch_Name { get; set; }
         public string? Party_Name { get; set; }
         public int? Ship_PartyId { get; set; }
         public string? Ship_Party_Name { get; set; }
         public int? Final_Customer_Id { get; set; }
         public string? Website { get; set; }
-        public string? Default_Currency { get; set; }
-        public int? Payment_Terms { get; set; }
-        public string? Payment_Terms_Value { get; set; }
         public string? Cust_Freight_Account_No { get; set; }
         public string? Alias_Name { get; set; }
         public string? Wechat_ID { get; set; }

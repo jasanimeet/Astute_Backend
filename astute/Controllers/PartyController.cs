@@ -48,9 +48,8 @@ namespace astute.Controllers
         #endregion
 
         #region Utilities
-        private DataTable Set_Column_In_Datatable(DataTable dt_stock_data, IList<Stock_Data> stock_Datas)
-        {
-            dt_stock_data.Columns.Add("Stock_Data_Id", typeof(int));
+        private DataTable Set_Column_In_Datatable(DataTable dt_stock_data, IList<Stock_Data> stock_Datas, int stock_Data_Id)
+        {   
             dt_stock_data.Columns.Add("SUPPLIER_NO", typeof(string));
             dt_stock_data.Columns.Add("CERTIFICATE_NO", typeof(string));
             dt_stock_data.Columns.Add("LAB", typeof(string));
@@ -136,13 +135,13 @@ namespace astute.Controllers
             {
                 foreach (var item in stock_Datas)
                 {
-                    dt_stock_data.Rows.Add(item.Stock_Data_Id, item.SUPPLIER_NO ?? null, item.CERTIFICATE_NO ?? null, item.LAB ?? null, item.SHAPE ?? null, item.CTS ?? null, item.BASE_DISC ?? null, item.BASE_RATE ?? null, item.BASE_AMOUNT ?? null, item.COLOR ?? null, item.CLARITY ?? null, item.CUT ?? null,
+                    dt_stock_data.Rows.Add(item.SUPPLIER_NO ?? null, item.CERTIFICATE_NO ?? null, item.LAB ?? null, item.SHAPE ?? null, item.CTS ?? null, item.BASE_DISC ?? null, item.BASE_RATE ?? null, item.BASE_AMOUNT ?? null, item.COLOR ?? null, item.CLARITY ?? null, item.CUT ?? null,
                         item.POLISH ?? null, item.SYMM ?? null, item.FLS_COLOR ?? null, item.FLS_INTENSITY ?? null, item.LENGTH ?? null, item.WIDTH ?? null, item.DEPTH ?? null, item.MEASUREMENT ?? null, item.DEPTH_PER ?? null, item.TABLE_PER ?? null, item.CULET ?? null, item.SHADE ?? null, item.LUSTER ?? null,
                         item.MILKY ?? null, item.BGM ?? null, item.LOCATION ?? null, item.STATUS ?? null, item.TABLE_BLACK ?? null, item.SIDE_BLACK ?? null, item.TABLE_WHITE ?? null, item.SIDE_WHITE ?? null, item.TABLE_OPEN ?? null, item.CROWN_OPEN ?? null, item.PAVILION_OPEN ?? null, item.GIRDLE_OPEN ?? null,
                         item.GIRDLE_FROM ?? null, item.GIRDLE_TO ?? null, item.GIRDLE_CONDITION ?? null, item.GIRDLE_TYPE ?? null, item.LASER_INSCRIPTION ?? null, item.CERTIFICATE_DATE ?? null, item.CROWN_ANGLE ?? null, item.CROWN_HEIGHT ?? null, item.PAVILION_ANGLE ?? null, item.PAVILION_HEIGHT ?? null,
                         item.GIRDLE_PER ?? null, item.LR_HALF ?? null, item.STAR_LN ?? null, item.CERT_TYPE ?? null, item.FANCY_COLOR ?? null, item.FANCY_INTENSITY ?? null, item.FANCY_OVERTONE ?? null, item.IMAGE_LINK ?? null, item.Image2 ?? null, item.VIDEO_LINK ?? null, item.Video2 ?? null, item.CERTIFICATE_LINK ?? null,
                         item.DNA ?? null, item.IMAGE_HEART_LINK ?? null, item.IMAGE_ARROW_LINK ?? null, item.H_A_LINK ?? null, item.CERTIFICATE_TYPE_LINK ?? null, item.KEY_TO_SYMBOL ?? null, item.LAB_COMMENTS ?? null, item.SUPPLIER_COMMENTS ?? null, item.ORIGIN ?? null, item.BOW_TIE ?? null,
-                        item.EXTRA_FACET_TABLE, item.EXTRA_FACET_CROWN, item.EXTRA_FACET_PAVILION, item.INTERNAL_GRAINING, item.H_A, item.SUPPLIER_DISC, item.SUPPLIER_AMOUNT, item.OFFER_DISC, item.OFFER_VALUE,
+                        item.EXTRA_FACET_TABLE ?? null, item.EXTRA_FACET_CROWN ?? null, item.EXTRA_FACET_PAVILION ?? null, item.INTERNAL_GRAINING ?? null, item.H_A ?? null, item.SUPPLIER_DISC ?? null, item.SUPPLIER_AMOUNT ?? null, item.OFFER_DISC ?? null, item.OFFER_VALUE ?? null,
                         item.MAX_SLAB_BASE_DISC ?? null, item.MAX_SLAB_BASE_VALUE ?? null, item.EYE_CLEAN ?? null, item.Short_Code ?? null);
                 }
             }
@@ -741,6 +740,24 @@ namespace astute.Controllers
                             dataTable.Rows.Add(item.Supp_Col_Id, supplier_Details.Party_Id, item.Col_Id, item.Supp_Col_Name, item.Column_Type, item.Column_Synonym);
                         }
                         var result = await _supplierService.Add_Update_Supplier_Column_Mapping(dataTable);
+                        if (result > 0)
+                        {
+                            success = true;
+                        }
+                    }
+                    if (supplier_Details.Supplier_Value_Mapping_List != null && supplier_Details.Supplier_Value_Mapping_List.Count > 0)
+                    {
+                        DataTable dataTable = new DataTable();
+                        dataTable.Columns.Add("Sup_Id", typeof(int));
+                        dataTable.Columns.Add("Supp_Cat_Name", typeof(string));
+                        dataTable.Columns.Add("Cat_val_Id", typeof(int));
+                        dataTable.Columns.Add("Status", typeof(bool));
+
+                        foreach (var item in supplier_Details.Supplier_Value_Mapping_List)
+                        {
+                            dataTable.Rows.Add(supplier_Details.Party_Id, item.Supp_Cat_Name, item.Cat_val_Id, item.Status);
+                        }
+                        var result = await _supplierService.Insert_Update_Supplier_Value_Mapping(dataTable);
                         if (result > 0)
                         {
                             success = true;
@@ -1375,19 +1392,19 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_update_supplier_data")]
         [Authorize]
-        public async Task<IActionResult> Create_Update_Supplier_Data([FromForm] Stock_Data_Master stock_Data_Master)
+        public async Task<IActionResult> Create_Update_Supplier_Data(Stock_Data_Master stock_Data_Master)
         {
             try
             {
                 if (ModelState.IsValid)
-                {   
+                {  
                     var (message, stock_Data_Id) = await _supplierService.Stock_Data_Insert_Update(stock_Data_Master);
                     if (message == "success" && stock_Data_Id > 0)
                     {
                         if (stock_Data_Master.Stock_Data_List != null && stock_Data_Master.Stock_Data_List.Count > 0)
                         {
                             DataTable dt_our_stock_data = new DataTable();
-                            dt_our_stock_data = Set_Column_In_Datatable(new DataTable(), stock_Data_Master.Stock_Data_List);
+                            dt_our_stock_data = Set_Column_In_Datatable(new DataTable(), stock_Data_Master.Stock_Data_List, stock_Data_Id);
                             var result = await _supplierService.Stock_Data_Detail_Insert_Update(dt_our_stock_data, stock_Data_Id);
                         }
                         return Ok(new

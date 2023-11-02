@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -84,7 +85,7 @@ namespace astute.Repository
             @chineseName, @address1, @address2, @address3, @cityId, @joindate, @employeeType, @birthDate, @gender, @mobileNo, @personalEmail, @companyEmail,
             @leaveDate, @pSNID, @bloodGroup, @contractStartDate, @contractEndDate, @approveHolidays, @orderNo, @sortNo, @userName, @password, @employee_Code, @status,
             @marital_Status, @mobile_Country_Code, @mobile_1_Country_Code, @probation_End_Date, @personal_Mobile_No",
-            empId, ipaddress, date, time, record_Type, employeeId, initial, firstName, middleName, lastName, chineseName, address1, address2, address3, cityId, joinDate, employeeType, 
+            empId, ipaddress, date, time, record_Type, employeeId, initial, firstName, middleName, lastName, chineseName, address1, address2, address3, cityId, joinDate, employeeType,
             birthDate, gender, mobileNo, personalEmail, companyEmail, leaveDate, pSNID, bloodGroup, contractStartDate, contractEndDate, approveHolidays, orderNo, sortNo, userName, password,
             employeeCode, status, marital_Status, mobile_Country_Code, mobile_1_Country_Code, probation_End_Date, personal_Mobile_No));
         }
@@ -241,7 +242,7 @@ namespace astute.Repository
                     if (employee_Master.Employee_Document_List != null && employee_Master.Employee_Document_List.Count > 0)
                     {
                         foreach (var item in employee_Master.Employee_Document_List)
-                        {   
+                        {
                             item.Document_Url = !string.IsNullOrEmpty(item.Document_Url) ? _configuration["BaseUrl"] + CoreCommonFilePath.EmployeeDocumentsPath + item.Document_Url : item.Document_Url;
                             item.Document_Url_2 = !string.IsNullOrEmpty(item.Document_Url_2) ? _configuration["BaseUrl"] + CoreCommonFilePath.EmployeeDocumentsPath + item.Document_Url_2 : item.Document_Url_2;
                             item.Document_Url_3 = !string.IsNullOrEmpty(item.Document_Url_3) ? _configuration["BaseUrl"] + CoreCommonFilePath.EmployeeDocumentsPath + item.Document_Url_3 : item.Document_Url_3;

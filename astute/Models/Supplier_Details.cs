@@ -17,5 +17,7 @@ namespace astute.Models
         public Party_File Party_File { get; set; }
         [NotMapped]
         public IList<Supplier_Column_Mapping> Supplier_Column_Mapping_List { get; set; } = new List<Supplier_Column_Mapping>();
+        [NotMapped]
+        public IList<Supplier_Value_Mapping> Supplier_Value_Mapping_List { get; set; } = new List<Supplier_Value_Mapping>();
     }
 }
