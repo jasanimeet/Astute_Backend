@@ -141,13 +141,14 @@ namespace astute.Repository
                         .ExecuteSqlRawAsync(@"EXEC Supplier_Column_Mapping_Insert_Update @supplier_column", parameter));
             return result;
         }
-        public async Task<IList<Supplier_Column_Mapping>> Get_Supplier_Column_Mapping(int supp_Id, string map_Flag)
+        public async Task<IList<Supplier_Column_Mapping>> Get_Supplier_Column_Mapping(int supp_Id, string map_Flag, string column_Type)
         {
             var _supp_Id = supp_Id > 0 ? new SqlParameter("@Supp_Id", supp_Id) : new SqlParameter("@Supp_Id", DBNull.Value);
             var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
+            var _column_Type = !string.IsNullOrEmpty(column_Type) ? new SqlParameter("@Column_Type", column_Type) : new SqlParameter("@Column_Type", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Supplier_Column_Mapping
-                            .FromSqlRaw(@"exec Supplier_Column_Mapping_Select @Supp_Id, @Map_Flag", _supp_Id, _map_Flag)
+                            .FromSqlRaw(@"exec Supplier_Column_Mapping_Select @Supp_Id, @Map_Flag, @Column_Type", _supp_Id, _map_Flag, _column_Type)
                             .ToListAsync());
             return result;
         }

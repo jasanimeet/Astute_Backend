@@ -787,7 +787,7 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_supplier_detail")]
         [Authorize]
-        public async Task<IActionResult> Get_Supplier_Detail(int party_Id, string map_Flag)
+        public async Task<IActionResult> Get_Supplier_Detail(int party_Id, string map_Flag, string column_Type)
         {
             try
             {
@@ -796,7 +796,7 @@ namespace astute.Controllers
                 supplier_detail.Party_Api = await _partyService.Get_Party_API(0, party_Id);
                 supplier_detail.Party_FTP = await _partyService.Get_Party_FTP(0, party_Id);
                 supplier_detail.Party_File = await _partyService.Get_Party_File(0, party_Id);
-                supplier_detail.Supplier_Column_Mapping_List = await _supplierService.Get_Supplier_Column_Mapping(party_Id, map_Flag);
+                supplier_detail.Supplier_Column_Mapping_List = await _supplierService.Get_Supplier_Column_Mapping(party_Id, map_Flag, column_Type);
                 if (supplier_detail.Party_File != null)
                 {
                     supplier_detail.Party_File.File_Location = !string.IsNullOrEmpty(supplier_detail.Party_File.File_Location) ? _configuration["BaseUrl"] + CoreCommonFilePath.SupplierFilePath + supplier_detail.Party_File.File_Location : null;
@@ -937,11 +937,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_supplier_column_mapping")]
         [Authorize]
-        public async Task<IActionResult> Get_Supplier_Column_Mapping(int party_Id, string map_Flag)
+        public async Task<IActionResult> Get_Supplier_Column_Mapping(int party_Id, string map_Flag, string column_Type)
         {
             try
             {
-                var result = await _supplierService.Get_Supplier_Column_Mapping(party_Id, map_Flag);
+                var result = await _supplierService.Get_Supplier_Column_Mapping(party_Id, map_Flag, column_Type);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -1273,7 +1273,7 @@ namespace astute.Controllers
                             // Create a DataTable
                             DataTable dt_our_stock_data = new DataTable();
 
-                            List<Supplier_Column_Mapping> Supplier_Column_Mapping_List = (List<Supplier_Column_Mapping>)await _supplierService.Get_Supplier_Column_Mapping(supplier_Id, "C");
+                            List<Supplier_Column_Mapping> Supplier_Column_Mapping_List = (List<Supplier_Column_Mapping>)await _supplierService.Get_Supplier_Column_Mapping(supplier_Id, "C", "API");
 
                             if (Supplier_Column_Mapping_List != null && Supplier_Column_Mapping_List.Count > 0)
                             {
