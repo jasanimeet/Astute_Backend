@@ -381,7 +381,7 @@ namespace astute.Repository
         public async Task<IList<Stock_Data_Column_Value>> Get_Stock_Data_Distinct_Column_Values(string column_Name,int supplier_Id)
         {
             var _column_Name = !string.IsNullOrEmpty(column_Name) ? new SqlParameter("@Column_Name", column_Name) : new SqlParameter("@Column_Name", DBNull.Value);
-            var _supplier_Id = new SqlParameter("@Supplier_Id", supplier_Id);
+            var _supplier_Id = supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Stock_Data_Column_Value
                             .FromSqlRaw(@"exec Stock_Data_Distinct_Column_Value_Select @Column_Name,@Supplier_Id", _column_Name, _supplier_Id).ToListAsync());

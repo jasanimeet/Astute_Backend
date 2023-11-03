@@ -1429,11 +1429,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_stock_data_distinct_column_values")]
         [Authorize]
-        public async Task<IActionResult> Get_Stock_Data_Distinct_Column_Values(string column_Name,int supplier_id)
+        public async Task<IActionResult> Get_Stock_Data_Distinct_Column_Values(string column_Name,int supplier_Id)
         {
             try
             {
-                var result = await _supplierService.Get_Stock_Data_Distinct_Column_Values(column_Name, supplier_id);
+                var result = await _supplierService.Get_Stock_Data_Distinct_Column_Values(column_Name, supplier_Id);
                 if(result != null && result.Count > 0)
                 {
                     return Ok(new 
