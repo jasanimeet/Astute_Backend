@@ -29,7 +29,7 @@ namespace astute.Repository
         #region Supplier Stock
         Task<(string, int)> Stock_Data_Insert_Update(Stock_Data_Master stock_Data_Master);
         Task<int> Stock_Data_Detail_Insert_Update(DataTable dataTable, int Stock_Data_Id);
-        Task<IList<Stock_Data_Column_Value>> Get_Stock_Data_Distinct_Column_Values(string column_Name);
+        Task<IList<Stock_Data_Column_Value>> Get_Stock_Data_Distinct_Column_Values(string column_Name,int supplier_id);
         #endregion
     }
 }
