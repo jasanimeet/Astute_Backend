@@ -426,6 +426,7 @@ namespace astute.Controllers
 
         [HttpGet]
         [Route("get_employee_code")]
+        [Authorize]
         public async Task<IActionResult> Get_Employee_Code()
         {
             try

@@ -2298,9 +2298,9 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_active_bank")]
         [Authorize]
-        public async Task<IActionResult> Get_Active_Bank(int bankId, string bank_Name)
+        public async Task<IActionResult> Get_Active_Bank(int bankId, string bank_Name, int currency_Id)
         {
-            var result = await _bankService.Get_Active_Bank(bankId, bank_Name);
+            var result = await _bankService.Get_Active_Bank(bankId, bank_Name, currency_Id);
             if (result != null && result.Count > 0)
             {
                 return Ok(new

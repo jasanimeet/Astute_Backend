@@ -9,6 +9,7 @@ namespace astute.Models
         public int Party_Media_Id { get; set; }
         public int? Party_Id { get; set; }
         public int? Cat_val_Id { get; set; }
+        public string? Cat_Name { get; set; }
         public string? ID { get; set; }
         [NotMapped]
         public string? QueryFlag { get; set; }

@@ -12,6 +12,7 @@ namespace astute.Models
         public string? Process_Type { get; set; }
         public string? Process_Type_Value { get; set; }
         public int? Default_Printing_Type { get; set; }
+        public string? Default_Printing_Type_Value { get; set; }
         public int? Default_Currency { get; set; }
         public string? Currency { get; set; }
         public int? Default_Bank { get; set; }

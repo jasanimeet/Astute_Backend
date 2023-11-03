@@ -54,6 +54,7 @@ namespace astute.Repository
         #region Party Details
         Task<(string, int)> Add_Update_Party(Party_Master party_Master);
         Task<Party_Master> Get_Party_Details(int party_Id);
+        Task<int> Get_Party_Code();
         #endregion
 
         #region Party API

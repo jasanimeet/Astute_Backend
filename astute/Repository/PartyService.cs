@@ -406,10 +406,31 @@ namespace astute.Repository
 
                     result.Party_Media_List = await Task.Run(() => _dbContext.Party_Media
                                             .FromSqlRaw(@"exec Party_Media_Select @PartyId", _partyId).ToListAsync());
+
+                    result.Party_Print_Process_List = await Task.Run(() => _dbContext.Party_Print_Process
+                                                .FromSqlRaw(@"exec Party_Print_Process_Select @PartyId", _partyId).ToListAsync());
                 }
             }
 
             return result;
+        }
+        public async Task<int> Get_Party_Code()
+        {
+            var partyCodeParam = new SqlParameter("@Party_Code", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            await _dbContext.Database.ExecuteSqlRawAsync("exec Party_Code_Select @Party_Code OUTPUT", partyCodeParam);
+
+            if (int.TryParse(partyCodeParam.Value?.ToString(), out int partyCode))
+            {
+                return partyCode;
+            }
+            else
+            {
+                return 0;
+            }
         }
         #endregion
 

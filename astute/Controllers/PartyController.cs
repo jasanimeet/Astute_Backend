@@ -370,7 +370,7 @@ namespace astute.Controllers
                             dataTable.Columns.Add("Per_1", typeof(decimal));
                             dataTable.Columns.Add("Assist_2", typeof(int));
                             dataTable.Columns.Add("Per_2", typeof(decimal));
-                            dataTable.Columns.Add("Viewing_Rights_To", typeof(int));
+                            dataTable.Columns.Add("Viewing_Rights_To", typeof(string));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
                             dataTable.Columns.Add("Date", typeof(string));
 
@@ -534,7 +534,7 @@ namespace astute.Controllers
 
                             foreach (var item in party_Master.Party_Media_List)
                             {
-                                dataTable.Rows.Add(party_Id, item.Cat_val_Id, item.ID, item.QueryFlag);
+                                dataTable.Rows.Add(item.Party_Media_Id, party_Id, item.Cat_val_Id, item.ID, item.QueryFlag);
                                 if (CoreService.Enable_Trace_Records(_configuration))
                                 {
                                     dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Cat_val_Id, item.ID);
@@ -662,6 +662,34 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Party_Detils", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_party_code")]
+        public async Task<IActionResult> Get_Party_Code()
+        {
+            try
+            {
+                var result = await _partyService.Get_Party_Code();
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Party_Code", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

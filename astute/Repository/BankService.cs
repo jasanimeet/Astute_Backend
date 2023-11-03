@@ -185,13 +185,14 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<IList<Bank_Master>> Get_Active_Bank(int bankId, string bank_Name)
+        public async Task<IList<Bank_Master>> Get_Active_Bank(int bankId, string bank_Name, int currency_Id)
         {
             var _bank_Id = bankId > 0 ? new SqlParameter("@Bank_Id", bankId) : new SqlParameter("@Bank_Id", DBNull.Value);
             var _bank_Name = !string.IsNullOrEmpty(bank_Name) ? new SqlParameter("@Bank_Name", bank_Name) : new SqlParameter("@Bank_Name", DBNull.Value);
+            var _currency_Id = currency_Id > 0 ? new SqlParameter("@Currency_Id", currency_Id) : new SqlParameter("@Currency_Id", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Bank_Master
-                            .FromSqlRaw(@"exec Bank_Mas_Active_Select @Bank_Id, @Bank_Name", _bank_Id, _bank_Name).ToListAsync());
+                            .FromSqlRaw(@"exec Bank_Mas_Active_Select @Bank_Id, @Bank_Name, @Currency_Id", _bank_Id, _bank_Name, _currency_Id).ToListAsync());
 
             return result;
         }
