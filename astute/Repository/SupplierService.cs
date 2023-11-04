@@ -378,24 +378,54 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<IList<Stock_Data_Column_Value>> Get_Stock_Data_Distinct_Column_Values(string column_Name,int supplier_Id)
+        public async Task<List<Dictionary<string, object>>> Get_Stock_Data_Distinct_Column_Values(string column_Name, int supplier_Id)
         {
-            var _column_Name = !string.IsNullOrEmpty(column_Name) ? new SqlParameter("@Column_Name", column_Name) : new SqlParameter("@Column_Name", DBNull.Value);
-            var _supplier_Id = supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
-
-            var result = await Task.Run(() => _dbContext.Stock_Data_Column_Value
-                            .FromSqlRaw(@"exec Stock_Data_Distinct_Column_Value_Select @Column_Name,@Supplier_Id", _column_Name, _supplier_Id).ToListAsync());
-
-            if(result != null && result.Count > 0)
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
-                foreach (var item in result)
+                using (var command = new SqlCommand("Stock_Data_Distinct_Column_Value_Select", connection))
                 {
-                    if(string.IsNullOrEmpty(item.Column_Value))
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@Column_Name", column_Name));
+                    command.Parameters.Add(new SqlParameter("@Supplier_Id", supplier_Id));
+
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    var dataTable = ds.Tables[ds.Tables.Count - 1];
+
+                    foreach (DataRow row in dataTable.Rows)
                     {
-                        item.Column_Value = "Blank";
+                        var dict = new Dictionary<string, object>();
+                        foreach (DataColumn col in dataTable.Columns)
+                        {
+                            if (row[col] == DBNull.Value)
+                            {
+                                dict[col.ColumnName] = "Blank";
+                            }
+                            else
+                            {
+                                dict[col.ColumnName] = row[col];
+                            }
+                        }
+                        result.Add(dict);
                     }
                 }
             }
+
+            return result;
+        }
+        public async Task<IList<Stock_Data>> Get_Not_Uploaded_Stock_Data(int supplier_Id)
+        {
+            var _supplier_Id = supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Stock_Data
+                            .FromSqlRaw(@"exec Stock_Data_Not_Uploaded_Select @Supplier_Id", _supplier_Id).ToListAsync());
 
             return result;
         }

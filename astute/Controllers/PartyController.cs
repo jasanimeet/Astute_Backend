@@ -147,6 +147,99 @@ namespace astute.Controllers
             }
             return dt_stock_data;
         }
+        private DataTable Set_Supp_Stock_Column_In_Datatable(DataTable dt_stock_data, IList<Stock_Data> stock_Datas, int stock_Data_Id)
+        {
+            dt_stock_data.Columns.Add("Supplier_Ref_No", typeof(string));
+            dt_stock_data.Columns.Add("Cert_No", typeof(string));
+            dt_stock_data.Columns.Add("Lab", typeof(string));
+            dt_stock_data.Columns.Add("Shape", typeof(string));
+            dt_stock_data.Columns.Add("Cts", typeof(string));
+            dt_stock_data.Columns.Add("Base_Disc", typeof(string));
+            dt_stock_data.Columns.Add("Base_Rate", typeof(string));
+            dt_stock_data.Columns.Add("Base_Amt", typeof(string));
+            dt_stock_data.Columns.Add("Color", typeof(string));
+            dt_stock_data.Columns.Add("Clarity", typeof(string));
+            dt_stock_data.Columns.Add("Cut", typeof(string));
+            dt_stock_data.Columns.Add("Polish", typeof(string));
+            dt_stock_data.Columns.Add("Symm", typeof(string));
+            dt_stock_data.Columns.Add("Flour", typeof(string));
+            dt_stock_data.Columns.Add("Flour_Intensity", typeof(string));
+            dt_stock_data.Columns.Add("Length", typeof(string));
+            dt_stock_data.Columns.Add("Width", typeof(string));
+            dt_stock_data.Columns.Add("Depth", typeof(string));
+            dt_stock_data.Columns.Add("Measurement", typeof(string));
+            dt_stock_data.Columns.Add("Depth_Per", typeof(string));
+            dt_stock_data.Columns.Add("Table_Per", typeof(string));
+            dt_stock_data.Columns.Add("Culet", typeof(string));
+            dt_stock_data.Columns.Add("Shade", typeof(string));
+            dt_stock_data.Columns.Add("Luster", typeof(string));
+            dt_stock_data.Columns.Add("Milky", typeof(string));
+            dt_stock_data.Columns.Add("BGM", typeof(string));
+            dt_stock_data.Columns.Add("Location", typeof(string));
+            dt_stock_data.Columns.Add("Status", typeof(string));
+            dt_stock_data.Columns.Add("Table_Black", typeof(string));
+            dt_stock_data.Columns.Add("Crown_Black", typeof(string));
+            dt_stock_data.Columns.Add("Table_White", typeof(string));
+            dt_stock_data.Columns.Add("Crown_White", typeof(string));
+            dt_stock_data.Columns.Add("Table_Open", typeof(string));
+            dt_stock_data.Columns.Add("Crown_Open", typeof(string));
+            dt_stock_data.Columns.Add("Pav_Open", typeof(string));
+            dt_stock_data.Columns.Add("Girdle_Open", typeof(string));
+            dt_stock_data.Columns.Add("Girdle_From", typeof(string));
+            dt_stock_data.Columns.Add("Girdle_To", typeof(string));
+            dt_stock_data.Columns.Add("Girdle_Condition", typeof(string));
+            dt_stock_data.Columns.Add("Girdle_Type", typeof(string));
+            dt_stock_data.Columns.Add("Laser_Insc", typeof(string));
+            dt_stock_data.Columns.Add("Cert_Date", typeof(string));
+            dt_stock_data.Columns.Add("Crown_Angle", typeof(string));
+            dt_stock_data.Columns.Add("Crown_Height", typeof(string));
+            dt_stock_data.Columns.Add("Pavillion_Angle", typeof(string));
+            dt_stock_data.Columns.Add("Pavillion_Height", typeof(string));
+            dt_stock_data.Columns.Add("Girdle_Per", typeof(string));
+            dt_stock_data.Columns.Add("LR_Half", typeof(string));
+            dt_stock_data.Columns.Add("Str_Ln", typeof(string));
+            dt_stock_data.Columns.Add("Cert_Type", typeof(string));
+            dt_stock_data.Columns.Add("Fancy_Color", typeof(string));
+            dt_stock_data.Columns.Add("Fancy_Intensity", typeof(string));
+            dt_stock_data.Columns.Add("Fancy_Overtone", typeof(string));
+            dt_stock_data.Columns.Add("Image", typeof(string));
+            dt_stock_data.Columns.Add("Image2", typeof(string));
+            dt_stock_data.Columns.Add("Video", typeof(string));
+            dt_stock_data.Columns.Add("Video2", typeof(string));
+            dt_stock_data.Columns.Add("Cert_Link", typeof(string));
+            dt_stock_data.Columns.Add("DNA", typeof(string));
+            dt_stock_data.Columns.Add("Heart_Link", typeof(string));
+            dt_stock_data.Columns.Add("Arrow_Link", typeof(string));
+            dt_stock_data.Columns.Add("H_A_Link", typeof(string));
+            dt_stock_data.Columns.Add("Cert_Type_Link", typeof(string));
+            dt_stock_data.Columns.Add("Key_to_Symbol", typeof(string));
+            dt_stock_data.Columns.Add("Additional_Comment", typeof(string));
+            dt_stock_data.Columns.Add("Supplier_Comment", typeof(string));
+            dt_stock_data.Columns.Add("Rough_Origin", typeof(string));
+            dt_stock_data.Columns.Add("Bow_Tie", typeof(string));
+            dt_stock_data.Columns.Add("Extra_Facet_Table", typeof(string));
+            dt_stock_data.Columns.Add("Extra_Facet_Crown", typeof(string));
+            dt_stock_data.Columns.Add("Extra_Facet_Pav", typeof(string));
+            dt_stock_data.Columns.Add("Internal_Graining", typeof(string));
+            dt_stock_data.Columns.Add("H_A", typeof(string));
+            dt_stock_data.Columns.Add("Cost_Disc", typeof(string));
+            dt_stock_data.Columns.Add("Cost_Amt", typeof(string));
+            dt_stock_data.Columns.Add("Offer_Disc", typeof(string));
+            dt_stock_data.Columns.Add("Offer_Amt", typeof(string));
+            dt_stock_data.Columns.Add("Max_Slab_Disc", typeof(string));
+            dt_stock_data.Columns.Add("Max_Slab_Amt", typeof(string));
+            dt_stock_data.Columns.Add("Eye_Clean", typeof(string));
+            dt_stock_data.Columns.Add("Supp_Short_Name", typeof(string));
+            foreach (var item in stock_Datas)
+            {
+                dt_stock_data.Rows.Add(item.SUPPLIER_NO, item.CERTIFICATE_NO, item.LAB, item.SHAPE, item.CTS, item.BASE_DISC, item.BASE_RATE, item.BASE_AMOUNT, item.COLOR,
+                    item.CLARITY, item.CUT, item.POLISH, item.SYMM, item.FLS_COLOR, item.FLS_INTENSITY, item.LENGTH, item.WIDTH, item.DEPTH, item.MEASUREMENT, item.DEPTH_PER,
+                    item.TABLE_PER, item.CULET, item.SHADE, item.LUSTER, item.MILKY, item.BGM, item.LOCATION, item.STATUS, item.TABLE_BLACK, item.SIDE_BLACK, item.TABLE_BLACK,
+                    item.SIDE_WHITE, item.TABLE_OPEN, item.CROWN_OPEN, item.PAVILION_OPEN, item.GIRDLE_OPEN, item.GIRDLE_FROM, item.GIRDLE_TO, item.GIRDLE_CONDITION, item.GIRDLE_TYPE,
+                    item.LASER_INSCRIPTION, item.CERTIFICATE_DATE, item.CROWN_ANGLE, item.CROWN_HEIGHT, item.PAVILION_ANGLE, item.PAVILION_HEIGHT);
+            }
+            return dt_stock_data;
+        }
         #endregion
 
         #region Methods
@@ -1219,7 +1312,12 @@ namespace astute.Controllers
                         {
                             dataTable.Rows.Add(item.Sup_Id, item.Supp_Cat_Name, item.Cat_val_Id, item.Status);
                         }
-                        await _supplierService.Insert_Update_Supplier_Value_Mapping(dataTable);
+                        var result = await _supplierService.Insert_Update_Supplier_Value_Mapping(dataTable);
+                        if(result > 0)
+                        {
+                            var supplier_Id = supplier_Value_Mappings.Select(x => x.Sup_Id).FirstOrDefault();
+                            var stock_Data = await _supplierService.Get_Not_Uploaded_Stock_Data(supplier_Id ?? 0);
+                        }
                     }
                 }
                 return BadRequest(ModelState);

@@ -88,5 +88,6 @@ namespace astute.Models
         public string? MAX_SLAB_BASE_VALUE { get; set; }
         public string? EYE_CLEAN { get; set; }
         public string? Short_Code { get; set; }
+        public bool? Is_Uploaded { get; set; }
     }
 }

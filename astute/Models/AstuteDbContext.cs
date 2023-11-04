@@ -83,5 +83,7 @@ namespace astute.Models
         public DbSet<City_Master_Export> City_Master_Export { get; set; }
         public DbSet<City_Master_Combo> City_Master_Combo { get; set; }
         public DbSet<Stock_Data_Column_Value> Stock_Data_Column_Value { get; set; }
+        public DbSet<Stock_Data_Master> Stock_Data_Master { get; set; }
+        public DbSet<Stock_Data> Stock_Data { get; set; }
     }
 }
