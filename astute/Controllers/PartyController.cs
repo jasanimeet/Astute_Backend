@@ -1581,5 +1581,109 @@ namespace astute.Controllers
             }
         }
         #endregion
+
+        #region Supplier Number Generation
+
+        #region Supplier Pricing
+        [HttpGet]
+        [Route("get_stock_number_generation")]
+        [Authorize]
+        public async Task<IActionResult> Get_Stock_Number_Generation(int Id)
+            {
+            try
+            {
+                var result = await _supplierService.Get_Stock_Number_Generation(Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NotFound(new
+                {
+                    statusCode = HttpStatusCode.NotFound,
+                    message = CoreCommonMessage.DataNotFound
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_Number_Generation", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("create_stock_number_generation")]
+        [Authorize]
+        public async Task<IActionResult> Create_Stock_Number_Generation([FromForm] Stock_Number_Generation stock_Number_Generation)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _supplierService.Add_Update_Stock_Number_Generation(stock_Number_Generation);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = stock_Number_Generation.Id == 0 ? CoreCommonMessage.StockNumberCreated : CoreCommonMessage.StockNumberUpdated,
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Stock_Number_Generation", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_stock_number_generation")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Stock_Number_Generation(int Id)
+        {
+            try
+            {
+                var result = await _supplierService.Delete_Stock_Number_Generation(Id);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.StockNumberDeleted
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Stock_Number_Generation", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+
+        }
+
+        #endregion
+
+        #endregion
     }
 }
