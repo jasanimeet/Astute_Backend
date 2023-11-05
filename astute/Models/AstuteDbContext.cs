@@ -85,6 +85,5 @@ namespace astute.Models
         public DbSet<Stock_Data_Column_Value> Stock_Data_Column_Value { get; set; }
         public DbSet<Stock_Data_Master> Stock_Data_Master { get; set; }
         public DbSet<Stock_Data> Stock_Data { get; set; }
-        public DbSet<Stock_Number_Generation> Stock_Number_Generation { get; set; }
     }
 }

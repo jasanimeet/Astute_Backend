@@ -14,7 +14,7 @@ namespace astute.Repository
         Task<IList<Supplier_Value_Mapping>> Get_Supplier_Value_Mapping(int sup_Id, int col_Id);
         Task<int> Add_Update_Supplier_Column_Mapping(DataTable dataTable);
         Task<IList<Supplier_Column_Mapping>> Get_Supplier_Column_Mapping(int supp_Id, string map_Flag, string column_Type);
-        
+
         #region Value Config
         Task<int> Add_Update_Value_Config(Value_Config value_Config);
         Task<int> Delete_Value_Config(int valueMap_ID);
@@ -31,13 +31,6 @@ namespace astute.Repository
         Task<int> Stock_Data_Detail_Insert_Update(DataTable dataTable, int Stock_Data_Id);
         Task<List<Dictionary<string, object>>> Get_Stock_Data_Distinct_Column_Values(string column_Name, int supplier_Id);
         Task<IList<Stock_Data>> Get_Not_Uploaded_Stock_Data(int stock_data_Id);
-        #endregion
-
-        #region Stock Number Generation
-        Task<IList<Stock_Number_Generation>> Get_Stock_Number_Generation(int Id);
-        Task<int> Add_Update_Stock_Number_Generation(Stock_Number_Generation stock_Number_Generation);
-        Task<int> Delete_Stock_Number_Generation(int Id);
-
         #endregion
     }
 }
