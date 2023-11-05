@@ -32,5 +32,13 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Stock_Data_Distinct_Column_Values(string column_Name, int supplier_Id);
         Task<IList<Stock_Data>> Get_Not_Uploaded_Stock_Data(int stock_data_Id);
         #endregion
+
+        #region Stock Number Generation
+        Task<IList<Stock_Number_Generation>> Get_Stock_Number_Generation(int Id);
+        Task<int> Add_Update_Stock_Number_Generation(Stock_Number_Generation stock_Number_Generation);
+        Task<int> Delete_Stock_Number_Generation(int Id);
+
+        #endregion
+
     }
 }
