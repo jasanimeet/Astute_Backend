@@ -39,8 +39,9 @@ namespace astute.Repository
         Task<int> Delete_Stock_Number_Generation(int Id);
 
         #endregion
-        #region Party Name
-        Task<IList<string>> Party_Name_Select(int Id);
+
+        #region  Api/FTP/File Party Name 
+        Task<IList<Bank_Dropdown_Model>> Get_Api_Ftp_File_Party_Select(int Id);
 
         #endregion
 

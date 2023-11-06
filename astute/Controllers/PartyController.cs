@@ -1699,13 +1699,13 @@ namespace astute.Controllers
         #region Party Name
 
         [HttpGet]
-        [Route("party_name_select")]
+        [Route("get_api_ftp_file_party_select")]
         [Authorize]
-        public async Task<IActionResult> Party_Name_Select(int Id)
+        public async Task<IActionResult> Get_Api_Ftp_File_Party_Select(int party_Id)
         {
             try
             {
-                var result = await _supplierService.Party_Name_Select(Id);
+                var result = await _supplierService.Get_Api_Ftp_File_Party_Select(party_Id);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -1715,11 +1715,7 @@ namespace astute.Controllers
                         data = result
                     });
                 }
-                return NotFound(new
-                {
-                    statusCode = HttpStatusCode.NotFound,
-                    message = CoreCommonMessage.DataNotFound
-                });
+                return NoContent();
             }
             catch (Exception ex)
             {
