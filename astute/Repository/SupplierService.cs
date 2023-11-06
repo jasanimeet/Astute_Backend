@@ -429,10 +429,23 @@ namespace astute.Repository
 
             return result;
         }
+        public async Task<int> Supplier_Stock_Insert_Update(DataTable dataTable, int supplier_Id)
+        {
+            var parameter = new SqlParameter("@tblSupplier_Stock", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Supplier_Stock_Table_Type",
+                Value = dataTable
+            };
+            var _supplier_Id = new SqlParameter("@Supplier_Id", supplier_Id);
+
+            var result = await Task.Run(() => _dbContext.Database
+            .ExecuteSqlRawAsync(@"exec Supplier_Stock_Insert_Update @tblSupplier_Stock, @Supplier_Id", parameter, _supplier_Id));
+
+            return result;
+        }
         #endregion
 
         #region Stock Number Generation
-
         public async Task<IList<Stock_Number_Generation>> Get_Stock_Number_Generation(int Id)
         {
             var _Id = Id > 0 ? new SqlParameter("@Id", Id) : new SqlParameter("@Id", DBNull.Value);

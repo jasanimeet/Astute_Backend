@@ -888,6 +888,11 @@ namespace astute.Controllers
                         var result = await _supplierService.Insert_Update_Supplier_Value_Mapping(dataTable);
                         if (result > 0)
                         {
+                            var supplier_Id = supplier_Details.Supplier_Value_Mapping_List.Select(x => x.Sup_Id).FirstOrDefault();
+                            var stock_Data = await _supplierService.Get_Not_Uploaded_Stock_Data(supplier_Id ?? 0);
+                            DataTable dataTable1 = new DataTable();
+                            dataTable1 = Set_Supp_Stock_Column_In_Datatable(new DataTable(), stock_Data);
+                            await _supplierService.Supplier_Stock_Insert_Update(dataTable1, supplier_Id ?? 0);
                             success = true;
                         }
                     }
@@ -1321,11 +1326,7 @@ namespace astute.Controllers
                         }
                         var result = await _supplierService.Insert_Update_Supplier_Value_Mapping(dataTable);
                         if(result > 0)
-                        {
-                            //var supplier_Id = supplier_Value_Mappings.Select(x => x.Sup_Id).FirstOrDefault();
-                            //var stock_Data = await _supplierService.Get_Not_Uploaded_Stock_Data(supplier_Id ?? 0);
-                            //DataTable dataTable1 = new DataTable();
-                            //dataTable1 = Set_Supp_Stock_Column_In_Datatable(new DataTable(), stock_Data);
+                        {   
                             return Ok(new
                             {
                                 statusCode = HttpStatusCode.OK,
