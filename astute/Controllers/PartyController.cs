@@ -1695,5 +1695,42 @@ namespace astute.Controllers
         }
 
         #endregion
+
+        #region Party Name
+
+        [HttpGet]
+        [Route("party_name_select")]
+        [Authorize]
+        public async Task<IActionResult> Party_Name_Select(int Id)
+        {
+            try
+            {
+                var result = await _supplierService.Party_Name_Select(Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NotFound(new
+                {
+                    statusCode = HttpStatusCode.NotFound,
+                    message = CoreCommonMessage.DataNotFound
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_Number_Generation", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
     }
 }

@@ -39,6 +39,10 @@ namespace astute.Repository
         Task<int> Delete_Stock_Number_Generation(int Id);
 
         #endregion
+        #region Party Name
+        Task<IList<string>> Party_Name_Select(int Id);
+
+        #endregion
 
     }
 }

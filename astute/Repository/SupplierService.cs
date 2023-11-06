@@ -467,6 +467,21 @@ namespace astute.Repository
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Stock_Number_Generation_Delete {Id}"));
         }
+
+        #region Party Name 
+        public async Task<IList<string>> Party_Name_Select(int Id)
+        {
+            var partyIdParam = Id > 0 ? new SqlParameter("@Party_Id", Id) : new SqlParameter("@Party_Id", DBNull.Value);
+
+            var result = await _dbContext.Set<string>()
+                .FromSqlRaw("EXEC [Party_Name_Select] @Party_Id", partyIdParam)
+                .ToListAsync();
+
+            return result;
+        }
+
+
+        #endregion
         #endregion
     }
 }
