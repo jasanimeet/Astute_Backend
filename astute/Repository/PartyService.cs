@@ -321,10 +321,15 @@ namespace astute.Repository
             var city_Id = party_Master.City_Id > 0 ? new SqlParameter("@City_Id", party_Master.City_Id) : new SqlParameter("@City_Id", DBNull.Value);
             var pin_Code = !string.IsNullOrEmpty(party_Master.PinCode) ? new SqlParameter("@PinCode", party_Master.PinCode) : new SqlParameter("@PinCode", DBNull.Value);
             var mobile_No1 = !string.IsNullOrEmpty(party_Master.Mobile_1) ? new SqlParameter("@Mobile_1", party_Master.Mobile_1) : new SqlParameter("@Mobile_1", DBNull.Value);
+            var mobile_1_Country_Code = !string.IsNullOrEmpty(party_Master.Mobile_1_Country_Code) ? new SqlParameter("@Mobile_1_Country_Code", party_Master.Mobile_1_Country_Code) : new SqlParameter("@Mobile_1_Country_Code", DBNull.Value);
             var mobile_No2 = !string.IsNullOrEmpty(party_Master.Mobile_2) ? new SqlParameter("@Mobile_2", party_Master.Mobile_2) : new SqlParameter("@Mobile_2", DBNull.Value);
+            var mobile_2_Country_Code = !string.IsNullOrEmpty(party_Master.Mobile_2_Country_Code) ? new SqlParameter("@Mobile_2_Country_Code", party_Master.Mobile_2_Country_Code) : new SqlParameter("@Mobile_2_Country_Code", DBNull.Value);
             var phone_No1 = !string.IsNullOrEmpty(party_Master.Phone_1) ? new SqlParameter("@Phone_1", party_Master.Phone_1) : new SqlParameter("@Phone_1", DBNull.Value);
+            var phone_1_Country_Code = !string.IsNullOrEmpty(party_Master.Phone_1_Country_Code) ? new SqlParameter("@Phone_1_Country_Code", party_Master.Phone_1_Country_Code) : new SqlParameter("@Phone_1_Country_Code", DBNull.Value);
             var phone_No2 = !string.IsNullOrEmpty(party_Master.Phone_2) ? new SqlParameter("@Phone_2", party_Master.Phone_2) : new SqlParameter("@Phone_2", DBNull.Value);
+            var phone_2_Country_Code = !string.IsNullOrEmpty(party_Master.Phone_2_Country_Code) ? new SqlParameter("@Phone_2_Country_Code", party_Master.Phone_2_Country_Code) : new SqlParameter("@Phone_2_Country_Code", DBNull.Value);
             var fax = !string.IsNullOrEmpty(party_Master.Fax) ? new SqlParameter("@Fax", party_Master.Fax) : new SqlParameter("@Fax", DBNull.Value);
+            var fax_Country_Code = !string.IsNullOrEmpty(party_Master.Fax_Country_Code) ? new SqlParameter("@Fax_Country_Code", party_Master.Fax_Country_Code) : new SqlParameter("@Fax_Country_Code", DBNull.Value);
             var email_1 = !string.IsNullOrEmpty(party_Master.Email_1) ? new SqlParameter("@Email_1", party_Master.Email_1) : new SqlParameter("@Email_1", DBNull.Value);
             var email_2 = !string.IsNullOrEmpty(party_Master.Email_2) ? new SqlParameter("@Email_2", party_Master.Email_2) : new SqlParameter("@Email_2", DBNull.Value);
             var party_Name = new SqlParameter("@Party_Name", party_Master.Party_Name);
@@ -347,9 +352,10 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_Master_Insert_Update @Party_Id, @Party_Type, @Party_Code, @Adress_1, @Adress_2, @Adress_3, @City_Id, @PinCode, @Mobile_1,
-                        @Mobile_2, @Phone_1, @Phone_2, @Fax, @Email_1, @Email_2, @Party_Name, @Ship_PartyId, @Final_Customer_Id, @Website,
+                        @Mobile_1_Country_Code, @Mobile_2, @Mobile_2_Country_Code, @Phone_1, @Phone_1_Country_Code, @Phone_2, @Phone_2_Country_Code, @Fax, @Fax_Country_Code, @Email_1, @Email_2, @Party_Name, @Ship_PartyId, @Final_Customer_Id, @Website,
                         @Cust_Freight_Account_No, @Alias_Name, @Wechat_ID, @Skype_ID, @Business_Reg_No, @Default_Remarks, @Notification, @Reference_By, @TIN_No, @InsertedId OUT", party_Id,
-                        party_Type, party_Code, party_Address1, party_Address2, party_Address3, city_Id, pin_Code, mobile_No1, mobile_No2, phone_No1, phone_No2, fax, email_1, email_2, 
+                        party_Type, party_Code, party_Address1, party_Address2, party_Address3, city_Id, pin_Code, mobile_No1, mobile_1_Country_Code, mobile_No2, mobile_2_Country_Code,
+                        phone_No1, phone_1_Country_Code, phone_No2, phone_2_Country_Code, fax, fax_Country_Code, email_1, email_2, 
                         party_Name, ship_PartyId, final_Customer_Id, website, cust_Freight_Account_No, alias_Name, wechat_ID, skype_ID, business_Reg_No,
                         default_Remarks, notification, reference_By, tIN_No, insertedId));
 

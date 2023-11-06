@@ -20,10 +20,15 @@ namespace astute.Models
         public string? Country { get; set; }
         public string? PinCode { get; set; }
         public string? Mobile_1 { get; set; }
+        public string? Mobile_1_Country_Code { get; set; }
         public string? Mobile_2 { get; set; }
+        public string? Mobile_2_Country_Code { get; set; }
         public string? Phone_1 { get; set; }
+        public string? Phone_1_Country_Code { get; set; }
         public string? Phone_2 { get; set; }
+        public string? Phone_2_Country_Code { get; set; }
         public string? Fax { get; set; }
+        public string? Fax_Country_Code { get; set; }
         public string? Email_1 { get; set; }
         public string? Email_2 { get; set; }
         public string? Party_Name { get; set; }

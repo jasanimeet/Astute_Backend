@@ -17,7 +17,9 @@ namespace astute.Models
         public int? Designation_Id { get; set; }
         public string? Designation { get; set; }
         public string? Phone_No { get; set; }
+        public string? Phone_No_Country_Code { get; set; }
         public string? Mobile_No { get; set; }
+        public string? Mobile_No_Country_Code { get; set; }
         public string? Email { get; set; }
         [NotMapped]
         public string QueryFlag { get; set; }
