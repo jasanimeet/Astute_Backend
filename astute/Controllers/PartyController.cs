@@ -15,7 +15,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 namespace astute.Controllers
@@ -48,7 +47,7 @@ namespace astute.Controllers
         #endregion
 
         #region Utilities
-        private DataTable Set_Column_In_Datatable(DataTable dt_stock_data, IList<Stock_Data> stock_Datas, int stock_Data_Id)
+        private DataTable Set_Column_In_Datatable(DataTable dt_stock_data, IList<Stock_Data> stock_Datas)
         {   
             dt_stock_data.Columns.Add("SUPPLIER_NO", typeof(string));
             dt_stock_data.Columns.Add("CERTIFICATE_NO", typeof(string));
@@ -147,7 +146,7 @@ namespace astute.Controllers
             }
             return dt_stock_data;
         }
-        private DataTable Set_Supp_Stock_Column_In_Datatable(DataTable dt_stock_data, IList<Stock_Data> stock_Datas, int stock_Data_Id)
+        private DataTable Set_Supp_Stock_Column_In_Datatable(DataTable dt_stock_data, IList<Stock_Data> stock_Datas)
         {
             dt_stock_data.Columns.Add("Supplier_Ref_No", typeof(string));
             dt_stock_data.Columns.Add("Cert_No", typeof(string));
@@ -236,7 +235,11 @@ namespace astute.Controllers
                     item.CLARITY, item.CUT, item.POLISH, item.SYMM, item.FLS_COLOR, item.FLS_INTENSITY, item.LENGTH, item.WIDTH, item.DEPTH, item.MEASUREMENT, item.DEPTH_PER,
                     item.TABLE_PER, item.CULET, item.SHADE, item.LUSTER, item.MILKY, item.BGM, item.LOCATION, item.STATUS, item.TABLE_BLACK, item.SIDE_BLACK, item.TABLE_BLACK,
                     item.SIDE_WHITE, item.TABLE_OPEN, item.CROWN_OPEN, item.PAVILION_OPEN, item.GIRDLE_OPEN, item.GIRDLE_FROM, item.GIRDLE_TO, item.GIRDLE_CONDITION, item.GIRDLE_TYPE,
-                    item.LASER_INSCRIPTION, item.CERTIFICATE_DATE, item.CROWN_ANGLE, item.CROWN_HEIGHT, item.PAVILION_ANGLE, item.PAVILION_HEIGHT);
+                    item.LASER_INSCRIPTION, item.CERTIFICATE_DATE, item.CROWN_ANGLE, item.CROWN_HEIGHT, item.PAVILION_ANGLE, item.PAVILION_HEIGHT, item.GIRDLE_PER, item.LR_HALF,
+                    item.STAR_LN, item.CERT_TYPE, item.FANCY_COLOR, item.FANCY_INTENSITY, item.FANCY_OVERTONE, item.Image2, item.Image2, item.Video2, item.Video2, item.CERTIFICATE_LINK,
+                    item.DNA, item.IMAGE_HEART_LINK, item.IMAGE_ARROW_LINK, item.H_A_LINK, item.CERTIFICATE_TYPE_LINK, item.KEY_TO_SYMBOL, item.LAB_COMMENTS, item.SUPPLIER_COMMENTS,
+                    item.ORIGIN, item.BOW_TIE, item.EXTRA_FACET_TABLE, item.EXTRA_FACET_CROWN, item.EXTRA_FACET_PAVILION, item.INTERNAL_GRAINING, item.H_A, item.SUPPLIER_DISC, item.SUPPLIER_AMOUNT,
+                    item.OFFER_DISC, item.OFFER_VALUE, item.MAX_SLAB_BASE_DISC, item.MAX_SLAB_BASE_VALUE, item.EYE_CLEAN, item.Short_Code);
             }
             return dt_stock_data;
         }
@@ -417,7 +420,9 @@ namespace astute.Controllers
                             dataTable.Columns.Add("Last_Name", typeof(string));
                             dataTable.Columns.Add("Designation_Id", typeof(int));
                             dataTable.Columns.Add("Phone_No", typeof(string));
+                            dataTable.Columns.Add("Phone_No_Country_Code", typeof(string));
                             dataTable.Columns.Add("Mobile_No", typeof(string));
+                            dataTable.Columns.Add("Mobile_No_Country_Code", typeof(string));
                             dataTable.Columns.Add("Email", typeof(string));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
 
@@ -440,7 +445,7 @@ namespace astute.Controllers
 
                             foreach (var item in party_Master.Party_Contact_List)
                             {
-                                dataTable.Rows.Add(item.Contact_Id, party_Id, item.Prefix, item.First_Name, item.Last_Name, item.Designation_Id, item.Phone_No, item.Mobile_No, item.Email, item.QueryFlag);
+                                dataTable.Rows.Add(item.Contact_Id, party_Id, item.Prefix, item.First_Name, item.Last_Name, item.Designation_Id, item.Phone_No, item.Phone_No_Country_Code, item.Mobile_No, item.Mobile_No_Country_Code, item.Email, item.QueryFlag);
                                 //if (CoreService.Enable_Trace_Records(_configuration))
                                 //{
                                 //    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Contact_Name, item.Sex, item.Designation_Id, item.Mobile_No, item.Email, item.Birth_Date, false);
@@ -651,7 +656,9 @@ namespace astute.Controllers
                             dataTable.Columns.Add("Address_3", typeof(string));
                             dataTable.Columns.Add("City_Id", typeof(int));
                             dataTable.Columns.Add("Mobile_No", typeof(string));
+                            dataTable.Columns.Add("Mobile_No_Country_Code", typeof(string));
                             dataTable.Columns.Add("Phone_No", typeof(string));
+                            dataTable.Columns.Add("Phone_No_Country_Code", typeof(string));
                             dataTable.Columns.Add("Contact_Person", typeof(string));
                             dataTable.Columns.Add("TIN_No", typeof(string));
                             dataTable.Columns.Add("Default_Address", typeof(bool));
@@ -682,7 +689,7 @@ namespace astute.Controllers
 
                             foreach (var item in party_Master.Party_Shipping_List)
                             {
-                                dataTable.Rows.Add(item.Ship_Id, party_Id, item.Company_Name, item.Address_1, item.Address_2, item.Address_3, item.City_Id, item.Mobile_No, item.Phone_No, item.Contact_Person, item.TIN_No, item.Default_Address, item.Status, item.QueryFlag);
+                                dataTable.Rows.Add(item.Ship_Id, party_Id, item.Company_Name, item.Address_1, item.Address_2, item.Address_3, item.City_Id, item.Mobile_No, item.Mobile_No_Country_Code, item.Phone_No, item.Phone_No_Country_Code, item.Contact_Person, item.TIN_No, item.Default_Address, item.Status, item.QueryFlag);
                                 if (CoreService.Enable_Trace_Records(_configuration))
                                 {
                                     dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Company_Name, item.Address_1, item.Address_2, item.Address_3, item.City_Id, item.Mobile_No, item.Phone_No, item.Contact_Person, item.TIN_No, item.Default_Address, item.Status);
@@ -1315,8 +1322,15 @@ namespace astute.Controllers
                         var result = await _supplierService.Insert_Update_Supplier_Value_Mapping(dataTable);
                         if(result > 0)
                         {
-                            var supplier_Id = supplier_Value_Mappings.Select(x => x.Sup_Id).FirstOrDefault();
-                            var stock_Data = await _supplierService.Get_Not_Uploaded_Stock_Data(supplier_Id ?? 0);
+                            //var supplier_Id = supplier_Value_Mappings.Select(x => x.Sup_Id).FirstOrDefault();
+                            //var stock_Data = await _supplierService.Get_Not_Uploaded_Stock_Data(supplier_Id ?? 0);
+                            //DataTable dataTable1 = new DataTable();
+                            //dataTable1 = Set_Supp_Stock_Column_In_Datatable(new DataTable(), stock_Data);
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = "Supplier value mapped successfully."
+                            });
                         }
                     }
                 }
@@ -1530,7 +1544,7 @@ namespace astute.Controllers
                         if (stock_Data_Master.Stock_Data_List != null && stock_Data_Master.Stock_Data_List.Count > 0)
                         {
                             DataTable dt_our_stock_data = new DataTable();
-                            dt_our_stock_data = Set_Column_In_Datatable(new DataTable(), stock_Data_Master.Stock_Data_List, stock_Data_Id);
+                            dt_our_stock_data = Set_Column_In_Datatable(new DataTable(), stock_Data_Master.Stock_Data_List);
                             var result = await _supplierService.Stock_Data_Detail_Insert_Update(dt_our_stock_data, stock_Data_Id);
                         }
                         return Ok(new
