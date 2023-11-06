@@ -301,5 +301,13 @@ namespace astute.CoreModel
         public static string AccountGroupUpdated = AccountGroup + UpdatedSuccessfully;
         public static string AccountGroupDeleted = AccountGroup + DeletedSuccessfully;
         #endregion
+
+
+        #region Stock Number Generation
+        public static string StockNumber = "Stock Number";
+        public static string StockNumberCreated = StockNumber + AddedSuccessfully;
+        public static string StockNumberUpdated = StockNumber + UpdatedSuccessfully;
+        public static string StockNumberDeleted = StockNumber + DeletedSuccessfully;
+        #endregion
     }
 }
