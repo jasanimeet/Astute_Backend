@@ -480,6 +480,22 @@ namespace astute.Repository
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Stock_Number_Generation_Delete {Id}"));
         }
+
+
+        #endregion
+
+        #region Api/FTP/File Party Name 
+        public async Task<IList<Bank_Dropdown_Model>> Get_Api_Ftp_File_Party_Select(int party_Id)
+        {
+            var partyIdParam = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Bank_Dropdown_Model
+                .FromSqlRaw("EXEC [Party_Name_Select] @Party_Id", partyIdParam)
+                .ToListAsync());
+
+            return result;
+        }
+
         #endregion
     }
 }

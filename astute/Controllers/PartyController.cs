@@ -1696,5 +1696,38 @@ namespace astute.Controllers
         }
 
         #endregion
+
+        #region Party Name
+
+        [HttpGet]
+        [Route("get_api_ftp_file_party_select")]
+        [Authorize]
+        public async Task<IActionResult> Get_Api_Ftp_File_Party_Select(int party_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Api_Ftp_File_Party_Select(party_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_Number_Generation", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
     }
 }
