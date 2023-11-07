@@ -485,11 +485,11 @@ namespace astute.Repository
         #endregion
 
         #region Api/FTP/File Party Name 
-        public async Task<IList<Bank_Dropdown_Model>> Get_Api_Ftp_File_Party_Select(int party_Id)
+        public async Task<IList<DropdownModel>> Get_Api_Ftp_File_Party_Select(int party_Id)
         {
             var partyIdParam = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
 
-            var result = await Task.Run(() => _dbContext.Bank_Dropdown_Model
+            var result = await Task.Run(() => _dbContext.DropdownModel
                 .FromSqlRaw("EXEC [Party_Name_Select] @Party_Id", partyIdParam)
                 .ToListAsync());
 

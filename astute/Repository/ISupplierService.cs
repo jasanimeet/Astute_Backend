@@ -42,7 +42,7 @@ namespace astute.Repository
         #endregion
 
         #region  Api/FTP/File Party Name 
-        Task<IList<Bank_Dropdown_Model>> Get_Api_Ftp_File_Party_Select(int Id);
+        Task<IList<DropdownModel>> Get_Api_Ftp_File_Party_Select(int party_Id);
 
         #endregion
 

@@ -1697,7 +1697,7 @@ namespace astute.Controllers
 
         #endregion
 
-        #region Party Name
+        #region Api/FTP/File Party Name
 
         [HttpGet]
         [Route("get_api_ftp_file_party_select")]
@@ -1720,7 +1720,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_Number_Generation", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Get_Api_Ftp_File_Party_Select", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
