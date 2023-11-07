@@ -42,3 +42,11 @@
 /astute/Properties/PublishProfiles/FolderProfile10.pubxml
 /astute/Properties/PublishProfiles/FolderProfile26.pubxml.user
 /astute/Properties/PublishProfiles/FolderProfile26.pubxml
+/astute/bin/Debug/net6.0/appsettings.json
+/astute/bin/Release/net6.0/appsettings.json
+/astute/Properties/PublishProfiles/FolderProfile10.pubxml
+/astute/Properties/PublishProfiles/FolderProfile3.pubxml.user
+*.sql
+/astute/obj/Release/net6.0/PubTmp/Out/appsettings.json
+*.targets
+/astute/astute.csproj.user
