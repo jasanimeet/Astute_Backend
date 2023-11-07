@@ -490,7 +490,7 @@ namespace astute.Repository
             var partyIdParam = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.DropdownModel
-                .FromSqlRaw("EXEC [Party_Name_Select] @Party_Id", partyIdParam)
+                .FromSqlRaw("EXEC Party_Name_From_Api_FTP_File_Select @Party_Id", partyIdParam)
                 .ToListAsync());
 
             return result;
