@@ -4,11 +4,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using static OfficeOpenXml.ExcelErrorValue;
 
 namespace astute.Repository
 {
@@ -288,12 +291,44 @@ namespace astute.Repository
             var lab = !string.IsNullOrEmpty(supplier_Pricing.Lab) ? new SqlParameter("@Lab", supplier_Pricing.Lab) : new SqlParameter("@Lab", DBNull.Value);
             var shade = !string.IsNullOrEmpty(supplier_Pricing.Shade) ? new SqlParameter("@Shade", supplier_Pricing.Shade) : new SqlParameter("@Shade", DBNull.Value);
             var luster = !string.IsNullOrEmpty(supplier_Pricing.Luster) ? new SqlParameter("@Luster", supplier_Pricing.Luster) : new SqlParameter("@Luster", DBNull.Value);
+            var bgm = !string.IsNullOrEmpty(supplier_Pricing.Bgm) ? new SqlParameter("@Bgm", supplier_Pricing.Bgm) : new SqlParameter("@Bgm", DBNull.Value);
+            var culet = !string.IsNullOrEmpty(supplier_Pricing.Culet) ? new SqlParameter("@Culet", supplier_Pricing.Culet) : new SqlParameter("@Culet", DBNull.Value);
             var location = !string.IsNullOrEmpty(supplier_Pricing.Location) ? new SqlParameter("@Location", supplier_Pricing.Location) : new SqlParameter("@Location", DBNull.Value);
             var status = !string.IsNullOrEmpty(supplier_Pricing.Status) ? new SqlParameter("@Status", supplier_Pricing.Status) : new SqlParameter("@Status", DBNull.Value);
-            var base_Disc_Per = !string.IsNullOrEmpty(supplier_Pricing.Base_Disc_Per) ? new SqlParameter("@Base_Disc_Per", supplier_Pricing.Base_Disc_Per) : new SqlParameter("@Base_Disc_Per", DBNull.Value);
-            var base_Amt = !string.IsNullOrEmpty(supplier_Pricing.Base_Amt) ? new SqlParameter("@Base_Amt", supplier_Pricing.Base_Amt) : new SqlParameter("@Base_Amt", DBNull.Value);
-            var final_Disc_Per = !string.IsNullOrEmpty(supplier_Pricing.Final_Disc_Per) ? new SqlParameter("@Final_Disc_Per", supplier_Pricing.Final_Disc_Per) : new SqlParameter("@Final_Disc_Per", DBNull.Value);
-            var final_Amt = !string.IsNullOrEmpty(supplier_Pricing.Final_Amt) ? new SqlParameter("@Final_Amt", supplier_Pricing.Final_Amt) : new SqlParameter("@Final_Amt", DBNull.Value);
+            var goods_Type = !string.IsNullOrEmpty(supplier_Pricing.Goods_Type) ? new SqlParameter("@Goods_Type", supplier_Pricing.Goods_Type) : new SqlParameter("@Goods_Type", DBNull.Value);
+            var length_From = supplier_Pricing.Length_From > 0 ? new SqlParameter("@Length_From", supplier_Pricing.Length_From) : new SqlParameter("@Length_From", DBNull.Value);
+            var length_To = supplier_Pricing.Length_To > 0 ? new SqlParameter("@Length_To", supplier_Pricing.Length_To) : new SqlParameter("@Length_To", DBNull.Value);
+            var width_From = supplier_Pricing.Width_From > 0 ? new SqlParameter("@Width_From", supplier_Pricing.Width_From) : new SqlParameter("@Width_From", DBNull.Value);
+            var width_To = supplier_Pricing.Width_To > 0 ? new SqlParameter("@Width_To", supplier_Pricing.Width_To) : new SqlParameter("@Width_To", DBNull.Value);
+            var depth_From = supplier_Pricing.Depth_From > 0 ? new SqlParameter("@Depth_From", supplier_Pricing.Depth_From) : new SqlParameter("@Depth_From", DBNull.Value);
+            var depth_To = supplier_Pricing.Depth_To > 0 ? new SqlParameter("@Depth_To", supplier_Pricing.Depth_To) : new SqlParameter("@Depth_To", DBNull.Value);
+            var depth_Per_From = supplier_Pricing.Depth_Per_From > 0 ? new SqlParameter("@Depth_Per_From", supplier_Pricing.Depth_Per_From) : new SqlParameter("@Depth_Per_From", DBNull.Value);
+            var depth_Per_To = supplier_Pricing.Depth_Per_To > 0 ? new SqlParameter("@Depth_Per_To", supplier_Pricing.Depth_Per_To) : new SqlParameter("@Depth_Per_To", DBNull.Value);
+            var table_Per_From = supplier_Pricing.Table_Per_From > 0 ? new SqlParameter("@Table_Per_From", supplier_Pricing.Table_Per_From) : new SqlParameter("@Table_Per_From", DBNull.Value);
+            var table_Per_To = supplier_Pricing.Table_Per_To > 0 ? new SqlParameter("@Table_Per_To", supplier_Pricing.Table_Per_To) : new SqlParameter("@Table_Per_To", DBNull.Value);
+            var crown_Angle_From = supplier_Pricing.Crown_Angle_From > 0 ? new SqlParameter("@Crown_Angle_From", supplier_Pricing.Crown_Angle_From) : new SqlParameter("@Crown_Angle_From", DBNull.Value);
+            var crown_Angle_To = supplier_Pricing.Crown_Angle_To > 0 ? new SqlParameter("@Crown_Angle_To", supplier_Pricing.Crown_Angle_To) : new SqlParameter("@Crown_Angle_To", DBNull.Value);
+            var crown_Height_From = supplier_Pricing.Crown_Height_From > 0 ? new SqlParameter("@Crown_Height_From", supplier_Pricing.Crown_Height_From) : new SqlParameter("@Crown_Height_From", DBNull.Value);
+            var crown_Height_To = supplier_Pricing.Crown_Height_To > 0 ? new SqlParameter("@Crown_Height_To", supplier_Pricing.Crown_Height_To) : new SqlParameter("@Crown_Height_To", DBNull.Value);
+            var pavilion_Angle_From = supplier_Pricing.Pavilion_Angle_From > 0 ? new SqlParameter("@Pavilion_Angle_From", supplier_Pricing.Pavilion_Angle_From) : new SqlParameter("@Pavilion_Angle_From", DBNull.Value);
+            var pavilion_Angle_To = supplier_Pricing.Pavilion_Angle_To > 0 ? new SqlParameter("@Pavilion_Angle_To", supplier_Pricing.Pavilion_Angle_To) : new SqlParameter("@Pavilion_Angle_To", DBNull.Value);
+            var girdle_Per_From = supplier_Pricing.Girdle_Per_From > 0 ? new SqlParameter("@Girdle_Per_From", supplier_Pricing.Girdle_Per_From) : new SqlParameter("@Girdle_Per_From", DBNull.Value);
+            var girdle_Per_To = supplier_Pricing.Girdle_Per_To > 0 ? new SqlParameter("@Girdle_Per_To", supplier_Pricing.Girdle_Per_To) : new SqlParameter("@Girdle_Per_To", DBNull.Value);
+            var table_Black = !string.IsNullOrEmpty(supplier_Pricing.Table_Black) ? new SqlParameter("@Table_Black", supplier_Pricing.Table_Black) : new SqlParameter("@Table_Black", DBNull.Value);
+            var side_Black = !string.IsNullOrEmpty(supplier_Pricing.Side_Black) ? new SqlParameter("@Side_Black", supplier_Pricing.Side_Black) : new SqlParameter("@Side_Black", DBNull.Value);
+            var table_White = !string.IsNullOrEmpty(supplier_Pricing.Table_White) ? new SqlParameter("@Table_White", supplier_Pricing.Table_White) : new SqlParameter("@Table_White", DBNull.Value);
+            var side_white = !string.IsNullOrEmpty(supplier_Pricing.Side_white) ? new SqlParameter("@Side_white", supplier_Pricing.Side_white) : new SqlParameter("@Side_white", DBNull.Value);
+            var key_To_Symbol = !string.IsNullOrEmpty(supplier_Pricing.Key_To_Symbol) ? new SqlParameter("@Key_To_Symbol", supplier_Pricing.Key_To_Symbol) : new SqlParameter("@Key_To_Symbol", DBNull.Value);
+            var comment = !string.IsNullOrEmpty(supplier_Pricing.Comment) ? new SqlParameter("@Comment", supplier_Pricing.Comment) : new SqlParameter("@Comment", DBNull.Value);
+            var cert_Type = !string.IsNullOrEmpty(supplier_Pricing.Cert_Type) ? new SqlParameter("@Cert_Type", supplier_Pricing.Cert_Type) : new SqlParameter("@Cert_Type", DBNull.Value);
+            var table_Open = !string.IsNullOrEmpty(supplier_Pricing.Table_Open) ? new SqlParameter("@Table_Open", supplier_Pricing.Table_Open) : new SqlParameter("@Table_Open", DBNull.Value);
+            var crown_Open = !string.IsNullOrEmpty(supplier_Pricing.Crown_Open) ? new SqlParameter("@Crown_Open", supplier_Pricing.Crown_Open) : new SqlParameter("@Crown_Open", DBNull.Value);
+            var pavilion_Open = !string.IsNullOrEmpty(supplier_Pricing.Pavilion_Open) ? new SqlParameter("@Pavilion_Open", supplier_Pricing.Pavilion_Open) : new SqlParameter("@Pavilion_Open", DBNull.Value);
+            var girdle_Open = !string.IsNullOrEmpty(supplier_Pricing.Girdle_Open) ? new SqlParameter("@Girdle_Open", supplier_Pricing.Girdle_Open) : new SqlParameter("@Girdle_Open", DBNull.Value);
+            var base_Disc_Per_From = supplier_Pricing.Base_Disc_Per_From > 0 ? new SqlParameter("@Base_Disc_Per_From", supplier_Pricing.Base_Disc_Per_From) : new SqlParameter("@Base_Disc_Per_From", DBNull.Value);
+            var base_Disc_Per_To = supplier_Pricing.Base_Disc_Per_To > 0 ? new SqlParameter("@Base_Disc_Per_To", supplier_Pricing.Base_Disc_Per_To) : new SqlParameter("@Base_Disc_Per_To", DBNull.Value);
+            var base_Amt_From = supplier_Pricing.Base_Amt_From > 0 ? new SqlParameter("@Base_Amt_From", supplier_Pricing.Base_Amt_From) : new SqlParameter("@Base_Amt_From", DBNull.Value);
+            var base_Amt_To = supplier_Pricing.Base_Amt_To > 0 ? new SqlParameter("@Base_Amt_To", supplier_Pricing.Base_Amt_To) : new SqlParameter("@Base_Amt_To", DBNull.Value);
             var supplier_Filter_Type = !string.IsNullOrEmpty(supplier_Pricing.Supplier_Filter_Type) ? new SqlParameter("@Supplier_Filter_Type", supplier_Pricing.Supplier_Filter_Type) : new SqlParameter("@Supplier_Filter_Type", DBNull.Value);
             var calculation_Type = !string.IsNullOrEmpty(supplier_Pricing.Calculation_Type) ? new SqlParameter("@Calculation_Type", supplier_Pricing.Calculation_Type) : new SqlParameter("@Calculation_Type", DBNull.Value);
             var sign = !string.IsNullOrEmpty(supplier_Pricing.Sign) ? new SqlParameter("@Sign", supplier_Pricing.Sign) : new SqlParameter("@Sign", DBNull.Value);
@@ -329,15 +364,19 @@ namespace astute.Repository
             var ms_sp_value_4 = supplier_Pricing.MS_SP_Value_4 > 0 ? new SqlParameter("@MS_SP_Value_4", supplier_Pricing.MS_SP_Value_4) : new SqlParameter("@MS_SP_Value_4", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Supplier_Pricing_Insert_Update @Supplier_Pricing_Id, @Supplier_Id, @Shape, @Cts, @Color, @Clarity, @Cut, @Polish, @Symm, @Flour, @Lab,
-                        @Shade, @Luster, @Location, @Status, @Base_Disc_Per, @Base_Amt, @Final_Disc_Per, @Final_Amt, @Supplier_Filter_Type, @Calculation_Type, @Sign, @Value_1, @Value_2, @Value_3, @Value_4, @SP_Calculation_Type, @SP_Sign,
-                        @SP_Start_Date, @SP_Start_Time, @SP_End_Date, @SP_End_Time, @SP_Value_1, @SP_Value_2, @SP_Value_3, @SP_Value_4, @MS_Calculation_Type, @MS_Sign, @MS_Value_1,
-                        @MS_Value_2, @MS_Value_3, @MS_Value_4, @MS_SP_Calculation_Type, @MS_SP_Sign, @MS_SP_Start_Date, @MS_SP_Start_Time, @MS_SP_End_Date, @MS_SP_End_Time, @MS_SP_Value_1,
-                        @MS_SP_Value_2, @MS_SP_Value_3, @MS_SP_Value_4", supplier_Pricing_Id, supplier_Id, shape, cts, color, clarity, cut, polish, symm, flour, lab, shade, luster,
-                        location, status, base_Disc_Per, base_Amt, final_Disc_Per, final_Amt, supplier_Filter_Type, calculation_Type, sign, value_1, value_2, value_3, value_4,
-                        sp_calculation_Type, sp_sign, sp_start_date, sp_start_time, sp_end_time, sp_end_time, sp_value_1, sp_value_2, sp_value_3, sp_value_4, ms_calculation_Type,
-                        ms_sign, ms_value_1, ms_value_2, ms_value_3, ms_value_4, ms_sp_calculation_Type, ms_sp_sign, ms_sp_start_date, ms_sp_start_time, ms_sp_end_date, ms_sp_end_time,
-                        ms_sp_value_1, ms_sp_value_2, ms_sp_value_3, ms_sp_value_4));
+                        .ExecuteSqlRawAsync(@"EXEC Supplier_Pricing_Insert_Update @Supplier_Pricing_Id @Supplier_Id, @Shape, @Cts, @Color, @Clarity, @Cut, @Polish, @Symm, @Flour, @Lab, @Shade, @Luster, @Bgm, @Culet,
+                        @Location, @Status, @Goods_Type, @Length_From, @Length_To, @Width_From, @Width_To, @Depth_From, @Depth_To, @Depth_Per_From, @Depth_Per_To, @Table_Per_From, @Table_Per_To,
+                        @Crown_Angle_From, @Crown_Angle_To, @Crown_Height_From, @Crown_Height_To, @Pavilion_Angle_From, @Pavilion_Angle_To, @Girdle_Per_From, @Girdle_Per_To, @Table_Black, @Side_Black,
+                        @Table_White, @Side_white, @Key_To_Symbol, @Comment, @Cert_Type, @Table_Open, @Crown_Open, @Pavilion_Open, @Girdle_Open, @Base_Disc_Per_From, @Base_Disc_Per_To, @Base_Amt_From,
+                        @Base_Amt_To, @Supplier_Filter_Type, @Calculation_Type, @Sign, @Value_1, @Value_2, @Value_3, @Value_4, @SP_Calculation_Type, @SP_Sign, @SP_Start_Date, @SP_Start_Time, @SP_End_Date,
+                        @SP_End_Time, @SP_Value_1, @SP_Value_2, @SP_Value_3, @SP_Value_4, @MS_Calculation_Type, @MS_Sign, @MS_Value_1, @MS_Value_2, @MS_Value_3, @MS_Value_4, @MS_SP_Calculation_Type,
+                        @MS_SP_Sign, @MS_SP_Start_Date, @MS_SP_Start_Time, @MS_SP_End_Date, @MS_SP_End_Time, @MS_SP_Value_1, @MS_SP_Value_2, @MS_SP_Value_3, @MS_SP_Value_4",
+                        supplier_Pricing_Id,supplier_Id,shape,cts,color,clarity,cut,polish,symm,flour,lab,shade,luster,bgm,culet,location,status,goods_Type,length_From,length_To,width_From,
+                        width_To,depth_From,depth_To,depth_Per_From,depth_Per_To,table_Per_From,table_Per_To,crown_Angle_From,crown_Angle_To,crown_Height_From,crown_Height_To,pavilion_Angle_From,
+                        pavilion_Angle_To,girdle_Per_From,girdle_Per_To,table_Black,side_Black,table_White,side_white,key_To_Symbol,comment,cert_Type,table_Open,crown_Open,pavilion_Open,girdle_Open,
+                        base_Disc_Per_From,base_Disc_Per_To,base_Amt_From,base_Amt_To,supplier_Filter_Type,calculation_Type,sign,value_1,value_2,value_3,value_4, sp_calculation_Type, sp_sign,sp_start_date,
+                        sp_start_time,sp_end_date,sp_end_time,sp_value_1,sp_value_2,sp_value_3,sp_value_4, ms_calculation_Type, ms_sign,ms_value_1,ms_value_2,ms_value_3,ms_value_4, ms_sp_calculation_Type,
+                        ms_sp_sign,ms_sp_start_date,ms_sp_start_time,ms_sp_end_date,ms_sp_end_time,ms_sp_value_1,ms_sp_value_2,ms_sp_value_3,ms_sp_value_4));
 
             return result;
         }

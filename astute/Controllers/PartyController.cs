@@ -1267,7 +1267,7 @@ namespace astute.Controllers
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
-                            message = supplier_Pricing.Supplier_Pricing_Id == 0 ? CoreCommonMessage.SupplierPricingCreated : CoreCommonMessage.SupplierPricingUpdated,
+                            message = supplier_Pricing.Supplier_Pricing_Id == 0 ? CoreCommonMessage.SupplierPricingCreated : CoreCommonMessage.SupplierPricingUpdated
                         });
                     }
                 }
@@ -1690,7 +1690,6 @@ namespace astute.Controllers
             }
 
         }
-
         #endregion
 
         #region Api/FTP/File Party Name

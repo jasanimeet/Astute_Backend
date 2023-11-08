@@ -50,3 +50,4 @@
 /astute/obj/Release/net6.0/PubTmp/Out/appsettings.json
 *.targets
 /astute/astute.csproj.user
+/astute/Properties/PublishProfiles/FolderProfile4.pubxml.user
