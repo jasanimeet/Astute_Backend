@@ -544,15 +544,56 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<IList<City_Master>> Get_Active_Cities(string city)
-        {
-            var _city = !string.IsNullOrEmpty(city) ? new SqlParameter("@city", city) : new SqlParameter("@city", DBNull.Value);
+        //public async Task<IList<City_Master>> Get_Active_Cities(string city)
+        //{
+        //    var _city = !string.IsNullOrEmpty(city) ? new SqlParameter("@city", city) : new SqlParameter("@city", DBNull.Value);
 
-            var result = await Task.Run(() => _dbContext.City_Master
-                 .FromSqlRaw(@"exec City_Mas_Active_Select @city", _city).ToListAsync());
+        //    var result = await Task.Run(() => _dbContext.City_Master
+        //         .FromSqlRaw(@"exec City_Mas_Active_Select @city", _city).ToListAsync());
+
+        //    return result;
+        //}
+        public async Task<List<Dictionary<string, object>>> Get_Active_Cities(string city)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("City_Mas_Active_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@city", city));
+
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    var dataTable = ds.Tables[ds.Tables.Count - 1];
+
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        var dict = new Dictionary<string, object>();
+                        foreach (DataColumn col in dataTable.Columns)
+                        {
+                            if (row[col] == DBNull.Value)
+                            {
+                                dict[col.ColumnName] = null;
+                            }
+                            else
+                            {
+                                dict[col.ColumnName] = row[col];
+                            }
+                        }
+                        result.Add(dict);
+                    }
+                }
+            }
 
             return result;
-        }        
+        }
         public async Task<int> CityChangeStatus(int city_Id, bool status)
         {
             var cityId = new SqlParameter("@City_Id", city_Id);

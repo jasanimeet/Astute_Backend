@@ -48,7 +48,7 @@ namespace astute.Controllers
 
         #region Utilities
         private DataTable Set_Column_In_Datatable(DataTable dt_stock_data, IList<Stock_Data> stock_Datas)
-        {   
+        {
             dt_stock_data.Columns.Add("SUPPLIER_NO", typeof(string));
             dt_stock_data.Columns.Add("CERTIFICATE_NO", typeof(string));
             dt_stock_data.Columns.Add("LAB", typeof(string));
@@ -1325,8 +1325,8 @@ namespace astute.Controllers
                             dataTable.Rows.Add(item.Sup_Id, item.Supp_Cat_Name, item.Cat_val_Id, item.Status);
                         }
                         var result = await _supplierService.Insert_Update_Supplier_Value_Mapping(dataTable);
-                        if(result > 0)
-                        {   
+                        if (result > 0)
+                        {
                             return Ok(new
                             {
                                 statusCode = HttpStatusCode.OK,
@@ -1538,7 +1538,7 @@ namespace astute.Controllers
             try
             {
                 if (ModelState.IsValid)
-                {  
+                {
                     var (message, stock_Data_Id) = await _supplierService.Stock_Data_Insert_Update(stock_Data_Master);
                     if (message == "success" && stock_Data_Id > 0)
                     {
@@ -1570,14 +1570,14 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_stock_data_distinct_column_values")]
         [Authorize]
-        public async Task<IActionResult> Get_Stock_Data_Distinct_Column_Values(string column_Name,int supplier_Id)
+        public async Task<IActionResult> Get_Stock_Data_Distinct_Column_Values(string column_Name, int supplier_Id)
         {
             try
             {
                 var result = await _supplierService.Get_Stock_Data_Distinct_Column_Values(column_Name, supplier_Id);
-                if(result != null && result.Count > 0)
+                if (result != null && result.Count > 0)
                 {
-                    return Ok(new 
+                    return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.DataSuccessfullyFound,
@@ -1630,20 +1630,31 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_stock_number_generation")]
         [Authorize]
-        public async Task<IActionResult> Create_Stock_Number_Generation(Stock_Number_Generation stock_Number_Generation)
+        public async Task<IActionResult> Create_Stock_Number_Generation(IList<Stock_Number_Generation> stock_Number_Generations)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _supplierService.Add_Update_Stock_Number_Generation(stock_Number_Generation);
-                    if (result > 0)
+                    bool success = false;
+                    if (stock_Number_Generations != null && stock_Number_Generations.Count > 0)
                     {
-                        return Ok(new
+                        foreach (var item in stock_Number_Generations)
                         {
-                            statusCode = HttpStatusCode.OK,
-                            message = stock_Number_Generation.Id == 0 ? CoreCommonMessage.StockNumberCreated : CoreCommonMessage.StockNumberUpdated,
-                        });
+                            var result = await _supplierService.Add_Update_Stock_Number_Generation(item);
+                            if (result > 0)
+                            {
+                                success = true;
+                            }
+                        }
+                        if (success)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.StockNumberUpdated,
+                            });
+                        }
                     }
                 }
                 return BadRequest(ModelState);
@@ -1696,11 +1707,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_api_ftp_file_party_select")]
         [Authorize]
-        public async Task<IActionResult> Get_Api_Ftp_File_Party_Select(int party_Id)
+        public async Task<IActionResult> Get_Api_Ftp_File_Party_Select(int party_Id, bool lab, bool overseas)
         {
             try
             {
-                var result = await _supplierService.Get_Api_Ftp_File_Party_Select(party_Id);
+                var result = await _supplierService.Get_Api_Ftp_File_Party_Select(party_Id, lab, overseas);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
