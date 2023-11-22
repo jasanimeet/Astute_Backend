@@ -45,8 +45,9 @@ namespace astute.Repository
                 issuer: _configuration["JwtToken:Issuer"]!,
                 audience: _configuration["JwtToken:Audience"],
                 claims: clims,
-                expires: DateTime.UtcNow.AddHours(5),
-                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
+                expires: DateTime.UtcNow.AddMinutes(120),
+                //signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
+                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature)
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);

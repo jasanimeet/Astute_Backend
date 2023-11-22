@@ -802,7 +802,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_update_supplier_detail")]
         [Authorize]
-        public async Task<IActionResult> Create_Update_Supplier_Detail([FromForm] Supplier_Details supplier_Details, IFormFile File_Location)
+        public virtual async Task<IActionResult> Create_Update_Supplier_Detail([FromForm] Supplier_Details supplier_Details, IFormFile File_Location)
         {
             try
             {
@@ -897,7 +897,7 @@ namespace astute.Controllers
                         }
                     }
                     if (success)
-                    {
+                    {   
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
@@ -1226,12 +1226,12 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_supplier_pricing")]
         [Authorize]
-        public async Task<IActionResult> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id)
+        public async Task<IActionResult> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type)
         {
             try
             {
-                var result = await _supplierService.Get_Supplier_Pricing(supplier_Pricing_Id, supplier_Id);
-                if (result != null)
+                var result = await _supplierService.Get_Supplier_Pricing(supplier_Pricing_Id, supplier_Id, supplier_Filter_Type);
+                if (result != null && result.Count > 0)
                 {
                     return Ok(new
                     {
@@ -1276,6 +1276,38 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Supplier_Pricing", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_supplier_pricing")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Supplier_Pricing(int supplier_Pricing_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Delete_Supplier_Pricing(supplier_Pricing_Id);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.SupplierPricingDeleted,
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Supplier_Pricing", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

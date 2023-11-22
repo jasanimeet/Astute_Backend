@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using astute.Authorization;
 using astute.Models;
@@ -80,7 +81,10 @@ namespace astute
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = Configuration["JwtToken:Issuer"],
                     ValidAudience = Configuration["JwtToken:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtToken:SecretKey"]))                    
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtToken:SecretKey"])),
+                    //ValidateLifetime = true, // Validate the token's lifetime
+                    //ClockSkew = TimeSpan.Zero,
+
                 };                
             });
             services.AddHttpContextAccessor();

@@ -22,8 +22,9 @@ namespace astute.Repository
         #endregion
 
         #region Supplier Pricing
-        Task<List<Dictionary<string, object>>> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id);
+        Task<List<Dictionary<string, object>>> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type);
         Task<int> Add_Update_Supplier_Pricing(Supplier_Pricing supplier_Pricing);
+        Task<int> Delete_Supplier_Pricing(int supplier_Pricing_Id);
         #endregion
 
         #region Supplier Stock
@@ -41,9 +42,8 @@ namespace astute.Repository
 
         #endregion
 
-        #region  Api/FTP/File Party Name 
+        #region  Api/FTP/File Party Name
         Task<IList<DropdownModel>> Get_Api_Ftp_File_Party_Select(int party_Id, bool lab, bool overseas);
-
         #endregion
 
     }
