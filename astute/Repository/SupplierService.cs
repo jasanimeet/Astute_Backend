@@ -394,7 +394,7 @@ namespace astute.Repository
             };
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Stock_Data_Master_Insert_Update @Stock_Data_Id, @Supplier_Id, @Upload_Method, @Inserted_Id OUT", stock_Data_Id, supplier_Id, upload_Method, inserted_Id));
+                        .ExecuteSqlRawAsync(@"EXEC Stock_Data_Master_Test_Insert_Update @Stock_Data_Id, @Supplier_Id, @Upload_Method, @Inserted_Id OUT", stock_Data_Id, supplier_Id, upload_Method, inserted_Id));
 
             int _insertedId = (int)inserted_Id.Value;
             if(_insertedId > 0)
@@ -413,7 +413,7 @@ namespace astute.Repository
             var stock_Data_Id = new SqlParameter("@Stock_Data_Id", Stock_Data_Id);
 
             var result = await Task.Run(() => _dbContext.Database
-            .ExecuteSqlRawAsync(@"exec [Stock_Data_Details_Insert_Update] @Stock_data,@Stock_Data_Id", parameter, stock_Data_Id));
+            .ExecuteSqlRawAsync(@"exec [Stock_Data_Details_Insert_Update_Test] @Stock_data,@Stock_Data_Id", parameter, stock_Data_Id));
 
             return result;
         }
