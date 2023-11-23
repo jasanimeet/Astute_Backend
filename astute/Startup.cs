@@ -3,6 +3,7 @@ using System.Text;
 using astute.Authorization;
 using astute.Models;
 using astute.Repository;
+using astute.TaskScheduler;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,6 +41,7 @@ namespace astute
             {
                 options.MultipartBodyLengthLimit = int.MaxValue; // Adjust as needed
             });
+            services.AddHostedService<ScheduledJobService>();
 
             services.AddDbContext<AstuteDbContext>();
             services.AddScoped<ICategoryService, CategoryService>();
