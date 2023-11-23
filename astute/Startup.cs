@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.Text;
 using astute.Authorization;
 using astute.Models;
@@ -41,7 +42,6 @@ namespace astute
             {
                 options.MultipartBodyLengthLimit = int.MaxValue; // Adjust as needed
             });
-            services.AddHostedService<ScheduledJobService>();
 
             services.AddDbContext<AstuteDbContext>();
             services.AddScoped<ICategoryService, CategoryService>();
@@ -87,9 +87,17 @@ namespace astute
                     //ValidateLifetime = true, // Validate the token's lifetime
                     //ClockSkew = TimeSpan.Zero,
 
-                };                
+                };
             });
+
+            var schedulerEnabled = Configuration.GetValue<bool>("Scheduler_Enabled");
+            if (schedulerEnabled)
+            {
+                services.AddHostedService<ScheduledJobService>();
+            }
+
             services.AddHttpContextAccessor();
+
             services.AddAuthorization();
         }
 

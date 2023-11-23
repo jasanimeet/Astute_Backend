@@ -2,6 +2,7 @@ using astute.TaskScheduler;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Configuration;
 
 namespace astute
 {
@@ -9,14 +10,7 @@ namespace astute
     {
         public static void Main(string[] args)
         {
-            //CreateHostBuilder(args).Build().Run();
-            var builder = CreateHostBuilder(args);
-            builder.ConfigureServices((hostContext, services) =>
-            {
-                services.AddHostedService<ScheduledJobService>();
-            });
-            var host = builder.Build();
-            host.Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
