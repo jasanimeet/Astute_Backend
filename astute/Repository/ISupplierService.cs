@@ -23,8 +23,14 @@ namespace astute.Repository
 
         #region Supplier Pricing
         Task<List<Dictionary<string, object>>> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type);
-        Task<int> Add_Update_Supplier_Pricing(Supplier_Pricing supplier_Pricing);
+        Task<(string, int)> Add_Update_Supplier_Pricing(Supplier_Pricing supplier_Pricing);
         Task<int> Delete_Supplier_Pricing(int supplier_Pricing_Id);
+        #endregion
+
+        #region Supplier Pricing Key To Symbole
+        Task<IList<Supplier_Pricing_Key_To_Symbole>> Get_Supplier_Pricing_Key_To_Symbole(int supplier_Pricing_Id);
+        Task<int> Add_Update_Supplier_Pricing_Key_To_Symbole(Supplier_Pricing_Key_To_Symbole supplier_Pricing_Key_To_Symbole);
+        Task<int> Delete_Supplier_Pricing_Key_To_Symbole(int supplier_Pricing_Id);
         #endregion
 
         #region Supplier Stock

@@ -237,6 +237,7 @@ namespace astute.Repository
         public async Task<List<Dictionary<string, object>>> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type)
         {
             var result = new List<Dictionary<string, object>>();
+            var supp_Pricing_Key_To_Sym_List = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
                 using (var command = new SqlCommand("Supplier_Pricing_Select", connection))
@@ -273,11 +274,46 @@ namespace astute.Repository
                         result.Add(dict);
                     }
                 }
+
+                using (var command = new SqlCommand("Supplier_Pricing_Key_To_Symbol_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(supplier_Pricing_Id > 0 ? new SqlParameter("@Supplier_Pricing_Id", supplier_Pricing_Id) : new SqlParameter("@Supplier_Pricing_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    var dataTable = ds.Tables[ds.Tables.Count - 1];
+
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        var dict = new Dictionary<string, object>();
+                        foreach (DataColumn col in dataTable.Columns)
+                        {
+                            if (row[col] == DBNull.Value)
+                            {
+                                dict[col.ColumnName] = null;
+                            }
+                            else
+                            {
+                                dict[col.ColumnName] = row[col];
+                            }
+                        }
+                        supp_Pricing_Key_To_Sym_List.Add(dict);
+                    }
+                }
             }
+
+            
 
             return result;
         }
-        public async Task<int> Add_Update_Supplier_Pricing(Supplier_Pricing supplier_Pricing)
+        public async Task<(string,int)> Add_Update_Supplier_Pricing(Supplier_Pricing supplier_Pricing)
         {
             var supplier_Pricing_Id = new SqlParameter("@Supplier_Pricing_Id", supplier_Pricing.Supplier_Pricing_Id);
             var supplier_Id = supplier_Pricing.Supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Pricing.Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
@@ -366,6 +402,10 @@ namespace astute.Repository
             var ms_sp_value_2 = supplier_Pricing.MS_SP_Value_2 > 0 ? new SqlParameter("@MS_SP_Value_2", supplier_Pricing.MS_SP_Value_2) : new SqlParameter("@MS_SP_Value_2", DBNull.Value);
             var ms_sp_value_3 = supplier_Pricing.MS_SP_Value_3 > 0 ? new SqlParameter("@MS_SP_Value_3", supplier_Pricing.MS_SP_Value_3) : new SqlParameter("@MS_SP_Value_3", DBNull.Value);
             var ms_sp_value_4 = supplier_Pricing.MS_SP_Value_4 > 0 ? new SqlParameter("@MS_SP_Value_4", supplier_Pricing.MS_SP_Value_4) : new SqlParameter("@MS_SP_Value_4", DBNull.Value);
+            var inserted_Id = new SqlParameter("@Inserted_Id", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Supplier_Pricing_Insert_Update @Supplier_Pricing_Id, @Supplier_Id, @Shape, @Cts, @Color, @Fancy_Color, @Clarity, @Cut, @Polish, @Symm, @Fls_Intensity, @Lab, @Shade, @Luster, @Bgm, @Culet,
@@ -381,8 +421,12 @@ namespace astute.Repository
                         base_Disc_From, base_Disc_To, base_Amount_From, base_Amount_To, supplier_Filter_Type, calculation_Type, sign, value_1, value_2, value_3, value_4, sp_calculation_Type, sp_sign,sp_start_date,
                         sp_start_time, sp_end_date, sp_end_time, sp_value_1, sp_value_2, sp_value_3, sp_value_4, ms_calculation_Type, ms_sign, ms_value_1, ms_value_2, ms_value_3, ms_value_4, ms_sp_calculation_Type,
                         ms_sp_sign, ms_sp_start_date, ms_sp_start_time, ms_sp_end_date, ms_sp_end_time, ms_sp_value_1, ms_sp_value_2, ms_sp_value_3, ms_sp_value_4));
-
-            return result;
+            int _insertedId = (int)inserted_Id.Value;
+            if (_insertedId > 0)
+            {
+                return ("success", _insertedId);
+            }
+            return ("error", 0);
         }
         public async Task<int> Delete_Supplier_Pricing(int supplier_Pricing_Id)
         {
@@ -390,6 +434,33 @@ namespace astute.Repository
         }
         #endregion
 
+
+        #region Supplier Pricing Key To Symbole
+        public async Task<IList<Supplier_Pricing_Key_To_Symbole>> Get_Supplier_Pricing_Key_To_Symbole(int supplier_Pricing_Id)
+        {
+            var Supplier_Pricing_Id = supplier_Pricing_Id > 0 ? new SqlParameter("@supplier_Pricing_Id", supplier_Pricing_Id) : new SqlParameter("@supplier_Pricing_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Supplier_Pricing_Key_To_Symbole
+                            .FromSqlRaw(@"exec Supplier_Pricing_Key_To_Symbol_Select @supplier_Pricing_Id", Supplier_Pricing_Id).ToListAsync());
+
+            return result;
+        }
+        public async Task<int> Add_Update_Supplier_Pricing_Key_To_Symbole(Supplier_Pricing_Key_To_Symbole supplier_Pricing_Key_To_Symbole)
+        {
+            var supplier_Pricing_Id = new SqlParameter("@Supplier_Pricing_Id", supplier_Pricing_Key_To_Symbole.Supplier_Pricing_Id);
+            var cat_Val_Id = supplier_Pricing_Key_To_Symbole.Cat_Val_Id > 0 ? new SqlParameter("@Cat_Val_Id", supplier_Pricing_Key_To_Symbole.Cat_Val_Id) : new SqlParameter("@Cat_Val_Id", DBNull.Value);
+            var symbol_Status = supplier_Pricing_Key_To_Symbole.Symbol_Status != null ? new SqlParameter("@Symbol_Status", supplier_Pricing_Key_To_Symbole.Symbol_Status) : new SqlParameter("@symbol_Status", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Supplier_Pricing_Key_To_Symbol_Insert_Update @Supplier_Pricing_Id, @Cat_Val_Id, @Symbol_Status",
+                        supplier_Pricing_Id, cat_Val_Id, symbol_Status));
+            return result;
+        }
+        public async Task<int> Delete_Supplier_Pricing_Key_To_Symbole(int supplier_Pricing_Id)
+        {
+            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Supplier_Pricing_Key_To_Symbol_Delete {supplier_Pricing_Id}"));
+        }
+        #endregion
         #region Supplier Stock
         public async Task<(string, int)> Stock_Data_Insert_Update(Stock_Data_Master stock_Data_Master)
         {

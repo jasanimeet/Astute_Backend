@@ -1261,14 +1261,21 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _supplierService.Add_Update_Supplier_Pricing(supplier_Pricing);
-                    if (result > 0)
+
+                    var (message, stock_Data_Id) = await _supplierService.Add_Update_Supplier_Pricing(supplier_Pricing);
+                    if (message == "success" && stock_Data_Id > 0)
                     {
-                        return Ok(new
+
+                        var result = await _supplierService.Add_Update_Supplier_Pricing_Key_To_Symbole(supplier_Pricing.supplier_Pricing_Key_To_Symbole);
+                        if (result > 0)
                         {
-                            statusCode = HttpStatusCode.OK,
-                            message = supplier_Pricing.Supplier_Pricing_Id == 0 ? CoreCommonMessage.SupplierPricingCreated : CoreCommonMessage.SupplierPricingUpdated
-                        });
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = supplier_Pricing.Supplier_Pricing_Id == 0 ? CoreCommonMessage.SupplierPricingCreated : CoreCommonMessage.SupplierPricingUpdated
+                            });
+                        }
+                      
                     }
                 }
                 return BadRequest(ModelState);
@@ -1293,6 +1300,7 @@ namespace astute.Controllers
                 var result = await _supplierService.Delete_Supplier_Pricing(supplier_Pricing_Id);
                 if (result > 0)
                 {
+                    var result_Supplier_Pricing_Key_To_Symbole = await _supplierService.Delete_Supplier_Pricing_Key_To_Symbole(supplier_Pricing_Id);
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
