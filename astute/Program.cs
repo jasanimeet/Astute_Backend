@@ -9,14 +9,14 @@ namespace astute
     {
         public static void Main(string[] args)
         {
-            //CreateHostBuilder(args).Build().Run();
-            var builder = CreateHostBuilder(args);
-            builder.ConfigureServices((hostContext, services) =>
-            {
-                services.AddHostedService<ScheduledJobService>();
-            });
-            var host = builder.Build();
-            host.Run();
+            CreateHostBuilder(args).Build().Run();
+            //var builder = CreateHostBuilder(args);
+            //builder.ConfigureServices((hostContext, services) =>
+            //{
+            //    services.AddHostedService<ScheduledJobService>();
+            //});
+            //var host = builder.Build();
+            //host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
