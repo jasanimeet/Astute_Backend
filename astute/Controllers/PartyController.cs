@@ -897,7 +897,7 @@ namespace astute.Controllers
                         }
                     }
                     if (success)
-                    {   
+                    {
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
@@ -1262,20 +1262,30 @@ namespace astute.Controllers
                 if (ModelState.IsValid)
                 {
 
-                    var (message, stock_Data_Id) = await _supplierService.Add_Update_Supplier_Pricing(supplier_Pricing);
-                    if (message == "success" && stock_Data_Id > 0)
-                    {
+                    var (message, supplier_Pricing_Id) = await _supplierService.Add_Update_Supplier_Pricing(supplier_Pricing);
 
-                        var result = await _supplierService.Add_Update_Supplier_Pricing_Key_To_Symbole(supplier_Pricing.supplier_Pricing_Key_To_Symbole);
-                        if (result > 0)
+                    if (message == "success" && supplier_Pricing_Id > 0)
+                    {
+                        if (supplier_Pricing.Supplier_Pricing_Key_To_Symbol_List != null && supplier_Pricing.Supplier_Pricing_Key_To_Symbol_List.Count > 0)
                         {
-                            return Ok(new
+                            supplier_Pricing.Supplier_Pricing_Key_To_Symbol_List.ForEach(item => item.Supplier_Pricing_Id = supplier_Pricing_Id);
+
+                            DataTable dataTable = new DataTable();
+                            dataTable.Columns.Add("Supplier_Pricing_Id", typeof(int));
+                            dataTable.Columns.Add("Cat_Val_Id", typeof(int));
+                            dataTable.Columns.Add("Symbol_Status", typeof(bool));
+
+                            foreach (var item in supplier_Pricing.Supplier_Pricing_Key_To_Symbol_List)
                             {
-                                statusCode = HttpStatusCode.OK,
-                                message = supplier_Pricing.Supplier_Pricing_Id == 0 ? CoreCommonMessage.SupplierPricingCreated : CoreCommonMessage.SupplierPricingUpdated
-                            });
+                                dataTable.Rows.Add(item.Supplier_Pricing_Id, item.Cat_Val_Id, item.Symbol_Status);
+                            }
+                            await _supplierService.Add_Update_Supplier_Pricing_Key_To_Symbole(dataTable);
                         }
-                      
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = supplier_Pricing.Supplier_Pricing_Id == 0 ? CoreCommonMessage.SupplierPricingCreated : CoreCommonMessage.SupplierPricingUpdated
+                        });
                     }
                 }
                 return BadRequest(ModelState);
@@ -1297,10 +1307,10 @@ namespace astute.Controllers
         {
             try
             {
+                var result_Supplier_Pricing_Key_To_Symbole = await _supplierService.Delete_Supplier_Pricing_Key_To_Symbole(supplier_Pricing_Id);
                 var result = await _supplierService.Delete_Supplier_Pricing(supplier_Pricing_Id);
                 if (result > 0)
                 {
-                    var result_Supplier_Pricing_Key_To_Symbole = await _supplierService.Delete_Supplier_Pricing_Key_To_Symbole(supplier_Pricing_Id);
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
