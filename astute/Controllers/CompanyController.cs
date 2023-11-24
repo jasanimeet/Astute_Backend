@@ -241,6 +241,7 @@ namespace astute.Controllers
                             dataTable.Columns.Add("QueryFlag", typeof(string));
                                                         
                             DataTable dataTable2 = new DataTable();
+
                             if (CoreService.Enable_Trace_Records(_configuration))
                             {
                                 dataTable2.Columns.Add("Employee_Id", typeof(int));

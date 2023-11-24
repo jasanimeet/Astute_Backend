@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing;
 
 namespace astute.Models
@@ -96,6 +98,7 @@ namespace astute.Models
         public float? MS_SP_Value_2 { get; set; }
         public float? MS_SP_Value_3 { get; set; }
         public float? MS_SP_Value_4 { get; set; }
-        public Supplier_Pricing_Key_To_Symbole supplier_Pricing_Key_To_Symbole { get; set; }
+        [NotMapped]
+        public List<Supplier_Pricing_Key_To_Symbole> Supplier_Pricing_Key_To_Symbol_List { get; set; } = new List<Supplier_Pricing_Key_To_Symbole>();
     }
 }

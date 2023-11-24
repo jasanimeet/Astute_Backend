@@ -28,8 +28,7 @@ namespace astute.Repository
         #endregion
 
         #region Supplier Pricing Key To Symbole
-        Task<IList<Supplier_Pricing_Key_To_Symbole>> Get_Supplier_Pricing_Key_To_Symbole(int supplier_Pricing_Id);
-        Task<int> Add_Update_Supplier_Pricing_Key_To_Symbole(Supplier_Pricing_Key_To_Symbole supplier_Pricing_Key_To_Symbole);
+        Task<int> Add_Update_Supplier_Pricing_Key_To_Symbole(DataTable dataTable);
         Task<int> Delete_Supplier_Pricing_Key_To_Symbole(int supplier_Pricing_Id);
         #endregion
 
