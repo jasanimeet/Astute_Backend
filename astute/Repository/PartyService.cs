@@ -20,16 +20,19 @@ namespace astute.Repository
         private readonly AstuteDbContext _dbContext;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ISupplierService _supplierService;
         #endregion
 
         #region Ctor
         public PartyService(AstuteDbContext dbContext,
             IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            ISupplierService supplierService)
         {
             _dbContext = dbContext;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
+            _supplierService = supplierService;
         }
         #endregion
 
@@ -536,6 +539,23 @@ namespace astute.Repository
                             .AsEnumerable()
                             .FirstOrDefault());
 
+            return result;
+        }
+        public async Task<IList<Party_API_With_Column_Mapping>> Get_Party_API_With_Column_Mapping()
+        {
+            var _api_Id = new SqlParameter("@API_Id", DBNull.Value);
+            var _party_Id = new SqlParameter("@Party_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Party_API_With_Column_Mapping
+                            .FromSqlRaw(@"exec Party_Api_Col_Map_Val_Map_Select @API_Id, @Party_Id", _api_Id, _party_Id)
+                            .ToList());
+            if(result != null && result.Count > 0)
+            {
+                foreach( var item in result)
+                {
+                    item.Supplier_Column_Mapping_List = await _supplierService.Get_Supplier_Column_Mapping(item.Party_Id ?? 0, "C", "API");
+                }
+            }
             return result;
         }
         #endregion

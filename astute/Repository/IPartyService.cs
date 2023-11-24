@@ -61,6 +61,7 @@ namespace astute.Repository
         Task<int> Add_Update_Party_API(Party_Api party_Api);
         Task<int> Delete_Party_API(int api_Id);
         Task<Party_Api> Get_Party_API(int api_Id, int party_Id);
+        Task<IList<Party_API_With_Column_Mapping>> Get_Party_API_With_Column_Mapping();
         #endregion
 
         #region Party FTP
