@@ -554,28 +554,53 @@ namespace astute.Repository
                 
                 foreach (var item in result)
                 {
-                    int supp_Id = 0;
-                    supp_Id = item.Party_Id ?? 0;
-                    IList<Supplier_Column_Mapping> supp_col_list = new List<Supplier_Column_Mapping>();
-                    var _supp_Id = supp_Id > 0 ? new SqlParameter("@Supp_Id", supp_Id) : new SqlParameter("@Supp_Id", DBNull.Value);
-                    var _map_Flag = new SqlParameter("@Map_Flag", "C");
-                    var _column_Type = new SqlParameter("@Column_Type", "API");
-
-                    supp_col_list = await Task.Run(() => _dbContext.Supplier_Column_Mapping
-                                    .FromSqlRaw(@"exec Supplier_Column_Mapping_Select @Supp_Id, @Map_Flag, @Column_Type", _supp_Id, _map_Flag, _column_Type)
-                                    .ToListAsync());
-                    
-
-                    //data = await _supplierService.Get_Supplier_Column_Mapping(item.Party_Id ?? 0, "C", "API");
-                    if(supp_col_list != null && supp_col_list.Count > 0)
-                    {
-                        foreach (var obj in supp_col_list)
-                        {
-                            item.Supplier_Column_Mapping_List.Add(obj);
-                        }
-                    }
+                    item.Supplier_Column_Mapping_List = await Common_Funtion_To_Get_Supp_Col_Map(item.Party_Id ?? 0);
                 }
             }
+            return result;
+        }
+        private async Task<List<Dictionary<string, object>>> Common_Funtion_To_Get_Supp_Col_Map(int supp_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                await connection.OpenAsync();
+                using (var command = new SqlCommand("Supplier_Column_Mapping_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@Supp_Id", supp_Id));
+                    command.Parameters.Add(new SqlParameter("@Map_Flag", "C"));
+                    command.Parameters.Add(new SqlParameter("@Column_Type", "API"));
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    var dataTable = ds.Tables[ds.Tables.Count - 1];
+
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        var dict = new Dictionary<string, object>();
+                        foreach (DataColumn col in dataTable.Columns)
+                        {
+                            if (row[col] == DBNull.Value)
+                            {
+                                dict[col.ColumnName] = null;
+                            }
+                            else
+                            {
+                                dict[col.ColumnName] = row[col];
+                            }
+                        }
+                        result.Add(dict);
+                    }
+                }
+                await connection.CloseAsync();
+            }
+
             return result;
         }
         #endregion

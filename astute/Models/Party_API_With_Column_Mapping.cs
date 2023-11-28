@@ -36,6 +36,6 @@ namespace astute.Models
         public string? Stock_Api_Method { get; set; }
         public string? Method_Type { get; set; }
         [NotMapped]
-        public IList<Supplier_Column_Mapping> Supplier_Column_Mapping_List { get; set; } = new List<Supplier_Column_Mapping>();
+        public IList<Dictionary<string, object>> Supplier_Column_Mapping_List { get; set; }
     }
 }
