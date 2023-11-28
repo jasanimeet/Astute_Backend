@@ -2008,11 +2008,10 @@ namespace astute.Controllers
         }
         #endregion
 
-        #region FTP Party
-
+        #region Supplier FTP
         [HttpGet]
         [Route("get_supplier_ftp_file")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> Get_Supplier_Ftp_File(int supp_Id)
         {
             try
