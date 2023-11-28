@@ -18,7 +18,7 @@ namespace astute.CoreServices
     {
         private static Byte[] Key_64 = { 42, 16, 93, 156, 78, 4, 218, 32 };
         private static Byte[] Iv_64 = { 55, 103, 246, 79, 36, 99, 167, 3 };
-        
+
         public static string Encrypt(string cValue, bool isFile = false)
         {
             string cAsVal = Decrypt(cValue);
@@ -141,7 +141,7 @@ namespace astute.CoreServices
             return (paramEmployeeId, paramIpAddress, paramTraceDate, paramTraceTime, paramRecordType);
         }
         public static bool Enable_Trace_Records(IConfiguration _configuration)
-        {            
+        {
             bool isEnable = false;
             string strEnableTraceRecord = _configuration["Enable_Trace_Record"];
             if (!string.IsNullOrEmpty(strEnableTraceRecord))
@@ -150,7 +150,7 @@ namespace astute.CoreServices
             return isEnable;
         }
         public static void Remove_File_From_Folder(string file_Path)
-        {   
+        {
             if (File.Exists(file_Path))
             {
                 File.Delete(file_Path);
@@ -166,12 +166,12 @@ namespace astute.CoreServices
                 }
             }
         }
-        public static void Ftp_File_Download(string ftpServer,  string username, string password, int ftpPort, string remoteFilePath, string localFolderPath)
+        public static void Ftp_File_Download(string ftpServer, string username, string password, int ftpPort, string remoteFilePath, string localFolderPath)
         {
             try
             {
                 // Build the FTP URL including port number
-                string ftpUrl = $"{ftpServer}:{ftpPort}{remoteFilePath}";
+                string ftpUrl = $"ftp://{ftpServer}:{ftpPort}{"/"}{remoteFilePath}";
 
                 // Create the FTP request
                 FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpUrl);
@@ -181,7 +181,7 @@ namespace astute.CoreServices
                 // Get the response and download the file
                 using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
                 using (Stream responseStream = response.GetResponseStream())
-                using (FileStream fileStream = File.Create(Path.Combine(localFolderPath, Path.GetFileName(remoteFilePath))))
+                using (FileStream fileStream = File.Create(localFolderPath))
                 {
                     responseStream.CopyTo(fileStream);
                     Console.WriteLine($"File downloaded to {localFolderPath}");

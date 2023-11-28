@@ -2012,23 +2012,24 @@ namespace astute.Controllers
 
         [HttpGet]
         [Route("get_supplier_ftp_file")]
-        [Authorize]
-        public async Task<IActionResult> Get_Supplier_Ftp_File(string ftpServer, string ftpUsername, string ftpPassword, int ftpPort, string remoteFileName)
+        //[Authorize]
+        public async Task<IActionResult> Get_Supplier_Ftp_File(int supp_Id)
         {
             try
             {
-                if (!string.IsNullOrEmpty(ftpServer) && !string.IsNullOrEmpty(ftpUsername) && !string.IsNullOrEmpty(ftpPassword) && !string.IsNullOrEmpty(remoteFileName) && ftpPort > 0)
+                  var supplier = await _partyService.Get_Party_FTP(0, supp_Id);
+                if (supplier != null)
                 {   
                     string ftpfileName = "/stock-" + Guid.NewGuid().ToString() + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".csv";                    
                     string ftpUrl = _configuration["BaseUrl"] + CoreCommonFilePath.FtpFilesPath + ftpfileName + ".csv";
-                    string localDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Files/FTPFile");
+                    string localDirectoryPath = Path.Combine(Directory.GetCurrentDirectory(), "Files/FTPFile");
 
-                    if (!Directory.Exists(localDirectory))
+                    if (!Directory.Exists(localDirectoryPath))
                     {
-                        Directory.CreateDirectory(localDirectory);
+                        Directory.CreateDirectory(localDirectoryPath);
                     }
-
-                    CoreService.Ftp_File_Download(ftpServer, ftpUsername, ftpPassword, ftpPort, remoteFileName, localDirectory);
+                    string localDirectory = localDirectoryPath + ftpfileName;
+                     CoreService.Ftp_File_Download(supplier.Host, supplier.Ftp_User, supplier.Ftp_Password, (int)supplier.Ftp_Port, supplier.Ftp_File_Name, localDirectory);
 
                     return Ok(new
                     {
