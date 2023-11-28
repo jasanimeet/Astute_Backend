@@ -2008,7 +2008,6 @@ namespace astute.Controllers
         }
         #endregion
 
-
         #region FTP Party
 
         [HttpGet]
@@ -2019,14 +2018,10 @@ namespace astute.Controllers
             try
             {
                 if (!string.IsNullOrEmpty(ftpServer) && !string.IsNullOrEmpty(ftpUsername) && !string.IsNullOrEmpty(ftpPassword) && !string.IsNullOrEmpty(remoteFileName) && ftpPort > 0)
-                {
-                    string baseUrl = _configuration["BaseUrl"] + "/";
-
-                    string projectDirectory = Directory.GetCurrentDirectory();
-                    string localSubDirectory = "Files/FTPFile";
-                    string ftpfileName = "/stock-" + Guid.NewGuid().ToString() + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".csv";
-                    string ftpUrl = baseUrl + localSubDirectory + ftpfileName;
-                    string localDirectory = Path.Combine(projectDirectory, localSubDirectory);
+                {   
+                    string ftpfileName = "/stock-" + Guid.NewGuid().ToString() + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".csv";                    
+                    string ftpUrl = _configuration["BaseUrl"] + CoreCommonFilePath.FtpFilesPath + ftpfileName + ".csv";
+                    string localDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Files/FTPFile");
 
                     if (!Directory.Exists(localDirectory))
                     {
@@ -2041,7 +2036,6 @@ namespace astute.Controllers
                         message = CoreCommonMessage.FileDownloadSuccessfully,
                         data = new { url = ftpUrl }
                     });
-
                 }
                 return BadRequest(new
                 {
