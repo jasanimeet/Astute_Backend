@@ -1470,7 +1470,7 @@ namespace astute.Controllers
                 if (ModelState.IsValid)
                 {
                     if (supplier_Pricings != null && supplier_Pricings.Count > 0)
-                    {   
+                    {
                         bool success = false;
                         if (supplier_Pricings != null && supplier_Pricings.Count > 0)
                         {
@@ -1974,7 +1974,6 @@ namespace astute.Controllers
                     message = ex.Message
                 });
             }
-
         }
         #endregion
 
@@ -2001,6 +2000,59 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Api_Ftp_File_Party_Select", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+
+        #region FTP Party
+
+        [HttpGet]
+        [Route("get_supplier_ftp_file")]
+        [Authorize]
+        public async Task<IActionResult> Get_Supplier_Ftp_File(string ftpServer, string ftpUsername, string ftpPassword, int ftpPort, string remoteFileName)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(ftpServer) && !string.IsNullOrEmpty(ftpUsername) && !string.IsNullOrEmpty(ftpPassword) && !string.IsNullOrEmpty(remoteFileName) && ftpPort > 0)
+                {
+                    string baseUrl = _configuration["BaseUrl"] + "/";
+
+                    string projectDirectory = Directory.GetCurrentDirectory();
+                    string localSubDirectory = "Files/FTPFile";
+                    string ftpfileName = "/stock-" + Guid.NewGuid().ToString() + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".csv";
+                    string ftpUrl = baseUrl + localSubDirectory + ftpfileName;
+                    string localDirectory = Path.Combine(projectDirectory, localSubDirectory);
+
+                    if (!Directory.Exists(localDirectory))
+                    {
+                        Directory.CreateDirectory(localDirectory);
+                    }
+
+                    CoreService.Ftp_File_Download(ftpServer, ftpUsername, ftpPassword, ftpPort, remoteFileName, localDirectory);
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.FileDownloadSuccessfully,
+                        data = new { url = ftpUrl }
+                    });
+
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_Ftp_File", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

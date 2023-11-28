@@ -11,7 +11,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.IO;
 
 namespace astute.CoreServices
 {
@@ -165,6 +164,32 @@ namespace astute.CoreServices
                 {
                     File.Delete(file);
                 }
+            }
+        }
+        public static void Ftp_File_Download(string ftpServer,  string username, string password, int ftpPort, string remoteFilePath, string localFolderPath)
+        {
+            try
+            {
+                // Build the FTP URL including port number
+                string ftpUrl = $"{ftpServer}:{ftpPort}{remoteFilePath}";
+
+                // Create the FTP request
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpUrl);
+                request.Credentials = new NetworkCredential(username, password);
+                request.Method = WebRequestMethods.Ftp.DownloadFile;
+
+                // Get the response and download the file
+                using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                using (Stream responseStream = response.GetResponseStream())
+                using (FileStream fileStream = File.Create(Path.Combine(localFolderPath, Path.GetFileName(remoteFilePath))))
+                {
+                    responseStream.CopyTo(fileStream);
+                    Console.WriteLine($"File downloaded to {localFolderPath}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
             }
         }
     }
