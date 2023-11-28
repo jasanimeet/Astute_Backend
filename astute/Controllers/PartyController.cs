@@ -243,6 +243,141 @@ namespace astute.Controllers
             }
             return dt_stock_data;
         }
+        private DataTable Set_Supplier_Pricing_Column_In_Datatable(DataTable dt_Supplier_Pricing, IList<Supplier_Pricing> supplier_Pricings)
+        {
+            dt_Supplier_Pricing.Columns.Add("Supplier_Pricing_Id", typeof(int));
+            dt_Supplier_Pricing.Columns.Add("Supplier_Id", typeof(int));
+            dt_Supplier_Pricing.Columns.Add("Map_Flag", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Shape", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Cts", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Color", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Fancy_Color", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Clarity", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Cut", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Polish", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Symm", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Fls_Intensity", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Lab", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Shade", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Luster", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Bgm", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Culet", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Location", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Status", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Good_Type", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Length_From", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Length_To", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Width_From", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Width_To", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Depth_From", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Depth_To", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Depth_Per_From", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Depth_Per_To", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Table_Per_From", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Table_Per_To", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Crown_Angle_From", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Crown_Angle_To", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Crown_Height_From", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Crown_Height_To", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Pavilion_Angle_From", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Pavilion_Angle_To", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Pavilion_Height_From", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Pavilion_Height_To", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Girdle_Per_From", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Girdle_Per_To", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Table_Black", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Side_Black", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Table_White", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Side_white", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Comment", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Cert_Type", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Table_Open", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Crown_Open", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Pavilion_Open", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Girdle_Open", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Base_Disc_From", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Base_Disc_To", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Base_Amount_From", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Base_Amount_To", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Supplier_Filter_Type", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Calculation_Type", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Sign", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("Value_1", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Value_2", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Value_3", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Value_4", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("SP_Calculation_Type", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("SP_Sign", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("SP_Start_Date", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("SP_Start_Time", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("SP_End_Date", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("SP_End_Time", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("SP_Value_1", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("SP_Value_2", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("SP_Value_3", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("SP_Value_4", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("MS_Calculation_Type", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("MS_Sign", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("MS_Value_1", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("MS_Value_2", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("MS_Value_3", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("MS_Value_4", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("MS_SP_Calculation_Type", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("MS_SP_Sign", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("MS_SP_Start_Date", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("MS_SP_Start_Time", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("MS_SP_End_Date", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("MS_SP_End_Time", typeof(string));
+            dt_Supplier_Pricing.Columns.Add("MS_SP_Value_1", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("MS_SP_Value_2", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("MS_SP_Value_3", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("MS_SP_Value_4", typeof(float));
+            dt_Supplier_Pricing.Columns.Add("Query_Flag", typeof(string));
+
+            if (supplier_Pricings != null && supplier_Pricings.Count > 0)
+            {
+                foreach (var item in supplier_Pricings)
+                {
+                    dt_Supplier_Pricing.Rows.Add(item.Supplier_Pricing_Id, item.Supplier_Id, item.Map_Flag, item.Shape, item.Cts, item.Color, item.Fancy_Color, item.Clarity, item.Cut,
+                        item.Polish, item.Symm, item.Fls_Intensity, item.Lab, item.Shade, item.Luster, item.Bgm, item.Culet, item.Location, item.Status, item.Good_Type, item.Length_From,
+                        item.Length_To, item.Width_From, item.Width_To, item.Depth_From, item.Depth_To, item.Depth_Per_From, item.Depth_Per_To, item.Table_Per_From, item.Table_Per_To,
+                        item.Crown_Angle_From, item.Crown_Angle_To, item.Crown_Height_From, item.Crown_Height_To, item.Pavilion_Angle_From, item.Pavilion_Angle_To, item.Pavilion_Height_From,
+                        item.Pavilion_Height_To, item.Girdle_Per_From, item.Girdle_Per_To, item.Table_Black, item.Side_Black, item.Table_White, item.Side_white, item.Comment, item.Cert_Type,
+                        item.Table_Open, item.Crown_Open, item.Pavilion_Open, item.Girdle_Open, item.Base_Disc_From, item.Base_Disc_To, item.Base_Amount_From, item.Base_Amount_To, item.Supplier_Filter_Type,
+                        item.Calculation_Type, item.Sign, item.Value_1, item.Value_2, item.Value_3, item.Value_4, item.SP_Calculation_Type, item.SP_Sign, item.SP_Start_Date, item.SP_Start_Time,
+                        item.SP_End_Date, item.SP_End_Time, item.SP_Value_1, item.SP_Value_2, item.SP_Value_3, item.SP_Value_4, item.MS_Calculation_Type, item.MS_Sign, item.MS_Value_1, item.MS_Value_2,
+                        item.MS_Value_3, item.MS_Value_4, item.MS_SP_Calculation_Type, item.MS_SP_Sign, item.MS_SP_Start_Date, item.MS_SP_Start_Time, item.MS_SP_End_Date, item.MS_SP_End_Time,
+                        item.MS_SP_Value_1, item.MS_SP_Value_2, item.MS_SP_Value_3, item.MS_SP_Value_4, item.Query_Flag);
+                }
+            }
+            return dt_Supplier_Pricing;
+        }
+        private DataTable Set_Column_And_Rows_In_DataTable<T>(IList<T> items)
+        {
+            DataTable dt = new DataTable();
+
+            if (items != null && items.Any())
+            {
+                var properties = typeof(T).GetProperties();
+
+                foreach (var prop in properties)
+                {
+                    dt.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
+                }
+
+                foreach (var item in items)
+                {
+                    DataRow row = dt.NewRow();
+                    foreach (var prop in properties)
+                    {
+                        row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
+                    }
+                    dt.Rows.Add(row);
+                }
+            }
+
+            return dt;
+        }
         #endregion
 
         #region Methods
@@ -1095,6 +1230,34 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_party_api_with_column_mapping")]
+        public async Task<IActionResult> Get_Party_API_With_Column_Mapping()
+        {
+            try
+            {
+                var result = await _partyService.Get_Party_API_With_Column_Mapping();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Party_API_With_Column_Mapping", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Value Config
@@ -1226,11 +1389,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_supplier_pricing")]
         [Authorize]
-        public async Task<IActionResult> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type)
+        public async Task<IActionResult> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type, string map_Flag)
         {
             try
             {
-                var result = await _supplierService.Get_Supplier_Pricing(supplier_Pricing_Id, supplier_Id, supplier_Filter_Type);
+                var result = await _supplierService.Get_Supplier_Pricing(supplier_Pricing_Id, supplier_Id, supplier_Filter_Type, map_Flag);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -1252,40 +1415,102 @@ namespace astute.Controllers
             }
         }
 
+        //[HttpPost]
+        //[Route("create_supplier_pricing")]
+        //[Authorize]
+        //public async Task<IActionResult> Create_Supplier_Pricing(Supplier_Pricing supplier_Pricing)
+        //{
+        //    try
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+        //            var (message, supplier_Pricing_Id) = await _supplierService.Add_Update_Supplier_Pricing(supplier_Pricing);
+
+        //            if (message == "success" && supplier_Pricing_Id > 0)
+        //            {
+        //                if (supplier_Pricing.Key_To_Symbol != null && supplier_Pricing.Key_To_Symbol.Count > 0)
+        //                {
+        //                    DataTable dataTable = new DataTable();
+        //                    dataTable.Columns.Add("Supplier_Pricing_Id", typeof(int));
+        //                    dataTable.Columns.Add("Cat_Val_Id", typeof(int));
+        //                    dataTable.Columns.Add("Symbol_Status", typeof(bool));
+
+        //                    foreach (var item in supplier_Pricing.Key_To_Symbol)
+        //                    {
+        //                        dataTable.Rows.Add(supplier_Pricing_Id, item.Cat_Val_Id, item.Symbol_Status);
+        //                    }
+        //                    await _supplierService.Add_Update_Supplier_Pricing_Key_To_Symbole(dataTable);
+        //                }
+        //                return Ok(new
+        //                {
+        //                    statusCode = HttpStatusCode.OK,
+        //                    message = supplier_Pricing.Supplier_Pricing_Id == 0 ? CoreCommonMessage.SupplierPricingCreated : CoreCommonMessage.SupplierPricingUpdated
+        //                });
+        //            }
+        //        }
+        //        return BadRequest(ModelState);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await _commonService.InsertErrorLog(ex.Message, "Create_Supplier_Pricing", ex.StackTrace);
+        //        return Ok(new
+        //        {
+        //            message = ex.Message
+        //        });
+        //    }
+        //}
+
         [HttpPost]
         [Route("create_supplier_pricing")]
         [Authorize]
-        public async Task<IActionResult> Create_Supplier_Pricing(Supplier_Pricing supplier_Pricing)
+        public async Task<IActionResult> Create_Supplier_Pricing(IList<Supplier_Pricing> supplier_Pricings)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-
-                    var (message, supplier_Pricing_Id) = await _supplierService.Add_Update_Supplier_Pricing(supplier_Pricing);
-
-                    if (message == "success" && supplier_Pricing_Id > 0)
-                    {
-                        if (supplier_Pricing.Supplier_Pricing_Key_To_Symbol_List != null && supplier_Pricing.Supplier_Pricing_Key_To_Symbol_List.Count > 0)
+                    if (supplier_Pricings != null && supplier_Pricings.Count > 0)
+                    {   
+                        bool success = false;
+                        if (supplier_Pricings != null && supplier_Pricings.Count > 0)
                         {
-                            supplier_Pricing.Supplier_Pricing_Key_To_Symbol_List.ForEach(item => item.Supplier_Pricing_Id = supplier_Pricing_Id);
-
-                            DataTable dataTable = new DataTable();
-                            dataTable.Columns.Add("Supplier_Pricing_Id", typeof(int));
-                            dataTable.Columns.Add("Cat_Val_Id", typeof(int));
-                            dataTable.Columns.Add("Symbol_Status", typeof(bool));
-
-                            foreach (var item in supplier_Pricing.Supplier_Pricing_Key_To_Symbol_List)
+                            foreach (var item in supplier_Pricings)
                             {
-                                dataTable.Rows.Add(item.Supplier_Pricing_Id, item.Cat_Val_Id, item.Symbol_Status);
+                                if (item.Query_Flag == "D")
+                                {
+                                    var result_Supplier_Pricing_Key_To_Symbol = await _supplierService.Delete_Supplier_Pricing_Key_To_Symbol(item.Supplier_Pricing_Id);
+                                    var result = await _supplierService.Delete_Supplier_Pricing(item.Supplier_Pricing_Id);
+                                }
+                                else
+                                {
+                                    var (message, supplier_pricing_Id) = await _supplierService.Add_Update_Supplier_Pricing(item);
+                                    if (message == "success" && supplier_pricing_Id > 0)
+                                    {
+                                        success = true;
+                                        if (item.Key_To_Symbol != null && item.Key_To_Symbol.Count > 0)
+                                        {
+                                            DataTable dataTable = new DataTable();
+                                            dataTable.Columns.Add("Supplier_Pricing_Id", typeof(int));
+                                            dataTable.Columns.Add("Cat_Val_Id", typeof(int));
+                                            dataTable.Columns.Add("Symbol_Status", typeof(bool));
+                                            foreach (var obj in item.Key_To_Symbol)
+                                            {
+                                                dataTable.Rows.Add(supplier_pricing_Id, obj.Cat_Val_Id, obj.Symbol_Status);
+                                            }
+                                            await _supplierService.Add_Update_Supplier_Pricing_Key_To_Symbol(dataTable);
+                                        }
+                                    }
+                                }
                             }
-                            await _supplierService.Add_Update_Supplier_Pricing_Key_To_Symbole(dataTable);
                         }
-                        return Ok(new
+                        if (success)
                         {
-                            statusCode = HttpStatusCode.OK,
-                            message = supplier_Pricing.Supplier_Pricing_Id == 0 ? CoreCommonMessage.SupplierPricingCreated : CoreCommonMessage.SupplierPricingUpdated
-                        });
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.SupplierPricingCreated
+                            });
+                        }
                     }
                 }
                 return BadRequest(ModelState);
@@ -1307,7 +1532,7 @@ namespace astute.Controllers
         {
             try
             {
-                var result_Supplier_Pricing_Key_To_Symbole = await _supplierService.Delete_Supplier_Pricing_Key_To_Symbole(supplier_Pricing_Id);
+                var result_Supplier_Pricing_Key_To_Symbol = await _supplierService.Delete_Supplier_Pricing_Key_To_Symbol(supplier_Pricing_Id);
                 var result = await _supplierService.Delete_Supplier_Pricing(supplier_Pricing_Id);
                 if (result > 0)
                 {

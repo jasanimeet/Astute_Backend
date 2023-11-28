@@ -1232,7 +1232,7 @@ namespace astute.Controllers
         public async Task<IActionResult> GetRandomQuote()
         {
             try
-            {
+            {   
                 var result = await _commonService.GetRandomQuote();
                 return Ok(new
                 {

@@ -2,7 +2,7 @@
 
 namespace astute.Models
 {
-    public partial class Supplier_Pricing_Key_To_Symbole
+    public partial class Supplier_Pricing_Key_To_Symbol
     {
         [Key]
         public int Id { get; set; }

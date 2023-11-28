@@ -11,6 +11,7 @@ namespace astute.Models
         [Key]
         public int Supplier_Pricing_Id { get; set; }
         public int? Supplier_Id { get; set; }
+        public string? Map_Flag { get; set; }
         public string? Shape { get; set; }
         public string? Cts { get; set; }
         public string? Color { get; set; }
@@ -52,7 +53,6 @@ namespace astute.Models
         public string? Side_Black { get; set; }
         public string? Table_White { get; set; }
         public string? Side_white { get; set; }
-        public string? Key_To_Symbol { get; set; }
         public string? Comment { get; set; }
         public string? Cert_Type { get; set; }
         public string? Table_Open { get; set; }
@@ -99,6 +99,8 @@ namespace astute.Models
         public float? MS_SP_Value_3 { get; set; }
         public float? MS_SP_Value_4 { get; set; }
         [NotMapped]
-        public List<Supplier_Pricing_Key_To_Symbole> Supplier_Pricing_Key_To_Symbol_List { get; set; } = new List<Supplier_Pricing_Key_To_Symbole>();
+        public string? Query_Flag { get; set; }
+        [NotMapped]
+        public IList<Supplier_Pricing_Key_To_Symbol> Key_To_Symbol { get; set; } = new List<Supplier_Pricing_Key_To_Symbol>();
     }
 }

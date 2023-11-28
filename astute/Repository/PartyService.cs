@@ -549,11 +549,31 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Party_API_With_Column_Mapping
                             .FromSqlRaw(@"exec Party_Api_Col_Map_Val_Map_Select @API_Id, @Party_Id", _api_Id, _party_Id)
                             .ToList());
-            if(result != null && result.Count > 0)
+            if (result != null && result.Count > 0)
             {
-                foreach( var item in result)
+                
+                foreach (var item in result)
                 {
-                    item.Supplier_Column_Mapping_List = await _supplierService.Get_Supplier_Column_Mapping(item.Party_Id ?? 0, "C", "API");
+                    int supp_Id = 0;
+                    supp_Id = item.Party_Id ?? 0;
+                    IList<Supplier_Column_Mapping> supp_col_list = new List<Supplier_Column_Mapping>();
+                    var _supp_Id = supp_Id > 0 ? new SqlParameter("@Supp_Id", supp_Id) : new SqlParameter("@Supp_Id", DBNull.Value);
+                    var _map_Flag = new SqlParameter("@Map_Flag", "C");
+                    var _column_Type = new SqlParameter("@Column_Type", "API");
+
+                    supp_col_list = await Task.Run(() => _dbContext.Supplier_Column_Mapping
+                                    .FromSqlRaw(@"exec Supplier_Column_Mapping_Select @Supp_Id, @Map_Flag, @Column_Type", _supp_Id, _map_Flag, _column_Type)
+                                    .ToListAsync());
+                    
+
+                    //data = await _supplierService.Get_Supplier_Column_Mapping(item.Party_Id ?? 0, "C", "API");
+                    if(supp_col_list != null && supp_col_list.Count > 0)
+                    {
+                        foreach (var obj in supp_col_list)
+                        {
+                            item.Supplier_Column_Mapping_List.Add(obj);
+                        }
+                    }
                 }
             }
             return result;
