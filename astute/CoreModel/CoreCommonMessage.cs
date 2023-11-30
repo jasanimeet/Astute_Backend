@@ -315,6 +315,7 @@ namespace astute.CoreModel
         public static string TempLayoutCreated = TempLayout + AddedSuccessfully;
         public static string TempLayoutUpdated = TempLayout + UpdatedSuccessfully;
         public static string TempLayoutDeleted = TempLayout + DeletedSuccessfully;
+        public static string TempLayoutStatusUpdate = "Layout status updated.";
         #endregion
     }
 }

@@ -3538,7 +3538,12 @@ namespace astute.Controllers
                         data = result
                     });
                 }
-                return NoContent();
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.NoContent,
+                    message = CoreCommonMessage.DataNotFound,
+                    data = new string[] { }
+                });
             }
             catch (Exception ex)
             {
@@ -3576,11 +3581,10 @@ namespace astute.Controllers
                             dataTable.Columns.Add("visible", typeof(bool));
                             dataTable.Columns.Add("visibleIndex", typeof(int));
                             dataTable.Columns.Add("width", typeof(int));
-                            dataTable.Columns.Add("Query_Flag", typeof(string));
 
                             foreach (var item in temp_Layout_Master.Temp_Layout_Detail_List)
                             {
-                                dataTable.Rows.Add(item.Layout_Detail_Id, layout_Id, item.dataField, item.dataType, item.filterValues, item.name, item.sortIndex, item.sortOrder, item.visible, item.visibleIndex, item.width, "I");
+                                dataTable.Rows.Add(item.Layout_Detail_Id, layout_Id, item.dataField, item.dataType, item.filterValues, item.name, item.sortIndex, item.sortOrder, item.visible, item.visibleIndex, item.width);
                             }
                             await _commonService.Insert_Update_Temp_Layout_Detail(dataTable);
                         }
@@ -3611,7 +3615,7 @@ namespace astute.Controllers
             try
             {
                 var result = await _commonService.Delete_Temp_Layout(layout_Id);
-                if(result > 0)
+                if (result > 0)
                 {
                     return Ok(new
                     {
@@ -3628,6 +3632,38 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Delete_Temp_Layout", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPut]
+        [Route("update_temp_layout_status")]
+        [Authorize]
+        public async Task<IActionResult> Update_Temp_Layout_Status(int layout_Id, bool status)
+        {
+            try
+            {
+                var result = await _commonService.Update_Temp_Layout_Status(layout_Id, status);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.TempLayoutStatusUpdate
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Temp_Layout_Status", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

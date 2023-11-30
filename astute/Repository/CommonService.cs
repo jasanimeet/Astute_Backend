@@ -1112,9 +1112,10 @@ namespace astute.Repository
             {
                 foreach (var item in result)
                 {
-                    var _item_layout_Id = item.Layout_Id > 0 ? new SqlParameter("@Layout_Id", layout_Id) : new SqlParameter("@Layout_Id", DBNull.Value);
+                    var _item_Layout_Detail_Id = new SqlParameter("@Layout_Detail_Id", DBNull.Value);
+                    var _item_layout_Id = item.Layout_Id > 0 ? new SqlParameter("@Layout_Id", item.Layout_Id) : new SqlParameter("@Layout_Id", DBNull.Value);
                     item.Temp_Layout_Detail_List = await Task.Run(() => _dbContext.Temp_Layout_Detail
-                            .FromSqlRaw(@"EXEC Temp_Layout_Detail_Select @Layout_Id", _item_layout_Id)
+                            .FromSqlRaw(@"EXEC Temp_Layout_Detail_Select @Layout_Detail_Id, @Layout_Id", _item_Layout_Detail_Id, _item_layout_Id)
                             .ToListAsync());
                 }
             }
@@ -1126,19 +1127,20 @@ namespace astute.Repository
             var layout_Name = !string.IsNullOrEmpty(temp_Layout_Master.Layout_Name) ? new SqlParameter("@Layout_Name", temp_Layout_Master.Layout_Name) : new SqlParameter("@Layout_Name", DBNull.Value);
             var menu_Id = temp_Layout_Master.Menu_Id > 0 ? new SqlParameter("@Menu_Id", temp_Layout_Master.Menu_Id) : new SqlParameter("@Menu_Id", DBNull.Value);
             var employee_Id = temp_Layout_Master.Employee_Id > 0 ? new SqlParameter("@Employee_Id", temp_Layout_Master.Employee_Id) : new SqlParameter("@Employee_Id", DBNull.Value);
+            var status = new SqlParameter("@Status", temp_Layout_Master.Status);
             var insertedId = new SqlParameter("@Inserted_Id", SqlDbType.Int)
             {
                 Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Temp_Layout_Master_Insert_Update @Layout_Id, @Layout_Name, @Menu_Id, @Employee_Id, @Inserted_Id OUT", layout_Id, layout_Name, menu_Id,
-                        employee_Id, insertedId));
+                        .ExecuteSqlRawAsync(@"EXEC Temp_Layout_Master_Insert_Update @Layout_Id, @Layout_Name, @Menu_Id, @Employee_Id, @Status, @Inserted_Id OUT", layout_Id, layout_Name, menu_Id,
+                        employee_Id, status, insertedId));
 
             var _inserted_Id = (int)insertedId.Value;
             if(result > 0)
             {
-                return ("success", result);
+                return ("success", _inserted_Id);
             }
             return ("error", 0);
         }
@@ -1155,6 +1157,16 @@ namespace astute.Repository
             };
 
             var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Temp_Layout_Detail_Insert_Update @tbl_Temp_Layout_Detail", parameter);
+
+            return result;
+        }
+        public async Task<int> Update_Temp_Layout_Status(int layout_Id, bool status)
+        {
+            var _layout_Id = new SqlParameter("@Layout_Id", layout_Id);
+            var _status = new SqlParameter("@Status", status);
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Temp_Layout_Master_Status_Update @Layout_Id, @Status", _layout_Id, _status));
 
             return result;
         }
