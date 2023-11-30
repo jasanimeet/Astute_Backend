@@ -80,5 +80,11 @@ namespace astute.Repository
         Task<int> Set_Default_Loader(int employee_Id, int loader_Id, bool default_Loader);
         #endregion
         Task<DataTable> Get_Stock();
+        #region Temp Layout
+        Task<IList<Temp_Layout_Master>> Get_Temp_Layout(int layout_Id, int menu_Id, int employee_Id);
+        Task<(string, int)> Insert_Update_Temp_Layout(Temp_Layout_Master temp_Layout_Master);
+        Task<int> Delete_Temp_Layout(int layout_Id);
+        Task<int> Insert_Update_Temp_Layout_Detail(DataTable dataTable);
+        #endregion
     }
 }

@@ -832,7 +832,7 @@ namespace astute.Controllers
         [Route("export_city_excel")]
         [Authorize]
         public async Task<IActionResult> Export_City_Excel()
-        {   
+        {
             var folder = Path.Combine(Directory.GetCurrentDirectory(), "Files/CityFiles");
             if (!(Directory.Exists(folder)))
             {
@@ -1232,7 +1232,7 @@ namespace astute.Controllers
         public async Task<IActionResult> GetRandomQuote()
         {
             try
-            {   
+            {
                 var result = await _commonService.GetRandomQuote();
                 return Ok(new
                 {
@@ -3512,6 +3512,122 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_Exchange_Rate", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region Temp Layout Master
+        [HttpGet]
+        [Route("get_temp_layout")]
+        [Authorize]
+        public async Task<IActionResult> Get_Temp_Layout(int layout_Id, int menu_Id, int employee_Id)
+        {
+            try
+            {
+                var result = await _commonService.Get_Temp_Layout(layout_Id, menu_Id, employee_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Temp_Layout", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("create_update_temp_layout")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Temp_Layout(Temp_Layout_Master temp_Layout_Master)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var (message, layout_Id) = await _commonService.Insert_Update_Temp_Layout(temp_Layout_Master);
+                    if (message == "success" && layout_Id > 0)
+                    {
+                        if (temp_Layout_Master.Temp_Layout_Detail_List != null && temp_Layout_Master.Temp_Layout_Detail_List.Count > 0)
+                        {
+                            DataTable dataTable = new DataTable();
+                            dataTable.Columns.Add("Layout_Detail_Id", typeof(int));
+                            dataTable.Columns.Add("Layout_Id", typeof(int));
+                            dataTable.Columns.Add("dataField", typeof(string));
+                            dataTable.Columns.Add("dataType", typeof(string));
+                            dataTable.Columns.Add("filterValues", typeof(string));
+                            dataTable.Columns.Add("name", typeof(string));
+                            dataTable.Columns.Add("sortIndex", typeof(int));
+                            dataTable.Columns.Add("sortOrder", typeof(string));
+                            dataTable.Columns.Add("visible", typeof(bool));
+                            dataTable.Columns.Add("visibleIndex", typeof(int));
+                            dataTable.Columns.Add("width", typeof(int));
+                            dataTable.Columns.Add("Query_Flag", typeof(string));
+
+                            foreach (var item in temp_Layout_Master.Temp_Layout_Detail_List)
+                            {
+                                dataTable.Rows.Add(item.Layout_Detail_Id, layout_Id, item.dataField, item.dataType, item.filterValues, item.name, item.sortIndex, item.sortOrder, item.visible, item.visibleIndex, item.width, "I");
+                            }
+                            await _commonService.Insert_Update_Temp_Layout_Detail(dataTable);
+                        }
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = temp_Layout_Master.Layout_Id == 0 ? CoreCommonMessage.TempLayoutCreated : CoreCommonMessage.TempLayoutUpdated
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "create_update_temp_layout", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_temp_layout")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Temp_Layout(int layout_Id)
+        {
+            try
+            {
+                var result = await _commonService.Delete_Temp_Layout(layout_Id);
+                if(result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.TempLayoutDeleted
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Temp_Layout", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

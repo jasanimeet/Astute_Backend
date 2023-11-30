@@ -88,5 +88,7 @@ namespace astute.Models
         public DbSet<Stock_Number_Generation> Stock_Number_Generation { get; set; }
         public DbSet<Supplier_Pricing_Key_To_Symbol> Supplier_Pricing_Key_To_Symbol { get; set; }
         public DbSet<Party_API_With_Column_Mapping> Party_API_With_Column_Mapping { get; set; }
+        public DbSet<Temp_Layout_Master> Temp_Layout_Master { get; set; }
+        public DbSet<Temp_Layout_Detail> Temp_Layout_Detail { get; set; }
     }
 }

@@ -316,7 +316,6 @@ namespace astute.Repository
 
             return result;
         }
-
         public async Task<(string, int)> Add_Update_Supplier_Pricing(Supplier_Pricing supplier_Pricing)
         {
             var supplier_Pricing_Id = new SqlParameter("@Supplier_Pricing_Id", supplier_Pricing.Supplier_Pricing_Id);
@@ -362,8 +361,7 @@ namespace astute.Repository
             var table_Black = !string.IsNullOrEmpty(supplier_Pricing.Table_Black) ? new SqlParameter("@Table_Black", supplier_Pricing.Table_Black) : new SqlParameter("@Table_Black", DBNull.Value);
             var side_Black = !string.IsNullOrEmpty(supplier_Pricing.Side_Black) ? new SqlParameter("@Side_Black", supplier_Pricing.Side_Black) : new SqlParameter("@Side_Black", DBNull.Value);
             var table_White = !string.IsNullOrEmpty(supplier_Pricing.Table_White) ? new SqlParameter("@Table_White", supplier_Pricing.Table_White) : new SqlParameter("@Table_White", DBNull.Value);
-            var side_white = !string.IsNullOrEmpty(supplier_Pricing.Side_white) ? new SqlParameter("@Side_white", supplier_Pricing.Side_white) : new SqlParameter("@Side_white", DBNull.Value);
-            //var key_To_Symbol = !string.IsNullOrEmpty(supplier_Pricing.Key_To_Symbol) ? new SqlParameter("@Key_To_Symbol", supplier_Pricing.Key_To_Symbol) : new SqlParameter("@Key_To_Symbol", DBNull.Value);
+            var side_white = !string.IsNullOrEmpty(supplier_Pricing.Side_white) ? new SqlParameter("@Side_white", supplier_Pricing.Side_white) : new SqlParameter("@Side_white", DBNull.Value);            
             var comment = !string.IsNullOrEmpty(supplier_Pricing.Comment) ? new SqlParameter("@Comment", supplier_Pricing.Comment) : new SqlParameter("@Comment", DBNull.Value);
             var cert_Type = !string.IsNullOrEmpty(supplier_Pricing.Cert_Type) ? new SqlParameter("@Cert_Type", supplier_Pricing.Cert_Type) : new SqlParameter("@Cert_Type", DBNull.Value);
             var table_Open = !string.IsNullOrEmpty(supplier_Pricing.Table_Open) ? new SqlParameter("@Table_Open", supplier_Pricing.Table_Open) : new SqlParameter("@Table_Open", DBNull.Value);
@@ -485,7 +483,8 @@ namespace astute.Repository
             };
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Stock_Data_Master_Insert_Update @Stock_Data_Id, @Supplier_Id, @Upload_Method, @Upload_Type, @Inserted_Id OUT", stock_Data_Id, supplier_Id, upload_Method, upload_Type, inserted_Id));
+                        .ExecuteSqlRawAsync(@"EXEC Stock_Data_Master_Insert_Update @Stock_Data_Id, @Supplier_Id, @Upload_Method, @Upload_Type, @Inserted_Id OUT", 
+                        stock_Data_Id, supplier_Id, upload_Method, upload_Type, inserted_Id));
 
             int _insertedId = (int)inserted_Id.Value;
             if(_insertedId > 0)
@@ -504,7 +503,7 @@ namespace astute.Repository
             var stock_Data_Id = new SqlParameter("@Stock_Data_Id", Stock_Data_Id);
 
             var result = await Task.Run(() => _dbContext.Database
-            .ExecuteSqlRawAsync(@"exec [Stock_Data_Details_Insert_Update] @Stock_data,@Stock_Data_Id", parameter, stock_Data_Id));
+            .ExecuteSqlRawAsync(@"EXEC Stock_Data_Details_Insert_Update @Stock_data,@Stock_Data_Id", parameter, stock_Data_Id));
 
             return result;
         }

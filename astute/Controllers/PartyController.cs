@@ -2016,11 +2016,11 @@ namespace astute.Controllers
         {
             try
             {
-                  var supplier = await _partyService.Get_Party_FTP(0, supp_Id);
+                var supplier = await _partyService.Get_Party_FTP(0, supp_Id);
                 if (supplier != null)
                 {   
                     string ftpfileName = "/stock-" + Guid.NewGuid().ToString() + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".csv";                    
-                    string ftpUrl = _configuration["BaseUrl"] + CoreCommonFilePath.FtpFilesPath + ftpfileName + ".csv";
+                    string ftpUrl = _configuration["BaseUrl"] + CoreCommonFilePath.FtpFilesPath + ftpfileName;
                     string localDirectoryPath = Path.Combine(Directory.GetCurrentDirectory(), "Files/FTPFile");
 
                     if (!Directory.Exists(localDirectoryPath))
