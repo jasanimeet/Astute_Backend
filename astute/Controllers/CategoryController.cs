@@ -458,7 +458,11 @@ namespace astute.Controllers
                         message = CoreCommonMessage.ReferenceFoundError
                     });
                 }
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "UpdateCategoryValue", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
             }
         }
 

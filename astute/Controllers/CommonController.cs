@@ -81,10 +81,6 @@ namespace astute.Controllers
         {
             try
             {
-                //if (!string.IsNullOrEmpty(isd_Code))
-                //{
-                //    isd_Code = "+" + isd_Code;
-                //}
                 var result = await _commonService.GetCountry(country_Id, country, isd_Code, short_Code);
                 if (result != null && result.Count > 0)
                 {
@@ -289,7 +285,11 @@ namespace astute.Controllers
                         message = CoreCommonMessage.ReferenceFoundError
                     });
                 }
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "UpdateCountry", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
             }
         }
 

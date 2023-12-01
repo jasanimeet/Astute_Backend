@@ -401,9 +401,13 @@ namespace astute.Controllers
                 }
                 return NoContent();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "GetParty", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -467,9 +471,13 @@ namespace astute.Controllers
                 }
                 return NoContent();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "ChangeStatusPartyBank", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
             }
         }
         #endregion
@@ -493,9 +501,13 @@ namespace astute.Controllers
                 }
                 return NoContent();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "ChangeStatusPartyShipping", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
             }
         }
         #endregion
@@ -1565,17 +1577,28 @@ namespace astute.Controllers
         [Authorize]
         public async Task<IActionResult> Get_Supplier_Value_Mapping(int sup_Id, int col_Id)
         {
-            var result = await _supplierService.Get_Supplier_Value_Mapping(sup_Id, col_Id);
-            if (result != null && result.Count > 0)
+            try
             {
+                var result = await _supplierService.Get_Supplier_Value_Mapping(sup_Id, col_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_Value_Mapping", ex.StackTrace);
                 return Ok(new
                 {
-                    statusCode = HttpStatusCode.OK,
-                    message = CoreCommonMessage.DataSuccessfullyFound,
-                    data = result
+                    message = ex.Message
                 });
             }
-            return NoContent();
         }
 
         [HttpPost]
@@ -1644,9 +1667,13 @@ namespace astute.Controllers
                     message = CoreCommonMessage.ParameterMismatched
                 });
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Supplier_Value_Mapping", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
             }
         }
         #endregion
