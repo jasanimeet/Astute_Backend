@@ -612,9 +612,9 @@ namespace astute.Controllers
                             dataTable.Columns.Add("Party_Id", typeof(int));
                             dataTable.Columns.Add("Diamond_Type", typeof(int));
                             dataTable.Columns.Add("Assist_1", typeof(int));
-                            dataTable.Columns.Add("Per_1", typeof(decimal));
+                            dataTable.Columns.Add("Per_1", typeof(float));
                             dataTable.Columns.Add("Assist_2", typeof(int));
-                            dataTable.Columns.Add("Per_2", typeof(decimal));
+                            dataTable.Columns.Add("Per_2", typeof(float));
                             dataTable.Columns.Add("Viewing_Rights_To", typeof(string));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
                             dataTable.Columns.Add("Date", typeof(string));

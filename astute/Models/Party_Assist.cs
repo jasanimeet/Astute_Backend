@@ -13,10 +13,10 @@ namespace astute.Models
         public string? Diamond_Type_Value { get; set; }
         public int? Assist_1 { get; set; }
         public string? Assist_Value_1 { get; set; }
-        public decimal? Per_1 { get; set; }
+        public float? Per_1 { get; set; }
         public int? Assist_2 { get; set; }
         public string? Assist_Value_2 { get; set; }
-        public decimal? Per_2 { get; set; }
+        public float? Per_2 { get; set; }
         public string? Viewing_Rights_To { get; set; }
         public string? Viewing_Rights_To_Values { get; set; }
         public string? Date { get; set; }
