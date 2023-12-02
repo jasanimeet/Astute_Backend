@@ -1130,7 +1130,7 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_party_supplier")]
         [Authorize]
-        public async Task<IActionResult> Get_Party_Supplier()
+        public async Task<IActionResult> Get_Party_Supplier() 
         {
             try
             {
@@ -2064,12 +2064,7 @@ namespace astute.Controllers
                         data = new { url = ftpUrl }
                     });
                 }
-                return BadRequest(new
-                {
-                    statusCode = HttpStatusCode.BadRequest,
-                    message = CoreCommonMessage.ParameterMismatched
-                });
-
+                return NoContent();
             }
             catch (Exception ex)
             {
