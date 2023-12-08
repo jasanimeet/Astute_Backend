@@ -146,7 +146,7 @@ namespace astute.Controllers
             }
             return dt_stock_data;
         }
-        private DataTable Set_Column_In_Datatable_Scheduler(DataTable dt_stock_data, IList<Stock_Data_Custom> stock_Datas)
+        private DataTable Set_Column_In_Datatable_Scheduler(DataTable dt_stock_data, IList<Stock_Data_Schedular> stock_Datas)
         {
             dt_stock_data.Columns.Add("SUPPLIER_NO", typeof(string));
             dt_stock_data.Columns.Add("CERTIFICATE_NO", typeof(string));
@@ -1610,51 +1610,6 @@ namespace astute.Controllers
             }
         }
 
-        //[HttpPost]
-        //[Route("create_supplier_pricing")]
-        //[Authorize]
-        //public async Task<IActionResult> Create_Supplier_Pricing(Supplier_Pricing supplier_Pricing)
-        //{
-        //    try
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            var (message, supplier_Pricing_Id) = await _supplierService.Add_Update_Supplier_Pricing(supplier_Pricing);
-
-        //            if (message == "success" && supplier_Pricing_Id > 0)
-        //            {
-        //                if (supplier_Pricing.Key_To_Symbol != null && supplier_Pricing.Key_To_Symbol.Count > 0)
-        //                {
-        //                    DataTable dataTable = new DataTable();
-        //                    dataTable.Columns.Add("Supplier_Pricing_Id", typeof(int));
-        //                    dataTable.Columns.Add("Cat_Val_Id", typeof(int));
-        //                    dataTable.Columns.Add("Symbol_Status", typeof(bool));
-
-        //                    foreach (var item in supplier_Pricing.Key_To_Symbol)
-        //                    {
-        //                        dataTable.Rows.Add(supplier_Pricing_Id, item.Cat_Val_Id, item.Symbol_Status);
-        //                    }
-        //                    await _supplierService.Add_Update_Supplier_Pricing_Key_To_Symbole(dataTable);
-        //                }
-        //                return Ok(new
-        //                {
-        //                    statusCode = HttpStatusCode.OK,
-        //                    message = supplier_Pricing.Supplier_Pricing_Id == 0 ? CoreCommonMessage.SupplierPricingCreated : CoreCommonMessage.SupplierPricingUpdated
-        //                });
-        //            }
-        //        }
-        //        return BadRequest(ModelState);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await _commonService.InsertErrorLog(ex.Message, "Create_Supplier_Pricing", ex.StackTrace);
-        //        return Ok(new
-        //        {
-        //            message = ex.Message
-        //        });
-        //    }
-        //}
-
         [HttpPost]
         [Route("create_supplier_pricing")]
         [Authorize]
@@ -2015,46 +1970,46 @@ namespace astute.Controllers
             }
         }
 
-        //[HttpPost]
-        //[Route("create_update_supplier_data")]
-        //[Authorize]
-        //public async Task<IActionResult> Create_Update_Supplier_Data(Stock_Data_Master stock_Data_Master)
-        //{
-        //    try
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            var (message, stock_Data_Id) = await _supplierService.Stock_Data_Insert_Update(stock_Data_Master);
-        //            if (message == "success" && stock_Data_Id > 0)
-        //            {
-        //                if (stock_Data_Master.Stock_Data_List != null && stock_Data_Master.Stock_Data_List.Count > 0)
-        //                {
-        //                    DataTable dt_our_stock_data = new DataTable();
-        //                    dt_our_stock_data = Set_Column_In_Datatable(new DataTable(), stock_Data_Master.Stock_Data_List);
-        //                    var result = await _supplierService.Stock_Data_Detail_Insert_Update(dt_our_stock_data, stock_Data_Id);
-        //                }
-        //                return Ok(new
-        //                {
-        //                    statusCode = HttpStatusCode.OK,
-        //                    message = CoreCommonMessage.StockUploadedSuccessfully
-        //                });
-        //            }
-        //        }
-        //        return BadRequest(ModelState);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await _commonService.InsertErrorLog(ex.Message, "Create_Update_Supplier_Data", ex.StackTrace);
-        //        return Ok(new
-        //        {
-        //            message = ex.Message
-        //        });
-        //    }
-        //}
+        [HttpPost]
+        [Route("create_update_supplier_data")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Supplier_Data(Stock_Data_Master stock_Data_Master)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var (message, stock_Data_Id) = await _supplierService.Stock_Data_Insert_Update(stock_Data_Master);
+                    if (message == "success" && stock_Data_Id > 0)
+                    {
+                        if (stock_Data_Master.Stock_Data_List != null && stock_Data_Master.Stock_Data_List.Count > 0)
+                        {
+                            DataTable dt_our_stock_data = new DataTable();
+                            dt_our_stock_data = Set_Column_In_Datatable(new DataTable(), stock_Data_Master.Stock_Data_List);
+                            var result = await _supplierService.Stock_Data_Detail_Insert_Update(dt_our_stock_data, stock_Data_Id);
+                        }
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.StockUploadedSuccessfully
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Supplier_Data", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
 
         [HttpPost]
         [Route("create_update_supplier_stock_by_scheduler")]
-        public async Task<IActionResult> Create_Update_Supplier_Stock_By_Scheduler(Stock_Data_Master_Custom stock_Data_Master)
+        public async Task<IActionResult> Create_Update_Supplier_Stock_By_Scheduler(Stock_Data_Master_Schedular stock_Data_Master)
         {
             try
             {

@@ -531,7 +531,7 @@ namespace astute.Controllers
             using var package = new ExcelPackage(new FileInfo(filePath));
             var worksheet = package.Workbook.Worksheets[0];
 
-            string cellAddress = "B2";
+            string cellAddress = "C2";
 
             // Retrieve the hyperlink from the cell
             ExcelHyperLink hyperlink = (ExcelHyperLink)worksheet.Cells[cellAddress].Hyperlink;

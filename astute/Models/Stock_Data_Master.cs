@@ -15,7 +15,7 @@ namespace astute.Models
         public IList<Stock_Data> Stock_Data_List { get; set; } = new List<Stock_Data>();
     }
 
-    public partial class Stock_Data_Master_Custom
+    public partial class Stock_Data_Master_Schedular
     {
         [Key]
         public int Stock_Data_Id { get; set; }
@@ -23,6 +23,6 @@ namespace astute.Models
         public string? Upload_Method { get; set; }
         public string? Upload_Type { get; set; }
         [NotMapped]
-        public IList<Stock_Data_Custom> Stock_Data_List { get; set; } = new List<Stock_Data_Custom>();
+        public IList<Stock_Data_Schedular> Stock_Data_List { get; set; } = new List<Stock_Data_Schedular>();
     }
 }

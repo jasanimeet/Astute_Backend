@@ -90,7 +90,7 @@ namespace astute.Models
         public string? Short_Code { get; set; }
         public bool? Is_Uploaded { get; set; }
     }
-    public partial class Stock_Data_Custom
+    public partial class Stock_Data_Schedular
     {
         [Key]
         public int Stock_Data_Id { get; set; }
@@ -98,7 +98,7 @@ namespace astute.Models
         public object? CERTIFICATE_NO { get; set; }
         public object? LAB { get; set; }
         public object? SHAPE { get; set; }
-        public string? Short_Code { get; set; }
+        public object? Short_Code { get; set; }
         public object? CTS { get; set; }
         public object? BASE_DISC { get; set; }
         public object? BASE_RATE { get; set; }

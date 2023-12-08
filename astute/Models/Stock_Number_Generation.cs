@@ -23,6 +23,10 @@ namespace astute.Models
         public int? End_Number { get; set; }
         public string? Live_Prefix { get; set; }
         public int? Supplier_Id { get; set; }
-        public string? Supplier { get; set; }   
+        public string? Supplier { get; set; }
+        public string? Created_Date { get; set; }
+        public string? Created_Time { get; set; }
+        public string? Update_Date { get; set; }
+        public string? Updated_Time { get; set; }
     }
 }
