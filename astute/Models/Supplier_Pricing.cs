@@ -98,6 +98,8 @@ namespace astute.Models
         public float? MS_SP_Value_2 { get; set; }
         public float? MS_SP_Value_3 { get; set; }
         public float? MS_SP_Value_4 { get; set; }
+        public bool? SP_Toggle_Bar { get; set; }
+        public bool? MS_SP_Toggle_Bar { get; set; }
         [NotMapped]
         public string? Query_Flag { get; set; }
         [NotMapped]

@@ -405,6 +405,8 @@ namespace astute.Repository
             var ms_sp_value_2 = supplier_Pricing.MS_SP_Value_2 > 0 ? new SqlParameter("@MS_SP_Value_2", supplier_Pricing.MS_SP_Value_2) : new SqlParameter("@MS_SP_Value_2", DBNull.Value);
             var ms_sp_value_3 = supplier_Pricing.MS_SP_Value_3 > 0 ? new SqlParameter("@MS_SP_Value_3", supplier_Pricing.MS_SP_Value_3) : new SqlParameter("@MS_SP_Value_3", DBNull.Value);
             var ms_sp_value_4 = supplier_Pricing.MS_SP_Value_4 > 0 ? new SqlParameter("@MS_SP_Value_4", supplier_Pricing.MS_SP_Value_4) : new SqlParameter("@MS_SP_Value_4", DBNull.Value);
+            var sP_Toggle_Bar = new SqlParameter("@SP_Toggle_Bar", supplier_Pricing.SP_Toggle_Bar);
+            var mSP_Toggle_Bar = new SqlParameter("@MS_SP_Toggle_Bar", supplier_Pricing.MS_SP_Toggle_Bar);
             var query_Flag = !string.IsNullOrEmpty(supplier_Pricing.Query_Flag) ? new SqlParameter("@Query_Flag", supplier_Pricing.Query_Flag) : new SqlParameter("@Query_Flag", DBNull.Value);
             var inserted_Id = new SqlParameter("@Inserted_Id", SqlDbType.Int)
             {
@@ -419,13 +421,13 @@ namespace astute.Repository
                         @Girdle_Open, @Base_Disc_From, @Base_Disc_To, @Base_Amount_From, @Base_Amount_To, @Supplier_Filter_Type, @Calculation_Type, @Sign, @Value_1, @Value_2, @Value_3, @Value_4,
                         @SP_Calculation_Type, @SP_Sign, @SP_Start_Date, @SP_Start_Time, @SP_End_Date, @SP_End_Time, @SP_Value_1, @SP_Value_2, @SP_Value_3, @SP_Value_4, @MS_Calculation_Type,
                         @MS_Sign, @MS_Value_1, @MS_Value_2, @MS_Value_3, @MS_Value_4, @MS_SP_Calculation_Type, @MS_SP_Sign, @MS_SP_Start_Date, @MS_SP_Start_Time, @MS_SP_End_Date, @MS_SP_End_Time,
-                        @MS_SP_Value_1, @MS_SP_Value_2, @MS_SP_Value_3, @MS_SP_Value_4, @Query_Flag, @Inserted_Id OUT",
+                        @MS_SP_Value_1, @MS_SP_Value_2, @MS_SP_Value_3, @MS_SP_Value_4, @SP_Toggle_Bar, @MS_SP_Toggle_Bar, @Query_Flag, @Inserted_Id OUT",
                         supplier_Pricing_Id, supplier_Id, map_Flag, shape, cts, color, fancy_Color, clarity, cut, polish, symm, fls_Intensity, lab, shade, luster, bgm, culet, location, status, good_Type, length_From, length_To, width_From,
                         width_To, depth_From, depth_To, depth_Per_From, depth_Per_To, table_Per_From, table_Per_To, crown_Angle_From, crown_Angle_To, crown_Height_From, crown_Height_To, pavilion_Angle_From,
                         pavilion_Angle_To, pavilion_Height_From, pavilion_Height_To, girdle_Per_From, girdle_Per_To, table_Black, side_Black, table_White, side_white, comment, cert_Type, table_Open, crown_Open, pavilion_Open, girdle_Open,
                         base_Disc_From, base_Disc_To, base_Amount_From, base_Amount_To, supplier_Filter_Type, calculation_Type, sign, value_1, value_2, value_3, value_4, sp_calculation_Type, sp_sign, sp_start_date,
                         sp_start_time, sp_end_date, sp_end_time, sp_value_1, sp_value_2, sp_value_3, sp_value_4, ms_calculation_Type, ms_sign, ms_value_1, ms_value_2, ms_value_3, ms_value_4, ms_sp_calculation_Type,
-                        ms_sp_sign, ms_sp_start_date, ms_sp_start_time, ms_sp_end_date, ms_sp_end_time, ms_sp_value_1, ms_sp_value_2, ms_sp_value_3, ms_sp_value_4, query_Flag, inserted_Id));
+                        ms_sp_sign, ms_sp_start_date, ms_sp_start_time, ms_sp_end_date, ms_sp_end_time, ms_sp_value_1, ms_sp_value_2, ms_sp_value_3, ms_sp_value_4, sP_Toggle_Bar, mSP_Toggle_Bar, query_Flag, inserted_Id));
             int _insertedId = (int)inserted_Id.Value;
             if (_insertedId > 0)
             {

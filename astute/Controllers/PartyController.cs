@@ -146,6 +146,189 @@ namespace astute.Controllers
             }
             return dt_stock_data;
         }
+        private DataTable Set_Column_In_Datatable_Scheduler(DataTable dt_stock_data, IList<Stock_Data> stock_Datas)
+        {
+            dt_stock_data.Columns.Add("SUPPLIER_NO", typeof(object));
+            dt_stock_data.Columns.Add("CERTIFICATE_NO", typeof(object));
+            dt_stock_data.Columns.Add("LAB", typeof(object));
+            dt_stock_data.Columns.Add("SHAPE", typeof(object));
+            dt_stock_data.Columns.Add("CTS", typeof(object));
+            dt_stock_data.Columns.Add("BASE_DISC", typeof(object));
+            dt_stock_data.Columns.Add("BASE_RATE", typeof(object));
+            dt_stock_data.Columns.Add("BASE_AMOUNT", typeof(object));
+            dt_stock_data.Columns.Add("COLOR", typeof(object));
+            dt_stock_data.Columns.Add("CLARITY", typeof(object));
+            dt_stock_data.Columns.Add("CUT", typeof(object));
+            dt_stock_data.Columns.Add("POLISH", typeof(object));
+            dt_stock_data.Columns.Add("SYMM", typeof(object));
+            dt_stock_data.Columns.Add("FLS_COLOR", typeof(object));
+            dt_stock_data.Columns.Add("FLS_INTENSITY", typeof(object));
+            dt_stock_data.Columns.Add("LENGTH", typeof(object));
+            dt_stock_data.Columns.Add("WIDTH", typeof(object));
+            dt_stock_data.Columns.Add("DEPTH", typeof(object));
+            dt_stock_data.Columns.Add("MEASUREMENT", typeof(object));
+            dt_stock_data.Columns.Add("DEPTH_PER", typeof(object));
+            dt_stock_data.Columns.Add("TABLE_PER", typeof(object));
+            dt_stock_data.Columns.Add("CULET", typeof(object));
+            dt_stock_data.Columns.Add("SHADE", typeof(object));
+            dt_stock_data.Columns.Add("LUSTER", typeof(object));
+            dt_stock_data.Columns.Add("MILKY", typeof(object));
+            dt_stock_data.Columns.Add("BGM", typeof(object));
+            dt_stock_data.Columns.Add("LOCATION", typeof(object));
+            dt_stock_data.Columns.Add("STATUS", typeof(object));
+            dt_stock_data.Columns.Add("TABLE_BLACK", typeof(object));
+            dt_stock_data.Columns.Add("SIDE_BLACK", typeof(object));
+            dt_stock_data.Columns.Add("TABLE_WHITE", typeof(object));
+            dt_stock_data.Columns.Add("SIDE_WHITE", typeof(object));
+            dt_stock_data.Columns.Add("TABLE_OPEN", typeof(object));
+            dt_stock_data.Columns.Add("CROWN_OPEN", typeof(object));
+            dt_stock_data.Columns.Add("PAVILION_OPEN", typeof(object));
+            dt_stock_data.Columns.Add("GIRDLE_OPEN", typeof(object));
+            dt_stock_data.Columns.Add("GIRDLE_FROM", typeof(object));
+            dt_stock_data.Columns.Add("GIRDLE_TO", typeof(object));
+            dt_stock_data.Columns.Add("GIRDLE_CONDITION", typeof(object));
+            dt_stock_data.Columns.Add("GIRDLE_TYPE", typeof(object));
+            dt_stock_data.Columns.Add("LASER_INSCRIPTION", typeof(object));
+            dt_stock_data.Columns.Add("CERTIFICATE_DATE", typeof(object));
+            dt_stock_data.Columns.Add("CROWN_ANGLE", typeof(object));
+            dt_stock_data.Columns.Add("CROWN_HEIGHT", typeof(object));
+            dt_stock_data.Columns.Add("PAVILION_ANGLE", typeof(object));
+            dt_stock_data.Columns.Add("PAVILION_HEIGHT", typeof(object));
+            dt_stock_data.Columns.Add("GIRDLE_PER", typeof(object));
+            dt_stock_data.Columns.Add("LR_HALF", typeof(object));
+            dt_stock_data.Columns.Add("STAR_LN", typeof(object));
+            dt_stock_data.Columns.Add("CERT_TYPE", typeof(object));
+            dt_stock_data.Columns.Add("FANCY_COLOR", typeof(object));
+            dt_stock_data.Columns.Add("FANCY_INTENSITY", typeof(object));
+            dt_stock_data.Columns.Add("FANCY_OVERTONE", typeof(object));
+            dt_stock_data.Columns.Add("IMAGE_LINK", typeof(object));
+            dt_stock_data.Columns.Add("Image2", typeof(object));
+            dt_stock_data.Columns.Add("VIDEO_LINK", typeof(object));
+            dt_stock_data.Columns.Add("Video2", typeof(object));
+            dt_stock_data.Columns.Add("CERTIFICATE_LINK", typeof(object));
+            dt_stock_data.Columns.Add("DNA", typeof(object));
+            dt_stock_data.Columns.Add("IMAGE_HEART_LINK", typeof(object));
+            dt_stock_data.Columns.Add("IMAGE_ARROW_LINK", typeof(object));
+            dt_stock_data.Columns.Add("H_A_LINK", typeof(object));
+            dt_stock_data.Columns.Add("CERTIFICATE_TYPE_LINK", typeof(object));
+            dt_stock_data.Columns.Add("KEY_TO_SYMBOL", typeof(object));
+            dt_stock_data.Columns.Add("LAB_COMMENTS", typeof(object));
+            dt_stock_data.Columns.Add("SUPPLIER_COMMENTS", typeof(object));
+            dt_stock_data.Columns.Add("ORIGIN", typeof(object));
+            dt_stock_data.Columns.Add("BOW_TIE", typeof(object));
+            dt_stock_data.Columns.Add("EXTRA_FACET_TABLE", typeof(object));
+            dt_stock_data.Columns.Add("EXTRA_FACET_CROWN", typeof(object));
+            dt_stock_data.Columns.Add("EXTRA_FACET_PAVILION", typeof(object));
+            dt_stock_data.Columns.Add("INTERNAL_GRAINING", typeof(object));
+            dt_stock_data.Columns.Add("H_A", typeof(object));
+            dt_stock_data.Columns.Add("SUPPLIER_DISC", typeof(object));
+            dt_stock_data.Columns.Add("SUPPLIER_AMOUNT", typeof(object));
+            dt_stock_data.Columns.Add("OFFER_DISC", typeof(object));
+            dt_stock_data.Columns.Add("OFFER_VALUE", typeof(object));
+            dt_stock_data.Columns.Add("MAX_SLAB_BASE_DISC", typeof(object));
+            dt_stock_data.Columns.Add("MAX_SLAB_BASE_VALUE", typeof(object));
+            dt_stock_data.Columns.Add("EYE_CLEAN", typeof(object));
+            dt_stock_data.Columns.Add("Short_Code", typeof(object));
+            if (stock_Datas != null && stock_Datas.Count > 0)
+            {
+                //foreach (var item in stock_Datas)
+                //{
+                //    dt_stock_data.Rows.Add(item.SUPPLIER_NO ?? null, item.CERTIFICATE_NO ?? null, item.LAB ?? null, item.SHAPE ?? null, item.CTS ?? null, item.BASE_DISC ?? null, item.BASE_RATE ?? null, item.BASE_AMOUNT ?? null, item.COLOR ?? null, item.CLARITY ?? null, item.CUT ?? null,
+                //        item.POLISH ?? null, item.SYMM ?? null, item.FLS_COLOR ?? null, item.FLS_INTENSITY ?? null, item.LENGTH ?? null, item.WIDTH ?? null, item.DEPTH ?? null, item.MEASUREMENT ?? null, item.DEPTH_PER ?? null, item.TABLE_PER ?? null, item.CULET ?? null, item.SHADE ?? null, item.LUSTER ?? null,
+                //        item.MILKY ?? null, item.BGM ?? null, item.LOCATION ?? null, item.STATUS ?? null, item.TABLE_BLACK ?? null, item.SIDE_BLACK ?? null, item.TABLE_WHITE ?? null, item.SIDE_WHITE ?? null, item.TABLE_OPEN ?? null, item.CROWN_OPEN ?? null, item.PAVILION_OPEN ?? null, item.GIRDLE_OPEN ?? null,
+                //        item.GIRDLE_FROM ?? null, item.GIRDLE_TO ?? null, item.GIRDLE_CONDITION ?? null, item.GIRDLE_TYPE ?? null, item.LASER_INSCRIPTION ?? null, item.CERTIFICATE_DATE ?? null, item.CROWN_ANGLE ?? null, item.CROWN_HEIGHT ?? null, item.PAVILION_ANGLE ?? null, item.PAVILION_HEIGHT ?? null,
+                //        item.GIRDLE_PER ?? null, item.LR_HALF ?? null, item.STAR_LN ?? null, item.CERT_TYPE ?? null, item.FANCY_COLOR ?? null, item.FANCY_INTENSITY ?? null, item.FANCY_OVERTONE ?? null, item.IMAGE_LINK ?? null, item.Image2 ?? null, item.VIDEO_LINK ?? null, item.Video2 ?? null, item.CERTIFICATE_LINK ?? null,
+                //        item.DNA ?? null, item.IMAGE_HEART_LINK ?? null, item.IMAGE_ARROW_LINK ?? null, item.H_A_LINK ?? null, item.CERTIFICATE_TYPE_LINK ?? null, item.KEY_TO_SYMBOL ?? null, item.LAB_COMMENTS ?? null, item.SUPPLIER_COMMENTS ?? null, item.ORIGIN ?? null, item.BOW_TIE ?? null,
+                //        item.EXTRA_FACET_TABLE ?? null, item.EXTRA_FACET_CROWN ?? null, item.EXTRA_FACET_PAVILION ?? null, item.INTERNAL_GRAINING ?? null, item.H_A ?? null, item.SUPPLIER_DISC ?? null, item.SUPPLIER_AMOUNT ?? null, item.OFFER_DISC ?? null, item.OFFER_VALUE ?? null,
+                //        item.MAX_SLAB_BASE_DISC ?? null, item.MAX_SLAB_BASE_VALUE ?? null, item.EYE_CLEAN ?? null, item.Short_Code ?? null);
+                //}
+                foreach (var item in stock_Datas)
+                {
+                    dt_stock_data.Rows.Add(item.SUPPLIER_NO != null ? Convert.ToString(item.SUPPLIER_NO) : DBNull.Value,
+                        item.CERTIFICATE_NO != null ? Convert.ToString(item.CERTIFICATE_NO) : DBNull.Value,
+                        item.LAB != null ? Convert.ToString(item.LAB) : DBNull.Value,
+                        item.SHAPE != null ? Convert.ToString(item.SHAPE) : DBNull.Value,
+                        item.CTS != null ? Convert.ToString(item.CTS) : DBNull.Value,
+                        item.BASE_DISC != null ? Convert.ToString(item.BASE_DISC) : DBNull.Value,
+                        item.BASE_RATE != null ? Convert.ToString(item.BASE_RATE) : DBNull.Value,
+                        item.BASE_AMOUNT != null ? Convert.ToString(item.BASE_AMOUNT) : DBNull.Value,
+                        item.COLOR != null ? Convert.ToString(item.COLOR) : DBNull.Value,
+                        item.CLARITY != null ? Convert.ToString(item.CLARITY) : DBNull.Value,
+                        item.CUT != null ? Convert.ToString(item.CUT) : DBNull.Value,
+                        item.POLISH != null ? Convert.ToString(item.POLISH) : DBNull.Value,
+                        item.SYMM != null ? Convert.ToString(item.SYMM) : DBNull.Value,
+                        item.FLS_COLOR != null ? Convert.ToString(item.FLS_COLOR) : DBNull.Value,
+                        item.FLS_INTENSITY != null ? Convert.ToString(item.FLS_INTENSITY) : DBNull.Value,
+                        item.LENGTH != null ? Convert.ToString(item.LENGTH) : DBNull.Value,
+                        item.WIDTH != null ? Convert.ToString(item.WIDTH) : DBNull.Value,
+                        item.DEPTH != null ? Convert.ToString(item.DEPTH) : DBNull.Value,
+                        item.MEASUREMENT != null ? Convert.ToString(item.MEASUREMENT) : DBNull.Value,
+                        item.DEPTH_PER != null ? Convert.ToString(item.DEPTH_PER) : DBNull.Value,
+                        item.TABLE_PER != null ? Convert.ToString(item.TABLE_PER) : DBNull.Value,
+                        item.CULET != null ? Convert.ToString(item.CULET) : DBNull.Value,
+                        item.SHADE != null ? Convert.ToString(item.SHADE) : DBNull.Value,
+                        item.LUSTER != null ? Convert.ToString(item.LUSTER) : DBNull.Value,
+                        item.MILKY != null ? Convert.ToString(item.MILKY) : DBNull.Value,
+                        item.BGM != null ? Convert.ToString(item.BGM) : DBNull.Value,
+                        item.LOCATION != null ? Convert.ToString(item.LOCATION) : DBNull.Value,
+                        item.STATUS != null ? Convert.ToString(item.STATUS) : DBNull.Value,
+                        item.TABLE_BLACK != null ? Convert.ToString(item.TABLE_BLACK) : DBNull.Value,
+                        item.SIDE_BLACK != null ? Convert.ToString(item.SIDE_BLACK) : DBNull.Value,
+                        item.TABLE_WHITE != null ? Convert.ToString(item.TABLE_WHITE) : DBNull.Value,
+                        item.SIDE_WHITE != null ? Convert.ToString(item.SIDE_WHITE) : DBNull.Value,
+                        item.TABLE_OPEN != null ? Convert.ToString(item.TABLE_OPEN) : DBNull.Value,
+                        item.CROWN_OPEN != null ? Convert.ToString(item.CROWN_OPEN) : DBNull.Value,
+                        item.PAVILION_OPEN != null ? Convert.ToString(item.PAVILION_OPEN) : DBNull.Value,
+                        item.GIRDLE_OPEN != null ? Convert.ToString(item.GIRDLE_OPEN) : DBNull.Value,
+                        item.GIRDLE_FROM != null ? Convert.ToString(item.GIRDLE_FROM) : DBNull.Value,
+                        item.GIRDLE_TO != null ? Convert.ToString(item.GIRDLE_TO) : DBNull.Value,
+                        item.GIRDLE_CONDITION != null ? Convert.ToString(item.GIRDLE_CONDITION) : DBNull.Value,
+                        item.GIRDLE_TYPE != null ? Convert.ToString(item.GIRDLE_TYPE) : DBNull.Value,
+                        item.LASER_INSCRIPTION != null ? Convert.ToString(item.LASER_INSCRIPTION) : DBNull.Value,
+                        item.CERTIFICATE_DATE != null ? Convert.ToString(item.CERTIFICATE_DATE) : DBNull.Value,
+                        item.CROWN_ANGLE != null ? Convert.ToString(item.CROWN_ANGLE) : DBNull.Value,
+                        item.CROWN_HEIGHT != null ? Convert.ToString(item.CROWN_HEIGHT) : DBNull.Value,
+                        item.PAVILION_ANGLE != null ? Convert.ToString(item.PAVILION_ANGLE) : DBNull.Value,
+                        item.PAVILION_HEIGHT != null ? Convert.ToString(item.PAVILION_HEIGHT) : DBNull.Value,
+                        item.GIRDLE_PER != null ? Convert.ToString(item.GIRDLE_PER) : DBNull.Value,
+                        item.LR_HALF != null ? Convert.ToString(item.LR_HALF) : DBNull.Value,
+                        item.STAR_LN != null ? Convert.ToString(item.STAR_LN) : DBNull.Value,
+                        item.CERT_TYPE != null ? Convert.ToString(item.CERT_TYPE) : DBNull.Value,
+                        item.FANCY_COLOR != null ? Convert.ToString(item.FANCY_COLOR) : DBNull.Value,
+                        item.FANCY_INTENSITY != null ? Convert.ToString(item.FANCY_INTENSITY) : DBNull.Value,
+                        item.FANCY_OVERTONE != null ? Convert.ToString(item.FANCY_OVERTONE) : DBNull.Value,
+                        item.IMAGE_LINK != null ? Convert.ToString(item.IMAGE_LINK) : DBNull.Value,
+                        item.Image2 != null ? Convert.ToString(item.Image2) : DBNull.Value,
+                        item.VIDEO_LINK != null ? Convert.ToString(item.VIDEO_LINK) : DBNull.Value,
+                        item.Video2 != null ? Convert.ToString(item.Video2) : DBNull.Value,
+                        item.CERTIFICATE_LINK != null ? Convert.ToString(item.CERTIFICATE_LINK) : DBNull.Value,
+                        item.DNA != null ? Convert.ToString(item.DNA) : DBNull.Value,
+                        item.IMAGE_HEART_LINK != null ? Convert.ToString(item.IMAGE_HEART_LINK) : DBNull.Value,
+                        item.IMAGE_ARROW_LINK != null ? Convert.ToString(item.IMAGE_ARROW_LINK) : DBNull.Value,
+                        item.H_A_LINK != null ? Convert.ToString(item.H_A_LINK) : DBNull.Value,
+                        item.CERTIFICATE_TYPE_LINK != null ? Convert.ToString(item.CERTIFICATE_TYPE_LINK) : DBNull.Value,
+                        item.KEY_TO_SYMBOL != null ? Convert.ToString(item.KEY_TO_SYMBOL) : DBNull.Value,
+                        item.LAB_COMMENTS != null ? Convert.ToString(item.LAB_COMMENTS) : DBNull.Value,
+                        item.SUPPLIER_COMMENTS != null ? Convert.ToString(item.SUPPLIER_COMMENTS) : DBNull.Value,
+                        item.ORIGIN != null ? Convert.ToString(item.ORIGIN) : DBNull.Value,
+                        item.BOW_TIE != null ? Convert.ToString(item.BOW_TIE) : DBNull.Value,
+                        item.EXTRA_FACET_TABLE != null ? Convert.ToString(item.EXTRA_FACET_TABLE) : DBNull.Value,
+                        item.EXTRA_FACET_CROWN != null ? Convert.ToString(item.EXTRA_FACET_CROWN) : DBNull.Value,
+                        item.EXTRA_FACET_PAVILION != null ? Convert.ToString(item.EXTRA_FACET_PAVILION) : DBNull.Value,
+                        item.INTERNAL_GRAINING != null ? Convert.ToString(item.INTERNAL_GRAINING) : DBNull.Value,
+                        item.H_A != null ? Convert.ToString(item.H_A) : DBNull.Value,
+                        item.SUPPLIER_DISC != null ? Convert.ToString(item.SUPPLIER_DISC) : DBNull.Value,
+                        item.SUPPLIER_AMOUNT != null ? Convert.ToString(item.SUPPLIER_AMOUNT) : DBNull.Value,
+                        item.OFFER_DISC != null ? Convert.ToString(item.OFFER_DISC) : DBNull.Value,
+                        item.OFFER_VALUE != null ? Convert.ToString(item.OFFER_VALUE) : DBNull.Value,
+                        item.MAX_SLAB_BASE_DISC != null ? Convert.ToString(item.MAX_SLAB_BASE_DISC) : DBNull.Value,
+                        item.MAX_SLAB_BASE_VALUE != null ? Convert.ToString(item.MAX_SLAB_BASE_VALUE) : DBNull.Value,
+                        item.EYE_CLEAN != null ? Convert.ToString(item.EYE_CLEAN) : DBNull.Value,
+                        item.Short_Code != null ? Convert.ToString(item.Short_Code) : DBNull.Value);
+                }
+            }
+            return dt_stock_data;
+        }
         private DataTable Set_Supp_Stock_Column_In_Datatable(DataTable dt_stock_data, IList<Stock_Data> stock_Datas)
         {
             dt_stock_data.Columns.Add("Supplier_Ref_No", typeof(string));
@@ -1832,10 +2015,46 @@ namespace astute.Controllers
             }
         }
 
+        //[HttpPost]
+        //[Route("create_update_supplier_data")]
+        //[Authorize]
+        //public async Task<IActionResult> Create_Update_Supplier_Data(Stock_Data_Master stock_Data_Master)
+        //{
+        //    try
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+        //            var (message, stock_Data_Id) = await _supplierService.Stock_Data_Insert_Update(stock_Data_Master);
+        //            if (message == "success" && stock_Data_Id > 0)
+        //            {
+        //                if (stock_Data_Master.Stock_Data_List != null && stock_Data_Master.Stock_Data_List.Count > 0)
+        //                {
+        //                    DataTable dt_our_stock_data = new DataTable();
+        //                    dt_our_stock_data = Set_Column_In_Datatable(new DataTable(), stock_Data_Master.Stock_Data_List);
+        //                    var result = await _supplierService.Stock_Data_Detail_Insert_Update(dt_our_stock_data, stock_Data_Id);
+        //                }
+        //                return Ok(new
+        //                {
+        //                    statusCode = HttpStatusCode.OK,
+        //                    message = CoreCommonMessage.StockUploadedSuccessfully
+        //                });
+        //            }
+        //        }
+        //        return BadRequest(ModelState);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await _commonService.InsertErrorLog(ex.Message, "Create_Update_Supplier_Data", ex.StackTrace);
+        //        return Ok(new
+        //        {
+        //            message = ex.Message
+        //        });
+        //    }
+        //}
+
         [HttpPost]
-        [Route("create_update_supplier_data")]
-        [Authorize]
-        public async Task<IActionResult> Create_Update_Supplier_Data(Stock_Data_Master stock_Data_Master)
+        [Route("create_update_supplier_stock_by_scheduler")]
+        public async Task<IActionResult> Create_Update_Supplier_Stock_By_Scheduler(Stock_Data_Master stock_Data_Master)
         {
             try
             {
@@ -1847,8 +2066,17 @@ namespace astute.Controllers
                         if (stock_Data_Master.Stock_Data_List != null && stock_Data_Master.Stock_Data_List.Count > 0)
                         {
                             DataTable dt_our_stock_data = new DataTable();
-                            dt_our_stock_data = Set_Column_In_Datatable(new DataTable(), stock_Data_Master.Stock_Data_List);
+                            dt_our_stock_data = Set_Column_In_Datatable_Scheduler(new DataTable(), stock_Data_Master.Stock_Data_List);
                             var result = await _supplierService.Stock_Data_Detail_Insert_Update(dt_our_stock_data, stock_Data_Id);
+                            //if (result > 0)
+                            //{
+                            //    if (stock_Data_Master.Upload_Type == "O")
+                            //    {
+                            //        DataTable dt_supplier_stock_data = new DataTable();
+                            //        dt_supplier_stock_data = Set_Supp_Stock_Column_In_Datatable(new DataTable(), stock_Data_Master.Stock_Data_List);
+                            //        await _supplierService.Supplier_Stock_Insert_Update(dt_supplier_stock_data, stock_Data_Master.Supplier_Id ?? 0);
+                            //    }
+                            //}
                         }
                         return Ok(new
                         {
@@ -1861,7 +2089,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Supplier_Value_Mapping", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Supplier_Stock_By_Scheduler", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
@@ -2065,6 +2293,53 @@ namespace astute.Controllers
                     });
                 }
                 return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_Ftp_File", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region Manual Upload
+        [HttpPost]
+        [Route("create_update_manual_upload")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Manual_Upload(Party_File party_File, IFormFile UploadFile)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/ManualUploadFiles");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string fileName = Path.GetFileNameWithoutExtension(UploadFile.FileName);
+                    string fileExt = Path.GetExtension(UploadFile.FileName);
+
+                    string strFile = fileName + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + fileExt;
+                    using (var fileStream = new FileStream(Path.Combine(filePath, strFile), FileMode.Create))
+                    {
+                        await UploadFile.CopyToAsync(fileStream);
+                    }
+                    party_File.File_Location = strFile;
+                    var result = await _partyService.Add_Update_Party_File(party_File);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = "File uploaded successfully."
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
             }
             catch (Exception ex)
             {

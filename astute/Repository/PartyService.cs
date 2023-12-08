@@ -661,9 +661,15 @@ namespace astute.Repository
             var file_Status = new SqlParameter("@File_Status", party_File.File_Status);
             var lab = new SqlParameter("@Lab", party_File.Lab);
             var overseas = new SqlParameter("@Overseas", party_File.Overseas);
+            var validity_Days = party_File.Validity_Days > 0 ? new SqlParameter("@Validity_Days", party_File.Validity_Days) : new SqlParameter("@Validity_Days", DBNull.Value);
+            var sheet_Name = !string.IsNullOrEmpty(party_File.Sheet_Name) ? new SqlParameter("@Sheet_Name", party_File.Sheet_Name) : new SqlParameter("@Sheet_Name", DBNull.Value);
+            var exclude = new SqlParameter("@Exclude", party_File.Exclude);
+            var aPI_Flag = new SqlParameter("@API_Flag", party_File.API_Flag);
+            var upload_Type = !string.IsNullOrEmpty(party_File.Upload_Type) ? new SqlParameter("@Upload_Type", party_File.Upload_Type) : new SqlParameter("@Upload_Type", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Party_File_Insert_Update @File_Id, @Party_Id, @File_Location, @Short_Code, @File_Status, @Lab, @Overseas", file_Id, _party_Id, file_Location, short_Code, file_Status, lab, overseas));
+                        .ExecuteSqlRawAsync(@"EXEC Party_File_Insert_Update @File_Id, @Party_Id, @File_Location, @Short_Code, @File_Status, @Lab, @Overseas, @Validity_Days, @Sheet_Name,
+                        @Exclude, @API_Flag, @Upload_Type", file_Id, _party_Id, file_Location, short_Code, file_Status, lab, overseas, validity_Days, sheet_Name, exclude, aPI_Flag, upload_Type));
 
             return result;
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.Contracts;
 
 namespace astute.Models
 {
@@ -14,5 +15,10 @@ namespace astute.Models
         public bool? File_Status { get; set; }
         public bool? Lab { get; set; }
         public bool? Overseas { get; set; }
+        public int? Validity_Days { get; set; }
+        public string? Sheet_Name { get; set; }
+        public bool? Exclude { get; set; }
+        public bool? API_Flag { get; set; }
+        public string? Upload_Type { get; set; }
     }
 }
