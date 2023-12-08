@@ -146,89 +146,89 @@ namespace astute.Controllers
             }
             return dt_stock_data;
         }
-        private DataTable Set_Column_In_Datatable_Scheduler(DataTable dt_stock_data, IList<Stock_Data> stock_Datas)
+        private DataTable Set_Column_In_Datatable_Scheduler(DataTable dt_stock_data, IList<Stock_Data_Custom> stock_Datas)
         {
-            dt_stock_data.Columns.Add("SUPPLIER_NO", typeof(object));
-            dt_stock_data.Columns.Add("CERTIFICATE_NO", typeof(object));
-            dt_stock_data.Columns.Add("LAB", typeof(object));
-            dt_stock_data.Columns.Add("SHAPE", typeof(object));
-            dt_stock_data.Columns.Add("CTS", typeof(object));
-            dt_stock_data.Columns.Add("BASE_DISC", typeof(object));
-            dt_stock_data.Columns.Add("BASE_RATE", typeof(object));
-            dt_stock_data.Columns.Add("BASE_AMOUNT", typeof(object));
-            dt_stock_data.Columns.Add("COLOR", typeof(object));
-            dt_stock_data.Columns.Add("CLARITY", typeof(object));
-            dt_stock_data.Columns.Add("CUT", typeof(object));
-            dt_stock_data.Columns.Add("POLISH", typeof(object));
-            dt_stock_data.Columns.Add("SYMM", typeof(object));
-            dt_stock_data.Columns.Add("FLS_COLOR", typeof(object));
-            dt_stock_data.Columns.Add("FLS_INTENSITY", typeof(object));
-            dt_stock_data.Columns.Add("LENGTH", typeof(object));
-            dt_stock_data.Columns.Add("WIDTH", typeof(object));
-            dt_stock_data.Columns.Add("DEPTH", typeof(object));
-            dt_stock_data.Columns.Add("MEASUREMENT", typeof(object));
-            dt_stock_data.Columns.Add("DEPTH_PER", typeof(object));
-            dt_stock_data.Columns.Add("TABLE_PER", typeof(object));
-            dt_stock_data.Columns.Add("CULET", typeof(object));
-            dt_stock_data.Columns.Add("SHADE", typeof(object));
-            dt_stock_data.Columns.Add("LUSTER", typeof(object));
-            dt_stock_data.Columns.Add("MILKY", typeof(object));
-            dt_stock_data.Columns.Add("BGM", typeof(object));
-            dt_stock_data.Columns.Add("LOCATION", typeof(object));
-            dt_stock_data.Columns.Add("STATUS", typeof(object));
-            dt_stock_data.Columns.Add("TABLE_BLACK", typeof(object));
-            dt_stock_data.Columns.Add("SIDE_BLACK", typeof(object));
-            dt_stock_data.Columns.Add("TABLE_WHITE", typeof(object));
-            dt_stock_data.Columns.Add("SIDE_WHITE", typeof(object));
-            dt_stock_data.Columns.Add("TABLE_OPEN", typeof(object));
-            dt_stock_data.Columns.Add("CROWN_OPEN", typeof(object));
-            dt_stock_data.Columns.Add("PAVILION_OPEN", typeof(object));
-            dt_stock_data.Columns.Add("GIRDLE_OPEN", typeof(object));
-            dt_stock_data.Columns.Add("GIRDLE_FROM", typeof(object));
-            dt_stock_data.Columns.Add("GIRDLE_TO", typeof(object));
-            dt_stock_data.Columns.Add("GIRDLE_CONDITION", typeof(object));
-            dt_stock_data.Columns.Add("GIRDLE_TYPE", typeof(object));
-            dt_stock_data.Columns.Add("LASER_INSCRIPTION", typeof(object));
-            dt_stock_data.Columns.Add("CERTIFICATE_DATE", typeof(object));
-            dt_stock_data.Columns.Add("CROWN_ANGLE", typeof(object));
-            dt_stock_data.Columns.Add("CROWN_HEIGHT", typeof(object));
-            dt_stock_data.Columns.Add("PAVILION_ANGLE", typeof(object));
-            dt_stock_data.Columns.Add("PAVILION_HEIGHT", typeof(object));
-            dt_stock_data.Columns.Add("GIRDLE_PER", typeof(object));
-            dt_stock_data.Columns.Add("LR_HALF", typeof(object));
-            dt_stock_data.Columns.Add("STAR_LN", typeof(object));
-            dt_stock_data.Columns.Add("CERT_TYPE", typeof(object));
-            dt_stock_data.Columns.Add("FANCY_COLOR", typeof(object));
-            dt_stock_data.Columns.Add("FANCY_INTENSITY", typeof(object));
-            dt_stock_data.Columns.Add("FANCY_OVERTONE", typeof(object));
-            dt_stock_data.Columns.Add("IMAGE_LINK", typeof(object));
-            dt_stock_data.Columns.Add("Image2", typeof(object));
-            dt_stock_data.Columns.Add("VIDEO_LINK", typeof(object));
-            dt_stock_data.Columns.Add("Video2", typeof(object));
-            dt_stock_data.Columns.Add("CERTIFICATE_LINK", typeof(object));
-            dt_stock_data.Columns.Add("DNA", typeof(object));
-            dt_stock_data.Columns.Add("IMAGE_HEART_LINK", typeof(object));
-            dt_stock_data.Columns.Add("IMAGE_ARROW_LINK", typeof(object));
-            dt_stock_data.Columns.Add("H_A_LINK", typeof(object));
-            dt_stock_data.Columns.Add("CERTIFICATE_TYPE_LINK", typeof(object));
-            dt_stock_data.Columns.Add("KEY_TO_SYMBOL", typeof(object));
-            dt_stock_data.Columns.Add("LAB_COMMENTS", typeof(object));
-            dt_stock_data.Columns.Add("SUPPLIER_COMMENTS", typeof(object));
-            dt_stock_data.Columns.Add("ORIGIN", typeof(object));
-            dt_stock_data.Columns.Add("BOW_TIE", typeof(object));
-            dt_stock_data.Columns.Add("EXTRA_FACET_TABLE", typeof(object));
-            dt_stock_data.Columns.Add("EXTRA_FACET_CROWN", typeof(object));
-            dt_stock_data.Columns.Add("EXTRA_FACET_PAVILION", typeof(object));
-            dt_stock_data.Columns.Add("INTERNAL_GRAINING", typeof(object));
-            dt_stock_data.Columns.Add("H_A", typeof(object));
-            dt_stock_data.Columns.Add("SUPPLIER_DISC", typeof(object));
-            dt_stock_data.Columns.Add("SUPPLIER_AMOUNT", typeof(object));
-            dt_stock_data.Columns.Add("OFFER_DISC", typeof(object));
-            dt_stock_data.Columns.Add("OFFER_VALUE", typeof(object));
-            dt_stock_data.Columns.Add("MAX_SLAB_BASE_DISC", typeof(object));
-            dt_stock_data.Columns.Add("MAX_SLAB_BASE_VALUE", typeof(object));
-            dt_stock_data.Columns.Add("EYE_CLEAN", typeof(object));
-            dt_stock_data.Columns.Add("Short_Code", typeof(object));
+            dt_stock_data.Columns.Add("SUPPLIER_NO", typeof(string));
+            dt_stock_data.Columns.Add("CERTIFICATE_NO", typeof(string));
+            dt_stock_data.Columns.Add("LAB", typeof(string));
+            dt_stock_data.Columns.Add("SHAPE", typeof(string));
+            dt_stock_data.Columns.Add("CTS", typeof(string));
+            dt_stock_data.Columns.Add("BASE_DISC", typeof(string));
+            dt_stock_data.Columns.Add("BASE_RATE", typeof(string));
+            dt_stock_data.Columns.Add("BASE_AMOUNT", typeof(string));
+            dt_stock_data.Columns.Add("COLOR", typeof(string));
+            dt_stock_data.Columns.Add("CLARITY", typeof(string));
+            dt_stock_data.Columns.Add("CUT", typeof(string));
+            dt_stock_data.Columns.Add("POLISH", typeof(string));
+            dt_stock_data.Columns.Add("SYMM", typeof(string));
+            dt_stock_data.Columns.Add("FLS_COLOR", typeof(string));
+            dt_stock_data.Columns.Add("FLS_INTENSITY", typeof(string));
+            dt_stock_data.Columns.Add("LENGTH", typeof(string));
+            dt_stock_data.Columns.Add("WIDTH", typeof(string));
+            dt_stock_data.Columns.Add("DEPTH", typeof(string));
+            dt_stock_data.Columns.Add("MEASUREMENT", typeof(string));
+            dt_stock_data.Columns.Add("DEPTH_PER", typeof(string));
+            dt_stock_data.Columns.Add("TABLE_PER", typeof(string));
+            dt_stock_data.Columns.Add("CULET", typeof(string));
+            dt_stock_data.Columns.Add("SHADE", typeof(string));
+            dt_stock_data.Columns.Add("LUSTER", typeof(string));
+            dt_stock_data.Columns.Add("MILKY", typeof(string));
+            dt_stock_data.Columns.Add("BGM", typeof(string));
+            dt_stock_data.Columns.Add("LOCATION", typeof(string));
+            dt_stock_data.Columns.Add("STATUS", typeof(string));
+            dt_stock_data.Columns.Add("TABLE_BLACK", typeof(string));
+            dt_stock_data.Columns.Add("SIDE_BLACK", typeof(string));
+            dt_stock_data.Columns.Add("TABLE_WHITE", typeof(string));
+            dt_stock_data.Columns.Add("SIDE_WHITE", typeof(string));
+            dt_stock_data.Columns.Add("TABLE_OPEN", typeof(string));
+            dt_stock_data.Columns.Add("CROWN_OPEN", typeof(string));
+            dt_stock_data.Columns.Add("PAVILION_OPEN", typeof(string));
+            dt_stock_data.Columns.Add("GIRDLE_OPEN", typeof(string));
+            dt_stock_data.Columns.Add("GIRDLE_FROM", typeof(string));
+            dt_stock_data.Columns.Add("GIRDLE_TO", typeof(string));
+            dt_stock_data.Columns.Add("GIRDLE_CONDITION", typeof(string));
+            dt_stock_data.Columns.Add("GIRDLE_TYPE", typeof(string));
+            dt_stock_data.Columns.Add("LASER_INSCRIPTION", typeof(string));
+            dt_stock_data.Columns.Add("CERTIFICATE_DATE", typeof(string));
+            dt_stock_data.Columns.Add("CROWN_ANGLE", typeof(string));
+            dt_stock_data.Columns.Add("CROWN_HEIGHT", typeof(string));
+            dt_stock_data.Columns.Add("PAVILION_ANGLE", typeof(string));
+            dt_stock_data.Columns.Add("PAVILION_HEIGHT", typeof(string));
+            dt_stock_data.Columns.Add("GIRDLE_PER", typeof(string));
+            dt_stock_data.Columns.Add("LR_HALF", typeof(string));
+            dt_stock_data.Columns.Add("STAR_LN", typeof(string));
+            dt_stock_data.Columns.Add("CERT_TYPE", typeof(string));
+            dt_stock_data.Columns.Add("FANCY_COLOR", typeof(string));
+            dt_stock_data.Columns.Add("FANCY_INTENSITY", typeof(string));
+            dt_stock_data.Columns.Add("FANCY_OVERTONE", typeof(string));
+            dt_stock_data.Columns.Add("IMAGE_LINK", typeof(string));
+            dt_stock_data.Columns.Add("Image2", typeof(string));
+            dt_stock_data.Columns.Add("VIDEO_LINK", typeof(string));
+            dt_stock_data.Columns.Add("Video2", typeof(string));
+            dt_stock_data.Columns.Add("CERTIFICATE_LINK", typeof(string));
+            dt_stock_data.Columns.Add("DNA", typeof(string));
+            dt_stock_data.Columns.Add("IMAGE_HEART_LINK", typeof(string));
+            dt_stock_data.Columns.Add("IMAGE_ARROW_LINK", typeof(string));
+            dt_stock_data.Columns.Add("H_A_LINK", typeof(string));
+            dt_stock_data.Columns.Add("CERTIFICATE_TYPE_LINK", typeof(string));
+            dt_stock_data.Columns.Add("KEY_TO_SYMBOL", typeof(string));
+            dt_stock_data.Columns.Add("LAB_COMMENTS", typeof(string));
+            dt_stock_data.Columns.Add("SUPPLIER_COMMENTS", typeof(string));
+            dt_stock_data.Columns.Add("ORIGIN", typeof(string));
+            dt_stock_data.Columns.Add("BOW_TIE", typeof(string));
+            dt_stock_data.Columns.Add("EXTRA_FACET_TABLE", typeof(string));
+            dt_stock_data.Columns.Add("EXTRA_FACET_CROWN", typeof(string));
+            dt_stock_data.Columns.Add("EXTRA_FACET_PAVILION", typeof(string));
+            dt_stock_data.Columns.Add("INTERNAL_GRAINING", typeof(string));
+            dt_stock_data.Columns.Add("H_A", typeof(string));
+            dt_stock_data.Columns.Add("SUPPLIER_DISC", typeof(string));
+            dt_stock_data.Columns.Add("SUPPLIER_AMOUNT", typeof(string));
+            dt_stock_data.Columns.Add("OFFER_DISC", typeof(string));
+            dt_stock_data.Columns.Add("OFFER_VALUE", typeof(string));
+            dt_stock_data.Columns.Add("MAX_SLAB_BASE_DISC", typeof(string));
+            dt_stock_data.Columns.Add("MAX_SLAB_BASE_VALUE", typeof(string));
+            dt_stock_data.Columns.Add("EYE_CLEAN", typeof(string));
+            dt_stock_data.Columns.Add("Short_Code", typeof(string));
             if (stock_Datas != null && stock_Datas.Count > 0)
             {
                 //foreach (var item in stock_Datas)
@@ -2054,13 +2054,13 @@ namespace astute.Controllers
 
         [HttpPost]
         [Route("create_update_supplier_stock_by_scheduler")]
-        public async Task<IActionResult> Create_Update_Supplier_Stock_By_Scheduler(Stock_Data_Master stock_Data_Master)
+        public async Task<IActionResult> Create_Update_Supplier_Stock_By_Scheduler(Stock_Data_Master_Custom stock_Data_Master)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var (message, stock_Data_Id) = await _supplierService.Stock_Data_Insert_Update(stock_Data_Master);
+                    var (message, stock_Data_Id) = await _supplierService.Stock_Data_Custom_Insert_Update(stock_Data_Master);
                     if (message == "success" && stock_Data_Id > 0)
                     {
                         if (stock_Data_Master.Stock_Data_List != null && stock_Data_Master.Stock_Data_List.Count > 0)

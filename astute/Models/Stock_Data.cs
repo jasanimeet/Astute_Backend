@@ -90,4 +90,91 @@ namespace astute.Models
         public string? Short_Code { get; set; }
         public bool? Is_Uploaded { get; set; }
     }
+    public partial class Stock_Data_Custom
+    {
+        [Key]
+        public int Stock_Data_Id { get; set; }
+        public object? SUPPLIER_NO { get; set; }
+        public object? CERTIFICATE_NO { get; set; }
+        public object? LAB { get; set; }
+        public object? SHAPE { get; set; }
+        public string? Short_Code { get; set; }
+        public object? CTS { get; set; }
+        public object? BASE_DISC { get; set; }
+        public object? BASE_RATE { get; set; }
+        public object? BASE_AMOUNT { get; set; }
+        public object? COLOR { get; set; }
+        public object? CLARITY { get; set; }
+        public object? CUT { get; set; }
+        public object? POLISH { get; set; }
+        public object? SYMM { get; set; }
+        public object? FLS_COLOR { get; set; }
+        public object? FLS_INTENSITY { get; set; }
+        public object? LENGTH { get; set; }
+        public object? WIDTH { get; set; }
+        public object? DEPTH { get; set; }
+        public object? MEASUREMENT { get; set; }
+        public object? DEPTH_PER { get; set; }
+        public object? TABLE_PER { get; set; }
+        public object? CULET { get; set; }
+        public object? SHADE { get; set; }
+        public object? LUSTER { get; set; }
+        public object? MILKY { get; set; }
+        public object? BGM { get; set; }
+        public object? LOCATION { get; set; }
+        public object? STATUS { get; set; }
+        public object? TABLE_BLACK { get; set; }
+        public object? SIDE_BLACK { get; set; }
+        public object? TABLE_WHITE { get; set; }
+        public object? SIDE_WHITE { get; set; }
+        public object? TABLE_OPEN { get; set; }
+        public object? CROWN_OPEN { get; set; }
+        public object? PAVILION_OPEN { get; set; }
+        public object? GIRDLE_OPEN { get; set; }
+        public object? GIRDLE_FROM { get; set; }
+        public object? GIRDLE_TO { get; set; }
+        public object? GIRDLE_CONDITION { get; set; }
+        public object? GIRDLE_TYPE { get; set; }
+        public object? LASER_INSCRIPTION { get; set; }
+        public object? CERTIFICATE_DATE { get; set; }
+        public object? CROWN_ANGLE { get; set; }
+        public object? CROWN_HEIGHT { get; set; }
+        public object? PAVILION_ANGLE { get; set; }
+        public object? PAVILION_HEIGHT { get; set; }
+        public object? GIRDLE_PER { get; set; }
+        public object? LR_HALF { get; set; }
+        public object? STAR_LN { get; set; }
+        public object? CERT_TYPE { get; set; }
+        public object? FANCY_COLOR { get; set; }
+        public object? FANCY_INTENSITY { get; set; }
+        public object? FANCY_OVERTONE { get; set; }
+        public object? IMAGE_LINK { get; set; }
+        public object? Image2 { get; set; }
+        public object? VIDEO_LINK { get; set; }
+        public object? Video2 { get; set; }
+        public object? CERTIFICATE_LINK { get; set; }
+        public object? DNA { get; set; }
+        public object? IMAGE_HEART_LINK { get; set; }
+        public object? IMAGE_ARROW_LINK { get; set; }
+        public object? H_A_LINK { get; set; }
+        public object? CERTIFICATE_TYPE_LINK { get; set; }
+        public object? KEY_TO_SYMBOL { get; set; }
+        public object? LAB_COMMENTS { get; set; }
+        public object? SUPPLIER_COMMENTS { get; set; }
+        public object? ORIGIN { get; set; }
+        public object? BOW_TIE { get; set; }
+        public object? EXTRA_FACET_TABLE { get; set; }
+        public object? EXTRA_FACET_CROWN { get; set; }
+        public object? EXTRA_FACET_PAVILION { get; set; }
+        public object? INTERNAL_GRAINING { get; set; }
+        public object? H_A { get; set; }
+        public object? SUPPLIER_DISC { get; set; }
+        public object? SUPPLIER_AMOUNT { get; set; }
+        public object? OFFER_DISC { get; set; }
+        public object? OFFER_VALUE { get; set; }
+        public object? MAX_SLAB_BASE_DISC { get; set; }
+        public object? MAX_SLAB_BASE_VALUE { get; set; }
+        public object? EYE_CLEAN { get; set; }
+        public bool? Is_Uploaded { get; set; }
+    }
 }
