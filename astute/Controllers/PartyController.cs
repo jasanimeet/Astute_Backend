@@ -626,7 +626,7 @@ namespace astute.Controllers
 
             return dt;
         }
-        private string Split_Supplier_Stock_Measurement(string expression, string dimension)
+        private string Splite_Supplier_Stock_Measurement(string expression, string dimension)
         {
             try
             {
