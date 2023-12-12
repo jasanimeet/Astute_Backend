@@ -626,33 +626,49 @@ namespace astute.Controllers
 
             return dt;
         }
-        private string Splite_Supplier_Stock_Measurement(string expression, string dimension)
+        private string Split_Supplier_Stock_Measurement(string expression, string dimension)
         {
-            // Define a regular expression pattern to capture numeric values
-            string pattern = @"[-+]?\d*\.\d+|[-+]?\d+";
-
-            // Use Regex.Matches to find all matches
-            MatchCollection matches = Regex.Matches(expression, pattern);
-
-            // Extract numeric values and store them in an array
-            double[] values = matches.Cast<Match>().Select(match => Convert.ToDouble(match.Value)).ToArray();
-
-            // Sort the values in descending order
-            Array.Sort(values, (a, b) => b.CompareTo(a));
-
-            // Determine the dimension to return
-            switch (dimension.ToLower())
+            try
             {
-                case "length":
-                    return values[0].ToString();
-                case "width":
-                    return values[1].ToString();
-                case "depth":
-                    return values[2].ToString();
-                default:
-                    throw new ArgumentException("Invalid dimension specified.");
+                // Define a regular expression pattern to capture numeric values
+                string pattern = @"[-+]?\d*\.\d+|[-+]?\d+";
+
+                // Use Regex.Matches to find all matches
+                MatchCollection matches = Regex.Matches(expression, pattern);
+
+                // Extract numeric values and store them in an array
+                double[] values = matches.Cast<Match>().Select(match => Convert.ToDouble(match.Value)).ToArray();
+
+                // Check if any numeric values were found
+                if (values.Length > 0)
+                {
+                    // Sort the values in descending order
+                    Array.Sort(values, (a, b) => b.CompareTo(a));
+
+                    // Determine the dimension to return
+                    switch (dimension.ToLower())
+                    {
+                        case "length":
+                            return values[0].ToString();
+                        case "width":
+                            return values.Length > 1 ? values[1].ToString() : "0"; // Consider 0 if no width value
+                        case "depth":
+                            return values.Length > 2 ? values[2].ToString() : "0"; // Consider 0 if no depth value
+                        default:
+                            throw new ArgumentException("Invalid dimension specified.");
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                // Handle the exception or log it if needed
+                throw;
+            }
+
+            // Return 0 if no numeric values were found
+            return "0";
         }
+
         #endregion
 
         #region Methods
