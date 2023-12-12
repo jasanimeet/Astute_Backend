@@ -89,10 +89,10 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_Currency_Master_Trace(currency_Mas, "Insert");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_Currency_Master_Trace(currency_Mas, "Insert");
+            //}
 
             return result;
         }
@@ -136,10 +136,10 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_Currency_Master_Trace(currency_Mas, "Update");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_Currency_Master_Trace(currency_Mas, "Update");
+            //}
 
             return result;
         }

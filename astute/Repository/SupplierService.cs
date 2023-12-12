@@ -196,31 +196,31 @@ namespace astute.Repository
                         width_From, width_To, depth_From, depth_To, depth_Per_From, depth_Per_To, table_Per_From, table_Per_To, crown_Angle_From, crown_Angle_To, crown_Height_From, crown_Height_To, pavilion_Angle_From,
                         pavilion_Angle_To, pavilion_Height_From, pavilion_Height_To, girdle_Per_From, girdle_Per_To, lr_Half_From, lr_Half_To, star_Ln_From, star_Ln_To, shape_Group, shape));
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                if (value_Config.ValueMap_ID > 0)
-                    await Insert_Value_Config_Trace(value_Config, "Update");
-                else
-                    await Insert_Value_Config_Trace(value_Config, "Insert");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    if (value_Config.ValueMap_ID > 0)
+            //        await Insert_Value_Config_Trace(value_Config, "Update");
+            //    else
+            //        await Insert_Value_Config_Trace(value_Config, "Insert");
+            //}
 
             return result;
         }
         public async Task<int> Delete_Value_Config(int valueMap_ID)
         {
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                var _valueMap_ID = valueMap_ID > 0 ? new SqlParameter("@ValueMap_ID", valueMap_ID) : new SqlParameter("@ValueMap_ID", DBNull.Value);
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    var _valueMap_ID = valueMap_ID > 0 ? new SqlParameter("@ValueMap_ID", valueMap_ID) : new SqlParameter("@ValueMap_ID", DBNull.Value);
 
-                var result = await Task.Run(() => _dbContext.Value_Config
-                                .FromSqlRaw(@"exec Value_Config_Select @ValueMap_ID", _valueMap_ID)
-                                .AsEnumerable()
-                                .FirstOrDefault());
-                if(result != null)
-                {
-                    await Insert_Value_Config_Trace(result, "Delete");
-                }
-            }
+            //    var result = await Task.Run(() => _dbContext.Value_Config
+            //                    .FromSqlRaw(@"exec Value_Config_Select @ValueMap_ID", _valueMap_ID)
+            //                    .AsEnumerable()
+            //                    .FirstOrDefault());
+            //    if(result != null)
+            //    {
+            //        await Insert_Value_Config_Trace(result, "Delete");
+            //    }
+            //}
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Value_Config_Delete {valueMap_ID}"));
         }
         public async Task<IList<Value_Config>> Get_Value_Config(int valueMap_ID)
@@ -235,6 +235,46 @@ namespace astute.Repository
         #endregion
 
         #region Supplier Pricing
+        public async Task<List<Dictionary<string, object>>> Get_Supplier_Pricing_List()
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Supplier_Pricing_Select_List", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    var dataTable = ds.Tables[ds.Tables.Count - 1];
+
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        var dict = new Dictionary<string, object>();
+                        foreach (DataColumn col in dataTable.Columns)
+                        {
+                            if (row[col] == DBNull.Value)
+                            {
+                                dict[col.ColumnName] = null;
+                            }
+                            else
+                            {
+                                dict[col.ColumnName] = row[col];
+                            }
+                        }
+                        result.Add(dict);
+                    }
+                }
+            }
+
+            return result;
+        }
         public async Task<List<Dictionary<string, object>>> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type, string map_Flag)
         {
             var result = new List<Dictionary<string, object>>();
@@ -436,9 +476,11 @@ namespace astute.Repository
             }
             return ("error", 0);
         }
-        public async Task<int> Delete_Supplier_Pricing(int supplier_Pricing_Id)
+        public async Task<int> Delete_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id)
         {
-            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Supplier_Pricing_Delete {supplier_Pricing_Id}"));
+            var _supplier_Pricing_Id = supplier_Pricing_Id > 0 ? new SqlParameter("@Supplier_Pricing_Id", supplier_Pricing_Id) : new SqlParameter("@Supplier_Pricing_Id", DBNull.Value);
+            var _supplier_Id = supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
+            return await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"Supplier_Pricing_Delete @Supplier_Pricing_Id, @Supplier_Id", _supplier_Pricing_Id, _supplier_Id));
         }
         #endregion
 

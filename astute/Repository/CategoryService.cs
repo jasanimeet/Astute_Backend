@@ -98,10 +98,10 @@ namespace astute.Repository
             if (isExist)
                 return 2;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_Category_Master_Trace(category_Master, "Insert");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_Category_Master_Trace(category_Master, "Insert");
+            //}
             return result;
         }
         public async Task<int> UpdateCategory(Category_Master category_Master)
@@ -125,10 +125,10 @@ namespace astute.Repository
             if (isExist)
                 return 2;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_Category_Master_Trace(category_Master, "Update");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_Category_Master_Trace(category_Master, "Update");
+            //}
             return result;
         }
         public async Task<int> DeleteCategory(int id)
@@ -138,19 +138,19 @@ namespace astute.Repository
                 Direction = System.Data.ParameterDirection.Output
             };
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                var _id = id > 0 ? new SqlParameter("@CatId", id) : new SqlParameter("@CatId", DBNull.Value);
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    var _id = id > 0 ? new SqlParameter("@CatId", id) : new SqlParameter("@CatId", DBNull.Value);
 
-                var result_cat = await Task.Run(() => _dbContext.Category_Master
-                                .FromSqlRaw(@"exec Category_Master_Select @CatId", _id).AsEnumerable()
-                                .FirstOrDefault());
+            //    var result_cat = await Task.Run(() => _dbContext.Category_Master
+            //                    .FromSqlRaw(@"exec Category_Master_Select @CatId", _id).AsEnumerable()
+            //                    .FirstOrDefault());
 
-                if (result_cat != null)
-                {
-                    await Insert_Category_Master_Trace(result_cat, "Delete");
-                }
-            }
+            //    if (result_cat != null)
+            //    {
+            //        await Insert_Category_Master_Trace(result_cat, "Delete");
+            //    }
+            //}
             var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Category_Master_Delete @CatId, @IsReferenced OUT",
                                         new SqlParameter("@CatId", id),
                                         isReferencedParameter);

@@ -90,10 +90,10 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 4;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_BGM_Trace(bGM_Mas, "Insert");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_BGM_Trace(bGM_Mas, "Insert");
+            //}
 
             return result;
         }
@@ -137,26 +137,26 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 4;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_BGM_Trace(bGM_Mas, "Update");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_BGM_Trace(bGM_Mas, "Update");
+            //}
 
             return result;
         }
         public async Task<int> DeleteBGM(int bgm_Id)
         {
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                var bGM_Mas = await Task.Run(() => _dbContext.BGM_Master
-                            .FromSqlRaw(@"exec BGM_Mas_Select @BgmId, @Shade, @Milky", bgm_Id, new SqlParameter("@Shade", DBNull.Value), new SqlParameter("@Milky", DBNull.Value))
-                            .AsEnumerable()
-                            .FirstOrDefault());
-                if(bGM_Mas != null)
-                {
-                    await Insert_BGM_Trace(bGM_Mas, "Delete");
-                }
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    var bGM_Mas = await Task.Run(() => _dbContext.BGM_Master
+            //                .FromSqlRaw(@"exec BGM_Mas_Select @BgmId, @Shade, @Milky", bgm_Id, new SqlParameter("@Shade", DBNull.Value), new SqlParameter("@Milky", DBNull.Value))
+            //                .AsEnumerable()
+            //                .FirstOrDefault());
+            //    if(bGM_Mas != null)
+            //    {
+            //        await Insert_BGM_Trace(bGM_Mas, "Delete");
+            //    }
+            //}
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"BGM_Mas_Delete {bgm_Id}"));
         }
         public async Task<IList<BGM_Master>> GetBgm(int bgm_Id, int shade, int milky)

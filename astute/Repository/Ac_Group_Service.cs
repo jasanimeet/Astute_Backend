@@ -79,13 +79,13 @@ namespace astute.Repository
             if (result > 0)
             {
                 int _insertedId = (int)insertedId.Value;
-                if (CoreService.Enable_Trace_Records(_configuration))
-                {
-                    if (ac_Group_Master.Ac_Group_Id > 0)
-                        await Insert_Ac_Group_Trace(ac_Group_Master, "Update");
-                    else
-                        await Insert_Ac_Group_Trace(ac_Group_Master, "Insert");
-                }
+                //if (CoreService.Enable_Trace_Records(_configuration))
+                //{
+                //    if (ac_Group_Master.Ac_Group_Id > 0)
+                //        await Insert_Ac_Group_Trace(ac_Group_Master, "Update");
+                //    else
+                //        await Insert_Ac_Group_Trace(ac_Group_Master, "Insert");
+                //}
                 return ("success", _insertedId);
             }
             return ("error", 0);
@@ -141,18 +141,18 @@ namespace astute.Repository
         }
         public virtual async Task<int> Delete_Ac_Group(int ac_Group_Id)
         {
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                var _ac_Group_Id = ac_Group_Id > 0 ? new SqlParameter("@Ac_Group_Id", ac_Group_Id) : new SqlParameter("@Ac_Group_Id", DBNull.Value);
-                var result = await Task.Run(() => _dbContext.Ac_Group_Master
-                                .FromSqlRaw(@"exec Ac_Group_Master_Select @Ac_Group_Id", _ac_Group_Id)
-                                .AsEnumerable()
-                                .FirstOrDefault());
-                if(result != null)
-                {
-                    await Insert_Ac_Group_Trace(result, "Delete");
-                }
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    var _ac_Group_Id = ac_Group_Id > 0 ? new SqlParameter("@Ac_Group_Id", ac_Group_Id) : new SqlParameter("@Ac_Group_Id", DBNull.Value);
+            //    var result = await Task.Run(() => _dbContext.Ac_Group_Master
+            //                    .FromSqlRaw(@"exec Ac_Group_Master_Select @Ac_Group_Id", _ac_Group_Id)
+            //                    .AsEnumerable()
+            //                    .FirstOrDefault());
+            //    if(result != null)
+            //    {
+            //        await Insert_Ac_Group_Trace(result, "Delete");
+            //    }
+            //}
 
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Ac_Group_Master_Delete {ac_Group_Id}"));
         }

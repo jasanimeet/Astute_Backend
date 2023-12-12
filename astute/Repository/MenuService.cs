@@ -80,11 +80,11 @@ namespace astute.Repository
 
 
             string record_Type = string.Empty;
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                record_Type = "Insert";
-                await Insert_Menu_Trace(menu_Mas, record_Type);
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    record_Type = "Insert";
+            //    await Insert_Menu_Trace(menu_Mas, record_Type);
+            //}
             return result;
         }
         public async Task<int> UpdateMenu(Menu_Mas menu_Mas)
@@ -112,10 +112,10 @@ namespace astute.Repository
             if (isExist)
                 return 2;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_Menu_Trace(menu_Mas, "Update");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_Menu_Trace(menu_Mas, "Update");
+            //}
             return result;
         }
         public async Task<int> DeleteMenu(int menuId)
@@ -125,19 +125,19 @@ namespace astute.Repository
                 Direction = System.Data.ParameterDirection.Output
             };
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                var _menuId = menuId > 0 ? new SqlParameter("@Menu_Id", menuId) : new SqlParameter("@Menu_Id", DBNull.Value);
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    var _menuId = menuId > 0 ? new SqlParameter("@Menu_Id", menuId) : new SqlParameter("@Menu_Id", DBNull.Value);
 
-                var result_menu = await Task.Run(() => _dbContext.Menu_Mas
-                                .FromSqlRaw(@"exec Menu_Mas_Select @Menu_Id", _menuId).AsEnumerable()
-                                .FirstOrDefault());
+            //    var result_menu = await Task.Run(() => _dbContext.Menu_Mas
+            //                    .FromSqlRaw(@"exec Menu_Mas_Select @Menu_Id", _menuId).AsEnumerable()
+            //                    .FirstOrDefault());
 
-                if (result_menu != null)
-                {
-                    await Insert_Menu_Trace(result_menu, "Delete");
-                }
-            }
+            //    if (result_menu != null)
+            //    {
+            //        await Insert_Menu_Trace(result_menu, "Delete");
+            //    }
+            //}
 
             var result = await _dbContext.Database
                                 .ExecuteSqlRawAsync("EXEC Menu_Mas_Delete @Menu_Id, @IsExists OUT", new SqlParameter("@Menu_Id", menuId),

@@ -136,14 +136,14 @@ namespace astute.Repository
             {
                 string record_Type = string.Empty;
                 int _insertedId = (int)insertedId.Value;
-                if (CoreService.Enable_Trace_Records(_configuration))
-                {
-                    if (company_Master.Company_Id == 0)
-                        record_Type = "Insert";
-                    else
-                        record_Type = "Update";
-                    await Insert_Company_Trace(company_Master, record_Type);
-                }
+                //if (CoreService.Enable_Trace_Records(_configuration))
+                //{
+                //    if (company_Master.Company_Id == 0)
+                //        record_Type = "Insert";
+                //    else
+                //        record_Type = "Update";
+                //    await Insert_Company_Trace(company_Master, record_Type);
+                //}
                 return ("success", _insertedId);
             }
             return ("error", 0);
@@ -187,19 +187,19 @@ namespace astute.Repository
         }
         public async Task<int> DeleteCompany(int companyId)
         {
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                var _companyId = companyId > 0 ? new SqlParameter("@CompanyId", companyId) : new SqlParameter("@CompanyId", DBNull.Value);
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    var _companyId = companyId > 0 ? new SqlParameter("@CompanyId", companyId) : new SqlParameter("@CompanyId", DBNull.Value);
 
-                var result = await Task.Run(() => _dbContext.Company_Master
-                                .FromSqlRaw(@"exec Company_Master_Select @CompanyId", _companyId)
-                                .AsEnumerable()
-                                .FirstOrDefault());
-                if (result != null)
-                {
-                    await Insert_Company_Trace(result, "Delete");
-                }
-            }
+            //    var result = await Task.Run(() => _dbContext.Company_Master
+            //                    .FromSqlRaw(@"exec Company_Master_Select @CompanyId", _companyId)
+            //                    .AsEnumerable()
+            //                    .FirstOrDefault());
+            //    if (result != null)
+            //    {
+            //        await Insert_Company_Trace(result, "Delete");
+            //    }
+            //}
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Company_Master_Delete {companyId}"));
         }
         public async Task<IList<Company_Master>> GetCompany(int companyId)

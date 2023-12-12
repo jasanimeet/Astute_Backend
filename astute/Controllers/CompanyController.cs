@@ -127,21 +127,21 @@ namespace astute.Controllers
                             dataTable.Columns.Add("Upload_Path_3", typeof(string));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
 
-                            #region Company Document Log
-                            DataTable dataTable2 = new DataTable();
-                            if (CoreService.Enable_Trace_Records(_configuration))
-                            {
-                                dataTable2.Columns.Add("Employee_Id", typeof(int));
-                                dataTable2.Columns.Add("IP_Address", typeof(string));
-                                dataTable2.Columns.Add("Trace_Date", typeof(DateTime));
-                                dataTable2.Columns.Add("Trace_Time", typeof(TimeSpan));
-                                dataTable2.Columns.Add("Record_Type", typeof(string));
-                                dataTable2.Columns.Add("Cat_Val_Id", typeof(int));
-                                dataTable2.Columns.Add("Start_Date", typeof(DateTime));
-                                dataTable2.Columns.Add("Expiry_Date", typeof(DateTime));
-                                dataTable2.Columns.Add("Upload_Path", typeof(string));
-                            }
-                            #endregion
+                            //#region Company Document Log
+                            //DataTable dataTable2 = new DataTable();
+                            //if (CoreService.Enable_Trace_Records(_configuration))
+                            //{
+                            //    dataTable2.Columns.Add("Employee_Id", typeof(int));
+                            //    dataTable2.Columns.Add("IP_Address", typeof(string));
+                            //    dataTable2.Columns.Add("Trace_Date", typeof(DateTime));
+                            //    dataTable2.Columns.Add("Trace_Time", typeof(TimeSpan));
+                            //    dataTable2.Columns.Add("Record_Type", typeof(string));
+                            //    dataTable2.Columns.Add("Cat_Val_Id", typeof(int));
+                            //    dataTable2.Columns.Add("Start_Date", typeof(DateTime));
+                            //    dataTable2.Columns.Add("Expiry_Date", typeof(DateTime));
+                            //    dataTable2.Columns.Add("Upload_Path", typeof(string));
+                            //}
+                            //#endregion
 
                             foreach (var item in company_Master.Company_Document_List)
                             {
@@ -216,16 +216,16 @@ namespace astute.Controllers
                                 string start_Date = !string.IsNullOrEmpty(item.Start_Date) ? item.Start_Date : null;
                                 string expire_Date = !string.IsNullOrEmpty(item.Expiry_Date) ? item.Expiry_Date : null;
                                 dataTable.Rows.Add(item.Company_Document_Id, company_Id, item.Cat_Val_Id, item.Document_No, start_Date, expire_Date, item.Upload_Path, item.Upload_Path_1, item.Upload_Path_2, item.Upload_Path_3, item.QueryFlag);
-                                if (CoreService.Enable_Trace_Records(_configuration))
-                                {
-                                    dataTable2.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, item.Cat_Val_Id, item.Start_Date, item.Expiry_Date, item.Upload_Path);
-                                }
+                                //if (CoreService.Enable_Trace_Records(_configuration))
+                                //{
+                                //    dataTable2.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, item.Cat_Val_Id, item.Start_Date, item.Expiry_Date, item.Upload_Path);
+                                //}
                             }
-                            if (CoreService.Enable_Trace_Records(_configuration))
-                            {
-                                //Insert Company Document Log
-                                await _companyService.Insert_Company_Document_Trace(dataTable2);
-                            }
+                            //if (CoreService.Enable_Trace_Records(_configuration))
+                            //{
+                            //    //Insert Company Document Log
+                            //    await _companyService.Insert_Company_Document_Trace(dataTable2);
+                            //}
 
                             //Insert Company Document
                             await _companyService.InsertCompanyDocument(dataTable);
@@ -242,30 +242,30 @@ namespace astute.Controllers
                                                         
                             DataTable dataTable2 = new DataTable();
 
-                            if (CoreService.Enable_Trace_Records(_configuration))
-                            {
-                                dataTable2.Columns.Add("Employee_Id", typeof(int));
-                                dataTable2.Columns.Add("IP_Address", typeof(string));
-                                dataTable2.Columns.Add("Trace_Date", typeof(DateTime));
-                                dataTable2.Columns.Add("Trace_Time", typeof(TimeSpan));
-                                dataTable2.Columns.Add("Record_Type", typeof(string));
-                                dataTable2.Columns.Add("Company_Id", typeof(int));
-                                dataTable2.Columns.Add("Cat_Val_Id", typeof(int));
-                                dataTable2.Columns.Add("Media_Detail", typeof(string));
-                            }
+                            //if (CoreService.Enable_Trace_Records(_configuration))
+                            //{
+                            //    dataTable2.Columns.Add("Employee_Id", typeof(int));
+                            //    dataTable2.Columns.Add("IP_Address", typeof(string));
+                            //    dataTable2.Columns.Add("Trace_Date", typeof(DateTime));
+                            //    dataTable2.Columns.Add("Trace_Time", typeof(TimeSpan));
+                            //    dataTable2.Columns.Add("Record_Type", typeof(string));
+                            //    dataTable2.Columns.Add("Company_Id", typeof(int));
+                            //    dataTable2.Columns.Add("Cat_Val_Id", typeof(int));
+                            //    dataTable2.Columns.Add("Media_Detail", typeof(string));
+                            //}
 
                             foreach (var item in company_Master.Company_Media_List)
                             {
                                 dataTable.Rows.Add(item.Company_Media_Id, company_Id, item.Cat_Val_Id, item.Media_Detail, item.QueryFlag);
-                                if (CoreService.Enable_Trace_Records(_configuration))
-                                {
-                                    dataTable2.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, company_Id, item.Cat_Val_Id, item.Media_Detail);
-                                }
+                                //if (CoreService.Enable_Trace_Records(_configuration))
+                                //{
+                                //    dataTable2.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, company_Id, item.Cat_Val_Id, item.Media_Detail);
+                                //}
                             }
-                            if (CoreService.Enable_Trace_Records(_configuration))
-                            {
-                                await _companyService.Insert_Company_Media_Trace(dataTable2);
-                            }
+                            //if (CoreService.Enable_Trace_Records(_configuration))
+                            //{
+                            //    await _companyService.Insert_Company_Media_Trace(dataTable2);
+                            //}
                             await _companyService.InsertCompanyMedia(dataTable);
                         }
                         //Company Bank
@@ -283,34 +283,34 @@ namespace astute.Controllers
                             dataTable.Columns.Add("QueryFlag", typeof(string));
 
                             DataTable dataTable2 = new DataTable();
-                            if (CoreService.Enable_Trace_Records(_configuration))
-                            {
-                                dataTable2.Columns.Add("Employee_Id", typeof(int));
-                                dataTable2.Columns.Add("IP_Address", typeof(string));
-                                dataTable2.Columns.Add("Trace_Date", typeof(DateTime));
-                                dataTable2.Columns.Add("Trace_Time", typeof(TimeSpan));
-                                dataTable2.Columns.Add("Record_Type", typeof(string));
-                                dataTable2.Columns.Add("Bank_Id", typeof(int));
-                                dataTable2.Columns.Add("Currency", typeof(string));
-                                dataTable2.Columns.Add("Account_Type", typeof(int));
-                                dataTable2.Columns.Add("Account_No", typeof(string));
-                                dataTable2.Columns.Add("Process_Id", typeof(string));
-                                dataTable2.Columns.Add("Status", typeof(bool));
-                                dataTable2.Columns.Add("Company_Bank_Id", typeof(int));
-                            }
+                            //if (CoreService.Enable_Trace_Records(_configuration))
+                            //{
+                            //    dataTable2.Columns.Add("Employee_Id", typeof(int));
+                            //    dataTable2.Columns.Add("IP_Address", typeof(string));
+                            //    dataTable2.Columns.Add("Trace_Date", typeof(DateTime));
+                            //    dataTable2.Columns.Add("Trace_Time", typeof(TimeSpan));
+                            //    dataTable2.Columns.Add("Record_Type", typeof(string));
+                            //    dataTable2.Columns.Add("Bank_Id", typeof(int));
+                            //    dataTable2.Columns.Add("Currency", typeof(string));
+                            //    dataTable2.Columns.Add("Account_Type", typeof(int));
+                            //    dataTable2.Columns.Add("Account_No", typeof(string));
+                            //    dataTable2.Columns.Add("Process_Id", typeof(string));
+                            //    dataTable2.Columns.Add("Status", typeof(bool));
+                            //    dataTable2.Columns.Add("Company_Bank_Id", typeof(int));
+                            //}
 
                             foreach (var item in company_Master.Company_Bank_List)
                             {
                                 dataTable.Rows.Add(item.Company_Bank_Id, company_Id, item.Bank_Id, item.Currency, item.Account_Type, item.Account_No, item.Process_Id, item.Status, item.QueryFlag);
-                                if (CoreService.Enable_Trace_Records(_configuration))
-                                {
-                                    dataTable2.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, item.Bank_Id, item.Currency, item.Account_Type, item.Account_No, item.Process_Id, item.Status, item.Company_Bank_Id);
-                                }
+                                //if (CoreService.Enable_Trace_Records(_configuration))
+                                //{
+                                //    dataTable2.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, item.Bank_Id, item.Currency, item.Account_Type, item.Account_No, item.Process_Id, item.Status, item.Company_Bank_Id);
+                                //}
                             }
-                            if (CoreService.Enable_Trace_Records(_configuration))
-                            {
-                                await _companyService.Insert_Company_Bank_Trace(dataTable2);
-                            }
+                            //if (CoreService.Enable_Trace_Records(_configuration))
+                            //{
+                            //    await _companyService.Insert_Company_Bank_Trace(dataTable2);
+                            //}
                             await _companyService.InsertCompanyBank(dataTable);
                         }
                         return Ok(new

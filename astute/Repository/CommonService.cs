@@ -141,10 +141,10 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 4;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_Country_Trace(country_Mas, "Insert");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_Country_Trace(country_Mas, "Insert");
+            //}
 
             return result;
         }
@@ -189,31 +189,31 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 4;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_Country_Trace(country_Mas, "Update");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_Country_Trace(country_Mas, "Update");
+            //}
 
             return result;
         }
         public async Task<int> DeleteCountry(int countryId)
         {
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                var CountryId = countryId > 0 ? new SqlParameter("@countryId", countryId) : new SqlParameter("@countryId", DBNull.Value);
-                var CountryName = new SqlParameter("@countryName", DBNull.Value);
-                var IsdCode = new SqlParameter("@isdCode", DBNull.Value);
-                var ShortCode = new SqlParameter("@shortCode", DBNull.Value);
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    var CountryId = countryId > 0 ? new SqlParameter("@countryId", countryId) : new SqlParameter("@countryId", DBNull.Value);
+            //    var CountryName = new SqlParameter("@countryName", DBNull.Value);
+            //    var IsdCode = new SqlParameter("@isdCode", DBNull.Value);
+            //    var ShortCode = new SqlParameter("@shortCode", DBNull.Value);
 
-                var result = await Task.Run(() => _dbContext.Country_Master
-                             .FromSqlRaw(@"exec Country_Mas_Select @countryId, @countryName, @isdCode, @shortCode", CountryId, CountryName, IsdCode, ShortCode)
-                             .AsEnumerable()
-                             .FirstOrDefault());
-                if (result != null)
-                {
-                    await Insert_Country_Trace(result, "Delete");
-                }
-            }
+            //    var result = await Task.Run(() => _dbContext.Country_Master
+            //                 .FromSqlRaw(@"exec Country_Mas_Select @countryId, @countryName, @isdCode, @shortCode", CountryId, CountryName, IsdCode, ShortCode)
+            //                 .AsEnumerable()
+            //                 .FirstOrDefault());
+            //    if (result != null)
+            //    {
+            //        await Insert_Country_Trace(result, "Delete");
+            //    }
+            //}
 
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Country_Mas_Delete {countryId}"));
         }
@@ -311,10 +311,10 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_State_Trace(state_Mas, "Insert");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_State_Trace(state_Mas, "Insert");
+            //}
 
             return result;
         }
@@ -359,30 +359,30 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_State_Trace(state_Mas, "Update");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_State_Trace(state_Mas, "Update");
+            //}
 
             return result;
         }
         public async Task<int> DeleteState(int stateId)
         {
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                var StateId = stateId > 0 ? new SqlParameter("@stateId", stateId) : new SqlParameter("@stateId", DBNull.Value);
-                var State = new SqlParameter("@state", DBNull.Value);
-                var CountryId = new SqlParameter("@countryId", DBNull.Value);
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    var StateId = stateId > 0 ? new SqlParameter("@stateId", stateId) : new SqlParameter("@stateId", DBNull.Value);
+            //    var State = new SqlParameter("@state", DBNull.Value);
+            //    var CountryId = new SqlParameter("@countryId", DBNull.Value);
 
-                var result = await Task.Run(() => _dbContext.State_Master
-                            .FromSqlRaw(@"exec State_Mas_Select @stateId, @state, @countryId", StateId, State, CountryId)
-                            .AsEnumerable()
-                            .FirstOrDefault());
-                if (result != null)
-                {
-                    await Insert_State_Trace(result, "Delete");
-                }
-            }
+            //    var result = await Task.Run(() => _dbContext.State_Master
+            //                .FromSqlRaw(@"exec State_Mas_Select @stateId, @state, @countryId", StateId, State, CountryId)
+            //                .AsEnumerable()
+            //                .FirstOrDefault());
+            //    if (result != null)
+            //    {
+            //        await Insert_State_Trace(result, "Delete");
+            //    }
+            //}
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"State_Mas_Delete {stateId}"));
         }
         public async Task<IList<State_Master>> GetStates(int state_Id, string state, int country_Id)
@@ -457,10 +457,10 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_City_Trace(city_Mas, "Insert");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_City_Trace(city_Mas, "Insert");
+            //}
 
             return result;
         }
@@ -496,33 +496,33 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_City_Trace(city_Mas, "Update");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_City_Trace(city_Mas, "Update");
+            //}
 
             return result;
         }
         public async Task<int> DeleteCity(int cityId)
         {
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                var CityId = new SqlParameter("@cityId", cityId);
-                var City = new SqlParameter("@city", DBNull.Value);
-                var StateId = new SqlParameter("@stateId", DBNull.Value);
-                var pageIndex = new SqlParameter("@iPgNo", DBNull.Value);
-                var pageSize = new SqlParameter("@iPgSize", DBNull.Value);
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    var CityId = new SqlParameter("@cityId", cityId);
+            //    var City = new SqlParameter("@city", DBNull.Value);
+            //    var StateId = new SqlParameter("@stateId", DBNull.Value);
+            //    var pageIndex = new SqlParameter("@iPgNo", DBNull.Value);
+            //    var pageSize = new SqlParameter("@iPgSize", DBNull.Value);
 
-                var result = await Task.Run(() => _dbContext.City_Master
-                               .FromSqlRaw(@"exec City_Mas_Select @cityId, @city, @stateId, @iPgNo, @iPgSize", CityId, City, StateId, pageIndex, pageSize)
-                               .AsEnumerable()
-                               .FirstOrDefault());
+            //    var result = await Task.Run(() => _dbContext.City_Master
+            //                   .FromSqlRaw(@"exec City_Mas_Select @cityId, @city, @stateId, @iPgNo, @iPgSize", CityId, City, StateId, pageIndex, pageSize)
+            //                   .AsEnumerable()
+            //                   .FirstOrDefault());
 
-                if (result != null)
-                {
-                    await Insert_City_Trace(result, "Delete");
-                }
-            }
+            //    if (result != null)
+            //    {
+            //        await Insert_City_Trace(result, "Delete");
+            //    }
+            //}
 
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"City_Mas_Delete {cityId}"));
         }
@@ -671,10 +671,10 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Year_Mas_Insert_Update @Year_Id, @Year, @Current_Status, @Status, @From_Date, @To_Date, @recordType", parametar.ToArray()));
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_Year_Trace(year_Mas, "Insert");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_Year_Trace(year_Mas, "Insert");
+            //}
 
             return result;
         }
@@ -692,28 +692,28 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Year_Mas_Insert_Update @Year_Id, @Year, @Current_Status, @Status, @From_Date, @To_Date, @recordType", parametar.ToArray()));
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_Year_Trace(year_Mas, "Update");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_Year_Trace(year_Mas, "Update");
+            //}
 
             return result;
         }
         public async Task<int> DeleteYears(int yearId)
         {
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                var year_Id = yearId > 0 ? new SqlParameter("@YearId", yearId) : new SqlParameter("@YearId", DBNull.Value);
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    var year_Id = yearId > 0 ? new SqlParameter("@YearId", yearId) : new SqlParameter("@YearId", DBNull.Value);
 
-                var result = await Task.Run(() => _dbContext.Year_Master
-                                .FromSqlRaw(@"exec Year_Mas_Select @YearId", year_Id)
-                                .AsEnumerable()
-                                .FirstOrDefault());
-                if(result != null)
-                {
-                    await Insert_Year_Trace(result, "Delete");
-                }
-            }
+            //    var result = await Task.Run(() => _dbContext.Year_Master
+            //                    .FromSqlRaw(@"exec Year_Mas_Select @YearId", year_Id)
+            //                    .AsEnumerable()
+            //                    .FirstOrDefault());
+            //    if(result != null)
+            //    {
+            //        await Insert_Year_Trace(result, "Delete");
+            //    }
+            //}
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Year_Mas_Delete {yearId}"));
         }
         #endregion

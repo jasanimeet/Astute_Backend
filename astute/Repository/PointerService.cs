@@ -113,14 +113,14 @@ namespace astute.Repository
             {
                 string record_Type = string.Empty;
                 int _insertedId = (int)insertedId.Value;
-                if (CoreService.Enable_Trace_Records(_configuration))
-                {
-                    if (pointer_Mas.Pointer_Id == 0)
-                        record_Type = "Insert";
-                    else
-                        record_Type = "Update";
-                    await Insert_Pointer_Trace(pointer_Mas, record_Type);
-                }
+                //if (CoreService.Enable_Trace_Records(_configuration))
+                //{
+                //    if (pointer_Mas.Pointer_Id == 0)
+                //        record_Type = "Insert";
+                //    else
+                //        record_Type = "Update";
+                //    await Insert_Pointer_Trace(pointer_Mas, record_Type);
+                //}
                 return ("success", _insertedId);
             }
             return ("error", 0);

@@ -315,33 +315,33 @@ namespace astute.Controllers
                             dataTable.Columns.Add("Status", typeof(bool));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
 
-                            #region Ac group detail log
-                            DataTable dataTable1 = new DataTable();
-                            dataTable1.Columns.Add("Employee_Id", typeof(int));
-                            dataTable1.Columns.Add("IP_Address", typeof(string));
-                            dataTable1.Columns.Add("Trace_Date", typeof(DateTime));
-                            dataTable1.Columns.Add("Trace_Time", typeof(TimeSpan));
-                            dataTable1.Columns.Add("Record_Type", typeof(string));
-                            dataTable1.Columns.Add("Ac_Group_Id", typeof(int));
-                            dataTable1.Columns.Add("Ac_Group_Det_Name", typeof(string));
-                            dataTable1.Columns.Add("Trans_Type", typeof(string));
-                            dataTable1.Columns.Add("Basic_Group", typeof(string));
-                            dataTable1.Columns.Add("Opp_Group_Det_Id", typeof(int));
-                            dataTable1.Columns.Add("Parent_Group", typeof(int));
-                            #endregion
+                            //#region Ac group detail log
+                            //DataTable dataTable1 = new DataTable();
+                            //dataTable1.Columns.Add("Employee_Id", typeof(int));
+                            //dataTable1.Columns.Add("IP_Address", typeof(string));
+                            //dataTable1.Columns.Add("Trace_Date", typeof(DateTime));
+                            //dataTable1.Columns.Add("Trace_Time", typeof(TimeSpan));
+                            //dataTable1.Columns.Add("Record_Type", typeof(string));
+                            //dataTable1.Columns.Add("Ac_Group_Id", typeof(int));
+                            //dataTable1.Columns.Add("Ac_Group_Det_Name", typeof(string));
+                            //dataTable1.Columns.Add("Trans_Type", typeof(string));
+                            //dataTable1.Columns.Add("Basic_Group", typeof(string));
+                            //dataTable1.Columns.Add("Opp_Group_Det_Id", typeof(int));
+                            //dataTable1.Columns.Add("Parent_Group", typeof(int));
+                            //#endregion
 
                             foreach (var item in ac_Group_Master.Ac_Group_Detail_List)
                             {
                                 dataTable.Rows.Add(item.Ac_Group_Det_Id, ac_group_Id, item.Ac_Group_Det_Name, item.Trans_Type, item.Basic_Group, item.Opp_Group_Det_Id, item.Parent_Group, item.Status, item.QueryFlag);
-                                if (CoreService.Enable_Trace_Records(_configuration))
-                                {
-                                    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, ac_group_Id, item.Ac_Group_Det_Name, item.Trans_Type, item.Basic_Group, item.Opp_Group_Det_Id, item.Parent_Group);
-                                }
+                                //if (CoreService.Enable_Trace_Records(_configuration))
+                                //{
+                                //    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, ac_group_Id, item.Ac_Group_Det_Name, item.Trans_Type, item.Basic_Group, item.Opp_Group_Det_Id, item.Parent_Group);
+                                //}
                             }
-                            if (CoreService.Enable_Trace_Records(_configuration))
-                            {
-                                await _ac_group_service.Insert_Ac_Group_Detail_Trace(dataTable1);
-                            }
+                            //if (CoreService.Enable_Trace_Records(_configuration))
+                            //{
+                            //    await _ac_group_service.Insert_Ac_Group_Detail_Trace(dataTable1);
+                            //}
                             await _ac_group_service.Add_Update_Ac_Group_Detail(dataTable);
                         }
                         return Ok(new

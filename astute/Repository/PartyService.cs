@@ -407,14 +407,14 @@ namespace astute.Repository
             {
                 string record_Type = string.Empty;
                 int _insertedId = (int)insertedId.Value;
-                if (CoreService.Enable_Trace_Records(_configuration))
-                {
-                    if (party_Master.Party_Id == 0)
-                        record_Type = "Insert";
-                    else
-                        record_Type = "Update";
-                    await Insert_Party_Master_Trace(party_Master, record_Type);
-                }
+                //if (CoreService.Enable_Trace_Records(_configuration))
+                //{
+                //    if (party_Master.Party_Id == 0)
+                //        record_Type = "Insert";
+                //    else
+                //        record_Type = "Update";
+                //    await Insert_Party_Master_Trace(party_Master, record_Type);
+                //}
                 return ("success", _insertedId);
             }
             return ("error", 0);

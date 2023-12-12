@@ -1865,34 +1865,34 @@ namespace astute.Controllers
 
                             DataTable dataTable2 = new DataTable();
                             var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
-                            if (CoreService.Enable_Trace_Records(_configuration))
-                            {
-                                dataTable2.Columns.Add("Employee_Id", typeof(int));
-                                dataTable2.Columns.Add("IP_Address", typeof(string));
-                                dataTable2.Columns.Add("Trace_Date", typeof(DateTime));
-                                dataTable2.Columns.Add("Trace_Time", typeof(TimeSpan));
-                                dataTable2.Columns.Add("Record_Type", typeof(string));
-                                dataTable2.Columns.Add("Pointer_id", typeof(int));
-                                dataTable2.Columns.Add("From_Cts", typeof(decimal));
-                                dataTable2.Columns.Add("To_Cts", typeof(decimal));
-                                dataTable2.Columns.Add("Order_No", typeof(int));
-                                dataTable2.Columns.Add("Sort_No", typeof(int));
-                                dataTable2.Columns.Add("Status", typeof(bool));
-                                dataTable2.Columns.Add("Sub_Pointer", typeof(string));
-                            }
+                            //if (CoreService.Enable_Trace_Records(_configuration))
+                            //{
+                            //    dataTable2.Columns.Add("Employee_Id", typeof(int));
+                            //    dataTable2.Columns.Add("IP_Address", typeof(string));
+                            //    dataTable2.Columns.Add("Trace_Date", typeof(DateTime));
+                            //    dataTable2.Columns.Add("Trace_Time", typeof(TimeSpan));
+                            //    dataTable2.Columns.Add("Record_Type", typeof(string));
+                            //    dataTable2.Columns.Add("Pointer_id", typeof(int));
+                            //    dataTable2.Columns.Add("From_Cts", typeof(decimal));
+                            //    dataTable2.Columns.Add("To_Cts", typeof(decimal));
+                            //    dataTable2.Columns.Add("Order_No", typeof(int));
+                            //    dataTable2.Columns.Add("Sort_No", typeof(int));
+                            //    dataTable2.Columns.Add("Status", typeof(bool));
+                            //    dataTable2.Columns.Add("Sub_Pointer", typeof(string));
+                            //}
 
                             foreach (var item in pointer_Mas.Pointer_Detail_List)
                             {
                                 dataTable.Rows.Add(item.Pointer_Det_Id, pointer_Id, item.From_Cts, item.To_Cts, item.Order_No, item.Sort_No, item.Status, item.Sub_Pointer, item.QueryFlag);
-                                if (CoreService.Enable_Trace_Records(_configuration))
-                                {
-                                    dataTable2.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, pointer_Id, item.From_Cts, item.To_Cts, item.Order_No, item.Sort_No, item.Status, item.Sub_Pointer);
-                                }
+                                //if (CoreService.Enable_Trace_Records(_configuration))
+                                //{
+                                //    dataTable2.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, pointer_Id, item.From_Cts, item.To_Cts, item.Order_No, item.Sort_No, item.Status, item.Sub_Pointer);
+                                //}
                             }
-                            if (CoreService.Enable_Trace_Records(_configuration))
-                            {
-                                await _pointerService.Insert_Pointer_Detail_Trace(dataTable2);
-                            }
+                            //if (CoreService.Enable_Trace_Records(_configuration))
+                            //{
+                            //    await _pointerService.Insert_Pointer_Detail_Trace(dataTable2);
+                            //}
                             await _pointerService.InsertPointerDetail(dataTable);
                         }
                         return Ok(new
@@ -2750,17 +2750,17 @@ namespace astute.Controllers
                         foreach (var item in holiday_Masters)
                         {
                             dataTable.Rows.Add(item.Holiday_Id, item.Date, item.Start_Time, item.End_Time, item.Holiday_Flag, item.Description, item.QueryFlag);
-                            if (CoreService.Enable_Trace_Records(_configuration))
-                            {
-                                dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, item.Date, item.Start_Time, item.End_Time, item.Holiday_Flag, item.Description);
-                            }
+                            //if (CoreService.Enable_Trace_Records(_configuration))
+                            //{
+                            //    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, item.Date, item.Start_Time, item.End_Time, item.Holiday_Flag, item.Description);
+                            //}
                         }
 
                         var result = await _holidayService.Insert_Update_Holiday(dataTable);
-                        if (CoreService.Enable_Trace_Records(_configuration))
-                        {
-                            await _holidayService.Insert_Holiday_Trace(dataTable1);
-                        }
+                        //if (CoreService.Enable_Trace_Records(_configuration))
+                        //{
+                        //    await _holidayService.Insert_Holiday_Trace(dataTable1);
+                        //}
                         if (result > 0)
                         {
                             return Ok(new
@@ -3488,15 +3488,15 @@ namespace astute.Controllers
                     foreach (var item in exchange_Rate_Masters)
                     {
                         dataTable.Rows.Add(item.Exchange_Id, item.Trans_date, item.Currency_Id, item.Bank_Rate, item.Custom_Rate, item.QueryFlag);
-                        if (CoreService.Enable_Trace_Records(_configuration))
-                        {
-                            dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, item.Trans_date, item.Currency_Id, item.Bank_Rate, item.Custom_Rate);
-                        }
+                        //if (CoreService.Enable_Trace_Records(_configuration))
+                        //{
+                        //    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, item.Trans_date, item.Currency_Id, item.Bank_Rate, item.Custom_Rate);
+                        //}
                     }
-                    if (CoreService.Enable_Trace_Records(_configuration))
-                    {
-                        await _exchange_Rate_Service.Insert_Exchange_Rate_Trace(dataTable1);
-                    }
+                    //if (CoreService.Enable_Trace_Records(_configuration))
+                    //{
+                    //    await _exchange_Rate_Service.Insert_Exchange_Rate_Trace(dataTable1);
+                    //}
                     var result = await _exchange_Rate_Service.Insert_Update_Exchange_Rate(dataTable);
                     if (result > 0)
                     {

@@ -81,31 +81,31 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                if (termsAndCondition.Condition_Id > 0)
-                    await Insert_TermsAndCondition_Trace(termsAndCondition, "Update");
-                else
-                    await Insert_TermsAndCondition_Trace(termsAndCondition, "Insert");
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    if (termsAndCondition.Condition_Id > 0)
+            //        await Insert_TermsAndCondition_Trace(termsAndCondition, "Update");
+            //    else
+            //        await Insert_TermsAndCondition_Trace(termsAndCondition, "Insert");
 
-            }
+            //}
 
             return result;
         }
         public async Task<int> DeleteTermsAndCondition(int condition_Id)
         {
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                var conditionId = condition_Id > 0 ? new SqlParameter("@Condition_Id", condition_Id) : new SqlParameter("@Condition_Id", DBNull.Value);
-                var result = await Task.Run(() => _dbContext.TermsAndCondition
-                            .FromSqlRaw(@"exec TermsAndCondition_Select @Condition_Id, @Process_Id", conditionId, new SqlParameter("@Process_Id", DBNull.Value))
-                            .AsEnumerable()
-                            .FirstOrDefault());
-                if (result != null)
-                {
-                    await Insert_TermsAndCondition_Trace(result, "Delete");
-                }
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    var conditionId = condition_Id > 0 ? new SqlParameter("@Condition_Id", condition_Id) : new SqlParameter("@Condition_Id", DBNull.Value);
+            //    var result = await Task.Run(() => _dbContext.TermsAndCondition
+            //                .FromSqlRaw(@"exec TermsAndCondition_Select @Condition_Id, @Process_Id", conditionId, new SqlParameter("@Process_Id", DBNull.Value))
+            //                .AsEnumerable()
+            //                .FirstOrDefault());
+            //    if (result != null)
+            //    {
+            //        await Insert_TermsAndCondition_Trace(result, "Delete");
+            //    }
+            //}
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"TermsAndCondition_Delete {condition_Id}"));
         }
         public async Task<IList<TermsAndCondition>> GetTermsAndCondition(int condition_Id, int process_Id)

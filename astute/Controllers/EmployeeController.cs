@@ -255,16 +255,16 @@ namespace astute.Controllers
                                 string document_Expiry_Date = !string.IsNullOrEmpty(item.Document_Expiry_Date) ? item.Document_Expiry_Date : null;
 
                                 dataTable.Rows.Add(item.Employee_Document_Id, employee_Id, item.Document_Type, document_Expiry_Date, item.Document_Url, item.Document_Url_2, item.Document_Url_3, item.Document_Url_4, item.QueryFlag);
-                                if (CoreService.Enable_Trace_Records(_configuration))
-                                {
-                                    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, employee_Id, item.Document_Type, document_Expiry_Date, item.Document_Url, item.Document_Url_2, item.Document_Url_3, item.Document_Url_4);
-                                }
+                                //if (CoreService.Enable_Trace_Records(_configuration))
+                                //{
+                                //    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, employee_Id, item.Document_Type, document_Expiry_Date, item.Document_Url, item.Document_Url_2, item.Document_Url_3, item.Document_Url_4);
+                                //}
                             }
                             await _employeeService.InsertEmployeeDocument(dataTable);
-                            if (CoreService.Enable_Trace_Records(_configuration))
-                            {
-                                await _employeeService.Insert_Employee_Document_Trace(dataTable1);
-                            }
+                            //if (CoreService.Enable_Trace_Records(_configuration))
+                            //{
+                            //    await _employeeService.Insert_Employee_Document_Trace(dataTable1);
+                            //}
                         }
                         if (employee_Master.Employee_Salary_List != null && employee_Master.Employee_Salary_List.Count > 0)
                         {
@@ -292,16 +292,16 @@ namespace astute.Controllers
                             foreach (var item in employee_Master.Employee_Salary_List)
                             {
                                 dataTable.Rows.Add(item.Employee_Salary_Id, employee_Id, item.Salary, item.Start_Date, item.Salary_Type, item.QueryFlag);
-                                if (CoreService.Enable_Trace_Records(_configuration))
-                                {
-                                    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, employee_Id, item.Salary, item.Start_Date, item.Salary_Type);
-                                }
+                                //if (CoreService.Enable_Trace_Records(_configuration))
+                                //{
+                                //    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, employee_Id, item.Salary, item.Start_Date, item.Salary_Type);
+                                //}
                             }
                             await _employeeService.InsertEmployeeSalary(dataTable);
-                            if (CoreService.Enable_Trace_Records(_configuration))
-                            {
-                                await _employeeService.Insert_Employee_Salary_Trace(dataTable1);
-                            }
+                            //if (CoreService.Enable_Trace_Records(_configuration))
+                            //{
+                            //    await _employeeService.Insert_Employee_Salary_Trace(dataTable1);
+                            //}
                         }
                         if (employee_Master.Emergency_Contact_Detail_List != null && employee_Master.Emergency_Contact_Detail_List.Count > 0)
                         {
@@ -330,16 +330,16 @@ namespace astute.Controllers
                             foreach (var item in employee_Master.Emergency_Contact_Detail_List)
                             {
                                 dataTable.Rows.Add(item.Emergency_Contact_Detail_Id, employee_Id, item.Name, item.Relation, item.Mobile, item.Address, item.QueryFlag);
-                                if (CoreService.Enable_Trace_Records(_configuration))
-                                {
-                                    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, item.Name, item.Relation, item.Mobile, item.Address);
-                                }
+                                //if (CoreService.Enable_Trace_Records(_configuration))
+                                //{
+                                //    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, item.Name, item.Relation, item.Mobile, item.Address);
+                                //}
                             }
                             await _employeeService.Insert_Emergency_Contact_Detail(dataTable);
-                            if (CoreService.Enable_Trace_Records(_configuration))
-                            {
-                                await _employeeService.Insert_Emergency_Contact_Detail_Trace(dataTable1);
-                            }
+                            //if (CoreService.Enable_Trace_Records(_configuration))
+                            //{
+                            //    await _employeeService.Insert_Emergency_Contact_Detail_Trace(dataTable1);
+                            //}
                         }
                         return Ok(new
                         {

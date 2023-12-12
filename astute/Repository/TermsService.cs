@@ -71,10 +71,10 @@ namespace astute.Repository
             if (termsIsExist)
                 return 5;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_Terms_Master_Trace(terms_Mas, "Insert");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_Terms_Master_Trace(terms_Mas, "Insert");
+            //}
 
             return result;
         }
@@ -100,27 +100,27 @@ namespace astute.Repository
             if (termsIsExist)
                 return 5;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_Terms_Master_Trace(terms_Mas, "Update");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_Terms_Master_Trace(terms_Mas, "Update");
+            //}
 
             return result;
         }
         public async Task<int> DeleteTerms(int terms_Id)
         {
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                var _terms_Id = terms_Id > 0 ? new SqlParameter("@terms_Id", terms_Id) : new SqlParameter("@terms_Id", DBNull.Value);
-                var result = await Task.Run(() => _dbContext.Terms_Master
-                                .FromSqlRaw(@"exec Terms_Mas_Select @terms_Id", _terms_Id)
-                                .AsEnumerable()
-                                .FirstOrDefault());
-                if (result != null)
-                {
-                    await Insert_Terms_Master_Trace(result, "Delete");
-                }
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    var _terms_Id = terms_Id > 0 ? new SqlParameter("@terms_Id", terms_Id) : new SqlParameter("@terms_Id", DBNull.Value);
+            //    var result = await Task.Run(() => _dbContext.Terms_Master
+            //                    .FromSqlRaw(@"exec Terms_Mas_Select @terms_Id", _terms_Id)
+            //                    .AsEnumerable()
+            //                    .FirstOrDefault());
+            //    if (result != null)
+            //    {
+            //        await Insert_Terms_Master_Trace(result, "Delete");
+            //    }
+            //}
 
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Terms_Mas_Delete {terms_Id}"));
         }

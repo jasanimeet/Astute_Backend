@@ -104,10 +104,10 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_Bank_Trace(bank_Mas, "Insert");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_Bank_Trace(bank_Mas, "Insert");
+            //}
 
             return result;
         }
@@ -154,26 +154,26 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_Bank_Trace(bank_Mas, "Update");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_Bank_Trace(bank_Mas, "Update");
+            //}
 
             return result;
         }
         public async Task<int> DeleteBank(int bankId)
         {
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                var bank_Mas = await Task.Run(() => _dbContext.Bank_Master
-                            .FromSqlRaw(@"exec Bank_Mas_Select @Bank_Id", bankId)
-                            .AsEnumerable()
-                            .FirstOrDefault());
-                if(bank_Mas != null)
-                {
-                    await Insert_Bank_Trace(bank_Mas, "Delete");
-                }
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    var bank_Mas = await Task.Run(() => _dbContext.Bank_Master
+            //                .FromSqlRaw(@"exec Bank_Mas_Select @Bank_Id", bankId)
+            //                .AsEnumerable()
+            //                .FirstOrDefault());
+            //    if(bank_Mas != null)
+            //    {
+            //        await Insert_Bank_Trace(bank_Mas, "Delete");
+            //    }
+            //}
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Bank_Mas_Delete {bankId}"));
         }
         public async Task<IList<Bank_Master>> GetBank(int bankId)

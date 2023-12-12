@@ -80,10 +80,10 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_Process_Master_Trace(process_Mas, "Insert");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_Process_Master_Trace(process_Mas, "Insert");
+            //}
 
             return result;
         }
@@ -118,27 +118,27 @@ namespace astute.Repository
             if (sortNoIsExist)
                 return 3;
 
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                await Insert_Process_Master_Trace(process_Mas, "Update");
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    await Insert_Process_Master_Trace(process_Mas, "Update");
+            //}
 
             return result;
         }
         public async Task<int> DeleteProcessMas(int proccessId)
         {
             var process_Id = new SqlParameter("@Process_Id", proccessId);
-            if (CoreService.Enable_Trace_Records(_configuration))
-            {
-                var process_Master = await Task.Run(() => _dbContext.Process_Master
-                                .FromSqlRaw(@"exec Process_Mas_Select @Process_Id", process_Id)
-                                .AsEnumerable()
-                                .FirstOrDefault());
-                if(process_Master != null)
-                {
-                    await Insert_Process_Master_Trace(process_Master, "Delete");
-                }
-            }
+            //if (CoreService.Enable_Trace_Records(_configuration))
+            //{
+            //    var process_Master = await Task.Run(() => _dbContext.Process_Master
+            //                    .FromSqlRaw(@"exec Process_Mas_Select @Process_Id", process_Id)
+            //                    .AsEnumerable()
+            //                    .FirstOrDefault());
+            //    if(process_Master != null)
+            //    {
+            //        await Insert_Process_Master_Trace(process_Master, "Delete");
+            //    }
+            //}
 
             var result = await _dbContext.Database
                                 .ExecuteSqlRawAsync("EXEC Process_Mas_Delete @Process_Id", process_Id);
