@@ -537,6 +537,10 @@ namespace astute.Repository
 
             return result;
         }
+        public async Task<int> Delete_Sunrise_Pricing(int sunrise_Pricing_Id)
+        {
+            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Sunrise_Pricing_Delete {sunrise_Pricing_Id}"));
+        }
         #endregion
 
         #region Supplier Pricing Key To Symbol

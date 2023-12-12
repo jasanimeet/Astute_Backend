@@ -29,6 +29,7 @@ namespace astute.Repository
         Task<(string, int)> Add_Update_Supplier_Pricing(Supplier_Pricing supplier_Pricing);
         Task<int> Delete_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id);
         Task<Common_Model> Get_Max_Sunrice_Pricing_Id();
+        Task<int> Delete_Sunrise_Pricing(int sunrise_Pricing_Id);
         #endregion
 
         #region Supplier Pricing Key To Symbol

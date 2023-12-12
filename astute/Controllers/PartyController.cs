@@ -306,18 +306,7 @@ namespace astute.Controllers
             dt_stock_data.Columns.Add("EYE_CLEAN", typeof(string));
             dt_stock_data.Columns.Add("Short_Code", typeof(string));
             if (stock_Datas != null && stock_Datas.Count > 0)
-            {
-                //foreach (var item in stock_Datas)
-                //{
-                //    dt_stock_data.Rows.Add(item.SUPPLIER_NO ?? null, item.CERTIFICATE_NO ?? null, item.LAB ?? null, item.SHAPE ?? null, item.CTS ?? null, item.BASE_DISC ?? null, item.BASE_RATE ?? null, item.BASE_AMOUNT ?? null, item.COLOR ?? null, item.CLARITY ?? null, item.CUT ?? null,
-                //        item.POLISH ?? null, item.SYMM ?? null, item.FLS_COLOR ?? null, item.FLS_INTENSITY ?? null, item.LENGTH ?? null, item.WIDTH ?? null, item.DEPTH ?? null, item.MEASUREMENT ?? null, item.DEPTH_PER ?? null, item.TABLE_PER ?? null, item.CULET ?? null, item.SHADE ?? null, item.LUSTER ?? null,
-                //        item.MILKY ?? null, item.BGM ?? null, item.LOCATION ?? null, item.STATUS ?? null, item.TABLE_BLACK ?? null, item.SIDE_BLACK ?? null, item.TABLE_WHITE ?? null, item.SIDE_WHITE ?? null, item.TABLE_OPEN ?? null, item.CROWN_OPEN ?? null, item.PAVILION_OPEN ?? null, item.GIRDLE_OPEN ?? null,
-                //        item.GIRDLE_FROM ?? null, item.GIRDLE_TO ?? null, item.GIRDLE_CONDITION ?? null, item.GIRDLE_TYPE ?? null, item.LASER_INSCRIPTION ?? null, item.CERTIFICATE_DATE ?? null, item.CROWN_ANGLE ?? null, item.CROWN_HEIGHT ?? null, item.PAVILION_ANGLE ?? null, item.PAVILION_HEIGHT ?? null,
-                //        item.GIRDLE_PER ?? null, item.LR_HALF ?? null, item.STAR_LN ?? null, item.CERT_TYPE ?? null, item.FANCY_COLOR ?? null, item.FANCY_INTENSITY ?? null, item.FANCY_OVERTONE ?? null, item.IMAGE_LINK ?? null, item.Image2 ?? null, item.VIDEO_LINK ?? null, item.Video2 ?? null, item.CERTIFICATE_LINK ?? null,
-                //        item.DNA ?? null, item.IMAGE_HEART_LINK ?? null, item.IMAGE_ARROW_LINK ?? null, item.H_A_LINK ?? null, item.CERTIFICATE_TYPE_LINK ?? null, item.KEY_TO_SYMBOL ?? null, item.LAB_COMMENTS ?? null, item.SUPPLIER_COMMENTS ?? null, item.ORIGIN ?? null, item.BOW_TIE ?? null,
-                //        item.EXTRA_FACET_TABLE ?? null, item.EXTRA_FACET_CROWN ?? null, item.EXTRA_FACET_PAVILION ?? null, item.INTERNAL_GRAINING ?? null, item.H_A ?? null, item.SUPPLIER_DISC ?? null, item.SUPPLIER_AMOUNT ?? null, item.OFFER_DISC ?? null, item.OFFER_VALUE ?? null,
-                //        item.MAX_SLAB_BASE_DISC ?? null, item.MAX_SLAB_BASE_VALUE ?? null, item.EYE_CLEAN ?? null, item.Short_Code ?? null);
-                //}
+            {   
                 foreach (var item in stock_Datas)
                 {
                     dt_stock_data.Rows.Add(item.SUPPLIER_NO != null ? Convert.ToString(item.SUPPLIER_NO) : DBNull.Value,
@@ -1231,12 +1220,12 @@ namespace astute.Controllers
         }
 
         [HttpGet]
-        [Route("get_party_contact")]
-        public async Task<IActionResult> Get_Party_Contact(int party_Id)
+        [Route("get_user_name")]
+        public async Task<IActionResult> Get_User_Name(int party_Id)
         {
             try
             {
-                var result = await _partyService.Get_Party_Contact(party_Id);
+                var result = await _partyService.Get_User_Name_From_Party_Contact(party_Id);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -1250,7 +1239,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Party_Contact", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Get_User_Name", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
@@ -1904,6 +1893,37 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Delete_Supplier_Pricing", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpDelete]
+        [Route("delete_sunrise_pricing")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Sunrise_Pricing(int sunrise_Pricing_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Delete_Sunrise_Pricing(sunrise_Pricing_Id);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.SunrisePricingDeleted,
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Sunrise_Pricing", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

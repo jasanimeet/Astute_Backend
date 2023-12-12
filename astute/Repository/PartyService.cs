@@ -225,13 +225,12 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<IList<Party_Contact>> Get_Party_Contact(int party_Id)
-        {
-            var _contact_Id = new SqlParameter("@Contact_Id", DBNull.Value);
+        public async Task<IList<DropdownModel>> Get_User_Name_From_Party_Contact(int party_Id)
+        {   
             var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
 
-            var result = await Task.Run(() => _dbContext.Party_Contact
-                            .FromSqlRaw(@"exec Party_Contact_Select @Contact_Id, @Party_Id", _contact_Id, _party_Id).ToListAsync());
+            var result = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"EXEC Get_User_Name_From_Party_Contact @Party_Id", _party_Id).ToListAsync());
 
             return result;
         }
