@@ -1229,6 +1229,34 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_party_contact")]
+        public async Task<IActionResult> Get_Party_Contact(int party_Id)
+        {
+            try
+            {
+                var result = await _partyService.Get_Party_Contact(party_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Party_Contact", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Supplier Details
@@ -1712,15 +1740,43 @@ namespace astute.Controllers
                 });
             }
         }
+        [HttpGet]
+        [Route("get_sunrise_pricing_list")]
+        [Authorize]
+        public async Task<IActionResult> Get_Sunrise_Pricing_List()
+        {
+            try
+            {
+                var result = await _supplierService.Get_Sunrise_Pricing_List();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Sunrise_Pricing_List", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
 
         [HttpGet]
         [Route("get_supplier_pricing")]
         [Authorize]
-        public async Task<IActionResult> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type, string map_Flag)
+        public async Task<IActionResult> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type, string map_Flag, int sunrise_pricing_Id)
         {
             try
             {
-                var result = await _supplierService.Get_Supplier_Pricing(supplier_Pricing_Id, supplier_Id, supplier_Filter_Type, map_Flag);
+                var result = await _supplierService.Get_Supplier_Pricing(supplier_Pricing_Id, supplier_Id, supplier_Filter_Type, map_Flag, sunrise_pricing_Id);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -1751,11 +1807,23 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    int sun_price_Id = 0;
+                    var selected_sun_price_Id = supplier_Pricings.Where(x => x.Sunrise_Pricing_Id > 0).Select(x => x.Sunrise_Pricing_Id).FirstOrDefault() ?? 0;
+                    if (selected_sun_price_Id > 0)
+                    {
+                        sun_price_Id = selected_sun_price_Id;
+                    }
+                    else
+                    {
+                        var data = await _supplierService.Get_Max_Sunrice_Pricing_Id();
+                        sun_price_Id = data.Id + 1;
+                    }
                     if (supplier_Pricings != null && supplier_Pricings.Count > 0)
                     {
                         bool success = false;
                         if (supplier_Pricings != null && supplier_Pricings.Count > 0)
                         {
+
                             foreach (var item in supplier_Pricings)
                             {
                                 if (item.Query_Flag == "D")
@@ -1765,6 +1833,10 @@ namespace astute.Controllers
                                 }
                                 else
                                 {
+                                    if (item.Map_Flag == "SPO" || item.Map_Flag == "SPL")
+                                    {
+                                        item.Sunrise_Pricing_Id = sun_price_Id;
+                                    }
                                     var (message, supplier_pricing_Id) = await _supplierService.Add_Update_Supplier_Pricing(item);
                                     if (message == "success" && supplier_pricing_Id > 0)
                                     {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using static astute.Repository.SupplierService;
 
 namespace astute.Repository
 {
@@ -23,9 +24,11 @@ namespace astute.Repository
 
         #region Supplier Pricing
         Task<List<Dictionary<string, object>>> Get_Supplier_Pricing_List();
-        Task<List<Dictionary<string, object>>> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type, string map_Flag);
+        Task<List<Dictionary<string, object>>> Get_Sunrise_Pricing_List();
+        Task<List<Dictionary<string, object>>> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type, string map_Flag, int sunrise_pricing_Id);
         Task<(string, int)> Add_Update_Supplier_Pricing(Supplier_Pricing supplier_Pricing);
         Task<int> Delete_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id);
+        Task<Common_Model> Get_Max_Sunrice_Pricing_Id();
         #endregion
 
         #region Supplier Pricing Key To Symbol

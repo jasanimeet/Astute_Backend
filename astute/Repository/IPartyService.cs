@@ -24,6 +24,7 @@ namespace astute.Repository
 
         #region Party Contact
         Task<int> AddUpdatePartyContact(DataTable dataTable);
+        Task<IList<Party_Contact>> Get_Party_Contact(int party_Id);
         #endregion
 
         #region Party Bank

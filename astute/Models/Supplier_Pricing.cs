@@ -11,6 +11,7 @@ namespace astute.Models
         [Key]
         public int Supplier_Pricing_Id { get; set; }
         public int? Supplier_Id { get; set; }
+        public int? Sunrise_Pricing_Id { get; set; }
         public string? Map_Flag { get; set; }
         public string? Shape { get; set; }
         public string? Cts { get; set; }

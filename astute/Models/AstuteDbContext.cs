@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using static astute.Repository.SupplierService;
 
 namespace astute.Models
 {
@@ -90,5 +91,6 @@ namespace astute.Models
         public DbSet<Party_API_With_Column_Mapping> Party_API_With_Column_Mapping { get; set; }
         public DbSet<Temp_Layout_Master> Temp_Layout_Master { get; set; }
         public DbSet<Temp_Layout_Detail> Temp_Layout_Detail { get; set; }
+        public DbSet<Common_Model> Common_Model { get; set; }
     }
 }
