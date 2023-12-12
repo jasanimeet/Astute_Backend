@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace astute.Controllers
@@ -151,9 +152,9 @@ namespace astute.Controllers
                         item.SYMM ?? null,
                         item.FLS_COLOR ?? null,
                         item.FLS_INTENSITY ?? null,
-                        !string.IsNullOrEmpty(item.LENGTH.ToString()) ? Convert.ToString(item.LENGTH) : item.MEASUREMENT != null ? CoreService.Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "length") : DBNull.Value,
-                        !string.IsNullOrEmpty(item.WIDTH.ToString()) ? Convert.ToString(item.WIDTH) : item.MEASUREMENT != null ? CoreService.Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "width") : DBNull.Value,
-                        !string.IsNullOrEmpty(item.DEPTH.ToString()) ? Convert.ToString(item.DEPTH) : item.MEASUREMENT != null ? CoreService.Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "depth") : DBNull.Value,
+                        !string.IsNullOrEmpty(item.LENGTH.ToString()) ? Convert.ToString(item.LENGTH) : item.MEASUREMENT != null ? Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "length") : DBNull.Value,
+                        !string.IsNullOrEmpty(item.WIDTH.ToString()) ? Convert.ToString(item.WIDTH) : item.MEASUREMENT != null ? Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "width") : DBNull.Value,
+                        !string.IsNullOrEmpty(item.DEPTH.ToString()) ? Convert.ToString(item.DEPTH) : item.MEASUREMENT != null ? Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "depth") : DBNull.Value,
                         item.MEASUREMENT ?? null,
                         item.DEPTH_PER ?? null,
                         item.TABLE_PER ?? null,
@@ -334,9 +335,9 @@ namespace astute.Controllers
                         item.SYMM != null ? Convert.ToString(item.SYMM) : DBNull.Value,
                         item.FLS_COLOR != null ? Convert.ToString(item.FLS_COLOR) : DBNull.Value,
                         item.FLS_INTENSITY != null ? Convert.ToString(item.FLS_INTENSITY) : DBNull.Value,
-                        !string.IsNullOrEmpty(item.LENGTH.ToString()) ? Convert.ToString(item.LENGTH) : item.MEASUREMENT != null ? CoreService.Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "length") : DBNull.Value,
-                        !string.IsNullOrEmpty(item.WIDTH.ToString()) ? Convert.ToString(item.WIDTH) : item.MEASUREMENT != null ? CoreService.Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "width") : DBNull.Value,
-                        !string.IsNullOrEmpty(item.DEPTH.ToString()) ? Convert.ToString(item.DEPTH) : item.MEASUREMENT != null ? CoreService.Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "depth") : DBNull.Value,
+                        !string.IsNullOrEmpty(item.LENGTH.ToString()) ? Convert.ToString(item.LENGTH) : item.MEASUREMENT != null ? Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "length") : DBNull.Value,
+                        !string.IsNullOrEmpty(item.WIDTH.ToString()) ? Convert.ToString(item.WIDTH) : item.MEASUREMENT != null ? Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "width") : DBNull.Value,
+                        !string.IsNullOrEmpty(item.DEPTH.ToString()) ? Convert.ToString(item.DEPTH) : item.MEASUREMENT != null ? Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "depth") : DBNull.Value,
                         item.MEASUREMENT != null ? Convert.ToString(item.MEASUREMENT) : DBNull.Value,
                         item.DEPTH_PER != null ? Convert.ToString(item.DEPTH_PER) : DBNull.Value,
                         item.TABLE_PER != null ? Convert.ToString(item.TABLE_PER) : DBNull.Value,
@@ -635,6 +636,33 @@ namespace astute.Controllers
             }
 
             return dt;
+        }
+        private string Splite_Supplier_Stock_Measurement(string expression, string dimension)
+        {
+            // Define a regular expression pattern to capture numeric values
+            string pattern = @"[-+]?\d*\.\d+|[-+]?\d+";
+
+            // Use Regex.Matches to find all matches
+            MatchCollection matches = Regex.Matches(expression, pattern);
+
+            // Extract numeric values and store them in an array
+            double[] values = matches.Cast<Match>().Select(match => Convert.ToDouble(match.Value)).ToArray();
+
+            // Sort the values in descending order
+            Array.Sort(values, (a, b) => b.CompareTo(a));
+
+            // Determine the dimension to return
+            switch (dimension.ToLower())
+            {
+                case "length":
+                    return values[0].ToString();
+                case "width":
+                    return values[1].ToString();
+                case "depth":
+                    return values[2].ToString();
+                default:
+                    throw new ArgumentException("Invalid dimension specified.");
+            }
         }
         #endregion
 
@@ -2075,7 +2103,7 @@ namespace astute.Controllers
 
         [HttpPost]
         [Route("create_update_supplier_data")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> Create_Update_Supplier_Data(Stock_Data_Master stock_Data_Master)
         {
             try

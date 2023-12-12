@@ -192,33 +192,7 @@ namespace astute.CoreServices
                 Console.WriteLine($"Error: {ex.Message}");
             }
         }
-        public static string Splite_Supplier_Stock_Measurement(string expression, string dimension)
-        {
-            // Define a regular expression pattern to capture numeric values
-            string pattern = @"[-+]?\d*\.\d+|[-+]?\d+";
-
-            // Use Regex.Matches to find all matches
-            MatchCollection matches = Regex.Matches(expression, pattern);
-
-            // Extract numeric values and store them in an array
-            double[] values = matches.Cast<Match>().Select(match => Convert.ToDouble(match.Value)).ToArray();
-
-            // Sort the values in descending order
-            Array.Sort(values, (a, b) => b.CompareTo(a));
-
-            // Determine the dimension to return
-            switch (dimension.ToLower())
-            {
-                case "length":
-                    return values[0].ToString();
-                case "width":
-                    return values[1].ToString();
-                case "depth":
-                    return values[2].ToString();
-                default:
-                    throw new ArgumentException("Invalid dimension specified.");
-            }
-        }
+    
 
     }
 }
