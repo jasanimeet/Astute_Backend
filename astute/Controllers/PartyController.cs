@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -134,14 +135,88 @@ namespace astute.Controllers
             {
                 foreach (var item in stock_Datas)
                 {
-                    dt_stock_data.Rows.Add(item.SUPPLIER_NO ?? null, item.CERTIFICATE_NO ?? null, item.LAB ?? null, item.SHAPE ?? null, item.CTS ?? null, item.BASE_DISC ?? null, item.BASE_RATE ?? null, item.BASE_AMOUNT ?? null, item.COLOR ?? null, item.CLARITY ?? null, item.CUT ?? null,
-                        item.POLISH ?? null, item.SYMM ?? null, item.FLS_COLOR ?? null, item.FLS_INTENSITY ?? null, item.LENGTH ?? null, item.WIDTH ?? null, item.DEPTH ?? null, item.MEASUREMENT ?? null, item.DEPTH_PER ?? null, item.TABLE_PER ?? null, item.CULET ?? null, item.SHADE ?? null, item.LUSTER ?? null,
-                        item.MILKY ?? null, item.BGM ?? null, item.LOCATION ?? null, item.STATUS ?? null, item.TABLE_BLACK ?? null, item.SIDE_BLACK ?? null, item.TABLE_WHITE ?? null, item.SIDE_WHITE ?? null, item.TABLE_OPEN ?? null, item.CROWN_OPEN ?? null, item.PAVILION_OPEN ?? null, item.GIRDLE_OPEN ?? null,
-                        item.GIRDLE_FROM ?? null, item.GIRDLE_TO ?? null, item.GIRDLE_CONDITION ?? null, item.GIRDLE_TYPE ?? null, item.LASER_INSCRIPTION ?? null, item.CERTIFICATE_DATE ?? null, item.CROWN_ANGLE ?? null, item.CROWN_HEIGHT ?? null, item.PAVILION_ANGLE ?? null, item.PAVILION_HEIGHT ?? null,
-                        item.GIRDLE_PER ?? null, item.LR_HALF ?? null, item.STAR_LN ?? null, item.CERT_TYPE ?? null, item.FANCY_COLOR ?? null, item.FANCY_INTENSITY ?? null, item.FANCY_OVERTONE ?? null, item.IMAGE_LINK ?? null, item.Image2 ?? null, item.VIDEO_LINK ?? null, item.Video2 ?? null, item.CERTIFICATE_LINK ?? null,
-                        item.DNA ?? null, item.IMAGE_HEART_LINK ?? null, item.IMAGE_ARROW_LINK ?? null, item.H_A_LINK ?? null, item.CERTIFICATE_TYPE_LINK ?? null, item.KEY_TO_SYMBOL ?? null, item.LAB_COMMENTS ?? null, item.SUPPLIER_COMMENTS ?? null, item.ORIGIN ?? null, item.BOW_TIE ?? null,
-                        item.EXTRA_FACET_TABLE ?? null, item.EXTRA_FACET_CROWN ?? null, item.EXTRA_FACET_PAVILION ?? null, item.INTERNAL_GRAINING ?? null, item.H_A ?? null, item.SUPPLIER_DISC ?? null, item.SUPPLIER_AMOUNT ?? null, item.OFFER_DISC ?? null, item.OFFER_VALUE ?? null,
-                        item.MAX_SLAB_BASE_DISC ?? null, item.MAX_SLAB_BASE_VALUE ?? null, item.EYE_CLEAN ?? null, item.Short_Code ?? null);
+                    dt_stock_data.Rows.Add(
+                        item.SUPPLIER_NO ?? null,
+                        item.CERTIFICATE_NO ?? null,
+                        item.LAB ?? null,
+                        item.SHAPE ?? null,
+                        item.CTS ?? null,
+                        item.BASE_DISC ?? null,
+                        item.BASE_RATE ?? null,
+                        item.BASE_AMOUNT ?? null,
+                        item.COLOR ?? null,
+                        item.CLARITY ?? null,
+                        item.CUT ?? null,
+                        item.POLISH ?? null,
+                        item.SYMM ?? null,
+                        item.FLS_COLOR ?? null,
+                        item.FLS_INTENSITY ?? null,
+                        !string.IsNullOrEmpty(item.LENGTH.ToString()) ? Convert.ToString(item.LENGTH) : item.MEASUREMENT != null ? CoreService.Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "length") : DBNull.Value,
+                        !string.IsNullOrEmpty(item.WIDTH.ToString()) ? Convert.ToString(item.WIDTH) : item.MEASUREMENT != null ? CoreService.Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "width") : DBNull.Value,
+                        !string.IsNullOrEmpty(item.DEPTH.ToString()) ? Convert.ToString(item.DEPTH) : item.MEASUREMENT != null ? CoreService.Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "depth") : DBNull.Value,
+                        item.MEASUREMENT ?? null,
+                        item.DEPTH_PER ?? null,
+                        item.TABLE_PER ?? null,
+                        item.CULET ?? null,
+                        item.SHADE ?? null,
+                        item.LUSTER ?? null,
+                        item.MILKY ?? null,
+                        item.BGM ?? null,
+                        item.LOCATION ?? null,
+                        item.STATUS ?? null,
+                        item.TABLE_BLACK ?? null,
+                        item.SIDE_BLACK ?? null,
+                        item.TABLE_WHITE ?? null,
+                        item.SIDE_WHITE ?? null,
+                        item.TABLE_OPEN ?? null,
+                        item.CROWN_OPEN ?? null,
+                        item.PAVILION_OPEN ?? null,
+                        item.GIRDLE_OPEN ?? null,
+                        item.GIRDLE_FROM ?? null,
+                        item.GIRDLE_TO ?? null,
+                        item.GIRDLE_CONDITION ?? null,
+                        item.GIRDLE_TYPE ?? null,
+                        item.LASER_INSCRIPTION ?? null,
+                        item.CERTIFICATE_DATE ?? null,
+                        item.CROWN_ANGLE ?? null,
+                        item.CROWN_HEIGHT ?? null,
+                        item.PAVILION_ANGLE ?? null,
+                        item.PAVILION_HEIGHT ?? null,
+                        item.GIRDLE_PER ?? null,
+                        item.LR_HALF ?? null,
+                        item.STAR_LN ?? null,
+                        item.CERT_TYPE ?? null,
+                        item.FANCY_COLOR ?? null,
+                        item.FANCY_INTENSITY ?? null,
+                        item.FANCY_OVERTONE ?? null,
+                        item.IMAGE_LINK ?? null,
+                        item.Image2 ?? null,
+                        item.VIDEO_LINK ?? null,
+                        item.Video2 ?? null,
+                        item.CERTIFICATE_LINK ?? null,
+                        item.DNA ?? null,
+                        item.IMAGE_HEART_LINK ?? null,
+                        item.IMAGE_ARROW_LINK ?? null,
+                        item.H_A_LINK ?? null,
+                        item.CERTIFICATE_TYPE_LINK ?? null,
+                        item.KEY_TO_SYMBOL ?? null,
+                        item.LAB_COMMENTS ?? null,
+                        item.SUPPLIER_COMMENTS ?? null,
+                        item.ORIGIN ?? null,
+                        item.BOW_TIE ?? null,
+                        item.EXTRA_FACET_TABLE ?? null,
+                        item.EXTRA_FACET_CROWN ?? null,
+                        item.EXTRA_FACET_PAVILION ?? null,
+                        item.INTERNAL_GRAINING ?? null,
+                        item.H_A ?? null,
+                        item.SUPPLIER_DISC ?? null,
+                        item.SUPPLIER_AMOUNT ?? null,
+                        item.OFFER_DISC ?? null,
+                        item.OFFER_VALUE ?? null,
+                        item.MAX_SLAB_BASE_DISC ?? null,
+                        item.MAX_SLAB_BASE_VALUE ?? null,
+                        item.EYE_CLEAN ?? null,
+                        item.Short_Code ?? null);
                 }
             }
             return dt_stock_data;
@@ -259,9 +334,9 @@ namespace astute.Controllers
                         item.SYMM != null ? Convert.ToString(item.SYMM) : DBNull.Value,
                         item.FLS_COLOR != null ? Convert.ToString(item.FLS_COLOR) : DBNull.Value,
                         item.FLS_INTENSITY != null ? Convert.ToString(item.FLS_INTENSITY) : DBNull.Value,
-                        item.LENGTH != null ? Convert.ToString(item.LENGTH) : DBNull.Value,
-                        item.WIDTH != null ? Convert.ToString(item.WIDTH) : DBNull.Value,
-                        item.DEPTH != null ? Convert.ToString(item.DEPTH) : DBNull.Value,
+                        !string.IsNullOrEmpty(item.LENGTH.ToString()) ? Convert.ToString(item.LENGTH) : item.MEASUREMENT != null ? CoreService.Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "length") : DBNull.Value,
+                        !string.IsNullOrEmpty(item.WIDTH.ToString()) ? Convert.ToString(item.WIDTH) : item.MEASUREMENT != null ? CoreService.Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "width") : DBNull.Value,
+                        !string.IsNullOrEmpty(item.DEPTH.ToString()) ? Convert.ToString(item.DEPTH) : item.MEASUREMENT != null ? CoreService.Splite_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "depth") : DBNull.Value,
                         item.MEASUREMENT != null ? Convert.ToString(item.MEASUREMENT) : DBNull.Value,
                         item.DEPTH_PER != null ? Convert.ToString(item.DEPTH_PER) : DBNull.Value,
                         item.TABLE_PER != null ? Convert.ToString(item.TABLE_PER) : DBNull.Value,
@@ -1313,7 +1388,7 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_party_supplier")]
         [Authorize]
-        public async Task<IActionResult> Get_Party_Supplier() 
+        public async Task<IActionResult> Get_Party_Supplier()
         {
             try
             {
@@ -1710,7 +1785,7 @@ namespace astute.Controllers
         public async Task<IActionResult> Delete_Supplier_Pricing(int supplier_Id)
         {
             try
-            {   
+            {
                 var result = await _supplierService.Delete_Supplier_Pricing(0, supplier_Id);
                 if (result > 0)
                 {
@@ -2000,7 +2075,7 @@ namespace astute.Controllers
 
         [HttpPost]
         [Route("create_update_supplier_data")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Create_Update_Supplier_Data(Stock_Data_Master stock_Data_Master)
         {
             try
@@ -2256,8 +2331,8 @@ namespace astute.Controllers
             {
                 var supplier = await _partyService.Get_Party_FTP(0, supp_Id);
                 if (supplier != null)
-                {   
-                    string ftpfileName = "/stock-" + Guid.NewGuid().ToString() + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".csv";                    
+                {
+                    string ftpfileName = "/stock-" + Guid.NewGuid().ToString() + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".csv";
                     string ftpUrl = _configuration["BaseUrl"] + CoreCommonFilePath.FtpFilesPath + ftpfileName;
                     string localDirectoryPath = Path.Combine(Directory.GetCurrentDirectory(), "Files/FTPFile");
 
@@ -2266,7 +2341,7 @@ namespace astute.Controllers
                         Directory.CreateDirectory(localDirectoryPath);
                     }
                     string localDirectory = localDirectoryPath + ftpfileName;
-                     CoreService.Ftp_File_Download(supplier.Host, supplier.Ftp_User, supplier.Ftp_Password, (int)supplier.Ftp_Port, supplier.Ftp_File_Name, localDirectory);
+                    CoreService.Ftp_File_Download(supplier.Host, supplier.Ftp_User, supplier.Ftp_Password, (int)supplier.Ftp_Port, supplier.Ftp_File_Name, localDirectory);
 
                     return Ok(new
                     {
