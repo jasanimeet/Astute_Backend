@@ -12,6 +12,8 @@ namespace astute.Models
         public int Supplier_Pricing_Id { get; set; }
         public int? Supplier_Id { get; set; }
         public int? Sunrise_Pricing_Id { get; set; }
+        public int? Customer_Pricing_Id { get; set; }
+        public string? User_Pricing_Id { get; set; }
         public string? Map_Flag { get; set; }
         public string? Shape { get; set; }
         public string? Cts { get; set; }
@@ -64,6 +66,7 @@ namespace astute.Models
         public float? Base_Disc_To { get; set; }
         public float? Base_Amount_From { get; set; }
         public float? Base_Amount_To { get; set; }
+        public string? Company { get; set; }
         public string? Final_Disc_Per { get; set; }
         public string? Final_Amt { get; set; }
         public string? Supplier_Filter_Type { get; set; }

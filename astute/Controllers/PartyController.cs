@@ -1745,6 +1745,7 @@ namespace astute.Controllers
                 });
             }
         }
+        
         [HttpGet]
         [Route("get_sunrise_pricing_list")]
         [Authorize]
@@ -1775,13 +1776,42 @@ namespace astute.Controllers
         }
 
         [HttpGet]
-        [Route("get_supplier_pricing")]
+        [Route("get_customer_pricing_list")]
         [Authorize]
-        public async Task<IActionResult> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type, string map_Flag, int sunrise_pricing_Id)
+        public async Task<IActionResult> Get_Customer_Pricing_List()
         {
             try
             {
-                var result = await _supplierService.Get_Supplier_Pricing(supplier_Pricing_Id, supplier_Id, supplier_Filter_Type, map_Flag, sunrise_pricing_Id);
+                var result = await _supplierService.Get_Customer_Pricing_List();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Customer_Pricing_List", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_supplier_pricing")]
+        [Authorize]
+        public async Task<IActionResult> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type, string map_Flag, int sunrise_pricing_Id, int customer_pricing_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Supplier_Pricing(supplier_Pricing_Id, supplier_Id, supplier_Filter_Type, map_Flag, sunrise_pricing_Id, customer_pricing_Id);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -1915,6 +1945,7 @@ namespace astute.Controllers
                 });
             }
         }
+
         [HttpDelete]
         [Route("delete_sunrise_pricing")]
         [Authorize]
@@ -1940,6 +1971,38 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Delete_Sunrise_Pricing", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_customer_pricing")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Customer_Pricing(int customer_Pricing_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Delete_Customer_Pricing(customer_Pricing_Id);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.CustomerPricingDeleted,
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Customer_Pricing", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

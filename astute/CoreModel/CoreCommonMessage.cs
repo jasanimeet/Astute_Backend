@@ -295,6 +295,7 @@ namespace astute.CoreModel
         public static string SupplierPricingUpdated = SupplierPricing + UpdatedSuccessfully;
         public static string SupplierPricingDeleted = SupplierPricing + DeletedSuccessfully;
         public static string SunrisePricingDeleted = "Sunrise pricing" + DeletedSuccessfully;
+        public static string CustomerPricingDeleted = "Customer pricing" + DeletedSuccessfully;
         #endregion
 
         #region Account Group

@@ -319,7 +319,47 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type, string map_Flag, int sunrise_pricing_Id)
+        public async Task<List<Dictionary<string, object>>> Get_Customer_Pricing_List()
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Customer_Pricing_Select_List", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    var dataTable = ds.Tables[ds.Tables.Count - 1];
+
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        var dict = new Dictionary<string, object>();
+                        foreach (DataColumn col in dataTable.Columns)
+                        {
+                            if (row[col] == DBNull.Value)
+                            {
+                                dict[col.ColumnName] = null;
+                            }
+                            else
+                            {
+                                dict[col.ColumnName] = row[col];
+                            }
+                        }
+                        result.Add(dict);
+                    }
+                }
+            }
+
+            return result;
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type, string map_Flag, int sunrise_pricing_Id, int customer_pricing_Id)
         {
             var result = new List<Dictionary<string, object>>();
 
@@ -334,6 +374,7 @@ namespace astute.Repository
                     command.Parameters.Add(!string.IsNullOrEmpty(supplier_Filter_Type) ? new SqlParameter("@Supplier_Filter_Type", supplier_Filter_Type) : new SqlParameter("@Supplier_Filter_Type", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value));
                     command.Parameters.Add(sunrise_pricing_Id > 0 ? new SqlParameter("@Sunrise_pricing_Id", sunrise_pricing_Id) : new SqlParameter("@Sunrise_pricing_Id", DBNull.Value));
+                    command.Parameters.Add(customer_pricing_Id > 0 ? new SqlParameter("@Customer_Pricing_Id", customer_pricing_Id) : new SqlParameter("@Customer_Pricing_Id", DBNull.Value));
 
                     using var da = new SqlDataAdapter();
                     da.SelectCommand = command;
@@ -406,6 +447,8 @@ namespace astute.Repository
             var supplier_Pricing_Id = new SqlParameter("@Supplier_Pricing_Id", supplier_Pricing.Supplier_Pricing_Id);
             var supplier_Id = supplier_Pricing.Supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Pricing.Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
             var sunrise_Pricing_Id = supplier_Pricing.Sunrise_Pricing_Id > 0 ? new SqlParameter("@Sunrise_Pricing_Id", supplier_Pricing.Sunrise_Pricing_Id) : new SqlParameter("@Sunrise_Pricing_Id", DBNull.Value);
+            var customer_Pricing_Id = supplier_Pricing.Customer_Pricing_Id > 0 ? new SqlParameter("@Customer_Pricing_Id", supplier_Pricing.Customer_Pricing_Id) : new SqlParameter("@Customer_Pricing_Id", DBNull.Value);
+            var user_Pricing_Id = !string.IsNullOrEmpty(supplier_Pricing.User_Pricing_Id) ? new SqlParameter("@User_Pricing_Id", supplier_Pricing.User_Pricing_Id) : new SqlParameter("@User_Pricing_Id", DBNull.Value);
             var map_Flag = !string.IsNullOrEmpty(supplier_Pricing.Map_Flag) ? new SqlParameter("@Map_Flag", supplier_Pricing.Map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
             var shape = !string.IsNullOrEmpty(supplier_Pricing.Shape) ? new SqlParameter("@Shape", supplier_Pricing.Shape) : new SqlParameter("@Shape", DBNull.Value);
             var cts = !string.IsNullOrEmpty(supplier_Pricing.Cts) ? new SqlParameter("@Cts", supplier_Pricing.Cts) : new SqlParameter("@Cts", DBNull.Value);
@@ -458,6 +501,7 @@ namespace astute.Repository
             var base_Disc_To = supplier_Pricing.Base_Disc_To > 0 ? new SqlParameter("@Base_Disc_To", supplier_Pricing.Base_Disc_To) : new SqlParameter("@Base_Disc_To", DBNull.Value);
             var base_Amount_From = supplier_Pricing.Base_Amount_From > 0 ? new SqlParameter("@Base_Amount_From", supplier_Pricing.Base_Amount_From) : new SqlParameter("@Base_Amount_From", DBNull.Value);
             var base_Amount_To = supplier_Pricing.Base_Amount_To > 0 ? new SqlParameter("@Base_Amount_To", supplier_Pricing.Base_Amount_To) : new SqlParameter("@Base_Amount_To", DBNull.Value);
+            var company = !string.IsNullOrEmpty(supplier_Pricing.Company) ? new SqlParameter("@Company", supplier_Pricing.Company) : new SqlParameter("@Company", DBNull.Value);
             var supplier_Filter_Type = !string.IsNullOrEmpty(supplier_Pricing.Supplier_Filter_Type) ? new SqlParameter("@Supplier_Filter_Type", supplier_Pricing.Supplier_Filter_Type) : new SqlParameter("@Supplier_Filter_Type", DBNull.Value);
             var calculation_Type = !string.IsNullOrEmpty(supplier_Pricing.Calculation_Type) ? new SqlParameter("@Calculation_Type", supplier_Pricing.Calculation_Type) : new SqlParameter("@Calculation_Type", DBNull.Value);
             var sign = !string.IsNullOrEmpty(supplier_Pricing.Sign) ? new SqlParameter("@Sign", supplier_Pricing.Sign) : new SqlParameter("@Sign", DBNull.Value);
@@ -501,18 +545,18 @@ namespace astute.Repository
             };
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Supplier_Pricing_Insert_Update @Supplier_Pricing_Id, @Supplier_Id, @Sunrise_Pricing_Id, @Map_Flag, @Shape, @Cts, @Color, @Fancy_Color, @Clarity, @Cut, @Polish, @Symm,
+                        .ExecuteSqlRawAsync(@"EXEC Supplier_Pricing_Insert_Update @Supplier_Pricing_Id, @Supplier_Id, @Sunrise_Pricing_Id, @Customer_Pricing_Id, @User_Pricing_Id, @Map_Flag, @Shape, @Cts, @Color, @Fancy_Color, @Clarity, @Cut, @Polish, @Symm,
                         @Fls_Intensity, @Lab, @Shade, @Luster, @Bgm, @Culet, @Location, @Status, @Good_Type, @Length_From, @Length_To, @Width_From, @Width_To, @Depth_From, @Depth_To, @Depth_Per_From,
                         @Depth_Per_To, @Table_Per_From, @Table_Per_To, @Crown_Angle_From, @Crown_Angle_To, @Crown_Height_From, @Crown_Height_To, @Pavilion_Angle_From, @Pavilion_Angle_To, @Pavilion_Height_From,
                         @Pavilion_Height_To, @Girdle_Per_From, @Girdle_Per_To, @Table_Black, @Side_Black, @Table_White, @Side_white, @Comment, @Cert_Type, @Table_Open, @Crown_Open, @Pavilion_Open,
-                        @Girdle_Open, @Base_Disc_From, @Base_Disc_To, @Base_Amount_From, @Base_Amount_To, @Supplier_Filter_Type, @Calculation_Type, @Sign, @Value_1, @Value_2, @Value_3, @Value_4,
+                        @Girdle_Open, @Base_Disc_From, @Base_Disc_To, @Base_Amount_From, @Base_Amount_To, @Company, @Supplier_Filter_Type, @Calculation_Type, @Sign, @Value_1, @Value_2, @Value_3, @Value_4,
                         @SP_Calculation_Type, @SP_Sign, @SP_Start_Date, @SP_Start_Time, @SP_End_Date, @SP_End_Time, @SP_Value_1, @SP_Value_2, @SP_Value_3, @SP_Value_4, @MS_Calculation_Type,
                         @MS_Sign, @MS_Value_1, @MS_Value_2, @MS_Value_3, @MS_Value_4, @MS_SP_Calculation_Type, @MS_SP_Sign, @MS_SP_Start_Date, @MS_SP_Start_Time, @MS_SP_End_Date, @MS_SP_End_Time,
                         @MS_SP_Value_1, @MS_SP_Value_2, @MS_SP_Value_3, @MS_SP_Value_4, @SP_Toggle_Bar, @MS_SP_Toggle_Bar, @Modified_By, @Query_Flag, @Inserted_Id OUT",
-                        supplier_Pricing_Id, supplier_Id, sunrise_Pricing_Id, map_Flag, shape, cts, color, fancy_Color, clarity, cut, polish, symm, fls_Intensity, lab, shade, luster, bgm, culet, location, status, good_Type, length_From, length_To, width_From,
+                        supplier_Pricing_Id, supplier_Id, sunrise_Pricing_Id, customer_Pricing_Id, user_Pricing_Id, map_Flag, shape, cts, color, fancy_Color, clarity, cut, polish, symm, fls_Intensity, lab, shade, luster, bgm, culet, location, status, good_Type, length_From, length_To, width_From,
                         width_To, depth_From, depth_To, depth_Per_From, depth_Per_To, table_Per_From, table_Per_To, crown_Angle_From, crown_Angle_To, crown_Height_From, crown_Height_To, pavilion_Angle_From,
                         pavilion_Angle_To, pavilion_Height_From, pavilion_Height_To, girdle_Per_From, girdle_Per_To, table_Black, side_Black, table_White, side_white, comment, cert_Type, table_Open, crown_Open, pavilion_Open, girdle_Open,
-                        base_Disc_From, base_Disc_To, base_Amount_From, base_Amount_To, supplier_Filter_Type, calculation_Type, sign, value_1, value_2, value_3, value_4, sp_calculation_Type, sp_sign, sp_start_date,
+                        base_Disc_From, base_Disc_To, base_Amount_From, base_Amount_To, company, supplier_Filter_Type, calculation_Type, sign, value_1, value_2, value_3, value_4, sp_calculation_Type, sp_sign, sp_start_date,
                         sp_start_time, sp_end_date, sp_end_time, sp_value_1, sp_value_2, sp_value_3, sp_value_4, ms_calculation_Type, ms_sign, ms_value_1, ms_value_2, ms_value_3, ms_value_4, ms_sp_calculation_Type,
                         ms_sp_sign, ms_sp_start_date, ms_sp_start_time, ms_sp_end_date, ms_sp_end_time, ms_sp_value_1, ms_sp_value_2, ms_sp_value_3, ms_sp_value_4, sP_Toggle_Bar, mSP_Toggle_Bar, modified_By, query_Flag, inserted_Id));
             int _insertedId = (int)inserted_Id.Value;
@@ -540,6 +584,10 @@ namespace astute.Repository
         public async Task<int> Delete_Sunrise_Pricing(int sunrise_Pricing_Id)
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Sunrise_Pricing_Delete {sunrise_Pricing_Id}"));
+        }
+        public async Task<int> Delete_Customer_Pricing(int customer_Pricing_Id)
+        {
+            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Customer_Pricing_Delete {customer_Pricing_Id}"));
         }
         #endregion
 
