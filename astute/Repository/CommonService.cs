@@ -20,16 +20,19 @@ namespace astute.Repository
         private readonly AstuteDbContext _dbContext;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IJWTAuthentication _jWTAuthentication;
         #endregion
 
         #region Ctor
         public CommonService(AstuteDbContext dbContext,
             IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IJWTAuthentication jWTAuthentication)
         {
             _dbContext = dbContext;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
+            _jWTAuthentication = jWTAuthentication;
         }
         #endregion
 
@@ -37,7 +40,9 @@ namespace astute.Repository
         private async Task Insert_City_Trace(City_Master city_Master, string recordType)
         {
             var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
-            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
+            var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+            var user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(user_Id ?? 0, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
 
             var city = !string.IsNullOrWhiteSpace(city_Master.City) ? new SqlParameter("@City", city_Master.City) : new SqlParameter("@City", DBNull.Value);
             var stateId = city_Master.State_Id > 0 ? new SqlParameter("@State_Id", city_Master.State_Id) : new SqlParameter("@State_Id", DBNull.Value);
@@ -53,7 +58,9 @@ namespace astute.Repository
         private async Task Insert_Country_Trace(Country_Master country_Master, string recordType)
         {
             var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
-            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
+            var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+            var user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(user_Id ?? 0, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
 
             var country = new SqlParameter("@Country", country_Master.Country);
             var isdCode = new SqlParameter("@Isd_Code", country_Master.Isd_Code);
@@ -69,7 +76,9 @@ namespace astute.Repository
         private async Task Insert_State_Trace(State_Master state_Master, string recordType)
         {
             var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
-            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
+            var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+            var user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(user_Id ?? 0, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
 
             var state = new SqlParameter("@State", state_Master.State);
             var countryId = new SqlParameter("@Country_Id", state_Master.Country_Id);
@@ -84,7 +93,9 @@ namespace astute.Repository
         private async Task Insert_Year_Trace(Year_Master year_Master, string recordType)
         {
             var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
-            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
+            var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+            var user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(user_Id ?? 0, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
 
             var year = new SqlParameter("@Year", year_Master.Year);
             var current_status = new SqlParameter("@Current_Status", year_Master.Current_Status);

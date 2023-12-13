@@ -24,6 +24,7 @@ namespace astute.Controllers
         private readonly IAc_Group_Service _ac_group_service;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IJWTAuthentication _jWTAuthentication;
         #endregion
 
         #region Ctor
@@ -31,13 +32,15 @@ namespace astute.Controllers
             ICommonService commonService,
             IAc_Group_Service ac_group_service,
             IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IJWTAuthentication jWTAuthentication)
         {
             _userService = userService;
             _commonService = commonService;
             _ac_group_service = ac_group_service;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
+            _jWTAuthentication = jWTAuthentication;
         }
         #endregion
 
@@ -299,6 +302,8 @@ namespace astute.Controllers
                 if (ModelState.IsValid)
                 {
                     var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    var user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                     var (message, ac_group_Id) = await _ac_group_service.Add_Update_Ac_Group(ac_Group_Master);
                     if (message == "success" && ac_group_Id > 0)
                     {
@@ -335,7 +340,7 @@ namespace astute.Controllers
                                 dataTable.Rows.Add(item.Ac_Group_Det_Id, ac_group_Id, item.Ac_Group_Det_Name, item.Trans_Type, item.Basic_Group, item.Opp_Group_Det_Id, item.Parent_Group, item.Status, item.QueryFlag);
                                 //if (CoreService.Enable_Trace_Records(_configuration))
                                 //{
-                                //    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, ac_group_Id, item.Ac_Group_Det_Name, item.Trans_Type, item.Basic_Group, item.Opp_Group_Det_Id, item.Parent_Group);
+                                //    dataTable1.Rows.Add(user_Id ?? 0, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, ac_group_Id, item.Ac_Group_Det_Name, item.Trans_Type, item.Basic_Group, item.Opp_Group_Det_Id, item.Parent_Group);
                                 //}
                             }
                             //if (CoreService.Enable_Trace_Records(_configuration))

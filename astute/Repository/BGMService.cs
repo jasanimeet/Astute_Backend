@@ -17,16 +17,19 @@ namespace astute.Repository
         private readonly AstuteDbContext _dbContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
+        private readonly IJWTAuthentication _jWTAuthentication;
         #endregion
 
         #region Ctor
         public BGMService(AstuteDbContext dbContext,
             IHttpContextAccessor httpContextAccessor,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IJWTAuthentication jWTAuthentication)
         {
             _dbContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
+            _jWTAuthentication = jWTAuthentication;
         }
         #endregion
 
@@ -34,7 +37,9 @@ namespace astute.Repository
         private async Task Insert_BGM_Trace(BGM_Master bGM_Mas, string recordType)
         {
             var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
-            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
+            var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+            var user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(user_Id ?? 0, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
 
             var bgm = new SqlParameter("@Bgm", bGM_Mas.BGM);
             var shade = bGM_Mas.Shade > 0 ? new SqlParameter("@Shade", bGM_Mas.Shade) : new SqlParameter("@Shade", DBNull.Value);

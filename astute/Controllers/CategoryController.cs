@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Net;
@@ -9,7 +8,6 @@ using astute.CoreServices;
 using astute.Models;
 using astute.Repository;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -25,22 +23,16 @@ namespace astute.Controllers
 
         #region Fields
         private readonly ICategoryService _categoryService;
-        private readonly ISupplierService _supplierService;
-        private readonly IWebHostEnvironment _environment;
         private readonly IConfiguration _configuration;
         private readonly ICommonService _commonService;
         #endregion
 
         #region Ctor
         public CategoryController(ICategoryService categoryService,
-            ISupplierService supplierService,
-            IWebHostEnvironment environment,
             IConfiguration configuration,
             ICommonService commonService)
         {
             _categoryService = categoryService;
-            _supplierService = supplierService;
-            _environment = environment;
             _configuration = configuration;
             _commonService = commonService;
         }
@@ -225,7 +217,7 @@ namespace astute.Controllers
         public async Task<IActionResult> Get_Active_Category_Values(int catId)
         {
             try
-            {
+            {   
                 var result = await _categoryService.Get_Active_Category_Values(catId);
                 if (result != null && result.Count > 0)
                 {

@@ -21,29 +21,35 @@ namespace astute.Repository
         private readonly AstuteDbContext _dbContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
+        private readonly IJWTAuthentication _jWTAuthentication;
         #endregion
 
         #region Ctor
         public CategoryService(AstuteDbContext dbContext,
             IHttpContextAccessor httpContextAccessor,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IJWTAuthentication jWTAuthentication)
         {
             _dbContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
+            _jWTAuthentication = jWTAuthentication;
         }
         #endregion
 
         #region Utilities
         private async Task Insert_Category_Master_Trace(Category_Master category_Master, string recordType)
         {
+            var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
+            var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+            var user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
             var columnName = new SqlParameter("@ColumnName", category_Master.Column_Name);
             var displayName = new SqlParameter("@DisplayName", category_Master.Display_Name);
             var status =     new SqlParameter("@Status", category_Master.Status);
             var colId = new SqlParameter("@ColId", category_Master.Col_Id);
-
-            var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
-            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
+                        
+            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(user_Id ?? 0, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
 
             var result = await Task.Run(() => _dbContext.Database
            .ExecuteSqlRawAsync(@"EXEC Category_Master_Trace_Insert @Employee_Id, @IP_Address, @Trace_Date, @Trace_Time, @RecordType, @ColumnName, @DisplayName, @Status, @ColId"
@@ -53,6 +59,10 @@ namespace astute.Repository
 
         private async Task Insert_Category_Value_Trace(Category_Value category_Value, string recordType)
         {
+            var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
+            var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+            var user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
             var catName = new SqlParameter("@CatName", category_Value.Cat_Name);
             var groupName = !string.IsNullOrEmpty(category_Value.Group_Name) ? new SqlParameter("@GroupName", category_Value.Group_Name) : new SqlParameter("@GroupName", DBNull.Value);
             var rapaportName = !string.IsNullOrEmpty(category_Value.Rapaport_Name) ? new SqlParameter("@RapaportName", category_Value.Rapaport_Name) : new SqlParameter("@RapaportName", DBNull.Value);
@@ -65,9 +75,8 @@ namespace astute.Repository
             var catId = category_Value.Cat_Id > 0 ? new SqlParameter("@CatId", category_Value.Cat_Id) : new SqlParameter("@CatId", DBNull.Value);
             var displayName = !string.IsNullOrEmpty(category_Value.Display_Name) ? new SqlParameter("@DisplayName", category_Value.Display_Name) : new SqlParameter("@DisplayName", DBNull.Value);
             var shortName = !string.IsNullOrEmpty(category_Value.Short_Name) ? new SqlParameter("@ShortName", category_Value.Short_Name) : new SqlParameter("@ShortName", DBNull.Value);
-
-            var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
-            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
+                        
+            var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(user_Id ?? 0, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
             await Task.Run(() => _dbContext.Database
             .ExecuteSqlRawAsync(@"EXEC Category_Value_Trace_Insert @Employee_Id, @IP_Address, @Trace_Date, @Trace_Time, @RecordType, @CatName, @GroupName, @RapaportName,
             @Rapnetname, @Synonyms, @OrderNo, @SortNo, @Status, @IconUrl, @CatId, @DisplayName, @ShortName",

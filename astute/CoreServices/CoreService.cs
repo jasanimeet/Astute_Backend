@@ -191,8 +191,15 @@ namespace astute.CoreServices
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
+        }   
+        public static string Get_Authorization_Token(IHttpContextAccessor _httpContextAccessor)
+        {
+            var bearerToken = string.Empty;
+            if (_httpContextAccessor.HttpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))
+            {
+                bearerToken = authHeader.ToString().Split(' ')[1];
+            }
+            return bearerToken;
         }
-    
-
     }
 }
