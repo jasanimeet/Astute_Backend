@@ -2423,7 +2423,7 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    bool success = false;
+                    bool success = false; bool prefix_Exist = false;
                     if (stock_Number_Generations != null && stock_Number_Generations.Count > 0)
                     {
                         foreach (var item in stock_Number_Generations)
@@ -2433,8 +2433,20 @@ namespace astute.Controllers
                             {
                                 success = true;
                             }
+                            else if (result == -1)
+                            {
+                                prefix_Exist = true;
+                            }
                         }
-                        if (success)
+                        if (prefix_Exist)
+                        {
+                            return Conflict(new
+                            {
+                                statusCode = HttpStatusCode.Conflict,
+                                message = CoreCommonMessage.StockNumberAlreadyExist,
+                            });
+                        }
+                        else if (success)
                         {
                             return Ok(new
                             {
