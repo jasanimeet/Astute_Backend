@@ -854,17 +854,13 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<int> Supplier_Stock_Insert_Update(DataTable dataTable, int supplier_Id)
+        public async Task<int> Supplier_Stock_Insert_Update(int supplier_Id, int stock_Data_Id)
         {
-            var parameter = new SqlParameter("@tblSupplier_Stock", SqlDbType.Structured)
-            {
-                TypeName = "dbo.Supplier_Stock_Table_Type",
-                Value = dataTable
-            };
             var _supplier_Id = new SqlParameter("@Supplier_Id", supplier_Id);
+            var _stock_Data_Id = new SqlParameter("@Stock_Data_Id", stock_Data_Id);
 
             var result = await Task.Run(() => _dbContext.Database
-            .ExecuteSqlRawAsync(@"exec Supplier_Stock_Insert_Update @tblSupplier_Stock, @Supplier_Id", parameter, _supplier_Id));
+            .ExecuteSqlRawAsync(@"exec [Supplier_Stock_Scheduler_Insert_Update] @Supplier_Id,@Stock_Data_Id", _supplier_Id, _stock_Data_Id));
 
             return result;
         }

@@ -45,7 +45,7 @@ namespace astute.Repository
         Task<int> Stock_Data_Detail_Insert_Update(DataTable dataTable, int Stock_Data_Id);
         Task<List<Dictionary<string, object>>> Get_Stock_Data_Distinct_Column_Values(string column_Name, int supplier_Id);
         Task<IList<Stock_Data>> Get_Not_Uploaded_Stock_Data(int stock_data_Id);
-        Task<int> Supplier_Stock_Insert_Update(DataTable dataTable, int supplier_Id);
+        Task<int> Supplier_Stock_Insert_Update(int supplier_Id, int stock_Data_Id);
         #endregion
 
         #region Stock Number Generation

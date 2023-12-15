@@ -2336,15 +2336,13 @@ namespace astute.Controllers
                             DataTable dt_our_stock_data = new DataTable();
                             dt_our_stock_data = Set_Column_In_Datatable_Scheduler(new DataTable(), stock_Data_Master.Stock_Data_List);
                             var result = await _supplierService.Stock_Data_Detail_Insert_Update(dt_our_stock_data, stock_Data_Id);
-                            //if (result > 0)
-                            //{
-                            //    if (stock_Data_Master.Upload_Type == "O")
-                            //    {
-                            //        DataTable dt_supplier_stock_data = new DataTable();
-                            //        dt_supplier_stock_data = Set_Supp_Stock_Column_In_Datatable(new DataTable(), stock_Data_Master.Stock_Data_List);
-                            //        await _supplierService.Supplier_Stock_Insert_Update(dt_supplier_stock_data, stock_Data_Master.Supplier_Id ?? 0);
-                            //    }
-                            //}
+                            if (result > 0)
+                            {
+                                if (stock_Data_Master.Upload_Type == "O")
+                                {
+                                    await _supplierService.Supplier_Stock_Insert_Update((int)stock_Data_Master.Supplier_Id, stock_Data_Master.Stock_Data_Id);
+                                }
+                            }
                         }
                         return Ok(new
                         {
