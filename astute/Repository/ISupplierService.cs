@@ -59,5 +59,9 @@ namespace astute.Repository
         Task<IList<DropdownModel>> Get_Api_Ftp_File_Party_Select(int party_Id, bool lab, bool overseas);
         #endregion
 
+        #region Supplier Stock Error Log
+        Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Error_Log(string supplier_Ids, string upload_Type, string from_Date, string from_Time, string to_Date, string to_Time, bool is_Lab_Entry);
+        Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Error_Log_Detail(int supplier_Id);
+        #endregion
     }
 }

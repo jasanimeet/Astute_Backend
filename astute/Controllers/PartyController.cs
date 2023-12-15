@@ -156,8 +156,8 @@ namespace astute.Controllers
                         item.WIDTH != null && !string.IsNullOrEmpty(item.WIDTH.ToString()) ? Convert.ToString(item.WIDTH) : item.MEASUREMENT != null ? Split_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "width") : DBNull.Value,
                         item.DEPTH != null && !string.IsNullOrEmpty(item.DEPTH.ToString()) ? Convert.ToString(item.DEPTH) : item.MEASUREMENT != null ? Split_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "depth") : DBNull.Value,
                         item.MEASUREMENT ?? null,
-                        item.DEPTH_PER ?? null,
-                        item.TABLE_PER ?? null,
+                        item.DEPTH_PER.Replace("%", "") ?? null,
+                        item.TABLE_PER.Replace("%", "") ?? null,
                         item.CULET ?? null,
                         item.SHADE ?? null,
                         item.LUSTER ?? null,
@@ -179,13 +179,13 @@ namespace astute.Controllers
                         item.GIRDLE_TYPE ?? null,
                         item.LASER_INSCRIPTION ?? null,
                         item.CERTIFICATE_DATE ?? null,
-                        item.CROWN_ANGLE ?? null,
-                        item.CROWN_HEIGHT ?? null,
-                        item.PAVILION_ANGLE ?? null,
-                        item.PAVILION_HEIGHT ?? null,
-                        item.GIRDLE_PER ?? null,
-                        item.LR_HALF ?? null,
-                        item.STAR_LN ?? null,
+                        item.CROWN_ANGLE.Replace("%", "") ?? null,
+                        item.CROWN_HEIGHT.Replace("%", "") ?? null,
+                        item.PAVILION_ANGLE.Replace("%", "") ?? null,
+                        item.PAVILION_HEIGHT.Replace("%", "") ?? null,
+                        item.GIRDLE_PER.Replace("%", "") ?? null,
+                        item.LR_HALF.Replace("%", "") ?? null,
+                        item.STAR_LN.Replace("%", "") ?? null,
                         item.CERT_TYPE ?? null,
                         item.FANCY_COLOR ?? null,
                         item.FANCY_INTENSITY ?? null,
@@ -328,8 +328,8 @@ namespace astute.Controllers
                         item.WIDTH != null && !string.IsNullOrEmpty(item.WIDTH.ToString()) ? Convert.ToString(item.WIDTH) : item.MEASUREMENT != null ? Split_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "width") : DBNull.Value,
                         item.DEPTH != null && !string.IsNullOrEmpty(item.DEPTH.ToString()) ? Convert.ToString(item.DEPTH) : item.MEASUREMENT != null ? Split_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "depth") : DBNull.Value,
                         item.MEASUREMENT != null ? Convert.ToString(item.MEASUREMENT) : DBNull.Value,
-                        item.DEPTH_PER != null ? Convert.ToString(item.DEPTH_PER) : DBNull.Value,
-                        item.TABLE_PER != null ? Convert.ToString(item.TABLE_PER) : DBNull.Value,
+                        item.DEPTH_PER != null ? Convert.ToString(item.DEPTH_PER).Replace("%","") : DBNull.Value,
+                        item.TABLE_PER != null ? Convert.ToString(item.TABLE_PER).Replace("%", "") : DBNull.Value,
                         item.CULET != null ? Convert.ToString(item.CULET) : DBNull.Value,
                         item.SHADE != null ? Convert.ToString(item.SHADE) : DBNull.Value,
                         item.LUSTER != null ? Convert.ToString(item.LUSTER) : DBNull.Value,
@@ -351,13 +351,13 @@ namespace astute.Controllers
                         item.GIRDLE_TYPE != null ? Convert.ToString(item.GIRDLE_TYPE) : DBNull.Value,
                         item.LASER_INSCRIPTION != null ? Convert.ToString(item.LASER_INSCRIPTION) : DBNull.Value,
                         item.CERTIFICATE_DATE != null ? Convert.ToString(item.CERTIFICATE_DATE) : DBNull.Value,
-                        item.CROWN_ANGLE != null ? Convert.ToString(item.CROWN_ANGLE) : DBNull.Value,
-                        item.CROWN_HEIGHT != null ? Convert.ToString(item.CROWN_HEIGHT) : DBNull.Value,
-                        item.PAVILION_ANGLE != null ? Convert.ToString(item.PAVILION_ANGLE) : DBNull.Value,
-                        item.PAVILION_HEIGHT != null ? Convert.ToString(item.PAVILION_HEIGHT) : DBNull.Value,
-                        item.GIRDLE_PER != null ? Convert.ToString(item.GIRDLE_PER) : DBNull.Value,
-                        item.LR_HALF != null ? Convert.ToString(item.LR_HALF) : DBNull.Value,
-                        item.STAR_LN != null ? Convert.ToString(item.STAR_LN) : DBNull.Value,
+                        item.CROWN_ANGLE != null ? Convert.ToString(item.CROWN_ANGLE).Replace("%", "") : DBNull.Value,
+                        item.CROWN_HEIGHT != null ? Convert.ToString(item.CROWN_HEIGHT).Replace("%", "") : DBNull.Value,
+                        item.PAVILION_ANGLE != null ? Convert.ToString(item.PAVILION_ANGLE).Replace("%", "") : DBNull.Value,
+                        item.PAVILION_HEIGHT != null ? Convert.ToString(item.PAVILION_HEIGHT).Replace("%", "") : DBNull.Value,
+                        item.GIRDLE_PER != null ? Convert.ToString(item.GIRDLE_PER).Replace("%", "") : DBNull.Value,
+                        item.LR_HALF != null ? Convert.ToString(item.LR_HALF).Replace("%", "") : DBNull.Value,
+                        item.STAR_LN != null ? Convert.ToString(item.STAR_LN).Replace("%", "") : DBNull.Value,
                         item.CERT_TYPE != null ? Convert.ToString(item.CERT_TYPE) : DBNull.Value,
                         item.FANCY_COLOR != null ? Convert.ToString(item.FANCY_COLOR) : DBNull.Value,
                         item.FANCY_INTENSITY != null ? Convert.ToString(item.FANCY_INTENSITY) : DBNull.Value,
@@ -928,8 +928,19 @@ namespace astute.Controllers
                             //}
                             foreach (var item in party_Master.Party_Assist_List)
                             {
-                                dataTable.Rows.Add(item.Assist_Id, party_Id, item.Diamond_Type, item.Assist_1, item.Per_1, item.Assist_2, item.Per_2, item.Viewing_Rights_To, item.QueryFlag, item.Date);
-
+                                var tot_per = (item.Per_1 + item.Per_2);
+                                if (tot_per > 100)
+                                {
+                                    return Conflict(new
+                                    { 
+                                        statusCode = HttpStatusCode.Conflict,
+                                        message = "Less then or equal to 100% allow."
+                                    });
+                                }
+                                else
+                                {
+                                    dataTable.Rows.Add(item.Assist_Id, party_Id, item.Diamond_Type, item.Assist_1, item.Per_1, item.Assist_2, item.Per_2, item.Viewing_Rights_To, item.QueryFlag, item.Date);
+                                }
                                 //if (CoreService.Enable_Trace_Records(_configuration))
                                 //{
                                 //    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Diamond_Type, item.Assist_1, item.Per_1, item.Assist_2, item.Per_2, item.Viewing_Rights_To);
@@ -2613,6 +2624,66 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_Ftp_File", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region Supplier Stock Error Log
+        [HttpGet]
+        [Route("supplier_stock_error_log")]
+        [Authorize]
+        public async Task<IActionResult> Supplier_Stock_Error_Log(string supplier_Ids, string upload_Type, string from_Date, string from_Time, string to_Date, string to_Time, bool is_Lab_Entry)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Supplier_Stock_Error_Log(supplier_Ids, upload_Type, from_Date, from_Time, to_Date, to_Time, is_Lab_Entry);
+                if(result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Supplier_Stock_Error_Log", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("supplier_stock_error_log_detail")]
+        [Authorize]
+        public async Task<IActionResult> Supplier_Stock_Error_Log_Detail(int supplier_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Supplier_Stock_Error_Log_Detail(supplier_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Supplier_Stock_Error_Log_Detail", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
