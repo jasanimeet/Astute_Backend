@@ -2340,7 +2340,7 @@ namespace astute.Controllers
                             {
                                 if (stock_Data_Master.Upload_Type == "O")
                                 {
-                                    await _supplierService.Supplier_Stock_Insert_Update((int)stock_Data_Master.Supplier_Id, stock_Data_Master.Stock_Data_Id);
+                                    await _supplierService.Supplier_Stock_Insert_Update((int)stock_Data_Master.Supplier_Id, stock_Data_Id);
                                 }
                             }
                         }
