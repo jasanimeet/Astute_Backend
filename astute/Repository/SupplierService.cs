@@ -891,10 +891,18 @@ namespace astute.Repository
             var _End_Number = stock_Number_Generation.End_Number > 0 ? new SqlParameter("@End_Number", stock_Number_Generation.End_Number) : new SqlParameter("@End_Number", DBNull.Value);
             var _Live_Prefix = !string.IsNullOrEmpty(stock_Number_Generation.Live_Prefix) ? new SqlParameter("@Live_Prefix", stock_Number_Generation.Live_Prefix) : new SqlParameter("@Live_Prefix", DBNull.Value);
             var _Supplier_Id = stock_Number_Generation.Supplier_Id > 0 ? new SqlParameter("@Supplier_Id", stock_Number_Generation.Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
+            var isExist = new SqlParameter("@IsExist", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Stock_Number_Generation_Insert_Update @Id, @Party_Id, @Pointer_Id, @Shape, @Stock_Type, @Front_Prefix, @Back_Prefix, @Front_Prefix_Alloted, @Start_Format, @End_Format, @Start_Number, @End_Number, @Live_Prefix, @Supplier_Id",
-                        _Id, _Exc_Party_Id, _Pointer_Id, _Shape, _Stock_Type, _Front_Prefix, _Back_Prefix, _Front_Prefix_Alloted, _Start_Format, _End_Format, _Start_Number, _End_Number, _Live_Prefix, _Supplier_Id));
+                        .ExecuteSqlRawAsync(@"EXEC Stock_Number_Generation_Insert_Update @Id, @Party_Id, @Pointer_Id, @Shape, @Stock_Type, @Front_Prefix, @Back_Prefix, @Front_Prefix_Alloted, @Start_Format, @End_Format, @Start_Number, @End_Number, @Live_Prefix, @Supplier_Id, @IsExist OUT",
+                        _Id, _Exc_Party_Id, _Pointer_Id, _Shape, _Stock_Type, _Front_Prefix, _Back_Prefix, _Front_Prefix_Alloted, _Start_Format, _End_Format, _Start_Number, _End_Number, _Live_Prefix, _Supplier_Id, isExist));
+
+            bool _isExist = (bool)isExist.Value;
+            if (_isExist)
+                return 5;
 
             return result;
         }
@@ -933,7 +941,7 @@ namespace astute.Repository
                     command.Parameters.Add(!string.IsNullOrEmpty(from_Date) ? new SqlParameter("@From_Date", from_Date) : new SqlParameter("@From_Date", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(from_Time) ? new SqlParameter("@From_Time", from_Time) : new SqlParameter("@From_Time", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(to_Date) ? new SqlParameter("@To_Date", to_Date) : new SqlParameter("@To_Date", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(to_Time) ? new SqlParameter("@From_Time", to_Time) : new SqlParameter("@From_Time", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(to_Time) ? new SqlParameter("@To_Time", to_Time) : new SqlParameter("@To_Time", DBNull.Value));
                     command.Parameters.Add(new SqlParameter("@Is_Last_Entry", is_Lab_Entry));
                     await connection.OpenAsync();
 

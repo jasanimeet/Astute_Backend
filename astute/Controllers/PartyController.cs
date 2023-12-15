@@ -2434,17 +2434,17 @@ namespace astute.Controllers
                 {
                     bool success = false; bool prefix_Exist = false;
                     if (stock_Number_Generations != null && stock_Number_Generations.Count > 0)
-                    {
+                    {   
                         foreach (var item in stock_Number_Generations)
                         {
                             var result = await _supplierService.Add_Update_Stock_Number_Generation(item);
-                            if (result > 0)
-                            {
-                                success = true;
-                            }
-                            else if (result == -1)
+                            if(result == 5)
                             {
                                 prefix_Exist = true;
+                            }
+                            else
+                            {
+                                success = true;
                             }
                         }
                         if (prefix_Exist)
@@ -2460,7 +2460,7 @@ namespace astute.Controllers
                             return Ok(new
                             {
                                 statusCode = HttpStatusCode.OK,
-                                message = CoreCommonMessage.StockNumberUpdated,
+                                message = CoreCommonMessage.StockNumberCreated,
                             });
                         }
                     }
