@@ -1853,6 +1853,7 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    int supplier_Id = 0, sunrise_Pricing_Id = 0, customer_Pricing_Id = 0;
                     int sun_price_Id = 0;
                     var selected_sun_price_Id = supplier_Pricings.Where(x => x.Sunrise_Pricing_Id > 0).Select(x => x.Sunrise_Pricing_Id).FirstOrDefault() ?? 0;
                     if (selected_sun_price_Id > 0)
@@ -1869,9 +1870,10 @@ namespace astute.Controllers
                         bool success = false;
                         if (supplier_Pricings != null && supplier_Pricings.Count > 0)
                         {
-
                             foreach (var item in supplier_Pricings)
                             {
+                                supplier_Id = item.Supplier_Id ?? 0;
+                                customer_Pricing_Id = item.Customer_Pricing_Id ?? 0;
                                 if (item.Query_Flag == "D")
                                 {
                                     var result_Supplier_Pricing_Key_To_Symbol = await _supplierService.Delete_Supplier_Pricing_Key_To_Symbol(item.Supplier_Pricing_Id);
@@ -1882,6 +1884,7 @@ namespace astute.Controllers
                                     if (item.Map_Flag == "SPO" || item.Map_Flag == "SPL")
                                     {
                                         item.Sunrise_Pricing_Id = sun_price_Id;
+                                        sunrise_Pricing_Id = item.Sunrise_Pricing_Id ?? 0;
                                     }
                                     var (message, supplier_pricing_Id) = await _supplierService.Add_Update_Supplier_Pricing(item);
                                     if (message == "success" && supplier_pricing_Id > 0)
@@ -1893,9 +1896,10 @@ namespace astute.Controllers
                                             dataTable.Columns.Add("Supplier_Pricing_Id", typeof(int));
                                             dataTable.Columns.Add("Cat_Val_Id", typeof(int));
                                             dataTable.Columns.Add("Symbol_Status", typeof(bool));
+                                            dataTable.Columns.Add("Filter_Type", typeof(string));
                                             foreach (var obj in item.Key_To_Symbol)
                                             {
-                                                dataTable.Rows.Add(supplier_pricing_Id, obj.Cat_Val_Id, obj.Symbol_Status);
+                                                dataTable.Rows.Add(supplier_pricing_Id, obj.Cat_Val_Id, obj.Symbol_Status, obj.Filter_Type);
                                             }
                                             await _supplierService.Add_Update_Supplier_Pricing_Key_To_Symbol(dataTable);
                                         }
@@ -1908,7 +1912,10 @@ namespace astute.Controllers
                             return Ok(new
                             {
                                 statusCode = HttpStatusCode.OK,
-                                message = CoreCommonMessage.SupplierPricingCreated
+                                message = CoreCommonMessage.SupplierPricingCreated,
+                                supplier_Id = supplier_Id,
+                                sunrise_Pricing_Id = sunrise_Pricing_Id,
+                                customer_Pricing_Id = customer_Pricing_Id
                             });
                         }
                     }
@@ -2514,11 +2521,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_api_ftp_file_party_select")]
         [Authorize]
-        public async Task<IActionResult> Get_Api_Ftp_File_Party_Select(int party_Id, bool lab, bool overseas)
+        public async Task<IActionResult> Get_Api_Ftp_File_Party_Select(int party_Id, bool lab, bool overseas, bool is_Stock_Gen)
         {
             try
             {
-                var result = await _supplierService.Get_Api_Ftp_File_Party_Select(party_Id, lab, overseas);
+                var result = await _supplierService.Get_Api_Ftp_File_Party_Select(party_Id, lab, overseas, is_Stock_Gen);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new

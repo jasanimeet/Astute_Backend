@@ -56,7 +56,7 @@ namespace astute.Repository
         #endregion
 
         #region  Api/FTP/File Party Name
-        Task<IList<DropdownModel>> Get_Api_Ftp_File_Party_Select(int party_Id, bool lab, bool overseas);
+        Task<IList<DropdownModel>> Get_Api_Ftp_File_Party_Select(int party_Id, bool lab, bool overseas, bool is_Stock_Gen);
         #endregion
 
         #region Supplier Stock Error Log

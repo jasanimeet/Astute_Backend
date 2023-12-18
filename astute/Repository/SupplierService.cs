@@ -913,14 +913,15 @@ namespace astute.Repository
         #endregion
 
         #region Api/FTP/File Party Name 
-        public async Task<IList<DropdownModel>> Get_Api_Ftp_File_Party_Select(int party_Id, bool lab, bool overseas)
+        public async Task<IList<DropdownModel>> Get_Api_Ftp_File_Party_Select(int party_Id, bool lab, bool overseas, bool is_Stock_Gen)
         {
             var partyIdParam = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
             var _lab = lab == true ? new SqlParameter("@Lab", lab) : new SqlParameter("@Lab", DBNull.Value);
             var _overseas = overseas == true ? new SqlParameter("@Overseas", overseas) : new SqlParameter("@Overseas", DBNull.Value);
+            var _is_Stock_Gen = new SqlParameter("@Is_Stock_Gen", is_Stock_Gen);
 
             var result = await Task.Run(() => _dbContext.DropdownModel
-                .FromSqlRaw("EXEC Party_Name_From_Api_FTP_File_Select @Party_Id, @Lab, @Overseas", partyIdParam, _lab, _overseas)
+                .FromSqlRaw("EXEC Party_Name_From_Api_FTP_File_Select @Party_Id, @Lab, @Overseas, @Is_Stock_Gen", partyIdParam, _lab, _overseas, _is_Stock_Gen)
                 .ToListAsync());
 
             return result;
