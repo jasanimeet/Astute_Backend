@@ -61,7 +61,7 @@ namespace astute.Repository
 
         #region Supplier Stock Error Log
         Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Error_Log(string supplier_Ids, string upload_Type, string from_Date, string from_Time, string to_Date, string to_Time, bool is_Lab_Entry);
-        Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Error_Log_Detail(string supplier_Id, string stock_Data_Id);
+        Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Error_Log_Detail(string supplier_Ids, string stock_Data_Ids, string upload_Type);
         #endregion
     }
 }

@@ -967,7 +967,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Error_Log_Detail(string supplier_Id, string stock_Data_Id)
+        public async Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Error_Log_Detail(string supplier_Ids, string stock_Data_Ids,string upload_Type)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -975,8 +975,9 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Supplier_Stock_Error_Log_Detail", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(!string.IsNullOrEmpty(supplier_Id) ? new SqlParameter("@Supplier_Ids", supplier_Id) : new SqlParameter("@Supplier_Ids", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(stock_Data_Id) ? new SqlParameter("@Stock_Data_Ids", stock_Data_Id) : new SqlParameter("@Stock_Data_Ids", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(supplier_Ids) ? new SqlParameter("@Supplier_Ids", supplier_Ids) : new SqlParameter("@Supplier_Ids", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(stock_Data_Ids) ? new SqlParameter("@Stock_Data_Ids", stock_Data_Ids) : new SqlParameter("@Stock_Data_Ids", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(upload_Type) ? new SqlParameter("@Upload_Type", upload_Type) : new SqlParameter("@Upload_Type", DBNull.Value));
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
