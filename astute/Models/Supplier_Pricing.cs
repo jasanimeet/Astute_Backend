@@ -56,7 +56,6 @@ namespace astute.Models
         public string? Side_Black { get; set; }
         public string? Table_White { get; set; }
         public string? Side_white { get; set; }
-        public string? Comment { get; set; }
         public string? Cert_Type { get; set; }
         public string? Table_Open { get; set; }
         public string? Crown_Open { get; set; }
@@ -109,5 +108,6 @@ namespace astute.Models
         public string? Query_Flag { get; set; }
         [NotMapped]
         public IList<Supplier_Pricing_Key_To_Symbol> Key_To_Symbol { get; set; } = new List<Supplier_Pricing_Key_To_Symbol>();
+        public IList<Supplier_Pricing_Key_To_Symbol> Comments { get; set; } = new List<Supplier_Pricing_Key_To_Symbol>();
     }
 }

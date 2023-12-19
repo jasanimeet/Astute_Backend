@@ -23,5 +23,9 @@ namespace astute.Repository
         Task<DataTable> GetCategororyValues(int catId);
         Task<int> Get_Category_Value_Max_Order_No();
         #endregion
+
+        #region Column Master
+        Task<List<Dictionary<string, object>>> Get_Column_Master();
+        #endregion
     }
 }

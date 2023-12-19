@@ -491,115 +491,115 @@ namespace astute.Controllers
             }
             return dt_stock_data;
         }
-        private DataTable Set_Supplier_Pricing_Column_In_Datatable(DataTable dt_Supplier_Pricing, IList<Supplier_Pricing> supplier_Pricings)
-        {
-            dt_Supplier_Pricing.Columns.Add("Supplier_Pricing_Id", typeof(int));
-            dt_Supplier_Pricing.Columns.Add("Supplier_Id", typeof(int));
-            dt_Supplier_Pricing.Columns.Add("Map_Flag", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Shape", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Cts", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Color", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Fancy_Color", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Clarity", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Cut", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Polish", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Symm", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Fls_Intensity", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Lab", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Shade", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Luster", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Bgm", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Culet", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Location", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Status", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Good_Type", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Length_From", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Length_To", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Width_From", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Width_To", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Depth_From", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Depth_To", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Depth_Per_From", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Depth_Per_To", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Table_Per_From", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Table_Per_To", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Crown_Angle_From", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Crown_Angle_To", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Crown_Height_From", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Crown_Height_To", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Pavilion_Angle_From", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Pavilion_Angle_To", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Pavilion_Height_From", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Pavilion_Height_To", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Girdle_Per_From", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Girdle_Per_To", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Table_Black", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Side_Black", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Table_White", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Side_white", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Comment", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Cert_Type", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Table_Open", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Crown_Open", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Pavilion_Open", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Girdle_Open", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Base_Disc_From", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Base_Disc_To", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Base_Amount_From", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Base_Amount_To", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Supplier_Filter_Type", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Calculation_Type", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Sign", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("Value_1", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Value_2", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Value_3", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Value_4", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("SP_Calculation_Type", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("SP_Sign", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("SP_Start_Date", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("SP_Start_Time", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("SP_End_Date", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("SP_End_Time", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("SP_Value_1", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("SP_Value_2", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("SP_Value_3", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("SP_Value_4", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("MS_Calculation_Type", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("MS_Sign", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("MS_Value_1", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("MS_Value_2", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("MS_Value_3", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("MS_Value_4", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("MS_SP_Calculation_Type", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("MS_SP_Sign", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("MS_SP_Start_Date", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("MS_SP_Start_Time", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("MS_SP_End_Date", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("MS_SP_End_Time", typeof(string));
-            dt_Supplier_Pricing.Columns.Add("MS_SP_Value_1", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("MS_SP_Value_2", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("MS_SP_Value_3", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("MS_SP_Value_4", typeof(float));
-            dt_Supplier_Pricing.Columns.Add("Query_Flag", typeof(string));
+        //private DataTable Set_Supplier_Pricing_Column_In_Datatable(DataTable dt_Supplier_Pricing, IList<Supplier_Pricing> supplier_Pricings)
+        //{
+        //    dt_Supplier_Pricing.Columns.Add("Supplier_Pricing_Id", typeof(int));
+        //    dt_Supplier_Pricing.Columns.Add("Supplier_Id", typeof(int));
+        //    dt_Supplier_Pricing.Columns.Add("Map_Flag", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Shape", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Cts", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Color", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Fancy_Color", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Clarity", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Cut", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Polish", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Symm", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Fls_Intensity", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Lab", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Shade", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Luster", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Bgm", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Culet", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Location", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Status", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Good_Type", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Length_From", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Length_To", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Width_From", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Width_To", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Depth_From", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Depth_To", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Depth_Per_From", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Depth_Per_To", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Table_Per_From", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Table_Per_To", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Crown_Angle_From", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Crown_Angle_To", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Crown_Height_From", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Crown_Height_To", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Pavilion_Angle_From", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Pavilion_Angle_To", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Pavilion_Height_From", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Pavilion_Height_To", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Girdle_Per_From", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Girdle_Per_To", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Table_Black", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Side_Black", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Table_White", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Side_white", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Comment", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Cert_Type", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Table_Open", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Crown_Open", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Pavilion_Open", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Girdle_Open", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Base_Disc_From", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Base_Disc_To", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Base_Amount_From", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Base_Amount_To", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Supplier_Filter_Type", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Calculation_Type", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Sign", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("Value_1", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Value_2", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Value_3", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Value_4", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("SP_Calculation_Type", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("SP_Sign", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("SP_Start_Date", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("SP_Start_Time", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("SP_End_Date", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("SP_End_Time", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("SP_Value_1", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("SP_Value_2", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("SP_Value_3", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("SP_Value_4", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("MS_Calculation_Type", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("MS_Sign", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("MS_Value_1", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("MS_Value_2", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("MS_Value_3", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("MS_Value_4", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("MS_SP_Calculation_Type", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("MS_SP_Sign", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("MS_SP_Start_Date", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("MS_SP_Start_Time", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("MS_SP_End_Date", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("MS_SP_End_Time", typeof(string));
+        //    dt_Supplier_Pricing.Columns.Add("MS_SP_Value_1", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("MS_SP_Value_2", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("MS_SP_Value_3", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("MS_SP_Value_4", typeof(float));
+        //    dt_Supplier_Pricing.Columns.Add("Query_Flag", typeof(string));
 
-            if (supplier_Pricings != null && supplier_Pricings.Count > 0)
-            {
-                foreach (var item in supplier_Pricings)
-                {
-                    dt_Supplier_Pricing.Rows.Add(item.Supplier_Pricing_Id, item.Supplier_Id, item.Map_Flag, item.Shape, item.Cts, item.Color, item.Fancy_Color, item.Clarity, item.Cut,
-                        item.Polish, item.Symm, item.Fls_Intensity, item.Lab, item.Shade, item.Luster, item.Bgm, item.Culet, item.Location, item.Status, item.Good_Type, item.Length_From,
-                        item.Length_To, item.Width_From, item.Width_To, item.Depth_From, item.Depth_To, item.Depth_Per_From, item.Depth_Per_To, item.Table_Per_From, item.Table_Per_To,
-                        item.Crown_Angle_From, item.Crown_Angle_To, item.Crown_Height_From, item.Crown_Height_To, item.Pavilion_Angle_From, item.Pavilion_Angle_To, item.Pavilion_Height_From,
-                        item.Pavilion_Height_To, item.Girdle_Per_From, item.Girdle_Per_To, item.Table_Black, item.Side_Black, item.Table_White, item.Side_white, item.Comment, item.Cert_Type,
-                        item.Table_Open, item.Crown_Open, item.Pavilion_Open, item.Girdle_Open, item.Base_Disc_From, item.Base_Disc_To, item.Base_Amount_From, item.Base_Amount_To, item.Supplier_Filter_Type,
-                        item.Calculation_Type, item.Sign, item.Value_1, item.Value_2, item.Value_3, item.Value_4, item.SP_Calculation_Type, item.SP_Sign, item.SP_Start_Date, item.SP_Start_Time,
-                        item.SP_End_Date, item.SP_End_Time, item.SP_Value_1, item.SP_Value_2, item.SP_Value_3, item.SP_Value_4, item.MS_Calculation_Type, item.MS_Sign, item.MS_Value_1, item.MS_Value_2,
-                        item.MS_Value_3, item.MS_Value_4, item.MS_SP_Calculation_Type, item.MS_SP_Sign, item.MS_SP_Start_Date, item.MS_SP_Start_Time, item.MS_SP_End_Date, item.MS_SP_End_Time,
-                        item.MS_SP_Value_1, item.MS_SP_Value_2, item.MS_SP_Value_3, item.MS_SP_Value_4, item.Query_Flag);
-                }
-            }
-            return dt_Supplier_Pricing;
-        }
+        //    if (supplier_Pricings != null && supplier_Pricings.Count > 0)
+        //    {
+        //        foreach (var item in supplier_Pricings)
+        //        {
+        //            dt_Supplier_Pricing.Rows.Add(item.Supplier_Pricing_Id, item.Supplier_Id, item.Map_Flag, item.Shape, item.Cts, item.Color, item.Fancy_Color, item.Clarity, item.Cut,
+        //                item.Polish, item.Symm, item.Fls_Intensity, item.Lab, item.Shade, item.Luster, item.Bgm, item.Culet, item.Location, item.Status, item.Good_Type, item.Length_From,
+        //                item.Length_To, item.Width_From, item.Width_To, item.Depth_From, item.Depth_To, item.Depth_Per_From, item.Depth_Per_To, item.Table_Per_From, item.Table_Per_To,
+        //                item.Crown_Angle_From, item.Crown_Angle_To, item.Crown_Height_From, item.Crown_Height_To, item.Pavilion_Angle_From, item.Pavilion_Angle_To, item.Pavilion_Height_From,
+        //                item.Pavilion_Height_To, item.Girdle_Per_From, item.Girdle_Per_To, item.Table_Black, item.Side_Black, item.Table_White, item.Side_white, item.Comment, item.Cert_Type,
+        //                item.Table_Open, item.Crown_Open, item.Pavilion_Open, item.Girdle_Open, item.Base_Disc_From, item.Base_Disc_To, item.Base_Amount_From, item.Base_Amount_To, item.Supplier_Filter_Type,
+        //                item.Calculation_Type, item.Sign, item.Value_1, item.Value_2, item.Value_3, item.Value_4, item.SP_Calculation_Type, item.SP_Sign, item.SP_Start_Date, item.SP_Start_Time,
+        //                item.SP_End_Date, item.SP_End_Time, item.SP_Value_1, item.SP_Value_2, item.SP_Value_3, item.SP_Value_4, item.MS_Calculation_Type, item.MS_Sign, item.MS_Value_1, item.MS_Value_2,
+        //                item.MS_Value_3, item.MS_Value_4, item.MS_SP_Calculation_Type, item.MS_SP_Sign, item.MS_SP_Start_Date, item.MS_SP_Start_Time, item.MS_SP_End_Date, item.MS_SP_End_Time,
+        //                item.MS_SP_Value_1, item.MS_SP_Value_2, item.MS_SP_Value_3, item.MS_SP_Value_4, item.Query_Flag);
+        //        }
+        //    }
+        //    return dt_Supplier_Pricing;
+        //}
         private DataTable Set_Column_And_Rows_In_DataTable<T>(IList<T> items)
         {
             DataTable dt = new DataTable();
@@ -1890,6 +1890,7 @@ namespace astute.Controllers
                                     if (message == "success" && supplier_pricing_Id > 0)
                                     {
                                         success = true;
+                                       
                                         if (item.Key_To_Symbol != null && item.Key_To_Symbol.Count > 0)
                                         {
                                             DataTable dataTable = new DataTable();
@@ -1898,6 +1899,19 @@ namespace astute.Controllers
                                             dataTable.Columns.Add("Symbol_Status", typeof(bool));
                                             dataTable.Columns.Add("Filter_Type", typeof(string));
                                             foreach (var obj in item.Key_To_Symbol)
+                                            {
+                                                dataTable.Rows.Add(supplier_pricing_Id, obj.Cat_Val_Id, obj.Symbol_Status, obj.Filter_Type);
+                                            }
+                                            await _supplierService.Add_Update_Supplier_Pricing_Key_To_Symbol(dataTable);
+                                        }
+                                        if (item.Comments != null && item.Comments.Count > 0)
+                                        {
+                                            DataTable dataTable = new DataTable();
+                                            dataTable.Columns.Add("Supplier_Pricing_Id", typeof(int));
+                                            dataTable.Columns.Add("Cat_Val_Id", typeof(int));
+                                            dataTable.Columns.Add("Symbol_Status", typeof(bool));
+                                            dataTable.Columns.Add("Filter_Type", typeof(string));
+                                            foreach (var obj in item.Comments)
                                             {
                                                 dataTable.Rows.Add(supplier_pricing_Id, obj.Cat_Val_Id, obj.Symbol_Status, obj.Filter_Type);
                                             }

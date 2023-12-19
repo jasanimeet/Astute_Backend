@@ -217,7 +217,7 @@ namespace astute.Controllers
         public async Task<IActionResult> Get_Active_Category_Values(int catId)
         {
             try
-            {   
+            {
                 var result = await _categoryService.Get_Active_Category_Values(catId);
                 if (result != null && result.Count > 0)
                 {
@@ -539,7 +539,38 @@ namespace astute.Controllers
                 URL = linkUrl
             });
         }
-        #endregion        
+        #endregion
+
+        #region Column Master
+        [HttpGet]
+        [Route("get_column_master")]
+        [Authorize]
+        public async Task<IActionResult> Get_Column_Master()
+        {
+            try
+            {
+                var result = await _categoryService.Get_Column_Master();
+                if(result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode= HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Column_Master", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
         #endregion
     }
 }

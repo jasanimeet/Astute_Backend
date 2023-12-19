@@ -129,7 +129,6 @@ namespace astute.Repository
             var side_Black = !string.IsNullOrEmpty(supplier_Pricing.Side_Black) ? new SqlParameter("@Side_Black", supplier_Pricing.Side_Black) : new SqlParameter("@Side_Black", DBNull.Value);
             var table_White = !string.IsNullOrEmpty(supplier_Pricing.Table_White) ? new SqlParameter("@Table_White", supplier_Pricing.Table_White) : new SqlParameter("@Table_White", DBNull.Value);
             var side_white = !string.IsNullOrEmpty(supplier_Pricing.Side_white) ? new SqlParameter("@Side_white", supplier_Pricing.Side_white) : new SqlParameter("@Side_white", DBNull.Value);
-            var comment = !string.IsNullOrEmpty(supplier_Pricing.Comment) ? new SqlParameter("@Comment", supplier_Pricing.Comment) : new SqlParameter("@Comment", DBNull.Value);
             var cert_Type = !string.IsNullOrEmpty(supplier_Pricing.Cert_Type) ? new SqlParameter("@Cert_Type", supplier_Pricing.Cert_Type) : new SqlParameter("@Cert_Type", DBNull.Value);
             var table_Open = !string.IsNullOrEmpty(supplier_Pricing.Table_Open) ? new SqlParameter("@Table_Open", supplier_Pricing.Table_Open) : new SqlParameter("@Table_Open", DBNull.Value);
             var crown_Open = !string.IsNullOrEmpty(supplier_Pricing.Crown_Open) ? new SqlParameter("@Crown_Open", supplier_Pricing.Crown_Open) : new SqlParameter("@Crown_Open", DBNull.Value);
@@ -181,14 +180,14 @@ namespace astute.Repository
             .ExecuteSqlRawAsync(@"EXEC Supplier_Pricing_Trace_Insert @Employee_Id, @IP_Address, @Trace_Date, @Trace_Time, @Record_Type, @Supplier_Pricing_Id, @Supplier_Id, @Sunrise_Pricing_Id, @Customer_Pricing_Id, @User_Pricing_Id, @Map_Flag, @Shape, @Cts, @Color, @Fancy_Color, @Clarity, @Cut, @Polish, @Symm,
                         @Fls_Intensity, @Lab, @Shade, @Luster, @Bgm, @Culet, @Location, @Status, @Good_Type, @Length_From, @Length_To, @Width_From, @Width_To, @Depth_From, @Depth_To, @Depth_Per_From,
                         @Depth_Per_To, @Table_Per_From, @Table_Per_To, @Crown_Angle_From, @Crown_Angle_To, @Crown_Height_From, @Crown_Height_To, @Pavilion_Angle_From, @Pavilion_Angle_To, @Pavilion_Height_From,
-                        @Pavilion_Height_To, @Girdle_Per_From, @Girdle_Per_To, @Table_Black, @Side_Black, @Table_White, @Side_white, @Comment, @Cert_Type, @Table_Open, @Crown_Open, @Pavilion_Open,
+                        @Pavilion_Height_To, @Girdle_Per_From, @Girdle_Per_To, @Table_Black, @Side_Black, @Table_White, @Side_white, @Cert_Type, @Table_Open, @Crown_Open, @Pavilion_Open,
                         @Girdle_Open, @Base_Disc_From, @Base_Disc_To, @Base_Amount_From, @Base_Amount_To, @Company, @Supplier_Filter_Type, @Calculation_Type, @Sign, @Value_1, @Value_2, @Value_3, @Value_4,
                         @SP_Calculation_Type, @SP_Sign, @SP_Start_Date, @SP_Start_Time, @SP_End_Date, @SP_End_Time, @SP_Value_1, @SP_Value_2, @SP_Value_3, @SP_Value_4, @MS_Calculation_Type,
                         @MS_Sign, @MS_Value_1, @MS_Value_2, @MS_Value_3, @MS_Value_4, @MS_SP_Calculation_Type, @MS_SP_Sign, @MS_SP_Start_Date, @MS_SP_Start_Time, @MS_SP_End_Date, @MS_SP_End_Time,
                         @MS_SP_Value_1, @MS_SP_Value_2, @MS_SP_Value_3, @MS_SP_Value_4, @SP_Toggle_Bar, @MS_SP_Toggle_Bar, @Modified_By",
             empId, ipaddress, date, time, record_Type, supplier_Pricing_Id, supplier_Id, sunrise_Pricing_Id, customer_Pricing_Id, user_Pricing_Id, map_Flag, shape, cts, color, fancy_Color, clarity, cut, polish, symm, fls_Intensity, lab, shade, luster, bgm, culet, location, status, good_Type, length_From, length_To, width_From,
             width_To, depth_From, depth_To, depth_Per_From, depth_Per_To, table_Per_From, table_Per_To, crown_Angle_From, crown_Angle_To, crown_Height_From, crown_Height_To, pavilion_Angle_From,
-            pavilion_Angle_To, pavilion_Height_From, pavilion_Height_To, girdle_Per_From, girdle_Per_To, table_Black, side_Black, table_White, side_white, comment, cert_Type, table_Open, crown_Open, pavilion_Open, girdle_Open,
+            pavilion_Angle_To, pavilion_Height_From, pavilion_Height_To, girdle_Per_From, girdle_Per_To, table_Black, side_Black, table_White, side_white, cert_Type, table_Open, crown_Open, pavilion_Open, girdle_Open,
             base_Disc_From, base_Disc_To, base_Amount_From, base_Amount_To, company, supplier_Filter_Type, calculation_Type, sign, value_1, value_2, value_3, value_4, sp_calculation_Type, sp_sign, sp_start_date,
             sp_start_time, sp_end_date, sp_end_time, sp_value_1, sp_value_2, sp_value_3, sp_value_4, ms_calculation_Type, ms_sign, ms_value_1, ms_value_2, ms_value_3, ms_value_4, ms_sp_calculation_Type,
             ms_sp_sign, ms_sp_start_date, ms_sp_start_time, ms_sp_end_date, ms_sp_end_time, ms_sp_value_1, ms_sp_value_2, ms_sp_value_3, ms_sp_value_4, sP_Toggle_Bar, mSP_Toggle_Bar, modified_By));
@@ -524,7 +523,7 @@ namespace astute.Repository
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
                             cmd.Parameters.Add(supplierPricingId > 0 ? new SqlParameter("@Supplier_Pricing_Id", supplierPricingId) : new SqlParameter("@Supplier_Pricing_Id", DBNull.Value));
-
+                            
                             using var daSym = new SqlDataAdapter();
                             daSym.SelectCommand = cmd;
 
@@ -552,6 +551,42 @@ namespace astute.Repository
                         }
 
                         dict["Key_To_Symbol"] = supp_Pricing_Key_To_Sym_List;
+
+
+                        var supp_Comments_List = new List<Dictionary<string, object>>();
+
+                        using (var cmd = new SqlCommand("Supplier_Pricing_Comments_Select", connection))
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.Add(supplierPricingId > 0 ? new SqlParameter("@Supplier_Pricing_Id", supplierPricingId) : new SqlParameter("@Supplier_Pricing_Id", DBNull.Value));
+                            
+                            using var daSym = new SqlDataAdapter();
+                            daSym.SelectCommand = cmd;
+
+                            using var dsSym = new DataSet();
+                            daSym.Fill(dsSym);
+
+                            var dataTableSym = dsSym.Tables[dsSym.Tables.Count - 1];
+
+                            foreach (DataRow rowSym in dataTableSym.Rows)
+                            {
+                                var dictSym = new Dictionary<string, object>();
+                                foreach (DataColumn colSym in dataTableSym.Columns)
+                                {
+                                    if (rowSym[colSym] == DBNull.Value)
+                                    {
+                                        dictSym[colSym.ColumnName] = null;
+                                    }
+                                    else
+                                    {
+                                        dictSym[colSym.ColumnName] = rowSym[colSym];
+                                    }
+                                }
+                                supp_Comments_List.Add(dictSym);
+                            }
+                        }
+
+                        dict["Comments"] = supp_Comments_List;
                         result.Add(dict);
                     }
                 }
@@ -609,7 +644,6 @@ namespace astute.Repository
             var side_Black = !string.IsNullOrEmpty(supplier_Pricing.Side_Black) ? new SqlParameter("@Side_Black", supplier_Pricing.Side_Black) : new SqlParameter("@Side_Black", DBNull.Value);
             var table_White = !string.IsNullOrEmpty(supplier_Pricing.Table_White) ? new SqlParameter("@Table_White", supplier_Pricing.Table_White) : new SqlParameter("@Table_White", DBNull.Value);
             var side_white = !string.IsNullOrEmpty(supplier_Pricing.Side_white) ? new SqlParameter("@Side_white", supplier_Pricing.Side_white) : new SqlParameter("@Side_white", DBNull.Value);
-            var comment = !string.IsNullOrEmpty(supplier_Pricing.Comment) ? new SqlParameter("@Comment", supplier_Pricing.Comment) : new SqlParameter("@Comment", DBNull.Value);
             var cert_Type = !string.IsNullOrEmpty(supplier_Pricing.Cert_Type) ? new SqlParameter("@Cert_Type", supplier_Pricing.Cert_Type) : new SqlParameter("@Cert_Type", DBNull.Value);
             var table_Open = !string.IsNullOrEmpty(supplier_Pricing.Table_Open) ? new SqlParameter("@Table_Open", supplier_Pricing.Table_Open) : new SqlParameter("@Table_Open", DBNull.Value);
             var crown_Open = !string.IsNullOrEmpty(supplier_Pricing.Crown_Open) ? new SqlParameter("@Crown_Open", supplier_Pricing.Crown_Open) : new SqlParameter("@Crown_Open", DBNull.Value);
@@ -666,14 +700,14 @@ namespace astute.Repository
                         .ExecuteSqlRawAsync(@"EXEC Supplier_Pricing_Insert_Update @Supplier_Pricing_Id, @Supplier_Id, @Sunrise_Pricing_Id, @Customer_Pricing_Id, @User_Pricing_Id, @Map_Flag, @Shape, @Cts, @Color, @Fancy_Color, @Clarity, @Cut, @Polish, @Symm,
                         @Fls_Intensity, @Lab, @Shade, @Luster, @Bgm, @Culet, @Location, @Status, @Good_Type, @Length_From, @Length_To, @Width_From, @Width_To, @Depth_From, @Depth_To, @Depth_Per_From,
                         @Depth_Per_To, @Table_Per_From, @Table_Per_To, @Crown_Angle_From, @Crown_Angle_To, @Crown_Height_From, @Crown_Height_To, @Pavilion_Angle_From, @Pavilion_Angle_To, @Pavilion_Height_From,
-                        @Pavilion_Height_To, @Girdle_Per_From, @Girdle_Per_To, @Table_Black, @Side_Black, @Table_White, @Side_white, @Comment, @Cert_Type, @Table_Open, @Crown_Open, @Pavilion_Open,
+                        @Pavilion_Height_To, @Girdle_Per_From, @Girdle_Per_To, @Table_Black, @Side_Black, @Table_White, @Side_white, @Cert_Type, @Table_Open, @Crown_Open, @Pavilion_Open,
                         @Girdle_Open, @Base_Disc_From, @Base_Disc_To, @Base_Amount_From, @Base_Amount_To, @Company, @Supplier_Filter_Type, @Calculation_Type, @Sign, @Value_1, @Value_2, @Value_3, @Value_4,
                         @SP_Calculation_Type, @SP_Sign, @SP_Start_Date, @SP_Start_Time, @SP_End_Date, @SP_End_Time, @SP_Value_1, @SP_Value_2, @SP_Value_3, @SP_Value_4, @MS_Calculation_Type,
                         @MS_Sign, @MS_Value_1, @MS_Value_2, @MS_Value_3, @MS_Value_4, @MS_SP_Calculation_Type, @MS_SP_Sign, @MS_SP_Start_Date, @MS_SP_Start_Time, @MS_SP_End_Date, @MS_SP_End_Time,
                         @MS_SP_Value_1, @MS_SP_Value_2, @MS_SP_Value_3, @MS_SP_Value_4, @SP_Toggle_Bar, @MS_SP_Toggle_Bar, @Modified_By, @Query_Flag, @Inserted_Id OUT",
                         supplier_Pricing_Id, supplier_Id, sunrise_Pricing_Id, customer_Pricing_Id, user_Pricing_Id, map_Flag, shape, cts, color, fancy_Color, clarity, cut, polish, symm, fls_Intensity, lab, shade, luster, bgm, culet, location, status, good_Type, length_From, length_To, width_From,
                         width_To, depth_From, depth_To, depth_Per_From, depth_Per_To, table_Per_From, table_Per_To, crown_Angle_From, crown_Angle_To, crown_Height_From, crown_Height_To, pavilion_Angle_From,
-                        pavilion_Angle_To, pavilion_Height_From, pavilion_Height_To, girdle_Per_From, girdle_Per_To, table_Black, side_Black, table_White, side_white, comment, cert_Type, table_Open, crown_Open, pavilion_Open, girdle_Open,
+                        pavilion_Angle_To, pavilion_Height_From, pavilion_Height_To, girdle_Per_From, girdle_Per_To, table_Black, side_Black, table_White, side_white, cert_Type, table_Open, crown_Open, pavilion_Open, girdle_Open,
                         base_Disc_From, base_Disc_To, base_Amount_From, base_Amount_To, company, supplier_Filter_Type, calculation_Type, sign, value_1, value_2, value_3, value_4, sp_calculation_Type, sp_sign, sp_start_date,
                         sp_start_time, sp_end_date, sp_end_time, sp_value_1, sp_value_2, sp_value_3, sp_value_4, ms_calculation_Type, ms_sign, ms_value_1, ms_value_2, ms_value_3, ms_value_4, ms_sp_calculation_Type,
                         ms_sp_sign, ms_sp_start_date, ms_sp_start_time, ms_sp_end_date, ms_sp_end_time, ms_sp_value_1, ms_sp_value_2, ms_sp_value_3, ms_sp_value_4, sP_Toggle_Bar, mSP_Toggle_Bar, modified_By, query_Flag, inserted_Id));
