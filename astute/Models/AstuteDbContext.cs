@@ -92,5 +92,7 @@ namespace astute.Models
         public DbSet<Temp_Layout_Master> Temp_Layout_Master { get; set; }
         public DbSet<Temp_Layout_Detail> Temp_Layout_Detail { get; set; }
         public DbSet<Common_Model> Common_Model { get; set; }
+        public DbSet<Report_Master> Report_Master { get; set; }
+        public DbSet<Report_Detail> Report_Detail { get; set; }
     }
 }

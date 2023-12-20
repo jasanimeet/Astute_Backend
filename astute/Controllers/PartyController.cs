@@ -2820,7 +2820,7 @@ namespace astute.Controllers
             try
             {
                 var result = await _supplierService.Get_Report_Detail(id);
-                if (result != null && result.Count > 0)
+                if (result != null)
                 {
                     return Ok(new
                     {

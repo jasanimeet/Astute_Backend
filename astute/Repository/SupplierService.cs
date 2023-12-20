@@ -1075,7 +1075,8 @@ namespace astute.Repository
             var rm_Id = report_Detail.Rm_Id > 0 ? new SqlParameter("@Rm_Id", report_Detail.Rm_Id) : new SqlParameter("@Rm_Id", DBNull.Value);
             var column_Type = !string.IsNullOrEmpty(report_Detail.Column_Type) ? new SqlParameter("@Column_Type", report_Detail.Column_Type) : new SqlParameter("@Column_Type", DBNull.Value);
             var col_Id = report_Detail.Col_Id > 0 ? new SqlParameter("@Col_Id", report_Detail.Col_Id) : new SqlParameter("@Col_Id", DBNull.Value);
-            var order_No = report_Detail.Order_No > 0 ? new SqlParameter("@Order_No", report_Detail.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
+            var order_By = !string.IsNullOrEmpty(report_Detail.Order_By) ? new SqlParameter("@Order_By", report_Detail.Order_By) : new SqlParameter("@Order_By", DBNull.Value);
+            var short_No = report_Detail.Short_No >0 ? new SqlParameter("@Short_No", report_Detail.Short_No) : new SqlParameter("@Short_No", DBNull.Value);
             var display_Type = !string.IsNullOrEmpty(report_Detail.Display_Type) ? new SqlParameter("@Display_Type", report_Detail.Display_Type) : new SqlParameter("@Display_Type", DBNull.Value);
             var width = report_Detail.Width > 0 ? new SqlParameter("@Width", report_Detail.Width) : new SqlParameter("@Width", DBNull.Value);
             var column_Format = !string.IsNullOrEmpty(report_Detail.Column_Format) ? new SqlParameter("@Column_Format", report_Detail.Column_Format) : new SqlParameter("@Column_Format", DBNull.Value);
@@ -1084,8 +1085,8 @@ namespace astute.Repository
             var back_Colour = !string.IsNullOrEmpty(report_Detail.Back_Colour) ? new SqlParameter("@Back_Colour", report_Detail.Back_Colour) : new SqlParameter("@Back_Colour", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Report_Detail_Insert_Update @Id, @Rm_Id, @Column_Type, @Col_Id, @Order_No,@Display_Type,@Width,@Column_Format,@Alignment,@Fore_Colour,@Back_Colour",
-                        id, rm_Id, column_Type, col_Id, order_No, display_Type, width, column_Format, alignment, fore_Colour, back_Colour));
+                        .ExecuteSqlRawAsync(@"EXEC Report_Detail_Insert_Update @Id, @Rm_Id, @Column_Type, @Col_Id, @Order_By,@Short_No,@Display_Type,@Width,@Column_Format,@Alignment,@Fore_Colour,@Back_Colour",
+                        id, rm_Id, column_Type, col_Id, order_By, short_No, display_Type, width, column_Format, alignment, fore_Colour, back_Colour));
 
             return result;
         }
@@ -1121,37 +1122,52 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Report_Detail(int id)
+        public async Task<Report_Detail_List> Get_Report_Detail(int id)
         {
-            var result = new List<Dictionary<string, object>>();
-            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            Report_Detail_List report_Detail_List = new Report_Detail_List();
+            List<Report_Filter_Parameter> report_Filter_Parameters = new List<Report_Filter_Parameter>();
+            List<Report_Column_Parameter> report_Column_Parameter = new List<Report_Column_Parameter>();
+
+            var _id = new SqlParameter("@Id", id);
+
+            var result = await Task.Run(() => _dbContext.Report_Detail
+                            .FromSqlRaw(@"exec Report_Detail_Select @Id", _id)
+                            .ToListAsync());
+
+            if (result != null && result.Count > 0)
             {
-                using (var command = new SqlCommand("Report_Detail_Select", connection))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(id > 0 ? new SqlParameter("@Id", id) : new SqlParameter("@Id", DBNull.Value));
-                    await connection.OpenAsync();
+                report_Detail_List.Id = id;
 
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            var dict = new Dictionary<string, object>();
+                report_Filter_Parameters = result.Where(x => x.Column_Type == "F")
+                                        .Select(x=>new Report_Filter_Parameter()
+                                        {
+                                           Id = x.Id,
+                                           Col_Id = x.Col_Id,
+                                           Display_Name = x.Display_Name
+                                        }).ToList();
 
-                            for (int i = 0; i < reader.FieldCount; i++)
-                            {
-                                var columnName = reader.GetName(i);
-                                var columnValue = reader.GetValue(i);
-
-                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
-                            }
-
-                            result.Add(dict);
-                        }
-                    }
-                }
+                report_Column_Parameter = result.Where(x => x.Column_Type == "C")
+                                      .Select(x => new Report_Column_Parameter()
+                                      {
+                                          Id = x.Id,
+                                          Rm_Id= x.Rm_Id,
+                                          Col_Id = x.Col_Id,
+                                          Display_Name = x.Display_Name,
+                                          Order_By = x.Order_By,
+                                          Short_No = x.Short_No,
+                                          Display_Type = x.Display_Type,
+                                          Width = x.Width,
+                                          Column_Format = x.Column_Format,
+                                          Alignment = x.Alignment,
+                                          Fore_Colour = x.Fore_Colour,
+                                          Back_Colour = x.Back_Colour,
+                                          IsBold = x.IsBold,
+                                      }).ToList();
+                report_Detail_List.report_Filter_Parameter = report_Filter_Parameters;
+                report_Detail_List.report_Column_Parameter = report_Column_Parameter;
             }
-            return result;
+           
+            return report_Detail_List;
         }
         #endregion
     }
