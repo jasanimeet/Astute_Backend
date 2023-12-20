@@ -67,7 +67,8 @@ namespace astute.Repository
         #region Report
         Task<(string, int)> Create_Update_Report_Master(Report_Master report_Master);
         Task<int> Create_Update_Report_Detail(Report_Detail report_Detail);
-
+        Task<List<Dictionary<string, object>>> Get_Report_Name(int id);
+        Task<List<Dictionary<string, object>>> Get_Report_Detail(int id);
         #endregion
     }
 }

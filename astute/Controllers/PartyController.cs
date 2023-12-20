@@ -2783,7 +2783,63 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_report_name")]
+        [Authorize]
+        public async Task<IActionResult> Get_Report_Name(int id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Report_Name(id);
+                if(result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Report_Name", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
 
+        [HttpGet]
+        [Route("get_report_detail")]
+        [Authorize]
+        public async Task<IActionResult> Get_Report_Detail(int id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Report_Detail(id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Report_Detail", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }
