@@ -87,6 +87,7 @@ namespace astute.Models
         public string? MAX_SLAB_BASE_DISC { get; set; }
         public string? MAX_SLAB_BASE_VALUE { get; set; }
         public string? EYE_CLEAN { get; set; }
+        public string? GOOD_TYPE { get; set; }
         public string? Short_Code { get; set; }
         public bool? Is_Uploaded { get; set; }
     }
@@ -175,6 +176,7 @@ namespace astute.Models
         public object? MAX_SLAB_BASE_DISC { get; set; }
         public object? MAX_SLAB_BASE_VALUE { get; set; }
         public object? EYE_CLEAN { get; set; }
+        public object? GOOD_TYPE { get; set; }
         public bool? Is_Uploaded { get; set; }
     }
 }

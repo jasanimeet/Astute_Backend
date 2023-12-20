@@ -426,12 +426,20 @@ namespace astute.Controllers
             try
             {
                 var result = await _categoryService.DeleteCategoryValue(id);
-                if (result > 0)
+                if (result == 1)
                 {
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.CategoryValueDeleted
+                    });
+                }
+                if (result == 547)
+                {
+                    return Conflict(new
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        message = CoreCommonMessage.ReferenceFoundError
                     });
                 }
                 return BadRequest(new

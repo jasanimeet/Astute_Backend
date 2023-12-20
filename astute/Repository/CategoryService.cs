@@ -46,9 +46,9 @@ namespace astute.Repository
 
             var columnName = new SqlParameter("@ColumnName", category_Master.Column_Name);
             var displayName = new SqlParameter("@DisplayName", category_Master.Display_Name);
-            var status =     new SqlParameter("@Status", category_Master.Status);
+            var status = new SqlParameter("@Status", category_Master.Status);
             var colId = new SqlParameter("@ColId", category_Master.Col_Id);
-                        
+
             var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(user_Id ?? 0, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
 
             var result = await Task.Run(() => _dbContext.Database
@@ -75,7 +75,7 @@ namespace astute.Repository
             var catId = category_Value.Cat_Id > 0 ? new SqlParameter("@CatId", category_Value.Cat_Id) : new SqlParameter("@CatId", DBNull.Value);
             var displayName = !string.IsNullOrEmpty(category_Value.Display_Name) ? new SqlParameter("@DisplayName", category_Value.Display_Name) : new SqlParameter("@DisplayName", DBNull.Value);
             var shortName = !string.IsNullOrEmpty(category_Value.Short_Name) ? new SqlParameter("@ShortName", category_Value.Short_Name) : new SqlParameter("@ShortName", DBNull.Value);
-                        
+
             var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(user_Id ?? 0, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
             await Task.Run(() => _dbContext.Database
             .ExecuteSqlRawAsync(@"EXEC Category_Value_Trace_Insert @Employee_Id, @IP_Address, @Trace_Date, @Trace_Time, @RecordType, @CatName, @GroupName, @RapaportName,
@@ -297,12 +297,15 @@ namespace astute.Repository
         }
         public async Task<int> DeleteCategoryValue(int id)
         {
+            var cat_val_Id = new SqlParameter("@catValId", id);
+            var isExists_Party_Type = new SqlParameter("@IsExists_Party_Type", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
             if (CoreService.Enable_Trace_Records(_configuration))
             {
-                var param = new SqlParameter("@catValId", id);
-
                 var categoryValue = await Task.Run(() => _dbContext.Category_Value
-                                .FromSqlRaw(@"exec GetCategoryValueByCatValId @catValId", param)
+                                .FromSqlRaw(@"exec GetCategoryValueByCatValId @catValId", cat_val_Id)
                                 .AsEnumerable()
                                 .FirstOrDefault());
                 if (categoryValue != null)
@@ -310,7 +313,14 @@ namespace astute.Repository
                     await Insert_Category_Value_Trace(categoryValue, "Delete");
                 }
             }
-            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Category_Value_Delete {id}"));
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Category_Value_Delete @catvalId, @IsExists_Party_Type OUT", cat_val_Id, isExists_Party_Type));
+
+            bool isExist = (bool)isExists_Party_Type.Value;
+            if (isExist)
+                return 547;
+
+            return result;
         }
         public async Task<Category_Value> GetCategoryValueByCatValId(int catValId)
         {

@@ -131,6 +131,7 @@ namespace astute.Controllers
             dt_stock_data.Columns.Add("MAX_SLAB_BASE_DISC", typeof(string));
             dt_stock_data.Columns.Add("MAX_SLAB_BASE_VALUE", typeof(string));
             dt_stock_data.Columns.Add("EYE_CLEAN", typeof(string));
+            dt_stock_data.Columns.Add("GOOD_TYPE", typeof(string));
             dt_stock_data.Columns.Add("Short_Code", typeof(string));
             if (stock_Datas != null && stock_Datas.Count > 0)
             {
@@ -217,6 +218,7 @@ namespace astute.Controllers
                         item.MAX_SLAB_BASE_DISC ?? null,
                         item.MAX_SLAB_BASE_VALUE ?? null,
                         item.EYE_CLEAN ?? null,
+                        item.GOOD_TYPE ?? null,
                         item.Short_Code ?? null);
                 }
             }
@@ -304,6 +306,7 @@ namespace astute.Controllers
             dt_stock_data.Columns.Add("MAX_SLAB_BASE_DISC", typeof(string));
             dt_stock_data.Columns.Add("MAX_SLAB_BASE_VALUE", typeof(string));
             dt_stock_data.Columns.Add("EYE_CLEAN", typeof(string));
+            dt_stock_data.Columns.Add("GOOD_TYPE", typeof(string));
             dt_stock_data.Columns.Add("Short_Code", typeof(string));
             if (stock_Datas != null && stock_Datas.Count > 0)
             {   
@@ -389,6 +392,7 @@ namespace astute.Controllers
                         item.MAX_SLAB_BASE_DISC != null ? Convert.ToString(item.MAX_SLAB_BASE_DISC) : DBNull.Value,
                         item.MAX_SLAB_BASE_VALUE != null ? Convert.ToString(item.MAX_SLAB_BASE_VALUE) : DBNull.Value,
                         item.EYE_CLEAN != null ? Convert.ToString(item.EYE_CLEAN) : DBNull.Value,
+                        item.GOOD_TYPE != null ? Convert.ToString(item.EYE_CLEAN) : DBNull.Value,
                         item.Short_Code != null ? Convert.ToString(item.Short_Code) : DBNull.Value);
                 }
             }
