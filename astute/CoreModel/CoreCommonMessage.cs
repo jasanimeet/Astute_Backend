@@ -320,5 +320,17 @@ namespace astute.CoreModel
         public static string TempLayoutDeleted = TempLayout + DeletedSuccessfully;
         public static string TempLayoutStatusUpdate = "Layout status updated.";
         #endregion
+
+        #region Report
+        public static string ReportMaster = "Report Master";
+        public static string ReportDetail = "Report Detail";
+        public static string ReportNameExist = "Report Name" + AlreadyExists;
+        public static string ReportMasterCreated = ReportMaster + AddedSuccessfully;
+        public static string ReportMasterUpdated = ReportMaster + UpdatedSuccessfully;
+        public static string ReportMasterDeleted = ReportMaster + DeletedSuccessfully;
+        public static string ReportDetailCreated = ReportDetail + AddedSuccessfully;
+        public static string ReportDetailUpdated = ReportDetail + UpdatedSuccessfully;
+        public static string ReportDetailDeleted = ReportDetail + DeletedSuccessfully;
+        #endregion
     }
 }

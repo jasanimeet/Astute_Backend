@@ -2714,5 +2714,76 @@ namespace astute.Controllers
             }
         }
         #endregion
+
+        #region Report
+        [HttpPost]
+        [Route("create_update_report_master")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Report_Master(Report_Master report_Master)
+        {
+            try
+            {
+
+                var (message, Report_Id) = await _supplierService.Create_Update_Report_Master(report_Master);
+                if (message == "success" && Report_Id > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.ReportMasterCreated,
+                        data = new { report_Id = Report_Id }
+                    });
+                }
+                else if (message == "exist")
+                {
+                    return Conflict(new
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        message = CoreCommonMessage.ReportNameExist,
+                    });
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Report_Master", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("create_update_report_detail")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Report_Detail(Report_Detail report_Detail)
+        {
+            try
+            {
+
+                var result = await _supplierService.Create_Update_Report_Detail(report_Detail);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.ReportDetailCreated,
+                    });
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Report_Detail", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+
+        #endregion
     }
 }

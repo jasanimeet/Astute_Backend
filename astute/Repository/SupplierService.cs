@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -1033,6 +1034,59 @@ namespace astute.Repository
                     }
                 }
             }
+            return result;
+        }
+        #endregion
+
+        #region Report
+        public async Task<(string, int)> Create_Update_Report_Master(Report_Master report_Master)
+        {
+            var id = new SqlParameter("@Id", report_Master.Id);
+            var rpt_Name = !string.IsNullOrEmpty(report_Master.Name) ? new SqlParameter("@Rpt_Name", report_Master.Name) : new SqlParameter("@Rpt_Name", DBNull.Value);
+            var rpt_Sp_Name = !string.IsNullOrEmpty(report_Master.Sp_Name) ? new SqlParameter("@Rpt_Sp_Name", report_Master.Sp_Name) : new SqlParameter("@Rpt_Sp_Name", DBNull.Value);
+            var status = report_Master.Status != null ? new SqlParameter("@Status", report_Master.Status) : new SqlParameter("@Status", DBNull.Value);
+            var inserted_Id = new SqlParameter("@Inserted_Id", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            var is_Exist = new SqlParameter("@IsExist", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Report_Master_Insert_Update @Id, @Rpt_Name, @Rpt_Sp_Name, @Status, @Inserted_Id OUT,@IsExist OUT",
+                        id, rpt_Name, rpt_Sp_Name, status, inserted_Id, is_Exist));
+
+            int _insertedId = (int)inserted_Id.Value;
+            if (_insertedId > 0)
+            {
+                return ("success", _insertedId);
+            }
+            if ((int)is_Exist.Value == 1)
+            {
+                return ("exist", 0);
+            }
+            return ("error", 0);
+        }
+        public async Task<int> Create_Update_Report_Detail(Report_Detail report_Detail)
+        {
+            var id = new SqlParameter("@Id", report_Detail.Id);
+            var rm_Id = report_Detail.Rm_Id > 0 ? new SqlParameter("@Rm_Id", report_Detail.Rm_Id) : new SqlParameter("@Rm_Id", DBNull.Value);
+            var column_Type = !string.IsNullOrEmpty(report_Detail.Column_Type) ? new SqlParameter("@Column_Type", report_Detail.Column_Type) : new SqlParameter("@Column_Type", DBNull.Value);
+            var col_Id = report_Detail.Col_Id > 0 ? new SqlParameter("@Col_Id", report_Detail.Col_Id) : new SqlParameter("@Col_Id", DBNull.Value);
+            var order_No = report_Detail.Order_No > 0 ? new SqlParameter("@Order_No", report_Detail.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
+            var display_Type = !string.IsNullOrEmpty(report_Detail.Display_Type) ? new SqlParameter("@Display_Type", report_Detail.Display_Type) : new SqlParameter("@Display_Type", DBNull.Value);
+            var width = report_Detail.Width > 0 ? new SqlParameter("@Width", report_Detail.Width) : new SqlParameter("@Width", DBNull.Value);
+            var column_Format = !string.IsNullOrEmpty(report_Detail.Column_Format) ? new SqlParameter("@Column_Format", report_Detail.Column_Format) : new SqlParameter("@Column_Format", DBNull.Value);
+            var alignment = !string.IsNullOrEmpty(report_Detail.Alignment) ? new SqlParameter("@Alignment", report_Detail.Alignment) : new SqlParameter("@Alignment", DBNull.Value);
+            var fore_Colour = !string.IsNullOrEmpty(report_Detail.Fore_Colour) ? new SqlParameter("@Fore_Colour", report_Detail.Fore_Colour) : new SqlParameter("@Fore_Colour", DBNull.Value);
+            var back_Colour = !string.IsNullOrEmpty(report_Detail.Back_Colour) ? new SqlParameter("@Back_Colour", report_Detail.Back_Colour) : new SqlParameter("@Back_Colour", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Report_Detail_Insert_Update @Id, @Rm_Id, @Column_Type, @Col_Id, @Order_No,@Display_Type,@Width,@Column_Format,@Alignment,@Fore_Colour,@Back_Colour",
+                        id, rm_Id, column_Type, col_Id, order_No, display_Type, width, column_Format, alignment, fore_Colour, back_Colour));
+
             return result;
         }
         #endregion
