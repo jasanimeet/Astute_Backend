@@ -2095,6 +2095,35 @@ namespace astute.Controllers
                 order_no = result
             });
         }
+
+        [HttpGet]
+        [Route("get_pointer_for_stock_generation")]
+        [Authorize]
+        public async Task<IActionResult> Get_Pointer_For_Stock_Generation(string stock_type)
+        {
+            try
+            {
+                var result = await _pointerService.Get_Pointer_For_Stock_Generation(0, stock_type);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Pointer_For_Stock_Generation", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region BGM Master

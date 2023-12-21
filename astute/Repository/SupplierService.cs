@@ -1113,52 +1113,69 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<Report_Detail_List> Get_Report_Detail(int id)
+        public async Task<List<Dictionary<string, object>>> Get_Report_Detail(int id)
         {
-            Report_Detail_List report_Detail_List = new Report_Detail_List();
-            List<Report_Filter_Parameter> report_Filter_Parameters = new List<Report_Filter_Parameter>();
-            List<Report_Column_Parameter> report_Column_Parameter = new List<Report_Column_Parameter>();
-
-            var _id = new SqlParameter("@Id", id);
-
-            var result = await Task.Run(() => _dbContext.Report_Detail
-                            .FromSqlRaw(@"exec Report_Detail_Select @Id", _id)
-                            .ToListAsync());
-
-            if (result != null && result.Count > 0)
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
-                report_Detail_List.Id = id;
+                using (var command = new SqlCommand("Report_Detail_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(id > 0 ? new SqlParameter("@Id", id) : new SqlParameter("@Id", DBNull.Value));
+                    await connection.OpenAsync();
 
-                report_Filter_Parameters = result.Where(x => x.Column_Type == "F")
-                                        .Select(x => new Report_Filter_Parameter()
-                                        {
-                                           Id = x.Id,
-                                           Col_Id = x.Col_Id,
-                                           Display_Name = x.Display_Name
-                                        }).ToList();
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
 
-                report_Column_Parameter = result.Where(x => x.Column_Type == "C")
-                                      .Select(x => new Report_Column_Parameter()
-                                      {
-                                          Id = x.Id,
-                                          Rm_Id= x.Rm_Id,
-                                          Col_Id = x.Col_Id,
-                                          Display_Name = x.Display_Name,
-                                          Order_By = x.Order_By,
-                                          Short_No = x.Short_No,
-                                          Display_Type = x.Display_Type,
-                                          Width = x.Width,
-                                          Column_Format = x.Column_Format,
-                                          Alignment = x.Alignment,
-                                          Fore_Colour = x.Fore_Colour,
-                                          Back_Colour = x.Back_Colour,
-                                          IsBold = x.IsBold,
-                                      }).ToList();
-                report_Detail_List.report_Filter_Parameter = report_Filter_Parameters;
-                report_Detail_List.report_Column_Parameter = report_Column_Parameter;
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
             }
-           
-            return report_Detail_List;
+            return result;
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Report_Detail_Filter_Parameter(int id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Report_Detail_Filter_Parameter_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(id > 0 ? new SqlParameter("@Id", id) : new SqlParameter("@Id", DBNull.Value));
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
         }
         #endregion
     }

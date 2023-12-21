@@ -66,7 +66,6 @@ namespace astute
             services.AddScoped<IJWTAuthentication, JWTAuthentication>();
             services.AddScoped<IExchange_Rate_Service, Exchange_Rate_Service>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IAc_Group_Service, Ac_Group_Service>();
 
             services.AddCors(p => p.AddPolicy("corsapp", builder =>
             {

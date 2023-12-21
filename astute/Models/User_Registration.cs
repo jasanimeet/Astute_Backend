@@ -24,6 +24,7 @@ namespace astute.Models
         public string? Fax { get; set; }
         public string? Email_1 { get; set; }
         public string? Email_2 { get; set; }
+        public string? Website { get; set; }
         public int? Designation { get; set; }
         public string? Designation_Value { get; set; }
         public string? Business_Reg_No { get; set; }
@@ -39,5 +40,9 @@ namespace astute.Models
         public string? User_Name { get; set; }
         public string? Password { get; set; }
         public string? Status { get; set; }
+        public int? Assist_By_1 { get; set; }
+        public string? Assist_By_1_Name { get; set; }
+        public int? Assist_By_2 { get; set; }
+        public int? Assist_By_2_Name { get; set; }
     }
 }

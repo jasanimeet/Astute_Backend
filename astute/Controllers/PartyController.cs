@@ -2457,7 +2457,8 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    bool success = false; bool prefix_Exist = false;
+                    bool success = false, prefix_Exist = false;
+                    int id = stock_Number_Generations.Select(x => x.Id).FirstOrDefault();
                     if (stock_Number_Generations != null && stock_Number_Generations.Count > 0)
                     {   
                         foreach (var item in stock_Number_Generations)
@@ -2485,7 +2486,7 @@ namespace astute.Controllers
                             return Ok(new
                             {
                                 statusCode = HttpStatusCode.OK,
-                                message = CoreCommonMessage.StockNumberCreated,
+                                message = id > 0 ? CoreCommonMessage.StockNumberUpdated : CoreCommonMessage.StockNumberCreated,
                             });
                         }
                     }
@@ -2841,6 +2842,35 @@ namespace astute.Controllers
             try
             {
                 var result = await _supplierService.Get_Report_Detail(id);
+                if (result != null)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Report_Detail", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_report_detail_filter_parameter")]
+        [Authorize]
+        public async Task<IActionResult> Get_Report_Detail_Filter_Parameter(int id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Report_Detail_Filter_Parameter(id);
                 if (result != null)
                 {
                     return Ok(new

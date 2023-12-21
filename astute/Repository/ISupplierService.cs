@@ -68,7 +68,8 @@ namespace astute.Repository
         Task<(string, int)> Create_Update_Report_Master(Report_Master report_Master);
         Task<int> Create_Update_Report_Detail(DataTable dataTable);
         Task<List<Dictionary<string, object>>> Get_Report_Name(int id);
-        Task<Report_Detail_List> Get_Report_Detail(int id);
+        Task<List<Dictionary<string, object>>> Get_Report_Detail(int id);
+        Task<List<Dictionary<string, object>>> Get_Report_Detail_Filter_Parameter(int id);
 
         #endregion
     }

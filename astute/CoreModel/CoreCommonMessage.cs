@@ -296,21 +296,14 @@ namespace astute.CoreModel
         public static string SupplierPricingDeleted = SupplierPricing + DeletedSuccessfully;
         public static string SunrisePricingDeleted = "Sunrise pricing" + DeletedSuccessfully;
         public static string CustomerPricingDeleted = "Customer pricing" + DeletedSuccessfully;
-        #endregion
-
-        #region Account Group
-        public static string AccountGroup = "Account group";
-        public static string AccountGroupCreated = AccountGroup + AddedSuccessfully;
-        public static string AccountGroupUpdated = AccountGroup + UpdatedSuccessfully;
-        public static string AccountGroupDeleted = AccountGroup + DeletedSuccessfully;
-        #endregion
+        #endregion        
 
         #region Stock Number Generation
-        public static string StockNumber = "Stock Number";
+        public static string StockNumber = "Stock number";
         public static string StockNumberCreated = StockNumber + AddedSuccessfully;
         public static string StockNumberUpdated = StockNumber + UpdatedSuccessfully;
         public static string StockNumberDeleted = StockNumber + DeletedSuccessfully;
-        public static string StockNumberAlreadyExist = "Front Prefix already exists";
+        public static string StockNumberAlreadyExist = "Front prefix already exists";
         #endregion
 
         #region Temp Layout

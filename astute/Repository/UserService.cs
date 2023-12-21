@@ -91,6 +91,7 @@ namespace astute.Repository
             var fax = !string.IsNullOrEmpty(user_Registration.Fax) ? new SqlParameter("@Fax", user_Registration.Fax) : new SqlParameter("@Fax", DBNull.Value);
             var email_1 = new SqlParameter("@Email_1", user_Registration.Email_1);
             var email_2 = !string.IsNullOrEmpty(user_Registration.Email_2) ? new SqlParameter("@Email_2", user_Registration.Email_2) : new SqlParameter("@Email_2", DBNull.Value);
+            var website = !string.IsNullOrEmpty(user_Registration.Website) ? new SqlParameter("@Website", user_Registration.Website) : new SqlParameter("@Website", DBNull.Value);
             var designation = user_Registration.Designation > 0 ? new SqlParameter("@Designation", user_Registration.Designation) : new SqlParameter("@Designation", DBNull.Value);
             var business_Reg_No = new SqlParameter("@Business_Reg_No", user_Registration.Business_Reg_No);
             var business_Reg_Upload = new SqlParameter("@Business_Reg_Upload", user_Registration.Business_Reg_Upload);
@@ -99,6 +100,8 @@ namespace astute.Repository
             var user_Name = new SqlParameter("@User_Name", user_Registration.User_Name);
             var password = new SqlParameter("@Password", encryptPassword);
             var status = user_Registration.User_Id == 0 ? new SqlParameter("@Status", "Pending") : new SqlParameter("@Status", user_Registration.Status);
+            var assist_by_1 = user_Registration.Assist_By_1 > 0 ? new SqlParameter("@Assist_By_1", user_Registration.Assist_By_1) : new SqlParameter("@Assist_By_1", DBNull.Value);
+            var assist_by_2 = user_Registration.Assist_By_2 > 0 ? new SqlParameter("@Assist_By_2", user_Registration.Assist_By_2) : new SqlParameter("@Assist_By_2", DBNull.Value);
 
             var isExistUserName = new SqlParameter("@IsExistUserName", System.Data.SqlDbType.Bit)
             {
@@ -107,9 +110,9 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC User_Registration_Insert_Update @User_Id, @Company_Name, @Prefix, @First_Name, @Last_Name, @Address, @City_Id, @PinCode, @Mobile_1,
-                        @Mobile_2, @Phone_1, @Phone_2, @Fax, @Email_1, @Email_2, @Designation, @Business_Reg_No, @Business_Reg_Upload, @Photo_Proof_Upload, @Address_Proof_Upload,
-                        @User_Name, @Password, @Status, @IsExistUserName OUT", user_Id, company_Name, prefix, first_Name, last_Name, address, city_Id, pincode, mobile_1, mobile_2,
-                        phone_1, phone_2, fax, email_1, email_2, designation, business_Reg_No, business_Reg_Upload, photo_Proof_Upload, address_Proof_Upload, user_Name, password, status, isExistUserName));
+                        @Mobile_2, @Phone_1, @Phone_2, @Fax, @Email_1, @Email_2, @Website, @Designation, @Business_Reg_No, @Business_Reg_Upload, @Photo_Proof_Upload, @Address_Proof_Upload,
+                        @User_Name, @Password, @Status, @Assist_By_1, @Assist_By_2, @IsExistUserName OUT", user_Id, company_Name, prefix, first_Name, last_Name, address, city_Id, pincode, mobile_1, mobile_2,
+                        phone_1, phone_2, fax, email_1, email_2, website, designation, business_Reg_No, business_Reg_Upload, photo_Proof_Upload, address_Proof_Upload, user_Name, password, status, assist_by_1, assist_by_2, isExistUserName));
 
             bool _isExistUserName = (bool)isExistUserName.Value;
             if (_isExistUserName)
