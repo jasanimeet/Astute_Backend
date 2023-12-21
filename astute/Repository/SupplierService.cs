@@ -1069,24 +1069,15 @@ namespace astute.Repository
             }
             return ("error", 0);
         }
-        public async Task<int> Create_Update_Report_Detail(Report_Detail report_Detail)
+        public async Task<int> Create_Update_Report_Detail(DataTable dataTable)
         {
-            var id = new SqlParameter("@Id", report_Detail.Id);
-            var rm_Id = report_Detail.Rm_Id > 0 ? new SqlParameter("@Rm_Id", report_Detail.Rm_Id) : new SqlParameter("@Rm_Id", DBNull.Value);
-            var column_Type = !string.IsNullOrEmpty(report_Detail.Column_Type) ? new SqlParameter("@Column_Type", report_Detail.Column_Type) : new SqlParameter("@Column_Type", DBNull.Value);
-            var col_Id = report_Detail.Col_Id > 0 ? new SqlParameter("@Col_Id", report_Detail.Col_Id) : new SqlParameter("@Col_Id", DBNull.Value);
-            var order_By = !string.IsNullOrEmpty(report_Detail.Order_By) ? new SqlParameter("@Order_By", report_Detail.Order_By) : new SqlParameter("@Order_By", DBNull.Value);
-            var short_No = report_Detail.Short_No >0 ? new SqlParameter("@Short_No", report_Detail.Short_No) : new SqlParameter("@Short_No", DBNull.Value);
-            var display_Type = !string.IsNullOrEmpty(report_Detail.Display_Type) ? new SqlParameter("@Display_Type", report_Detail.Display_Type) : new SqlParameter("@Display_Type", DBNull.Value);
-            var width = report_Detail.Width > 0 ? new SqlParameter("@Width", report_Detail.Width) : new SqlParameter("@Width", DBNull.Value);
-            var column_Format = !string.IsNullOrEmpty(report_Detail.Column_Format) ? new SqlParameter("@Column_Format", report_Detail.Column_Format) : new SqlParameter("@Column_Format", DBNull.Value);
-            var alignment = !string.IsNullOrEmpty(report_Detail.Alignment) ? new SqlParameter("@Alignment", report_Detail.Alignment) : new SqlParameter("@Alignment", DBNull.Value);
-            var fore_Colour = !string.IsNullOrEmpty(report_Detail.Fore_Colour) ? new SqlParameter("@Fore_Colour", report_Detail.Fore_Colour) : new SqlParameter("@Fore_Colour", DBNull.Value);
-            var back_Colour = !string.IsNullOrEmpty(report_Detail.Back_Colour) ? new SqlParameter("@Back_Colour", report_Detail.Back_Colour) : new SqlParameter("@Back_Colour", DBNull.Value);
+            var parameter = new SqlParameter("@tblReport_Detail", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Report_Detail_Table_Type",
+                Value = dataTable
+            };
 
-            var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Report_Detail_Insert_Update @Id, @Rm_Id, @Column_Type, @Col_Id, @Order_By,@Short_No,@Display_Type,@Width,@Column_Format,@Alignment,@Fore_Colour,@Back_Colour",
-                        id, rm_Id, column_Type, col_Id, order_By, short_No, display_Type, width, column_Format, alignment, fore_Colour, back_Colour));
+            var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Report_Detail_Insert_Update @tblReport_Detail", parameter);
 
             return result;
         }
@@ -1139,7 +1130,7 @@ namespace astute.Repository
                 report_Detail_List.Id = id;
 
                 report_Filter_Parameters = result.Where(x => x.Column_Type == "F")
-                                        .Select(x=>new Report_Filter_Parameter()
+                                        .Select(x => new Report_Filter_Parameter()
                                         {
                                            Id = x.Id,
                                            Col_Id = x.Col_Id,

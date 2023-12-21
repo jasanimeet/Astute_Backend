@@ -2757,19 +2757,40 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_update_report_detail")]
         [Authorize]
-        public async Task<IActionResult> Create_Update_Report_Detail(Report_Detail report_Detail)
+        public async Task<IActionResult> Create_Update_Report_Detail(IList<Report_Detail> report_Detail)
         {
             try
             {
-
-                var result = await _supplierService.Create_Update_Report_Detail(report_Detail);
-                if (result > 0)
+                if(report_Detail != null && report_Detail.Count > 0)
                 {
-                    return Ok(new
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Id", typeof(int));
+                    dataTable.Columns.Add("Rm_Id", typeof(int));
+                    dataTable.Columns.Add("Column_Type", typeof(string));
+                    dataTable.Columns.Add("Col_Id", typeof(int));
+                    dataTable.Columns.Add("Order_By", typeof(string));
+                    dataTable.Columns.Add("Short_No", typeof(int));
+                    dataTable.Columns.Add("Display_Type", typeof(string));
+                    dataTable.Columns.Add("Width", typeof(int));
+                    dataTable.Columns.Add("Column_Format", typeof(string));
+                    dataTable.Columns.Add("Alignment", typeof(string));
+                    dataTable.Columns.Add("Fore_Colour", typeof(string));
+                    dataTable.Columns.Add("Back_Colour", typeof(string));
+                    dataTable.Columns.Add("IsBold", typeof(bool));
+                    dataTable.Columns.Add("QueryFlag", typeof(string));
+                    foreach (var item in report_Detail)
                     {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.ReportDetailCreated,
-                    });
+                        dataTable.Rows.Add(item.Id, item.Rm_Id, item.Column_Type, item.Col_Id, item.Order_By, item.Short_No, item.Display_Type, item.Width, item.Column_Format, item.Alignment, item.Fore_Colour, item.Back_Colour, item.IsBold, item.QueryFlag);
+                    }
+                    var result = await _supplierService.Create_Update_Report_Detail(dataTable);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.ReportDetailCreated,
+                        });
+                    }
                 }
                 return BadRequest(ModelState);
             }
