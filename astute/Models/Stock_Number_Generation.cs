@@ -9,7 +9,6 @@ namespace astute.Models
         [Key]
         public int Id { get; set; }
         public string? Exc_Party_Id { get; set; }
-        [NotMapped]
         public string? Exc_Party_Name { get; set; }
         public string? Pointer_Id { get; set; }
         public string? Pointer_Name { get; set; }
@@ -25,7 +24,6 @@ namespace astute.Models
         public int? End_Number { get; set; }
         public string? Live_Prefix { get; set; }
         public int? Supplier_Id { get; set; }
-        [NotMapped]
         public string? Company_Name { get; set; }
         public string? Created_Date { get; set; }
         public string? Created_Time { get; set; }
