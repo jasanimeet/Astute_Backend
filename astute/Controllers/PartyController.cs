@@ -1309,7 +1309,7 @@ namespace astute.Controllers
                         }
                     }
                     if (supplier_Details.Party_File != null)
-                    {
+                    {                        
                         if (File_Location != null && File_Location.Length > 0)
                         {
                             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/SupplierDetailFile");
