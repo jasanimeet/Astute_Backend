@@ -925,7 +925,7 @@ namespace astute.Repository
             var _Start_Number = stock_Number_Generation.Start_Number > 0 ? new SqlParameter("@Start_Number", stock_Number_Generation.Start_Number) : new SqlParameter("@Start_Number", DBNull.Value);
             var _End_Number = stock_Number_Generation.End_Number > 0 ? new SqlParameter("@End_Number", stock_Number_Generation.End_Number) : new SqlParameter("@End_Number", DBNull.Value);
             var _Live_Prefix = !string.IsNullOrEmpty(stock_Number_Generation.Live_Prefix) ? new SqlParameter("@Live_Prefix", stock_Number_Generation.Live_Prefix) : new SqlParameter("@Live_Prefix", DBNull.Value);
-            var _Supplier_Id = !string.IsNullOrEmpty(stock_Number_Generation.Supplier_Id) ? new SqlParameter("@Supplier_Id", stock_Number_Generation.Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
+            var _Supplier_Id = stock_Number_Generation.Supplier_Id > 0 ? new SqlParameter("@Supplier_Id", stock_Number_Generation.Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
             var isExist = new SqlParameter("@IsExist", SqlDbType.Bit)
             {
                 Direction = ParameterDirection.Output

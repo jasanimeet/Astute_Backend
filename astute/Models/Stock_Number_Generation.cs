@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace astute.Models
 {
@@ -8,6 +9,7 @@ namespace astute.Models
         [Key]
         public int Id { get; set; }
         public string? Exc_Party_Id { get; set; }
+        [NotMapped]
         public string? Exc_Party_Name { get; set; }
         public string? Pointer_Id { get; set; }
         public string? Pointer_Name { get; set; }
@@ -22,7 +24,8 @@ namespace astute.Models
         public int? Start_Number { get; set; }
         public int? End_Number { get; set; }
         public string? Live_Prefix { get; set; }
-        public string? Supplier_Id { get; set; }
+        public int? Supplier_Id { get; set; }
+        [NotMapped]
         public string? Company_Name { get; set; }
         public string? Created_Date { get; set; }
         public string? Created_Time { get; set; }
