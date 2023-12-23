@@ -2805,10 +2805,9 @@ namespace astute.Controllers
                     dataTable.Columns.Add("Fore_Colour", typeof(string));
                     dataTable.Columns.Add("Back_Colour", typeof(string));
                     dataTable.Columns.Add("IsBold", typeof(bool));
-                    dataTable.Columns.Add("QueryFlag", typeof(string));
                     foreach (var item in report_Detail)
                     {
-                        dataTable.Rows.Add(item.Id, item.Rm_Id, item.Column_Type, item.Col_Id, item.Order_By, item.Short_No, item.Display_Type, item.Width, item.Column_Format, item.Alignment, item.Fore_Colour, item.Back_Colour, item.IsBold, item.QueryFlag);
+                        dataTable.Rows.Add(item.Id, item.Rm_Id, item.Column_Type, item.Col_Id, item.Order_By, item.Short_No, item.Display_Type, item.Width, item.Column_Format, item.Alignment, item.Fore_Colour, item.Back_Colour, item.IsBold);
                     }
                     var result = await _supplierService.Create_Update_Report_Detail(dataTable);
                     if (result > 0)

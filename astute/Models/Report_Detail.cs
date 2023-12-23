@@ -21,8 +21,6 @@ namespace astute.Models
         public string Fore_Colour { get; set; }
         public string Back_Colour { get; set; }
         public bool IsBold { get; set; }
-        [NotMapped]
-        public string? QueryFlag { get; set; }
 
     }
 }
