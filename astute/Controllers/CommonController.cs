@@ -2099,11 +2099,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_pointer_for_stock_generation")]
         [Authorize]
-        public async Task<IActionResult> Get_Pointer_For_Stock_Generation(string stock_type)
+        public async Task<IActionResult> Get_Pointer_For_Stock_Generation(string stock_type, int company_Id)
         {
             try
             {
-                var result = await _pointerService.Get_Pointer_For_Stock_Generation(0, stock_type);
+                var result = await _pointerService.Get_Pointer_For_Stock_Generation(0, stock_type, company_Id);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new

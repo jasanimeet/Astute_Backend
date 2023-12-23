@@ -309,7 +309,7 @@ namespace astute.Controllers
             dt_stock_data.Columns.Add("GOOD_TYPE", typeof(string));
             dt_stock_data.Columns.Add("Short_Code", typeof(string));
             if (stock_Datas != null && stock_Datas.Count > 0)
-            {   
+            {
                 foreach (var item in stock_Datas)
                 {
                     dt_stock_data.Rows.Add(item.SUPPLIER_NO != null ? Convert.ToString(item.SUPPLIER_NO) : DBNull.Value,
@@ -331,7 +331,7 @@ namespace astute.Controllers
                         item.WIDTH != null && !string.IsNullOrEmpty(item.WIDTH.ToString()) ? Convert.ToString(item.WIDTH) : item.MEASUREMENT != null ? Split_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "width") : DBNull.Value,
                         item.DEPTH != null && !string.IsNullOrEmpty(item.DEPTH.ToString()) ? Convert.ToString(item.DEPTH) : item.MEASUREMENT != null ? Split_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "depth") : DBNull.Value,
                         item.MEASUREMENT != null ? Convert.ToString(item.MEASUREMENT) : DBNull.Value,
-                        item.DEPTH_PER != null ? Convert.ToString(item.DEPTH_PER).Replace("%","") : DBNull.Value,
+                        item.DEPTH_PER != null ? Convert.ToString(item.DEPTH_PER).Replace("%", "") : DBNull.Value,
                         item.TABLE_PER != null ? Convert.ToString(item.TABLE_PER).Replace("%", "") : DBNull.Value,
                         item.CULET != null ? Convert.ToString(item.CULET) : DBNull.Value,
                         item.SHADE != null ? Convert.ToString(item.SHADE) : DBNull.Value,
@@ -936,7 +936,7 @@ namespace astute.Controllers
                                 if (tot_per > 100)
                                 {
                                     return Conflict(new
-                                    { 
+                                    {
                                         statusCode = HttpStatusCode.Conflict,
                                         message = "Less then or equal to 100% allow."
                                     });
@@ -1309,7 +1309,7 @@ namespace astute.Controllers
                         }
                     }
                     if (supplier_Details.Party_File != null)
-                    {                        
+                    {
                         if (File_Location != null && File_Location.Length > 0)
                         {
                             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/SupplierDetailFile");
@@ -1760,7 +1760,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_sunrise_pricing_list")]
         [Authorize]
@@ -1859,7 +1859,9 @@ namespace astute.Controllers
                 {
                     int supplier_Id = 0, sunrise_Pricing_Id = 0, customer_Pricing_Id = 0;
                     int sun_price_Id = 0;
+                    var map_flag = string.Empty;
                     var selected_sun_price_Id = supplier_Pricings.Where(x => x.Sunrise_Pricing_Id > 0).Select(x => x.Sunrise_Pricing_Id).FirstOrDefault() ?? 0;
+                    map_flag = supplier_Pricings.Select(x => x.Map_Flag).FirstOrDefault();
                     if (selected_sun_price_Id > 0)
                     {
                         sun_price_Id = selected_sun_price_Id;
@@ -1881,7 +1883,24 @@ namespace astute.Controllers
                                 if (item.Query_Flag == "D")
                                 {
                                     var result_Supplier_Pricing_Key_To_Symbol = await _supplierService.Delete_Supplier_Pricing_Key_To_Symbol(item.Supplier_Pricing_Id);
+
                                     var result = await _supplierService.Delete_Supplier_Pricing(item.Supplier_Pricing_Id, 0);
+                                    if (result > 0)
+                                    {
+                                        return Ok(new
+                                        {
+                                            statusCode = HttpStatusCode.OK,
+                                            message = CoreCommonMessage.SupplierPricingCreated,
+                                        });
+                                    }
+                                    //else if (message == "exist" && result == 574)
+                                    //{
+                                    //    return Conflict(new
+                                    //    {
+                                    //        statusCode = HttpStatusCode.Conflict,
+                                    //        message = CoreCommonMessage.SupplierPricingIsExists,
+                                    //    });
+                                    //}
                                 }
                                 else
                                 {
@@ -1894,7 +1913,7 @@ namespace astute.Controllers
                                     if (message == "success" && supplier_pricing_Id > 0)
                                     {
                                         success = true;
-                                       
+
                                         if (item.Key_To_Symbol != null && item.Key_To_Symbol.Count > 0)
                                         {
                                             DataTable dataTable = new DataTable();
@@ -1966,6 +1985,14 @@ namespace astute.Controllers
                         message = CoreCommonMessage.SupplierPricingDeleted,
                     });
                 }
+                //else if(message == "exist" && result == 574)
+                //{
+                //    return Conflict(new
+                //    {
+                //        statusCode = HttpStatusCode.Conflict,
+                //        message = CoreCommonMessage.SupplierPricingIsExists,
+                //    });
+                //}
                 return BadRequest(new
                 {
                     statusCode = HttpStatusCode.BadRequest,
@@ -2460,11 +2487,11 @@ namespace astute.Controllers
                     bool success = false, prefix_Exist = false;
                     int id = stock_Number_Generations.Select(x => x.Id).FirstOrDefault();
                     if (stock_Number_Generations != null && stock_Number_Generations.Count > 0)
-                    {   
+                    {
                         foreach (var item in stock_Number_Generations)
                         {
                             var result = await _supplierService.Add_Update_Stock_Number_Generation(item);
-                            if(result == 5)
+                            if (result == 5)
                             {
                                 prefix_Exist = true;
                             }
@@ -2665,7 +2692,7 @@ namespace astute.Controllers
             try
             {
                 var result = await _supplierService.Get_Supplier_Stock_Error_Log(supplier_Ids, upload_Type, from_Date, from_Time, to_Date, to_Time, is_Lab_Entry);
-                if(result != null && result.Count > 0)
+                if (result != null && result.Count > 0)
                 {
                     return Ok(new
                     {
@@ -2689,7 +2716,7 @@ namespace astute.Controllers
         [HttpGet]
         [Route("supplier_stock_error_log_detail")]
         [Authorize]
-        public async Task<IActionResult> Supplier_Stock_Error_Log_Detail(string supplier_Ids,string stock_Data_Ids, string upload_Type)
+        public async Task<IActionResult> Supplier_Stock_Error_Log_Detail(string supplier_Ids, string stock_Data_Ids, string upload_Type)
         {
             try
             {
@@ -2762,7 +2789,7 @@ namespace astute.Controllers
         {
             try
             {
-                if(report_Detail != null && report_Detail.Count > 0)
+                if (report_Detail != null && report_Detail.Count > 0)
                 {
                     DataTable dataTable = new DataTable();
                     dataTable.Columns.Add("Id", typeof(int));
@@ -2813,7 +2840,7 @@ namespace astute.Controllers
             try
             {
                 var result = await _supplierService.Get_Report_Name(id);
-                if(result != null && result.Count > 0)
+                if (result != null && result.Count > 0)
                 {
                     return Ok(new
                     {

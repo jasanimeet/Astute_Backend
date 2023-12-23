@@ -16,7 +16,7 @@ namespace astute.Repository
         Task<IList<Pointer_Master>> GetPointer(int pointerId);
         Task<int> PointerChangeStatus(int pointer_Id, bool status);
         Task<int> Get_Pointer_Master_Max_Order_No();
-        Task<IList<Pointer_Master>> Get_Pointer_For_Stock_Generation(int pointerId, string stock_type);
+        Task<IList<Pointer_Master>> Get_Pointer_For_Stock_Generation(int pointerId, string stock_type, int company_Id);
         #endregion
 
         #region Pointer Detail

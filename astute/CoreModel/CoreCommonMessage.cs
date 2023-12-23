@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Serialization;
+using System;
 
 namespace astute.CoreModel
 {
@@ -291,12 +292,16 @@ namespace astute.CoreModel
 
         #region Supplier Pricing
         public static string SupplierPricing = "Supplier pricing";
-        public static string SupplierPricingCreated = SupplierPricing + AddedSuccessfully;
+        public static string SupplierPricingCreated = SupplierPricing + " saved successfully.";
+        public static string SupplierStockCreated = "Sunrise stock saved successfully.";
+        public static string SunrisePricingCreated = "Sunrise pricing saved successfully.";
+        public static string CustomerPricingCreated = "Customer pricing saved successfully.";
         public static string SupplierPricingUpdated = SupplierPricing + UpdatedSuccessfully;
         public static string SupplierPricingDeleted = SupplierPricing + DeletedSuccessfully;
         public static string SunrisePricingDeleted = "Sunrise pricing" + DeletedSuccessfully;
         public static string CustomerPricingDeleted = "Customer pricing" + DeletedSuccessfully;
-        #endregion        
+        public static string SupplierPricingIsExists = "Please check records exists in supplier pricing or stock!";
+        #endregion
 
         #region Stock Number Generation
         public static string StockNumber = "Stock number";

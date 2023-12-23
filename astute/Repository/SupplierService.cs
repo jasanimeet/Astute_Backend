@@ -739,12 +739,20 @@ namespace astute.Repository
         {
             var _supplier_Pricing_Id = supplier_Pricing_Id > 0 ? new SqlParameter("@Supplier_Pricing_Id", supplier_Pricing_Id) : new SqlParameter("@Supplier_Pricing_Id", DBNull.Value);
             var _supplier_Id = supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
-            var isCheckInStock = new SqlParameter("@IsCheckInStock", SqlDbType.Bit)
-            {
-                Direction = ParameterDirection.Output
-            };
+            //var isCheckInStock = new SqlParameter("@IsCheckInStock", SqlDbType.Bit)
+            //{
+            //    Direction = ParameterDirection.Output
+            //};
 
-            return await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"Supplier_Pricing_Delete @Supplier_Pricing_Id, @Supplier_Id", _supplier_Pricing_Id, _supplier_Id));
+            var result = await Task.Run(() => _dbContext.Database.
+            ExecuteSqlRawAsync(@"EXEC Supplier_Pricing_Delete @Supplier_Pricing_Id, @Supplier_Id", _supplier_Pricing_Id, _supplier_Id));
+
+            //bool _isCheckInStock = (bool)isCheckInStock.Value;
+            //if(_isCheckInStock)
+            //{
+            //    return ("exist", 574);
+            //}
+            return result;
         }
         public async Task<Common_Model> Get_Max_Sunrice_Pricing_Id()
         {
