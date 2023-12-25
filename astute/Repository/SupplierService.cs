@@ -913,16 +913,51 @@ namespace astute.Repository
 
             return result;
         }
+        //public async Task<int> Supplier_Stock_Insert_Update(int supplier_Id, int stock_Data_Id)
+        //{
+        //    var _supplier_Id = new SqlParameter("@Supplier_Id", supplier_Id);
+        //    var _stock_Data_Id = new SqlParameter("@Stock_Data_Id", stock_Data_Id);
+
+        //    var result = await Task.Run(() => _dbContext.Database
+        //    .ExecuteSqlRawAsync(@"exec [Supplier_Stock_Scheduler_Insert_Update] @Supplier_Id,@Stock_Data_Id", _supplier_Id, _stock_Data_Id));
+
+        //    return result;
+        //}
+
         public async Task<int> Supplier_Stock_Insert_Update(int supplier_Id, int stock_Data_Id)
         {
             var _supplier_Id = new SqlParameter("@Supplier_Id", supplier_Id);
             var _stock_Data_Id = new SqlParameter("@Stock_Data_Id", stock_Data_Id);
 
-            var result = await Task.Run(() => _dbContext.Database
-            .ExecuteSqlRawAsync(@"exec [Supplier_Stock_Scheduler_Insert_Update] @Supplier_Id,@Stock_Data_Id", _supplier_Id, _stock_Data_Id));
+            var sqlCommand = @"exec [Supplier_Stock_Scheduler_Insert_Update] @Supplier_Id, @Stock_Data_Id";
+
+            var result = await Task.Run(async () =>
+            {
+                using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = sqlCommand;
+                    command.Parameters.Add(_supplier_Id);
+                    command.Parameters.Add(_stock_Data_Id);
+
+                    // Set the command timeout to 30 minutes (in seconds)
+                    command.CommandTimeout = 1800;
+
+                    await _dbContext.Database.OpenConnectionAsync();
+                    try
+                    {
+                        var affectedRows = await command.ExecuteNonQueryAsync();
+                        return affectedRows;
+                    }
+                    finally
+                    {
+                        _dbContext.Database.CloseConnection();
+                    }
+                }
+            });
 
             return result;
         }
+
         #endregion
 
         #region Stock Number Generation
