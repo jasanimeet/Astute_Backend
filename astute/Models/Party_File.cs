@@ -20,5 +20,6 @@ namespace astute.Models
         public bool? Exclude { get; set; }
         public bool? API_Flag { get; set; }
         public string? Upload_Type { get; set; }
+        public bool? Is_Same_Id { get; set; }
     }
 }

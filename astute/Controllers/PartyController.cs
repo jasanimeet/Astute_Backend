@@ -2,6 +2,7 @@
 using astute.CoreServices;
 using astute.Models;
 using astute.Repository;
+using ExcelDataReader;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -31,6 +33,7 @@ namespace astute.Controllers
         private readonly ICommonService _commonService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ISupplierService _supplierService;
+        IExcelDataReader _excelDataReader;
         #endregion
 
         #region Ctor
@@ -157,8 +160,8 @@ namespace astute.Controllers
                         item.WIDTH != null && !string.IsNullOrEmpty(item.WIDTH.ToString()) ? Convert.ToString(item.WIDTH) : item.MEASUREMENT != null ? Split_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "width") : DBNull.Value,
                         item.DEPTH != null && !string.IsNullOrEmpty(item.DEPTH.ToString()) ? Convert.ToString(item.DEPTH) : item.MEASUREMENT != null ? Split_Supplier_Stock_Measurement(Convert.ToString(item.MEASUREMENT), "depth") : DBNull.Value,
                         item.MEASUREMENT ?? null,
-                        item.DEPTH_PER.Replace("%", "") ?? null,
-                        item.TABLE_PER.Replace("%", "") ?? null,
+                        item.DEPTH_PER != item.DEPTH_PER && !string.IsNullOrEmpty(item.DEPTH_PER) ? item.DEPTH_PER.Replace("%", "") : null,
+                        item.TABLE_PER != item.TABLE_PER && !string.IsNullOrEmpty(item.TABLE_PER) ? item.TABLE_PER.Replace("%", "") : null,
                         item.CULET ?? null,
                         item.SHADE ?? null,
                         item.LUSTER ?? null,
@@ -180,13 +183,13 @@ namespace astute.Controllers
                         item.GIRDLE_TYPE ?? null,
                         item.LASER_INSCRIPTION ?? null,
                         item.CERTIFICATE_DATE ?? null,
-                        item.CROWN_ANGLE.Replace("%", "") ?? null,
-                        item.CROWN_HEIGHT.Replace("%", "") ?? null,
-                        item.PAVILION_ANGLE.Replace("%", "") ?? null,
-                        item.PAVILION_HEIGHT.Replace("%", "") ?? null,
-                        item.GIRDLE_PER.Replace("%", "") ?? null,
-                        item.LR_HALF.Replace("%", "") ?? null,
-                        item.STAR_LN.Replace("%", "") ?? null,
+                        item.CROWN_ANGLE != item.CROWN_ANGLE && !string.IsNullOrEmpty(item.CROWN_ANGLE) ? item.CROWN_ANGLE.Replace("%", "") : null,
+                        item.CROWN_HEIGHT != item.CROWN_HEIGHT && !string.IsNullOrEmpty(item.CROWN_HEIGHT) ? item.CROWN_HEIGHT.Replace("%", "") : null,
+                        item.PAVILION_ANGLE != item.PAVILION_ANGLE && !string.IsNullOrEmpty(item.PAVILION_ANGLE) ? item.PAVILION_ANGLE.Replace("%", "") : null,
+                        item.PAVILION_HEIGHT != item.PAVILION_HEIGHT && !string.IsNullOrEmpty(item.PAVILION_HEIGHT) ? item.PAVILION_HEIGHT.Replace("%", "") : null,
+                        item.GIRDLE_PER != item.GIRDLE_PER && !string.IsNullOrEmpty(item.GIRDLE_PER) ? item.GIRDLE_PER.Replace("%", "") : null,
+                        item.LR_HALF != item.LR_HALF && !string.IsNullOrEmpty(item.LR_HALF) ? item.LR_HALF.Replace("%", "") : null,
+                        item.STAR_LN != item.STAR_LN && !string.IsNullOrEmpty(item.STAR_LN) ? item.STAR_LN.Replace("%", "") : null,
                         item.CERT_TYPE ?? null,
                         item.FANCY_COLOR ?? null,
                         item.FANCY_INTENSITY ?? null,
@@ -1884,8 +1887,8 @@ namespace astute.Controllers
                                 {
                                     var result_Supplier_Pricing_Key_To_Symbol = await _supplierService.Delete_Supplier_Pricing_Key_To_Symbol(item.Supplier_Pricing_Id);
 
-                                    var result = await _supplierService.Delete_Supplier_Pricing(item.Supplier_Pricing_Id, 0);
-                                    if (result > 0)
+                                    var (message, result) = await _supplierService.Delete_Supplier_Pricing(item.Supplier_Pricing_Id, item.Supplier_Id ?? 0);
+                                    if (message == "success" && result > 0)
                                     {
                                         return Ok(new
                                         {
@@ -1893,14 +1896,14 @@ namespace astute.Controllers
                                             message = CoreCommonMessage.SupplierPricingCreated,
                                         });
                                     }
-                                    //else if (message == "exist" && result == 574)
-                                    //{
-                                    //    return Conflict(new
-                                    //    {
-                                    //        statusCode = HttpStatusCode.Conflict,
-                                    //        message = CoreCommonMessage.SupplierPricingIsExists,
-                                    //    });
-                                    //}
+                                    else if (message == "exist" && result == 574)
+                                    {
+                                        return Conflict(new
+                                        {
+                                            statusCode = HttpStatusCode.Conflict,
+                                            message = CoreCommonMessage.SupplierPricingIsExists,
+                                        });
+                                    }
                                 }
                                 else
                                 {
@@ -1946,10 +1949,27 @@ namespace astute.Controllers
                         }
                         if (success)
                         {
+                            string resurn_message = string.Empty;
+                            if (map_flag == "P")
+                            {
+                                resurn_message = CoreCommonMessage.SupplierPricingCreated;
+                            }
+                            else if (map_flag == "S")
+                            {
+                                resurn_message = CoreCommonMessage.SupplierStockCreated;
+                            }
+                            else if (map_flag == "SPL" || map_flag == "SPO")
+                            {
+                                resurn_message = CoreCommonMessage.SunrisePricingCreated;
+                            }
+                            else if (map_flag == "CPL" || map_flag == "CPO")
+                            {
+                                resurn_message = CoreCommonMessage.CustomerPricingCreated;
+                            }
                             return Ok(new
                             {
                                 statusCode = HttpStatusCode.OK,
-                                message = CoreCommonMessage.SupplierPricingCreated,
+                                message = resurn_message,
                                 supplier_Id = supplier_Id,
                                 sunrise_Pricing_Id = sunrise_Pricing_Id,
                                 customer_Pricing_Id = customer_Pricing_Id
@@ -1976,7 +1996,7 @@ namespace astute.Controllers
         {
             try
             {
-                var result = await _supplierService.Delete_Supplier_Pricing(0, supplier_Id);
+                var result = await _supplierService.Delete_Supplier_Pricing_By_Supplier(supplier_Id);
                 if (result > 0)
                 {
                     return Ok(new
@@ -1985,14 +2005,6 @@ namespace astute.Controllers
                         message = CoreCommonMessage.SupplierPricingDeleted,
                     });
                 }
-                //else if(message == "exist" && result == 574)
-                //{
-                //    return Conflict(new
-                //    {
-                //        statusCode = HttpStatusCode.Conflict,
-                //        message = CoreCommonMessage.SupplierPricingIsExists,
-                //    });
-                //}
                 return BadRequest(new
                 {
                     statusCode = HttpStatusCode.BadRequest,
@@ -2640,7 +2652,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_update_manual_upload")]
         [Authorize]
-        public async Task<IActionResult> Create_Update_Manual_Upload(Party_File party_File, IFormFile UploadFile)
+        public async Task<IActionResult> Create_Update_Manual_Upload([FromForm] Party_File party_File, IFormFile File_Location)
         {
             try
             {
@@ -2651,18 +2663,67 @@ namespace astute.Controllers
                     {
                         Directory.CreateDirectory(filePath);
                     }
-                    string fileName = Path.GetFileNameWithoutExtension(UploadFile.FileName);
-                    string fileExt = Path.GetExtension(UploadFile.FileName);
-
+                    string fileName = Path.GetFileNameWithoutExtension(File_Location.FileName);
+                    string fileExt = Path.GetExtension(File_Location.FileName);
                     string strFile = fileName + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + fileExt;
+
                     using (var fileStream = new FileStream(Path.Combine(filePath, strFile), FileMode.Create))
                     {
-                        await UploadFile.CopyToAsync(fileStream);
+                        await File_Location.CopyToAsync(fileStream);
                     }
                     party_File.File_Location = strFile;
-                    var result = await _partyService.Add_Update_Party_File(party_File);
+                    var fileLocation = Path.Combine(filePath, strFile);
+                    var result = 1; //await _partyService.Add_Update_Party_File(party_File);
                     if (result > 0)
                     {
+                        List<Supplier_Column_Mapping> supplier_column_Mapping = (List<Supplier_Column_Mapping>)await _supplierService.Get_Supplier_Column_Mapping(party_File.Party_Id ?? 0, "C", "FILE");
+                        if (supplier_column_Mapping != null && supplier_column_Mapping.Count > 0)
+                        {
+                            supplier_column_Mapping = supplier_column_Mapping.Where(x => !string.IsNullOrEmpty(x.Supp_Col_Name)).ToList();
+                        }
+                        List<string> list_Name = party_File.Sheet_Name.Split(',').ToList();
+                        using (var stream = new FileStream(fileLocation, FileMode.Open))
+                        {
+                            if (fileExt == ".xls")
+                            {
+                                _excelDataReader = ExcelReaderFactory.CreateBinaryReader(stream);
+
+                                DataSet ds = new DataSet();
+                                ds = _excelDataReader.AsDataSet();
+                                _excelDataReader.Close();
+                                var result1 = new List<Dictionary<string, object>>();
+                                if (ds != null && ds.Tables.Count > 0)
+                                {
+                                    IList<Stock_Data_Schedular> stock_Data_Schedular_list = new List<Stock_Data_Schedular>();
+
+                                    foreach (DataTable table in ds.Tables)
+                                    {
+                                        var isExist = list_Name.Contains(table.TableName);
+                                        if (!isExist)
+                                            continue;
+
+                                        var dataTable = table;
+
+                                        foreach (DataRow row in dataTable.Rows)
+                                        {
+                                            var dict = new Dictionary<string, object>();
+                                            foreach (DataColumn col in dataTable.Columns)
+                                            {
+                                                if (row[col] == DBNull.Value)
+                                                {
+                                                    dict[col.ColumnName] = null;
+                                                }
+                                                else
+                                                {
+                                                    dict[col.ColumnName] = row[col];
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,

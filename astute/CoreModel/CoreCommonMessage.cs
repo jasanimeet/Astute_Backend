@@ -293,7 +293,7 @@ namespace astute.CoreModel
         #region Supplier Pricing
         public static string SupplierPricing = "Supplier pricing";
         public static string SupplierPricingCreated = SupplierPricing + " saved successfully.";
-        public static string SupplierStockCreated = "Sunrise stock saved successfully.";
+        public static string SupplierStockCreated = "Supplier stock saved successfully.";
         public static string SunrisePricingCreated = "Sunrise pricing saved successfully.";
         public static string CustomerPricingCreated = "Customer pricing saved successfully.";
         public static string SupplierPricingUpdated = SupplierPricing + UpdatedSuccessfully;

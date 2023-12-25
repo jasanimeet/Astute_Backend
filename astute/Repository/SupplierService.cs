@@ -735,25 +735,36 @@ namespace astute.Repository
             }
             return ("error", 0);
         }
-        public async Task<int> Delete_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id)
+        public async Task<(string, int)> Delete_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id)
         {
             var _supplier_Pricing_Id = supplier_Pricing_Id > 0 ? new SqlParameter("@Supplier_Pricing_Id", supplier_Pricing_Id) : new SqlParameter("@Supplier_Pricing_Id", DBNull.Value);
+            
             var _supplier_Id = supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
-            //var isCheckInStock = new SqlParameter("@IsCheckInStock", SqlDbType.Bit)
-            //{
-            //    Direction = ParameterDirection.Output
-            //};
+            var isCheckInStock = new SqlParameter("@IsCheckInStock", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
 
             var result = await Task.Run(() => _dbContext.Database.
-            ExecuteSqlRawAsync(@"EXEC Supplier_Pricing_Delete @Supplier_Pricing_Id, @Supplier_Id", _supplier_Pricing_Id, _supplier_Id));
+            ExecuteSqlRawAsync(@"EXEC Supplier_Pricing_Delete @Supplier_Pricing_Id, @Supplier_Id, @IsCheckInStock OUT", _supplier_Pricing_Id, _supplier_Id, isCheckInStock));
 
-            //bool _isCheckInStock = (bool)isCheckInStock.Value;
-            //if(_isCheckInStock)
-            //{
-            //    return ("exist", 574);
-            //}
+            bool _isCheckInStock = (bool)isCheckInStock.Value;
+            if (_isCheckInStock)
+            {
+                return ("exist", 574);
+            }
+            return ("success", result);
+        }
+
+        public async Task<int> Delete_Supplier_Pricing_By_Supplier(int supplier_Id)
+        {
+            var _supplier_Id = supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
+            var result = await Task.Run(() => _dbContext.Database.
+            ExecuteSqlRawAsync(@"EXEC Supplier_Pricing_Delete_By_Supplier @Supplier_Id", _supplier_Id));
+
             return result;
         }
+
         public async Task<Common_Model> Get_Max_Sunrice_Pricing_Id()
         {
             var result = await Task.Run(() => _dbContext.Common_Model
@@ -926,7 +937,7 @@ namespace astute.Repository
         public async Task<int> Add_Update_Stock_Number_Generation(Stock_Number_Generation stock_Number_Generation)
         {
             var _Id = stock_Number_Generation.Id > 0 ? new SqlParameter("@Id", stock_Number_Generation.Id) : new SqlParameter("@Id", DBNull.Value);
-            var _Exc_Party_Id = !string.IsNullOrEmpty(stock_Number_Generation.Exc_Party_Id) ? new SqlParameter("@Party_Id", stock_Number_Generation.Exc_Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+            var _Exc_Party_Id = new SqlParameter("@Party_Id", DBNull.Value);
             var _Pointer_Id = !string.IsNullOrEmpty(stock_Number_Generation.Pointer_Id) ? new SqlParameter("@Pointer_Id", stock_Number_Generation.Pointer_Id) : new SqlParameter("@Pointer_Id", DBNull.Value);
             var _Shape = !string.IsNullOrEmpty(stock_Number_Generation.Shape) ? new SqlParameter("@Shape", stock_Number_Generation.Shape) : new SqlParameter("@Shape", DBNull.Value);
             var _Stock_Type = !string.IsNullOrEmpty(stock_Number_Generation.Stock_Type) ? new SqlParameter("@Stock_Type", stock_Number_Generation.Stock_Type) : new SqlParameter("@Stock_Type", DBNull.Value);
