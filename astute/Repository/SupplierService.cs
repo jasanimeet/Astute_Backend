@@ -755,7 +755,6 @@ namespace astute.Repository
             }
             return ("success", result);
         }
-
         public async Task<int> Delete_Supplier_Pricing_By_Supplier(int supplier_Id)
         {
             var _supplier_Id = supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
@@ -764,7 +763,6 @@ namespace astute.Repository
 
             return result;
         }
-
         public async Task<Common_Model> Get_Max_Sunrice_Pricing_Id()
         {
             var result = await Task.Run(() => _dbContext.Common_Model

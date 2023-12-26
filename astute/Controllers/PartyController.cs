@@ -2457,7 +2457,7 @@ namespace astute.Controllers
         }
         #endregion
 
-        #region Stock Generate
+        #region Stock Number Generate
         [HttpGet]
         [Route("get_stock_number_generation")]
         [Authorize]
@@ -2700,6 +2700,7 @@ namespace astute.Controllers
                                 DataSet ds = new DataSet();
                                 ds = _excelDataReader.AsDataSet();
                                 _excelDataReader.Close();
+                                var firstroe_result = new List<Dictionary<string, object>>();
                                 var result1 = new List<Dictionary<string, object>>();
                                 if (ds != null && ds.Tables.Count > 0)
                                 {
@@ -2711,22 +2712,82 @@ namespace astute.Controllers
                                         if (!isExist)
                                             continue;
 
-                                        var dataTable = table;
+                                        int startColumn = 1;
+                                        int endColumn = 10;
+                                        int startRow = 1;
+                                        int endRow = 10;
+                                        bool dataExist = false;
+                                        int row_cnt = 0;
+                                        int col_cnt = 0;
 
-                                        foreach (DataRow row in dataTable.Rows)
+                                        for (int row = startRow - 1; row < Math.Min(endRow, table.Rows.Count); row++)
                                         {
-                                            var dict = new Dictionary<string, object>();
-                                            foreach (DataColumn col in dataTable.Columns)
+                                            row_cnt = row_cnt + 1;
+                                            for (int col = startColumn - 1; col < Math.Min(endColumn, table.Columns.Count); col++)
                                             {
-                                                if (row[col] == DBNull.Value)
+                                                if (table.Rows[row][col] != DBNull.Value && !string.IsNullOrWhiteSpace(table.Rows[row][col].ToString()))
                                                 {
-                                                    dict[col.ColumnName] = null;
-                                                }
-                                                else
-                                                {
-                                                    dict[col.ColumnName] = row[col];
+                                                    col_cnt = col_cnt + 1;
+                                                    dataExist = true;
                                                 }
                                             }
+                                        }
+                                        
+
+                                        DataRow firstRow = table.Rows[row_cnt];
+
+                                        var firstRow_dict = new Dictionary<string, object>();
+                                        foreach (DataColumn col in table.Columns)
+                                        {
+                                            if (firstRow[col] == DBNull.Value)
+                                            {
+                                                firstRow_dict[col.ColumnName] = null;
+                                            }
+                                            else
+                                            {
+                                                firstRow_dict[col.ColumnName] = firstRow[col];
+                                            }
+                                        }
+                                        firstroe_result.Add(firstRow_dict);
+
+                                        var matchingColumnList = new List<Supplier_Column_Mapping>();
+                                        foreach (var rowDict in firstroe_result)
+                                        {
+                                            foreach (var kvp in rowDict)
+                                            {
+                                                string columnName = kvp.Key;
+                                                object columnValue = kvp.Value;
+
+                                                var matchingColumn = supplier_column_Mapping.FirstOrDefault(x => x.Display_Name == columnName);
+                                                matchingColumnList.Add(matchingColumn);
+                                            }
+                                        }
+
+
+                                        foreach (DataRow row in table.Rows.Cast<DataRow>().Skip(row_cnt))
+                                        {
+                                            Stock_Data_Schedular stockData = new Stock_Data_Schedular();
+
+                                            foreach (DataColumn col in table.Columns)
+                                            {
+                                                var propertyName = col.ColumnName;
+                                                var propertyInfo = typeof(Stock_Data_Schedular).GetProperty(propertyName);
+
+                                                if (propertyInfo != null)
+                                                {
+                                                    if (row[col] == DBNull.Value)
+                                                    {
+                                                        propertyInfo.SetValue(stockData, null);
+                                                    }
+                                                    else
+                                                    {
+                                                        var convertedValue = Convert.ChangeType(row[col], propertyInfo.PropertyType);
+                                                        propertyInfo.SetValue(stockData, convertedValue);
+                                                    }
+                                                }
+                                            }
+
+                                            stock_Data_Schedular_list.Add(stockData);
                                         }
                                     }
                                 }
