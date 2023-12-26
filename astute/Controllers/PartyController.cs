@@ -2496,23 +2496,32 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    bool success = false, prefix_Exist = false;
                     int id = stock_Number_Generations.Select(x => x.Id).FirstOrDefault();
                     if (stock_Number_Generations != null && stock_Number_Generations.Count > 0)
                     {
+
+                        DataTable dataTable = new DataTable();
+                        dataTable.Columns.Add("Id", typeof(int));
+                        dataTable.Columns.Add("Exc_Party_Id", typeof(string));
+                        dataTable.Columns.Add("Pointer_Id", typeof(string));
+                        dataTable.Columns.Add("Shape", typeof(string));
+                        dataTable.Columns.Add("Stock_Type", typeof(string));
+                        dataTable.Columns.Add("Front_Prefix", typeof(string));
+                        dataTable.Columns.Add("Back_Prefix", typeof(string));
+                        dataTable.Columns.Add("Front_Prefix_Alloted", typeof(string));
+                        dataTable.Columns.Add("Start_Format", typeof(string));
+                        dataTable.Columns.Add("Start_Number", typeof(string));
+                        dataTable.Columns.Add("End_Number", typeof(string));
+                        dataTable.Columns.Add("Supplier_Id", typeof(int));
+                        dataTable.Columns.Add("Query_Flag", typeof(string));
+
                         foreach (var item in stock_Number_Generations)
                         {
-                            var result = await _supplierService.Add_Update_Stock_Number_Generation(item);
-                            if (result == 5)
-                            {
-                                prefix_Exist = true;
-                            }
-                            else
-                            {
-                                success = true;
-                            }
+                            dataTable.Rows.Add(item.Id, item.Exc_Party_Id, item.Pointer_Id, item.Shape, item.Stock_Type, item.Front_Prefix, item.Back_Prefix, item.Front_Prefix_Alloted, item.Start_Format, item.Start_Number, item.End_Number, item.Supplier_Id, id > 0 ? 'U' :'I');
                         }
-                        if (prefix_Exist)
+
+                        var result = await _supplierService.Add_Update_Stock_Number_Generation(dataTable);
+                        if (result == 5)
                         {
                             return Conflict(new
                             {
@@ -2520,7 +2529,7 @@ namespace astute.Controllers
                                 message = CoreCommonMessage.StockNumberAlreadyExist,
                             });
                         }
-                        else if (success)
+                        else 
                         {
                             return Ok(new
                             {

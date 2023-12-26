@@ -969,37 +969,60 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<int> Add_Update_Stock_Number_Generation(Stock_Number_Generation stock_Number_Generation)
+
+        public async Task<int> Add_Update_Stock_Number_Generation(DataTable dataTable)
         {
-            var _Id = stock_Number_Generation.Id > 0 ? new SqlParameter("@Id", stock_Number_Generation.Id) : new SqlParameter("@Id", DBNull.Value);
-            var _Exc_Party_Id = new SqlParameter("@Party_Id", DBNull.Value);
-            var _Pointer_Id = !string.IsNullOrEmpty(stock_Number_Generation.Pointer_Id) ? new SqlParameter("@Pointer_Id", stock_Number_Generation.Pointer_Id) : new SqlParameter("@Pointer_Id", DBNull.Value);
-            var _Shape = !string.IsNullOrEmpty(stock_Number_Generation.Shape) ? new SqlParameter("@Shape", stock_Number_Generation.Shape) : new SqlParameter("@Shape", DBNull.Value);
-            var _Stock_Type = !string.IsNullOrEmpty(stock_Number_Generation.Stock_Type) ? new SqlParameter("@Stock_Type", stock_Number_Generation.Stock_Type) : new SqlParameter("@Stock_Type", DBNull.Value);
-            var _Front_Prefix = !string.IsNullOrEmpty(stock_Number_Generation.Front_Prefix) ? new SqlParameter("@Front_Prefix", stock_Number_Generation.Front_Prefix) : new SqlParameter("@Front_Prefix", DBNull.Value);
-            var _Back_Prefix = !string.IsNullOrEmpty(stock_Number_Generation.Back_Prefix) ? new SqlParameter("@Back_Prefix", stock_Number_Generation.Back_Prefix) : new SqlParameter("@Back_Prefix", DBNull.Value);
-            var _Front_Prefix_Alloted = !string.IsNullOrEmpty(stock_Number_Generation.Front_Prefix_Alloted) ? new SqlParameter("@Front_Prefix_Alloted", stock_Number_Generation.Front_Prefix_Alloted) : new SqlParameter("@Front_Prefix_Alloted", DBNull.Value);
-            var _Start_Format = !string.IsNullOrEmpty(stock_Number_Generation.Start_Format) ? new SqlParameter("@Start_Format", stock_Number_Generation.Start_Format) : new SqlParameter("@Start_Format", DBNull.Value);
-            var _End_Format = !string.IsNullOrEmpty(stock_Number_Generation.End_Format) ? new SqlParameter("@End_Format", stock_Number_Generation.End_Format) : new SqlParameter("@End_Format", DBNull.Value);
-            var _Start_Number = stock_Number_Generation.Start_Number > 0 ? new SqlParameter("@Start_Number", stock_Number_Generation.Start_Number) : new SqlParameter("@Start_Number", DBNull.Value);
-            var _End_Number = stock_Number_Generation.End_Number > 0 ? new SqlParameter("@End_Number", stock_Number_Generation.End_Number) : new SqlParameter("@End_Number", DBNull.Value);
-            var _Live_Prefix = !string.IsNullOrEmpty(stock_Number_Generation.Live_Prefix) ? new SqlParameter("@Live_Prefix", stock_Number_Generation.Live_Prefix) : new SqlParameter("@Live_Prefix", DBNull.Value);
-            var _Supplier_Id = stock_Number_Generation.Supplier_Id > 0 ? new SqlParameter("@Supplier_Id", stock_Number_Generation.Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
+            var parameter = new SqlParameter("@Stock_Number_Generation_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Stock_Number_Generation_Table_Type",
+                Value = dataTable
+            };
+
             var isExist = new SqlParameter("@IsExist", SqlDbType.Bit)
             {
                 Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Stock_Number_Generation_Insert_Update @Id, @Party_Id, @Pointer_Id, @Shape, @Stock_Type, @Front_Prefix, @Back_Prefix, @Front_Prefix_Alloted, @Start_Format, @End_Format, @Start_Number, @End_Number, @Live_Prefix, @Supplier_Id, @IsExist OUT",
-                        _Id, _Exc_Party_Id, _Pointer_Id, _Shape, _Stock_Type, _Front_Prefix, _Back_Prefix, _Front_Prefix_Alloted, _Start_Format, _End_Format, _Start_Number, _End_Number, _Live_Prefix, _Supplier_Id, isExist));
-
+                   .ExecuteSqlRawAsync(@"exec Stock_Number_Generation_Insert_Update @Stock_Number_Generation_Table_Type,@IsExist OUT", parameter, isExist));
+           
             bool _isExist = (bool)isExist.Value;
             if (_isExist)
                 return 5;
 
             return result;
         }
+        //public async Task<int> Add_Update_Stock_Number_Generation(Stock_Number_Generation stock_Number_Generation)
+        //{
+        //    var _Id = stock_Number_Generation.Id > 0 ? new SqlParameter("@Id", stock_Number_Generation.Id) : new SqlParameter("@Id", DBNull.Value);
+        //    var _Exc_Party_Id = new SqlParameter("@Party_Id", DBNull.Value);
+        //    var _Pointer_Id = !string.IsNullOrEmpty(stock_Number_Generation.Pointer_Id) ? new SqlParameter("@Pointer_Id", stock_Number_Generation.Pointer_Id) : new SqlParameter("@Pointer_Id", DBNull.Value);
+        //    var _Shape = !string.IsNullOrEmpty(stock_Number_Generation.Shape) ? new SqlParameter("@Shape", stock_Number_Generation.Shape) : new SqlParameter("@Shape", DBNull.Value);
+        //    var _Stock_Type = !string.IsNullOrEmpty(stock_Number_Generation.Stock_Type) ? new SqlParameter("@Stock_Type", stock_Number_Generation.Stock_Type) : new SqlParameter("@Stock_Type", DBNull.Value);
+        //    var _Front_Prefix = !string.IsNullOrEmpty(stock_Number_Generation.Front_Prefix) ? new SqlParameter("@Front_Prefix", stock_Number_Generation.Front_Prefix) : new SqlParameter("@Front_Prefix", DBNull.Value);
+        //    var _Back_Prefix = !string.IsNullOrEmpty(stock_Number_Generation.Back_Prefix) ? new SqlParameter("@Back_Prefix", stock_Number_Generation.Back_Prefix) : new SqlParameter("@Back_Prefix", DBNull.Value);
+        //    var _Front_Prefix_Alloted = !string.IsNullOrEmpty(stock_Number_Generation.Front_Prefix_Alloted) ? new SqlParameter("@Front_Prefix_Alloted", stock_Number_Generation.Front_Prefix_Alloted) : new SqlParameter("@Front_Prefix_Alloted", DBNull.Value);
+        //    var _Start_Format = !string.IsNullOrEmpty(stock_Number_Generation.Start_Format) ? new SqlParameter("@Start_Format", stock_Number_Generation.Start_Format) : new SqlParameter("@Start_Format", DBNull.Value);
+        //    var _End_Format = !string.IsNullOrEmpty(stock_Number_Generation.End_Format) ? new SqlParameter("@End_Format", stock_Number_Generation.End_Format) : new SqlParameter("@End_Format", DBNull.Value);
+        //    var _Start_Number = stock_Number_Generation.Start_Number > 0 ? new SqlParameter("@Start_Number", stock_Number_Generation.Start_Number) : new SqlParameter("@Start_Number", DBNull.Value);
+        //    var _End_Number = stock_Number_Generation.End_Number > 0 ? new SqlParameter("@End_Number", stock_Number_Generation.End_Number) : new SqlParameter("@End_Number", DBNull.Value);
+        //    var _Live_Prefix = !string.IsNullOrEmpty(stock_Number_Generation.Live_Prefix) ? new SqlParameter("@Live_Prefix", stock_Number_Generation.Live_Prefix) : new SqlParameter("@Live_Prefix", DBNull.Value);
+        //    var _Supplier_Id = stock_Number_Generation.Supplier_Id > 0 ? new SqlParameter("@Supplier_Id", stock_Number_Generation.Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
+        //    var isExist = new SqlParameter("@IsExist", SqlDbType.Bit)
+        //    {
+        //        Direction = ParameterDirection.Output
+        //    };
+
+        //    var result = await Task.Run(() => _dbContext.Database
+        //                .ExecuteSqlRawAsync(@"EXEC Stock_Number_Generation_Insert_Update @Id, @Party_Id, @Pointer_Id, @Shape, @Stock_Type, @Front_Prefix, @Back_Prefix, @Front_Prefix_Alloted, @Start_Format, @End_Format, @Start_Number, @End_Number, @Live_Prefix, @Supplier_Id, @IsExist OUT",
+        //                _Id, _Exc_Party_Id, _Pointer_Id, _Shape, _Stock_Type, _Front_Prefix, _Back_Prefix, _Front_Prefix_Alloted, _Start_Format, _End_Format, _Start_Number, _End_Number, _Live_Prefix, _Supplier_Id, isExist));
+
+        //    bool _isExist = (bool)isExist.Value;
+        //    if (_isExist)
+        //        return 5;
+
+        //    return result;
+        //}
         public async Task<int> Delete_Stock_Number_Generation(int Id)
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Stock_Number_Generation_Delete {Id}"));

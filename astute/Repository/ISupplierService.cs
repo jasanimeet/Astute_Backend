@@ -51,7 +51,7 @@ namespace astute.Repository
 
         #region Stock Number Generation
         Task<IList<Stock_Number_Generation>> Get_Stock_Number_Generation(int Id);
-        Task<int> Add_Update_Stock_Number_Generation(Stock_Number_Generation stock_Number_Generation);
+        Task<int> Add_Update_Stock_Number_Generation(DataTable dataTable);
         Task<int> Delete_Stock_Number_Generation(int Id);
 
         #endregion
