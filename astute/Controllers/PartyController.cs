@@ -2774,7 +2774,7 @@ namespace astute.Controllers
 
                                                 foreach (DataColumn col in table.Columns)
                                                 {
-                                                    var propertyName = col.ColumnName; //matchingColumnList.Where(x => x.Supp_Col_Name == col.ColumnName).Select(x => x.Display_Name).FirstOrDefault();
+                                                    var propertyName = col.ColumnName;
                                                     var propertyInfo = typeof(Stock_Data_Schedular).GetProperty(propertyName);
 
                                                     if (propertyInfo != null)
