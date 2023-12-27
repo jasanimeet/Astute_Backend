@@ -2729,65 +2729,70 @@ namespace astute.Controllers
                                                 {
                                                     col_cnt = col_cnt + 1;
                                                     dataExist = true;
+                                                    goto foundData;
                                                 }
                                             }
                                         }
-                                        
-
-                                        DataRow firstRow = table.Rows[row_cnt];
-
-                                        var firstRow_dict = new Dictionary<string, object>();
-                                        foreach (DataColumn col in table.Columns)
+                                        foundData:
+                                        if (dataExist)
                                         {
-                                            if (firstRow[col] == DBNull.Value)
-                                            {
-                                                firstRow_dict[col.ColumnName] = null;
-                                            }
-                                            else
-                                            {
-                                                firstRow_dict[col.ColumnName] = firstRow[col];
-                                            }
-                                        }
-                                        firstroe_result.Add(firstRow_dict);
+                                            DataRow firstRow = table.Rows[row_cnt - 1];
 
-                                        var matchingColumnList = new List<Supplier_Column_Mapping>();
-                                        foreach (var rowDict in firstroe_result)
-                                        {
-                                            foreach (var kvp in rowDict)
-                                            {
-                                                string columnName = kvp.Key;
-                                                object columnValue = kvp.Value;
-
-                                                var matchingColumn = supplier_column_Mapping.FirstOrDefault(x => x.Display_Name == columnName);
-                                                matchingColumnList.Add(matchingColumn);
-                                            }
-                                        }
-
-
-                                        foreach (DataRow row in table.Rows.Cast<DataRow>().Skip(row_cnt))
-                                        {
-                                            Stock_Data_Schedular stockData = new Stock_Data_Schedular();
-
+                                            var firstRow_dict = new Dictionary<string, object>();
                                             foreach (DataColumn col in table.Columns)
                                             {
-                                                var propertyName = col.ColumnName;
-                                                var propertyInfo = typeof(Stock_Data_Schedular).GetProperty(propertyName);
-
-                                                if (propertyInfo != null)
+                                                if (firstRow[col] == DBNull.Value)
                                                 {
-                                                    if (row[col] == DBNull.Value)
+                                                    firstRow_dict[col.ColumnName] = null;
+                                                }
+                                                else
+                                                {
+                                                    firstRow_dict[col.ColumnName] = firstRow[col];
+                                                }
+                                            }
+                                            firstroe_result.Add(firstRow_dict);
+
+                                            var matchingColumnList = new List<Supplier_Column_Mapping>();
+                                            foreach (var rowDict in firstroe_result)
+                                            {
+                                                foreach (var kvp in rowDict)
+                                                {
+                                                    string columnName = kvp.Key;
+                                                    string columnValue = kvp.Value.ToString().Replace(".", "");
+
+                                                    var matchingColumn = supplier_column_Mapping.Where(x => x.Supp_Col_Name == columnValue).FirstOrDefault();
+                                                    if (matchingColumn != null)
                                                     {
-                                                        propertyInfo.SetValue(stockData, null);
-                                                    }
-                                                    else
-                                                    {
-                                                        var convertedValue = Convert.ChangeType(row[col], propertyInfo.PropertyType);
-                                                        propertyInfo.SetValue(stockData, convertedValue);
+                                                        matchingColumnList.Add(matchingColumn);
                                                     }
                                                 }
                                             }
 
-                                            stock_Data_Schedular_list.Add(stockData);
+                                            foreach (DataRow row in table.Rows.Cast<DataRow>().Skip(row_cnt - 1))
+                                            {
+                                                Stock_Data_Schedular stockData = new Stock_Data_Schedular();
+
+                                                foreach (DataColumn col in table.Columns)
+                                                {
+                                                    var propertyName = col.ColumnName; //matchingColumnList.Where(x => x.Supp_Col_Name == col.ColumnName).Select(x => x.Display_Name).FirstOrDefault();
+                                                    var propertyInfo = typeof(Stock_Data_Schedular).GetProperty(propertyName);
+
+                                                    if (propertyInfo != null)
+                                                    {
+                                                        if (row[col] == DBNull.Value)
+                                                        {
+                                                            propertyInfo.SetValue(stockData, null);
+                                                        }
+                                                        else
+                                                        {
+                                                            var convertedValue = Convert.ChangeType(row[col], propertyInfo.PropertyType);
+                                                            propertyInfo.SetValue(stockData, convertedValue);
+                                                        }
+                                                    }
+                                                }
+
+                                                stock_Data_Schedular_list.Add(stockData);
+                                            }
                                         }
                                     }
                                 }
