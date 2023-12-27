@@ -15,6 +15,7 @@ namespace astute.Repository
         Task<IList<Supplier_Value_Mapping>> Get_Supplier_Value_Mapping(int sup_Id, int col_Id);
         Task<int> Add_Update_Supplier_Column_Mapping(DataTable dataTable);
         Task<IList<Supplier_Column_Mapping>> Get_Supplier_Column_Mapping(int supp_Id, string map_Flag, string column_Type);
+        Task<DataTable> Get_Supplier_Column_Mapping_In_Datatable(int supp_Id, string map_Flag, string column_Type);
 
         #region Value Config
         Task<int> Add_Update_Value_Config(Value_Config value_Config);

@@ -278,6 +278,34 @@ namespace astute.Repository
                             .ToListAsync());
             return result;
         }
+
+        public async Task<DataTable> Get_Supplier_Column_Mapping_In_Datatable(int supp_Id, string map_Flag, string column_Type)
+        {
+            DataTable dataTable = new DataTable();
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Supplier_Column_Mapping_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(supp_Id > 0 ? new SqlParameter("@Supp_Id", supp_Id) : new SqlParameter("@Supp_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(column_Type) ? new SqlParameter("@Column_Type", column_Type) : new SqlParameter("@Column_Type", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    dataTable = ds.Tables[ds.Tables.Count - 1];
+                }
+            }
+
+            return dataTable;
+        }
         #endregion
 
         #region Value Config

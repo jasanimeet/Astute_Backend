@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.OleDb;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -200,6 +203,32 @@ namespace astute.CoreServices
                 bearerToken = authHeader.ToString().Split(' ')[1];
             }
             return bearerToken;
+        }
+        public static string RemoveNonNumericAndDotAndNegativeCharacters(string input)
+        {   
+            string pattern = "[^0-9.-]";
+            Regex regex = new Regex(pattern);
+            string result = regex.Replace(input, "");
+            result = (result == "-" ? "" : result);
+            return result;
+        }
+
+        public static DataTable Convert_FILE_To_DataTable(string filetype, string connString, string SheetName)
+        {
+            DataTable table = new DataTable();
+
+            if (filetype == ".xls" || filetype == ".xlsx")
+            {
+                using (OleDbConnection connection = new OleDbConnection(connString))
+                {
+                    connection.Open();
+                        
+                    OleDbDataAdapter adapter = new OleDbDataAdapter($"SELECT * FROM [{SheetName}$]", connection);
+                    adapter.Fill(table);
+                    connection.Close();
+                }
+            }
+            return table;
         }
     }
 }
