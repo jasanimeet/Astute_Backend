@@ -976,7 +976,7 @@ namespace astute.Repository
                 Value = dataTable
             };
 
-            var isExist = new SqlParameter("@IsExist", SqlDbType.Bit)
+            var isExist = new SqlParameter("@IsExist", SqlDbType.Int)
             {
                 Direction = ParameterDirection.Output
             };
@@ -984,10 +984,13 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                    .ExecuteSqlRawAsync(@"exec Stock_Number_Generation_Insert_Update @Stock_Number_Generation_Table_Type,@IsExist OUT", parameter, isExist));
            
-            bool _isExist = (bool)isExist.Value;
-            if (_isExist)
+            int _isExist = (int)isExist.Value;
+            if (_isExist == 1)
                 return 5;
-
+            else if (_isExist == 2)
+                return 6;
+            else if (_isExist == 3)
+                return 7;
             return result;
         }
         //public async Task<int> Add_Update_Stock_Number_Generation(Stock_Number_Generation stock_Number_Generation)

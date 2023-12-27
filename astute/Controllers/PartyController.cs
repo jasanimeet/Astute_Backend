@@ -2517,19 +2517,19 @@ namespace astute.Controllers
 
                         foreach (var item in stock_Number_Generations)
                         {
-                            dataTable.Rows.Add(item.Id, item.Exc_Party_Id, item.Pointer_Id, item.Shape, item.Stock_Type, item.Front_Prefix, item.Back_Prefix, item.Front_Prefix_Alloted, item.Start_Format, item.Start_Number, item.End_Number, item.Supplier_Id, id > 0 ? 'U' :'I');
+                            dataTable.Rows.Add(item.Id, item.Exc_Party_Id, item.Pointer_Id, item.Shape, item.Stock_Type, item.Front_Prefix, item.Back_Prefix, item.Front_Prefix_Alloted, item.Start_Format, item.Start_Number, item.End_Number, item.Supplier_Id, id > 0 ? 'U' : 'I');
                         }
 
                         var result = await _supplierService.Add_Update_Stock_Number_Generation(dataTable);
-                        if (result == 5)
+                        if (result == 5 || result == 6 || result == 7)
                         {
                             return Conflict(new
                             {
                                 statusCode = HttpStatusCode.Conflict,
-                                message = CoreCommonMessage.StockNumberAlreadyExist,
+                                message = result == 5 ? CoreCommonMessage.StockNumberAlreadyExistLab : (result == 6 ? CoreCommonMessage.StockNumberAlreadyExistOverses : (result == 7 ? CoreCommonMessage.StockNumberAlreadyExistSunrise : "")),
                             });
                         }
-                        else 
+                        else
                         {
                             return Ok(new
                             {
@@ -2732,7 +2732,7 @@ namespace astute.Controllers
                                                 }
                                             }
                                         }
-                                        
+
 
                                         DataRow firstRow = table.Rows[row_cnt];
 

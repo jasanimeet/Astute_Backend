@@ -308,7 +308,9 @@ namespace astute.CoreModel
         public static string StockNumberCreated = StockNumber + AddedSuccessfully;
         public static string StockNumberUpdated = StockNumber + UpdatedSuccessfully;
         public static string StockNumberDeleted = StockNumber + DeletedSuccessfully;
-        public static string StockNumberAlreadyExist = "Front prefix already exists";
+        public static string StockNumberAlreadyExistLab = "Front prefix already exists on lab";
+        public static string StockNumberAlreadyExistOverses = "Front prefix already exists on overseas";
+        public static string StockNumberAlreadyExistSunrise = "Front prefix already exists on sunrise";
         #endregion
 
         #region Temp Layout
