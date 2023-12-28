@@ -215,22 +215,66 @@ namespace astute.CoreServices
             return result;
         }
 
-        public static DataTable Convert_FILE_To_DataTable(string filetype, string connString, string SheetName)
+        //public static DataTable Convert_FILE_To_DataTable(string filetype, string connString, string SheetName)
+        //{
+        //    DataTable table = new DataTable();
+
+        //    if (filetype == ".xls" || filetype == ".xlsx")
+        //    {
+        //        using (OleDbConnection connection = new OleDbConnection(connString))
+        //        {
+        //            connection.Open();
+                        
+        //            OleDbDataAdapter adapter = new OleDbDataAdapter($"SELECT * FROM [{SheetName}$]", connection);
+        //            adapter.Fill(table);
+        //            connection.Close();
+        //        }
+        //    }
+        //    return table;
+        //}
+
+        public static DataTable Convert_FILE_To_DataTable(string filetype, string connString, string sheetNames)
         {
-            DataTable table = new DataTable();
+            DataTable mergedTable = new DataTable();
+
+            var sheet_Names = sheetNames.Split(",");
 
             if (filetype == ".xls" || filetype == ".xlsx")
             {
                 using (OleDbConnection connection = new OleDbConnection(connString))
                 {
                     connection.Open();
-                        
-                    OleDbDataAdapter adapter = new OleDbDataAdapter($"SELECT * FROM [{SheetName}$]", connection);
-                    adapter.Fill(table);
+
+                    // Fetch the first sheet to initialize the mergedTable
+                    OleDbDataAdapter initialAdapter = new OleDbDataAdapter($"SELECT * FROM [{sheet_Names.First()}$]", connection);
+                    initialAdapter.Fill(mergedTable);
+
+                    // Merge the remaining sheets
+                    foreach (string sheetName in sheet_Names.Skip(1))
+                    {
+                        OleDbDataAdapter adapter = new OleDbDataAdapter($"SELECT * FROM [{sheetName}$]", connection);
+                        DataTable sheetTable = new DataTable(sheetName); // Use sheet name as table name
+
+                        adapter.Fill(sheetTable);
+                        mergedTable = UnionTables(mergedTable, sheetTable);
+                        // Merge columns if not already present
+                    }
+
                     connection.Close();
                 }
             }
-            return table;
+
+            return mergedTable;
+        }
+        static DataTable UnionTables(DataTable table1, DataTable table2)
+        {
+            // Use LINQ Union to combine rows and remove duplicates
+            var query = table1.AsEnumerable().Union(table2.AsEnumerable(), DataRowComparer.Default);
+
+            // Create a new DataTable with the structure of the source tables
+            DataTable resultTable = query.CopyToDataTable();
+
+            return resultTable;
         }
 
         public static (bool,int) CheckDataInFirstTenRowsAndColumns(ExcelWorksheet worksheet)
