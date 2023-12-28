@@ -331,6 +331,7 @@ namespace astute.CoreModel
         public static string ReportDetailCreated = ReportDetail + AddedSuccessfully;
         public static string ReportDetailUpdated = ReportDetail + UpdatedSuccessfully;
         public static string ReportDetailDeleted = ReportDetail + DeletedSuccessfully;
+        public static string ReportRoles = "Report roles apply successfully.";
         #endregion
     }
 }

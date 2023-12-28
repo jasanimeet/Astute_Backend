@@ -1288,6 +1288,20 @@ namespace astute.Repository
             }
             return result;
         }
+
+        public async Task<int> Create_Update_Report_User_Role(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@Report_Users_Role_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Report_Users_Role_Table_Type",
+                Value = dataTable
+            };
+
+            var result = await _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Users_Role_Insert_Update @Report_Users_Role_Table_Type", parameter);
+
+            return result;
+        }
+
         #endregion
     }
 }
