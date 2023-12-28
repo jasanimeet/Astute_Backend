@@ -16,6 +16,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static NPOI.HSSF.UserModel.HeaderFooter;
 
 namespace astute.CoreServices
 {
@@ -154,23 +155,23 @@ namespace astute.CoreServices
 
             return isEnable;
         }
-        public static void Remove_File_From_Folder(string file_Path)
-        {
-            if (File.Exists(file_Path))
-            {
-                File.Delete(file_Path);
-            }
-        }
-        public static void Remove_Files_From_Folder(IList<string> files, string root_folder)
-        {
-            foreach (var file in files)
-            {
-                if (File.Exists(Path.Combine(root_folder, file)))
-                {
-                    File.Delete(file);
-                }
-            }
-        }
+        //public static void Remove_File_From_Folder(string file_Path)
+        //{
+        //    if (File.Exists(file_Path))
+        //    {
+        //        File.Delete(file_Path);
+        //    }
+        //}
+        //public static void Remove_Files_From_Folder(IList<string> files, string root_folder)
+        //{
+        //    foreach (var file in files)
+        //    {
+        //        if (File.Exists(Path.Combine(root_folder, file)))
+        //        {
+        //            File.Delete(file);
+        //        }
+        //    }
+        //}
         public static void Ftp_File_Download(string ftpServer, string username, string password, int ftpPort, string remoteFilePath, string localFolderPath)
         {
             try
@@ -184,13 +185,13 @@ namespace astute.CoreServices
                 request.Method = WebRequestMethods.Ftp.DownloadFile;
 
                 // Get the response and download the file
-                using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
-                using (Stream responseStream = response.GetResponseStream())
-                using (FileStream fileStream = File.Create(localFolderPath))
-                {
-                    responseStream.CopyTo(fileStream);
-                    Console.WriteLine($"File downloaded to {localFolderPath}");
-                }
+                //using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                //using (Stream responseStream = response.GetResponseStream())
+                //using (FileStream fileStream = File.Create(localFolderPath))
+                //{
+                //    responseStream.CopyTo(fileStream);
+                //    Console.WriteLine($"File downloaded to {localFolderPath}");
+                //}
             }
             catch (Exception ex)
             {
@@ -233,7 +234,7 @@ namespace astute.CoreServices
         //    return table;
         //}
 
-        public static DataTable Convert_FILE_To_DataTable(string filetype, string connString, string sheetNames)
+        public static DataTable Convert_File_To_DataTable(string filetype, string connString, string sheetNames)
         {
             DataTable mergedTable = new DataTable();
 
@@ -259,8 +260,47 @@ namespace astute.CoreServices
                         mergedTable = UnionTables(mergedTable, sheetTable);
                         // Merge columns if not already present
                     }
-
                     connection.Close();
+                }
+            }
+            else if(filetype == ".csv")
+            {
+                string[] fields = null;
+                using (TextFieldParser parser = new TextFieldParser(connString))
+                {
+                    parser.TextFieldType = FieldType.Delimited;
+                    parser.SetDelimiters(",");
+
+                    string[] headers = parser.ReadFields();
+                    foreach (string header in headers)
+                    {
+                        mergedTable.Columns.Add(header);
+                    }
+
+                    while (!parser.EndOfData)
+                    {
+                        try
+                        {
+                            fields = parser.ReadFields();
+                        }
+                        catch (MalformedLineException ex)
+                        {
+                            fields = null;
+                        }
+
+                        if (fields != null)
+                        {
+                            DataRow row = mergedTable.NewRow();
+                            for (int i = 0; i < mergedTable.Columns.Count; i++)
+                            {
+                                if (fields.Length > i)
+                                {
+                                    row[i] = fields[i];
+                                }
+                            }
+                            mergedTable.Rows.Add(row);
+                        }
+                    }
                 }
             }
 
@@ -276,12 +316,11 @@ namespace astute.CoreServices
 
             return resultTable;
         }
-
         public static (bool,int) CheckDataInFirstTenRowsAndColumns(ExcelWorksheet worksheet)
         {
             var dataExist = false;
-            int rowCount = Math.Min(worksheet.Dimension.End.Row, 10);
-            int colCount = Math.Min(worksheet.Dimension.End.Column, 10);
+            int rowCount = Math.Min(worksheet.Dimension.End.Row, 15);
+            int colCount = Math.Min(worksheet.Dimension.End.Column, 15);
             int row_cnt = 0;
             int col_cnt = 0;
             for (int row = 1; row <= rowCount; row++)
@@ -297,9 +336,10 @@ namespace astute.CoreServices
                     }
                     else
                     {
+                        col_cnt = 0;
                         dataExist = false;
                     }
-                    if(dataExist && col_cnt == 10)
+                    if(dataExist && col_cnt == 15)
                     {
                         goto dataFound;
                     }
@@ -311,8 +351,8 @@ namespace astute.CoreServices
         public static (bool, int) CheckDataInFirstTenRowsAndColumns(HSSFSheet sheet)
         {
             var dataExist = false;
-            int rowCount = Math.Min(sheet.LastRowNum + 1, 10);
-            int colCount = 10;
+            int rowCount = Math.Min(sheet.LastRowNum + 1, 15);
+            int colCount = 15;
             int row_cnt = 0;
             int col_cnt = 0;
 
@@ -325,16 +365,18 @@ namespace astute.CoreServices
                     for (int col = 0; col < colCount; col++)
                     {
                         HSSFCell cell = (HSSFCell)currentRow.GetCell(col);
-                        if (cell != null && !string.IsNullOrEmpty(cell.StringCellValue))
+                        //if (cell != null && !string.IsNullOrEmpty(cell.StringCellValue))
+                        if (cell != null)
                         {
                             col_cnt = col_cnt + 1;
                             dataExist = true;
                         }
                         else
                         {
+                            col_cnt = 0;
                             dataExist = false;
                         }
-                        if (dataExist && col_cnt == 10)
+                        if (dataExist && col_cnt == 15)
                         {
                             goto dataFound;
                         }
