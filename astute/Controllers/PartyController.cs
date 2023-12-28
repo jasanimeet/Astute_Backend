@@ -2841,11 +2841,11 @@ namespace astute.Controllers
 
                             var (hasDataInFirstTenRowsAndColumns, rowCount) = CoreService.CheckDataInFirstTenRowsAndColumns(sheet);
 
-                            if (hasDataInFirstTenRowsAndColumns)
+                            if (hasDataInFirstTenRowsAndColumns && rowCount > 0)
                             {
                                 sheet.ShiftRows(1, rowCount - 1, 0);
                                 string outputFilePath = Path.Combine(filePath, strFile);
-                                using (FileStream outputFile = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write))
+                                using (FileStream outputFile = new FileStream(outputFilePath, FileMode.Create))
                                 {
                                     workbook.Write(outputFile);
                                 }
@@ -2859,9 +2859,12 @@ namespace astute.Controllers
                             ExcelWorksheet worksheet = package.Workbook.Worksheets[party_File.Sheet_Name];
 
                             var (hasDataInFirstTenRowsAndColumns, row_count) = CoreService.CheckDataInFirstTenRowsAndColumns(worksheet);
-                            worksheet.DeleteRow(1, row_count - 1);
-                            string outputFilePath = Path.Combine(filePath, strFile);
-                            package.SaveAs(new FileInfo(outputFilePath));
+                            if (hasDataInFirstTenRowsAndColumns && row_count > 0)
+                            {
+                                worksheet.DeleteRow(1, row_count - 1);
+                                string outputFilePath = Path.Combine(filePath, strFile);
+                                package.SaveAs(new FileInfo(outputFilePath));
+                            }
                         }
                     }
                     var result = 1; //await _partyService.Add_Update_Party_File(party_File);
