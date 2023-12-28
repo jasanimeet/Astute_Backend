@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NPOI.HSSF.UserModel;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -2831,18 +2832,38 @@ namespace astute.Controllers
                     }
                     party_File.File_Location = strFile;
                     var fileLocation = Path.Combine(filePath, strFile);
+                    if (fileExt == ".xls")
+                    {
+                        using (FileStream file = new FileStream(fileLocation, FileMode.Open, FileAccess.Read))
+                        {
+                            HSSFWorkbook workbook = new HSSFWorkbook(file);
+                            HSSFSheet sheet = (HSSFSheet)workbook.GetSheet(party_File.Sheet_Name);
 
+                            var (hasDataInFirstTenRowsAndColumns, rowCount) = CoreService.CheckDataInFirstTenRowsAndColumns(sheet);
 
-                    //using (var package = new ExcelPackage(new FileInfo(fileLocation)))
-                    //{
-                    //    ExcelWorksheet worksheet = package.Workbook.Worksheets[party_File.Sheet_Name]; // Access the first worksheet
+                            if (hasDataInFirstTenRowsAndColumns)
+                            {
+                                sheet.ShiftRows(1, rowCount - 1, 0);
+                                string outputFilePath = Path.Combine(filePath, strFile);
+                                using (FileStream outputFile = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write))
+                                {
+                                    workbook.Write(outputFile);
+                                }
+                            }
+                        }
+                    }
+                    if (fileExt == ".xlsx")
+                    {
+                        using (var package = new ExcelPackage(new FileInfo(fileLocation)))
+                        {
+                            ExcelWorksheet worksheet = package.Workbook.Worksheets[party_File.Sheet_Name];
 
-                    //    var (hasDataInFirstTenRowsAndColumns, row_count) = CoreService.CheckDataInFirstTenRowsAndColumns(worksheet);
-                    //    worksheet.DeleteRow(1, row_count - 1);
-                    //    string outputFilePath = Path.Combine(filePath, strFile);
-                    //    package.SaveAs(new FileInfo(outputFilePath));
-                    //}
-
+                            var (hasDataInFirstTenRowsAndColumns, row_count) = CoreService.CheckDataInFirstTenRowsAndColumns(worksheet);
+                            worksheet.DeleteRow(1, row_count - 1);
+                            string outputFilePath = Path.Combine(filePath, strFile);
+                            package.SaveAs(new FileInfo(outputFilePath));
+                        }
+                    }
                     var result = 1; //await _partyService.Add_Update_Party_File(party_File);
                     if (result > 0)
                     {

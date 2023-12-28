@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic.FileIO;
+using NPOI.HSSF.UserModel;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -294,12 +295,53 @@ namespace astute.CoreServices
                         col_cnt = col_cnt + 1;
                         dataExist = true;
                     }
+                    else
+                    {
+                        dataExist = false;
+                    }
                     if(dataExist && col_cnt == 10)
                     {
                         goto dataFound;
                     }
                 }
             }
+            dataFound:
+            return (dataExist, row_cnt);
+        }
+        public static (bool, int) CheckDataInFirstTenRowsAndColumns(HSSFSheet sheet)
+        {
+            var dataExist = false;
+            int rowCount = Math.Min(sheet.LastRowNum + 1, 10);
+            int colCount = 10;
+            int row_cnt = 0;
+            int col_cnt = 0;
+
+            for (int row = 1; row < rowCount; row++)
+            {
+                row_cnt = row_cnt + 1;
+                HSSFRow currentRow = (HSSFRow)sheet.GetRow(row);
+                if (currentRow != null)
+                {
+                    for (int col = 0; col < colCount; col++)
+                    {
+                        HSSFCell cell = (HSSFCell)currentRow.GetCell(col);
+                        if (cell != null && !string.IsNullOrEmpty(cell.StringCellValue))
+                        {
+                            col_cnt = col_cnt + 1;
+                            dataExist = true;
+                        }
+                        else
+                        {
+                            dataExist = false;
+                        }
+                        if (dataExist && col_cnt == 10)
+                        {
+                            goto dataFound;
+                        }
+                    }
+                }
+            }
+
             dataFound:
             return (dataExist, row_cnt);
         }
