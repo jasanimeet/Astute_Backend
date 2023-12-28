@@ -2833,15 +2833,15 @@ namespace astute.Controllers
                     var fileLocation = Path.Combine(filePath, strFile);
 
 
-                    using (var package = new ExcelPackage(new FileInfo(fileLocation)))
-                    {
-                        ExcelWorksheet worksheet = package.Workbook.Worksheets[party_File.Sheet_Name]; // Access the first worksheet
+                    //using (var package = new ExcelPackage(new FileInfo(fileLocation)))
+                    //{
+                    //    ExcelWorksheet worksheet = package.Workbook.Worksheets[party_File.Sheet_Name]; // Access the first worksheet
 
-                        var (hasDataInFirstTenRowsAndColumns, row_count) = CoreService.CheckDataInFirstTenRowsAndColumns(worksheet);
-                        worksheet.DeleteRow(1, row_count - 1);
-                        string outputFilePath = Path.Combine(filePath, strFile);
-                        package.SaveAs(new FileInfo(outputFilePath));
-                    }
+                    //    var (hasDataInFirstTenRowsAndColumns, row_count) = CoreService.CheckDataInFirstTenRowsAndColumns(worksheet);
+                    //    worksheet.DeleteRow(1, row_count - 1);
+                    //    string outputFilePath = Path.Combine(filePath, strFile);
+                    //    package.SaveAs(new FileInfo(outputFilePath));
+                    //}
 
                     var result = 1; //await _partyService.Add_Update_Party_File(party_File);
                     if (result > 0)
