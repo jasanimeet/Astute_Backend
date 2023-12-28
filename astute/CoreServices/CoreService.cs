@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic.FileIO;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -229,6 +230,34 @@ namespace astute.CoreServices
                 }
             }
             return table;
+        }
+
+        public static (bool,int) CheckDataInFirstTenRowsAndColumns(ExcelWorksheet worksheet)
+        {
+            var dataExist = false;
+            int rowCount = Math.Min(worksheet.Dimension.End.Row, 10);
+            int colCount = Math.Min(worksheet.Dimension.End.Column, 10);
+            int row_cnt = 0;
+            int col_cnt = 0;
+            for (int row = 1; row <= rowCount; row++)
+            {
+                row_cnt = row_cnt + 1;
+                for (int col = 1; col <= colCount; col++)
+                {
+                    var cell = worksheet.Cells[row, col];
+                    if (!string.IsNullOrEmpty(cell.Text))
+                    {
+                        col_cnt = col_cnt + 1;
+                        dataExist = true;
+                    }
+                    if(dataExist && col_cnt == 10)
+                    {
+                        goto dataFound;
+                    }
+                }
+            }
+            dataFound:
+            return (dataExist, row_cnt);
         }
     }
 }
