@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using astute.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic.FileIO;
@@ -155,23 +156,23 @@ namespace astute.CoreServices
 
             return isEnable;
         }
-        //public static void Remove_File_From_Folder(string file_Path)
-        //{
-        //    if (File.Exists(file_Path))
-        //    {
-        //        File.Delete(file_Path);
-        //    }
-        //}
-        //public static void Remove_Files_From_Folder(IList<string> files, string root_folder)
-        //{
-        //    foreach (var file in files)
-        //    {
-        //        if (File.Exists(Path.Combine(root_folder, file)))
-        //        {
-        //            File.Delete(file);
-        //        }
-        //    }
-        //}
+        public static void Remove_File_From_Folder(string file_Path)
+        {
+            if (System.IO.File.Exists(file_Path))
+            {
+                System.IO.File.Delete(file_Path);
+            }
+        }
+        public static void Remove_Files_From_Folder(IList<string> files, string root_folder)
+        {
+            foreach (var file in files)
+            {
+                if (System.IO.File.Exists(Path.Combine(root_folder, file)))
+                {
+                    System.IO.File.Delete(file);
+                }
+            }
+        }
         public static void Ftp_File_Download(string ftpServer, string username, string password, int ftpPort, string remoteFilePath, string localFolderPath)
         {
             try
@@ -184,20 +185,20 @@ namespace astute.CoreServices
                 request.Credentials = new NetworkCredential(username, password);
                 request.Method = WebRequestMethods.Ftp.DownloadFile;
 
-                // Get the response and download the file
-                //using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
-                //using (Stream responseStream = response.GetResponseStream())
-                //using (FileStream fileStream = File.Create(localFolderPath))
-                //{
-                //    responseStream.CopyTo(fileStream);
-                //    Console.WriteLine($"File downloaded to {localFolderPath}");
-                //}
+                //Get the response and download the file
+                using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                using (Stream responseStream = response.GetResponseStream())
+                using (FileStream fileStream = System.IO.File.Create(localFolderPath))
+                {
+                    responseStream.CopyTo(fileStream);
+                    Console.WriteLine($"File downloaded to {localFolderPath}");
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
-        }   
+        }
         public static string Get_Authorization_Token(IHttpContextAccessor _httpContextAccessor)
         {
             var bearerToken = string.Empty;
@@ -208,7 +209,7 @@ namespace astute.CoreServices
             return bearerToken;
         }
         public static string RemoveNonNumericAndDotAndNegativeCharacters(string input)
-        {   
+        {
             string pattern = "[^0-9.-]";
             Regex regex = new Regex(pattern);
             string result = regex.Replace(input, "");
@@ -225,7 +226,7 @@ namespace astute.CoreServices
         //        using (OleDbConnection connection = new OleDbConnection(connString))
         //        {
         //            connection.Open();
-                        
+
         //            OleDbDataAdapter adapter = new OleDbDataAdapter($"SELECT * FROM [{SheetName}$]", connection);
         //            adapter.Fill(table);
         //            connection.Close();
@@ -246,7 +247,7 @@ namespace astute.CoreServices
                 {
                     connection.Open();
 
-                    // Fetch the first sheet to initialize the mergedTable
+                    //Fetch the first sheet to initialize the mergedTable
                     OleDbDataAdapter initialAdapter = new OleDbDataAdapter($"SELECT * FROM [{sheet_Names.First()}$]", connection);
                     initialAdapter.Fill(mergedTable);
 
@@ -260,10 +261,47 @@ namespace astute.CoreServices
                         mergedTable = UnionTables(mergedTable, sheetTable);
                         // Merge columns if not already present
                     }
+
+
+                    //if(_sheet_Names != null && _sheet_Names.Count > 0)
+                    //{
+                    //    List<Get_SheetName_From_File_Res> List_Res = new List<Get_SheetName_From_File_Res>();
+                    //    int num = 0;
+
+                    //    DataTable dt = connection.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+                    //    foreach (DataRow row1 in dt.Rows)
+                    //    {
+                    //        string sheetName = Convert.ToString(row1["TABLE_NAME"]);
+                    //        if (!sheetName.EndsWith("_Deleted$") && sheetName.EndsWith("$"))
+                    //        {
+                    //            Get_SheetName_From_File_Res Res = new Get_SheetName_From_File_Res();
+                    //            Res.Id = num + 1;
+                    //            Res.SheetName = sheetName;
+                    //            List_Res.Add(Res);
+                    //        }
+                    //        num++;
+                    //    }
+                    //    foreach (Get_SheetName_From_File_Res row in List_Res)
+                    //    {
+                    //        DataTable new_table = new DataTable();
+                    //        OleDbDataAdapter adapter = new OleDbDataAdapter($"SELECT * FROM [{row.SheetName}]", connection);
+                    //        adapter.Fill(new_table);
+
+                    //        if (new_table != null && new_table.Rows.Count > 0)
+                    //        {
+                    //            mergedTable.Merge(new_table);
+                    //        }
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    OleDbDataAdapter adapter = new OleDbDataAdapter($"SELECT * FROM [{sheetNames}$]", connection);
+                    //    adapter.Fill(mergedTable);
+                    //}
                     connection.Close();
                 }
             }
-            else if(filetype == ".csv")
+            else if (filetype == ".csv")
             {
                 string[] fields = null;
                 using (TextFieldParser parser = new TextFieldParser(connString))
@@ -316,7 +354,7 @@ namespace astute.CoreServices
 
             return resultTable;
         }
-        public static (bool,int) CheckDataInFirstTenRowsAndColumns(ExcelWorksheet worksheet)
+        public static (bool, int) CheckDataInFirstTenRowsAndColumns(ExcelWorksheet worksheet)
         {
             var dataExist = false;
             int rowCount = Math.Min(worksheet.Dimension.End.Row, 15);
@@ -339,13 +377,13 @@ namespace astute.CoreServices
                         col_cnt = 0;
                         dataExist = false;
                     }
-                    if(dataExist && col_cnt == 15)
+                    if (dataExist && col_cnt == 15)
                     {
                         goto dataFound;
                     }
                 }
             }
-            dataFound:
+        dataFound:
             return (dataExist, row_cnt);
         }
         public static (bool, int) CheckDataInFirstTenRowsAndColumns(HSSFSheet sheet)
@@ -384,7 +422,7 @@ namespace astute.CoreServices
                 }
             }
 
-            dataFound:
+        dataFound:
             return (dataExist, row_cnt);
         }
     }
