@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,7 +9,8 @@ namespace astute.Models
     public class Party_API_With_Column_Mapping
     {
         [Key]
-        public int Id { get; set; }
+        public int? API_Id { get; set; }
+        public int? FTP_Id { get; set; }
         public int? Party_Id { get; set; }
         public string? Upload_Type { get; set; }
         public string? API_URL { get; set; }
