@@ -564,12 +564,12 @@ namespace astute.Repository
                 
                 foreach (var item in result)
                 {
-                    item.Supplier_Column_Mapping_List = await Common_Funtion_To_Get_Supp_Col_Map(item.Party_Id ?? 0);
+                    item.Supplier_Column_Mapping_List = await Common_Funtion_To_Get_Supp_Col_Map(item.Party_Id ?? 0, item.Upload_Type);
                 }
             }
             return result;
         }
-        private async Task<List<Dictionary<string, object>>> Common_Funtion_To_Get_Supp_Col_Map(int supp_Id)
+        private async Task<List<Dictionary<string, object>>> Common_Funtion_To_Get_Supp_Col_Map(int supp_Id,string upload_Type)
         {
             var result = new List<Dictionary<string, object>>();
 
@@ -581,7 +581,7 @@ namespace astute.Repository
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(new SqlParameter("@Supp_Id", supp_Id));
                     command.Parameters.Add(new SqlParameter("@Map_Flag", "C"));
-                    command.Parameters.Add(new SqlParameter("@Column_Type", "API"));
+                    command.Parameters.Add(new SqlParameter("@Column_Type", upload_Type));
 
                     using var da = new SqlDataAdapter();
                     da.SelectCommand = command;
