@@ -6,9 +6,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace astute.Models
 {
+    [Keyless]
     public class Party_API_With_Column_Mapping
     {
-        [Key]
+      
         public int? API_Id { get; set; }
         public int? FTP_Id { get; set; }
         public int? Party_Id { get; set; }
