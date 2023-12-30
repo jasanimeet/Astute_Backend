@@ -302,6 +302,10 @@ namespace astute.Repository
             {
                 Direction = ParameterDirection.Output
             };
+            var isExists_Employee_Type = new SqlParameter("@IsExists_Employee_Type", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
             if (CoreService.Enable_Trace_Records(_configuration))
             {
                 var categoryValue = await Task.Run(() => _dbContext.Category_Value
@@ -314,10 +318,14 @@ namespace astute.Repository
                 }
             }
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Category_Value_Delete @catvalId, @IsExists_Party_Type OUT", cat_val_Id, isExists_Party_Type));
+                        .ExecuteSqlRawAsync(@"EXEC Category_Value_Delete @catvalId, @IsExists_Party_Type OUT, @IsExists_Employee_Type OUT", cat_val_Id, isExists_Party_Type, isExists_Employee_Type));
 
-            bool isExist = (bool)isExists_Party_Type.Value;
-            if (isExist)
+            bool isExistPartyType = (bool)isExists_Party_Type.Value;
+            if (isExistPartyType)
+                return 547;
+
+            bool isExistEmployeeType = (bool)isExists_Employee_Type.Value;
+            if (isExistEmployeeType)
                 return 547;
 
             return result;

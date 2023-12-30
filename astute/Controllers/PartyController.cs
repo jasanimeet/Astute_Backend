@@ -2645,6 +2645,45 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_supplier_ftp_file_scheduler")]
+        public async Task<IActionResult> Get_Supplier_Ftp_File_Scheduler(int supp_Id)
+        {
+            try
+            {
+                var supplier = await _partyService.Get_Party_FTP(0, supp_Id);
+                if (supplier != null)
+                {
+                    string ftpfileName = "/stock-" + Guid.NewGuid().ToString() + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".csv";
+                    string ftpUrl = _configuration["BaseUrl"] + CoreCommonFilePath.FtpFilesPath + ftpfileName;
+                    string localDirectoryPath = Path.Combine(Directory.GetCurrentDirectory(), "Files/FTPFile");
+
+                    if (!Directory.Exists(localDirectoryPath))
+                    {
+                        Directory.CreateDirectory(localDirectoryPath);
+                    }
+                    string localDirectory = localDirectoryPath + ftpfileName;
+                    CoreService.Ftp_File_Download(supplier.Host, supplier.Ftp_User, supplier.Ftp_Password, (int)supplier.Ftp_Port, supplier.Ftp_File_Name, localDirectory);
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.FileDownloadSuccessfully,
+                        data = new { url = ftpUrl }
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_Ftp_File_Scheduler", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Manual Upload
