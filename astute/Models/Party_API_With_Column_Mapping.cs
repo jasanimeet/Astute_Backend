@@ -8,8 +8,9 @@ namespace astute.Models
     public class Party_API_With_Column_Mapping
     {
         [Key]
-        public int API_Id { get; set; }
+        public int Id { get; set; }
         public int? Party_Id { get; set; }
+        public string? Upload_Type { get; set; }
         public string? API_URL { get; set; }
         public string? API_User { get; set; }
         public string? API_Password { get; set; }
@@ -35,6 +36,13 @@ namespace astute.Models
         public string? Short_Code { get; set; }
         public string? Stock_Api_Method { get; set; }
         public string? Method_Type { get; set; }
+        public string? Host { get; set; }
+        public int? Ftp_Port { get; set; }
+        public string? Ftp_User { get; set; }
+        public string? Ftp_Password { get; set; }
+        public string? Ftp_File_Name { get; set; }
+        public string? Ftp_File_Type { get; set; }
+        public bool? Secure_Ftp { get; set; }
         [NotMapped]
         public IList<Dictionary<string, object>> Supplier_Column_Mapping_List { get; set; }
     }
