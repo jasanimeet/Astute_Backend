@@ -216,25 +216,6 @@ namespace astute.CoreServices
             result = (result == "-" ? "" : result);
             return result;
         }
-
-        //public static DataTable Convert_FILE_To_DataTable(string filetype, string connString, string SheetName)
-        //{
-        //    DataTable table = new DataTable();
-
-        //    if (filetype == ".xls" || filetype == ".xlsx")
-        //    {
-        //        using (OleDbConnection connection = new OleDbConnection(connString))
-        //        {
-        //            connection.Open();
-
-        //            OleDbDataAdapter adapter = new OleDbDataAdapter($"SELECT * FROM [{SheetName}$]", connection);
-        //            adapter.Fill(table);
-        //            connection.Close();
-        //        }
-        //    }
-        //    return table;
-        //}
-
         public static DataTable Convert_File_To_DataTable(string filetype, string connString, string sheetNames)
         {
             DataTable mergedTable = new DataTable();
@@ -261,43 +242,6 @@ namespace astute.CoreServices
                         mergedTable = UnionTables(mergedTable, sheetTable);
                         // Merge columns if not already present
                     }
-
-
-                    //if(_sheet_Names != null && _sheet_Names.Count > 0)
-                    //{
-                    //    List<Get_SheetName_From_File_Res> List_Res = new List<Get_SheetName_From_File_Res>();
-                    //    int num = 0;
-
-                    //    DataTable dt = connection.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
-                    //    foreach (DataRow row1 in dt.Rows)
-                    //    {
-                    //        string sheetName = Convert.ToString(row1["TABLE_NAME"]);
-                    //        if (!sheetName.EndsWith("_Deleted$") && sheetName.EndsWith("$"))
-                    //        {
-                    //            Get_SheetName_From_File_Res Res = new Get_SheetName_From_File_Res();
-                    //            Res.Id = num + 1;
-                    //            Res.SheetName = sheetName;
-                    //            List_Res.Add(Res);
-                    //        }
-                    //        num++;
-                    //    }
-                    //    foreach (Get_SheetName_From_File_Res row in List_Res)
-                    //    {
-                    //        DataTable new_table = new DataTable();
-                    //        OleDbDataAdapter adapter = new OleDbDataAdapter($"SELECT * FROM [{row.SheetName}]", connection);
-                    //        adapter.Fill(new_table);
-
-                    //        if (new_table != null && new_table.Rows.Count > 0)
-                    //        {
-                    //            mergedTable.Merge(new_table);
-                    //        }
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    OleDbDataAdapter adapter = new OleDbDataAdapter($"SELECT * FROM [{sheetNames}$]", connection);
-                    //    adapter.Fill(mergedTable);
-                    //}
                     connection.Close();
                 }
             }
@@ -383,7 +327,7 @@ namespace astute.CoreServices
                     }
                 }
             }
-        dataFound:
+            dataFound:
             return (dataExist, row_cnt);
         }
         public static (bool, int) CheckDataInFirstTenRowsAndColumns(HSSFSheet sheet)
@@ -421,8 +365,7 @@ namespace astute.CoreServices
                     }
                 }
             }
-
-        dataFound:
+            dataFound:
             return (dataExist, row_cnt);
         }
     }

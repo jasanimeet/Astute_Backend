@@ -278,11 +278,9 @@ namespace astute.Repository
                             .ToListAsync());
             return result;
         }
-
         public async Task<DataTable> Get_Supplier_Column_Mapping_In_Datatable(int supp_Id, string map_Flag, string column_Type)
         {
-            DataTable dataTable = new DataTable();
-            var result = new List<Dictionary<string, object>>();
+            DataTable dataTable = new DataTable();            
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
                 using (var command = new SqlCommand("Supplier_Column_Mapping_Select", connection))
@@ -682,6 +680,10 @@ namespace astute.Repository
             var base_Disc_To = supplier_Pricing.Base_Disc_To > 0 ? new SqlParameter("@Base_Disc_To", supplier_Pricing.Base_Disc_To) : new SqlParameter("@Base_Disc_To", DBNull.Value);
             var base_Amount_From = supplier_Pricing.Base_Amount_From > 0 ? new SqlParameter("@Base_Amount_From", supplier_Pricing.Base_Amount_From) : new SqlParameter("@Base_Amount_From", DBNull.Value);
             var base_Amount_To = supplier_Pricing.Base_Amount_To > 0 ? new SqlParameter("@Base_Amount_To", supplier_Pricing.Base_Amount_To) : new SqlParameter("@Base_Amount_To", DBNull.Value);
+            var final_Disc_From = supplier_Pricing.Final_Disc_From > 0 ? new SqlParameter("@Final_Disc_From", supplier_Pricing.Final_Disc_From) : new SqlParameter("@Final_Disc_From", DBNull.Value);
+            var final_Disc_To = supplier_Pricing.Final_Disc_To > 0 ? new SqlParameter("@Final_Disc_To", supplier_Pricing.Final_Disc_To) : new SqlParameter("@Final_Disc_To", DBNull.Value);
+            var final_Amount_From = supplier_Pricing.Final_Amount_From > 0 ? new SqlParameter("@Final_Amount_From", supplier_Pricing.Final_Amount_From) : new SqlParameter("@Final_Amount_From", DBNull.Value);
+            var final_Amount_To = supplier_Pricing.Final_Amount_To > 0 ? new SqlParameter("@Final_Amount_To", supplier_Pricing.Final_Amount_To) : new SqlParameter("@Final_Amount_To", DBNull.Value);
             var company = !string.IsNullOrEmpty(supplier_Pricing.Company) ? new SqlParameter("@Company", supplier_Pricing.Company) : new SqlParameter("@Company", DBNull.Value);
             var supplier_Filter_Type = !string.IsNullOrEmpty(supplier_Pricing.Supplier_Filter_Type) ? new SqlParameter("@Supplier_Filter_Type", supplier_Pricing.Supplier_Filter_Type) : new SqlParameter("@Supplier_Filter_Type", DBNull.Value);
             var calculation_Type = !string.IsNullOrEmpty(supplier_Pricing.Calculation_Type) ? new SqlParameter("@Calculation_Type", supplier_Pricing.Calculation_Type) : new SqlParameter("@Calculation_Type", DBNull.Value);
@@ -730,14 +732,14 @@ namespace astute.Repository
                         @Fls_Intensity, @Lab, @Shade, @Luster, @Bgm, @Culet, @Location, @Status, @Good_Type, @Length_From, @Length_To, @Width_From, @Width_To, @Depth_From, @Depth_To, @Depth_Per_From,
                         @Depth_Per_To, @Table_Per_From, @Table_Per_To, @Crown_Angle_From, @Crown_Angle_To, @Crown_Height_From, @Crown_Height_To, @Pavilion_Angle_From, @Pavilion_Angle_To, @Pavilion_Height_From,
                         @Pavilion_Height_To, @Girdle_Per_From, @Girdle_Per_To, @Table_Black, @Side_Black, @Table_White, @Side_white, @Cert_Type, @Table_Open, @Crown_Open, @Pavilion_Open,
-                        @Girdle_Open, @Base_Disc_From, @Base_Disc_To, @Base_Amount_From, @Base_Amount_To, @Company, @Supplier_Filter_Type, @Calculation_Type, @Sign, @Value_1, @Value_2, @Value_3, @Value_4,
+                        @Girdle_Open, @Base_Disc_From, @Base_Disc_To, @Base_Amount_From, @Base_Amount_To, @Final_Disc_From, @Final_Disc_To, @Final_Amount_From, @Final_Amount_To, @Company, @Supplier_Filter_Type, @Calculation_Type, @Sign, @Value_1, @Value_2, @Value_3, @Value_4,
                         @SP_Calculation_Type, @SP_Sign, @SP_Start_Date, @SP_Start_Time, @SP_End_Date, @SP_End_Time, @SP_Value_1, @SP_Value_2, @SP_Value_3, @SP_Value_4, @MS_Calculation_Type,
                         @MS_Sign, @MS_Value_1, @MS_Value_2, @MS_Value_3, @MS_Value_4, @MS_SP_Calculation_Type, @MS_SP_Sign, @MS_SP_Start_Date, @MS_SP_Start_Time, @MS_SP_End_Date, @MS_SP_End_Time,
                         @MS_SP_Value_1, @MS_SP_Value_2, @MS_SP_Value_3, @MS_SP_Value_4, @SP_Toggle_Bar, @MS_SP_Toggle_Bar, @Modified_By, @Query_Flag, @Inserted_Id OUT",
                         supplier_Pricing_Id, supplier_Id, sunrise_Pricing_Id, customer_Pricing_Id, user_Pricing_Id, map_Flag, shape, cts, color, fancy_Color, clarity, cut, polish, symm, fls_Intensity, lab, shade, luster, bgm, culet, location, status, good_Type, length_From, length_To, width_From,
                         width_To, depth_From, depth_To, depth_Per_From, depth_Per_To, table_Per_From, table_Per_To, crown_Angle_From, crown_Angle_To, crown_Height_From, crown_Height_To, pavilion_Angle_From,
                         pavilion_Angle_To, pavilion_Height_From, pavilion_Height_To, girdle_Per_From, girdle_Per_To, table_Black, side_Black, table_White, side_white, cert_Type, table_Open, crown_Open, pavilion_Open, girdle_Open,
-                        base_Disc_From, base_Disc_To, base_Amount_From, base_Amount_To, company, supplier_Filter_Type, calculation_Type, sign, value_1, value_2, value_3, value_4, sp_calculation_Type, sp_sign, sp_start_date,
+                        base_Disc_From, base_Disc_To, base_Amount_From, base_Amount_To, final_Disc_From, final_Disc_To, final_Amount_From, final_Amount_To, company, supplier_Filter_Type, calculation_Type, sign, value_1, value_2, value_3, value_4, sp_calculation_Type, sp_sign, sp_start_date,
                         sp_start_time, sp_end_date, sp_end_time, sp_value_1, sp_value_2, sp_value_3, sp_value_4, ms_calculation_Type, ms_sign, ms_value_1, ms_value_2, ms_value_3, ms_value_4, ms_sp_calculation_Type,
                         ms_sp_sign, ms_sp_start_date, ms_sp_start_time, ms_sp_end_date, ms_sp_end_time, ms_sp_value_1, ms_sp_value_2, ms_sp_value_3, ms_sp_value_4, sP_Toggle_Bar, mSP_Toggle_Bar, modified_By, query_Flag, inserted_Id));
             int _insertedId = (int)inserted_Id.Value;
@@ -1149,6 +1151,63 @@ namespace astute.Repository
                 }
             }
             return result;
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Supplier_Stock_File_Error_Log(int supplier_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Supplier_File_Upload_Error_Log_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public async Task<DataTable> Get_Supplier_Stock_File_Error_Log_Detail(int supplier_Id, string upload_Type)
+        {
+            DataTable dataTable = new DataTable();            
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Supplier_File_Upload_Error_Log_Detail", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supp_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(upload_Type) ? new SqlParameter("@Upload_Type", upload_Type) : new SqlParameter("@Upload_Type", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    dataTable = ds.Tables[ds.Tables.Count - 1];
+                }
+            }
+
+            return dataTable;
         }
         #endregion
 

@@ -65,6 +65,10 @@ namespace astute.Models
         public float? Base_Disc_To { get; set; }
         public float? Base_Amount_From { get; set; }
         public float? Base_Amount_To { get; set; }
+        public float? Final_Disc_From { get; set; }
+        public float? Final_Disc_To { get; set; }
+        public float? Final_Amount_From { get; set; }
+        public float? Final_Amount_To { get; set; }
         public string? Company { get; set; }
         public string? Final_Disc_Per { get; set; }
         public string? Final_Amt { get; set; }

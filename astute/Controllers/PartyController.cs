@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NPOI.HPSF;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.Formula.Functions;
 using OfficeOpenXml;
@@ -652,7 +653,7 @@ namespace astute.Controllers
                 if (values.Length > 0)
                 {
                     // Sort the values in descending order
-                    Array.Sort(values, (a, b) => b.CompareTo(a));
+                    System.Array.Sort(values, (a, b) => b.CompareTo(a));
 
                     // Determine the dimension to return
                     switch (dimension.ToLower())
@@ -3281,6 +3282,84 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Supplier_Stock_Error_Log_Detail", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("supplier_stock_file_error_error_log")]
+        [Authorize]
+        public async Task<IActionResult> Supplier_Stock_File_Error_Error_Log(int supplier_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Supplier_Stock_File_Error_Log(supplier_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Supplier_Stock_File_Error_Error_Log", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("supplier_stock_file_error_error_log_detail")]
+        [Authorize]
+        public async Task<IActionResult> Supplier_Stock_File_Error_Error_Log_Detail(int supplier_Id, string upload_Type)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Supplier_Stock_File_Error_Log_Detail(supplier_Id, upload_Type);
+                var party = await _partyService.Get_Party_Details(supplier_Id);
+                if (result != null && result.Rows.Count > 0)
+                {
+                    var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Files/SupplierErrorLog");
+                    if (!(Directory.Exists(folderPath)))
+                    {
+                        Directory.CreateDirectory(folderPath);
+                    }
+                    
+                    string strFile = party.Party_Name + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".xlsx";
+
+                    string filePath = Path.Combine(folderPath, strFile);
+
+                    using var package = new ExcelPackage();
+                    var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+                    
+                    worksheet.Cells["A1"].LoadFromDataTable(result, true);
+                    
+                    System.IO.File.WriteAllBytes(filePath, package.GetAsByteArray());
+
+                    var file_url = _configuration["BaseUrl"] + CoreCommonFilePath.SupplierErrorLogFilesPath + strFile;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = file_url
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Supplier_Stock_File_Error_Error_Log", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
