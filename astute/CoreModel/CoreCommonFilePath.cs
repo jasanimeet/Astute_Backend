@@ -13,5 +13,6 @@
         public static string CityFilesPath = "/Files/CityFiles/";
         public static string FtpFilesPath = "/Files/FTPFile/";
         public static string SupplierErrorLogFilesPath = "/Files/SupplierErrorLog/";
+        public static string ManualUploadFilesPath = "/Files/ManualUploadFiles/";
     }
 }

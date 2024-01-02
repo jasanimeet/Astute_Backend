@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using NPOI.HPSF;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.Formula.Functions;
+using NPOI.SS.Util;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -1890,8 +1891,8 @@ namespace astute.Controllers
                                 {
                                     var result_Supplier_Pricing_Key_To_Symbol = await _supplierService.Delete_Supplier_Pricing_Key_To_Symbol(item.Supplier_Pricing_Id);
 
-                                    var result = await _supplierService.Delete_Supplier_Pricing(item.Supplier_Pricing_Id,0);                                    
-                                    if(result > 0)
+                                    var result = await _supplierService.Delete_Supplier_Pricing(item.Supplier_Pricing_Id, 0);
+                                    if (result > 0)
                                     {
                                         success = true;
                                     }
@@ -2806,6 +2807,85 @@ namespace astute.Controllers
                                                     string outputFilePath = Path.Combine(filePath, strFile);
                                                     package.SaveAs(new FileInfo(outputFilePath));
                                                 }
+
+                                                //List<string> columnNames = new List<string>();
+                                                //List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
+
+                                                //if (worksheet != null)
+                                                //{
+                                                //    // Get column names
+                                                //    int totalColumns = worksheet.Dimension.End.Column;
+                                                //    int headerRow = 1;
+
+                                                //    for (int col = 1; col <= totalColumns; col++)
+                                                //    {
+                                                //        var cellValue = worksheet.Cells[headerRow, col].Value;
+                                                //        if (cellValue != null)
+                                                //        {
+                                                //            columnNames.Add(cellValue.ToString());
+                                                //        }
+                                                //    }
+
+                                                //    // Get row values
+                                                //    int totalRows = worksheet.Dimension.End.Row;
+
+                                                //    for (int row = headerRow + 1; row <= totalRows; row++)
+                                                //    {
+                                                //        Dictionary<string, object> rowData = new Dictionary<string, object>();
+
+                                                //        for (int col = 1; col <= totalColumns; col++)
+                                                //        {
+                                                //            string columnName = columnNames[col - 1];
+                                                //            var cell = worksheet.Cells[row, col];
+                                                //            var cellValue = cell.Value;
+                                                //            var formula = worksheet.Cells["A1"].Formula;
+
+                                                //            if (cell.Hyperlink != null && cell.Hyperlink.AbsoluteUri != null)
+                                                //            {
+                                                //                string linkUrl = cell.Hyperlink.AbsoluteUri;
+                                                //                rowData.Add(columnName, linkUrl);
+                                                //            }
+                                                //            else if(!string.IsNullOrEmpty(formula))
+                                                //            {
+                                                //                const string urlRegex = @"HYPERLINK\(""([^""]+)""\s*,\s*""[^""]+""\)";
+                                                //                var match = System.Text.RegularExpressions.Regex.Match(formula, urlRegex);
+                                                //                if(match.Success)
+                                                //                {
+                                                //                   var val = match.Groups[1].Value;
+                                                //                }
+                                                //            }
+                                                //            else
+                                                //            {
+                                                //                rowData.Add(columnName, cellValue);
+                                                //            }
+                                                //        }
+
+                                                //        rowsData.Add(rowData);
+                                                //    }
+
+                                                //    //Save File
+                                                //    int colIndex = 1;
+                                                //    foreach (var columnName in columnNames)
+                                                //    {
+                                                //        worksheet.Cells[1, colIndex].Value = columnName;
+                                                //        colIndex++;
+                                                //    }
+
+                                                //    // Write row data
+                                                //    int rowIndex = 2;
+                                                //    foreach (var row in rowsData)
+                                                //    {
+                                                //        colIndex = 1;
+                                                //        foreach (var cellValue in row.Values)
+                                                //        {
+                                                //            worksheet.Cells[rowIndex, colIndex].Value = cellValue;
+                                                //            colIndex++;
+                                                //        }
+                                                //        rowIndex++;
+                                                //    }
+                                                //    string outputFilePath1 = Path.Combine(filePath, strFile);
+                                                //    package.SaveAs(outputFilePath1);
+                                                //}
                                             }
                                         }
                                     }
@@ -3334,17 +3414,20 @@ namespace astute.Controllers
                     {
                         Directory.CreateDirectory(folderPath);
                     }
-                    
-                    string strFile = party.Party_Name + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".xlsx";
 
-                    string filePath = Path.Combine(folderPath, strFile);
+                    string strFile = party.Party_Name + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".xlsx";
 
                     using var package = new ExcelPackage();
                     var worksheet = package.Workbook.Worksheets.Add("Sheet1");
-                    
                     worksheet.Cells["A1"].LoadFromDataTable(result, true);
-                    
-                    System.IO.File.WriteAllBytes(filePath, package.GetAsByteArray());
+
+                    byte[] byteArray = package.GetAsByteArray();
+                    string filePath = Path.Combine(folderPath, strFile);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await fileStream.WriteAsync(byteArray, 0, byteArray.Length);
+                    }
 
                     var file_url = _configuration["BaseUrl"] + CoreCommonFilePath.SupplierErrorLogFilesPath + strFile;
 
