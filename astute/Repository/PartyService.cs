@@ -398,6 +398,7 @@ namespace astute.Repository
             var notification = !string.IsNullOrEmpty(party_Master.Notification) ? new SqlParameter("@Notification", party_Master.Notification) : new SqlParameter("@Notification", DBNull.Value);
             var reference_By = !string.IsNullOrEmpty(party_Master.Reference_By) ? new SqlParameter("@Reference_By", party_Master.Reference_By) : new SqlParameter("@Reference_By", DBNull.Value);
             var tIN_No = !string.IsNullOrEmpty(party_Master.TIN_No) ? new SqlParameter("@TIN_No", party_Master.TIN_No) : new SqlParameter("@TIN_No", DBNull.Value);
+            var modified_By = party_Master.Modified_By > 0 ? new SqlParameter("@Modified_By", party_Master.Modified_By) : new SqlParameter("@Modified_By", DBNull.Value);
             var insertedId = new SqlParameter("@InsertedId", System.Data.SqlDbType.Int)
             {
                 Direction = System.Data.ParameterDirection.Output
@@ -406,11 +407,11 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_Master_Insert_Update @Party_Id, @Party_Type, @Party_Code, @Adress_1, @Adress_2, @Adress_3, @City_Id, @PinCode, @Mobile_1,
                         @Mobile_1_Country_Code, @Mobile_2, @Mobile_2_Country_Code, @Phone_1, @Phone_1_Country_Code, @Phone_2, @Phone_2_Country_Code, @Fax, @Fax_Country_Code, @Email_1, @Email_2, @Party_Name, @Ship_PartyId, @Final_Customer_Id, @Website,
-                        @Cust_Freight_Account_No, @Alias_Name, @Wechat_ID, @Skype_ID, @Business_Reg_No, @Default_Remarks, @Notification, @Reference_By, @TIN_No, @InsertedId OUT", party_Id,
+                        @Cust_Freight_Account_No, @Alias_Name, @Wechat_ID, @Skype_ID, @Business_Reg_No, @Default_Remarks, @Notification, @Reference_By, @TIN_No, @Modified_By, @InsertedId OUT", party_Id,
                         party_Type, party_Code, party_Address1, party_Address2, party_Address3, city_Id, pin_Code, mobile_No1, mobile_1_Country_Code, mobile_No2, mobile_2_Country_Code,
                         phone_No1, phone_1_Country_Code, phone_No2, phone_2_Country_Code, fax, fax_Country_Code, email_1, email_2, 
                         party_Name, ship_PartyId, final_Customer_Id, website, cust_Freight_Account_No, alias_Name, wechat_ID, skype_ID, business_Reg_No,
-                        default_Remarks, notification, reference_By, tIN_No, insertedId));
+                        default_Remarks, notification, reference_By, tIN_No, modified_By, insertedId));
 
             if (result > 0)
             {

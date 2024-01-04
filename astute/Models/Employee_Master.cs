@@ -50,6 +50,7 @@ namespace astute.Models
         public bool? Is_Admin { get; set; }
         public int? Designation_Id { get; set; }
         public string? Designation { get; set; }
+        public string? User_Type { get; set; }
         [NotMapped]
         public IList<Employee_Document> Employee_Document_List { get; set; } = new List<Employee_Document>();
         [NotMapped]
