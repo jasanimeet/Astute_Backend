@@ -989,6 +989,43 @@ namespace astute.Repository
             return result;
         }
 
+        public async Task<int> Stock_Data_Shedular_Insert_Update(DataTable dataTable, int Stock_Data_Id)
+        {
+            var parameter = new SqlParameter("@Stock_data", SqlDbType.Structured)
+            {
+                TypeName = "dbo.[Stock_Data_Type]",
+                Value = dataTable
+            };
+            var stock_Data_Id = new SqlParameter("@Stock_Data_Id", Stock_Data_Id);
+
+            var sqlCommand = @"exec [Stock_Data_Details_Insert_Update] @Stock_data, @Stock_Data_Id";
+
+            var result = await Task.Run(async () =>
+            {
+                using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = sqlCommand;
+                    command.Parameters.Add(parameter);
+                    command.Parameters.Add(stock_Data_Id);
+
+                    // Set the command timeout to 30 minutes (in seconds)
+                    command.CommandTimeout = 1800;
+
+                    await _dbContext.Database.OpenConnectionAsync();
+                    try
+                    {
+                        var affectedRows = await command.ExecuteNonQueryAsync();
+                        return affectedRows;
+                    }
+                    finally
+                    {
+                        _dbContext.Database.CloseConnection();
+                    }
+                }
+            });
+
+            return result;
+        }
         #endregion
 
         #region Stock Number Generation

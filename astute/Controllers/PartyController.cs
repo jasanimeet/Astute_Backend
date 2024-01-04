@@ -2391,7 +2391,7 @@ namespace astute.Controllers
                         {
                             DataTable dt_our_stock_data = new DataTable();
                             dt_our_stock_data = Set_Column_In_Datatable_Scheduler(new DataTable(), stock_Data_Master.Stock_Data_List);
-                            var result = await _supplierService.Stock_Data_Detail_Insert_Update(dt_our_stock_data, stock_Data_Id);
+                            var result = await _supplierService.Stock_Data_Shedular_Insert_Update(dt_our_stock_data, stock_Data_Id);
                             if (result > 0)
                             {
                                 if (stock_Data_Master.Upload_Type == "O")
