@@ -220,9 +220,9 @@ namespace astute.CoreModel
 
         #region Party Master
         public static string PartyMaster = "Party";
-        public static string PartyMasterCreated = PartyMaster + AddedSuccessfully;
-        public static string PartyMasterUpdated = PartyMaster + UpdatedSuccessfully;
-        public static string PartyMasterDeleted = PartyMaster + DeletedSuccessfully;
+        public static string PartyMasterCreated = PartyMaster + " has been added successfully";
+        public static string PartyMasterUpdated = PartyMaster + " has been updated successfully";
+        public static string PartyMasterDeleted = PartyMaster + " has been deleted successfully";
         public static string PartyCodeAlreadyExist = "Party code" + AlreadyExists;
         #endregion
 

@@ -46,6 +46,13 @@ namespace astute.Models
         public string? Notification { get; set; }
         public string? Reference_By { get; set; }
         public string? TIN_No { get; set; }
+        public string? Created_Date { get; set; }
+        public string? Created_Time { get; set; }
+        public string? Created_By { get; set; }
+        public string? Updated_Date { get; set; }
+        public string? Updated_Time { get; set; }
+        public string? Updated_By { get; set; }
+        public int? Modified_By { get; set; }
         [NotMapped]
         public IList<Party_Contact> Party_Contact_List { get; set; } = new List<Party_Contact>();
         [NotMapped]

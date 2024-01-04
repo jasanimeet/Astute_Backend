@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using NPOI.HPSF;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.Formula.Functions;
+using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using OfficeOpenXml;
 using System;
@@ -1213,7 +1214,7 @@ namespace astute.Controllers
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.PartyMasterCreated
+                            message = party_Master.Party_Id > 0 ? CoreCommonMessage.PartyMasterUpdated : CoreCommonMessage.PartyMasterCreated
                         });
                     }
                 }
@@ -2786,6 +2787,88 @@ namespace astute.Controllers
                                                         workbook.Write(outputFile);
                                                     }
                                                 }
+
+                                                List<string> columnNames = new List<string>();
+                                                List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
+
+                                                int totalColumns = sheet.GetRow(0).LastCellNum;
+                                                IRow headerRow = sheet.GetRow(0);
+
+                                                for (int col = 0; col < totalColumns; col++)
+                                                {
+                                                    var cellValue = headerRow.GetCell(col)?.ToString();
+                                                    if (!string.IsNullOrEmpty(cellValue))
+                                                    {
+                                                        columnNames.Add(cellValue);
+                                                    }
+                                                }
+                                                int _rowCount = sheet.PhysicalNumberOfRows;
+                                                for (int row = 1; row < _rowCount; row++)
+                                                {
+                                                    IRow currentRow = sheet.GetRow(row);
+                                                    Dictionary<string, object> rowData = new Dictionary<string, object>();
+
+                                                    for (int col = 0; col < totalColumns; col++)
+                                                    {
+                                                        string columnName = columnNames[col];
+                                                        var cell = currentRow.GetCell(col);
+                                                        var cellValue = cell?.ToString();
+                                                        string formula = string.Empty;
+                                                        if (cell.CellType == CellType.Formula)
+                                                        {
+                                                            formula = cell?.CellFormula;
+                                                        }
+                                                        if (!string.IsNullOrEmpty(cell.Hyperlink?.Address))
+                                                        {
+                                                            string linkUrl = cell.Hyperlink.Address;
+                                                            rowData.Add(columnName, linkUrl);
+                                                        }
+                                                        else if (cell.CellType == CellType.Formula && !string.IsNullOrEmpty(formula))
+                                                        {
+                                                            var urlMatch = Regex.Match(formula, "\"(.*?)\"");
+                                                            if (urlMatch.Success)
+                                                            {
+                                                                string url = urlMatch.Groups[1].Value;
+                                                                string text = Regex.Match(formula, ",\"(.*?)\"").Groups[1].Value;
+                                                                bool containsOnlyNumbers = Regex.IsMatch(text, @"^[0-9]+$");
+                                                                if (containsOnlyNumbers)
+                                                                {
+                                                                    rowData.Add(columnName, url + "," + text);
+                                                                }
+                                                                else
+                                                                {
+                                                                    rowData.Add(columnName, url);
+                                                                }
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            rowData.Add(columnName, cellValue);
+                                                        }
+                                                    }
+
+                                                    rowsData.Add(rowData);
+                                                }
+
+                                                for (int colIndex = 0; colIndex < columnNames.Count; colIndex++)
+                                                {
+                                                    headerRow.GetCell(colIndex).SetCellValue(columnNames[colIndex]);
+                                                }
+
+                                                for (int rowIndex = 0; rowIndex < rowsData.Count; rowIndex++)
+                                                {
+                                                    IRow currentRow = sheet.GetRow(rowIndex + 1);
+                                                    for (int colIndex = 0; colIndex < columnNames.Count; colIndex++)
+                                                    {
+                                                        currentRow.GetCell(colIndex)?.SetCellValue(rowsData[rowIndex][columnNames[colIndex]].ToString());
+                                                    }
+                                                }
+
+                                                string outputFilePath1 = Path.Combine(filePath, strFile);
+                                                using (FileStream outputFile = new FileStream(outputFilePath1, FileMode.Create))
+                                                {
+                                                    workbook.Write(outputFile);
+                                                }
                                             }
                                         }
                                     }
@@ -2808,95 +2891,81 @@ namespace astute.Controllers
                                                     package.SaveAs(new FileInfo(outputFilePath));
                                                 }
 
-                                                List<string> columnNames = new List<string>();
-                                                List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
+                                                //List<string> columnNames = new List<string>();
+                                                //List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
 
-                                                if (worksheet != null)
-                                                {
-                                                    // Get column names
-                                                    int totalColumns = worksheet.Dimension.End.Column;
-                                                    int headerRow = 1;
+                                                //if (worksheet != null)
+                                                //{
+                                                //    // Get column names
+                                                //    int totalColumns = worksheet.Dimension.End.Column;
+                                                //    int headerRow = 1;
 
-                                                    for (int col = 1; col <= totalColumns; col++)
-                                                    {
-                                                        var cellValue = worksheet.Cells[headerRow, col].Value;
-                                                        if (cellValue != null)
-                                                        {
-                                                            columnNames.Add(cellValue.ToString());
-                                                        }
-                                                    }
+                                                //    for (int col = 1; col <= totalColumns; col++)
+                                                //    {
+                                                //        var cellValue = worksheet.Cells[headerRow, col].Value;
+                                                //        if (cellValue != null)
+                                                //        {
+                                                //            columnNames.Add(cellValue.ToString());
+                                                //        }
+                                                //    }
 
-                                                    // Get row values
-                                                    int totalRows = worksheet.Dimension.End.Row;
+                                                //    // Get row values
+                                                //    int totalRows = worksheet.Dimension.End.Row;
 
-                                                    for (int row = headerRow + 1; row <= totalRows; row++)
-                                                    {
-                                                        Dictionary<string, object> rowData = new Dictionary<string, object>();
+                                                //    for (int row = headerRow + 1; row <= totalRows; row++)
+                                                //    {
+                                                //        Dictionary<string, object> rowData = new Dictionary<string, object>();
 
-                                                        for (int col = 1; col <= totalColumns; col++)
-                                                        {
-                                                            string columnName = columnNames[col - 1];
-                                                            var cell = worksheet.Cells[row, col];
-                                                            var cellValue = cell.Value;
-                                                            var formula = cell.Formula;
+                                                //        for (int col = 1; col <= totalColumns; col++)
+                                                //        {
+                                                //            string columnName = columnNames[col - 1];
+                                                //            var cell = worksheet.Cells[row, col];
+                                                //            var cellValue = cell.Value;
 
-                                                            if (cell.Hyperlink != null && cell.Hyperlink.AbsoluteUri != null)
-                                                            {
-                                                                string linkUrl = cell.Hyperlink.AbsoluteUri;
-                                                                rowData.Add(columnName, linkUrl);
-                                                            }
-                                                            else if (!string.IsNullOrEmpty(formula))
-                                                            {
-                                                                int urlStartIndex = formula.IndexOf("\"") + 1;
-                                                                int urlEndIndex = formula.IndexOf("\",\"");
+                                                //            if (cell.Hyperlink != null && cell.Hyperlink.AbsoluteUri != null)
+                                                //            {
+                                                //                string linkUrl = cell.Hyperlink.AbsoluteUri;
+                                                //                rowData.Add(columnName, linkUrl);
+                                                //            }
+                                                //            else
+                                                //            {
+                                                //                rowData.Add(columnName, cellValue);
+                                                //            }
+                                                //        }
 
-                                                                int textStartIndex = urlEndIndex + 3;
-                                                                int textEndIndex = formula.LastIndexOf("\"");
+                                                //        rowsData.Add(rowData);
+                                                //    }
 
-                                                                string url = formula.Substring(urlStartIndex, urlEndIndex - urlStartIndex);
-                                                                string text = formula.Substring(textStartIndex, textEndIndex - textStartIndex);
-                                                                bool containsOnlyNumbers = Regex.IsMatch(text, @"^[0-9]+$");
-                                                                if (containsOnlyNumbers)
-                                                                {
-                                                                    rowData.Add(columnName, url + "," + text);
-                                                                }
-                                                                else
-                                                                {
-                                                                    rowData.Add(columnName, url);
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                rowData.Add(columnName, cellValue);
-                                                            }
-                                                        }
+                                                //    //Save File
+                                                //    int colIndex = 1;
+                                                //    foreach (var columnName in columnNames)
+                                                //    {
+                                                //        worksheet.Cells[1, colIndex].Value = columnName;
+                                                //        colIndex++;
+                                                //    }
 
-                                                        rowsData.Add(rowData);
-                                                    }
+                                                //    // Write row data
+                                                //    int rowIndex = 2;
+                                                //    foreach (var row in rowsData)
+                                                //    {
+                                                //        colIndex = 1;
+                                                //        foreach (var cellValue in row.Values)
+                                                //        {
+                                                //            worksheet.Cells[rowIndex, colIndex].Value = cellValue;
+                                                //            colIndex++;
+                                                //        }
+                                                //        rowIndex++;
+                                                //    }
+                                                //    try
+                                                //    {
+                                                //        string outputFilePath2 = Path.Combine(filePath, strFile);
+                                                //        package.SaveAs(new FileInfo(outputFilePath2));
+                                                //    }
+                                                //    catch (Exception ex)
+                                                //    {
 
-                                                    //Save File
-                                                    int colIndex = 1;
-                                                    foreach (var columnName in columnNames)
-                                                    {
-                                                        worksheet.Cells[1, colIndex].Value = columnName;
-                                                        colIndex++;
-                                                    }
-
-                                                    // Write row data
-                                                    int rowIndex = 2;
-                                                    foreach (var row in rowsData)
-                                                    {
-                                                        colIndex = 1;
-                                                        foreach (var cellValue in row.Values)
-                                                        {
-                                                            worksheet.Cells[rowIndex, colIndex].Value = cellValue;
-                                                            colIndex++;
-                                                        }
-                                                        rowIndex++;
-                                                    }
-                                                    string outputFilePath1 = Path.Combine(filePath, strFile);
-                                                    package.SaveAs(outputFilePath1);
-                                                }
+                                                //    }
+                                                //}
                                             }
                                         }
                                     }
@@ -3200,7 +3269,7 @@ namespace astute.Controllers
 
                                             Final_row["CERTIFICATE_LINK"] = ((Convert.ToString(SuppCol_row["Display_Name"]) != "CERTIFICATE_LINK") || (Convert.ToString(SuppCol_row["Supp_Col_Name"]) == "")) ? Convert.ToString(Final_row["CERTIFICATE_LINK"]) : row[Convert.ToString(SuppCol_row["Supp_Col_Name"])];
                                             Final_row["CERTIFICATE_LINK"] = (Convert.ToString(Final_row["CERTIFICATE_LINK"]) == "") ? null : Convert.ToString(Final_row["CERTIFICATE_LINK"]);
-
+                                            
                                             Final_row["DNA"] = ((Convert.ToString(SuppCol_row["Display_Name"]) != "DNA") || (Convert.ToString(SuppCol_row["Supp_Col_Name"]) == "")) ? Convert.ToString(Final_row["DNA"]) : row[Convert.ToString(SuppCol_row["Supp_Col_Name"])];
                                             Final_row["DNA"] = (Convert.ToString(Final_row["DNA"]) == "") ? null : Convert.ToString(Final_row["DNA"]);
 
