@@ -21,5 +21,6 @@ namespace astute.Models
         public bool? API_Flag { get; set; }
         public string? Upload_Type { get; set; }
         public bool? Is_Same_Id { get; set; }
+        public bool? Overseas_Same_Id { get; set; }
     }
 }

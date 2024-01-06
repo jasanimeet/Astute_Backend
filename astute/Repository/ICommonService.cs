@@ -87,5 +87,9 @@ namespace astute.Repository
         Task<int> Insert_Update_Temp_Layout_Detail(DataTable dataTable);
         Task<int> Update_Temp_Layout_Status(int layout_Id, bool status);
         #endregion
+
+        #region Designation Master
+        Task<List<Dictionary<string, object>>> Get_Designation();
+        #endregion
     }
 }

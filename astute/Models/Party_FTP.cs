@@ -26,5 +26,6 @@ namespace astute.Models
         public string? Short_Code { get; set; }
         public bool? Ftp_Status { get; set; }
         public bool? Is_Same_Id { get; set; }
+        public bool? Overseas_Same_Id { get; set; }
     }
 }

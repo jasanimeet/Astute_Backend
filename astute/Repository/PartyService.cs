@@ -525,14 +525,15 @@ namespace astute.Repository
             var stock_Api_Method = !string.IsNullOrEmpty(party_Api.Stock_Api_Method) ? new SqlParameter("@Stock_Api_Method", party_Api.Stock_Api_Method) : new SqlParameter("@Stock_Api_Method", DBNull.Value);
             var method_Type = !string.IsNullOrEmpty(party_Api.Method_Type) ? new SqlParameter("@Method_Type", party_Api.Method_Type) : new SqlParameter("@Method_Type", DBNull.Value);
             var is_Same_Id = new SqlParameter("@Is_Same_Id", party_Api.Is_Same_Id);
+            var overseas_Same_Id = new SqlParameter("@Overseas_Same_Id", party_Api.Overseas_Same_Id);
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_Api_Insert_Update @API_Id, @Party_Id, @API_URL, @API_User, @API_Password, @API_Method, @API_Response, @API_Status,
                         @Disc_Inverse, @Auto_Ref_No, @RepeateveryType, @repeatevery, @Lab, @Overseas, @Stock_Url, @User_Id, @User_Caption, @Password_Caption, @Action_Caption, 
-                        @Action_Value,@Action_Caption_1, @Action_Value_1, @Action_Caption_2, @Action_Value_2, @Short_Code, @Stock_Api_Method, @Method_Type, @Is_Same_Id", api_Id, 
+                        @Action_Value,@Action_Caption_1, @Action_Value_1, @Action_Caption_2, @Action_Value_2, @Short_Code, @Stock_Api_Method, @Method_Type, @Is_Same_Id, @Overseas_Same_Id", api_Id, 
                         _party_Id, api_Url, api_User, api_Password, api_Method, api_Response, api_Status, api_Inverse, auto_Ref_No, repeateveryType, repeatevery, lab, overseas, 
                         stock_Url, user_Id, user_Caption, password_Caption, action_Caption, action_Value, action_Caption_1, action_Value_1, action_Caption_2, action_Value_2, 
-                        short_Code, stock_Api_Method, method_Type, is_Same_Id));
+                        short_Code, stock_Api_Method, method_Type, is_Same_Id, overseas_Same_Id));
 
             return result;
         }
@@ -637,11 +638,12 @@ namespace astute.Repository
             var short_Code = !string.IsNullOrEmpty(party_FTP.Short_Code) ? new SqlParameter("@Short_Code", party_FTP.Short_Code) : new SqlParameter("@Short_Code", DBNull.Value);
             var ftp_Status = new SqlParameter("@Ftp_Status", party_FTP.Ftp_Status);
             var is_Same_Id = new SqlParameter("@Is_Same_Id", party_FTP.Is_Same_Id);
+            var overseas_Same_Id = new SqlParameter("@Overseas_Same_Id", party_FTP.Overseas_Same_Id);
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_FTP_Insert_Update @FTP_Id, @Party_Id, @Host, @Ftp_Port, @Ftp_User, @Ftp_Password, @Ftp_File_Name, @Ftp_File_Type,
-                        @Disc_Inverse, @Auto_Ref_No, @RepeateveryType, @Repeatevery, @Lab, @Overseas, @Secure_Ftp, @Short_Code, @Ftp_Status, @Is_Same_Id", ftp_Id, _party_Id, host, ftp_Port, 
-                        ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Type, api_Inverse, auto_Ref_No, repeateveryType, repeatevery, lab, overseas, secure_Ftp, short_Code, ftp_Status, is_Same_Id));
+                        @Disc_Inverse, @Auto_Ref_No, @RepeateveryType, @Repeatevery, @Lab, @Overseas, @Secure_Ftp, @Short_Code, @Ftp_Status, @Is_Same_Id, @Overseas_Same_Id", ftp_Id, _party_Id, host, ftp_Port, 
+                        ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Type, api_Inverse, auto_Ref_No, repeateveryType, repeatevery, lab, overseas, secure_Ftp, short_Code, ftp_Status, is_Same_Id, overseas_Same_Id));
 
             return result;
         }
@@ -679,10 +681,11 @@ namespace astute.Repository
             var aPI_Flag = new SqlParameter("@API_Flag", party_File.API_Flag);
             var upload_Type = !string.IsNullOrEmpty(party_File.Upload_Type) ? new SqlParameter("@Upload_Type", party_File.Upload_Type) : new SqlParameter("@Upload_Type", DBNull.Value);
             var is_Same_Id = new SqlParameter("@Is_Same_Id", party_File.Is_Same_Id);
+            var overseas_Same_Id = new SqlParameter("@Overseas_Same_Id", party_File.Overseas_Same_Id);
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_File_Insert_Update @File_Id, @Party_Id, @File_Location, @Short_Code, @File_Status, @Lab, @Overseas, @Validity_Days, @Sheet_Name,
-                        @Exclude, @API_Flag, @Upload_Type, @Is_Same_Id", file_Id, _party_Id, file_Location, short_Code, file_Status, lab, overseas, validity_Days, sheet_Name, exclude, aPI_Flag, upload_Type, is_Same_Id));
+                        @Exclude, @API_Flag, @Upload_Type, @Is_Same_Id, @Overseas_Same_Id", file_Id, _party_Id, file_Location, short_Code, file_Status, lab, overseas, validity_Days, sheet_Name, exclude, aPI_Flag, upload_Type, is_Same_Id, overseas_Same_Id));
 
             return result;
         }

@@ -331,6 +331,7 @@ namespace astute.CoreServices
             dataFound:
             return (dataExist, row_cnt);
         }
+
         public static (bool, int) CheckDataInFirstTenRowsAndColumns(HSSFSheet sheet)
         {
             var dataExist = false;

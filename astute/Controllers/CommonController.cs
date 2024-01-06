@@ -3700,6 +3700,37 @@ namespace astute.Controllers
             }
         }
         #endregion
+
+        #region Designation Master
+        [HttpGet]
+        [Route("get_designation")]
+        [Authorize]
+        public async Task<IActionResult> Get_Designation()
+        {
+            try
+            {
+                var result = await _commonService.Get_Designation();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Designation", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
         #endregion
     }
 }

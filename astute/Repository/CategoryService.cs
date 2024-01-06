@@ -183,7 +183,7 @@ namespace astute.Repository
 
         #region Category Values
         public async Task<int> InsertCategoryValue(Category_Value category_Value)
-        {
+        {   
             var catvalId = new SqlParameter("@CatvalId", category_Value.Cat_val_Id);
             var catName = new SqlParameter("@CatName", category_Value.Cat_Name);
             var groupName = !string.IsNullOrEmpty(category_Value.Group_Name) ? new SqlParameter("@GroupName", category_Value.Group_Name) : new SqlParameter("@GroupName", DBNull.Value);
@@ -362,7 +362,7 @@ namespace astute.Repository
                     model.Add(new CategoryValueModel()
                     {
                         Cat_val_Id = x.Cat_val_Id,
-                        Cat_Name = x.Cat_Name,
+                        Cat_Name = x.Cat_Name.Replace("_"," "),
                         Group_Name = x.Group_Name,
                         Rapaport_Name = x.Rapaport_Name,
                         Rapnet_name = x.Rapnet_name,

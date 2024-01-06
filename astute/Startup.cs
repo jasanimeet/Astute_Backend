@@ -5,6 +5,7 @@ using astute.Authorization;
 using astute.Models;
 using astute.Repository;
 using astute.TaskScheduler;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

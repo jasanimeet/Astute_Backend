@@ -2740,6 +2740,7 @@ namespace astute.Controllers
                             party_file_obj.Validity_Days = party_File.Validity_Days;
                             party_file_obj.API_Flag = party_File.API_Flag;
                             party_file_obj.Exclude = party_File.Exclude;
+                            party_file_obj.Overseas_Same_Id = party_File.Overseas_Same_Id;
 
                             var result = await _partyService.Add_Update_Party_File(party_file_obj);
 
@@ -2890,6 +2891,36 @@ namespace astute.Controllers
                                                     string outputFilePath = Path.Combine(filePath, strFile);
                                                     package.SaveAs(new FileInfo(outputFilePath));
                                                 }
+
+                                                var rowCount = worksheet.Dimension.End.Row;
+                                                var colCount = worksheet.Dimension.End.Column;
+
+                                                int rowsToCheck = Math.Max(rowCount - (rowCount - 1), 1);
+
+                                                for (int row = rowCount; row >= rowsToCheck; row--)
+                                                {
+                                                    bool hasData = false;
+
+                                                    for (int col = colCount; col > colCount - 20; col--)
+                                                    {
+                                                        var cell = worksheet.Cells[row, col];
+
+                                                        if (!string.IsNullOrEmpty(cell.Text))
+                                                        {
+                                                            hasData = true;
+                                                            break;
+                                                        }
+                                                    }
+
+                                                    if (!hasData)
+                                                    {
+                                                        worksheet.DeleteRow(row);
+                                                        rowCount--;
+                                                    }
+                                                }
+
+                                                string outputFilePath1 = Path.Combine(filePath, strFile);
+                                                package.SaveAs(new FileInfo(outputFilePath1));
 
                                                 //List<string> columnNames = new List<string>();
                                                 //List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
