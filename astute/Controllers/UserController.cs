@@ -103,12 +103,24 @@ namespace astute.Controllers
                         }
                         user_Registration.Address_Proof_Upload = strFile;
                     }
-                    await _userService.Add_Update_User(user_Registration);
-                    return Ok(new
+                    var (message, result) = await _userService.Add_Update_User(user_Registration);
+                    if (message == "success" && result > 0)
                     {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.UserRegisteredSuccessfully
-                    });
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.UserRegisteredSuccessfully
+                        });
+                    }
+                    else if(message == "_error_username_exist" && result == 409)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.UserNameAlreadyExist
+                        });
+                    }
+                    
                 }
                 return BadRequest(ModelState);
             }
@@ -182,12 +194,23 @@ namespace astute.Controllers
                         }
                         user_Registration.Address_Proof_Upload = strFile;
                     }
-                    await _userService.Add_Update_User(user_Registration);
-                    return Ok(new
+                    var (message, result) = await _userService.Add_Update_User(user_Registration);
+                    if (message == "success" && result > 0)
                     {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.UserUpdatedSuccessfully
-                    });
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.UserUpdatedSuccessfully
+                        });
+                    }
+                    else if (message == "_error_username_exist" && result == 409)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.UserNameAlreadyExist
+                        });
+                    }
                 }
                 return BadRequest(ModelState);
             }
@@ -222,6 +245,36 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_User", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region City/State/Country
+        [HttpGet]
+        [Route("get_active_cities")]        
+        public async Task<IActionResult> Get_Active_Cities(string city)
+        {
+            try
+            {
+                var result = await _commonService.Get_Active_Cities(city);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Active_Cities", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

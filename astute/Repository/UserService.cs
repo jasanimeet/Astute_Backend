@@ -116,7 +116,7 @@ namespace astute.Repository
 
             bool _isExistUserName = (bool)isExistUserName.Value;
             if (_isExistUserName)
-                return ("_error_username_exist", 0);
+                return ("_error_username_exist", 409);
 
             return ("success", result);
         }

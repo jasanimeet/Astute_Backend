@@ -651,7 +651,7 @@ namespace astute.Controllers
                     message = ex.Message
                 });
             }
-        }
+        }        
 
         [HttpPost]
         [Route("createcity")]
@@ -3704,7 +3704,6 @@ namespace astute.Controllers
         #region Designation Master
         [HttpGet]
         [Route("get_designation")]
-        [Authorize]
         public async Task<IActionResult> Get_Designation()
         {
             try

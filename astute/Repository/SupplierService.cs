@@ -1387,7 +1387,6 @@ namespace astute.Repository
             }
             return result;
         }
-
         public async Task<int> Create_Update_Report_User_Role(DataTable dataTable)
         {
             var parameter = new SqlParameter("@Report_Users_Role_Table_Type", SqlDbType.Structured)
@@ -1482,7 +1481,40 @@ namespace astute.Repository
             }
             return result;
         }
+        public async Task<List<Dictionary<string, object>>> Get_Report_Column_Format(int user_Id, int report_Id, string format_Type)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Report_Column_Format_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
+                    command.Parameters.Add(report_Id > 0 ? new SqlParameter("@Report_Id", report_Id) : new SqlParameter("@Report_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(format_Type) ? new SqlParameter("@Format_Type", format_Type) : new SqlParameter("@Format_Type", DBNull.Value));
+                    await connection.OpenAsync();
 
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
         #endregion
     }
 }
