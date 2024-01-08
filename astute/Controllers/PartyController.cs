@@ -3765,6 +3765,35 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("get_report_search")]
+        [Authorize]
+        public async Task<IActionResult> Get_Report_Search(Report_Filter report_Filter)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Report_Search", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }

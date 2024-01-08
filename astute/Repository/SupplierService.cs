@@ -280,7 +280,7 @@ namespace astute.Repository
         }
         public async Task<DataTable> Get_Supplier_Column_Mapping_In_Datatable(int supp_Id, string map_Flag, string column_Type)
         {
-            DataTable dataTable = new DataTable();            
+            DataTable dataTable = new DataTable();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
                 using (var command = new SqlCommand("Supplier_Column_Mapping_Select", connection))
@@ -550,7 +550,7 @@ namespace astute.Repository
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
                             cmd.Parameters.Add(supplierPricingId > 0 ? new SqlParameter("@Supplier_Pricing_Id", supplierPricingId) : new SqlParameter("@Supplier_Pricing_Id", DBNull.Value));
-                            
+
                             using var daSym = new SqlDataAdapter();
                             daSym.SelectCommand = cmd;
 
@@ -586,7 +586,7 @@ namespace astute.Repository
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
                             cmd.Parameters.Add(supplierPricingId > 0 ? new SqlParameter("@Supplier_Pricing_Id", supplierPricingId) : new SqlParameter("@Supplier_Pricing_Id", DBNull.Value));
-                            
+
                             using var daSym = new SqlDataAdapter();
                             daSym.SelectCommand = cmd;
 
@@ -768,7 +768,7 @@ namespace astute.Repository
         public async Task<int> Delete_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id)
         {
             var _supplier_Pricing_Id = supplier_Pricing_Id > 0 ? new SqlParameter("@Supplier_Pricing_Id", supplier_Pricing_Id) : new SqlParameter("@Supplier_Pricing_Id", DBNull.Value);
-            
+
             //var _supplier_Id = supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
             //var isCheckInStock = new SqlParameter("@IsCheckInStock", SqlDbType.Bit)
             //{
@@ -1053,7 +1053,7 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
                    .ExecuteSqlRawAsync(@"exec Stock_Number_Generation_Insert_Update @Stock_Number_Generation_Table_Type,@IsExist OUT", parameter, isExist));
-           
+
             int _isExist = (int)isExist.Value;
             if (_isExist == 1)
                 return 5;
@@ -1155,7 +1155,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Error_Log_Detail(string supplier_Ids, string stock_Data_Ids,string upload_Type)
+        public async Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Error_Log_Detail(string supplier_Ids, string stock_Data_Ids, string upload_Type)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -1223,7 +1223,7 @@ namespace astute.Repository
         }
         public async Task<DataTable> Get_Supplier_Stock_File_Error_Log_Detail(int supplier_Id, string upload_Type)
         {
-            DataTable dataTable = new DataTable();            
+            DataTable dataTable = new DataTable();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
                 using (var command = new SqlCommand("Supplier_File_Upload_Error_Log_Detail", connection))
@@ -1401,7 +1401,7 @@ namespace astute.Repository
             return result;
         }
 
-        public async Task<List<Dictionary<string, object>>> Get_Report_Users_Role(int id,int user_Id)
+        public async Task<List<Dictionary<string, object>>> Get_Report_Users_Role(int id, int user_Id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -1431,6 +1431,54 @@ namespace astute.Repository
                         }
                     }
                 }
+            }
+            return result;
+        }
+
+
+        public async Task<List<Dictionary<string, object>>> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters)
+        {
+            var result = new List<Dictionary<string, object>>();
+            var _id = new SqlParameter("@Id", id);
+            var result_Master = await Task.Run(() => _dbContext.Bank_Dropdown_Model
+            .FromSqlRaw(@"exec Report_Master_Select @Id", _id).AsEnumerable().FirstOrDefault());
+
+            if (result_Master != null)
+            {
+                string report_Sp = result_Master.Name;
+
+                using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+                {
+                    using (var command = new SqlCommand(report_Sp, connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        foreach (var item in report_Filter_Parameters)
+                        {
+                            command.Parameters.Add(!string.IsNullOrEmpty(item.Category_Value) ? new SqlParameter("@" + item.Column_Name, item.Category_Value) : new SqlParameter("@" + item.Column_Name, DBNull.Value));
+                        }
+                        command.CommandTimeout = 1800;
+                        await connection.OpenAsync();
+
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var dict = new Dictionary<string, object>();
+
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
+                                    var columnName = reader.GetName(i);
+                                    var columnValue = reader.GetValue(i);
+
+                                    dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                                }
+
+                                result.Add(dict);
+                            }
+                        }
+                    }
+                }
+
             }
             return result;
         }
