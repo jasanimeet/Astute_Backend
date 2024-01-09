@@ -1140,7 +1140,7 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _commonService.InsertYears(year_Mas);
+                    var result = await _commonService.Insert_Update_Years(year_Mas);
                     if (result > 0)
                     {
                         return Ok(new
@@ -1171,7 +1171,7 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _commonService.UpdateYears(year_Mas);
+                    var result = await _commonService.Insert_Update_Years(year_Mas);
                     if (result > 0)
                     {
                         return Ok(new

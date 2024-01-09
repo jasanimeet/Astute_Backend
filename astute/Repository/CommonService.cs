@@ -668,44 +668,22 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<int> InsertYears(Year_Master year_Mas)
-        {
-            var parametar = new List<SqlParameter>();
-            parametar.Add(new SqlParameter("@Year_Id", year_Mas.Year_Id));
-            parametar.Add(new SqlParameter("@Year", year_Mas.Year));
-            parametar.Add(new SqlParameter("@Current_Status", year_Mas.Current_Status));
-            parametar.Add(new SqlParameter("@Status", year_Mas.Status));
-            parametar.Add(new SqlParameter("@From_Date", year_Mas.From_Date));
-            parametar.Add(new SqlParameter("@To_Date", year_Mas.To_Date));
-            parametar.Add(new SqlParameter("@recordType", "Insert"));
+        public async Task<int> Insert_Update_Years(Year_Master year_Mas)
+        {   
+            var year_Id = new SqlParameter("@Year_Id", year_Mas.Year_Id);
+            var year = !string.IsNullOrEmpty(year_Mas.Year) ? new SqlParameter("@Year", year_Mas.Year) : new SqlParameter("@Year", DBNull.Value);
+            var current_Status = new SqlParameter("@Current_Status", year_Mas.Current_Status);
+            var status = new SqlParameter("@Status", year_Mas.Status);
+            var from_date = !string.IsNullOrEmpty(year_Mas.From_Date) ? new SqlParameter("@From_Date", year_Mas.From_Date) : new SqlParameter("@From_Date", DBNull.Value);
+            var to_date = !string.IsNullOrEmpty(year_Mas.To_Date) ? new SqlParameter("@To_Date", year_Mas.To_Date) : new SqlParameter("@To_Date", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Year_Mas_Insert_Update @Year_Id, @Year, @Current_Status, @Status, @From_Date, @To_Date, @recordType", parametar.ToArray()));
+                        .ExecuteSqlRawAsync(@"EXEC Year_Mas_Insert_Update @Year_Id, @Year, @Current_Status, @Status, @From_Date, @To_Date", year_Id, year, current_Status,
+                        status, from_date, to_date));
 
             //if (CoreService.Enable_Trace_Records(_configuration))
             //{
             //    await Insert_Year_Trace(year_Mas, "Insert");
-            //}
-
-            return result;
-        }
-        public async Task<int> UpdateYears(Year_Master year_Mas)
-        {
-            var parametar = new List<SqlParameter>();
-            parametar.Add(new SqlParameter("@Year_Id", year_Mas.Year_Id));
-            parametar.Add(new SqlParameter("@Year", year_Mas.Year));
-            parametar.Add(new SqlParameter("@Current_Status", year_Mas.Current_Status));
-            parametar.Add(new SqlParameter("@Status", year_Mas.Status));
-            parametar.Add(new SqlParameter("@From_Date", year_Mas.From_Date));
-            parametar.Add(new SqlParameter("@To_Date", year_Mas.To_Date));
-            parametar.Add(new SqlParameter("@recordType", "Update"));
-
-            var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Year_Mas_Insert_Update @Year_Id, @Year, @Current_Status, @Status, @From_Date, @To_Date, @recordType", parametar.ToArray()));
-
-            //if (CoreService.Enable_Trace_Records(_configuration))
-            //{
-            //    await Insert_Year_Trace(year_Mas, "Update");
             //}
 
             return result;

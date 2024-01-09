@@ -1399,7 +1399,6 @@ namespace astute.Repository
 
             return result;
         }
-
         public async Task<List<Dictionary<string, object>>> Get_Report_Users_Role(int id, int user_Id)
         {
             var result = new List<Dictionary<string, object>>();
@@ -1433,8 +1432,6 @@ namespace astute.Repository
             }
             return result;
         }
-
-
         public async Task<List<Dictionary<string, object>>> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters)
         {
             var result = new List<Dictionary<string, object>>();
@@ -1514,6 +1511,51 @@ namespace astute.Repository
                 }
             }
             return result;
+        }
+        public async Task<int> Create_Update_Report_Search(Report_Search_Save report_Search_Save)
+        {
+            var id = new SqlParameter("@Id", report_Search_Save.Id);
+            var name = new SqlParameter("@Name", report_Search_Save.Name);
+            var search_Value = new SqlParameter("@Search_Value", report_Search_Save.Search_Value);
+
+            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Search_Save_Create_Update @Id, @Name, @Search_Value", id, name, search_Value));
+
+            return result;
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Report_Search()
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Report_Search_Save_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public async Task<int> Delete_Report_Search(int id)
+        {   
+            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Report_Search_Save_Delete {id}"));
         }
         #endregion
     }

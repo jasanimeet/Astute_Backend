@@ -78,9 +78,11 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Report_Detail_Filter_Parameter(int id);
         Task<int> Create_Update_Report_User_Role(DataTable dataTable);
         Task<List<Dictionary<string, object>>> Get_Report_Users_Role(int id, int user_Id);
-
         Task<List<Dictionary<string, object>>> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters);
         Task<List<Dictionary<string, object>>> Get_Report_Column_Format(int user_Id, int report_Id, string format_Type);
+        Task<int> Create_Update_Report_Search(Report_Search_Save report_Search_Save);
+        Task<List<Dictionary<string, object>>> Get_Report_Search();
+        Task<int> Delete_Report_Search(int id);
         #endregion
     }
 }
