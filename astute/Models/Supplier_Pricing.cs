@@ -15,6 +15,9 @@ namespace astute.Models
         public int? Customer_Pricing_Id { get; set; }
         public string? User_Pricing_Id { get; set; }
         public string? Map_Flag { get; set; }
+        public bool? Stock_Lab { get; set; }
+        public bool? Stock_Overseas { get; set; }
+        public bool? Stock_Buyer { get; set; }
         public string? Shape { get; set; }
         public string? Cts { get; set; }
         public string? Color { get; set; }
