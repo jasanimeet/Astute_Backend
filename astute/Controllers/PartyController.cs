@@ -39,6 +39,7 @@ namespace astute.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ISupplierService _supplierService;
         IExcelDataReader _excelDataReader;
+        private readonly ICartService _cartService;
         #endregion
 
         #region Ctor
@@ -46,13 +47,15 @@ namespace astute.Controllers
             IConfiguration configuration,
             ICommonService commonService,
             IHttpContextAccessor httpContextAccessor,
-            ISupplierService supplierService)
+            ISupplierService supplierService,
+            ICartService cartService)
         {
             _partyService = partyService;
             _configuration = configuration;
             _commonService = commonService;
             _httpContextAccessor = httpContextAccessor;
             _supplierService = supplierService;
+            _cartService = cartService;
         }
         #endregion
 
@@ -1101,10 +1104,19 @@ namespace astute.Controllers
                             //    await _partyService.Insert_Party_Print_Trace(dataTable1);
                             //}
                         }
+                        
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
                             message = party_Master.Party_Id > 0 ? CoreCommonMessage.PartyMasterUpdated : CoreCommonMessage.PartyMasterCreated
+                        });
+                    }
+                    else if (message == "_party_exists" && party_Id == 0)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.PartyAlreadyExist
                         });
                     }
                 }
@@ -3847,8 +3859,50 @@ namespace astute.Controllers
         }
         #endregion
 
-        #region Cart
-
+        #region Cart/Review/Approval Management        
+        [HttpPost]
+        [Route("create_cart_review_approval_management")]
+        [Authorize]
+        public async Task<IActionResult> Create_Cart_Review_Approval_Management(Cart_Review_Approval_Management cart_Review_Approval_Management)
+        {
+            try
+            {
+                if(ModelState.IsValid)
+                {
+                    var result = await _cartService.Insert_Cart_Review_Aproval_Management(cart_Review_Approval_Management);
+                    if(result > 0)
+                    {
+                        string msg = string.Empty;
+                        if(cart_Review_Approval_Management.Upload_Type == "C")
+                        {
+                            msg = CoreCommonMessage.CartAdded;
+                        }
+                        else if(cart_Review_Approval_Management.Upload_Type == "R")
+                        {
+                            msg = CoreCommonMessage.ReviewAdded;
+                        }
+                        else if(cart_Review_Approval_Management.Upload_Type == "A")
+                        {
+                            msg = CoreCommonMessage.StockApproved;
+                        }
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = msg
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Cart_Review_Approval_Management", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }

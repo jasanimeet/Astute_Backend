@@ -225,6 +225,7 @@ namespace astute.CoreModel
         public static string PartyMasterUpdated = PartyMaster + " has been updated successfully";
         public static string PartyMasterDeleted = PartyMaster + " has been deleted successfully";
         public static string PartyCodeAlreadyExist = "Party code" + AlreadyExists;
+        public static string PartyAlreadyExist = PartyMaster + AlreadyExists;
         #endregion
 
         #region Party Contact
@@ -336,6 +337,12 @@ namespace astute.CoreModel
         public static string SearchedReportCreated = "Searched report has been added successfully.";
         public static string SearchedReportUpdated = "Searched report has been updated successfully.";
         public static string SearchedReportDeleted = "Searched report has been deleted successfully.";
+        #endregion
+
+        #region Cart/Review/Approval Management
+        public static string CartAdded = "Stock has been added in the cart successfully.";
+        public static string ReviewAdded = "Stock has been added in the review successfully.";
+        public static string StockApproved = "Cart stock has been approved successfully.";
         #endregion
     }
 }
