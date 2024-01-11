@@ -3729,54 +3729,6 @@ namespace astute.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("create_update_report_users_role_save_layout")]
-        [Authorize]
-        public async Task<IActionResult> Create_Update_Report_Users_Role_Save_Layout(Report_Users_Role_Save_Layout_Model report_Users_Role_Save_Layout_Model )
-        {
-            try
-            {
-                if (report_Users_Role_Save_Layout_Model != null)
-                {
-                    DataTable dataTable = new DataTable();
-                    dataTable.Columns.Add("Rd_Id", typeof(int));
-                    dataTable.Columns.Add("User_Id", typeof(int));
-
-                    var UserIds = report_Users_Role_Save_Layout_Model.User_Ids.Split(",");
-
-                    if (UserIds != null)
-                    {
-                        foreach (var item in UserIds)
-                        {
-                            foreach (var item1 in report_Users_Role_Save_Layout_Model.Report_Role_Save_Layout_Models)
-                            {
-                                dataTable.Rows.Add(item1.Id, item);
-                            }
-                        }
-                        var result = await _supplierService.Create_Update_Report_Users_Role_Save_Layout(dataTable);
-                        if (result > 0)
-                        {
-                            return Ok(new
-                            {
-                                statusCode = HttpStatusCode.OK,
-                                message = CoreCommonMessage.ReportRolesSaveLayout
-                            });
-                        }
-                    }
-
-                }
-                return BadRequest(ModelState);
-
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Report_Users_Role_Save_Layout", ex.StackTrace);
-                return Ok(new
-                {
-                    message = ex.Message
-                });
-            }
-        }
 
         [HttpGet]
         [Route("get_report_column_format")]

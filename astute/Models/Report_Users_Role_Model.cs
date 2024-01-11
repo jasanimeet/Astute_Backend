@@ -24,4 +24,6 @@ namespace astute.Models
         public string? Back_Colour { get; set; }
         public bool? IsBold { get; set; }
     }
+
+
 }
