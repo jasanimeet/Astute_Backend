@@ -343,6 +343,7 @@ namespace astute.CoreModel
         public static string CartAdded = "Stock has been added in the cart successfully.";
         public static string ReviewAdded = "Stock has been added in the review successfully.";
         public static string StockApproved = "Cart stock has been approved successfully.";
+        public static string CartStockDeleted = "Stock from the cart has been removed successfully.";
         #endregion
     }
 }

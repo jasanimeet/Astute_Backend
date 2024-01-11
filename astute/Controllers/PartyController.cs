@@ -6,15 +6,12 @@ using ExcelDataReader;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NPOI.HPSF;
 using NPOI.HSSF.UserModel;
-using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
-using NPOI.SS.Util;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -1104,7 +1101,7 @@ namespace astute.Controllers
                             //    await _partyService.Insert_Party_Print_Trace(dataTable1);
                             //}
                         }
-                        
+
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
@@ -1802,7 +1799,7 @@ namespace astute.Controllers
                                 }
                                 else
                                 {
-                                    if (item.Map_Flag == "SPO" || item.Map_Flag == "SPL")
+                                    if (item.Map_Flag == "SPLP" || item.Map_Flag == "SPLS" || item.Map_Flag == "SPOP" || item.Map_Flag == "SPOS")
                                     {
                                         item.Sunrise_Pricing_Id = sun_price_Id;
                                         sunrise_Pricing_Id = item.Sunrise_Pricing_Id ?? 0;
@@ -1853,11 +1850,11 @@ namespace astute.Controllers
                             {
                                 resurn_message = CoreCommonMessage.SupplierStockCreated;
                             }
-                            else if (map_flag == "SPL" || map_flag == "SPO")
+                            else if (map_flag == "SPLP" || map_flag == "SPLS" || map_flag == "SPOP" || map_flag == "SPOS")
                             {
                                 resurn_message = CoreCommonMessage.SunrisePricingCreated;
                             }
-                            else if (map_flag == "CPL" || map_flag == "CPO")
+                            else if (map_flag == "CPL" || map_flag == "CPO" || map_flag == "CSL" || map_flag == "CSO")
                             {
                                 resurn_message = CoreCommonMessage.CustomerPricingCreated;
                             }
@@ -3740,9 +3737,9 @@ namespace astute.Controllers
             try
             {
                 var result = await _supplierService.Get_Report_Search();
-                if(result != null && result.Count > 0)
+                if (result != null && result.Count > 0)
                 {
-                    return Ok(new 
+                    return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.DataSuccessfullyFound,
@@ -3768,10 +3765,10 @@ namespace astute.Controllers
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     var result = await _supplierService.Create_Update_Report_Search(report_Search_Save);
-                    if(result > 0)
+                    if (result > 0)
                     {
                         return Ok(new
                         {
@@ -3842,7 +3839,7 @@ namespace astute.Controllers
                         });
                     }
                 }
-                return BadRequest(new 
+                return BadRequest(new
                 {
                     statusCode = HttpStatusCode.BadRequest,
                     message = CoreCommonMessage.ParameterMismatched
@@ -3859,7 +3856,7 @@ namespace astute.Controllers
         }
         #endregion
 
-        #region Cart/Review/Approval Management        
+        #region Cart/Approval Management        
         [HttpPost]
         [Route("create_cart_review_approval_management")]
         [Authorize]
@@ -3867,21 +3864,21 @@ namespace astute.Controllers
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     var result = await _cartService.Insert_Cart_Review_Aproval_Management(cart_Review_Approval_Management);
-                    if(result > 0)
+                    if (result > 0)
                     {
                         string msg = string.Empty;
-                        if(cart_Review_Approval_Management.Upload_Type == "C")
+                        if (cart_Review_Approval_Management.Upload_Type == "C")
                         {
                             msg = CoreCommonMessage.CartAdded;
                         }
-                        else if(cart_Review_Approval_Management.Upload_Type == "R")
+                        else if (cart_Review_Approval_Management.Upload_Type == "R")
                         {
                             msg = CoreCommonMessage.ReviewAdded;
                         }
-                        else if(cart_Review_Approval_Management.Upload_Type == "A")
+                        else if (cart_Review_Approval_Management.Upload_Type == "A")
                         {
                             msg = CoreCommonMessage.StockApproved;
                         }
@@ -3897,6 +3894,67 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Cart_Review_Approval_Management", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_cart_review_approval_management")]
+        [Authorize]
+        public async Task<IActionResult> Get_Cart_Review_Approval_Management(string upload_Type, string userIds)
+        {
+            try
+            {
+                var result = await _cartService.Get_Cart_Review_Approval_Management(upload_Type, userIds);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Cart_Review_Approval_Management", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPut]
+        [Route("delete_cart_review_approval_management")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Cart_Review_Approval_Management(string ids, int user_Id, string upload_Type)
+        {
+            try
+            {
+                var result = await _cartService.Delete_Cart_Review_Aproval_Management(ids, user_Id, upload_Type);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.CartStockDeleted
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Cart_Review_Approval_Management", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
