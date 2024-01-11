@@ -1561,7 +1561,6 @@ namespace astute.Repository
         {   
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Report_Search_Save_Delete {id}"));
         }
-
         public async Task<string> Create_Update_Report_Layout_Save(Report_Layout_Save report_Layout_Save)
         {
             var id = new SqlParameter("@Id", report_Layout_Save.Id);
