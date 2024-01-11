@@ -4050,7 +4050,7 @@ namespace astute.Controllers
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.CartStockDeleted
+                        message = upload_Type == "C" ? CoreCommonMessage.CartStockDeleted : CoreCommonMessage.ApprovalStockDeleted,
                     });
                 }
                 return BadRequest(new
@@ -4062,6 +4062,34 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Delete_Cart_Review_Approval_Management", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("approved_or_rejected_by_management")]
+        [Authorize]
+        public async Task<IActionResult> Approved_Or_Rejected_by_Management(string ids, bool? is_Approved, bool? is_Rejected, int user_Id)
+        {
+            try
+            {
+                var result = await _cartService.Approved_Or_Rejected_by_Management(ids, is_Approved ?? false, is_Rejected ?? false, user_Id);
+                if(result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = is_Approved == true ? CoreCommonMessage.StokeApprovedByManagement : CoreCommonMessage.StokeRejectedByManagement
+                    });
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Approved_Or_Rejected_by_Management", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

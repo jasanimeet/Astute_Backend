@@ -342,10 +342,13 @@ namespace astute.CoreModel
         #endregion
 
         #region Cart/Review/Approval Management
-        public static string CartAdded = "Stock has been added in the cart successfully.";
-        public static string ReviewAdded = "Stock has been added in the review successfully.";
-        public static string StockApproved = "Cart stock has been approved successfully.";
-        public static string CartStockDeleted = "Stock from the cart has been removed successfully.";
+        public static string CartAdded = "Stone has been added to cart successfully.";
+        public static string ReviewAdded = "Stone has been added to review successfully.";
+        public static string StockApproved = "Stone has been send to management successfully for the approval.";
+        public static string CartStockDeleted = "Stone hase been deleted from the cart successfully.";
+        public static string ApprovalStockDeleted = "Stone hase been deleted from the approval list successfully.";
+        public static string StokeApprovedByManagement = "Stone has been approved successfully.";
+        public static string StokeRejectedByManagement = "Stone has been rejected successfully.";
         #endregion
     }
 }

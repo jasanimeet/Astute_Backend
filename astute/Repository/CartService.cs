@@ -26,7 +26,6 @@ namespace astute.Repository
         #endregion
 
         #region Methods
-        #region Cart
         public async Task<int> Insert_Cart_Review_Aproval_Management(Cart_Review_Approval_Management cart_Review_Approval_Management)
         {
             var supp_Stock_Ids = !string.IsNullOrEmpty(cart_Review_Approval_Management.Supp_Stock_Ids) ? new SqlParameter("@Supp_Stock_Ids", cart_Review_Approval_Management.Supp_Stock_Ids) : new SqlParameter("@Supp_Stock_Ids", DBNull.Value);
@@ -89,10 +88,18 @@ namespace astute.Repository
 
             return result;
         }
-        #endregion
+        public async Task<int> Approved_Or_Rejected_by_Management(string ids, bool is_Approved, bool is_Rejected, int user_Id)
+        {
+            var _ids = !string.IsNullOrEmpty(ids) ? new SqlParameter("@Ids", ids) : new SqlParameter("@Ids", DBNull.Value);
+            var _is_Approved = new SqlParameter("@Is_Approved", is_Approved);
+            var _is_Rejected = new SqlParameter("@Is_Rejected", is_Rejected);
+            var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
 
-        #region Approval Management
-        #endregion
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Approved_Or_Rejected_By_Management @Ids, @Is_Approved, @Is_Rejected, @User_Id", _ids, _is_Approved, _is_Rejected, _user_Id));
+
+            return result;
+        }
         #endregion
     }
 }
