@@ -337,6 +337,8 @@ namespace astute.CoreModel
         public static string SearchedReportCreated = "Searched report has been added successfully.";
         public static string SearchedReportUpdated = "Searched report has been updated successfully.";
         public static string SearchedReportDeleted = "Searched report has been deleted successfully.";
+        public static string ReportRolesSaveLayout = "Report roles layout saved successfully.";
+
         #endregion
 
         #region Cart/Review/Approval Management

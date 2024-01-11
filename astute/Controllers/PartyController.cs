@@ -3648,11 +3648,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_report_users_role")]
         [Authorize]
-        public async Task<IActionResult> Get_Report_Users_Role(int id, int user_Id)
+        public async Task<IActionResult> Get_Report_Users_Role(int id, int user_Id, string user_Type)
         {
             try
             {
-                var result = await _supplierService.Get_Report_Users_Role(id, user_Id);
+                var result = await _supplierService.Get_Report_Users_Role(id, user_Id, user_Type);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -3667,6 +3667,113 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Report_Users_Role", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("create_update_report_user_role")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Report_User_Role(Report_Users_Role_Model report_User_Roles)
+        {
+            try
+            {
+                if (report_User_Roles != null)
+                {
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Rd_Id", typeof(int));
+                    dataTable.Columns.Add("User_Id", typeof(int));
+                    dataTable.Columns.Add("Display_Type", typeof(string));
+                    dataTable.Columns.Add("Order_By", typeof(string));
+                    dataTable.Columns.Add("Short_No", typeof(int));
+                    dataTable.Columns.Add("Width", typeof(int));
+                    dataTable.Columns.Add("Column_Format", typeof(string));
+                    dataTable.Columns.Add("Alignment", typeof(string));
+                    dataTable.Columns.Add("Fore_Colour", typeof(string));
+                    dataTable.Columns.Add("Back_Colour", typeof(string));
+                    dataTable.Columns.Add("IsBold", typeof(bool));
+
+                    var UserIds = report_User_Roles.User_Ids.Split(",");
+
+                    if (UserIds != null)
+                    {
+                        foreach (var item in UserIds)
+                        {
+                            foreach (var item1 in report_User_Roles.Report_Roles)
+                            {
+                                dataTable.Rows.Add(item1.Rd_Id, item, item1.Display_Type,item1.Order_By, item1.Short_No,item1.Width,item1.Column_Format, item1.Alignment, item1.Fore_Colour, item1.Back_Colour, item1.IsBold);
+                            }
+                        }
+                        var result = await _supplierService.Create_Update_Report_User_Role(dataTable);
+                        if (result > 0)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.ReportRoles,
+                            });
+                        }
+                    }
+
+                }
+                return BadRequest(ModelState);
+
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Report_User_Role", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("create_update_report_users_role_save_layout")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Report_Users_Role_Save_Layout(Report_Users_Role_Save_Layout_Model report_Users_Role_Save_Layout_Model )
+        {
+            try
+            {
+                if (report_Users_Role_Save_Layout_Model != null)
+                {
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Rd_Id", typeof(int));
+                    dataTable.Columns.Add("User_Id", typeof(int));
+
+                    var UserIds = report_Users_Role_Save_Layout_Model.User_Ids.Split(",");
+
+                    if (UserIds != null)
+                    {
+                        foreach (var item in UserIds)
+                        {
+                            foreach (var item1 in report_Users_Role_Save_Layout_Model.Report_Role_Save_Layout_Models)
+                            {
+                                dataTable.Rows.Add(item1.Id, item);
+                            }
+                        }
+                        var result = await _supplierService.Create_Update_Report_Users_Role_Save_Layout(dataTable);
+                        if (result > 0)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.ReportRolesSaveLayout
+                            });
+                        }
+                    }
+
+                }
+                return BadRequest(ModelState);
+
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Report_Users_Role_Save_Layout", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

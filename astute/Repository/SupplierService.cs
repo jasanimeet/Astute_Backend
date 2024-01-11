@@ -1402,7 +1402,19 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Report_Users_Role(int id, int user_Id)
+        public async Task<int> Create_Update_Report_Users_Role_Save_Layout(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@Report_Users_Role_Save_Layout_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Report_Users_Role_Save_Layout_Table_Type",
+                Value = dataTable
+            };
+
+            var result = await _dbContext.Database.ExecuteSqlRawAsync(@"EXEC [Report_Users_Role_Save_Layout_Insert_Update] @Report_Users_Role_Save_Layout_Table_Type", parameter);
+
+            return result;
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Report_Users_Role(int id, int user_Id,string user_Type)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -1412,6 +1424,7 @@ namespace astute.Repository
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(id > 0 ? new SqlParameter("@Id", id) : new SqlParameter("@Id", DBNull.Value));
                     command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(user_Type) ? new SqlParameter("@User_Type", user_Type) : new SqlParameter("@User_Type", DBNull.Value));
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
