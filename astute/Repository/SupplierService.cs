@@ -1402,18 +1402,6 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<int> Create_Update_Report_Users_Role_Save_Layout(DataTable dataTable)
-        {
-            var parameter = new SqlParameter("@Report_Users_Role_Save_Layout_Table_Type", SqlDbType.Structured)
-            {
-                TypeName = "dbo.Report_Users_Role_Save_Layout_Table_Type",
-                Value = dataTable
-            };
-
-            var result = await _dbContext.Database.ExecuteSqlRawAsync(@"EXEC [Report_Users_Role_Save_Layout_Insert_Update] @Report_Users_Role_Save_Layout_Table_Type", parameter);
-
-            return result;
-        }
         public async Task<List<Dictionary<string, object>>> Get_Report_Users_Role(int id, int user_Id,string user_Type)
         {
             var result = new List<Dictionary<string, object>>();
