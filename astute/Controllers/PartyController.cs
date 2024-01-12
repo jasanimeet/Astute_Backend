@@ -3914,6 +3914,111 @@ namespace astute.Controllers
                 });
             }
         }
+
+
+        [HttpGet]
+        [Route("get_report_layout_save")]
+        [Authorize]
+        public async Task<IActionResult> Get_Report_Layout_Save(int User_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Report_Layout_Save(User_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Report_Layout_Save", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("create_update_report_layout_save")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Report_Layout_Save(Report_Layout_Save report_Layout_Save)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _supplierService.Create_Update_Report_Layout_Save(report_Layout_Save);
+                    if (result == "success")
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = report_Layout_Save.Id> 0 ? CoreCommonMessage.LayoutReportUpdated : CoreCommonMessage.LayoutReportCreated
+                        });
+                    }
+                    else if (result == "exist")
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.LayoutReportNameExist,
+                        });
+
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Report_Layout_Save", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_report_layout_save")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Report_Layout_Save(int id)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _supplierService.Delete_Report_Layout_Save(id);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.LayoutReportDeleted
+                        });
+                    }
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Report_Layout_Save", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Cart/Approval Management        

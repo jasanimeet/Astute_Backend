@@ -83,6 +83,10 @@ namespace astute.Repository
         Task<int> Create_Update_Report_Search(Report_Search_Save report_Search_Save);
         Task<List<Dictionary<string, object>>> Get_Report_Search();
         Task<int> Delete_Report_Search(int id);
+        Task<string> Create_Update_Report_Layout_Save(Report_Layout_Save report_Layout_Save);
+        Task<List<Dictionary<string, object>>> Get_Report_Layout_Save(int User_Id);
+
+        Task<int> Delete_Report_Layout_Save(int id);
         #endregion
     }
 }
