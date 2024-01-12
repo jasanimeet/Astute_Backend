@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -4042,6 +4043,163 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Approved_Or_Rejected_by_Management", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region Get GIA Certificate Data
+        [HttpGet]
+        [Route("get_gia_cert_data")]
+        [Authorize]
+        public async Task<IActionResult> Get_GIA_Cert_Data(string cert_no)
+        {
+            var key = _configuration["Sunrise_Key"];
+            try
+            {
+                var query = @"
+                             query ReportQuery($ReportNumber: String!) {
+                                getReport(report_number: $ReportNumber){
+                                    report_number
+                                    report_date
+                                    results {
+                                        __typename
+                                        ... on DiamondGradingReportResults {
+                                             measurements
+                                             carat_weight
+                                             color_grade
+                                             color_origin
+                                             color_distribution
+                                             clarity_grade
+                                             cut_grade
+                                             polish
+                                             symmetry
+                                             fluorescence
+                                             clarity_characteristics
+                                             key_to_symbols
+                                             {
+                                                characteristic
+                                             }
+                                             inscriptions
+                                             report_comments
+                                             proportions {
+                                                      depth_pct
+                                                      table_pct
+                                                      crown_angle
+                                                      crown_height
+                                                      pavilion_angle
+                                                      pavilion_depth
+                                                      star_length
+                                                      lower_half
+                                                      girdle
+                                                      culet
+                                                    }
+                                              data {
+                                                    shape {
+                                                        shape_category
+                                                        shape_code
+                                                        shape_group
+                                                        shape_group_code
+                                                        }
+                                                        weight {
+                                                            weight
+                                                            weight_unit
+                                                        }
+                                                        color {
+                                                            color_grade_code
+                                                            color_modifier
+                                                        }
+                                                        clarity
+                                                        cut
+                                                        polish
+                                                        symmetry
+                                                        fluorescence {
+                                                            fluorescence_intensity
+                                                            fluorescence_color
+                                                        }
+                                                        girdle {
+                                                            girdle_condition
+                                                            girdle_condition_code
+                                                            girdle_pct
+                                                            girdle_size
+                                                            girdle_size_code
+                                                        }
+                                                        culet {
+                                                            culet_code
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            links {
+                                                pdf
+                                                proportions_diagram
+                                                plotting_diagram
+                                                digital_card
+                                            }
+                                    quota {
+                                        remaining
+                                    }
+                                }
+                            }
+                            ";
+
+                var lst_Cert_No = cert_no.Split(",").ToList();
+                DataTable dataTable = new DataTable();
+                int sr_No = 1;
+                if (lst_Cert_No != null && lst_Cert_No.Count > 0)
+                {
+                    foreach (var item in lst_Cert_No)
+                    {
+                        var query_variables = new Dictionary<string, string>
+                        {
+                            { "ReportNumber", item}
+                        };
+
+                        var body = new Dictionary<string, object>
+                        {
+                            { "query", query },
+                            { "variables", query_variables }
+                        };
+
+                        string json = System.Text.Json.JsonSerializer.Serialize(body);
+                        //var client = new WebClient();
+                        //string url = "https://api.reportresults.gia.edu";
+
+                        //client.Headers.Add(HttpRequestHeader.Authorization, key);
+                        //client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+
+                        //var response = client.UploadString(url, json);
+
+                        //return Ok(response);
+
+                        using (HttpClient client = new HttpClient())
+                        {
+                            string url = "https://api.reportresults.gia.edu";
+                            //string url = "https://gialaboratory.github.io/";
+
+                            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", key);
+                            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+                            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                            HttpResponseMessage response = await client.PostAsync(url, content);
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                string responseData = await response.Content.ReadAsStringAsync();
+                                return Ok(responseData);
+                            }
+                        }
+                    }
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_GIA_Cert_Data", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

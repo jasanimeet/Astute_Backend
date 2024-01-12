@@ -1522,7 +1522,7 @@ namespace astute.Repository
             var name = new SqlParameter("@Name", report_Search_Save.Name);
             var search_Value = new SqlParameter("@Search_Value", report_Search_Save.Search_Value);
 
-            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Search_Save_Create_Update @Id, @Name, @Search_Value", id, name, search_Value));
+            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Search_Save_Insert_Update @Id, @Name, @Search_Value", id, name, search_Value));
 
             return result;
         }
