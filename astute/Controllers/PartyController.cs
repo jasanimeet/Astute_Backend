@@ -8,11 +8,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -571,6 +573,65 @@ namespace astute.Controllers
 
             // Return 0 if no numeric values were found
             return "0";
+        }
+        private DataTable Set_GIA_Lab_Parameter_Column_In_Datatable(DataTable dataTable, IList<GIA_Lab_Parameter> gIA_Lab_Parameters)
+        {
+            dataTable.Columns.Add("Report_No", typeof(string));
+            dataTable.Columns.Add("Report_Date", typeof(string));
+            dataTable.Columns.Add("Length", typeof(float));
+            dataTable.Columns.Add("Width", typeof(float));
+            dataTable.Columns.Add("Depth", typeof(float));
+            dataTable.Columns.Add("Color_Grade", typeof(string));
+            dataTable.Columns.Add("Clarity_Grade", typeof(string));
+            dataTable.Columns.Add("Cut_Grade", typeof(string));
+            dataTable.Columns.Add("Polish_Grade", typeof(string));
+            dataTable.Columns.Add("Symmetry_Grade", typeof(string));
+            dataTable.Columns.Add("Fluorescence", typeof(string));
+            dataTable.Columns.Add("Inscriptions", typeof(string));
+            dataTable.Columns.Add("Key_To_Symbols", typeof(string));
+            dataTable.Columns.Add("Report_Comments", typeof(string));
+            dataTable.Columns.Add("Table_Pct", typeof(float));
+            dataTable.Columns.Add("Depth_Pct", typeof(float));
+            dataTable.Columns.Add("Crown_Angle", typeof(float));
+            dataTable.Columns.Add("Crown_Height", typeof(float));
+            dataTable.Columns.Add("Pavilion_Angle", typeof(float));
+            dataTable.Columns.Add("Pavilion_Depth", typeof(float));
+            dataTable.Columns.Add("Star_Length", typeof(float));
+            dataTable.Columns.Add("Lower_Half", typeof(float));
+            dataTable.Columns.Add("Shape_Code", typeof(string));
+            dataTable.Columns.Add("Shape_Group", typeof(string));
+            dataTable.Columns.Add("Carats", typeof(float));
+            dataTable.Columns.Add("Clarity", typeof(string));
+            dataTable.Columns.Add("Cut", typeof(string));
+            dataTable.Columns.Add("Polish", typeof(string));
+            dataTable.Columns.Add("Symmetry", typeof(string));
+            dataTable.Columns.Add("Fluorescence_Intensity", typeof(string));
+            dataTable.Columns.Add("Fluorescence_Color");
+            dataTable.Columns.Add("Girdle_Condition", typeof(string));
+            dataTable.Columns.Add("Girdle_Condition_Code", typeof(string));
+            dataTable.Columns.Add("Girdle_Pct", typeof(float));
+            dataTable.Columns.Add("Girdle_Size", typeof(string));
+            dataTable.Columns.Add("Girdle_Size_Code", typeof(string));
+            dataTable.Columns.Add("Culet_Code", typeof(string));
+            dataTable.Columns.Add("Certificate_PDF", typeof(string));
+            dataTable.Columns.Add("Plotting_Diagram", typeof(string));
+            dataTable.Columns.Add("Proportions_Diagram", typeof(string));
+            dataTable.Columns.Add("Digital_Card", typeof(string));
+
+            if(gIA_Lab_Parameters != null && gIA_Lab_Parameters.Count > 0)
+            {
+                foreach (var item in gIA_Lab_Parameters)
+                {
+                    dataTable.Rows.Add(item.Report_No,item.Report_Date, item.Length, item.Width, item.Depth, item.Color_Grade, item.Clarity_Grade, item.Cut_Grade, item.Polish_Grade
+                                        ,item.Symmetry_Grade, item.Fluorescence, item.Inscriptions, item.Key_To_Symbols, item.Report_Comments, item.Table_Pct, item.Depth_Pct, item.Crown_Angle
+                                        ,item.Crown_Height, item.Pavilion_Angle, item.Pavilion_Depth, item.Star_Length, item.Lower_Half, item.Shape_Code, item.Shape_Group, item.Carats
+                                        ,item.Clarity, item.Cut, item.Polish, item.Symmetry, item.Fluorescence_Intensity, item.Fluorescence_Color, item.Girdle_Condition, item.Girdle_Condition_Code
+                                        ,item.Girdle_Pct, item.Girdle_Size, item.Girdle_Size_Code, item.Culet_Code, item.Certificate_PDF, item.Plotting_Diagram, item.Proportions_Diagram
+                                        ,item.Digital_Card);
+                }
+            }
+
+            return dataTable;
         }
         #endregion
 
@@ -2828,81 +2889,81 @@ namespace astute.Controllers
 
                                                 }
 
-                                                //List<string> columnNames = new List<string>();
-                                                //List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
+                                                List<string> columnNames = new List<string>();
+                                                List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
 
-                                                //if (worksheet != null)
-                                                //{
-                                                //    // Get column names
-                                                //    int totalColumns = worksheet.Dimension.End.Column;
-                                                //    int headerRow = 1;
+                                                if (worksheet != null)
+                                                {
+                                                    // Get column names
+                                                    int totalColumns = worksheet.Dimension.End.Column;
+                                                    int headerRow = 1;
 
-                                                //    for (int col = 1; col <= totalColumns; col++)
-                                                //    {
-                                                //        var cellValue = worksheet.Cells[headerRow, col].Value;
-                                                //        if (cellValue != null)
-                                                //        {
-                                                //            columnNames.Add(cellValue.ToString());
-                                                //        }
-                                                //    }
+                                                    for (int col = 1; col <= totalColumns; col++)
+                                                    {
+                                                        var cellValue = worksheet.Cells[headerRow, col].Value;
+                                                        if (cellValue != null)
+                                                        {
+                                                            columnNames.Add(cellValue.ToString());
+                                                        }
+                                                    }
 
-                                                //    // Get row values
-                                                //    int totalRows = worksheet.Dimension.End.Row;
+                                                    // Get row values
+                                                    int totalRows = worksheet.Dimension.End.Row;
 
-                                                //    for (int row = headerRow + 1; row <= totalRows; row++)
-                                                //    {
-                                                //        Dictionary<string, object> rowData = new Dictionary<string, object>();
+                                                    for (int row = headerRow + 1; row <= totalRows; row++)
+                                                    {
+                                                        Dictionary<string, object> rowData = new Dictionary<string, object>();
 
-                                                //        for (int col = 1; col <= totalColumns; col++)
-                                                //        {
-                                                //            string columnName = columnNames[col - 1];
-                                                //            var cell = worksheet.Cells[row, col];
-                                                //            var cellValue = cell.Value;
+                                                        for (int col = 1; col <= totalColumns; col++)
+                                                        {
+                                                            string columnName = columnNames[col - 1];
+                                                            var cell = worksheet.Cells[row, col];
+                                                            var cellValue = cell.Value;
 
-                                                //            if (cell.Hyperlink != null && cell.Hyperlink.AbsoluteUri != null)
-                                                //            {
-                                                //                string linkUrl = cell.Hyperlink.AbsoluteUri;
-                                                //                rowData.Add(columnName, linkUrl);
-                                                //            }
-                                                //            else
-                                                //            {
-                                                //                rowData.Add(columnName, cellValue);
-                                                //            }
-                                                //        }
+                                                            if (cell.Hyperlink != null && cell.Hyperlink.AbsoluteUri != null)
+                                                            {
+                                                                string linkUrl = cell.Hyperlink.AbsoluteUri;
+                                                                rowData.Add(columnName, linkUrl);
+                                                            }
+                                                            else
+                                                            {
+                                                                rowData.Add(columnName, cellValue);
+                                                            }
+                                                        }
 
-                                                //        rowsData.Add(rowData);
-                                                //    }
+                                                        rowsData.Add(rowData);
+                                                    }
 
-                                                //    //Save File
-                                                //    int colIndex = 1;
-                                                //    foreach (var columnName in columnNames)
-                                                //    {
-                                                //        worksheet.Cells[1, colIndex].Value = columnName;
-                                                //        colIndex++;
-                                                //    }
+                                                    //Save File
+                                                    int colIndex = 1;
+                                                    foreach (var columnName in columnNames)
+                                                    {
+                                                        worksheet.Cells[1, colIndex].Value = columnName;
+                                                        colIndex++;
+                                                    }
 
-                                                //    // Write row data
-                                                //    int rowIndex = 2;
-                                                //    foreach (var row in rowsData)
-                                                //    {
-                                                //        colIndex = 1;
-                                                //        foreach (var cellValue in row.Values)
-                                                //        {
-                                                //            worksheet.Cells[rowIndex, colIndex].Value = cellValue;
-                                                //            colIndex++;
-                                                //        }
-                                                //        rowIndex++;
-                                                //    }
-                                                //    try
-                                                //    {
-                                                //        string outputFilePath2 = Path.Combine(filePath, strFile);
-                                                //        package.SaveAs(new FileInfo(outputFilePath2));
-                                                //    }
-                                                //    catch (Exception ex)
-                                                //    {
+                                                    // Write row data
+                                                    int rowIndex = 2;
+                                                    foreach (var row in rowsData)
+                                                    {
+                                                        colIndex = 1;
+                                                        foreach (var cellValue in row.Values)
+                                                        {
+                                                            worksheet.Cells[rowIndex, colIndex].Value = cellValue;
+                                                            colIndex++;
+                                                        }
+                                                        rowIndex++;
+                                                    }
+                                                    try
+                                                    {
+                                                        string outputFilePath2 = Path.Combine(filePath, strFile);
+                                                        package.SaveAs(new FileInfo(outputFilePath2));
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
 
-                                                //    }
-                                                //}
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -4160,12 +4221,28 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_gia_cert_data")]
         [Authorize]
-        public async Task<IActionResult> Get_GIA_Cert_Data(string cert_no)
-        {
+        public async Task<IActionResult> Get_GIA_Cert_Data(string cert_no, string report_Date)
+        {   
             var key = _configuration["Sunrise_Key"];
             try
             {
-                var query = @"
+                if (!string.IsNullOrEmpty(report_Date))
+                {
+                    var result = await _supplierService.GIA_Lab_Parameter(report_Date);
+                    if(result != null && result.Count > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = result
+                        });
+                    }
+                    return NoContent();
+                }
+                else
+                {
+                    var query = @"
                              query ReportQuery($ReportNumber: String!) {
                                 getReport(report_number: $ReportNumber){
                                     report_number
@@ -4251,60 +4328,268 @@ namespace astute.Controllers
                             }
                             ";
 
-                var lst_Cert_No = cert_no.Split(",").ToList();
-                DataTable dataTable = new DataTable();
-                int sr_No = 1;
-                if (lst_Cert_No != null && lst_Cert_No.Count > 0)
-                {
-                    foreach (var item in lst_Cert_No)
+                    var lst_Cert_No = cert_no.Split(",").ToList();
+                    DataTable dataTable = new DataTable();
+                    #region Set Column In Datatable
+                    dataTable.Columns.Add("Report_No", typeof(string));
+                    dataTable.Columns.Add("Report_Date", typeof(string));
+                    dataTable.Columns.Add("Length", typeof(float));
+                    dataTable.Columns.Add("Width", typeof(float));
+                    dataTable.Columns.Add("Depth", typeof(float));
+                    dataTable.Columns.Add("Color_Grade", typeof(string));
+                    dataTable.Columns.Add("Clarity_Grade", typeof(string));
+                    dataTable.Columns.Add("Cut_Grade", typeof(string));
+                    dataTable.Columns.Add("Polish_Grade", typeof(string));
+                    dataTable.Columns.Add("Symmetry_Grade", typeof(string));
+                    dataTable.Columns.Add("Fluorescence", typeof(string));
+                    dataTable.Columns.Add("Inscriptions", typeof(string));
+                    dataTable.Columns.Add("Key_To_Symbols", typeof(string));
+                    dataTable.Columns.Add("Report_Comments", typeof(string));
+                    dataTable.Columns.Add("Table_Pct", typeof(float));
+                    dataTable.Columns.Add("Depth_Pct", typeof(float));
+                    dataTable.Columns.Add("Crown_Angle", typeof(float));
+                    dataTable.Columns.Add("Crown_Height", typeof(float));
+                    dataTable.Columns.Add("Pavilion_Angle", typeof(float));
+                    dataTable.Columns.Add("Pavilion_Depth", typeof(float));
+                    dataTable.Columns.Add("Star_Length", typeof(float));
+                    dataTable.Columns.Add("Lower_Half", typeof(float));
+                    dataTable.Columns.Add("Shape_Code", typeof(string));
+                    dataTable.Columns.Add("Shape_Group", typeof(string));
+                    dataTable.Columns.Add("Carats", typeof(float));
+                    dataTable.Columns.Add("Clarity", typeof(string));
+                    dataTable.Columns.Add("Cut", typeof(string));
+                    dataTable.Columns.Add("Polish", typeof(string));
+                    dataTable.Columns.Add("Symmetry", typeof(string));
+                    dataTable.Columns.Add("Fluorescence_Intensity", typeof(string));
+                    dataTable.Columns.Add("Fluorescence_Color");
+                    dataTable.Columns.Add("Girdle_Condition", typeof(string));
+                    dataTable.Columns.Add("Girdle_Condition_Code", typeof(string));
+                    dataTable.Columns.Add("Girdle_Pct", typeof(float));
+                    dataTable.Columns.Add("Girdle_Size", typeof(string));
+                    dataTable.Columns.Add("Girdle_Size_Code", typeof(string));
+                    dataTable.Columns.Add("Culet_Code", typeof(string));
+                    dataTable.Columns.Add("Certificate_PDF", typeof(string));
+                    dataTable.Columns.Add("Plotting_Diagram", typeof(string));
+                    dataTable.Columns.Add("Proportions_Diagram", typeof(string));
+                    dataTable.Columns.Add("Digital_Card", typeof(string));
+                    #endregion
+                    if (lst_Cert_No != null && lst_Cert_No.Count > 0)
                     {
-                        var query_variables = new Dictionary<string, string>
+                        foreach (var item in lst_Cert_No)
                         {
-                            { "ReportNumber", item}
-                        };
-
-                        var body = new Dictionary<string, object>
-                        {
-                            { "query", query },
-                            { "variables", query_variables }
-                        };
-
-                        string json = System.Text.Json.JsonSerializer.Serialize(body);
-                        //var client = new WebClient();
-                        //string url = "https://api.reportresults.gia.edu";
-
-                        //client.Headers.Add(HttpRequestHeader.Authorization, key);
-                        //client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-
-                        //var response = client.UploadString(url, json);
-
-                        //return Ok(response);
-
-                        using (HttpClient client = new HttpClient())
-                        {
-                            string url = "https://api.reportresults.gia.edu";
-                            //string url = "https://gialaboratory.github.io/";
-
-                            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", key);
-                            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-
-                            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                            HttpResponseMessage response = await client.PostAsync(url, content);
-
-                            if (response.IsSuccessStatusCode)
+                            var query_variables = new Dictionary<string, string>
                             {
-                                string responseData = await response.Content.ReadAsStringAsync();
-                                return Ok(responseData);
+                                { "ReportNumber", item}
+                            };
+
+                            var body = new Dictionary<string, object>
+                            {
+                                { "query", query },
+                                { "variables", query_variables }
+                            };
+                            
+                            string json = System.Text.Json.JsonSerializer.Serialize(body);
+                            var client = new WebClient();
+                            string url = "https://api.reportresults.gia.edu";
+
+                            client.Headers.Add(HttpRequestHeader.Authorization, key);
+                            client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+
+                            var responseData = client.UploadString(url, json);
+
+                            GIA_Report gIA_Report = JsonConvert.DeserializeObject<GIA_Report>(responseData);
+                            if (gIA_Report != null && gIA_Report.Data.GetReport != null && !string.IsNullOrEmpty(gIA_Report.Data.GetReport.ReportNumber))
+                            {
+                                DataRow dataRow = dataTable.NewRow();
+                                var measurements = gIA_Report.Data.GetReport.Results.Measurements;
+                                string[] arrMeasurements = null;
+                                arrMeasurements = measurements.Split('-', 'x');
+
+                                dataRow["Report_No"] = gIA_Report.Data.GetReport.ReportNumber;
+                                dataRow["Report_Date"] = Convert.ToDateTime(gIA_Report.Data.GetReport.ReportDate).ToString("dd-MM-yyyy");
+                                if (arrMeasurements != null && arrMeasurements.Length == 3)
+                                {
+                                    var length = arrMeasurements[1].ToString().Replace("mm", "").Trim();
+                                    var width = arrMeasurements[0].ToString().Replace("mm", "").Trim();
+                                    var depth = arrMeasurements[2].ToString().Replace("mm", "").Trim();
+                                    dataRow["Length"] = float.Parse(length);
+                                    dataRow["Width"] = float.Parse(width);
+                                    dataRow["Depth"] = float.Parse(depth);
+                                }
+                                else
+                                {
+                                    dataRow["Length"] = DBNull.Value;
+                                    dataRow["Width"] = DBNull.Value;
+                                    dataRow["Depth"] = DBNull.Value;
+                                }
+                                dataRow["Color_Grade"] = gIA_Report.Data.GetReport.Results.ColorGrade;
+                                dataRow["Clarity_Grade"] = gIA_Report.Data.GetReport.Results.ClarityGrade;
+                                dataRow["Cut_Grade"] = gIA_Report.Data.GetReport.Results.CutGrade;
+                                dataRow["Polish_Grade"] = gIA_Report.Data.GetReport.Results.Polish;
+                                dataRow["Symmetry_Grade"] = gIA_Report.Data.GetReport.Results.Symmetry;
+                                dataRow["Fluorescence"] = gIA_Report.Data.GetReport.Results.Fluorescence;
+                                dataRow["Inscriptions"] = gIA_Report.Data.GetReport.Results.Inscriptions;
+                                if (gIA_Report.Data.GetReport.Results.KeyToSymbols != null)
+                                {
+                                    string keyToSymbols = "";
+                                    foreach (var obj in gIA_Report.Data.GetReport.Results.KeyToSymbols)
+                                    {
+                                        keyToSymbols += (keyToSymbols.Length == 0 ? "" : ", ") + obj.characteristic;
+                                    }
+                                    dataRow["Key_To_Symbols"] = keyToSymbols;
+                                }
+                                else
+                                {
+                                    dataRow["Key_To_Symbols"] = DBNull.Value;
+                                }
+                                dataRow["Report_Comments"] = gIA_Report.Data.GetReport.Results.ReportComments;
+                                if (gIA_Report.Data.GetReport.Results.Proportions != null)
+                                {
+                                    dataRow["Table_Pct"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.TablePct) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.TablePct) : DBNull.Value;
+                                    dataRow["Depth_Pct"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.DepthPct) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.DepthPct) : DBNull.Value;
+                                    dataRow["Crown_Angle"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.CrownAngle) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.CrownAngle) : DBNull.Value;
+                                    dataRow["Crown_Height"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.CrownHeight) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.CrownHeight) : DBNull.Value;
+                                    dataRow["Pavilion_Angle"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.PavilionAngle) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.PavilionAngle) : DBNull.Value;
+                                    dataRow["Pavilion_Depth"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.PavilionDepth) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.PavilionDepth) : DBNull.Value;
+                                    dataRow["Star_Length"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.StarLength) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.StarLength) : DBNull.Value;
+                                    dataRow["Lower_Half"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.LowerHalf) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.LowerHalf) : DBNull.Value;
+                                }
+                                else
+                                {
+                                    dataRow["Table_Pct"] = DBNull.Value;
+                                    dataRow["Depth_Pct"] = DBNull.Value;
+                                    dataRow["Crown_Angle"] = DBNull.Value;
+                                    dataRow["Crown_Height"] = DBNull.Value;
+                                    dataRow["Pavilion_Angle"] = DBNull.Value;
+                                    dataRow["Pavilion_Depth"] = DBNull.Value;
+                                    dataRow["Star_Length"] = DBNull.Value;
+                                    dataRow["Lower_Half"] = DBNull.Value;
+                                }
+                                if (gIA_Report.Data.GetReport.Results.Data.Shape != null)
+                                {
+                                    dataRow["Shape_Code"] = gIA_Report.Data.GetReport.Results.Data.Shape.ShapeCode;
+                                    dataRow["Shape_Group"] = gIA_Report.Data.GetReport.Results.Data.Shape.ShapeGroup;
+                                }
+                                else
+                                {
+                                    dataRow["Shape_Code"] = DBNull.Value;
+                                    dataRow["Shape_Group"] = DBNull.Value;
+                                }
+                                dataRow["Carats"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Data.Weight.WeightWeight) ? float.Parse(gIA_Report.Data.GetReport.Results.Data.Weight.WeightWeight) : DBNull.Value;
+                                dataRow["Clarity"] = gIA_Report.Data.GetReport.Results.Data.Clarity;
+                                dataRow["Cut"] = gIA_Report.Data.GetReport.Results.Data.Cut;
+                                dataRow["Polish"] = gIA_Report.Data.GetReport.Results.Data.Polish;
+                                dataRow["Symmetry"] = gIA_Report.Data.GetReport.Results.Data.Symmetry;
+                                if (gIA_Report.Data.GetReport.Results.Data.Fluorescence != null)
+                                {
+                                    dataRow["Fluorescence_Intensity"] = gIA_Report.Data.GetReport.Results.Data.Fluorescence.FluorescenceIntensity;
+                                    dataRow["Fluorescence_Color"] = gIA_Report.Data.GetReport.Results.Data.Fluorescence.FluorescenceColor;
+                                }
+                                else
+                                {
+                                    dataRow["Fluorescence_Intensity"] = DBNull.Value;
+                                    dataRow["Fluorescence_Color"] = DBNull.Value;
+                                }
+                                if (gIA_Report.Data.GetReport.Results.Data.Girdle != null)
+                                {
+                                    dataRow["Girdle_Condition"] = gIA_Report.Data.GetReport.Results.Data.Girdle.GirdleCondition;
+                                    dataRow["Girdle_Condition_Code"] = gIA_Report.Data.GetReport.Results.Data.Girdle.GirdleConditionCode;
+                                    dataRow["Girdle_Pct"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Data.Girdle.GirdlePct) ? float.Parse(gIA_Report.Data.GetReport.Results.Data.Girdle.GirdlePct) : DBNull.Value;
+                                    dataRow["Girdle_Size"] = gIA_Report.Data.GetReport.Results.Data.Girdle.GirdleSize;
+                                    dataRow["Girdle_Size_Code"] = gIA_Report.Data.GetReport.Results.Data.Girdle.GirdleSizeCode;
+                                }
+                                else
+                                {
+                                    dataRow["Girdle_Condition"] = DBNull.Value;
+                                    dataRow["Girdle_Condition_Code"] = DBNull.Value;
+                                    dataRow["Girdle_Pct"] = DBNull.Value;
+                                    dataRow["Girdle_Size"] = DBNull.Value;
+                                    dataRow["Girdle_Size_Code"] = DBNull.Value;
+                                }
+                                dataRow["Culet_Code"] = gIA_Report.Data.GetReport.Results.Data.Culet.CuletCode;
+                                if (gIA_Report.Data.GetReport.Links != null)
+                                {
+                                    dataRow["Certificate_PDF"] = gIA_Report.Data.GetReport.Links.Pdf;
+                                    dataRow["Plotting_Diagram"] = gIA_Report.Data.GetReport.Links.PlottingDiagram;
+                                    dataRow["Proportions_Diagram"] = gIA_Report.Data.GetReport.Links.ProportionsDiagram;
+                                    dataRow["Digital_Card"] = gIA_Report.Data.GetReport.Links.DigitalCard;
+                                }
+                                else
+                                {
+                                    dataRow["Certificate_PDF"] = DBNull.Value;
+                                    dataRow["Plotting_Diagram"] = DBNull.Value;
+                                    dataRow["Proportions_Diagram"] = DBNull.Value;
+                                    dataRow["Digital_Card"] = DBNull.Value;
+                                }
+                                dataTable.Rows.Add(dataRow);
                             }
                         }
+
+                        var result = new List<Dictionary<string, object>>();
+                        foreach (DataRow row in dataTable.Rows)
+                        {
+                            var dict = new Dictionary<string, object>();
+                            foreach (DataColumn col in dataTable.Columns)
+                            {
+                                if (row[col] == DBNull.Value)
+                                {
+                                    dict[col.ColumnName] = null;
+                                }
+                                else
+                                {
+                                    dict[col.ColumnName] = row[col];
+                                }
+                            }
+                            result.Add(dict);
+                        }
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = result
+                        });
                     }
+                    return NoContent();
                 }
-                return NoContent();
+                return BadRequest();
             }
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_GIA_Cert_Data", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("save_gia_lab_cert_data")]
+        [Authorize]
+        public async Task<IActionResult> Save_GIA_Lab_Cert_Data(IList<GIA_Lab_Parameter> gIA_Lab_Parameters)
+        {
+            try
+            {
+                if(gIA_Lab_Parameters != null && gIA_Lab_Parameters.Count > 0)
+                {
+                    DataTable dataTable = new DataTable();
+                    dataTable = Set_GIA_Lab_Parameter_Column_In_Datatable(new DataTable(), gIA_Lab_Parameters);
+                    var result = await _supplierService.Insert_GIA_Lab_Parameter(dataTable);
+                    if(result > 0)
+                    {
+                        return Ok(new 
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = "GIA lab parameter saved successfully."
+                        });
+                    }
+                    return BadRequest();
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Save_GIA_Lab_Cert_Data", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

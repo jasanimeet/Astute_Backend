@@ -1,6 +1,7 @@
 ﻿using astute.CoreServices;
 using astute.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -957,7 +958,6 @@ namespace astute.Repository
 
         //    return result;
         //}
-
         public async Task<int> Supplier_Stock_Insert_Update(int supplier_Id, int stock_Data_Id)
         {
             var _supplier_Id = new SqlParameter("@Supplier_Id", supplier_Id);
@@ -991,7 +991,6 @@ namespace astute.Repository
 
             return result;
         }
-
         public async Task<int> Stock_Data_Shedular_Insert_Update(DataTable dataTable, int Stock_Data_Id)
         {
             var parameter = new SqlParameter("@Stock_data", SqlDbType.Structured)
@@ -1617,6 +1616,54 @@ namespace astute.Repository
         public async Task<int> Delete_Report_Layout_Save(int id)
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Report_Layout_Save_Delete {id}"));
+        }
+        #endregion
+
+        #region GIA Lap Parameter
+        public async Task<int> Insert_GIA_Lab_Parameter(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@tblGIA_Lab_Parameter", SqlDbType.Structured)
+            {
+                TypeName = "dbo.[GIA_Lab_Parameter_Table_Type]",
+                Value = dataTable
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+            .ExecuteSqlRawAsync(@"EXEC GIA_Lab_Parameter_Insert_Update @tblGIA_Lab_Parameter", parameter));
+
+            return result;
+        }
+        public async Task<List<Dictionary<string, object>>> GIA_Lab_Parameter(string report_Date)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("GIA_Lab_Parameter_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(report_Date) ? new SqlParameter("@Report_Date", report_Date) : new SqlParameter("@Report_Date", DBNull.Value));
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
         }
         #endregion
     }

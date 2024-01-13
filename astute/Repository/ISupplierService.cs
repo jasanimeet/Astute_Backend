@@ -88,5 +88,10 @@ namespace astute.Repository
 
         Task<int> Delete_Report_Layout_Save(int id);
         #endregion
+
+        #region GIA Lap Parameter
+        Task<int> Insert_GIA_Lab_Parameter(DataTable dataTable);
+        Task<List<Dictionary<string, object>>> GIA_Lab_Parameter(string report_Date);
+        #endregion
     }
 }
