@@ -3014,8 +3014,6 @@ namespace astute.Controllers
                                     excel_dataTable.Columns.Clear();
                                     excel_dataTable.Columns.AddRange(trimmedColumns);
 
-
-
                                     #region Add column to datatable
                                     DataTable dt_stock_data = new DataTable();
                                     dt_stock_data.Columns.Add("SUPPLIER_NO", typeof(string));
@@ -4386,10 +4384,13 @@ namespace astute.Controllers
                     dataTable.Columns.Add("Proportions_Diagram", typeof(string));
                     dataTable.Columns.Add("Digital_Card", typeof(string));
                     #endregion
+                    bool success = false;
+                    string certificate_no = "";
                     if (lst_Cert_No != null && lst_Cert_No.Count > 0)
                     {
                         foreach (var item in lst_Cert_No)
                         {
+                            certificate_no = item;
                             var query_variables = new Dictionary<string, string>
                             {
                                 { "ReportNumber", item}
@@ -4535,6 +4536,15 @@ namespace astute.Controllers
                                     dataRow["Digital_Card"] = DBNull.Value;
                                 }
                                 dataTable.Rows.Add(dataRow);
+                                success = true;
+                                if (lst_Cert_No.Count > 1)
+                                {
+                                    certificate_no += ", " + certificate_no;
+                                }
+                            }
+                            else
+                            {
+                                success = false;
                             }
                         }
 
@@ -4555,16 +4565,22 @@ namespace astute.Controllers
                             }
                             result.Add(dict);
                         }
-                        return Ok(new
+                        if (success)
                         {
-                            statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.DataSuccessfullyFound,
-                            data = result
-                        });
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.DataSuccessfullyFound,
+                                data = result
+                            });
+                        }
+                        else if(!success)
+                        {
+                            return NoContent();
+                        }
                     }
                     return NoContent();
                 }
-                return BadRequest();
             }
             catch (Exception ex)
             {
