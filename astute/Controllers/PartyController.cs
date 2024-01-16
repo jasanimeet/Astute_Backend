@@ -2857,7 +2857,7 @@ namespace astute.Controllers
                                                 var colCount = worksheet.Dimension.End.Column;
 
                                                 int rowsToCheck = Math.Max(rowCount - (rowCount - 1), 1);
-
+                                                bool is_Removed = false;
                                                 for (int row = rowCount; row >= rowsToCheck; row--)
                                                 {
                                                     bool hasData = false;
@@ -2877,93 +2877,97 @@ namespace astute.Controllers
                                                     {
                                                         worksheet.DeleteRow(row);
                                                         rowCount--;
+                                                        is_Removed = true;
                                                     }
                                                 }
-                                                try
+                                                if (is_Removed)
                                                 {
-                                                    string outputFilePath1 = Path.Combine(filePath, strFile);
-                                                    package.SaveAs(new FileInfo(outputFilePath1));
-                                                }
-                                                catch (Exception ex)
-                                                {
-
-                                                }
-
-                                                List<string> columnNames = new List<string>();
-                                                List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
-
-                                                if (worksheet != null)
-                                                {
-                                                    // Get column names
-                                                    int totalColumns = worksheet.Dimension.End.Column;
-                                                    int headerRow = 1;
-
-                                                    for (int col = 1; col <= totalColumns; col++)
-                                                    {
-                                                        var cellValue = worksheet.Cells[headerRow, col].Value;
-                                                        if (cellValue != null)
-                                                        {
-                                                            columnNames.Add(cellValue.ToString());
-                                                        }
-                                                    }
-
-                                                    // Get row values
-                                                    int totalRows = worksheet.Dimension.End.Row;
-
-                                                    for (int row = headerRow + 1; row <= totalRows; row++)
-                                                    {
-                                                        Dictionary<string, object> rowData = new Dictionary<string, object>();
-
-                                                        for (int col = 1; col <= totalColumns; col++)
-                                                        {
-                                                            string columnName = columnNames[col - 1];
-                                                            var cell = worksheet.Cells[row, col];
-                                                            var cellValue = cell.Value;
-
-                                                            if (cell.Hyperlink != null && cell.Hyperlink.AbsoluteUri != null)
-                                                            {
-                                                                string linkUrl = cell.Hyperlink.AbsoluteUri;
-                                                                rowData.Add(columnName, linkUrl);
-                                                            }
-                                                            else
-                                                            {
-                                                                rowData.Add(columnName, cellValue);
-                                                            }
-                                                        }
-
-                                                        rowsData.Add(rowData);
-                                                    }
-
-                                                    //Save File
-                                                    int colIndex = 1;
-                                                    foreach (var columnName in columnNames)
-                                                    {
-                                                        worksheet.Cells[1, colIndex].Value = columnName;
-                                                        colIndex++;
-                                                    }
-
-                                                    // Write row data
-                                                    int rowIndex = 2;
-                                                    foreach (var row in rowsData)
-                                                    {
-                                                        colIndex = 1;
-                                                        foreach (var cellValue in row.Values)
-                                                        {
-                                                            worksheet.Cells[rowIndex, colIndex].Value = cellValue;
-                                                            colIndex++;
-                                                        }
-                                                        rowIndex++;
-                                                    }
                                                     try
                                                     {
-                                                        string outputFilePath2 = Path.Combine(filePath, strFile);
-                                                        package.SaveAs(new FileInfo(outputFilePath2));
+                                                        string outputFilePath1 = Path.Combine(filePath, strFile);
+                                                        package.SaveAs(new FileInfo(outputFilePath1));
                                                     }
                                                     catch (Exception ex)
                                                     {
 
                                                     }
                                                 }
+
+                                                //List<string> columnNames = new List<string>();
+                                                //List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
+
+                                                //if (worksheet != null)
+                                                //{
+                                                //    // Get column names
+                                                //    int totalColumns = worksheet.Dimension.End.Column;
+                                                //    int headerRow = 1;
+
+                                                //    for (int col = 1; col <= totalColumns; col++)
+                                                //    {
+                                                //        var cellValue = worksheet.Cells[headerRow, col].Value;
+                                                //        if (cellValue != null)
+                                                //        {
+                                                //            columnNames.Add(cellValue.ToString());
+                                                //        }
+                                                //    }
+
+                                                //    // Get row values
+                                                //    int totalRows = worksheet.Dimension.End.Row;
+
+                                                //    for (int row = headerRow + 1; row <= totalRows; row++)
+                                                //    {
+                                                //        Dictionary<string, object> rowData = new Dictionary<string, object>();
+
+                                                //        for (int col = 1; col <= totalColumns; col++)
+                                                //        {
+                                                //            string columnName = columnNames[col - 1];
+                                                //            var cell = worksheet.Cells[row, col];
+                                                //            var cellValue = cell.Value;
+
+                                                //            if (cell.Hyperlink != null && cell.Hyperlink.AbsoluteUri != null)
+                                                //            {
+                                                //                string linkUrl = cell.Hyperlink.AbsoluteUri;
+                                                //                rowData.Add(columnName, linkUrl);
+                                                //            }
+                                                //            else
+                                                //            {
+                                                //                rowData.Add(columnName, cellValue);
+                                                //            }
+                                                //        }
+
+                                                //        rowsData.Add(rowData);
+                                                //    }
+
+                                                //    //Save File
+                                                //    int colIndex = 1;
+                                                //    foreach (var columnName in columnNames)
+                                                //    {
+                                                //        worksheet.Cells[1, colIndex].Value = columnName;
+                                                //        colIndex++;
+                                                //    }
+
+                                                //    // Write row data
+                                                //    int rowIndex = 2;
+                                                //    foreach (var row in rowsData)
+                                                //    {
+                                                //        colIndex = 1;
+                                                //        foreach (var cellValue in row.Values)
+                                                //        {
+                                                //            worksheet.Cells[rowIndex, colIndex].Value = cellValue;
+                                                //            colIndex++;
+                                                //        }
+                                                //        rowIndex++;
+                                                //    }
+                                                //    try
+                                                //    {
+                                                //        string outputFilePath2 = Path.Combine(filePath, strFile);
+                                                //        package.SaveAs(new FileInfo(outputFilePath2));
+                                                //    }
+                                                //    catch (Exception ex)
+                                                //    {
+
+                                                //    }
+                                                //}
                                             }
                                         }
                                     }
@@ -3001,8 +3005,17 @@ namespace astute.Controllers
                                 {
                                     excel_dataTable = CoreService.Convert_File_To_DataTable(".csv", fileLocation, "");
                                 }
+                                
                                 if (excel_dataTable != null && excel_dataTable.Rows.Count > 0)
-                                {
+                                {   
+                                    var trimmedColumns = excel_dataTable.Columns.Cast<DataColumn>()
+                                                        .Select(column => new DataColumn(column.ColumnName.Trim(), column.DataType))
+                                                        .ToArray();
+                                    excel_dataTable.Columns.Clear();
+                                    excel_dataTable.Columns.AddRange(trimmedColumns);
+
+
+
                                     #region Add column to datatable
                                     DataTable dt_stock_data = new DataTable();
                                     dt_stock_data.Columns.Add("SUPPLIER_NO", typeof(string));
@@ -3090,7 +3103,7 @@ namespace astute.Controllers
                                     #endregion
 
                                     foreach (DataRow row in excel_dataTable.Rows)
-                                    {
+                                    {   
                                         DataRow Final_row = dt_stock_data.NewRow();
                                         foreach (DataRow SuppCol_row in supplier_column_Mapping.Rows)
                                         {
@@ -3105,14 +3118,14 @@ namespace astute.Controllers
 
                                             Final_row["SHAPE"] = ((Convert.ToString(SuppCol_row["Display_Name"]) != "SHAPE") || (Convert.ToString(SuppCol_row["Supp_Col_Name"]) == "")) ? Convert.ToString(Final_row["SHAPE"]) : row[Convert.ToString(SuppCol_row["Supp_Col_Name"])];
                                             Final_row["SHAPE"] = (Convert.ToString(Final_row["SHAPE"]) == "") ? null : Convert.ToString(Final_row["SHAPE"]);
-
+                                            
                                             Final_row["CTS"] = ((Convert.ToString(SuppCol_row["Display_Name"]) != "CTS") || (Convert.ToString(SuppCol_row["Supp_Col_Name"]) == "")) ? Convert.ToString(Final_row["CTS"]) : row[Convert.ToString(SuppCol_row["Supp_Col_Name"])];
                                             Final_row["CTS"] = (Convert.ToString(Final_row["CTS"]) == "") ? null : CoreService.RemoveNonNumericAndDotAndNegativeCharacters(Convert.ToString(Final_row["CTS"]));
 
                                             Final_row["BASE_DISC"] = ((Convert.ToString(SuppCol_row["Display_Name"]) != "BASE_DISC") || (Convert.ToString(SuppCol_row["Supp_Col_Name"]) == "")) ? Convert.ToString(Final_row["BASE_DISC"]) : row[Convert.ToString(SuppCol_row["Supp_Col_Name"])];
                                             Final_row["BASE_DISC"] = (Convert.ToString(Final_row["BASE_DISC"]) == "") ? null : CoreService.RemoveNonNumericAndDotAndNegativeCharacters(Convert.ToString(Final_row["BASE_DISC"]));
 
-                                            Final_row["BASE_RATE"] = ((Convert.ToString(SuppCol_row["Display_Name"]) != "BASE_RATE") || (Convert.ToString(SuppCol_row["Supp_Col_Name"]) == "")) ? Convert.ToString(Final_row["BASE_RATE"]) : row[Convert.ToString(SuppCol_row["Supp_Col_Name"])];
+                                            Final_row["BASE_RATE"] = ((Convert.ToString(SuppCol_row["Display_Name"]) != "BASE_RATE") || (Convert.ToString(SuppCol_row["Supp_Col_Name"]) == "")) ? Convert.ToString(Final_row["BASE_RATE"]) : row[Convert.ToString(SuppCol_row["Supp_Col_Name"])].ToString().Trim();
                                             Final_row["BASE_RATE"] = (Convert.ToString(Final_row["BASE_RATE"]) == "") ? null : CoreService.RemoveNonNumericAndDotAndNegativeCharacters(Convert.ToString(Final_row["BASE_RATE"]));
 
                                             Final_row["BASE_AMOUNT"] = ((Convert.ToString(SuppCol_row["Display_Name"]) != "BASE_AMOUNT") || (Convert.ToString(SuppCol_row["Supp_Col_Name"]) == "")) ? Convert.ToString(Final_row["BASE_AMOUNT"]) : row[Convert.ToString(SuppCol_row["Supp_Col_Name"])];
