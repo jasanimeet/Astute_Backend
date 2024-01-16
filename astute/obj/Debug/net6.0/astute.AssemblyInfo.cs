@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("astute")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+63b337861666c6756a6c20d103d539b4ec1916e8")]
 [assembly: System.Reflection.AssemblyProductAttribute("astute")]
 [assembly: System.Reflection.AssemblyTitleAttribute("astute")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
