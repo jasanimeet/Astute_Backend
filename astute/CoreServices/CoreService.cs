@@ -219,6 +219,34 @@ namespace astute.CoreServices
         }
         public static DataTable Convert_File_To_DataTable(string filetype, string connString, string sheetNames)
         {
+            //DataTable mergedTable = new DataTable();
+
+            //var sheet_Names = sheetNames.Split(",");
+
+            //if (filetype == ".xls" || filetype == ".xlsx")
+            //{
+            //    using (OleDbConnection connection = new OleDbConnection(connString))
+            //    {
+            //        connection.Open();
+
+            //        //Fetch the first sheet to initialize the mergedTable
+            //        OleDbDataAdapter initialAdapter = new OleDbDataAdapter($"SELECT * FROM [{sheet_Names.First()}$]", connection);
+            //        initialAdapter.Fill(mergedTable);
+
+            //        // Merge the remaining sheets
+            //        foreach (string sheetName in sheet_Names.Skip(1))
+            //        {
+            //            OleDbDataAdapter adapter = new OleDbDataAdapter($"SELECT * FROM [{sheetName}$]", connection);
+            //            DataTable sheetTable = new DataTable(sheetName); // Use sheet name as table name
+
+            //            adapter.Fill(sheetTable);
+            //            mergedTable = UnionTables(mergedTable, sheetTable);
+            //            // Merge columns if not already present
+            //        }
+            //        connection.Close();
+            //    }
+            //}
+
             DataTable mergedTable = new DataTable();
 
             var sheet_Names = sheetNames.Split(",");
@@ -229,9 +257,15 @@ namespace astute.CoreServices
                 {
                     connection.Open();
 
-                    //Fetch the first sheet to initialize the mergedTable
+                    // Fetch the first sheet to initialize the mergedTable
                     OleDbDataAdapter initialAdapter = new OleDbDataAdapter($"SELECT * FROM [{sheet_Names.First()}$]", connection);
                     initialAdapter.Fill(mergedTable);
+
+                    // Trim column names
+                    foreach (DataColumn column in mergedTable.Columns)
+                    {
+                        column.ColumnName = column.ColumnName.Trim();
+                    }
 
                     // Merge the remaining sheets
                     foreach (string sheetName in sheet_Names.Skip(1))
@@ -240,12 +274,20 @@ namespace astute.CoreServices
                         DataTable sheetTable = new DataTable(sheetName); // Use sheet name as table name
 
                         adapter.Fill(sheetTable);
+
+                        // Trim column names in the sheetTable
+                        foreach (DataColumn column in sheetTable.Columns)
+                        {
+                            column.ColumnName = column.ColumnName.Trim();
+                        }
+
                         mergedTable = UnionTables(mergedTable, sheetTable);
                         // Merge columns if not already present
                     }
                     connection.Close();
                 }
             }
+
             else if (filetype == ".csv")
             {
                 string[] fields = null;
@@ -257,7 +299,7 @@ namespace astute.CoreServices
                     string[] headers = parser.ReadFields();
                     foreach (string header in headers)
                     {
-                        mergedTable.Columns.Add(header);
+                        mergedTable.Columns.Add(header.Trim());
                     }
 
                     while (!parser.EndOfData)

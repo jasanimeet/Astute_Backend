@@ -3007,15 +3007,7 @@ namespace astute.Controllers
                                 }
                                 
                                 if (excel_dataTable != null && excel_dataTable.Rows.Count > 0)
-                                {   
-                                    var trimmedColumns = excel_dataTable.Columns.Cast<DataColumn>()
-                                                        .Select(column => new DataColumn(column.ColumnName.Trim(), column.DataType))
-                                                        .ToArray();
-                                    excel_dataTable.Columns.Clear();
-                                    excel_dataTable.Columns.AddRange(trimmedColumns);
-
-
-
+                                {  
                                     #region Add column to datatable
                                     DataTable dt_stock_data = new DataTable();
                                     dt_stock_data.Columns.Add("SUPPLIER_NO", typeof(string));
