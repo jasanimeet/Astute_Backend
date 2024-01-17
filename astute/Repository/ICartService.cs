@@ -1,14 +1,15 @@
 ﻿using astute.Models;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace astute.Repository
 {
     public partial interface ICartService
     {
-        Task<int> Insert_Cart_Review_Aproval_Management(Cart_Review_Approval_Management cart_Review_Approval_Management);
-        Task<List<Dictionary<string, object>>> Get_Cart_Review_Approval_Management(string upload_Type, string userIds);
-        Task<int> Delete_Cart_Review_Aproval_Management(string ids, int user_Id, string upload_Type);
+        Task<int> Insert_Cart(DataTable dataTable, int User_Id);
+        Task<List<Dictionary<string, object>>> Get_Cart(string userIds);
+        Task<int> Delete_Cart(string ids, int user_Id);
         Task<int> Approved_Or_Rejected_by_Management(string ids, bool is_Approved, bool is_Rejected, int user_Id);
     }
 }

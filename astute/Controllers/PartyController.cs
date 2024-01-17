@@ -618,16 +618,16 @@ namespace astute.Controllers
             dataTable.Columns.Add("Proportions_Diagram", typeof(string));
             dataTable.Columns.Add("Digital_Card", typeof(string));
 
-            if(gIA_Lab_Parameters != null && gIA_Lab_Parameters.Count > 0)
+            if (gIA_Lab_Parameters != null && gIA_Lab_Parameters.Count > 0)
             {
                 foreach (var item in gIA_Lab_Parameters)
                 {
-                    dataTable.Rows.Add(item.Report_No,item.Report_Date, item.Length, item.Width, item.Depth, item.Color_Grade, item.Clarity_Grade, item.Cut_Grade, item.Polish_Grade
-                                        ,item.Symmetry_Grade, item.Fluorescence, item.Inscriptions, item.Key_To_Symbols, item.Report_Comments, item.Table_Pct, item.Depth_Pct, item.Crown_Angle
-                                        ,item.Crown_Height, item.Pavilion_Angle, item.Pavilion_Depth, item.Star_Length, item.Lower_Half, item.Shape_Code, item.Shape_Group, item.Carats
-                                        ,item.Clarity, item.Cut, item.Polish, item.Symmetry, item.Fluorescence_Intensity, item.Fluorescence_Color, item.Girdle_Condition, item.Girdle_Condition_Code
-                                        ,item.Girdle_Pct, item.Girdle_Size, item.Girdle_Size_Code, item.Culet_Code, item.Certificate_PDF, item.Plotting_Diagram, item.Proportions_Diagram
-                                        ,item.Digital_Card);
+                    dataTable.Rows.Add(item.Report_No, item.Report_Date, item.Length, item.Width, item.Depth, item.Color_Grade, item.Clarity_Grade, item.Cut_Grade, item.Polish_Grade
+                                        , item.Symmetry_Grade, item.Fluorescence, item.Inscriptions, item.Key_To_Symbols, item.Report_Comments, item.Table_Pct, item.Depth_Pct, item.Crown_Angle
+                                        , item.Crown_Height, item.Pavilion_Angle, item.Pavilion_Depth, item.Star_Length, item.Lower_Half, item.Shape_Code, item.Shape_Group, item.Carats
+                                        , item.Clarity, item.Cut, item.Polish, item.Symmetry, item.Fluorescence_Intensity, item.Fluorescence_Color, item.Girdle_Condition, item.Girdle_Condition_Code
+                                        , item.Girdle_Pct, item.Girdle_Size, item.Girdle_Size_Code, item.Culet_Code, item.Certificate_PDF, item.Plotting_Diagram, item.Proportions_Diagram
+                                        , item.Digital_Card);
                 }
             }
 
@@ -3005,9 +3005,9 @@ namespace astute.Controllers
                                 {
                                     excel_dataTable = CoreService.Convert_File_To_DataTable(".csv", fileLocation, "");
                                 }
-                                
+
                                 if (excel_dataTable != null && excel_dataTable.Rows.Count > 0)
-                                {  
+                                {
                                     #region Add column to datatable
                                     DataTable dt_stock_data = new DataTable();
                                     dt_stock_data.Columns.Add("SUPPLIER_NO", typeof(string));
@@ -3095,7 +3095,7 @@ namespace astute.Controllers
                                     #endregion
 
                                     foreach (DataRow row in excel_dataTable.Rows)
-                                    {   
+                                    {
                                         DataRow Final_row = dt_stock_data.NewRow();
                                         foreach (DataRow SuppCol_row in supplier_column_Mapping.Rows)
                                         {
@@ -3110,7 +3110,7 @@ namespace astute.Controllers
 
                                             Final_row["SHAPE"] = ((Convert.ToString(SuppCol_row["Display_Name"]) != "SHAPE") || (Convert.ToString(SuppCol_row["Supp_Col_Name"]) == "")) ? Convert.ToString(Final_row["SHAPE"]) : row[Convert.ToString(SuppCol_row["Supp_Col_Name"])];
                                             Final_row["SHAPE"] = (Convert.ToString(Final_row["SHAPE"]) == "") ? null : Convert.ToString(Final_row["SHAPE"]);
-                                            
+
                                             Final_row["CTS"] = ((Convert.ToString(SuppCol_row["Display_Name"]) != "CTS") || (Convert.ToString(SuppCol_row["Supp_Col_Name"]) == "")) ? Convert.ToString(Final_row["CTS"]) : row[Convert.ToString(SuppCol_row["Supp_Col_Name"])];
                                             Final_row["CTS"] = (Convert.ToString(Final_row["CTS"]) == "") ? null : CoreService.RemoveNonNumericAndDotAndNegativeCharacters(Convert.ToString(Final_row["CTS"]));
 
@@ -3768,7 +3768,7 @@ namespace astute.Controllers
                         {
                             foreach (var item1 in report_User_Roles.Report_Roles)
                             {
-                                dataTable.Rows.Add(item1.Rd_Id, item, item1.Display_Type,item1.Order_By, item1.Short_No,item1.Width,item1.Column_Format, item1.Alignment, item1.Fore_Colour, item1.Back_Colour, item1.IsBold);
+                                dataTable.Rows.Add(item1.Rd_Id, item, item1.Display_Type, item1.Order_By, item1.Short_No, item1.Width, item1.Column_Format, item1.Alignment, item1.Fore_Colour, item1.Back_Colour, item1.IsBold);
                             }
                         }
                         var result = await _supplierService.Create_Update_Report_User_Role(dataTable);
@@ -4026,7 +4026,7 @@ namespace astute.Controllers
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
-                            message = report_Layout_Save.Id> 0 ? CoreCommonMessage.LayoutReportUpdated : CoreCommonMessage.LayoutReportCreated
+                            message = report_Layout_Save.Id > 0 ? CoreCommonMessage.LayoutReportUpdated : CoreCommonMessage.LayoutReportCreated
                         });
                     }
                     else if (result == "exist")
@@ -4089,42 +4089,52 @@ namespace astute.Controllers
 
         #region Cart/Approval Management        
         [HttpPost]
-        [Route("create_cart_review_approval_management")]
+        [Route("create_cart")]
         [Authorize]
-        public async Task<IActionResult> Create_Cart_Review_Approval_Management(Cart_Review_Approval_Management cart_Review_Approval_Management)
+        public async Task<IActionResult> Create_Cart(Cart_Model cart_Model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _cartService.Insert_Cart_Review_Aproval_Management(cart_Review_Approval_Management);
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Supp_Stock_Id", typeof(int));
+                    dataTable.Columns.Add("Base_Disc", typeof(double));
+                    dataTable.Columns.Add("Base_Amt", typeof(double));
+                    dataTable.Columns.Add("Final_Disc", typeof(double));
+                    dataTable.Columns.Add("Final_Amt", typeof(double));
+                    dataTable.Columns.Add("Final_Disc_Max_Slab", typeof(double));
+                    dataTable.Columns.Add("Final_Amt_Max_Slab", typeof(double));
+                    dataTable.Columns.Add("Buyer_Disc", typeof(double));
+                    dataTable.Columns.Add("Buyer_Amt", typeof(double));
+                    dataTable.Columns.Add("Buyer_Price_Per_Cts", typeof(double));
+                    dataTable.Columns.Add("Expected_Final_Disc", typeof(double));
+                    dataTable.Columns.Add("Expected_Final_Amt", typeof(double));
+                    dataTable.Columns.Add("Cart_Status", typeof(string));
+                    dataTable.Columns.Add("User_Id", typeof(int));
+
+                    foreach (var item in cart_Model.Cart_Detail)
+                    {
+                        dataTable.Rows.Add(item.Supp_Stock_Id, item.Base_Disc, item.Base_Amt, item.Final_Disc, item.Final_Amt, item.Final_Disc_Max_Slab, item.Final_Amt_Max_Slab, item.Buyer_Disc, item.Buyer_Amt, item.Buyer_Price_Per_Cts, item.Expected_Final_Disc, item.Expected_Final_Amt, item.Customer_Id);
+                    }
+
+                    var result = await _cartService.Insert_Cart(dataTable, (int)cart_Model.User_Id);
                     if (result > 0)
                     {
-                        string msg = string.Empty;
-                        if (cart_Review_Approval_Management.Upload_Type == "C")
-                        {
-                            msg = CoreCommonMessage.CartAdded;
-                        }
-                        else if (cart_Review_Approval_Management.Upload_Type == "R")
-                        {
-                            msg = CoreCommonMessage.ReviewAdded;
-                        }
-                        else if (cart_Review_Approval_Management.Upload_Type == "A")
-                        {
-                            msg = CoreCommonMessage.StockApproved;
-                        }
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
-                            message = msg
+                            message = CoreCommonMessage.CartAdded
+
                         });
                     }
+
                 }
                 return BadRequest(ModelState);
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Create_Cart_Review_Approval_Management", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Create_Cart", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
@@ -4133,13 +4143,13 @@ namespace astute.Controllers
         }
 
         [HttpGet]
-        [Route("get_cart_review_approval_management")]
+        [Route("get_cart")]
         [Authorize]
-        public async Task<IActionResult> Get_Cart_Review_Approval_Management(string upload_Type, string userIds)
+        public async Task<IActionResult> Get_Cart(string userIds)
         {
             try
             {
-                var result = await _cartService.Get_Cart_Review_Approval_Management(upload_Type, userIds);
+                var result = await _cartService.Get_Cart(userIds);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -4153,7 +4163,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Cart_Review_Approval_Management", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Get_Cart", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
@@ -4162,19 +4172,19 @@ namespace astute.Controllers
         }
 
         [HttpPut]
-        [Route("delete_cart_review_approval_management")]
+        [Route("delete_cart")]
         [Authorize]
-        public async Task<IActionResult> Delete_Cart_Review_Approval_Management(string ids, int user_Id, string upload_Type)
+        public async Task<IActionResult> Delete_Cart(string ids, int user_Id)
         {
             try
             {
-                var result = await _cartService.Delete_Cart_Review_Aproval_Management(ids, user_Id, upload_Type);
+                var result = await _cartService.Delete_Cart(ids, user_Id);
                 if (result > 0)
                 {
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
-                        message = upload_Type == "C" ? CoreCommonMessage.CartStockDeleted : CoreCommonMessage.ApprovalStockDeleted,
+                        message = CoreCommonMessage.CartStockDeleted
                     });
                 }
                 return BadRequest(new
@@ -4185,7 +4195,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Delete_Cart_Review_Approval_Management", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Cart", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
@@ -4201,7 +4211,7 @@ namespace astute.Controllers
             try
             {
                 var result = await _cartService.Approved_Or_Rejected_by_Management(ids, is_Approved ?? false, is_Rejected ?? false, user_Id);
-                if(result > 0)
+                if (result > 0)
                 {
                     return Ok(new
                     {
@@ -4227,14 +4237,14 @@ namespace astute.Controllers
         [Route("get_gia_cert_data")]
         [Authorize]
         public async Task<IActionResult> Get_GIA_Cert_Data(string cert_no, string report_Date)
-        {   
+        {
             var key = _configuration["Sunrise_Key"];
             try
             {
                 if (!string.IsNullOrEmpty(report_Date))
                 {
                     var result = await _supplierService.GIA_Lab_Parameter(report_Date);
-                    if(result != null && result.Count > 0)
+                    if (result != null && result.Count > 0)
                     {
                         return Ok(new
                         {
@@ -4395,7 +4405,7 @@ namespace astute.Controllers
                                 { "query", query },
                                 { "variables", query_variables }
                             };
-                            
+
                             string json = System.Text.Json.JsonSerializer.Serialize(body);
                             var client = new WebClient();
                             string url = "https://api.reportresults.gia.edu";
@@ -4568,7 +4578,7 @@ namespace astute.Controllers
                                 data = result
                             });
                         }
-                        else if(!success)
+                        else if (!success)
                         {
                             return NoContent();
                         }
@@ -4593,14 +4603,14 @@ namespace astute.Controllers
         {
             try
             {
-                if(gIA_Lab_Parameters != null && gIA_Lab_Parameters.Count > 0)
+                if (gIA_Lab_Parameters != null && gIA_Lab_Parameters.Count > 0)
                 {
                     DataTable dataTable = new DataTable();
                     dataTable = Set_GIA_Lab_Parameter_Column_In_Datatable(new DataTable(), gIA_Lab_Parameters);
                     var result = await _supplierService.Insert_GIA_Lab_Parameter(dataTable);
-                    if(result > 0)
+                    if (result > 0)
                     {
-                        return Ok(new 
+                        return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
                             message = "GIA lab parameter saved successfully."
