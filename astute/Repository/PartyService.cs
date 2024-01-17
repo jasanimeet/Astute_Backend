@@ -159,12 +159,13 @@ namespace astute.Repository
             else
                 return ("success", result);
         }
-        public async Task<IList<Party_Master>> GetParty(int party_Id)
+        public async Task<IList<Party_Master>> GetParty(int party_Id, string party_Type)
         {
             var partyId = party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value);
+            var partyType = !string.IsNullOrEmpty(party_Type) ? new SqlParameter("@Party_Type", party_Type) : new SqlParameter("@PartyId", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Party_Master
-                            .FromSqlRaw(@"exec Party_Master_Select @PartyId", partyId).ToListAsync());
+                            .FromSqlRaw(@"exec Party_Master_Select @PartyId, @Party_Type", partyId, partyType).ToListAsync());
 
             return result;
         }
@@ -226,7 +227,7 @@ namespace astute.Repository
             return result;
         }
         public async Task<IList<DropdownModel>> Get_User_Name_From_Party_Contact(int party_Id)
-        {   
+        {
             var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.DropdownModel
@@ -413,12 +414,12 @@ namespace astute.Repository
                         @Mobile_1_Country_Code, @Mobile_2, @Mobile_2_Country_Code, @Phone_1, @Phone_1_Country_Code, @Phone_2, @Phone_2_Country_Code, @Fax, @Fax_Country_Code, @Email_1, @Email_2, @Party_Name, @Ship_PartyId, @Final_Customer_Id, @Website,
                         @Cust_Freight_Account_No, @Alias_Name, @Wechat_ID, @Skype_ID, @Business_Reg_No, @Default_Remarks, @Notification, @Reference_By, @TIN_No, @Modified_By, @InsertedId OUT, @Party_Exists OUT", party_Id,
                         party_Type, party_Code, party_Address1, party_Address2, party_Address3, city_Id, pin_Code, mobile_No1, mobile_1_Country_Code, mobile_No2, mobile_2_Country_Code,
-                        phone_No1, phone_1_Country_Code, phone_No2, phone_2_Country_Code, fax, fax_Country_Code, email_1, email_2, 
+                        phone_No1, phone_1_Country_Code, phone_No2, phone_2_Country_Code, fax, fax_Country_Code, email_1, email_2,
                         party_Name, ship_PartyId, final_Customer_Id, website, cust_Freight_Account_No, alias_Name, wechat_ID, skype_ID, business_Reg_No,
                         default_Remarks, notification, reference_By, tIN_No, modified_By, insertedId, party_Exists));
 
             var _party_exists = (bool)party_Exists.Value;
-            if(_party_exists)
+            if (_party_exists)
                 return ("_party_exists", 0);
 
             if (result > 0)
@@ -504,7 +505,7 @@ namespace astute.Repository
 
         #region Party API
         public async Task<int> Add_Update_Party_API(Party_Api party_Api)
-        {   
+        {
             var api_Id = new SqlParameter("@API_Id", party_Api.API_Id);
             var _party_Id = party_Api.Party_Id > 0 ? new SqlParameter("@Party_Id", party_Api.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
             var api_Url = !string.IsNullOrEmpty(party_Api.API_URL) ? new SqlParameter("@API_URL", party_Api.API_URL) : new SqlParameter("@API_URL", DBNull.Value);
@@ -538,9 +539,9 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_Api_Insert_Update @API_Id, @Party_Id, @API_URL, @API_User, @API_Password, @API_Method, @API_Response, @API_Status,
                         @Disc_Inverse, @Auto_Ref_No, @RepeateveryType, @repeatevery, @Lab, @Overseas, @Stock_Url, @User_Id, @User_Caption, @Password_Caption, @Action_Caption, 
-                        @Action_Value,@Action_Caption_1, @Action_Value_1, @Action_Caption_2, @Action_Value_2, @Short_Code, @Stock_Api_Method, @Method_Type, @Is_Same_Id, @Overseas_Same_Id", api_Id, 
-                        _party_Id, api_Url, api_User, api_Password, api_Method, api_Response, api_Status, api_Inverse, auto_Ref_No, repeateveryType, repeatevery, lab, overseas, 
-                        stock_Url, user_Id, user_Caption, password_Caption, action_Caption, action_Value, action_Caption_1, action_Value_1, action_Caption_2, action_Value_2, 
+                        @Action_Value,@Action_Caption_1, @Action_Value_1, @Action_Caption_2, @Action_Value_2, @Short_Code, @Stock_Api_Method, @Method_Type, @Is_Same_Id, @Overseas_Same_Id", api_Id,
+                        _party_Id, api_Url, api_User, api_Password, api_Method, api_Response, api_Status, api_Inverse, auto_Ref_No, repeateveryType, repeatevery, lab, overseas,
+                        stock_Url, user_Id, user_Caption, password_Caption, action_Caption, action_Value, action_Caption_1, action_Value_1, action_Caption_2, action_Value_2,
                         short_Code, stock_Api_Method, method_Type, is_Same_Id, overseas_Same_Id));
 
             return result;
@@ -571,7 +572,7 @@ namespace astute.Repository
                             .ToList());
             if (result != null && result.Count > 0)
             {
-                
+
                 foreach (var item in result)
                 {
                     item.Supplier_Column_Mapping_List = await Common_Funtion_To_Get_Supp_Col_Map(item.Party_Id ?? 0, item.Upload_Type);
@@ -579,7 +580,7 @@ namespace astute.Repository
             }
             return result;
         }
-        private async Task<List<Dictionary<string, object>>> Common_Funtion_To_Get_Supp_Col_Map(int supp_Id,string upload_Type)
+        private async Task<List<Dictionary<string, object>>> Common_Funtion_To_Get_Supp_Col_Map(int supp_Id, string upload_Type)
         {
             var result = new List<Dictionary<string, object>>();
 
@@ -627,7 +628,7 @@ namespace astute.Repository
 
         #region Party FTP
         public async Task<int> Add_Update_Party_FTP(Party_FTP party_FTP)
-        {   
+        {
             var ftp_Id = new SqlParameter("@FTP_Id", party_FTP.FTP_Id);
             var _party_Id = party_FTP.Party_Id > 0 ? new SqlParameter("@Party_Id", party_FTP.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
             var host = !string.IsNullOrEmpty(party_FTP.Host) ? new SqlParameter("@Host", party_FTP.Host) : new SqlParameter("@Host", DBNull.Value);
@@ -650,7 +651,7 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_FTP_Insert_Update @FTP_Id, @Party_Id, @Host, @Ftp_Port, @Ftp_User, @Ftp_Password, @Ftp_File_Name, @Ftp_File_Type,
-                        @Disc_Inverse, @Auto_Ref_No, @RepeateveryType, @Repeatevery, @Lab, @Overseas, @Secure_Ftp, @Short_Code, @Ftp_Status, @Is_Same_Id, @Overseas_Same_Id", ftp_Id, _party_Id, host, ftp_Port, 
+                        @Disc_Inverse, @Auto_Ref_No, @RepeateveryType, @Repeatevery, @Lab, @Overseas, @Secure_Ftp, @Short_Code, @Ftp_Status, @Is_Same_Id, @Overseas_Same_Id", ftp_Id, _party_Id, host, ftp_Port,
                         ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Type, api_Inverse, auto_Ref_No, repeateveryType, repeatevery, lab, overseas, secure_Ftp, short_Code, ftp_Status, is_Same_Id, overseas_Same_Id));
 
             return result;
@@ -660,7 +661,7 @@ namespace astute.Repository
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Party_FTP_Delete {ftp_Id}"));
         }
         public async Task<Party_FTP> Get_Party_FTP(int ftp_Id, int party_Id)
-        {   
+        {
             var _ftp_Id = ftp_Id > 0 ? new SqlParameter("@FTP_Id", party_Id) : new SqlParameter("@FTP_Id", DBNull.Value);
             var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
 
@@ -675,7 +676,7 @@ namespace astute.Repository
 
         #region Party File
         public async Task<int> Add_Update_Party_File(Party_File party_File)
-        {   
+        {
             var file_Id = new SqlParameter("@File_Id", party_File.File_Id);
             var _party_Id = party_File.Party_Id > 0 ? new SqlParameter("@Party_Id", party_File.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
             var file_Location = !string.IsNullOrEmpty(party_File.File_Location) ? new SqlParameter("@File_Location", party_File.File_Location) : new SqlParameter("@File_Location", DBNull.Value);
@@ -702,7 +703,7 @@ namespace astute.Repository
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Party_File_Delete {file_Id}"));
         }
         public async Task<Party_File> Get_Party_File(int file_Id, int party_Id)
-        {   
+        {
             var _file_Id = file_Id > 0 ? new SqlParameter("@File_Id", file_Id) : new SqlParameter("@File_Id", DBNull.Value);
             var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
 
@@ -714,7 +715,7 @@ namespace astute.Repository
             return result;
         }
         #endregion
-                
+
         public async Task<IList<Supplier_Details_List>> Get_Suplier_Detail_List(int party_Id)
         {
             var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);

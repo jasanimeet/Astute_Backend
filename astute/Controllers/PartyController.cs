@@ -640,11 +640,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("getparty")]
         [Authorize]
-        public async Task<IActionResult> GetParty(int party_Id)
+        public async Task<IActionResult> GetParty(int party_Id,string party_Type)
         {
             try
             {
-                var result = await _partyService.GetParty(party_Id);
+                var result = await _partyService.GetParty(party_Id, party_Type);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new

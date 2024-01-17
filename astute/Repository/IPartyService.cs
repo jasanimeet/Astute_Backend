@@ -19,7 +19,7 @@ namespace astute.Repository
 
         #region Party Master        
         Task<(string, int)> DeleteParty(int party_Id);
-        Task<IList<Party_Master>> GetParty(int party_Id);
+        Task<IList<Party_Master>> GetParty(int party_Id, string party_Type);
         #endregion
 
         #region Party Contact
