@@ -17,6 +17,7 @@ namespace astute.Models
         public string? City { get; set; }
         public string? State { get; set; }
         public string? Country { get; set; }
+        public string? Country_Code { get; set; }
         public string? Phone_No { get; set; }
         public string? Fax_No { get; set; }
         public string? Email { get; set; }
