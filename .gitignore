@@ -59,3 +59,13 @@
 /astute/Properties/PublishProfiles/FolderProfile7.pubxml.user
 /astute/Properties/PublishProfiles/FolderProfile8.pubxml.user
 /astute/Properties/PublishProfiles/FolderProfile9.pubxml.user
+*.dll
+/astute/obj/Debug/net6.0/astute.AssemblyInfo.cs
+/astute/obj/Debug/net6.0/astute.AssemblyInfoInputs.cache
+*.json
+*.props
+*.cache
+/astute/obj/Release/net6.0/PubTmp/Out/web.config
+*.txt
+*.pubxml
+*.user
