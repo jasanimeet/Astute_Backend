@@ -19,6 +19,7 @@ namespace astute.Models
         public string? State { get; set; }
         public string? Country { get; set; }
         public string? Country_Code { get; set; }
+        public string? Contact_Person { get; set; }
         public string? PinCode { get; set; }
         public string? Mobile_1 { get; set; }
         public string? Mobile_1_Country_Code { get; set; }
