@@ -3060,7 +3060,7 @@ namespace astute.Controllers
                                     dt_stock_data.Columns.Add("VIDEO_LINK", typeof(string));
                                     dt_stock_data.Columns.Add("Video2", typeof(string));
                                     dt_stock_data.Columns.Add("CERTIFICATE_LINK", typeof(string));
-                                    dt_stock_data.Columns.Add("DNA", typeof(string));
+                                    dt_stock_data.Columns.Add("DNA_LINK", typeof(string));
                                     dt_stock_data.Columns.Add("IMAGE_HEART_LINK", typeof(string));
                                     dt_stock_data.Columns.Add("IMAGE_ARROW_LINK", typeof(string));
                                     dt_stock_data.Columns.Add("H_A_LINK", typeof(string));
@@ -3099,10 +3099,7 @@ namespace astute.Controllers
                                               {
                                                   string columnName = Convert.ToString(suppColName);
 
-                                                  if (!string.IsNullOrEmpty(columnName))
-                                                  {
-                                                      finalRow[displayColName] = row[columnName];
-                                                  }
+                                                  finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
 
                                                   if (columnName == "CTS" && columnName == "BASE_DISC" && columnName == "BASE_RATE" &&
                                                            columnName == "LENGTH" && columnName == "WIDTH" && columnName == "DEPTH" &&
