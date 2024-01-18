@@ -159,14 +159,48 @@ namespace astute.Repository
             else
                 return ("success", result);
         }
-        public async Task<IList<Party_Master>> GetParty(int party_Id, string party_Type)
+        //public async Task<IList<Party_Master>> GetParty(int party_Id, string party_Type)
+        //{
+        //    var partyId = party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value);
+        //    var partyType = !string.IsNullOrEmpty(party_Type) ? new SqlParameter("@Party_Type", party_Type) : new SqlParameter("@Party_Type", DBNull.Value);
+
+        //    var result = await Task.Run(() => _dbContext.Party_Master
+        //                    .FromSqlRaw(@"exec Party_Master_Select @PartyId, @Party_Type", partyId, partyType).ToListAsync());
+
+        //    return result;
+        //}
+
+        public async Task<List<Dictionary<string, object>>> GetParty(int party_Id, string party_Type)
         {
-            var partyId = party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value);
-            var partyType = !string.IsNullOrEmpty(party_Type) ? new SqlParameter("@Party_Type", party_Type) : new SqlParameter("@Party_Type", DBNull.Value);
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Party_Master_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(party_Type) ? new SqlParameter("@Party_Type", party_Type) : new SqlParameter("@Party_Type", DBNull.Value));
+                    await connection.OpenAsync();
 
-            var result = await Task.Run(() => _dbContext.Party_Master
-                            .FromSqlRaw(@"exec Party_Master_Select @PartyId, @Party_Type", partyId, partyType).ToListAsync());
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
 
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
             return result;
         }
         //public async Task<List<Dictionary<string, object>>> GetParty(int party_Id)
