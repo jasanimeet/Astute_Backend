@@ -25,6 +25,7 @@ namespace astute.Models
         public string? TIN_No { get; set; }
         public bool? Default_Address { get; set; }
         public bool? Status { get; set; }
+        public bool? Is_Editable { get; set; }
         [NotMapped]
         public string? QueryFlag { get; set; }
     }

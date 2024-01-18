@@ -1076,6 +1076,7 @@ namespace astute.Controllers
                             dataTable.Columns.Add("TIN_No", typeof(string));
                             dataTable.Columns.Add("Default_Address", typeof(bool));
                             dataTable.Columns.Add("Status", typeof(bool));
+                            dataTable.Columns.Add("Is_Editable", typeof(bool));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
 
                             DataTable dataTable1 = new DataTable();
@@ -1102,7 +1103,7 @@ namespace astute.Controllers
 
                             foreach (var item in party_Master.Party_Shipping_List)
                             {
-                                dataTable.Rows.Add(item.Ship_Id, party_Id, item.Company_Name, item.Address_1, item.Address_2, item.Address_3, item.City_Id, item.Mobile_No, item.Mobile_No_Country_Code, item.Phone_No, item.Phone_No_Country_Code, item.Contact_Person, item.TIN_No, item.Default_Address, item.Status, item.QueryFlag);
+                                dataTable.Rows.Add(item.Ship_Id, party_Id, item.Company_Name, item.Address_1, item.Address_2, item.Address_3, item.City_Id, item.Mobile_No, item.Mobile_No_Country_Code, item.Phone_No, item.Phone_No_Country_Code, item.Contact_Person, item.TIN_No, item.Default_Address, item.Status,item.Is_Editable, item.QueryFlag);
                                 //if (CoreService.Enable_Trace_Records(_configuration))
                                 //{
                                 //    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Company_Name, item.Address_1, item.Address_2, item.Address_3, item.City_Id, item.Mobile_No, item.Phone_No, item.Contact_Person, item.TIN_No, item.Default_Address, item.Status);
