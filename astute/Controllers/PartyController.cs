@@ -2857,19 +2857,31 @@ namespace astute.Controllers
                                                 var rowCount = worksheet.Dimension.End.Row;
                                                 var colCount = worksheet.Dimension.End.Column;
 
-                                                bool isRemoved = false;
+                                                int rowsToCheck = Math.Max(rowCount - (rowCount - 1), 1);
+                                                bool is_Removed = false;
+                                                for (int row = rowCount; row >= rowsToCheck; row--)
+                                                {
+                                                    bool hasData = false;
 
-                                                Enumerable.Range(rowCount, Math.Max(rowCount - 1, 1))
-                                                    .Where(row => !Enumerable.Range(colCount, 20).Any(col => !string.IsNullOrEmpty(worksheet.Cells[row, col].Text)))
-                                                    .ToList()
-                                                    .ForEach(row =>
+                                                    for (int col = colCount; col > colCount - 20; col--)
+                                                    {
+                                                        var cell = worksheet.Cells[row, col];
+
+                                                        if (!string.IsNullOrEmpty(cell.Text))
+                                                        {
+                                                            hasData = true;
+                                                            break;
+                                                        }
+                                                    }
+
+                                                    if (!hasData)
                                                     {
                                                         worksheet.DeleteRow(row);
                                                         rowCount--;
-                                                        isRemoved = true;
-                                                    });
-
-                                                if (isRemoved)
+                                                        is_Removed = true;
+                                                    }
+                                                }
+                                                if (is_Removed)
                                                 {
                                                     try
                                                     {
