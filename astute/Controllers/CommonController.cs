@@ -1224,6 +1224,34 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPut]
+        [Route("changestatusyear")]
+        [Authorize]
+        public async Task<IActionResult> ChangeStatusYear(int year_Id, bool status)
+        {
+            try
+            {
+                var result = await _commonService.YearChangeStatus(year_Id, status);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.StatusChangedSuccessMessage
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "ChangeStatusYear", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Quote Mas

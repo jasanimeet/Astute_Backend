@@ -705,6 +705,15 @@ namespace astute.Repository
             //}
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Year_Mas_Delete {yearId}"));
         }
+        public async Task<int> YearChangeStatus(int year_Id, bool status)
+        {
+            var _year_Id = new SqlParameter("@Year_Id", year_Id);
+            var _status = new SqlParameter("@Status", status);
+
+            var result = await Task.Run(() => _dbContext.Database
+                                .ExecuteSqlRawAsync(@"EXEC Year_Master_Update_Status @Year_Id, @Status", _year_Id, _status));
+            return result;
+        }
         #endregion
 
         #region Quote Mas

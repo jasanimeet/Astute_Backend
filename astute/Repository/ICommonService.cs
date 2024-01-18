@@ -48,6 +48,7 @@ namespace astute.Repository
         Task<IList<Year_Master>> GetYear(int yearId);
         Task<int> Insert_Update_Years(Year_Master year_Mas);
         Task<int> DeleteYears(int yearId);
+        Task<int> YearChangeStatus(int year_Id, bool status);
         #endregion
 
         #region Quote Mas
