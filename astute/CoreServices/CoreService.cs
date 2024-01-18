@@ -262,10 +262,7 @@ namespace astute.CoreServices
                     initialAdapter.Fill(mergedTable);
 
                     // Trim column names
-                    foreach (DataColumn column in mergedTable.Columns)
-                    {
-                        column.ColumnName = column.ColumnName.Trim();
-                    }
+                    mergedTable.Columns.Cast<DataColumn>().ToList().ForEach(column => column.ColumnName = column.ColumnName.Trim());
 
                     // Merge the remaining sheets
                     foreach (string sheetName in sheet_Names.Skip(1))
@@ -297,10 +294,7 @@ namespace astute.CoreServices
                     parser.SetDelimiters(",");
 
                     string[] headers = parser.ReadFields();
-                    foreach (string header in headers)
-                    {
-                        mergedTable.Columns.Add(header.Trim());
-                    }
+                    mergedTable.Columns.AddRange(headers.Select(header => new DataColumn(header.Trim())).ToArray());
 
                     while (!parser.EndOfData)
                     {
@@ -411,6 +405,34 @@ namespace astute.CoreServices
             }
             dataFound:
             return (dataExist, row_cnt);
+        }
+        public static string Split_Supplier_Stock_Measurement(string expression, string dimension)
+        {
+            // Define a regular expression pattern to capture numeric values
+            string pattern = @"[-+]?\d*\.\d+|[-+]?\d+";
+
+            // Use Regex.Matches to find all matches
+            MatchCollection matches = Regex.Matches(expression, pattern);
+
+            // Extract numeric values and store them in an array
+            double[] values = matches.Cast<Match>().Select(match => Convert.ToDouble(match.Value)).ToArray();
+
+            // Sort the values in descending order
+            Array.Sort(values, (a, b) => b.CompareTo(a));
+
+            // Determine the dimension to return
+            switch (dimension.ToLower())
+            {
+                case "length":
+                    return values.Length > 0 ? values[0].ToString() : "";
+                case "width":
+                    return values.Length > 1 ? values[1].ToString() : "";
+                case "depth":
+                    return values.Length > 2 ? values[2].ToString() : "";
+                default:
+                    throw new ArgumentException("Invalid dimension specified.");
+            }
+
         }
     }
 }

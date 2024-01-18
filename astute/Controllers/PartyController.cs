@@ -640,7 +640,7 @@ namespace astute.Controllers
         [HttpGet]
         [Route("getparty")]
         [Authorize]
-        public async Task<IActionResult> GetParty(int party_Id,string party_Type)
+        public async Task<IActionResult> GetParty(int party_Id, string party_Type)
         {
             try
             {
@@ -1103,7 +1103,7 @@ namespace astute.Controllers
 
                             foreach (var item in party_Master.Party_Shipping_List)
                             {
-                                dataTable.Rows.Add(item.Ship_Id, party_Id, item.Company_Name, item.Address_1, item.Address_2, item.Address_3, item.City_Id, item.Mobile_No, item.Mobile_No_Country_Code, item.Phone_No, item.Phone_No_Country_Code, item.Contact_Person, item.TIN_No, item.Default_Address, item.Status,item.Is_Editable, item.QueryFlag);
+                                dataTable.Rows.Add(item.Ship_Id, party_Id, item.Company_Name, item.Address_1, item.Address_2, item.Address_3, item.City_Id, item.Mobile_No, item.Mobile_No_Country_Code, item.Phone_No, item.Phone_No_Country_Code, item.Contact_Person, item.TIN_No, item.Default_Address, item.Status, item.Is_Editable, item.QueryFlag);
                                 //if (CoreService.Enable_Trace_Records(_configuration))
                                 //{
                                 //    dataTable1.Rows.Add(16, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, item.QueryFlag, party_Id, item.Company_Name, item.Address_1, item.Address_2, item.Address_3, item.City_Id, item.Mobile_No, item.Phone_No, item.Contact_Person, item.TIN_No, item.Default_Address, item.Status);
@@ -3087,46 +3087,67 @@ namespace astute.Controllers
                                     dt_stock_data.Columns.Add("Short_Code", typeof(string));
                                     #endregion
                                     var mappedRows = excel_dataTable.AsEnumerable()
-                                      .Select(row =>
-                                      {
-                                          var finalRow = dt_stock_data.NewRow();
+                                     .Select(row =>
+                                     {
+                                         var finalRow = dt_stock_data.NewRow();
 
-                                          supplier_column_Mapping.AsEnumerable().ToList().ForEach(suppColRow =>
-                                          {
-                                              string displayColName = Convert.ToString(suppColRow["Display_Name"]);
-                                              string suppColName = Convert.ToString(suppColRow["Supp_Col_Name"]);
+                                         supplier_column_Mapping.AsEnumerable().ToList().ForEach(suppColRow =>
+                                         {
+                                             string displayColName = Convert.ToString(suppColRow["Display_Name"]);
+                                             string suppColName = Convert.ToString(suppColRow["Supp_Col_Name"]);
 
-                                              if (displayColName != suppColName && suppColName != "")
-                                              {
-                                                  string columnName = Convert.ToString(suppColName);
+                                             if (displayColName != suppColName && suppColName != "")
+                                             {
+                                                 string columnName = Convert.ToString(suppColName);
 
-                                                  finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
+                                                 finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
 
-                                                  if (columnName == "CTS" && columnName == "BASE_DISC" && columnName == "BASE_RATE" &&
-                                                           columnName == "LENGTH" && columnName == "WIDTH" && columnName == "DEPTH" &&
-                                                           columnName == "DEPTH_PER" && columnName == "TABLE_PER" && columnName == "CROWN_ANGLE" &&
-                                                           columnName == "CROWN_HEIGHT" && columnName == "PAVILION_ANGLE" &&
-                                                           columnName == "PAVILION_HEIGHT" && columnName == "GIRDLE_PER" &&
-                                                           columnName == "SUPPLIER_DISC" && columnName == "SUPPLIER_AMOUNT" &&
-                                                           columnName == "OFFER_DISC" && columnName == "OFFER_VALUE" &&
-                                                           columnName == "MAX_SLAB_BASE_DISC" && columnName == "MAX_SLAB_BASE_VALUE")
-                                                  {
-                                                      finalRow[displayColName] = CoreService.RemoveNonNumericAndDotAndNegativeCharacters(
-                                                                                 Convert.ToString(finalRow[displayColName]));
+                                                 if (columnName == "CTS" || columnName == "BASE_DISC" || columnName == "BASE_RATE" ||
+                                                     columnName == "LENGTH" || columnName == "WIDTH" || columnName == "DEPTH" ||
+                                                     columnName == "DEPTH_PER" || columnName == "TABLE_PER" || columnName == "CROWN_ANGLE" ||
+                                                     columnName == "CROWN_HEIGHT" || columnName == "PAVILION_ANGLE" ||
+                                                     columnName == "PAVILION_HEIGHT" || columnName == "GIRDLE_PER" ||
+                                                     columnName == "SUPPLIER_DISC" || columnName == "SUPPLIER_AMOUNT" ||
+                                                     columnName == "OFFER_DISC" || columnName == "OFFER_VALUE" ||
+                                                     columnName == "MAX_SLAB_BASE_DISC" || columnName == "MAX_SLAB_BASE_VALUE")
+                                                 {
+                                                     finalRow[displayColName] = CoreService.RemoveNonNumericAndDotAndNegativeCharacters(
+                                                         Convert.ToString(finalRow[displayColName]));
+                                                 }
+                                                 else
+                                                 {
+                                                     finalRow[displayColName] = string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName]))
+                                                         ? null : Convert.ToString(finalRow[displayColName]);
+                                                 }
+                                             }
+                                         });
 
-                                                  }
-                                                  else
-                                                  {
-                                                      finalRow[displayColName] = string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName]))
-                                                                                 ? null : Convert.ToString(finalRow[displayColName]);
-                                                  }
-                                              }
-                                          });
+                                         dt_stock_data.Rows.Add(finalRow);
+                                         return finalRow;
+                                     })
+                                     .ToList();
+                                    dt_stock_data.AsEnumerable().ToList().ForEach(stockDataRow =>
+                                    {
+                                        // Check if all three columns are currently null or empty
+                                        if ((string.IsNullOrEmpty(Convert.ToString(stockDataRow["LENGTH"]))
+                                            && string.IsNullOrEmpty(Convert.ToString(stockDataRow["WIDTH"]))
+                                            && string.IsNullOrEmpty(Convert.ToString(stockDataRow["DEPTH"]))))
+                                        {
+                                            string measurementValue = Convert.ToString(stockDataRow["MEASUREMENT"]);
 
-                                          dt_stock_data.Rows.Add(finalRow);
-                                          return finalRow;
-                                      })
-                                      .ToList();
+                                            // Call the function and handle possible null values
+                                            string lengthValue = CoreService.Split_Supplier_Stock_Measurement(measurementValue, "LENGTH");
+                                            string widthValue = CoreService.Split_Supplier_Stock_Measurement(measurementValue, "WIDTH");
+                                            string depthValue = CoreService.Split_Supplier_Stock_Measurement(measurementValue, "DEPTH");
+
+                                            // Set the values in the DataRow, handling nulls or empty strings
+                                            stockDataRow["LENGTH"] = !string.IsNullOrEmpty(lengthValue) ? lengthValue : stockDataRow["LENGTH"];
+                                            stockDataRow["WIDTH"] = !string.IsNullOrEmpty(widthValue) ? widthValue : stockDataRow["WIDTH"];
+                                            stockDataRow["DEPTH"] = !string.IsNullOrEmpty(depthValue) ? depthValue : stockDataRow["DEPTH"];
+                                        }
+                                    });
+
+
 
                                     Stock_Data_Master_Schedular stock_Data_Master_Schedular = new Stock_Data_Master_Schedular();
                                     stock_Data_Master_Schedular.Stock_Data_Id = 0;
