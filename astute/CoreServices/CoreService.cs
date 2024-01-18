@@ -433,5 +433,27 @@ namespace astute.CoreServices
             }
 
         }
+        //public static (string, string) Table_And_Side_White(string strValue)
+        //{
+        //    //First string for Table White
+        //    //Second string for Croun White
+        //    if (strValue == "NONE")
+        //    {
+        //        return ("NN", "NN");
+        //    }
+        //    else if (strValue.Equals("T1,TS") || strValue.Equals("T1,TC"))
+        //    {
+        //        return ("T1", "NN");
+        //    }
+        //    else if (strValue.Equals("T1,CC") || strValue.Equals("T1,CC"))
+        //    {
+        //        return ("NN", "C1");
+        //    }
+        //    else if ()
+        //    {
+
+        //    }
+        //    return (string.Empty, string.Empty);
+        //}
     }
 }
