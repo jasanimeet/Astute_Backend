@@ -162,7 +162,7 @@ namespace astute.Repository
         public async Task<IList<Party_Master>> GetParty(int party_Id, string party_Type)
         {
             var partyId = party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value);
-            var partyType = !string.IsNullOrEmpty(party_Type) ? new SqlParameter("@Party_Type", party_Type) : new SqlParameter("@PartyId", DBNull.Value);
+            var partyType = !string.IsNullOrEmpty(party_Type) ? new SqlParameter("@Party_Type", party_Type) : new SqlParameter("@Party_Type", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Party_Master
                             .FromSqlRaw(@"exec Party_Master_Select @PartyId, @Party_Type", partyId, partyType).ToListAsync());
