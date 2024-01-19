@@ -220,6 +220,13 @@ namespace astute.Repository
                                 .ExecuteSqlRawAsync(@"EXEC Company_Master_Update_Status @Company_Id, @Status", companyId, Status));
             return result;
         }
+        public async Task<IList<DropdownModel>> Get_Active_Company()
+        {
+            var result = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"exec Company_Master_Active_Select").ToListAsync());
+
+            return result;
+        }
         #endregion
 
         #region Company Document

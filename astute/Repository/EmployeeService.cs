@@ -436,6 +436,14 @@ namespace astute.Repository
 
             return employees;
         }
+        public async Task<IList<DropdownModel>> Get_Employee_For_Report(bool is_Exist)
+        {
+            var _is_Exist = new SqlParameter("@Is_Exist", is_Exist);
+            var employees = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"exec Employee_Master_Select_For_Report @Is_Exist", _is_Exist).ToListAsync());
+
+            return employees;
+        }
         #endregion
 
         #region Employee Document

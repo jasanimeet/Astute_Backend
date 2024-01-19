@@ -20,6 +20,7 @@ namespace astute.Repository
         Task<int> DeleteCompany(int companyId);
         Task<IList<Company_Master>> GetCompany(int companyId);
         Task<int> CompanyChangeStatus(int company_Id, bool status);
+        Task<IList<DropdownModel>> Get_Active_Company();
         #endregion
 
         #region Company Document

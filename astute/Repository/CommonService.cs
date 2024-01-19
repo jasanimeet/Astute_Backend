@@ -668,6 +668,13 @@ namespace astute.Repository
 
             return result;
         }
+        public async Task<IList<DropdownModel>> Get_Active_Year()
+        {
+            var result = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"exec Year_Master_Active_Select").ToListAsync());
+
+            return result;
+        }
         public async Task<int> Insert_Update_Years(Year_Master year_Mas)
         {   
             var year_Id = new SqlParameter("@Year_Id", year_Mas.Year_Id);

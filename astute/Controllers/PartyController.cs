@@ -60,8 +60,9 @@ namespace astute.Controllers
         #endregion
 
         #region Utilities
-        private DataTable Set_Column_In_Datatable(DataTable dt_stock_data, IList<Stock_Data> stock_Datas)
+        private async Task<DataTable> Set_Column_In_Datatable(int? supplier_Id, DataTable dt_stock_data, IList<Stock_Data> stock_Datas)
         {
+            var party_master = await _partyService.Get_Party_Details(supplier_Id ?? 0);
             dt_stock_data.Columns.Add("SUPPLIER_NO", typeof(string));
             dt_stock_data.Columns.Add("CERTIFICATE_NO", typeof(string));
             dt_stock_data.Columns.Add("LAB", typeof(string));
@@ -148,6 +149,26 @@ namespace astute.Controllers
             {
                 foreach (var item in stock_Datas)
                 {
+                    var table_white = string.Empty;
+                    var table_Black = string.Empty;
+                    var side_White = string.Empty;
+                    var side_Black = string.Empty;
+                    //if (party_master.Party_Code == "8511")
+                    if (party_master.Party_Code == "1192")
+                    {
+                        (table_white, _) = CoreService.Table_And_Side_White(item.TABLE_WHITE);
+                        (_, side_White) = CoreService.Table_And_Side_White(item.SIDE_WHITE);
+
+                        (table_Black, _) = CoreService.Table_And_Side_Black(item.TABLE_BLACK);
+                        (_, side_Black) = CoreService.Table_And_Side_Black(item.SIDE_BLACK);
+                    }
+                    else
+                    {
+                        table_white = item.TABLE_WHITE;
+                        table_Black = item.TABLE_BLACK;
+                        side_White = item.SIDE_WHITE;
+                        side_Black = item.SIDE_BLACK;
+                    }
                     dt_stock_data.Rows.Add(
                         item.SUPPLIER_NO ?? null,
                         item.CERTIFICATE_NO ?? null,
@@ -177,10 +198,10 @@ namespace astute.Controllers
                         item.BGM ?? null,
                         item.LOCATION ?? null,
                         item.STATUS ?? null,
-                        item.TABLE_BLACK ?? null,
-                        item.SIDE_BLACK ?? null,
-                        item.TABLE_WHITE ?? null,
-                        item.SIDE_WHITE ?? null,
+                        table_Black,
+                        side_Black,
+                        table_white,
+                        side_White,
                         item.TABLE_OPEN ?? null,
                         item.CROWN_OPEN ?? null,
                         item.PAVILION_OPEN ?? null,
@@ -235,8 +256,9 @@ namespace astute.Controllers
             }
             return dt_stock_data;
         }
-        private DataTable Set_Column_In_Datatable_Scheduler(DataTable dt_stock_data, IList<Stock_Data_Schedular> stock_Datas)
+        private async Task<DataTable> Set_Column_In_Datatable_Scheduler(DataTable dt_stock_data, IList<Stock_Data_Schedular> stock_Datas, int supplier_Id)
         {
+            var party_master = await _partyService.Get_Party_Details(supplier_Id);
             dt_stock_data.Columns.Add("SUPPLIER_NO", typeof(string));
             dt_stock_data.Columns.Add("CERTIFICATE_NO", typeof(string));
             dt_stock_data.Columns.Add("LAB", typeof(string));
@@ -323,6 +345,26 @@ namespace astute.Controllers
             {
                 foreach (var item in stock_Datas)
                 {
+                    var table_white = string.Empty;
+                    var table_Black = string.Empty;
+                    var side_White = string.Empty;
+                    var side_Black = string.Empty;
+                    //if (party_master.Party_Code == "8511")
+                    if (party_master.Party_Code == "1192")
+                    {
+                        (table_white, _) = CoreService.Table_And_Side_White(Convert.ToString(item.TABLE_WHITE));
+                        (_, side_White) = CoreService.Table_And_Side_White(Convert.ToString(item.SIDE_WHITE));
+
+                        (table_Black, _) = CoreService.Table_And_Side_White(Convert.ToString(item.TABLE_BLACK));
+                        (_, side_Black) = CoreService.Table_And_Side_White(Convert.ToString(item.SIDE_BLACK));
+                    }
+                    else
+                    {
+                        table_white = Convert.ToString(item.TABLE_WHITE);
+                        table_Black = Convert.ToString(item.TABLE_BLACK);
+                        side_White = Convert.ToString(item.SIDE_WHITE);
+                        side_Black = Convert.ToString(item.SIDE_BLACK);
+                    }
                     dt_stock_data.Rows.Add(item.SUPPLIER_NO != null ? Convert.ToString(item.SUPPLIER_NO) : DBNull.Value,
                         item.CERTIFICATE_NO != null ? Convert.ToString(item.CERTIFICATE_NO) : DBNull.Value,
                         item.LAB != null ? Convert.ToString(item.LAB) : DBNull.Value,
@@ -351,10 +393,10 @@ namespace astute.Controllers
                         item.BGM != null ? Convert.ToString(item.BGM) : DBNull.Value,
                         item.LOCATION != null ? Convert.ToString(item.LOCATION) : DBNull.Value,
                         item.STATUS != null ? Convert.ToString(item.STATUS) : DBNull.Value,
-                        item.TABLE_BLACK != null ? Convert.ToString(item.TABLE_BLACK) : DBNull.Value,
-                        item.SIDE_BLACK != null ? Convert.ToString(item.SIDE_BLACK) : DBNull.Value,
-                        item.TABLE_WHITE != null ? Convert.ToString(item.TABLE_WHITE) : DBNull.Value,
-                        item.SIDE_WHITE != null ? Convert.ToString(item.SIDE_WHITE) : DBNull.Value,
+                        table_Black,
+                        side_Black,
+                        table_white,
+                        side_White,
                         item.TABLE_OPEN != null ? Convert.ToString(item.TABLE_OPEN) : DBNull.Value,
                         item.CROWN_OPEN != null ? Convert.ToString(item.CROWN_OPEN) : DBNull.Value,
                         item.PAVILION_OPEN != null ? Convert.ToString(item.PAVILION_OPEN) : DBNull.Value,
@@ -2317,7 +2359,7 @@ namespace astute.Controllers
                         if (stock_Data_Master.Stock_Data_List != null && stock_Data_Master.Stock_Data_List.Count > 0)
                         {
                             DataTable dt_our_stock_data = new DataTable();
-                            dt_our_stock_data = Set_Column_In_Datatable(new DataTable(), stock_Data_Master.Stock_Data_List);
+                            dt_our_stock_data = await Set_Column_In_Datatable(stock_Data_Master.Supplier_Id ?? 0, new DataTable(), stock_Data_Master.Stock_Data_List);
                             var result = await _supplierService.Stock_Data_Detail_Insert_Update(dt_our_stock_data, stock_Data_Id);
                         }
                         return Ok(new
@@ -2353,7 +2395,7 @@ namespace astute.Controllers
                         if (stock_Data_Master.Stock_Data_List != null && stock_Data_Master.Stock_Data_List.Count > 0)
                         {
                             DataTable dt_our_stock_data = new DataTable();
-                            dt_our_stock_data = Set_Column_In_Datatable_Scheduler(new DataTable(), stock_Data_Master.Stock_Data_List);
+                            dt_our_stock_data = await Set_Column_In_Datatable_Scheduler(new DataTable(), stock_Data_Master.Stock_Data_List, stock_Data_Master.Supplier_Id ?? 0);
                             var result = await _supplierService.Stock_Data_Shedular_Insert_Update(dt_our_stock_data, stock_Data_Id);
                             if (result > 0)
                             {
@@ -3158,8 +3200,6 @@ namespace astute.Controllers
                                             stockDataRow["DEPTH"] = !string.IsNullOrEmpty(depthValue) ? depthValue : stockDataRow["DEPTH"];
                                         }
                                     });
-
-
 
                                     Stock_Data_Master_Schedular stock_Data_Master_Schedular = new Stock_Data_Master_Schedular();
                                     stock_Data_Master_Schedular.Stock_Data_Id = 0;

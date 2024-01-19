@@ -1131,6 +1131,34 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_active_years")]
+        public async Task<IActionResult> Get_Active_Years()
+        {
+            try
+            {
+                var result = await _commonService.Get_Active_Year();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Active_Years", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         [HttpPost]
         [Route("createyear")]
         [Authorize]

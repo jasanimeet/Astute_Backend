@@ -452,6 +452,35 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_employee_for_report")]
+        [Authorize]
+        public async Task<IActionResult> Get_Employee_For_Report(bool is_Exist)
+        {
+            try
+            {
+                var result = await _employeeService.Get_Employee_For_Report(is_Exist);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Employee_For_Report", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Employee Login

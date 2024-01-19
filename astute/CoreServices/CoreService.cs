@@ -433,27 +433,215 @@ namespace astute.CoreServices
             }
 
         }
-        //public static (string, string) Table_And_Side_White(string strValue)
-        //{
-        //    //First string for Table White
-        //    //Second string for Croun White
-        //    if (strValue == "NONE")
-        //    {
-        //        return ("NN", "NN");
-        //    }
-        //    else if (strValue.Equals("T1,TS") || strValue.Equals("T1,TC"))
-        //    {
-        //        return ("T1", "NN");
-        //    }
-        //    else if (strValue.Equals("T1,CC") || strValue.Equals("T1,CC"))
-        //    {
-        //        return ("NN", "C1");
-        //    }
-        //    else if ()
-        //    {
+        public static (string, string) Table_And_Side_White(string strValue)
+        {
+            if (!string.IsNullOrEmpty(strValue))
+            {
+                if (strValue == "NONE")
+                {
+                    return ("NN", "NN");
+                }
+                else
+                {
+                    string[] strArray = strValue.Split(',');
 
-        //    }
-        //    return (string.Empty, string.Empty);
-        //}
+                    Int32 ok_Len = Convert.ToInt32(strArray.Length) - 1;
+                    Int32 Exist_Len = 0;
+
+                    if (strArray[0] == "T1" || strArray[0] == "T2")
+                    {
+                        if (strArray.Length == 2)
+                        {
+                            foreach (string str in strArray)
+                            {
+                                if (str.Trim() == "TS" || str.Trim() == "TC")
+                                {
+                                    Exist_Len += 1;
+                                }
+                            }
+                            if (Exist_Len == ok_Len)
+                            {
+                                return ("T1", "NN");
+                            }
+
+                            foreach (string str in strArray)
+                            {
+                                if (str.Trim() == "CC" || str.Trim() == "CG")
+                                {
+                                    Exist_Len += 1;
+                                }
+                            }
+                            if (Exist_Len == ok_Len)
+                            {
+                                return ("NN", "C1");
+                            }
+                        }
+                        else if (strArray.Length == 3)
+                        {
+                            foreach (string str in strArray)
+                            {
+                                if (str.Trim() == "TS" || str.Trim() == "TC" || str.Trim() == "CC" || str.Trim() == "CG")
+                                {
+                                    Exist_Len += 1;
+                                }
+                            }
+                            if (Exist_Len == ok_Len)
+                            {
+                                return ("T1", "C1");
+                            }
+                        }
+                    }
+                    else if (strArray[0] == "T3")
+                    {
+                        if (strArray.Length == 2)
+                        {
+                            foreach (string str in strArray)
+                            {
+                                if (str.Trim() == "TS" || str.Trim() == "TC")
+                                {
+                                    Exist_Len += 1;
+                                }
+                            }
+                            if (Exist_Len == ok_Len)
+                            {
+                                return ("T2", "NN");
+                            }
+
+                            foreach (string str in strArray)
+                            {
+                                if (str.Trim() == "CC" || str.Trim() == "CG")
+                                {
+                                    Exist_Len += 1;
+                                }
+                            }
+                            if (Exist_Len == ok_Len)
+                            {
+                                return ("NN", "C2");
+                            }
+                        }
+                        else if (strArray.Length == 3)
+                        {
+                            foreach (string str in strArray)
+                            {
+                                if (str.Trim() == "TS" || str.Trim() == "TC" || str.Trim() == "CC" || str.Trim() == "CG")
+                                {
+                                    Exist_Len += 1;
+                                }
+                            }
+                            if (Exist_Len == ok_Len)
+                            {
+                                return ("T2", "C2");
+                            }
+                        }
+                    }
+                }
+            }
+            return (null, null);
+        }
+        public static (string, string) Table_And_Side_Black(string strValue)
+        {
+            if (!string.IsNullOrEmpty(strValue))
+            {
+                if (strValue == "NONE")
+                {
+                    return ("NN", "NN");
+                }
+                else
+                {
+                    string[] strArray = strValue.Split(',');
+
+                    Int32 ok_Len = Convert.ToInt32(strArray.Length) - 1;
+                    Int32 Exist_Len = 0;
+
+                    if (strArray[0] == "N1" || strArray[0] == "N2")
+                    {
+                        if (strArray.Length == 2)
+                        {
+                            foreach (string str in strArray)
+                            {
+                                if (str.Trim() == "TS" || str.Trim() == "TC")
+                                {
+                                    Exist_Len += 1;
+                                }
+                            }
+                            if (Exist_Len == ok_Len)
+                            {
+                                return ("BT1", "NN");
+                            }
+
+                            foreach (string str in strArray)
+                            {
+                                if (str.Trim() == "CC" || str.Trim() == "CG")
+                                {
+                                    Exist_Len += 1;
+                                }
+                            }
+                            if (Exist_Len == ok_Len)
+                            {
+                                return ("NN", "BC1");
+                            }
+                        }
+                        else if (strArray.Length == 3)
+                        {
+                            foreach (string str in strArray)
+                            {
+                                if (str.Trim() == "TS" || str.Trim() == "TC" || str.Trim() == "CC" || str.Trim() == "CG")
+                                {
+                                    Exist_Len += 1;
+                                }
+                            }
+                            if (Exist_Len == ok_Len)
+                            {
+                                return ("BT1", "BC1");
+                            }
+                        }
+                    }
+                    else if (strArray[0] == "N3")
+                    {
+                        if (strArray.Length == 2)
+                        {
+                            foreach (string str in strArray)
+                            {
+                                if (str.Trim() == "TS" || str.Trim() == "TC")
+                                {
+                                    Exist_Len += 1;
+                                }
+                            }
+                            if (Exist_Len == ok_Len)
+                            {
+                                return ("BT2", "NN");
+                            }
+
+                            foreach (string str in strArray)
+                            {
+                                if (str.Trim() == "CC" || str.Trim() == "CG")
+                                {
+                                    Exist_Len += 1;
+                                }
+                            }
+                            if (Exist_Len == ok_Len)
+                            {
+                                return ("NN", "BC2");
+                            }
+                        }
+                        else if (strArray.Length == 3)
+                        {
+                            foreach (string str in strArray)
+                            {
+                                if (str.Trim() == "TS" || str.Trim() == "TC" || str.Trim() == "CC" || str.Trim() == "CG")
+                                {
+                                    Exist_Len += 1;
+                                }
+                            }
+                            if (Exist_Len == ok_Len)
+                            {
+                                return ("BT2", "BC2");
+                            }
+                        }
+                    }
+                }
+            }
+            return (null, null);
+        }
     }
 }

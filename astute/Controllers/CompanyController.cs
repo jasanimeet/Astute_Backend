@@ -98,6 +98,34 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_active_company")]
+        public async Task<IActionResult> Get_Active_Company()
+        {
+            try
+            {
+                var result = await _companyService.Get_Active_Company();
+                if (result != null)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Active_Company", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         [HttpPost]
         [Route("create_company_details")]
         [Authorize]
