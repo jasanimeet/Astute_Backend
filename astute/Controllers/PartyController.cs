@@ -708,6 +708,36 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("getpartycustomer")]
+        [Authorize]
+        public async Task<IActionResult> GetPartyCustomer(int party_Id, string party_Type)
+        {
+            try
+            {
+                var result = await _partyService.GetPartyCustomer(party_Id, party_Type);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "GetParty", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+
+        }
+
         [HttpDelete]
         [Route("deleteparty")]
         [Authorize]
