@@ -2544,7 +2544,7 @@ namespace astute.Controllers
 
                         foreach (var item in stock_Number_Generations)
                         {
-                            dataTable.Rows.Add(item.Id, item.Exc_Party_Id, item.Pointer_Id, item.Shape, item.Stock_Type, item.Front_Prefix, item.Back_Prefix, item.Front_Prefix_Alloted, item.Start_Format, item.Start_Number, item.End_Number, item.Supplier_Id, id > 0 ? 'U' : 'I');
+                            dataTable.Rows.Add(item.Id, item.Exc_Party_Id, item.Pointer_Id, item.Shape, item.Stock_Type, item.Front_Prefix, item.Back_Prefix, item.Front_Prefix_Alloted, item.Start_Format, item.Start_Number, item.End_Number, item.Supplier_Id, item.Id > 0 ? 'U' : 'I');
                         }
 
                         var result = await _supplierService.Add_Update_Stock_Number_Generation(dataTable);
