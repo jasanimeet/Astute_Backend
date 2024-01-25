@@ -209,7 +209,7 @@ namespace astute.Repository
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
-                using (var command = new SqlCommand("Party_Master_Customer_Select", connection))
+                using (var command = new SqlCommand("Party_Master_Detail_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value));
@@ -513,7 +513,7 @@ namespace astute.Repository
             var _partyId = party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Party_Master
-                            .FromSqlRaw(@"exec Party_Master_Select @PartyId", _partyId)
+                            .FromSqlRaw(@"exec Party_Master_Detail_Select @PartyId", _partyId)
                             .AsEnumerable()
                             .FirstOrDefault());
 
