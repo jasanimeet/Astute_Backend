@@ -147,14 +147,14 @@ namespace astute.Controllers
             dt_stock_data.Columns.Add("Short_Code", typeof(string));
             if (stock_Datas != null && stock_Datas.Count > 0)
             {
+                var lakhi_Party_Code = _configuration["Lakhi_Party_Code"];
                 foreach (var item in stock_Datas)
                 {
                     var table_white = string.Empty;
                     var table_Black = string.Empty;
                     var side_White = string.Empty;
                     var side_Black = string.Empty;
-                    //if (party_master.Party_Code == "8511")
-                    if (party_master.Party_Code == "1192")
+                    if (party_master != null && party_master.Party_Code == lakhi_Party_Code)
                     {
                         (table_white, _) = CoreService.Table_And_Side_White(item.TABLE_WHITE);
                         (_, side_White) = CoreService.Table_And_Side_White(item.SIDE_WHITE);
@@ -343,14 +343,14 @@ namespace astute.Controllers
             dt_stock_data.Columns.Add("Short_Code", typeof(string));
             if (stock_Datas != null && stock_Datas.Count > 0)
             {
+                var lakhi_Party_Code = _configuration["Lakhi_Party_Code"];
                 foreach (var item in stock_Datas)
                 {
                     var table_white = string.Empty;
                     var table_Black = string.Empty;
                     var side_White = string.Empty;
                     var side_Black = string.Empty;
-                    //if (party_master.Party_Code == "8511")
-                    if (party_master.Party_Code == "1192")
+                    if (party_master != null && party_master.Party_Code == lakhi_Party_Code)
                     {
                         (table_white, _) = CoreService.Table_And_Side_White(Convert.ToString(item.TABLE_WHITE));
                         (_, side_White) = CoreService.Table_And_Side_White(Convert.ToString(item.SIDE_WHITE));
@@ -2810,19 +2810,71 @@ namespace astute.Controllers
                                             {
                                                 HSSFWorkbook workbook = new HSSFWorkbook(file);
                                                 HSSFSheet sheet = (HSSFSheet)workbook.GetSheet(sheet_name);
+                                                #region Start Remove above unused rows and columns
+                                                var (hasDataInFirstTenRowsAndColumns, rowcnt) = CoreService.CheckDataInFirstTenRowsAndColumns(sheet);
 
-                                                var (hasDataInFirstTenRowsAndColumns, rowCount) = CoreService.CheckDataInFirstTenRowsAndColumns(sheet);
-
-                                                if (hasDataInFirstTenRowsAndColumns && rowCount > 1)
+                                                if (hasDataInFirstTenRowsAndColumns && rowcnt > 1)
                                                 {
-                                                    sheet.ShiftRows(1, rowCount - 1, 0);
+                                                    sheet.ShiftRows(1, rowcnt - 1, 0);
                                                     string outputFilePath = Path.Combine(filePath, strFile);
                                                     using (FileStream outputFile = new FileStream(outputFilePath, FileMode.Create))
                                                     {
                                                         workbook.Write(outputFile);
                                                     }
                                                 }
+                                                #endregion
 
+                                                #region Start Remove belowe unused rows and columns
+                                                int rowCount = sheet.LastRowNum + 1;
+                                                int colCount = sheet.GetRow(0).LastCellNum;
+
+                                                int rowsToCheck = Math.Max(rowCount - (rowCount - 1), 1);
+                                                bool is_Removed = false;
+
+                                                for (int row = rowCount - 1; row >= rowsToCheck; row--)
+                                                {
+                                                    bool hasData = false;
+
+                                                    IRow currentRow = sheet.GetRow(row);
+                                                    if (currentRow != null)
+                                                    {
+                                                        for (int col = colCount - 1; col >= colCount - 20; col--)
+                                                        {
+                                                            ICell cell = currentRow.GetCell(col);
+                                                            if (cell != null && !string.IsNullOrEmpty(cell.ToString()))
+                                                            {
+                                                                hasData = true;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+
+                                                    if (!hasData)
+                                                    {
+                                                        sheet.RemoveRow(currentRow);
+                                                        rowCount--;
+                                                        is_Removed = true;
+                                                    }
+                                                }
+
+                                                if (is_Removed)
+                                                {
+                                                    try
+                                                    {
+                                                        string outputFilePath2 = Path.Combine(filePath, strFile);
+                                                        using (FileStream outputFile = new FileStream(outputFilePath2, FileMode.Create))
+                                                        {
+                                                            workbook.Write(outputFile);
+                                                        }
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        // Handle exception
+                                                    }
+                                                }
+                                                #endregion
+
+                                                #region Start Update URL
                                                 List<string> columnNames = new List<string>();
                                                 List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
 
@@ -2904,6 +2956,7 @@ namespace astute.Controllers
                                                 {
                                                     workbook.Write(outputFile);
                                                 }
+                                                #endregion
                                             }
                                         }
                                     }
@@ -2918,6 +2971,7 @@ namespace astute.Controllers
                                             {
                                                 ExcelWorksheet worksheet = package.Workbook.Worksheets[sheet_name];
 
+                                                #region Start Remove above unused rows and columns
                                                 var (hasDataInFirstTenRowsAndColumns, row_count) = CoreService.CheckDataInFirstTenRowsAndColumns(worksheet);
                                                 if (hasDataInFirstTenRowsAndColumns && row_count > 1)
                                                 {
@@ -2925,7 +2979,9 @@ namespace astute.Controllers
                                                     string outputFilePath = Path.Combine(filePath, strFile);
                                                     package.SaveAs(new FileInfo(outputFilePath));
                                                 }
+                                                #endregion
 
+                                                #region Start Remove belowe unused rows and columns
                                                 var rowCount = worksheet.Dimension.End.Row;
                                                 var colCount = worksheet.Dimension.End.Column;
 
@@ -2965,6 +3021,7 @@ namespace astute.Controllers
 
                                                     }
                                                 }
+                                                #endregion
 
                                                 //List<string> columnNames = new List<string>();
                                                 //List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
@@ -3210,8 +3267,36 @@ namespace astute.Controllers
                                          return finalRow;
                                      })
                                      .ToList();
+                                    var party_master = await _partyService.Get_Party_Details(party_File.Party_Id ?? 0);
                                     dt_stock_data.AsEnumerable().ToList().ForEach(stockDataRow =>
                                     {
+                                        //Start Center Inclusion AND Black Inclusion
+                                        var lakhi_Party_Code = _configuration["Lakhi_Party_Code"];
+                                        var table_white = string.Empty;
+                                        var table_Black = string.Empty;
+                                        var side_White = string.Empty;
+                                        var side_Black = string.Empty;
+                                        if (party_master != null && party_master.Party_Code == lakhi_Party_Code)
+                                        {
+                                            (table_white, _) = CoreService.Table_And_Side_White(Convert.ToString(stockDataRow["TABLE_WHITE"]));
+                                            (_, side_White) = CoreService.Table_And_Side_White(Convert.ToString(stockDataRow["SIDE_WHITE"]));
+
+                                            (table_Black, _) = CoreService.Table_And_Side_Black(Convert.ToString(stockDataRow["TABLE_BLACK"]));
+                                            (_, side_Black) = CoreService.Table_And_Side_Black(Convert.ToString(stockDataRow["SIDE_BLACK"]));
+                                        }
+                                        else
+                                        {
+                                            table_white = Convert.ToString(stockDataRow["TABLE_WHITE"]);
+                                            table_Black = Convert.ToString(stockDataRow["SIDE_WHITE"]);
+                                            side_White = Convert.ToString(stockDataRow["TABLE_BLACK"]);
+                                            side_Black = Convert.ToString(stockDataRow["SIDE_BLACK"]);
+                                        }
+                                        stockDataRow["TABLE_WHITE"] = table_white;
+                                        stockDataRow["SIDE_WHITE"] = table_Black;
+                                        stockDataRow["TABLE_BLACK"] = side_White;
+                                        stockDataRow["SIDE_BLACK"] = side_Black;
+                                        //END Center Inclusion AND Black Inclusion
+
                                         // Check if all three columns are currently null or empty
                                         if ((string.IsNullOrEmpty(Convert.ToString(stockDataRow["LENGTH"]))
                                             && string.IsNullOrEmpty(Convert.ToString(stockDataRow["WIDTH"]))
