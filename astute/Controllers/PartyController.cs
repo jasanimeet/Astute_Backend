@@ -2517,14 +2517,14 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_stock_number_generation")]
         [Authorize]
-        public async Task<IActionResult> Create_Stock_Number_Generation(IList<Stock_Number_Generation> stock_Number_Generations)
+        public async Task<IActionResult> Create_Stock_Number_Generation(Stock_Number_Generation_List stock_Number_Generation_List)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    int id = stock_Number_Generations.Select(x => x.Id).FirstOrDefault();
-                    if (stock_Number_Generations != null && stock_Number_Generations.Count > 0)
+                    int id = stock_Number_Generation_List.stock_Number_Generations.Select(x => x.Id).FirstOrDefault();
+                    if (stock_Number_Generation_List.stock_Number_Generations != null && stock_Number_Generation_List.stock_Number_Generations.Count > 0)
                     {
 
                         DataTable dataTable = new DataTable();
@@ -2541,10 +2541,12 @@ namespace astute.Controllers
                         dataTable.Columns.Add("End_Number", typeof(string));
                         dataTable.Columns.Add("Supplier_Id", typeof(int));
                         dataTable.Columns.Add("Query_Flag", typeof(string));
+                        dataTable.Columns.Add("User_Id", typeof(int));
 
-                        foreach (var item in stock_Number_Generations)
+
+                        foreach (var item in stock_Number_Generation_List.stock_Number_Generations)
                         {
-                            dataTable.Rows.Add(item.Id, item.Exc_Party_Id, item.Pointer_Id, item.Shape, item.Stock_Type, item.Front_Prefix, item.Back_Prefix, item.Front_Prefix_Alloted, item.Start_Format, item.Start_Number, item.End_Number, item.Supplier_Id, item.Id > 0 ? 'U' : 'I');
+                            dataTable.Rows.Add(item.Id, item.Exc_Party_Id, item.Pointer_Id, item.Shape, item.Stock_Type, item.Front_Prefix, item.Back_Prefix, item.Front_Prefix_Alloted, item.Start_Format, item.Start_Number, item.End_Number, item.Supplier_Id, item.Id > 0 ? 'U' : 'I', stock_Number_Generation_List.User_Id);
                         }
 
                         var result = await _supplierService.Add_Update_Stock_Number_Generation(dataTable);

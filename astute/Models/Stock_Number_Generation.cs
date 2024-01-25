@@ -1,8 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace astute.Models
 {
+
+    public partial class Stock_Number_Generation_List
+    { 
+        public int User_Id { get; set; }
+
+        public IList<Stock_Number_Generation> stock_Number_Generations { get; set; } = new List<Stock_Number_Generation>();
+
+
+    }
 
     public partial class Stock_Number_Generation
     {
@@ -27,7 +37,11 @@ namespace astute.Models
         public string? Company_Name { get; set; }
         public string? Created_Date { get; set; }
         public string? Created_Time { get; set; }
+        public string? Created_By { get; set; }
         public string? Update_Date { get; set; }
         public string? Updated_Time { get; set; }
+        public string? Updated_By { get; set; }
+        
+
     }
 }
