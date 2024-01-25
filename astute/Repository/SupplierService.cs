@@ -1090,6 +1090,19 @@ namespace astute.Repository
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Stock_Number_Generation_Delete {Id}"));
         }
+        public async Task<int> Add_Update_Stock_Number_Generation_Replicate(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@tblStock_Number_Generation_Replicate", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Stock_Number_Generation_Replicate_Table_Type",
+                Value = dataTable
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"exec Stock_Number_Generation_Replicate_Insert_Update @tblStock_Number_Generation_Replicate", parameter));
+
+            return result;
+        }
         #endregion
 
         #region Api/FTP/File Party Name 
