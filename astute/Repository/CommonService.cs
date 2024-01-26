@@ -1166,7 +1166,7 @@ namespace astute.Repository
             return result;
         }
         public async Task<int> Update_Temp_Layout_Status(int layout_Id, bool status)
-        {
+        {   
             var _layout_Id = new SqlParameter("@Layout_Id", layout_Id);
             var _status = new SqlParameter("@Status", status);
 

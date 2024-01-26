@@ -223,7 +223,7 @@ namespace astute.Repository
                             .FromSqlRaw(@"exec Get_Pointer_For_Stock_Generation @Pointer_Id, @Stock_Type, @Company_Id", pointer_Id, _stock_type, _company_Id)
                             .ToListAsync());
             return result;
-        }
+        }        
         #endregion
 
         #region Pointer Detail

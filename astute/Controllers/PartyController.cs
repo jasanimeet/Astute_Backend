@@ -2543,13 +2543,13 @@ namespace astute.Controllers
                         dataTable.Columns.Add("Query_Flag", typeof(string));
                         dataTable.Columns.Add("User_Id", typeof(int));
 
-
                         foreach (var item in stock_Number_Generation_List.stock_Number_Generations)
                         {
                             dataTable.Rows.Add(item.Id, item.Exc_Party_Id, item.Pointer_Id, item.Shape, item.Stock_Type, item.Front_Prefix, item.Back_Prefix, item.Front_Prefix_Alloted, item.Start_Format, item.Start_Number, item.End_Number, item.Supplier_Id, item.Id > 0 ? 'U' : 'I', stock_Number_Generation_List.User_Id);
                         }
 
                         var result = await _supplierService.Add_Update_Stock_Number_Generation(dataTable);
+                        await _supplierService.Add_Update_Stock_Number_Generation_Raplicate(dataTable);
                         if (result == 5 || result == 6 || result == 7)
                         {
                             return Conflict(new
@@ -2559,7 +2559,7 @@ namespace astute.Controllers
                             });
                         }
                         else
-                        {
+                        {                            
                             return Ok(new
                             {
                                 statusCode = HttpStatusCode.OK,
