@@ -22,6 +22,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
+using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -2548,8 +2550,45 @@ namespace astute.Controllers
                             dataTable.Rows.Add(item.Id, item.Exc_Party_Id, item.Pointer_Id, item.Shape, item.Stock_Type, item.Front_Prefix, item.Back_Prefix, item.Front_Prefix_Alloted, item.Start_Format, item.Start_Number, item.End_Number, item.Supplier_Id, item.Id > 0 ? 'U' : 'I', stock_Number_Generation_List.User_Id);
                         }
 
+                        DataTable dataTableSinglePointer = new DataTable();
+                        dataTableSinglePointer.Columns.Add("Id", typeof(int));
+                        dataTableSinglePointer.Columns.Add("Exc_Party_Id", typeof(string));
+                        dataTableSinglePointer.Columns.Add("Pointer_Id", typeof(string));
+                        dataTableSinglePointer.Columns.Add("Shape", typeof(string));
+                        dataTableSinglePointer.Columns.Add("Stock_Type", typeof(string));
+                        dataTableSinglePointer.Columns.Add("Front_Prefix", typeof(string));
+                        dataTableSinglePointer.Columns.Add("Back_Prefix", typeof(string));
+                        dataTableSinglePointer.Columns.Add("Front_Prefix_Alloted", typeof(string));
+                        dataTableSinglePointer.Columns.Add("Start_Format", typeof(string));
+                        dataTableSinglePointer.Columns.Add("Start_Number", typeof(string));
+                        dataTableSinglePointer.Columns.Add("End_Number", typeof(string));
+                        dataTableSinglePointer.Columns.Add("Supplier_Id", typeof(int));
+                        dataTableSinglePointer.Columns.Add("Query_Flag", typeof(string));
+                        dataTableSinglePointer.Columns.Add("User_Id", typeof(int));
+                        string ids = string.Empty;
+                        foreach (var item in stock_Number_Generation_List.stock_Number_Generations)
+                        {
+                            if (item.Id > 0)
+                                ids += (ids.Length > 0 ? "," : "") + item.Id;
+
+                            string[] arrPointer = item.Pointer_Id.Split(",");
+                            string[] arrFrontPrifixAlloted = item.Front_Prefix_Alloted.Split(",");
+                            
+                            foreach (string pointer in arrPointer)
+                            {
+                                foreach (string fromPrifixAlloted in arrFrontPrifixAlloted)
+                                {
+                                    dataTableSinglePointer.Rows.Add(item.Id, item.Exc_Party_Id, pointer, item.Shape, item.Stock_Type, item.Front_Prefix, item.Back_Prefix, fromPrifixAlloted, item.Start_Format, item.Start_Number, item.End_Number, item.Supplier_Id, item.Id > 0 ? 'U' : 'I', stock_Number_Generation_List.User_Id);
+                                }
+                                if (item.Front_Prefix.Length > 0)
+                                {
+                                    dataTableSinglePointer.Rows.Add(item.Id, item.Exc_Party_Id, pointer, item.Shape, item.Stock_Type, item.Front_Prefix, item.Back_Prefix, item.Front_Prefix, item.Start_Format, item.Start_Number, item.End_Number, item.Supplier_Id, item.Id > 0 ? 'U' : 'I', stock_Number_Generation_List.User_Id);
+                                }
+                            }
+                        }
+
                         var result = await _supplierService.Add_Update_Stock_Number_Generation(dataTable);
-                        await _supplierService.Add_Update_Stock_Number_Generation_Raplicate(dataTable);
+                        await _supplierService.Add_Update_Stock_Number_Generation_Raplicate(dataTableSinglePointer, ids);
                         if (result == 5 || result == 6 || result == 7)
                         {
                             return Conflict(new
@@ -2559,7 +2598,7 @@ namespace astute.Controllers
                             });
                         }
                         else
-                        {                            
+                        {
                             return Ok(new
                             {
                                 statusCode = HttpStatusCode.OK,
@@ -3025,81 +3064,104 @@ namespace astute.Controllers
                                                 }
                                                 #endregion
 
-                                                //List<string> columnNames = new List<string>();
-                                                //List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
+                                                List<string> columnNames = new List<string>();
+                                                List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
 
-                                                //if (worksheet != null)
-                                                //{
-                                                //    // Get column names
-                                                //    int totalColumns = worksheet.Dimension.End.Column;
-                                                //    int headerRow = 1;
+                                                if (worksheet != null)
+                                                {
+                                                    // Get column names
+                                                    int totalColumns = worksheet.Dimension.End.Column;
+                                                    int headerRow = 1;
 
-                                                //    for (int col = 1; col <= totalColumns; col++)
-                                                //    {
-                                                //        var cellValue = worksheet.Cells[headerRow, col].Value;
-                                                //        if (cellValue != null)
-                                                //        {
-                                                //            columnNames.Add(cellValue.ToString());
-                                                //        }
-                                                //    }
+                                                    for (int col = 1; col <= totalColumns; col++)
+                                                    {
+                                                        var cellValue = worksheet.Cells[headerRow, col].Value;
+                                                        if (cellValue != null)
+                                                        {
+                                                            columnNames.Add(cellValue.ToString());
+                                                        }
+                                                    }
 
-                                                //    // Get row values
-                                                //    int totalRows = worksheet.Dimension.End.Row;
+                                                    // Get row values
+                                                    int totalRows = worksheet.Dimension.End.Row;
 
-                                                //    for (int row = headerRow + 1; row <= totalRows; row++)
-                                                //    {
-                                                //        Dictionary<string, object> rowData = new Dictionary<string, object>();
+                                                    for (int row = headerRow + 1; row <= totalRows; row++)
+                                                    {
+                                                        Dictionary<string, object> rowData = new Dictionary<string, object>();
 
-                                                //        for (int col = 1; col <= totalColumns; col++)
-                                                //        {
-                                                //            string columnName = columnNames[col - 1];
-                                                //            var cell = worksheet.Cells[row, col];
-                                                //            var cellValue = cell.Value;
+                                                        for (int col = 1; col <= totalColumns; col++)
+                                                        {
+                                                            var _cellValue = worksheet.Cells[headerRow, col].Value;
+                                                            if (_cellValue != null)
+                                                            {
+                                                                string columnName = columnNames[col - 1];
+                                                                var cell = worksheet.Cells[row, col];
+                                                                var cellValue = cell.Value;
 
-                                                //            if (cell.Hyperlink != null && cell.Hyperlink.AbsoluteUri != null)
-                                                //            {
-                                                //                string linkUrl = cell.Hyperlink.AbsoluteUri;
-                                                //                rowData.Add(columnName, linkUrl);
-                                                //            }
-                                                //            else
-                                                //            {
-                                                //                rowData.Add(columnName, cellValue);
-                                                //            }
-                                                //        }
+                                                                if (cell.Hyperlink != null)
+                                                                {
+                                                                    string url = cell.Hyperlink.OriginalString.Replace("%22", "");
 
-                                                //        rowsData.Add(rowData);
-                                                //    }
+                                                                    if (url.Length > 0)
+                                                                    {
+                                                                        string linkUrl = url;
+                                                                        rowData.Add(columnName, linkUrl);
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        rowData.Add(columnName, cellValue);
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    rowData.Add(columnName, cellValue);
+                                                                }
+                                                            }
 
-                                                //    //Save File
-                                                //    int colIndex = 1;
-                                                //    foreach (var columnName in columnNames)
-                                                //    {
-                                                //        worksheet.Cells[1, colIndex].Value = columnName;
-                                                //        colIndex++;
-                                                //    }
+                                                            //if (cell.Hyperlink != null && cell.Hyperlink.AbsoluteUri != null)
+                                                            //{
+                                                            //    string linkUrl = cell.Hyperlink.AbsoluteUri;
+                                                            //    rowData.Add(columnName, linkUrl);
+                                                            //}
+                                                            //else
+                                                            //{
+                                                            //    rowData.Add(columnName, cellValue);
+                                                            //}
+                                                        }
 
-                                                //    // Write row data
-                                                //    int rowIndex = 2;
-                                                //    foreach (var row in rowsData)
-                                                //    {
-                                                //        colIndex = 1;
-                                                //        foreach (var cellValue in row.Values)
-                                                //        {
-                                                //            worksheet.Cells[rowIndex, colIndex].Value = cellValue;
-                                                //            colIndex++;
-                                                //        }
-                                                //        rowIndex++;
-                                                //    }
-                                                //    try
-                                                //    {
-                                                //        string outputFilePath2 = Path.Combine(filePath, strFile);
-                                                //        package.SaveAs(new FileInfo(outputFilePath2));
-                                                //    }
-                                                //    catch (Exception ex)
-                                                //    {
+                                                        rowsData.Add(rowData);
+                                                    }
 
-                                                //    }
-                                                //}
+                                                    //Save File
+                                                    int colIndex = 1;
+                                                    foreach (var columnName in columnNames)
+                                                    {
+                                                        worksheet.Cells[1, colIndex].Value = columnName;
+                                                        colIndex++;
+                                                    }
+
+                                                    // Write row data
+                                                    int rowIndex = 2;
+                                                    foreach (var row in rowsData)
+                                                    {
+                                                        colIndex = 1;
+                                                        foreach (var cellValue in row.Values)
+                                                        {
+                                                            worksheet.Cells[rowIndex, colIndex].Value = cellValue;
+                                                            colIndex++;
+                                                        }
+                                                        rowIndex++;
+                                                    }
+                                                    try
+                                                    {
+                                                        string outputFilePath2 = Path.Combine(filePath, strFile);
+                                                        package.SaveAs(new FileInfo(outputFilePath2));
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+
+                                                    }
+                                                }
                                             }
                                         }
                                     }
