@@ -337,13 +337,14 @@ namespace astute.Repository
             var star_Ln_To = value_Config.Star_Ln_To > 0 ? new SqlParameter("@Star_Ln_To", value_Config.Star_Ln_To) : new SqlParameter("@Star_Ln_To", DBNull.Value);
             var shape_Group = !string.IsNullOrEmpty(value_Config.Shape_Group) ? new SqlParameter("@Shape_Group", value_Config.Shape_Group) : new SqlParameter("@Shape_Group", DBNull.Value);
             var shape = !string.IsNullOrEmpty(value_Config.Shape) ? new SqlParameter("@Shape", value_Config.Shape) : new SqlParameter("@Shape", DBNull.Value);
+            var user_Id = value_Config.User_Id > 0 ? new SqlParameter("@User_Id", value_Config.User_Id) : new SqlParameter("@User_Id", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Value_Config_Insert_Update @ValueMap_ID, @Length_From, @Length_To, @Width_From, @Width_To, @Depth_From, @Depth_To, @Depth_Per_From, @Depth_Per_To, @Table_Per_From,
                         @Table_Per_To, @Crown_Angle_From, @Crown_Angle_To, @Crown_Height_From, @Crown_Height_To, @Pavilion_Angle_From, @Pavilion_Angle_To, @Pavilion_Height_From,
-                        @Pavilion_Height_To, @Girdle_Per_From, @Girdle_Per_To, @Lr_Half_From, @Lr_Half_To, @Star_Ln_From, @Star_Ln_To, @Shape_Group, @Shape", valueMap_ID, length_From, length_To,
+                        @Pavilion_Height_To, @Girdle_Per_From, @Girdle_Per_To, @Lr_Half_From, @Lr_Half_To, @Star_Ln_From, @Star_Ln_To, @Shape_Group, @Shape,@User_Id", valueMap_ID, length_From, length_To,
                         width_From, width_To, depth_From, depth_To, depth_Per_From, depth_Per_To, table_Per_From, table_Per_To, crown_Angle_From, crown_Angle_To, crown_Height_From, crown_Height_To, pavilion_Angle_From,
-                        pavilion_Angle_To, pavilion_Height_From, pavilion_Height_To, girdle_Per_From, girdle_Per_To, lr_Half_From, lr_Half_To, star_Ln_From, star_Ln_To, shape_Group, shape));
+                        pavilion_Angle_To, pavilion_Height_From, pavilion_Height_To, girdle_Per_From, girdle_Per_To, lr_Half_From, lr_Half_To, star_Ln_From, star_Ln_To, shape_Group, shape,user_Id));
 
             //if (CoreService.Enable_Trace_Records(_configuration))
             //{
