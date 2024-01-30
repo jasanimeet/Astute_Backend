@@ -220,7 +220,7 @@ namespace astute.CoreServices
         public static string GetCertificateNoOrUrl(string input, bool IsUrl)
         {
             string[] certificate = input.Split(",");
-            string data = certificate.Length > 0 ? (IsUrl == true ? certificate[1] : certificate[0]) : input;
+            string data = certificate.Length > 1 ? (IsUrl == true ? certificate[1] : certificate[0]) : input;
             return data.Trim();
         }
 

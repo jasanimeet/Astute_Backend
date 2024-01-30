@@ -726,7 +726,7 @@ namespace astute.Repository
             var sP_Toggle_Bar = new SqlParameter("@SP_Toggle_Bar", supplier_Pricing.SP_Toggle_Bar);
             var mSP_Toggle_Bar = new SqlParameter("@MS_SP_Toggle_Bar", supplier_Pricing.MS_SP_Toggle_Bar);
             var modified_By = supplier_Pricing.Modified_By > 0 ? new SqlParameter("@Modified_By", supplier_Pricing.Modified_By) : new SqlParameter("@Modified_By", DBNull.Value);
-            var C_Length = !string.IsNullOrEmpty(supplier_Pricing.C_Length) ? new SqlParameter("@C_Lenght", supplier_Pricing.C_Length) : new SqlParameter("@C_Length", DBNull.Value);
+            var C_Length = !string.IsNullOrEmpty(supplier_Pricing.C_Length) ? new SqlParameter("@C_Length", supplier_Pricing.C_Length) : new SqlParameter("@C_Length", DBNull.Value);
             var C_Width = !string.IsNullOrEmpty(supplier_Pricing.C_Width) ? new SqlParameter("@C_Width", supplier_Pricing.C_Width) : new SqlParameter("@C_Width", DBNull.Value);
             var Cost_Disc = !string.IsNullOrEmpty(supplier_Pricing.Cost_Disc) ? new SqlParameter("@Cost_Disc", supplier_Pricing.Cost_Disc) : new SqlParameter("@Cost_Disc", DBNull.Value);
             var Cost_Amount = !string.IsNullOrEmpty(supplier_Pricing.Cost_Amount) ? new SqlParameter("@Cost_Amount", supplier_Pricing.Cost_Amount) : new SqlParameter("@Cost_Amount", DBNull.Value);
