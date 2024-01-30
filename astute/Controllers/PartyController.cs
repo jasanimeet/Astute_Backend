@@ -3105,7 +3105,7 @@ namespace astute.Controllers
                                                                     if (url.Length > 0)
                                                                     {
                                                                         string linkUrl = url;
-                                                                        rowData.Add(columnName, linkUrl);
+                                                                        rowData.Add(columnName, linkUrl + ", " + cellValue);
                                                                     }
                                                                     else
                                                                     {
@@ -3303,21 +3303,29 @@ namespace astute.Controllers
 
                                              if (displayColName != suppColName && suppColName != "")
                                              {
-                                                 string columnName = Convert.ToString(suppColName);
-
                                                  finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
 
-                                                 if (columnName == "CTS" || columnName == "BASE_DISC" || columnName == "BASE_RATE" ||
-                                                     columnName == "LENGTH" || columnName == "WIDTH" || columnName == "DEPTH" ||
-                                                     columnName == "DEPTH_PER" || columnName == "TABLE_PER" || columnName == "CROWN_ANGLE" ||
-                                                     columnName == "CROWN_HEIGHT" || columnName == "PAVILION_ANGLE" ||
-                                                     columnName == "PAVILION_HEIGHT" || columnName == "GIRDLE_PER" ||
-                                                     columnName == "SUPPLIER_DISC" || columnName == "SUPPLIER_AMOUNT" ||
-                                                     columnName == "OFFER_DISC" || columnName == "OFFER_VALUE" ||
-                                                     columnName == "MAX_SLAB_BASE_DISC" || columnName == "MAX_SLAB_BASE_VALUE")
+                                                 if (displayColName == "CTS" || displayColName == "BASE_DISC" || displayColName == "BASE_RATE" ||
+                                                     displayColName == "LENGTH" || displayColName == "WIDTH" || displayColName == "DEPTH" ||
+                                                     displayColName == "DEPTH_PER" || displayColName == "TABLE_PER" || displayColName == "CROWN_ANGLE" ||
+                                                     displayColName == "CROWN_HEIGHT" || displayColName == "PAVILION_ANGLE" ||
+                                                     displayColName == "PAVILION_HEIGHT" || displayColName == "GIRDLE_PER" ||
+                                                     displayColName == "SUPPLIER_DISC" || displayColName == "SUPPLIER_AMOUNT" ||
+                                                     displayColName == "OFFER_DISC" || displayColName == "OFFER_VALUE" ||
+                                                     displayColName == "MAX_SLAB_BASE_DISC" || displayColName == "MAX_SLAB_BASE_VALUE")
                                                  {
                                                      finalRow[displayColName] = CoreService.RemoveNonNumericAndDotAndNegativeCharacters(
                                                          Convert.ToString(finalRow[displayColName]));
+                                                 }
+                                                 else if (displayColName == "CERTIFICATE_NO")
+                                                 {
+                                                     finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
+                                                        Convert.ToString(finalRow[displayColName]),true);
+                                                 }
+                                                 else if (displayColName == "CERTIFICATE_LINK")
+                                                 {
+                                                     finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
+                                                        Convert.ToString(finalRow[displayColName]), false);
                                                  }
                                                  else
                                                  {
