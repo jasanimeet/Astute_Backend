@@ -481,6 +481,34 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPut]
+        [Route("change_status_employee_master")]
+        [Authorize]
+        public async Task<IActionResult> Change_Status_Employee_Master(int employee_Id, bool status)
+        {
+            try
+            {
+                var result = await _employeeService.Employee_Master_Change_Status(employee_Id, status);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.StatusChangedSuccessMessage
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Change_Status_Employee_Master", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Employee Login

@@ -38,7 +38,7 @@ namespace astute.Repository
 
         #region Supplier Pricing Key To Symbol
         Task<int> Add_Update_Supplier_Pricing_Key_To_Symbol(DataTable dataTable);
-        Task<int> Delete_Supplier_Pricing_Key_To_Symbol(int supplier_Pricing_Id);
+        Task<int> Delete_Supplier_Pricing_Key_To_Symbol(int supplier_Pricing_Id, string filter_Type);
         #endregion
 
         #region Supplier Stock

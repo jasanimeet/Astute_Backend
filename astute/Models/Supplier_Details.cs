@@ -15,6 +15,7 @@ namespace astute.Models
         public Party_Api Party_Api { get; set; }
         public Party_FTP Party_FTP { get; set; }
         public Party_File Party_File { get; set; }
+        public int? User_Id { get; set; }
         [NotMapped]
         public IList<Supplier_Column_Mapping> Supplier_Column_Mapping_List { get; set; } = new List<Supplier_Column_Mapping>();
         [NotMapped]

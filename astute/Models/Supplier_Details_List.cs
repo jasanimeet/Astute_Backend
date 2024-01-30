@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Org.BouncyCastle.Tls;
+using System.ComponentModel.DataAnnotations;
 
 namespace astute.Models
 {
@@ -12,5 +13,11 @@ namespace astute.Models
         public int? FTP_Id { get; set; }
         public int? File_Id { get; set; }
         public string? File_Type { get; set; }
+        public string? Created_Date { get; set; }
+        public string? Created_Time { get; set; }
+        public string? Created_By { get; set; }
+        public string? Updated_Date { get; set; }
+        public string? Updated_Time { get; set; }
+        public string? Updated_By { get; set; }
     }
 }

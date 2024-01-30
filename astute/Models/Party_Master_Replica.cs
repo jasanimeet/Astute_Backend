@@ -1,20 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace astute.Models
 {
-    public partial class Party_Master
+    public class Party_Master_Replica
     {
         [Key]
         public int Party_Id { get; set; }
         public string? Party_Type { get; set; }
         public string? Party_Type_Value { get; set; }
         public string? Party_Code { get; set; }
+        [NotMapped]
         public string? Adress_1 { get; set; }
+        [NotMapped]
         public string? Adress_2 { get; set; }
+        [NotMapped]
         public string? Adress_3 { get; set; }
+        public string? Adress { get; set; }
         public int? City_Id { get; set; }
         public string? City { get; set; }
         public string? State { get; set; }
@@ -57,7 +61,20 @@ namespace astute.Models
         public string? Updated_Time { get; set; }
         public string? Updated_By { get; set; }
         public int? Modified_By { get; set; }
-        public bool? Status { get; set; }        
+        public bool? Status { get; set; }
+        public string? LOOSE_Diamond_Type_Value { get; set; }
+        public string? LOOSE_Assist_Value_1 { get; set; }
+        public float? LOOSE_Per_1 { get; set; }
+        public string? LOOSE_Assist_Value_2 { get; set; }
+        public float? LOOSE_Per_2 { get; set; }
+        public DateTime? LOOSE_Date { get; set; }
+        public string? CERTIFIED_Diamond_Type_Value { get; set; }
+        public string? CERTIFIED_Assist_Value_1 { get; set; }
+        public float? CERTIFIED_Per_1 { get; set; }
+        public string? CERTIFIED_Assist_Value_2 { get; set; }
+        public float? CERTIFIED_Per_2 { get; set; }
+        public string? CERTIFIED_Viewing_Rights_To_Values { get; set; }
+        public DateTime? CERTIFIED_Date { get; set; }
         [NotMapped]
         public IList<Party_Contact> Party_Contact_List { get; set; } = new List<Party_Contact>();
         [NotMapped]
@@ -72,6 +89,5 @@ namespace astute.Models
         public IList<Party_Shipping> Party_Shipping_List { get; set; } = new List<Party_Shipping>();
         [NotMapped]
         public IList<Party_Print_Process> Party_Print_Process_List { get; set; } = new List<Party_Print_Process>();
-       
     }
 }

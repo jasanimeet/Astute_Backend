@@ -111,10 +111,15 @@ namespace astute.Models
         public bool? SP_Toggle_Bar { get; set; }
         public bool? MS_SP_Toggle_Bar { get; set; }
         public int? Modified_By { get; set; }
+        public string? C_Length { get; set; }
+        public string? C_Width { get; set; }
+        public string? Cost_Disc { get; set; }
+        public string? Cost_Amount { get; set; }
+        public bool? Default_Price { get; set; }
         [NotMapped]
         public string? Query_Flag { get; set; }
         [NotMapped]
         public IList<Supplier_Pricing_Key_To_Symbol> Key_To_Symbol { get; set; } = new List<Supplier_Pricing_Key_To_Symbol>();
-        public IList<Supplier_Pricing_Key_To_Symbol> Comments { get; set; } = new List<Supplier_Pricing_Key_To_Symbol>();
+        public IList<Supplier_Pricing_Key_To_Symbol> Lab_Comments { get; set; } = new List<Supplier_Pricing_Key_To_Symbol>();
     }
 }

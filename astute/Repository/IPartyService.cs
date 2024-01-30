@@ -19,8 +19,8 @@ namespace astute.Repository
 
         #region Party Master        
         Task<(string, int)> DeleteParty(int party_Id);
-        //Task<IList<Party_Master>> GetParty(int party_Id, string party_Type);
-        Task<List<Dictionary<string, object>>> GetParty(int party_Id, string party_Type);
+        Task<IList<Party_Master_Replica>> GetParty(int party_Id, string party_Type);
+        //Task<List<Dictionary<string, object>>> GetParty(int party_Id, string party_Type);
         Task<List<Dictionary<string, object>>> GetPartyCustomer(int party_Id, string party_Type);
         #endregion
 
@@ -58,23 +58,24 @@ namespace astute.Repository
         Task<(string, int)> Add_Update_Party(Party_Master party_Master);
         Task<Party_Master> Get_Party_Details(int party_Id);
         Task<int> Get_Party_Code();
+        Task<int> Party_Master_Change_Status(int party_Id, bool status);
         #endregion
 
         #region Party API
-        Task<int> Add_Update_Party_API(Party_Api party_Api);
+        Task<int> Add_Update_Party_API(Party_Api party_Api, int modified_By);
         Task<int> Delete_Party_API(int api_Id);
         Task<Party_Api> Get_Party_API(int api_Id, int party_Id);
         Task<IList<Party_API_With_Column_Mapping>> Get_Party_API_With_Column_Mapping();
         #endregion
 
         #region Party FTP
-        Task<int> Add_Update_Party_FTP(Party_FTP party_FTP);
+        Task<int> Add_Update_Party_FTP(Party_FTP party_FTP, int modified_By);
         Task<int> Delete_Party_FTP(int ftp_Id);
         Task<Party_FTP> Get_Party_FTP(int ftp_Id, int party_Id);
         #endregion
 
         #region Party File
-        Task<int> Add_Update_Party_File(Party_File party_File);
+        Task<int> Add_Update_Party_File(Party_File party_File, int modified_By);
         Task<int> Delete_Party_File(int file_Id);
         Task<Party_File> Get_Party_File(int file_Id, int party_Id);
         #endregion

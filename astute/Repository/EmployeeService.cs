@@ -444,6 +444,15 @@ namespace astute.Repository
 
             return employees;
         }
+        public async Task<int> Employee_Master_Change_Status(int employee_Id, bool status)
+        {
+            var _employee_Id = new SqlParameter("@Employee_Id", employee_Id);
+            var Status = new SqlParameter("@Status", status);
+
+            var result = await Task.Run(() => _dbContext.Database
+                                .ExecuteSqlRawAsync(@"EXEC Employee_Master_Update_Status @Employee_Id, @Status", _employee_Id, Status));
+            return result;
+        }
         #endregion
 
         #region Employee Document
