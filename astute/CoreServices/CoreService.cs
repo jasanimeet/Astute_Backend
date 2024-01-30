@@ -217,6 +217,13 @@ namespace astute.CoreServices
             result = (result == "-" ? "" : result);
             return result;
         }
+        public static string GetCertificateNoOrUrl(string input, bool IsUrl)
+        {
+            string[] certificate = input.Split(",");
+            string data = certificate.Length > 0 ? (IsUrl == true ? certificate[1] : certificate[0]) : input;
+            return data.Trim();
+        }
+
         public static DataTable Convert_File_To_DataTable(string filetype, string connString, string sheetNames)
         {
             //DataTable mergedTable = new DataTable();
