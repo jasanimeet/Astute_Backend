@@ -159,50 +159,52 @@ namespace astute.Repository
             else
                 return ("success", result);
         }
-        //public async Task<IList<Party_Master>> GetParty(int party_Id, string party_Type)
+        public async Task<IList<Party_Master_Replica>> GetParty(int party_Id, string party_Type)
+        {
+            var partyId = party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value);
+            var partyType = !string.IsNullOrEmpty(party_Type) ? new SqlParameter("@Party_Type", party_Type) : new SqlParameter("@Party_Type", DBNull.Value);
+
+            //var result = await Task.Run(() => _dbContext.Party_Master
+            //                .FromSqlRaw(@"exec Party_Master_Select @PartyId, @Party_Type", partyId, partyType).ToListAsync());
+
+            return await _dbContext.Party_Master_Replica
+            .FromSqlRaw("exec Party_Master_Select @PartyId, @Party_Type", partyId, partyType)
+            .ToListAsync();
+        }
+
+        //public async Task<List<Dictionary<string, object>>> GetParty(int party_Id, string party_Type)
         //{
-        //    var partyId = party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value);
-        //    var partyType = !string.IsNullOrEmpty(party_Type) ? new SqlParameter("@Party_Type", party_Type) : new SqlParameter("@Party_Type", DBNull.Value);
+        //    var result = new List<Dictionary<string, object>>();
+        //    using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+        //    {
+        //        using (var command = new SqlCommand("Party_Master_Select", connection))
+        //        {
+        //            command.CommandType = CommandType.StoredProcedure;
+        //            command.Parameters.Add(party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value));
+        //            command.Parameters.Add(!string.IsNullOrEmpty(party_Type) ? new SqlParameter("@Party_Type", party_Type) : new SqlParameter("@Party_Type", DBNull.Value));
+        //            await connection.OpenAsync();
 
-        //    var result = await Task.Run(() => _dbContext.Party_Master
-        //                    .FromSqlRaw(@"exec Party_Master_Select @PartyId, @Party_Type", partyId, partyType).ToListAsync());
+        //            using (var reader = await command.ExecuteReaderAsync())
+        //            {
+        //                while (await reader.ReadAsync())
+        //                {
+        //                    var dict = new Dictionary<string, object>();
 
+        //                    for (int i = 0; i < reader.FieldCount; i++)
+        //                    {
+        //                        var columnName = reader.GetName(i);
+        //                        var columnValue = reader.GetValue(i);
+
+        //                        dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+        //                    }
+
+        //                    result.Add(dict);
+        //                }
+        //            }
+        //        }
+        //    }
         //    return result;
         //}
-
-        public async Task<List<Dictionary<string, object>>> GetParty(int party_Id, string party_Type)
-        {
-            var result = new List<Dictionary<string, object>>();
-            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
-            {
-                using (var command = new SqlCommand("Party_Master_Select", connection))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(party_Type) ? new SqlParameter("@Party_Type", party_Type) : new SqlParameter("@Party_Type", DBNull.Value));
-                    await connection.OpenAsync();
-
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            var dict = new Dictionary<string, object>();
-
-                            for (int i = 0; i < reader.FieldCount; i++)
-                            {
-                                var columnName = reader.GetName(i);
-                                var columnValue = reader.GetValue(i);
-
-                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
-                            }
-
-                            result.Add(dict);
-                        }
-                    }
-                }
-            }
-            return result;
-        }
 
         public async Task<List<Dictionary<string, object>>> GetPartyCustomer(int party_Id, string party_Type)
         {
@@ -470,6 +472,7 @@ namespace astute.Repository
             var tIN_No = !string.IsNullOrEmpty(party_Master.TIN_No) ? new SqlParameter("@TIN_No", party_Master.TIN_No) : new SqlParameter("@TIN_No", DBNull.Value);
             var invoice_Grp = !string.IsNullOrEmpty(party_Master.Invoice_Grp) ? new SqlParameter("@Invoice_Grp", party_Master.Invoice_Grp) : new SqlParameter("@Invoice_Grp", DBNull.Value);
             var modified_By = party_Master.Modified_By > 0 ? new SqlParameter("@Modified_By", party_Master.Modified_By) : new SqlParameter("@Modified_By", DBNull.Value);
+            var status = new SqlParameter("@Status", party_Master.Status ?? false);
             var insertedId = new SqlParameter("@InsertedId", System.Data.SqlDbType.Int)
             {
                 Direction = System.Data.ParameterDirection.Output
@@ -482,11 +485,11 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_Master_Insert_Update @Party_Id, @Party_Type, @Party_Code, @Adress_1, @Adress_2, @Adress_3, @City_Id, @PinCode, @Mobile_1,
                         @Mobile_1_Country_Code, @Mobile_2, @Mobile_2_Country_Code, @Phone_1, @Phone_1_Country_Code, @Phone_2, @Phone_2_Country_Code, @Fax, @Fax_Country_Code, @Email_1, @Email_2, @Party_Name, @Ship_PartyId, @Final_Customer_Id, @Website,
-                        @Cust_Freight_Account_No, @Alias_Name, @Wechat_ID, @Skype_ID, @Business_Reg_No, @Default_Remarks, @Notification, @Reference_By, @TIN_No,@Invoice_Grp, @Modified_By, @InsertedId OUT, @Party_Exists OUT", party_Id,
+                        @Cust_Freight_Account_No, @Alias_Name, @Wechat_ID, @Skype_ID, @Business_Reg_No, @Default_Remarks, @Notification, @Reference_By, @TIN_No,@Invoice_Grp, @Modified_By, @Status, @InsertedId OUT, @Party_Exists OUT", party_Id,
                         party_Type, party_Code, party_Address1, party_Address2, party_Address3, city_Id, pin_Code, mobile_No1, mobile_1_Country_Code, mobile_No2, mobile_2_Country_Code,
                         phone_No1, phone_1_Country_Code, phone_No2, phone_2_Country_Code, fax, fax_Country_Code, email_1, email_2,
                         party_Name, ship_PartyId, final_Customer_Id, website, cust_Freight_Account_No, alias_Name, wechat_ID, skype_ID, business_Reg_No,
-                        default_Remarks, notification, reference_By, tIN_No, invoice_Grp, modified_By, insertedId, party_Exists));
+                        default_Remarks, notification, reference_By, tIN_No, invoice_Grp, modified_By, status, insertedId, party_Exists));
 
             var _party_exists = (bool)party_Exists.Value;
             if (_party_exists)
@@ -571,10 +574,19 @@ namespace astute.Repository
                 return 0;
             }
         }
+        public async Task<int> Party_Master_Change_Status(int party_Id, bool status)
+        {
+            var _party_Id = new SqlParameter("@Party_Id", party_Id);
+            var Status = new SqlParameter("@Status", status);
+
+            var result = await Task.Run(() => _dbContext.Database
+                                .ExecuteSqlRawAsync(@"EXEC Party_Master_Update_Status @Party_Id, @Status", _party_Id, Status));
+            return result;
+        }
         #endregion
 
         #region Party API
-        public async Task<int> Add_Update_Party_API(Party_Api party_Api)
+        public async Task<int> Add_Update_Party_API(Party_Api party_Api, int modified_By)
         {
             var api_Id = new SqlParameter("@API_Id", party_Api.API_Id);
             var _party_Id = party_Api.Party_Id > 0 ? new SqlParameter("@Party_Id", party_Api.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
@@ -605,14 +617,15 @@ namespace astute.Repository
             var method_Type = !string.IsNullOrEmpty(party_Api.Method_Type) ? new SqlParameter("@Method_Type", party_Api.Method_Type) : new SqlParameter("@Method_Type", DBNull.Value);
             var is_Same_Id = new SqlParameter("@Is_Same_Id", party_Api.Is_Same_Id);
             var overseas_Same_Id = new SqlParameter("@Overseas_Same_Id", party_Api.Overseas_Same_Id);
+            var _modified_By = new SqlParameter("@Modified_By", modified_By);
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_Api_Insert_Update @API_Id, @Party_Id, @API_URL, @API_User, @API_Password, @API_Method, @API_Response, @API_Status,
                         @Disc_Inverse, @Auto_Ref_No, @RepeateveryType, @repeatevery, @Lab, @Overseas, @Stock_Url, @User_Id, @User_Caption, @Password_Caption, @Action_Caption, 
-                        @Action_Value,@Action_Caption_1, @Action_Value_1, @Action_Caption_2, @Action_Value_2, @Short_Code, @Stock_Api_Method, @Method_Type, @Is_Same_Id, @Overseas_Same_Id", api_Id,
-                        _party_Id, api_Url, api_User, api_Password, api_Method, api_Response, api_Status, api_Inverse, auto_Ref_No, repeateveryType, repeatevery, lab, overseas,
+                        @Action_Value,@Action_Caption_1, @Action_Value_1, @Action_Caption_2, @Action_Value_2, @Short_Code, @Stock_Api_Method, @Method_Type, @Is_Same_Id, @Overseas_Same_Id, @Modified_By", 
+                        api_Id, _party_Id, api_Url, api_User, api_Password, api_Method, api_Response, api_Status, api_Inverse, auto_Ref_No, repeateveryType, repeatevery, lab, overseas,
                         stock_Url, user_Id, user_Caption, password_Caption, action_Caption, action_Value, action_Caption_1, action_Value_1, action_Caption_2, action_Value_2,
-                        short_Code, stock_Api_Method, method_Type, is_Same_Id, overseas_Same_Id));
+                        short_Code, stock_Api_Method, method_Type, is_Same_Id, overseas_Same_Id, _modified_By));
 
             return result;
         }
@@ -697,7 +710,7 @@ namespace astute.Repository
         #endregion
 
         #region Party FTP
-        public async Task<int> Add_Update_Party_FTP(Party_FTP party_FTP)
+        public async Task<int> Add_Update_Party_FTP(Party_FTP party_FTP, int modified_By)
         {
             var ftp_Id = new SqlParameter("@FTP_Id", party_FTP.FTP_Id);
             var _party_Id = party_FTP.Party_Id > 0 ? new SqlParameter("@Party_Id", party_FTP.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
@@ -718,11 +731,12 @@ namespace astute.Repository
             var ftp_Status = new SqlParameter("@Ftp_Status", party_FTP.Ftp_Status);
             var is_Same_Id = new SqlParameter("@Is_Same_Id", party_FTP.Is_Same_Id);
             var overseas_Same_Id = new SqlParameter("@Overseas_Same_Id", party_FTP.Overseas_Same_Id);
+            var _modified_By = new SqlParameter("@Modified_By", modified_By);
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_FTP_Insert_Update @FTP_Id, @Party_Id, @Host, @Ftp_Port, @Ftp_User, @Ftp_Password, @Ftp_File_Name, @Ftp_File_Type,
-                        @Disc_Inverse, @Auto_Ref_No, @RepeateveryType, @Repeatevery, @Lab, @Overseas, @Secure_Ftp, @Short_Code, @Ftp_Status, @Is_Same_Id, @Overseas_Same_Id", ftp_Id, _party_Id, host, ftp_Port,
-                        ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Type, api_Inverse, auto_Ref_No, repeateveryType, repeatevery, lab, overseas, secure_Ftp, short_Code, ftp_Status, is_Same_Id, overseas_Same_Id));
+                        @Disc_Inverse, @Auto_Ref_No, @RepeateveryType, @Repeatevery, @Lab, @Overseas, @Secure_Ftp, @Short_Code, @Ftp_Status, @Is_Same_Id, @Overseas_Same_Id, @Modified_By", ftp_Id, _party_Id, host, ftp_Port,
+                        ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Type, api_Inverse, auto_Ref_No, repeateveryType, repeatevery, lab, overseas, secure_Ftp, short_Code, ftp_Status, is_Same_Id, overseas_Same_Id, _modified_By));
 
             return result;
         }
@@ -745,7 +759,7 @@ namespace astute.Repository
         #endregion
 
         #region Party File
-        public async Task<int> Add_Update_Party_File(Party_File party_File)
+        public async Task<int> Add_Update_Party_File(Party_File party_File, int modified_By)
         {
             var file_Id = new SqlParameter("@File_Id", party_File.File_Id);
             var _party_Id = party_File.Party_Id > 0 ? new SqlParameter("@Party_Id", party_File.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
@@ -761,10 +775,11 @@ namespace astute.Repository
             var upload_Type = !string.IsNullOrEmpty(party_File.Upload_Type) ? new SqlParameter("@Upload_Type", party_File.Upload_Type) : new SqlParameter("@Upload_Type", DBNull.Value);
             var is_Same_Id = new SqlParameter("@Is_Same_Id", party_File.Is_Same_Id);
             var overseas_Same_Id = new SqlParameter("@Overseas_Same_Id", party_File.Overseas_Same_Id);
+            var _modified_By = new SqlParameter("@Modified_By", modified_By);
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_File_Insert_Update @File_Id, @Party_Id, @File_Location, @Short_Code, @File_Status, @Lab, @Overseas, @Validity_Days, @Sheet_Name,
-                        @Exclude, @API_Flag, @Upload_Type, @Is_Same_Id, @Overseas_Same_Id", file_Id, _party_Id, file_Location, short_Code, file_Status, lab, overseas, validity_Days, sheet_Name, exclude, aPI_Flag, upload_Type, is_Same_Id, overseas_Same_Id));
+                        @Exclude, @API_Flag, @Upload_Type, @Is_Same_Id, @Overseas_Same_Id, @Modified_By", file_Id, _party_Id, file_Location, short_Code, file_Status, lab, overseas, validity_Days, sheet_Name, exclude, aPI_Flag, upload_Type, is_Same_Id, overseas_Same_Id, _modified_By));
 
             return result;
         }

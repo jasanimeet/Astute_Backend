@@ -779,6 +779,34 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPut]
+        [Route("change_status_party_master")]
+        [Authorize]
+        public async Task<IActionResult> Change_Status_Party_Master(int party_Id, bool status)
+        {
+            try
+            {
+                var result = await _partyService.Party_Master_Change_Status(party_Id, status);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.StatusChangedSuccessMessage
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Change_Status_Party_Master", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Party Bank
@@ -1337,7 +1365,7 @@ namespace astute.Controllers
                     if (supplier_Details.Party_Api != null)
                     {
                         supplier_Details.Party_Api.Party_Id = supplier_Details.Party_Id;
-                        var party_Api = await _partyService.Add_Update_Party_API(supplier_Details.Party_Api);
+                        var party_Api = await _partyService.Add_Update_Party_API(supplier_Details.Party_Api, supplier_Details.User_Id ?? 0);
                         if (party_Api > 0)
                         {
                             success = true;
@@ -1346,7 +1374,7 @@ namespace astute.Controllers
                     if (supplier_Details.Party_FTP != null)
                     {
                         supplier_Details.Party_FTP.Party_Id = supplier_Details.Party_Id;
-                        var party_ftp = await _partyService.Add_Update_Party_FTP(supplier_Details.Party_FTP);
+                        var party_ftp = await _partyService.Add_Update_Party_FTP(supplier_Details.Party_FTP, supplier_Details.User_Id ?? 0);
                         if (party_ftp > 0)
                         {
                             success = true;
@@ -1372,7 +1400,7 @@ namespace astute.Controllers
                             supplier_Details.Party_File.File_Location = strFile;
                         }
                         supplier_Details.Party_File.Party_Id = supplier_Details.Party_Id;
-                        var party_file = await _partyService.Add_Update_Party_File(supplier_Details.Party_File);
+                        var party_file = await _partyService.Add_Update_Party_File(supplier_Details.Party_File, supplier_Details.User_Id ?? 0);
                         if (party_file > 0)
                         {
                             success = true;
@@ -1926,7 +1954,7 @@ namespace astute.Controllers
                                 customer_Pricing_Id = item.Customer_Pricing_Id ?? 0;
                                 if (item.Query_Flag == "D")
                                 {
-                                    var result_Supplier_Pricing_Key_To_Symbol = await _supplierService.Delete_Supplier_Pricing_Key_To_Symbol(item.Supplier_Pricing_Id);
+                                    var result_Supplier_Pricing_Key_To_Symbol = await _supplierService.Delete_Supplier_Pricing_Key_To_Symbol(item.Supplier_Pricing_Id, null);
 
                                     var result = await _supplierService.Delete_Supplier_Pricing(item.Supplier_Pricing_Id, 0);
                                     if (result > 0)
@@ -1959,18 +1987,26 @@ namespace astute.Controllers
                                             }
                                             await _supplierService.Add_Update_Supplier_Pricing_Key_To_Symbol(dataTable);
                                         }
-                                        if (item.Comments != null && item.Comments.Count > 0)
+                                        else
+                                        {
+                                            await _supplierService.Delete_Supplier_Pricing_Key_To_Symbol(supplier_pricing_Id, "S");
+                                        }
+                                        if (item.Lab_Comments != null && item.Lab_Comments.Count > 0)
                                         {
                                             DataTable dataTable = new DataTable();
                                             dataTable.Columns.Add("Supplier_Pricing_Id", typeof(int));
                                             dataTable.Columns.Add("Cat_Val_Id", typeof(int));
                                             dataTable.Columns.Add("Symbol_Status", typeof(bool));
                                             dataTable.Columns.Add("Filter_Type", typeof(string));
-                                            foreach (var obj in item.Comments)
+                                            foreach (var obj in item.Lab_Comments)
                                             {
                                                 dataTable.Rows.Add(supplier_pricing_Id, obj.Cat_Val_Id, obj.Symbol_Status, obj.Filter_Type);
                                             }
                                             await _supplierService.Add_Update_Supplier_Pricing_Key_To_Symbol(dataTable);
+                                        }
+                                        else
+                                        {
+                                            await _supplierService.Delete_Supplier_Pricing_Key_To_Symbol(supplier_pricing_Id, "C");
                                         }
                                     }
                                 }
@@ -2627,7 +2663,15 @@ namespace astute.Controllers
             try
             {
                 var result = await _supplierService.Delete_Stock_Number_Generation(Id);
-                if (result > 0)
+                if(result == 409)
+                {
+                    return Conflict(new
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        message = CoreCommonMessage.ReferenceFoundError
+                    });
+                }
+                else
                 {
                     return Ok(new
                     {
@@ -2635,11 +2679,6 @@ namespace astute.Controllers
                         message = CoreCommonMessage.StockNumberDeleted
                     });
                 }
-                return BadRequest(new
-                {
-                    statusCode = HttpStatusCode.BadRequest,
-                    message = CoreCommonMessage.ParameterMismatched
-                });
             }
             catch (Exception ex)
             {
@@ -2817,7 +2856,7 @@ namespace astute.Controllers
                             party_file_obj.Exclude = party_File.Exclude;
                             party_file_obj.Overseas_Same_Id = party_File.Overseas_Same_Id;
 
-                            var result = await _partyService.Add_Update_Party_File(party_file_obj);
+                            var result = await _partyService.Add_Update_Party_File(party_file_obj, 0);
 
                             if (result > 0)
                             {
