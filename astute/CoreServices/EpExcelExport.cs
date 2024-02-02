@@ -17,7 +17,7 @@ namespace astute.CoreServices
         public const String ImageURL = "/Files/CategoryValueIcon/";
         public const String VideoURL = "/Files/CategoryValueIcon/";
         public const String CertiURL = "/Files/CategoryValueIcon/";
-        private static void removingGreenTagWarning(ExcelWorksheet template1, string address)
+        public static void removingGreenTagWarning(ExcelWorksheet template1, string address)
         {
             var xdoc = template1.WorksheetXml;
             //Create the import nodes (note the plural vs singular

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -24,5 +25,11 @@ namespace astute.Models
         public string? Upload_Type { get; set; }
         [NotMapped]
         public IList<Stock_Data_Schedular> Stock_Data_List { get; set; } = new List<Stock_Data_Schedular>();
+    }
+
+    public partial class Stock_Data_Master_Excel
+    {
+        public int? Supplier_Id { get; set; }
+        public object? Supplier_Stock_Data { get; set; }
     }
 }

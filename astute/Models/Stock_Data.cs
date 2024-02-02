@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 
 namespace astute.Models
@@ -179,4 +181,106 @@ namespace astute.Models
         public object? GOOD_TYPE { get; set; }
         public bool? Is_Uploaded { get; set; }
     }
+    public partial class Supplier_Stock_Excel
+    {
+        [JsonProperty("SUPPLIER_NO")]
+        public string SUPPLIER_NO { get; set; }
+
+        [JsonProperty("CERTIFICATE_NO")]
+        public string CERTIFICATE_NO { get; set; }
+
+        [JsonProperty("LAB")]
+        public string Lab { get; set; }
+
+        [JsonProperty("SHAPE")]
+        public string Shape { get; set; }
+
+        [JsonProperty("CTS")]
+        public double Cts { get; set; }
+
+        [JsonProperty("Supplier Name")]
+        public string SupplierName { get; set; }
+
+        [JsonProperty("Stock Status")]
+        public string StockStatus { get; set; }
+
+        [JsonProperty("Error Message")]
+        public string ErrorMessage { get; set; }
+
+        [JsonProperty("COLOR")]
+        public string Color { get; set; }
+
+        [JsonProperty("CLARITY")]
+        public string Clarity { get; set; }
+
+        [JsonProperty("CUT")]
+        public string Cut { get; set; }
+
+        [JsonProperty("POLISH")]
+        public string Polish { get; set; }
+
+        [JsonProperty("SYMM")]
+        public string Symm { get; set; }
+
+        [JsonProperty("FLS_INTENSITY")]
+        public string FlsIntensity { get; set; }
+
+        [JsonProperty("LENGTH")]
+        public string Length { get; set; }
+
+        [JsonProperty("WIDTH")]
+        public string Width { get; set; }
+
+        [JsonProperty("DEPTH")]
+        public string Depth { get; set; }
+
+        [JsonProperty("DEPTH_PER")]
+        public string DepthPer { get; set; }
+
+        [JsonProperty("TABLE_PER")]
+        public long TablePer { get; set; }
+
+        [JsonProperty("CULET")]
+        public string Culet { get; set; }
+
+        [JsonProperty("SHADE")]
+        public string Shade { get; set; }
+
+        [JsonProperty("MILKY")]
+        public string Milky { get; set; }
+
+        [JsonProperty("LOCATION")]
+        public string Location { get; set; }
+
+        [JsonProperty("Upload Type")]
+        public string UploadType { get; set; }
+
+        [JsonProperty("TABLE_BLACK")]
+        public string TableBlack { get; set; }
+
+        [JsonProperty("SIDE_BLACK")]
+        public string SideBlack { get; set; }
+
+        [JsonProperty("TABLE_WHITE")]
+        public string TableWhite { get; set; }
+
+        [JsonProperty("SIDE_WHITE")]
+        public string SideWhite { get; set; }
+
+        [JsonProperty("CROWN_ANGLE")]
+        public string CrownAngle { get; set; }
+
+        [JsonProperty("PAVILION_ANGLE")]
+        public string PavilionAngle { get; set; }
+
+        [JsonProperty("GIRDLE_PER")]
+        public string GirdlePer { get; set; }
+
+        [JsonProperty("KEY_TO_SYMBOL")]
+        public string KeyToSymbol { get; set; }
+
+        [JsonProperty("Stock_Type")]
+        public string StockType { get; set; }
+    }
+
 }
