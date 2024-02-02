@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NPOI.HSSF.UserModel;
+using NPOI.POIFS.Crypt.Dsig;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
 using Org.BouncyCastle.Asn1.Ocsp;
@@ -25,6 +26,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Security.Policy;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -2609,7 +2611,7 @@ namespace astute.Controllers
 
                             string[] arrPointer = item.Pointer_Id.Split(",");
                             string[] arrFrontPrifixAlloted = item.Front_Prefix_Alloted.Split(",");
-                            
+
                             foreach (string pointer in arrPointer)
                             {
                                 foreach (string fromPrifixAlloted in arrFrontPrifixAlloted)
@@ -2663,7 +2665,7 @@ namespace astute.Controllers
             try
             {
                 var result = await _supplierService.Delete_Stock_Number_Generation(Id);
-                if(result == 409)
+                if (result == 409)
                 {
                     return Conflict(new
                     {
@@ -3359,7 +3361,7 @@ namespace astute.Controllers
                                                  else if (displayColName == "CERTIFICATE_NO")
                                                  {
                                                      finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
-                                                        Convert.ToString(finalRow[displayColName]),true);
+                                                        Convert.ToString(finalRow[displayColName]), true);
                                                  }
                                                  else if (displayColName == "CERTIFICATE_LINK")
                                                  {
@@ -3586,6 +3588,21 @@ namespace astute.Controllers
                     var worksheet = package.Workbook.Worksheets.Add("Sheet1");
                     worksheet.Cells["A1"].LoadFromDataTable(result, true);
 
+                    int rowEnd = worksheet.Dimension.End.Row;
+
+                    string cellAdress = worksheet.Cells[1, 1, rowEnd, 100].Address;
+                    EpExcelExport.removingGreenTagWarning(worksheet, cellAdress);
+
+                    int startColumn = worksheet.Dimension.Start.Column;
+                    int endColumn = worksheet.Dimension.End.Column;
+                    string startColumnAddress = worksheet.Cells[1, startColumn].Address;
+                    string endColumnAddress = worksheet.Cells[1, endColumn].Address;
+                    worksheet.Cells[startColumnAddress + ":" + endColumnAddress].AutoFilter = true;
+
+                    worksheet.Cells[1, 1, 1, 100].Style.Font.Bold = true;
+                    worksheet.Cells[worksheet.Dimension.Address].Style.Font.Size = 10;
+                    worksheet.Cells[worksheet.Dimension.Address].Offset(1, 0, rowEnd - 1, 100).Style.Font.Size = 9;
+
                     byte[] byteArray = package.GetAsByteArray();
                     string filePath = Path.Combine(folderPath, strFile);
 
@@ -3614,6 +3631,77 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("supplier_stock_excel_error_log_detail")]
+        [Authorize]
+        public async Task<IActionResult> Supplier_Stock_Excel_Error_Log_Detail(Stock_Data_Master_Excel stock_Data_Master_Excel)
+        {
+            try
+            {
+                var party = await _partyService.Get_Party_Details((int)stock_Data_Master_Excel.Supplier_Id);
+                if (stock_Data_Master_Excel.Supplier_Stock_Data != null)
+                {
+                    IList<Supplier_Stock_Excel> Supplier_Stock_Excel = JsonConvert.DeserializeObject<IList<Supplier_Stock_Excel>>(stock_Data_Master_Excel.Supplier_Stock_Data.ToString());
+
+                    DataTable dataTable = new DataTable();
+                    dataTable = CoreService.ToDataTable(Supplier_Stock_Excel.ToArray());
+
+                    var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Files/SupplierErrorLog");
+                    if (!(Directory.Exists(folderPath)))
+                    {
+                        Directory.CreateDirectory(folderPath);
+                    }
+                    string strFile = party.Party_Name + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".xlsx";
+
+                    using var package = new ExcelPackage();
+                    var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+                    worksheet.Cells["A1"].LoadFromDataTable(dataTable, true);
+
+                    int rowEnd = worksheet.Dimension.End.Row;
+
+                    string cellAdress = worksheet.Cells[1, 1, rowEnd, 100].Address;
+                    EpExcelExport.removingGreenTagWarning(worksheet, cellAdress);
+
+                    int startColumn = worksheet.Dimension.Start.Column;
+                    int endColumn = worksheet.Dimension.End.Column;
+                    string startColumnAddress = worksheet.Cells[1, startColumn].Address;
+                    string endColumnAddress = worksheet.Cells[1, endColumn].Address;
+                    worksheet.Cells[startColumnAddress + ":" + endColumnAddress].AutoFilter = true;
+
+                    worksheet.Cells[1, 1, 1, 100].Style.Font.Bold = true;
+                    worksheet.Cells[worksheet.Dimension.Address].Style.Font.Size = 10;
+                    worksheet.Cells[worksheet.Dimension.Address].Offset(1, 0, rowEnd - 1, 100).Style.Font.Size = 9;
+
+                    byte[] byteArray = package.GetAsByteArray();
+                    string filePath = Path.Combine(folderPath, strFile);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await fileStream.WriteAsync(byteArray, 0, byteArray.Length);
+                    }
+
+                    var file_url = _configuration["BaseUrl"] + CoreCommonFilePath.SupplierErrorLogFilesPath + strFile;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = file_url
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Supplier_Stock_Excel_Error_Log_Detail", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Report

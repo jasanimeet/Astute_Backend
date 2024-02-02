@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -22,7 +23,7 @@ using static NPOI.HSSF.UserModel.HeaderFooter;
 
 namespace astute.CoreServices
 {
-    public class CoreService
+    public static class CoreService
     {
         private static Byte[] Key_64 = { 42, 16, 93, 156, 78, 4, 218, 32 };
         private static Byte[] Iv_64 = { 55, 103, 246, 79, 36, 99, 167, 3 };
@@ -649,6 +650,36 @@ namespace astute.CoreServices
                 }
             }
             return (null, null);
+        }
+
+        public static DataTable ToDataTable<T>(this T[] array)
+        {
+            DataTable dataTable = new DataTable();
+
+            // Assuming T is a reference type, you can use its properties as columns
+            if (array.Length > 0)
+            {
+                PropertyInfo[] properties = array[0].GetType().GetProperties();
+
+                foreach (PropertyInfo property in properties)
+                {
+                    dataTable.Columns.Add(property.Name, property.PropertyType);
+                }
+
+                foreach (T item in array)
+                {
+                    DataRow row = dataTable.NewRow();
+
+                    foreach (PropertyInfo property in properties)
+                    {
+                        row[property.Name] = property.GetValue(item);
+                    }
+
+                    dataTable.Rows.Add(row);
+                }
+            }
+
+            return dataTable;
         }
     }
 }
