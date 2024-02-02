@@ -4712,5 +4712,35 @@ namespace astute.Controllers
             }
         }
         #endregion
+
+        #region Create Stock In Excel Format
+        [HttpPost]
+        [Route("export_stock_excel")]
+        public async Task<IActionResult> Export_Stock_Excel(string supplier_Ref_No, string excel_Format)
+        {
+            DataTable dtSumm = new DataTable();
+            DataTable dt = await _supplierService.Get_Stock_In_Datatable(supplier_Ref_No);
+
+            List<string> columnNames = new List<string>();
+            foreach (DataColumn column in dt.Columns)
+            {
+                columnNames.Add(column.ColumnName);
+            }
+
+            DataTable columnNamesTable = new DataTable();
+            columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+            foreach (string columnName in columnNames)
+            {
+                columnNamesTable.Rows.Add(columnName);
+            }
+
+            string filename = "Customer_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/CustomerStockExcelFiles/");
+            EpExcelExport.Create_Customer_Excel(dt, columnNamesTable, filePath, filePath + filename);
+            var excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.CustomerStockExcelFilesPath + filename;
+            return Ok(excelPath);
+        }
+        #endregion
     }
 }
