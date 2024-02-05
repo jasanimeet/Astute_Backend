@@ -231,8 +231,17 @@ namespace astute.Repository
                 TypeName = "dbo.BGM_Detail_Table_Type",
                 Value = dataTable
             };
+            var isExistShade_Milky = new SqlParameter("@IsExistShade_Milky", System.Data.SqlDbType.Bit)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
 
-            var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC BGM_Detail_Insert_Update @tblBGM_Detail", parameter);
+            var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC BGM_Detail_Insert_Update @tblBGM_Detail, @IsExistShade_Milky OUT", parameter, isExistShade_Milky);
+
+            bool Shade_MilkyIsExist = (bool)isExistShade_Milky.Value;
+            if (Shade_MilkyIsExist)
+                return 409;
+
             return result;
         }
         public async Task<BGM_Master> Get_Bgm_Detail(int bgm_Id)
@@ -244,9 +253,9 @@ namespace astute.Repository
                 .AsEnumerable()
                 .FirstOrDefault());
 
-            if(result != null)
+            if (result != null)
             {
-                if(bgm_Id > 0)
+                if (bgm_Id > 0)
                 {
                     var id = new SqlParameter("@Id", DBNull.Value);
                     var _bgm_Id1 = bgm_Id > 0 ? new SqlParameter("@BgmId", bgm_Id) : new SqlParameter("@BgmId", DBNull.Value);
