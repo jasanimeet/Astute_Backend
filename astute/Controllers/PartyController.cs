@@ -582,6 +582,8 @@ namespace astute.Controllers
         {
             try
             {
+
+                expression = expression.Replace("-", "*");
                 // Define a regular expression pattern to capture numeric values
                 string pattern = @"[-+]?\d*\.\d+|[-+]?\d+";
 
