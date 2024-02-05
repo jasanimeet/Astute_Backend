@@ -1589,7 +1589,7 @@ namespace astute.CoreServices
                 throw;
             }
         }
-        public static void Buyer_Customer_Excel(DataTable dtStock, DataTable column_dt, string _strFolderPath, string _strFilePath)
+        public static void Create_Buyer_Excel(DataTable dtStock, DataTable column_dt, string _strFolderPath, string _strFilePath)
         {
             try
             {
@@ -1610,9 +1610,22 @@ namespace astute.CoreServices
                     Color colFromHex_H1 = ColorTranslator.FromHtml("#8497b0");
                     Color col_color_Red = ColorTranslator.FromHtml("#ff0000");
                     Color supp_cost_clr = ColorTranslator.FromHtml("#FF99CC");
+                    Color supp_off_bg = ColorTranslator.FromHtml("#C0C0C0");
+                    Color supp_final_bg = ColorTranslator.FromHtml("#FFFF00");
+                    Color max_slab_bg = ColorTranslator.FromHtml("#FF99FF");
+                    Color rank_bg = ColorTranslator.FromHtml("#F2DC13");
+                    Color buyer_bg = ColorTranslator.FromHtml("#93C5F7");
+                    Color status_bg = ColorTranslator.FromHtml("#C4BD97");
+                    Color bid_bg = ColorTranslator.FromHtml("#CCECFF");
+                    Color avg_stock_bg = ColorTranslator.FromHtml("#FCD5B4");
+                    Color avg_pur_bg = ColorTranslator.FromHtml("#66FFCC");
+                    Color avg_sales_bg = ColorTranslator.FromHtml("#E4DFEC");
+                    Color kts_bg = ColorTranslator.FromHtml("#DAEEF3");
+                    Color comm_grade_bg = ColorTranslator.FromHtml("#99CC00");
+                    Color para_grade_bg = ColorTranslator.FromHtml("#00FFFF");
 
                     #region Company Detail on Header
-                    ep.Workbook.Worksheets.Add("Supplier Stock");
+                    ep.Workbook.Worksheets.Add("Buyer Stock");
 
                     ExcelWorksheet worksheet = ep.Workbook.Worksheets[0];
 
@@ -1725,6 +1738,7 @@ namespace astute.CoreServices
                             {
                                 kk += 1;
                                 worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
+                                
                                 if (Column_Name == "Lab")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Lab"]);
@@ -1737,7 +1751,119 @@ namespace astute.CoreServices
                                         worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Blue);
                                     }
                                 }
-                                if (Column_Name == "Cts")
+                                else if(Column_Name == "Rank")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Rank"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(rank_bg);
+                                }
+                                else if (Column_Name == "Buyer Name")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Buyer Name"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(buyer_bg);
+                                }
+                                else if (Column_Name == "Status")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Status"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(status_bg);
+                                }
+                                else if (Column_Name == "Bid Amt")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Bid Amt"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(bid_bg);
+                                }
+                                else if (Column_Name == "Bid/Ct")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Bid/Ct"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(bid_bg);
+                                }
+                                else if (Column_Name == "Avg. Stock Disc(%)")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Avg. Stock Disc(%)"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(avg_stock_bg);
+                                }
+                                else if (Column_Name == "Avg. Stock Pcs")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Avg. Stock Pcs"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(avg_stock_bg);
+                                }
+                                else if (Column_Name == "Avg. Pur. Disc(%)")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Avg. Pur. Disc(%)"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(avg_pur_bg);
+                                }
+                                else if (Column_Name == "Avg. Pur. Pcs")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Avg. Pur. Pcs"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(avg_pur_bg);
+                                }
+                                else if (Column_Name == "Avg. Sales Disc(%)")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Avg. Sales Disc(%)"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(avg_sales_bg);
+                                }
+                                else if (Column_Name == "Sales Pcs")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Sales Pcs"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(avg_sales_bg);
+                                }
+                                else if (Column_Name == "KTS Grade")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["KTS Grade"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(kts_bg);
+                                }
+                                else if (Column_Name == "Comm. Grade")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Comm. Grade"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(comm_grade_bg);
+                                }
+                                else if (Column_Name == "Zone")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Zone"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(rank_bg);
+                                }
+                                else if (Column_Name == "Para. Grade")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Para. Grade"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(para_grade_bg);
+                                }
+                                else if (Column_Name == "Comment")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Comment"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(kts_bg);
+                                }
+                                else if (Column_Name == "Cts")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = ((dtStock.Rows[i - inStartIndex]["Cts"] != null) ?
                                        (dtStock.Rows[i - inStartIndex]["Cts"].GetType().Name != "DBNull" ?
@@ -1761,46 +1887,6 @@ namespace astute.CoreServices
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
-                                else if (Column_Name == "Supplier Cost Disc(%)")
-                                {
-                                    worksheet.Cells[inwrkrow, kk].Value = ((dtStock.Rows[i - inStartIndex]["Supplier Cost Disc(%)"] != null) ?
-                                     (dtStock.Rows[i - inStartIndex]["Supplier Cost Disc(%)"].GetType().Name != "DBNull" ?
-                                     Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Cost Disc(%)"]) : DBNull.Value) : DBNull.Value);
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
-                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(supp_cost_clr);
-                                }
-                                else if (Column_Name == "Supplier Cost Value($)")
-                                {
-                                    worksheet.Cells[inwrkrow, kk].Value = ((dtStock.Rows[i - inStartIndex]["Supplier Cost Value($)"] != null) ?
-                                     (dtStock.Rows[i - inStartIndex]["Supplier Cost Value($)"].GetType().Name != "DBNull" ?
-                                     Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Cost Value($)"]) : DBNull.Value) : DBNull.Value);
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
-                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(supp_cost_clr);
-                                }
-                                else if (Column_Name == "Final Disc(%)")
-                                {
-                                    worksheet.Cells[inwrkrow, kk].Value = ((dtStock.Rows[i - inStartIndex]["Final Amt US($)"] != null) ?
-                                     (dtStock.Rows[i - inStartIndex]["Final Amt US($)"].GetType().Name != "DBNull" ?
-                                     Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Final Amt US($)"]) : DBNull.Value) : DBNull.Value);
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
-                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(common_bg);
-                                }
-                                else if (Column_Name == "Final Amt US($)")
-                                {
-                                    worksheet.Cells[inwrkrow, kk].Value = ((dtStock.Rows[i - inStartIndex]["Final Amt US($)"] != null) ?
-                                     (dtStock.Rows[i - inStartIndex]["Final Amt US($)"].GetType().Name != "DBNull" ?
-                                     Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Final Amt US($)"]) : DBNull.Value) : DBNull.Value);
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
-                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(common_bg);
-                                }
                                 else if (Column_Name == "Supplier Base Offer(%)")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = ((dtStock.Rows[i - inStartIndex]["Supplier Base Offer(%)"] != null) ?
@@ -1808,6 +1894,8 @@ namespace astute.CoreServices
                                      Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Base Offer(%)"]) : DBNull.Value) : DBNull.Value);
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(supp_off_bg);
                                 }
                                 else if (Column_Name == "Supplier Base Offer Value($)")
                                 {
@@ -1816,6 +1904,48 @@ namespace astute.CoreServices
                                      Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Base Offer Value($)"]) : DBNull.Value) : DBNull.Value);
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(supp_off_bg);
+                                }
+                                else if (Column_Name == "Supplier Final Disc(%)")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = ((dtStock.Rows[i - inStartIndex]["Supplier Final Disc(%)"] != null) ?
+                                     (dtStock.Rows[i - inStartIndex]["Supplier Final Disc(%)"].GetType().Name != "DBNull" ?
+                                     Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Final Disc(%)"]) : DBNull.Value) : DBNull.Value);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(supp_final_bg);
+                                }
+                                else if (Column_Name == "Supplier Final Value($)")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = ((dtStock.Rows[i - inStartIndex]["Supplier Final Value($)"] != null) ?
+                                     (dtStock.Rows[i - inStartIndex]["Supplier Final Value($)"].GetType().Name != "DBNull" ?
+                                     Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Final Value($)"]) : DBNull.Value) : DBNull.Value);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(supp_final_bg);
+                                }
+                                else if (Column_Name == "Supplier Final Disc. With Max Slab(%)")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = ((dtStock.Rows[i - inStartIndex]["Supplier Final Disc. With Max Slab(%)"] != null) ?
+                                     (dtStock.Rows[i - inStartIndex]["Supplier Final Disc. With Max Slab(%)"].GetType().Name != "DBNull" ?
+                                     Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Final Disc. With Max Slab(%)"]) : DBNull.Value) : DBNull.Value);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(max_slab_bg);
+                                }
+                                else if (Column_Name == "Supplier Final Value With Max Slab($)")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = ((dtStock.Rows[i - inStartIndex]["Supplier Final Value With Max Slab($)"] != null) ?
+                                     (dtStock.Rows[i - inStartIndex]["Supplier Final Value With Max Slab($)"].GetType().Name != "DBNull" ?
+                                     Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Final Value With Max Slab($)"]) : DBNull.Value) : DBNull.Value);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(max_slab_bg);
                                 }
                                 else if (Column_Name == "Cut")
                                 {
@@ -1838,8 +1968,6 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(ratio) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["RATIO"]) : DBNull.Value;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(ratio_bg);
                                 }
                                 else if (Column_Name == "Length")
                                 {
@@ -1970,46 +2098,46 @@ namespace astute.CoreServices
                                         = cellStyleHeader_RapAmt.Border.Top.Style = cellStyleHeader_RapAmt.Border.Bottom.Style
                                         = ExcelBorderStyle.Medium;
                             }
-                            else if (Column_Name == "Supplier Cost Disc(%)")
-                            {
-                                worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
-                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
-                            }
-                            else if (Column_Name == "Supplier Cost Value($)")
-                            {
-                                worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
-                                worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0";
-
-                                ExcelStyle cellStyleHeader_TotalAmt = worksheet.Cells[1, kkk].Style;
-                                cellStyleHeader_TotalAmt.Border.Left.Style = cellStyleHeader_TotalAmt.Border.Right.Style
-                                        = cellStyleHeader_TotalAmt.Border.Top.Style = cellStyleHeader_TotalAmt.Border.Bottom.Style
-                                        = ExcelBorderStyle.Medium;
-                            }
-                            else if (Column_Name == "Final Disc(%)")
-                            {
-                                worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
-                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
-                            }
-                            else if (Column_Name == "Final Amt US($)")
-                            {
-                                worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
-                                worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0";
-
-                                ExcelStyle cellStyleHeader_TotalAmt = worksheet.Cells[1, kkk].Style;
-                                cellStyleHeader_TotalAmt.Border.Left.Style = cellStyleHeader_TotalAmt.Border.Right.Style
-                                        = cellStyleHeader_TotalAmt.Border.Top.Style = cellStyleHeader_TotalAmt.Border.Bottom.Style
-                                        = ExcelBorderStyle.Medium;
-                            }
                             else if (Column_Name == "Supplier Base Offer(%)")
                             {
                                 worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "Supplier Base Offer Value($)")
+                            {
+                                worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
+                                worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0";
+
+                                ExcelStyle cellStyleHeader_TotalAmt = worksheet.Cells[1, kkk].Style;
+                                cellStyleHeader_TotalAmt.Border.Left.Style = cellStyleHeader_TotalAmt.Border.Right.Style
+                                        = cellStyleHeader_TotalAmt.Border.Top.Style = cellStyleHeader_TotalAmt.Border.Bottom.Style
+                                        = ExcelBorderStyle.Medium;
+                            }
+                            else if (Column_Name == "Supplier Final Disc(%)")
+                            {
+                                worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
+                            }
+                            else if (Column_Name == "Supplier Final Value($)")
+                            {
+                                worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
+                                worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0";
+
+                                ExcelStyle cellStyleHeader_TotalAmt = worksheet.Cells[1, kkk].Style;
+                                cellStyleHeader_TotalAmt.Border.Left.Style = cellStyleHeader_TotalAmt.Border.Right.Style
+                                        = cellStyleHeader_TotalAmt.Border.Top.Style = cellStyleHeader_TotalAmt.Border.Bottom.Style
+                                        = ExcelBorderStyle.Medium;
+                            }
+                            else if (Column_Name == "Supplier Final Disc. With Max Slab(%)")
+                            {
+                                worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
+                            }
+                            else if (Column_Name == "Supplier Final Value With Max Slab($)")
                             {
                                 worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                                 worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -2049,7 +2177,7 @@ namespace astute.CoreServices
                 throw;
             }
         }
-        public static void Supplier_Customer_Excel(DataTable dtStock, DataTable column_dt, string _strFolderPath, string _strFilePath)
+        public static void Create_Supplier_Excel(DataTable dtStock, DataTable column_dt, string _strFolderPath, string _strFilePath)
         {
             try
             {
@@ -2509,7 +2637,6 @@ namespace astute.CoreServices
                 throw;
             }
         }
-
         static string GetExcelColumnLetter(int columnNumber)
         {
             string columnLetter = "";
