@@ -1518,7 +1518,7 @@ namespace astute.Repository
                     using (var command = new SqlCommand(report_Sp, connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        foreach (var item in report_Filter_Parameters)
+                        foreach (var item in report_Filter_Parameters.Where(x=>!string.IsNullOrEmpty(x.Category_Value)).ToList())
                         {
                             command.Parameters.Add(!string.IsNullOrEmpty(item.Category_Value) ? new SqlParameter("@" + item.Column_Name, item.Category_Value) : new SqlParameter("@" + item.Column_Name, DBNull.Value));
                         }
