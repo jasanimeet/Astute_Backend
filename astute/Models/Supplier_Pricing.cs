@@ -116,6 +116,8 @@ namespace astute.Models
         public string? Cost_Disc { get; set; }
         public string? Cost_Amount { get; set; }
         public bool? Default_Price { get; set; }
+        public bool? Cost_Price_Flag { get; set; }
+        public bool? Final_Price_Flag { get; set; }
         [NotMapped]
         public string? Query_Flag { get; set; }
         [NotMapped]

@@ -94,5 +94,9 @@ namespace astute.Repository
         Task<int> Insert_GIA_Lab_Parameter(DataTable dataTable);
         Task<List<Dictionary<string, object>>> GIA_Lab_Parameter(string report_Date);
         #endregion
+
+        #region Get Excel Formet Stock Result
+        Task<DataTable> Get_Stock_In_Datatable(string supp_ref_no);
+        #endregion
     }
 }
