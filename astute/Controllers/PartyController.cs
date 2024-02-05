@@ -4805,29 +4805,55 @@ namespace astute.Controllers
         [HttpPost]
         [Route("export_stock_excel")]
         public async Task<IActionResult> Export_Stock_Excel(string supplier_Ref_No, string excel_Format)
-        {
-            DataTable dtSumm = new DataTable();
-            DataTable dt = await _supplierService.Get_Stock_In_Datatable(supplier_Ref_No);
-
-            List<string> columnNames = new List<string>();
-            foreach (DataColumn column in dt.Columns)
+        {   
+            DataTable supp_stock_dt = await _supplierService.Get_Stock_In_Datatable(supplier_Ref_No, excel_Format);
+            if (supp_stock_dt != null && supp_stock_dt.Rows.Count > 0)
             {
-                columnNames.Add(column.ColumnName);
+                List<string> columnNames = new List<string>();
+                foreach (DataColumn column in supp_stock_dt.Columns)
+                {
+                    columnNames.Add(column.ColumnName);
+                }
+
+                DataTable columnNamesTable = new DataTable();
+                columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                foreach (string columnName in columnNames)
+                {
+                    columnNamesTable.Rows.Add(columnName);
+                }
+                var excelPath = string.Empty;
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                if (!(Directory.Exists(filePath)))
+                {
+                    Directory.CreateDirectory(filePath);
+                }
+                if (excel_Format == "Customer")
+                {
+                    string filename = "Customer_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    EpExcelExport.Create_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                }
+                else if(excel_Format == "Buyer")
+                {
+                    string filename = "Buyer_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    EpExcelExport.Create_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                }
+                else if(excel_Format == "Supplier")
+                {
+                    string filename = "Supplier_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    EpExcelExport.Supplier_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                }
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    message = CoreCommonMessage.DataSuccessfullyFound,
+                    result = excelPath
+                });
             }
-
-            DataTable columnNamesTable = new DataTable();
-            columnNamesTable.Columns.Add("Column_Name", typeof(string));
-
-            foreach (string columnName in columnNames)
-            {
-                columnNamesTable.Rows.Add(columnName);
-            }
-
-            string filename = "Customer_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/CustomerStockExcelFiles/");
-            EpExcelExport.Create_Customer_Excel(dt, columnNamesTable, filePath, filePath + filename);
-            var excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.CustomerStockExcelFilesPath + filename;
-            return Ok(excelPath);
+            return NoContent();
         }
         #endregion
     }

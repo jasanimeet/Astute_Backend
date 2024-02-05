@@ -119,7 +119,7 @@ namespace astute.CoreModel
 
         #region BGM
         public static string BGM = "BGM";
-        public static string BGMCreated = BGM + AddedSuccessfully;
+        public static string BGMCreated = "BGM saved successfully.";
         public static string BGMUpdated = BGM + UpdatedSuccessfully;
         public static string BGMDeleted = BGM + DeletedSuccessfully;
         public static string IsExistBGM = BGM + AlreadyExists;

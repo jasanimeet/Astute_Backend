@@ -1737,7 +1737,7 @@ namespace astute.Repository
         #endregion
 
         #region Get Excel Formet Stock Result
-        public async Task<DataTable> Get_Stock_In_Datatable(string supp_ref_no)
+        public async Task<DataTable> Get_Stock_In_Datatable(string supp_ref_no, string excel_Format)
         {
             DataTable dataTable = new DataTable();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -1746,6 +1746,7 @@ namespace astute.Repository
                 {
                     command.CommandType = CommandType.StoredProcedure;                    
                     command.Parameters.Add(!string.IsNullOrEmpty(supp_ref_no) ? new SqlParameter("@Supplier_Ref_No", supp_ref_no) : new SqlParameter("@Supplier_Ref_No", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(excel_Format) ? new SqlParameter("@Excel_Format", excel_Format) : new SqlParameter("@Excel_Format", DBNull.Value));
 
                     await connection.OpenAsync();
 

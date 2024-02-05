@@ -86,7 +86,8 @@ namespace astute.Repository
         Task<(string, int)> Insert_Update_Temp_Layout(Temp_Layout_Master temp_Layout_Master);
         Task<int> Delete_Temp_Layout(int layout_Id);
         Task<int> Insert_Update_Temp_Layout_Detail(DataTable dataTable);
-        Task<int> Update_Temp_Layout_Status(int layout_Id, bool status);
+        Task<int> Update_Temp_Layout_Status(int layout_Id, int menu_Id, int employee_Id, bool status);
+        Task<int> Set_Default_Temp_Layout(int menu_Id, int employee_Id);
         #endregion
 
         #region Designation Master

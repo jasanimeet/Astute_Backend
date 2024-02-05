@@ -96,7 +96,7 @@ namespace astute.Repository
         #endregion
 
         #region Get Excel Formet Stock Result
-        Task<DataTable> Get_Stock_In_Datatable(string supp_ref_no);
+        Task<DataTable> Get_Stock_In_Datatable(string supp_ref_no, string excel_Format);
         #endregion
     }
 }

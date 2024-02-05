@@ -14,6 +14,6 @@
         public static string FtpFilesPath = "/Files/FTPFile/";
         public static string SupplierErrorLogFilesPath = "/Files/SupplierErrorLog/";
         public static string ManualUploadFilesPath = "/Files/ManualUploadFiles/";
-        public static string CustomerStockExcelFilesPath = "/Files/CustomerStockExcelFiles/";
+        public static string DownloadStockExcelFilesPath = "/Files/DownloadStockExcelFiles/";
     }
 }

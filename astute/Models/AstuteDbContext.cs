@@ -93,5 +93,6 @@ namespace astute.Models
         public DbSet<Report_Master> Report_Master { get; set; }
         public DbSet<Report_Detail> Report_Detail { get; set; }
         public DbSet<Party_Master_Replica> Party_Master_Replica { get; set; }
+        public DbSet<BGM_Detail> BGM_Detail { get; set; }
     }
 }

@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -42,8 +44,8 @@ namespace astute.Repository
             var (empId, ipaddress, date, time, record_Type) = CoreService.Get_SqlParameter_Values(user_Id ?? 0, ip_Address, DateTime.Now, DateTime.Now.TimeOfDay, recordType);
 
             var bgm = new SqlParameter("@Bgm", bGM_Mas.BGM);
-            var shade = bGM_Mas.Shade > 0 ? new SqlParameter("@Shade", bGM_Mas.Shade) : new SqlParameter("@Shade", DBNull.Value);
-            var milky = bGM_Mas.Milky > 0 ? new SqlParameter("@Milky", bGM_Mas.Milky) : new SqlParameter("@Milky", DBNull.Value);
+            var shade = new SqlParameter("@Shade", DBNull.Value);
+            var milky = new SqlParameter("@Milky", DBNull.Value);
             var sortNo = bGM_Mas.Sort_No > 0 ? new SqlParameter("@Sort_No", bGM_Mas.Sort_No) : new SqlParameter("@Sort_No", DBNull.Value);
             var orderNo = bGM_Mas.Order_No > 0 ? new SqlParameter("@Order_No", bGM_Mas.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
             var status = new SqlParameter("@Status", bGM_Mas.Status);
@@ -59,8 +61,8 @@ namespace astute.Repository
         {
             var bgmId = new SqlParameter("@Bgm_Id", bGM_Mas.Bgm_Id);
             var bgm = new SqlParameter("@Bgm", bGM_Mas.BGM);
-            var shade = bGM_Mas.Shade > 0 ? new SqlParameter("@Shade", bGM_Mas.Shade) : new SqlParameter("@Shade", DBNull.Value);
-            var milky = bGM_Mas.Milky > 0 ? new SqlParameter("@Milky", bGM_Mas.Milky) : new SqlParameter("@Milky", DBNull.Value);
+            var shade = new SqlParameter("@Shade", DBNull.Value);
+            var milky = new SqlParameter("@Milky", DBNull.Value);
             var sortNo = bGM_Mas.Sort_No > 0 ? new SqlParameter("@Sort_No", bGM_Mas.Sort_No) : new SqlParameter("@Sort_No", DBNull.Value);
             var orderNo = bGM_Mas.Order_No > 0 ? new SqlParameter("@Order_No", bGM_Mas.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
             var status = new SqlParameter("@Status", bGM_Mas.Status);
@@ -102,12 +104,52 @@ namespace astute.Repository
 
             return result;
         }
+        public async Task<(string, int)> Add_Update_Bgm_Master(BGM_Master bGM_Master)
+        {
+            var bgmId = new SqlParameter("@Bgm_Id", bGM_Master.Bgm_Id);
+            var bgm = new SqlParameter("@Bgm", bGM_Master.BGM);
+            var sortNo = bGM_Master.Sort_No > 0 ? new SqlParameter("@Sort_No", bGM_Master.Sort_No) : new SqlParameter("@Sort_No", DBNull.Value);
+            var orderNo = bGM_Master.Order_No > 0 ? new SqlParameter("@Order_No", bGM_Master.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
+            var status = new SqlParameter("@Status", bGM_Master.Status);
+            var recordType = new SqlParameter("@recordType", "Insert");
+            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
+            var isExistSortNo = new SqlParameter("@IsExistSortNo", System.Data.SqlDbType.Bit)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
+            var insertedId = new SqlParameter("@InsertedId", System.Data.SqlDbType.Int)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+            .ExecuteSqlRawAsync(@"EXEC BGM_Mas_Insert_Update @Bgm_Id, @Bgm, @Sort_No, @Order_No, @Status, @recordType, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT",
+            bgmId, bgm, sortNo, orderNo, status, recordType, isExistOrderNo, isExistSortNo, insertedId));
+
+            bool orderNoIsExist = (bool)isExistOrderNo.Value;
+            if (orderNoIsExist)
+                return ("_error_order_no", 0);
+
+            bool sortNoIsExist = (bool)isExistSortNo.Value;
+            if (sortNoIsExist)
+                return ("_error_sort_no", 0);
+
+            if (result > 0)
+            {
+                int _insertedId = (int)insertedId.Value;
+                return ("success", _insertedId);
+            }
+            return ("error", 0);
+        }
         public async Task<int> UpdateBGM(BGM_Master bGM_Mas)
         {
             var bgmId = new SqlParameter("@Bgm_Id", bGM_Mas.Bgm_Id);
             var bgm = new SqlParameter("@Bgm", bGM_Mas.BGM);
-            var shade = bGM_Mas.Shade > 0 ? new SqlParameter("@Shade", bGM_Mas.Shade) : new SqlParameter("@Shade", DBNull.Value);
-            var milky = bGM_Mas.Milky > 0 ? new SqlParameter("@Milky", bGM_Mas.Milky) : new SqlParameter("@Milky", DBNull.Value);
+            var shade = new SqlParameter("@Shade", DBNull.Value);
+            var milky = new SqlParameter("@Milky", DBNull.Value);
             var sortNo = bGM_Mas.Sort_No > 0 ? new SqlParameter("@Sort_No", bGM_Mas.Sort_No) : new SqlParameter("@Sort_No", DBNull.Value);
             var orderNo = bGM_Mas.Order_No > 0 ? new SqlParameter("@Order_No", bGM_Mas.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
             var status = new SqlParameter("@Status", bGM_Mas.Status);
@@ -164,14 +206,12 @@ namespace astute.Repository
             //}
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"BGM_Mas_Delete {bgm_Id}"));
         }
-        public async Task<IList<BGM_Master>> GetBgm(int bgm_Id, int shade, int milky)
+        public async Task<IList<BGM_Master>> GetBgm(int bgm_Id)
         {
             var _bgm_Id = bgm_Id > 0 ? new SqlParameter("@BgmId", bgm_Id) : new SqlParameter("@BgmId", DBNull.Value);
-            var Shade = shade > 0 ? new SqlParameter("@Shade", shade) : new SqlParameter("@Shade", DBNull.Value);
-            var Milky = shade > 0 ? new SqlParameter("@Milky", milky) : new SqlParameter("@Milky", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.BGM_Master
-                            .FromSqlRaw(@"exec BGM_Mas_Select @BgmId, @Shade, @Milky", _bgm_Id, Shade, Milky).ToListAsync());
+                            .FromSqlRaw(@"exec BGM_Mas_Select @BgmId", _bgm_Id).ToListAsync());
 
             return result;
         }
@@ -182,6 +222,49 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
                                 .ExecuteSqlRawAsync(@"EXEC BGM_Master_Update_Status @Bgm_Id, @Status", bgmid, Status));
+            return result;
+        }
+        public async Task<int> Insert_BGM_Detail(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@tblBGM_Detail", SqlDbType.Structured)
+            {
+                TypeName = "dbo.BGM_Detail_Table_Type",
+                Value = dataTable
+            };
+
+            var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC BGM_Detail_Insert_Update @tblBGM_Detail", parameter);
+            return result;
+        }
+        public async Task<BGM_Master> Get_Bgm_Detail(int bgm_Id)
+        {
+            var _bgm_Id = bgm_Id > 0 ? new SqlParameter("@BgmId", bgm_Id) : new SqlParameter("@BgmId", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.BGM_Master
+                .FromSqlRaw(@"exec BGM_Mas_Select @BgmId", _bgm_Id)
+                .AsEnumerable()
+                .FirstOrDefault());
+
+            if(result != null)
+            {
+                if(bgm_Id > 0)
+                {
+                    var id = new SqlParameter("@Id", DBNull.Value);
+                    var _bgm_Id1 = bgm_Id > 0 ? new SqlParameter("@BgmId", bgm_Id) : new SqlParameter("@BgmId", DBNull.Value);
+
+                    result.BGM_Detail_List = await Task.Run(() => _dbContext.BGM_Detail
+                            .FromSqlRaw(@"exec BGM_Detail_Select @Id, @BgmId", id, _bgm_Id1).ToList());
+                }
+            }
+
+            return result;
+        }
+        public async Task<int> BGM_Detail_Change_Status(int id, bool status)
+        {
+            var _id = new SqlParameter("@Id", id);
+            var Status = new SqlParameter("@Status", status);
+
+            var result = await Task.Run(() => _dbContext.Database
+                                .ExecuteSqlRawAsync(@"EXEC BGM_Detail_Update_Status @Id, @Status", _id, Status));
             return result;
         }
         #endregion

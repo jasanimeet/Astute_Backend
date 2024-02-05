@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using OfficeOpenXml;
+using Org.BouncyCastle.Bcpg;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -651,7 +653,7 @@ namespace astute.Controllers
                     message = ex.Message
                 });
             }
-        }        
+        }
 
         [HttpPost]
         [Route("createcity")]
@@ -2186,20 +2188,125 @@ namespace astute.Controllers
         [HttpGet]
         [Route("getbgm")]
         [Authorize]
-        public async Task<IActionResult> GetBgm(int bgm_Id, int shade, int milky)
+        public async Task<IActionResult> GetBgm(int bgm_Id)
         {
-            var result = await _bGMService.GetBgm(bgm_Id, shade, milky);
-            if (result != null && result.Count > 0)
+            try
             {
+                var result = await _bGMService.GetBgm(bgm_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "GetBgm", ex.StackTrace);
                 return Ok(new
                 {
-                    StatusCode = HttpStatusCode.OK,
-                    message = CoreCommonMessage.DataSuccessfullyFound,
-                    data = result
+                    message = ex.Message
                 });
             }
-            return NoContent();
         }
+
+        [HttpPost]
+        [Route("add_update_bgm_detail")]
+        [Authorize]
+        public async Task<IActionResult> Add_Update_BGM_Detail([FromForm] BGM_Master bGM_Master)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var (message, bgm_id) = await _bGMService.Add_Update_Bgm_Master(bGM_Master);
+                    if (message == "success" && bgm_id > 0)
+                    {
+                        if(bGM_Master.BGM_Detail_List != null && bGM_Master.BGM_Detail_List.Count > 0)
+                        {
+                            DataTable dataTable = new DataTable();
+                            dataTable.Columns.Add("@Id", typeof(int));
+                            dataTable.Columns.Add("@BGM_Id", typeof(int));
+                            dataTable.Columns.Add("@Shade", typeof(int));
+                            dataTable.Columns.Add("@Milky", typeof(int));
+                            dataTable.Columns.Add("@Status", typeof(bool));
+                            dataTable.Columns.Add("@QueryFlag", typeof(string));
+
+                            foreach (var item in bGM_Master.BGM_Detail_List)
+                            {
+                                dataTable.Rows.Add(item.Id, bgm_id, item.Shade, item.Milky, item.Status, item.QueryFlag);
+                            }
+
+                            await _bGMService.Insert_BGM_Detail(dataTable);
+                        }
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.BGMCreated
+                        });
+                    }
+                    else if (message == "_error_order_no")
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.OrderNoAlreadyExist
+                        });
+                    }
+                    else if (message == "_error_sort_no")
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.SortNoAlreadyExist
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Add_Update_BGM_Detail", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_bgm_detail")]
+        [Authorize]
+        public async Task<IActionResult> Get_BGM_Detail(int bgm_Id)
+        {
+            try
+            {
+                var result = await _bGMService.Get_Bgm_Detail(bgm_Id);
+                if (result != null)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_BGM_Detail", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         [HttpPost]
         [Route("createbgm")]
         [Authorize]
@@ -2353,6 +2460,34 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "ChangeStatusBgm", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPut]
+        [Route("change_status_bgm_detail")]
+        [Authorize]
+        public async Task<IActionResult> Change_Status_Bgm_Detail(int id, bool status)
+        {
+            try
+            {
+                var result = await _bGMService.BGM_Detail_Change_Status(id, status);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.StatusChangedSuccessMessage
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Change_Status_Bgm_Detail", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
@@ -3727,11 +3862,11 @@ namespace astute.Controllers
         [HttpPut]
         [Route("update_temp_layout_status")]
         [Authorize]
-        public async Task<IActionResult> Update_Temp_Layout_Status(int layout_Id, bool status)
+        public async Task<IActionResult> Update_Temp_Layout_Status(int layout_Id, int menu_Id, int employee_Id, bool status)
         {
             try
             {
-                var result = await _commonService.Update_Temp_Layout_Status(layout_Id, status);
+                var result = await _commonService.Update_Temp_Layout_Status(layout_Id, menu_Id, employee_Id, status);
                 if (result > 0)
                 {
                     return Ok(new
@@ -3749,6 +3884,38 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Update_Temp_Layout_Status", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPut]
+        [Route("set_temp_layout_default")]
+        [Authorize]
+        public async Task<IActionResult> Set_Temp_Layout_Default(int menu_Id, int employee_Id)
+        {
+            try
+            {
+                var result = await _commonService.Set_Default_Temp_Layout(menu_Id, employee_Id);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.TempLayoutStatusUpdate
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Set_Temp_Layout_Defalt", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
