@@ -1772,24 +1772,43 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(status_bg);
                                 }
+                                else if (Column_Name == "Bid Disc(%)")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = ((dtStock.Rows[i - inStartIndex]["Bid Disc(%)"] != null) ?
+                                     (dtStock.Rows[i - inStartIndex]["Bid Disc(%)"].GetType().Name != "DBNull" ?
+                                     Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Bid Disc(%)"]) : DBNull.Value) : DBNull.Value);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(bid_bg);
+                                }
                                 else if (Column_Name == "Bid Amt")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Bid Amt"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = ((dtStock.Rows[i - inStartIndex]["Bid Amt"] != null) ?
+                                     (dtStock.Rows[i - inStartIndex]["Bid Amt"].GetType().Name != "DBNull" ?
+                                     Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Bid Amt"]) : DBNull.Value) : DBNull.Value);
 
+                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(bid_bg);
                                 }
                                 else if (Column_Name == "Bid/Ct")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Bid/Ct"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = ((dtStock.Rows[i - inStartIndex]["Bid/Ct"] != null) ?
+                                     (dtStock.Rows[i - inStartIndex]["Bid/Ct"].GetType().Name != "DBNull" ?
+                                     Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Bid/Ct"]) : DBNull.Value) : DBNull.Value);
 
+                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(bid_bg);
                                 }
                                 else if (Column_Name == "Avg. Stock Disc(%)")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Avg. Stock Disc(%)"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = ((dtStock.Rows[i - inStartIndex]["Avg. Stock Disc(%)"] != null) ?
+                                     (dtStock.Rows[i - inStartIndex]["Avg. Stock Disc(%)"].GetType().Name != "DBNull" ?
+                                     Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Avg. Stock Disc(%)"]) : DBNull.Value) : DBNull.Value);
 
+                                    worksheet.Cells[1, kk].Style.Numberformat.Format = "#,##0.00";
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(avg_stock_bg);
                                 }
@@ -1802,8 +1821,11 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "Avg. Pur. Disc(%)")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Avg. Pur. Disc(%)"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = ((dtStock.Rows[i - inStartIndex]["Avg. Pur. Disc(%)"] != null) ?
+                                     (dtStock.Rows[i - inStartIndex]["Avg. Pur. Disc(%)"].GetType().Name != "DBNull" ?
+                                     Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Avg. Pur. Disc(%)"]) : DBNull.Value) : DBNull.Value);
 
+                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(avg_pur_bg);
                                 }
@@ -1816,8 +1838,11 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "Avg. Sales Disc(%)")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Avg. Sales Disc(%)"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = ((dtStock.Rows[i - inStartIndex]["Avg. Sales Disc(%)"] != null) ?
+                                     (dtStock.Rows[i - inStartIndex]["Avg. Sales Disc(%)"].GetType().Name != "DBNull" ?
+                                     Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Avg. Sales Disc(%)"]) : DBNull.Value) : DBNull.Value);
 
+                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(avg_sales_bg);
                                 }
