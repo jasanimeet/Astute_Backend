@@ -4839,13 +4839,13 @@ namespace astute.Controllers
                 else if(excel_Format == "Buyer")
                 {
                     string filename = "Buyer_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                    EpExcelExport.Create_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
+                    EpExcelExport.Create_Buyer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
                     excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                 }
                 else if(excel_Format == "Supplier")
                 {
                     string filename = "Supplier_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                    EpExcelExport.Supplier_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
+                    EpExcelExport.Create_Supplier_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
                     excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                 }
                 return Ok(new
