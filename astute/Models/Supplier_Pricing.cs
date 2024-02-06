@@ -118,6 +118,32 @@ namespace astute.Models
         public bool? Default_Price { get; set; }
         public bool? Cost_Price_Flag { get; set; }
         public bool? Final_Price_Flag { get; set; }
+        public bool? Is_All_Bgm { get; set; }
+        public bool? Is_All_Clarity { get; set; }
+        public bool? Is_All_Color { get; set; }
+        public bool? Is_All_Culet { get; set; }
+        public bool? Is_All_Cut { get; set; }
+        public bool? Is_All_Fls_Intencity { get; set; }
+        public bool? Is_All_Good_Type { get; set; }
+        public bool? Is_All_Location { get; set; }
+        public bool? Is_All_Lab { get; set; }
+        public bool? Is_All_Luster { get; set; }
+        public bool? Is_All_Polish { get; set; }
+        public bool? Is_All_Shade { get; set; }
+        public bool? Is_All_Shape { get; set; }
+        public bool? Is_All_Symm { get; set; }
+        public bool? Is_All_Status { get; set; }
+        public bool? Is_All_Cert_Type { get; set; }
+        public bool? Is_All_Fancy_Color { get; set; }
+        public bool? Is_All_Girdle_Open { get; set; }
+        public bool? Is_All_Table_Open { get; set; }
+        public bool? Is_All_Table_Black { get; set; }
+        public bool? Is_All_Table_White { get; set; }
+        public bool? Is_All_Side_Black { get; set; }
+        public bool? Is_All_Side_White { get; set; }
+        public bool? Is_All_Pavilion_Open { get; set; }
+        public bool? Is_All_Crown_Open { get; set; }
+        public bool? Is_All_Company { get; set; }
         [NotMapped]
         public string? Query_Flag { get; set; }
         [NotMapped]
