@@ -75,19 +75,5 @@ namespace astute.Models
         public float? CERTIFIED_Per_2 { get; set; }
         public string? CERTIFIED_Viewing_Rights_To_Values { get; set; }
         public DateTime? CERTIFIED_Date { get; set; }
-        [NotMapped]
-        public IList<Party_Contact> Party_Contact_List { get; set; } = new List<Party_Contact>();
-        [NotMapped]
-        public IList<Party_Assist> Party_Assist_List { get; set; } = new List<Party_Assist>();
-        [NotMapped]
-        public IList<Party_Bank> Party_Bank_List { get; set; } = new List<Party_Bank>();
-        [NotMapped]
-        public IList<Party_Document> Party_Document_List { get; set; } = new List<Party_Document>();
-        [NotMapped]
-        public IList<Party_Media> Party_Media_List { get; set; } = new List<Party_Media>();
-        [NotMapped]
-        public IList<Party_Shipping> Party_Shipping_List { get; set; } = new List<Party_Shipping>();
-        [NotMapped]
-        public IList<Party_Print_Process> Party_Print_Process_List { get; set; } = new List<Party_Print_Process>();
     }
 }

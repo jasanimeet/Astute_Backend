@@ -69,3 +69,7 @@
 *.txt
 *.pubxml
 *.user
+/astute/obj/Release/net6.0/PubTmp/Out/astute.deps.json
+/astute/obj/Release/net6.0/astute.csproj.AssemblyReference.cache
+/astute/obj/Release/net6.0/astute.deps.json
+/astute/bin/Release/net6.0/astute.deps.json

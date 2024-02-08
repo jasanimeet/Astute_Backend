@@ -3589,22 +3589,23 @@ namespace astute.Controllers
 
                     using var package = new ExcelPackage();
                     var worksheet = package.Workbook.Worksheets.Add("Sheet1");
-                    worksheet.Cells["A1"].LoadFromDataTable(result, true);
+                    worksheet.Cells["A2"].LoadFromDataTable(result, true);
 
                     int rowEnd = worksheet.Dimension.End.Row;
 
                     string cellAdress = worksheet.Cells[1, 1, rowEnd, 100].Address;
                     EpExcelExport.removingGreenTagWarning(worksheet, cellAdress);
 
-                    int startColumn = worksheet.Dimension.Start.Column;
-                    int endColumn = worksheet.Dimension.End.Column;
-                    string startColumnAddress = worksheet.Cells[1, startColumn].Address;
-                    string endColumnAddress = worksheet.Cells[1, endColumn].Address;
-                    worksheet.Cells[startColumnAddress + ":" + endColumnAddress].AutoFilter = true;
+                    worksheet.Cells[2, 1, 2, result.Columns.Count].AutoFilter = true;
 
                     worksheet.Cells[1, 1, 1, 100].Style.Font.Bold = true;
                     worksheet.Cells[worksheet.Dimension.Address].Style.Font.Size = 10;
                     worksheet.Cells[worksheet.Dimension.Address].Offset(1, 0, rowEnd - 1, 100).Style.Font.Size = 9;
+
+                    worksheet.Cells[1, 1].Value = "Total";
+                    var total_cnt = rowEnd - 1;
+                    worksheet.Cells[1, 3].Value = total_cnt;
+                    worksheet.Cells[1, 3].Style.Numberformat.Format = "#,##";
 
                     byte[] byteArray = package.GetAsByteArray();
                     string filePath = Path.Combine(folderPath, strFile);
