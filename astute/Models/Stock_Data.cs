@@ -196,7 +196,7 @@ namespace astute.Models
         public string Shape { get; set; }
 
         [JsonProperty("CTS")]
-        public double Cts { get; set; }
+        public string Cts { get; set; }
 
         [JsonProperty("Supplier Name")]
         public string SupplierName { get; set; }
@@ -238,7 +238,7 @@ namespace astute.Models
         public string DepthPer { get; set; }
 
         [JsonProperty("TABLE_PER")]
-        public long TablePer { get; set; }
+        public string TablePer { get; set; }
 
         [JsonProperty("CULET")]
         public string Culet { get; set; }
