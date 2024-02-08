@@ -3598,8 +3598,8 @@ namespace astute.Controllers
 
                     worksheet.Cells[2, 1, 2, result.Columns.Count].AutoFilter = true;
 
-                    worksheet.Cells[2, 1, 2, dataTable.Columns.Count].Style.Font.Bold = true;
-                    worksheet.Cells[1, 1, 1, dataTable.Columns.Count].Style.Font.Bold = true;
+                    worksheet.Cells[2, 1, 2, result.Columns.Count].Style.Font.Bold = true;
+                    worksheet.Cells[1, 1, 1, result.Columns.Count].Style.Font.Bold = true;
 
                     worksheet.Cells[worksheet.Dimension.Address].Style.Font.Size = 10;
                     worksheet.Cells[worksheet.Dimension.Address].Offset(1, 0, rowEnd - 1, 100).Style.Font.Size = 9;
