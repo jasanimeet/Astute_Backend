@@ -29,7 +29,7 @@ namespace astute.Models
 
     public partial class Stock_Data_Master_Excel
     {
-        public int? Supplier_Id { get; set; }
+        public string? Supplier_Id { get; set; }
         public object? Supplier_Stock_Data { get; set; }
     }
 }

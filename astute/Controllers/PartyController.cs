@@ -3643,7 +3643,6 @@ namespace astute.Controllers
         {
             try
             {
-                var party = await _partyService.Get_Party_Details((int)stock_Data_Master_Excel.Supplier_Id);
                 if (stock_Data_Master_Excel.Supplier_Stock_Data != null)
                 {
                     IList<Supplier_Stock_Excel> Supplier_Stock_Excel = JsonConvert.DeserializeObject<IList<Supplier_Stock_Excel>>(stock_Data_Master_Excel.Supplier_Stock_Data.ToString());
@@ -3656,7 +3655,7 @@ namespace astute.Controllers
                     {
                         Directory.CreateDirectory(folderPath);
                     }
-                    string strFile = party.Party_Name + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".xlsx";
+                    string strFile = "Error_Log_File_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".xlsx";
 
                     using var package = new ExcelPackage();
                     var worksheet = package.Workbook.Worksheets.Add("Sheet1");
