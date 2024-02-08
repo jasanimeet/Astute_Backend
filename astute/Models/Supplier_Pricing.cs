@@ -140,7 +140,7 @@ namespace astute.Models
         public bool? Is_All_Table_Black { get; set; }
         public bool? Is_All_Table_White { get; set; }
         public bool? Is_All_Side_Black { get; set; }
-        public bool? Is_All_Side_White { get; set; }
+        public bool? Is_All_Side_white { get; set; }
         public bool? Is_All_Pavilion_Open { get; set; }
         public bool? Is_All_Crown_Open { get; set; }
         public bool? Is_All_Company { get; set; }
