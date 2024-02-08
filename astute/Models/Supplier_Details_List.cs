@@ -13,6 +13,9 @@ namespace astute.Models
         public int? FTP_Id { get; set; }
         public int? File_Id { get; set; }
         public string? File_Type { get; set; }
+        public bool? API_Status { get; set; }
+        public bool? Ftp_Status { get; set; }
+        public bool? File_Status { get; set; }
         public string? Created_Date { get; set; }
         public string? Created_Time { get; set; }
         public string? Created_By { get; set; }

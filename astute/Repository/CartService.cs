@@ -48,7 +48,7 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Cart(string userIds)
+        public async Task<List<Dictionary<string, object>>> Get_Cart(string upload_Type, string userIds)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -56,6 +56,7 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Cart_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(upload_Type) ? new SqlParameter("@Upload_Type", upload_Type) : new SqlParameter("@Upload_Type", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(userIds) ? new SqlParameter("@User_Ids", userIds) : new SqlParameter("@User_Ids", DBNull.Value));
                     await connection.OpenAsync();
 
