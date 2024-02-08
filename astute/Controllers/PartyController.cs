@@ -3598,14 +3598,15 @@ namespace astute.Controllers
 
                     worksheet.Cells[2, 1, 2, result.Columns.Count].AutoFilter = true;
 
-                    worksheet.Cells[1, 1, 1, 100].Style.Font.Bold = true;
+                    worksheet.Cells[1, 1, 2, result.Columns.Count].Style.Font.Bold = true;
                     worksheet.Cells[worksheet.Dimension.Address].Style.Font.Size = 10;
                     worksheet.Cells[worksheet.Dimension.Address].Offset(1, 0, rowEnd - 1, 100).Style.Font.Size = 9;
 
                     worksheet.Cells[1, 1].Value = "Total";
-                    var total_cnt = rowEnd - 1;
-                    worksheet.Cells[1, 3].Value = total_cnt;
+                    worksheet.Cells[1, 3].Formula = $"SUBTOTAL(103, F3:F{rowEnd})";
                     worksheet.Cells[1, 3].Style.Numberformat.Format = "#,##";
+
+                    worksheet.Cells[1, 5].Formula = $"SUBTOTAL(109,F3:F{rowEnd})";
 
                     byte[] byteArray = package.GetAsByteArray();
                     string filePath = Path.Combine(folderPath, strFile);
@@ -3659,22 +3660,26 @@ namespace astute.Controllers
 
                     using var package = new ExcelPackage();
                     var worksheet = package.Workbook.Worksheets.Add("Sheet1");
-                    worksheet.Cells["A1"].LoadFromDataTable(dataTable, true);
+                    worksheet.Cells["A2"].LoadFromDataTable(dataTable, true);
 
                     int rowEnd = worksheet.Dimension.End.Row;
 
-                    string cellAdress = worksheet.Cells[1, 1, rowEnd, 100].Address;
-                    EpExcelExport.removingGreenTagWarning(worksheet, cellAdress);
+                    worksheet.Cells[2, 1, 2, dataTable.Columns.Count].AutoFilter = true;
 
-                    int startColumn = worksheet.Dimension.Start.Column;
-                    int endColumn = worksheet.Dimension.End.Column;
-                    string startColumnAddress = worksheet.Cells[1, startColumn].Address;
-                    string endColumnAddress = worksheet.Cells[1, endColumn].Address;
-                    worksheet.Cells[startColumnAddress + ":" + endColumnAddress].AutoFilter = true;
+                    worksheet.Cells[2, 1, 2, dataTable.Columns.Count].Style.Font.Bold = true;
+                    worksheet.Cells[1, 1, 1, dataTable.Columns.Count].Style.Font.Bold = true;
 
-                    worksheet.Cells[1, 1, 1, 100].Style.Font.Bold = true;
                     worksheet.Cells[worksheet.Dimension.Address].Style.Font.Size = 10;
                     worksheet.Cells[worksheet.Dimension.Address].Offset(1, 0, rowEnd - 1, 100).Style.Font.Size = 9;
+
+                    worksheet.Cells[1, 1].Value = "Total";
+                    worksheet.Cells[1, 3].Formula = $"SUBTOTAL(103, F3:F{rowEnd})";
+                    worksheet.Cells[1, 3].Style.Numberformat.Format = "#,##";
+
+                    worksheet.Cells[1, 5].Formula = $"SUBTOTAL(109,F3:F{rowEnd})";
+
+                    string cellAdress = worksheet.Cells[1, 1, rowEnd, 100].Address;
+                    EpExcelExport.removingGreenTagWarning(worksheet, cellAdress);
 
                     byte[] byteArray = package.GetAsByteArray();
                     string filePath = Path.Combine(folderPath, strFile);
