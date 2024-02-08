@@ -738,7 +738,7 @@ namespace astute.Repository
             var is_All_Color = new SqlParameter("@Is_All_Color", supplier_Pricing.Is_All_Color ?? false);
             var is_All_Culet = new SqlParameter("@Is_All_Culet", supplier_Pricing.Is_All_Culet ?? false);
             var is_All_Cut = new SqlParameter("@Is_All_Cut", supplier_Pricing.Is_All_Cut ?? false);
-            var is_All_Fls_Intencity = new SqlParameter("@Is_All_Fls_Intencity", supplier_Pricing.Is_All_Fls_Intencity ?? false);
+            var is_All_Fls_Intensity = new SqlParameter("@Is_All_Fls_Intensity", supplier_Pricing.Is_All_Fls_Intensity ?? false);
             var is_All_Good_Type = new SqlParameter("@Is_All_Good_Type", supplier_Pricing.Is_All_Good_Type ?? false);
             var is_All_Location = new SqlParameter("@Is_All_Location", supplier_Pricing.Is_All_Location ?? false);
             var is_All_Lab = new SqlParameter("@Is_All_Lab", supplier_Pricing.Is_All_Lab ?? false);
@@ -774,7 +774,7 @@ namespace astute.Repository
                         @SP_Calculation_Type, @SP_Sign, @SP_Start_Date, @SP_Start_Time, @SP_End_Date, @SP_End_Time, @SP_Value_1, @SP_Value_2, @SP_Value_3, @SP_Value_4, @MS_Calculation_Type,
                         @MS_Sign, @MS_Value_1, @MS_Value_2, @MS_Value_3, @MS_Value_4, @MS_SP_Calculation_Type, @MS_SP_Sign, @MS_SP_Start_Date, @MS_SP_Start_Time, @MS_SP_End_Date, @MS_SP_End_Time,
                         @MS_SP_Value_1, @MS_SP_Value_2, @MS_SP_Value_3, @MS_SP_Value_4, @SP_Toggle_Bar, @MS_SP_Toggle_Bar, @Modified_By, @C_Length, @C_Width, @Cost_Disc, @Cost_Amount, @Default_Price, 
-                        @Cost_Price_Flag, @Final_Price_Flag, @Is_All_Bgm,@Is_All_Clarity,@Is_All_Color,@Is_All_Culet,@Is_All_Cut,@Is_All_Fls_Intencity,@Is_All_Good_Type,@Is_All_Location,@Is_All_Lab,
+                        @Cost_Price_Flag, @Final_Price_Flag, @Is_All_Bgm,@Is_All_Clarity,@Is_All_Color,@Is_All_Culet,@Is_All_Cut,@Is_All_Fls_Intensity,@Is_All_Good_Type,@Is_All_Location,@Is_All_Lab,
                         @Is_All_Luster,@Is_All_Polish,@Is_All_Shade,@Is_All_Shape,@Is_All_Symm,@Is_All_Status,@Is_All_Cert_Type,@Is_All_Fancy_Color,@Is_All_Girdle_Open,@Is_All_Table_Open,@Is_All_Table_Black,
                         @Is_All_Table_White,@Is_All_Side_Black,@Is_All_Side_White,@Is_All_Pavilion_Open,@Is_All_Crown_Open,@Is_All_Company, @Query_Flag, @Inserted_Id OUT",
                         supplier_Pricing_Id, supplier_Id, sunrise_Pricing_Id, customer_Pricing_Id, user_Pricing_Id, map_Flag,stock_Lab,stock_Overseas,stock_Buyer ,shape, cts, color, fancy_Color, clarity, cut, polish, symm, fls_Intensity, lab, shade, luster, bgm, culet, location, status, good_Type, length_From, length_To, width_From,
@@ -783,7 +783,7 @@ namespace astute.Repository
                         base_Disc_From, base_Disc_To, base_Amount_From, base_Amount_To, final_Disc_From, final_Disc_To, final_Amount_From, final_Amount_To, company, supplier_Filter_Type, calculation_Type, sign, value_1, value_2, value_3, value_4, sp_calculation_Type, sp_sign, sp_start_date,
                         sp_start_time, sp_end_date, sp_end_time, sp_value_1, sp_value_2, sp_value_3, sp_value_4, ms_calculation_Type, ms_sign, ms_value_1, ms_value_2, ms_value_3, ms_value_4, ms_sp_calculation_Type,
                         ms_sp_sign, ms_sp_start_date, ms_sp_start_time, ms_sp_end_date, ms_sp_end_time, ms_sp_value_1, ms_sp_value_2, ms_sp_value_3, ms_sp_value_4, sP_Toggle_Bar, mSP_Toggle_Bar, modified_By, C_Length, C_Width, Cost_Disc, Cost_Amount, default_Price, cost_Price_Flag, final_Price_Flag,
-                        is_All_Bgm, is_All_Clarity, is_All_Color, is_All_Culet, is_All_Cut, is_All_Fls_Intencity, is_All_Good_Type, is_All_Location, is_All_Lab, is_All_Luster, is_All_Polish, is_All_Shade, is_All_Shape,
+                        is_All_Bgm, is_All_Clarity, is_All_Color, is_All_Culet, is_All_Cut, is_All_Fls_Intensity, is_All_Good_Type, is_All_Location, is_All_Lab, is_All_Luster, is_All_Polish, is_All_Shade, is_All_Shape,
                         is_All_Symm, is_All_Status, is_All_Cert_Type, is_All_Fancy_Color, is_All_Girdle_Open, is_All_Table_Open, is_All_Table_Black, is_All_Table_White, is_All_Side_Black, is_All_Side_White, is_All_Pavilion_Open,
                         is_All_Crown_Open, is_All_Company, query_Flag, inserted_Id));
             int _insertedId = (int)inserted_Id.Value;

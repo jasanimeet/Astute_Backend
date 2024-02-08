@@ -123,7 +123,7 @@ namespace astute.Models
         public bool? Is_All_Color { get; set; }
         public bool? Is_All_Culet { get; set; }
         public bool? Is_All_Cut { get; set; }
-        public bool? Is_All_Fls_Intencity { get; set; }
+        public bool? Is_All_Fls_Intensity { get; set; }
         public bool? Is_All_Good_Type { get; set; }
         public bool? Is_All_Location { get; set; }
         public bool? Is_All_Lab { get; set; }
