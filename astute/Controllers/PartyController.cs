@@ -3636,7 +3636,7 @@ namespace astute.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("supplier_stock_excel_error_log_detail")]
         [Authorize]
         public async Task<IActionResult> Supplier_Stock_Excel_Error_Log_Detail(Stock_Data_Master_Excel stock_Data_Master_Excel)
