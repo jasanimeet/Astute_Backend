@@ -2241,15 +2241,15 @@ namespace astute.Controllers
                                 dataTable.Rows.Add(item.Id, bgm_id, item.Shade, item.Milky, item.Status, item.QueryFlag);
                             }
 
-                            var result = await _bGMService.Insert_BGM_Detail(dataTable);
-                            if (result == 409)
-                            {
-                                return Conflict(new
-                                {
-                                    statusCode = HttpStatusCode.Conflict,
-                                    message = CoreCommonMessage.IsExistShade_Milky
-                                });
-                            }
+                            await _bGMService.Insert_BGM_Detail(dataTable);
+                            //if (result == 409)
+                            //{
+                            //    return Conflict(new
+                            //    {
+                            //        statusCode = HttpStatusCode.Conflict,
+                            //        message = CoreCommonMessage.IsExistShade_Milky
+                            //    });
+                            //}
                         }
                         return Ok(new
                         {

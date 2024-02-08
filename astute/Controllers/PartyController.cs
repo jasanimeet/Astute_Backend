@@ -15,6 +15,7 @@ using NPOI.HSSF.UserModel;
 using NPOI.POIFS.Crypt.Dsig;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
@@ -4287,7 +4288,7 @@ namespace astute.Controllers
 
                     foreach (var item in cart_Model.Cart_Detail)
                     {
-                        dataTable.Rows.Add(item.Supp_Stock_Id, item.Base_Disc, item.Base_Amt, item.Final_Disc, item.Final_Amt, item.Final_Disc_Max_Slab, item.Final_Amt_Max_Slab, item.Buyer_Disc, item.Buyer_Amt, item.Buyer_Price_Per_Cts, item.Expected_Final_Disc, item.Expected_Final_Amt, item.Customer_Id);
+                        dataTable.Rows.Add(item.Supp_Stock_Id, item.Base_Disc, item.Base_Amt, item.Final_Disc, item.Final_Amt, item.Final_Disc_Max_Slab, item.Final_Amt_Max_Slab, item.Buyer_Disc, item.Buyer_Amt, item.Buyer_Price_Per_Cts, item.Expected_Final_Disc, item.Expected_Final_Amt, item.Cart_Status, item.Customer_Id);
                     }
 
                     var result = await _cartService.Insert_Cart(dataTable, (int)cart_Model.User_Id);
@@ -4317,11 +4318,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_cart")]
         [Authorize]
-        public async Task<IActionResult> Get_Cart(string userIds)
+        public async Task<IActionResult> Get_Cart(string upload_Type, string userIds)
         {
             try
             {
-                var result = await _cartService.Get_Cart(userIds);
+                var result = await _cartService.Get_Cart(upload_Type, userIds);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new

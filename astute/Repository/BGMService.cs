@@ -111,7 +111,6 @@ namespace astute.Repository
             var sortNo = bGM_Master.Sort_No > 0 ? new SqlParameter("@Sort_No", bGM_Master.Sort_No) : new SqlParameter("@Sort_No", DBNull.Value);
             var orderNo = bGM_Master.Order_No > 0 ? new SqlParameter("@Order_No", bGM_Master.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
             var status = new SqlParameter("@Status", bGM_Master.Status);
-            var recordType = new SqlParameter("@recordType", "Insert");
             var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
             {
                 Direction = System.Data.ParameterDirection.Output
@@ -126,8 +125,8 @@ namespace astute.Repository
             };
 
             var result = await Task.Run(() => _dbContext.Database
-            .ExecuteSqlRawAsync(@"EXEC BGM_Mas_Insert_Update @Bgm_Id, @Bgm, @Sort_No, @Order_No, @Status, @recordType, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT",
-            bgmId, bgm, sortNo, orderNo, status, recordType, isExistOrderNo, isExistSortNo, insertedId));
+            .ExecuteSqlRawAsync(@"EXEC BGM_Mas_Insert_Update @Bgm_Id, @Bgm, @Sort_No, @Order_No, @Status, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT",
+            bgmId, bgm, sortNo, orderNo, status, isExistOrderNo, isExistSortNo, insertedId));
 
             bool orderNoIsExist = (bool)isExistOrderNo.Value;
             if (orderNoIsExist)
@@ -231,16 +230,16 @@ namespace astute.Repository
                 TypeName = "dbo.BGM_Detail_Table_Type",
                 Value = dataTable
             };
-            var isExistShade_Milky = new SqlParameter("@IsExistShade_Milky", System.Data.SqlDbType.Bit)
-            {
-                Direction = System.Data.ParameterDirection.Output
-            };
+            //var isExistShade_Milky = new SqlParameter("@IsExistShade_Milky", System.Data.SqlDbType.Bit)
+            //{
+            //    Direction = System.Data.ParameterDirection.Output
+            //};
 
-            var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC BGM_Detail_Insert_Update @tblBGM_Detail, @IsExistShade_Milky OUT", parameter, isExistShade_Milky);
+            var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC BGM_Detail_Insert_Update @tblBGM_Detail", parameter);
 
-            bool Shade_MilkyIsExist = (bool)isExistShade_Milky.Value;
-            if (Shade_MilkyIsExist)
-                return 409;
+            //bool Shade_MilkyIsExist = (bool)isExistShade_Milky.Value;
+            //if (Shade_MilkyIsExist)
+            //    return 409;
 
             return result;
         }
