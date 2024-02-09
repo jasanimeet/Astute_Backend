@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using astute.CoreServices;
 using System.Data;
 using System.Linq;
-using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Authorization;
 
 namespace astute.Controllers
