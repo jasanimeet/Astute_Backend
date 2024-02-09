@@ -3377,7 +3377,7 @@ namespace astute.Controllers
                                              string displayColName = Convert.ToString(suppColRow["Display_Name"]);
                                              string suppColName = Convert.ToString(suppColRow["Supp_Col_Name"]);
 
-                                             if (displayColName != suppColName && suppColName != "")
+                                             if (displayColName != "" && suppColName != "")
                                              {
                                                  finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
 
