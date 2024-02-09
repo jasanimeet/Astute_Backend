@@ -2872,6 +2872,7 @@ namespace astute.Controllers
         [Authorize]
         public async Task<IActionResult> Create_Update_Manual_Upload([FromForm] Party_File party_File, IFormFile File_Location)
         {
+            string party_Name = string.Empty;
             try
             {
                 if (ModelState.IsValid)
@@ -2882,6 +2883,8 @@ namespace astute.Controllers
                     {
                         #region Update Party File
                         var party_file_obj = await _partyService.Get_Party_File(0, party_File.Party_Id ?? 0);
+                        var party = await _partyService.GetParty_Raplicate(party_File.Party_Id ?? 0, null);
+                        party_Name = party.Select(x => x.Party_Name).FirstOrDefault();
                         if (party_file_obj != null)
                         {
                             party_file_obj.Sheet_Name = party_File.Sheet_Name;
@@ -3503,7 +3506,8 @@ namespace astute.Controllers
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_Manual_Upload", ex.StackTrace);
                 return Ok(new
                 {
-                    message = ex.Message
+                    Party_Name = party_Name,
+                    message = ex.Message 
                 });
             }
         }
