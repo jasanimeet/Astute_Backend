@@ -3637,7 +3637,7 @@ namespace astute.Controllers
                     worksheet.Cells[1, 3].Formula = $"SUBTOTAL(103, F3:F{rowEnd})";
                     worksheet.Cells[1, 3].Style.Numberformat.Format = "#,##";
 
-                    worksheet.Cells[1, 5].Formula = $"SUBTOTAL(109,F3:F{rowEnd})";
+                    worksheet.Cells[1, 6].Formula = $"SUBTOTAL(109,F3:F{rowEnd})";
 
                     byte[] byteArray = package.GetAsByteArray();
                     string filePath = Path.Combine(folderPath, strFile);
@@ -3707,7 +3707,7 @@ namespace astute.Controllers
                     worksheet.Cells[1, 3].Formula = $"SUBTOTAL(103, F3:F{rowEnd})";
                     worksheet.Cells[1, 3].Style.Numberformat.Format = "#,##";
 
-                    worksheet.Cells[1, 5].Formula = $"SUBTOTAL(109,F3:F{rowEnd})";
+                    worksheet.Cells[1, 6].Formula = $"SUBTOTAL(109,F3:F{rowEnd})";
 
                     string cellAdress = worksheet.Cells[1, 1, rowEnd, 100].Address;
                     EpExcelExport.removingGreenTagWarning(worksheet, cellAdress);
