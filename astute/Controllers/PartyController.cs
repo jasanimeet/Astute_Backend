@@ -690,7 +690,7 @@ namespace astute.Controllers
         [Route("getparty")]
         [Authorize]
         public async Task<IActionResult> GetParty(int party_Id, string party_Type)
-        {
+        {   
             try
             {
                 var result = await _partyService.GetParty(party_Id, party_Type);
@@ -708,6 +708,35 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetParty", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_party_raplicate")]
+        [Authorize]
+        public async Task<IActionResult> Get_Party_Raplicate(int party_Id, string party_Type)
+        {
+            try
+            {
+                var result = await _partyService.GetParty_Raplicate(party_Id, party_Type);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "GetParty_Raplicate", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

@@ -159,35 +159,20 @@ namespace astute.Repository
             else
                 return ("success", result);
         }
-        //public async Task<IList<Party_Master_Replica>> GetParty(int party_Id, string party_Type)
-        //{
-        //    var partyId = party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value);
-        //    var partyType = !string.IsNullOrEmpty(party_Type) ? new SqlParameter("@Party_Type", party_Type) : new SqlParameter("@Party_Type", DBNull.Value);
-
-        //    //var result = await Task.Run(() => _dbContext.Party_Master
-        //    //                .FromSqlRaw(@"exec Party_Master_Select @PartyId, @Party_Type", partyId, partyType).ToListAsync());
-
-        //    return await _dbContext.Party_Master_Replica
-        //    .FromSqlRaw("exec Party_Master_Select @PartyId, @Party_Type", partyId, partyType)
-        //    .ToListAsync();
-        //}
-        public async Task<IList<Party_Master_Replica>> GetParty(int party_Id, string party_Type)
+        public async Task<IList<Party_Master_Replica>> GetParty_Raplicate(int party_Id, string party_Type)
         {
-            var parameters = new List<SqlParameter>
-            {
-                new SqlParameter("@PartyId", SqlDbType.Int) { Value = party_Id > 0 ? party_Id : DBNull.Value },
-                new SqlParameter("@Party_Type", SqlDbType.NVarChar, 100) { Value = !string.IsNullOrEmpty(party_Type) ? party_Type : DBNull.Value }
-            };
+            var partyId = party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value);
+            var partyType = !string.IsNullOrEmpty(party_Type) ? new SqlParameter("@Party_Type", party_Type) : new SqlParameter("@Party_Type", DBNull.Value);
 
             return await _dbContext.Party_Master_Replica
-                .FromSqlRaw("EXEC Party_Master_Select @PartyId, @Party_Type", parameters.ToArray())
-                .ToListAsync();
+            .FromSqlRaw("exec Party_Master_Select_Raplicate @PartyId, @Party_Type", partyId, partyType)
+            .ToListAsync();
         }
-
 
         //public async Task<List<Dictionary<string, object>>> GetParty(int party_Id, string party_Type)
         //{
         //    var result = new List<Dictionary<string, object>>();
+        //    DataTable dataTable = new DataTable();
         //    using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
         //    {
         //        using (var command = new SqlCommand("Party_Master_Select", connection))
@@ -195,30 +180,38 @@ namespace astute.Repository
         //            command.CommandType = CommandType.StoredProcedure;
         //            command.Parameters.Add(party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value));
         //            command.Parameters.Add(!string.IsNullOrEmpty(party_Type) ? new SqlParameter("@Party_Type", party_Type) : new SqlParameter("@Party_Type", DBNull.Value));
+
         //            await connection.OpenAsync();
 
-        //            using (var reader = await command.ExecuteReaderAsync())
+        //            using var da = new SqlDataAdapter();
+        //            da.SelectCommand = command;
+
+        //            using var ds = new DataSet();
+        //            da.Fill(ds);
+
+        //            dataTable = ds.Tables[ds.Tables.Count - 1];
+
+        //            foreach (DataRow row in dataTable.Rows)
         //            {
-        //                while (await reader.ReadAsync())
+        //                var dict = new Dictionary<string, object>();
+        //                foreach (DataColumn col in dataTable.Columns)
         //                {
-        //                    var dict = new Dictionary<string, object>();
-
-        //                    for (int i = 0; i < reader.FieldCount; i++)
+        //                    if (row[col] == DBNull.Value)
         //                    {
-        //                        var columnName = reader.GetName(i);
-        //                        var columnValue = reader.GetValue(i);
-
-        //                        dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+        //                        dict[col.ColumnName] = null;
         //                    }
-
-        //                    result.Add(dict);
+        //                    else
+        //                    {
+        //                        dict[col.ColumnName] = row[col];
+        //                    }
         //                }
+        //                result.Add(dict);
         //            }
         //        }
         //    }
+
         //    return result;
         //}
-
         public async Task<List<Dictionary<string, object>>> GetPartyCustomer(int party_Id, string party_Type)
         {
             var result = new List<Dictionary<string, object>>();
@@ -253,47 +246,48 @@ namespace astute.Repository
             return result;
         }
 
-        //public async Task<List<Dictionary<string, object>>> GetParty(int party_Id)
-        //{
-        //    var result = new List<Dictionary<string, object>>();
-        //    using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
-        //    {
-        //        using (var command = new SqlCommand("Party_Master_Select", connection))
-        //        {
-        //            command.CommandType = CommandType.StoredProcedure;
-        //            command.Parameters.Add(party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@Supplier_Pricing_Id", DBNull.Value));
+        public async Task<List<Dictionary<string, object>>> GetParty(int party_Id, string party_Type)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Party_Master_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(party_Type) ? new SqlParameter("@Party_Type", party_Type) : new SqlParameter("@Party_Type", DBNull.Value));
 
-        //            await connection.OpenAsync();
+                    await connection.OpenAsync();
 
-        //            using var da = new SqlDataAdapter();
-        //            da.SelectCommand = command;
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
 
-        //            using var ds = new DataSet();
-        //            da.Fill(ds);
+                    using var ds = new DataSet();
+                    da.Fill(ds);
 
-        //            var dataTable = ds.Tables[ds.Tables.Count - 1];
+                    var dataTable = ds.Tables[ds.Tables.Count - 1];
 
-        //            foreach (DataRow row in dataTable.Rows)
-        //            {
-        //                var dict = new Dictionary<string, object>();
-        //                foreach (DataColumn col in dataTable.Columns)
-        //                {
-        //                    if (row[col] == DBNull.Value)
-        //                    {
-        //                        dict[col.ColumnName] = null;
-        //                    }
-        //                    else
-        //                    {
-        //                        dict[col.ColumnName] = row[col];
-        //                    }
-        //                }
-        //                result.Add(dict);
-        //            }
-        //        }
-        //    }
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        var dict = new Dictionary<string, object>();
+                        foreach (DataColumn col in dataTable.Columns)
+                        {
+                            if (row[col] == DBNull.Value)
+                            {
+                                dict[col.ColumnName] = null;
+                            }
+                            else
+                            {
+                                dict[col.ColumnName] = row[col];
+                            }
+                        }
+                        result.Add(dict);
+                    }
+                }
+            }
 
-        //    return result;
-        //}
+            return result;
+        }
         #endregion
 
         #region Party Contact        

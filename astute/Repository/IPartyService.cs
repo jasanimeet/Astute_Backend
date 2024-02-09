@@ -19,7 +19,8 @@ namespace astute.Repository
 
         #region Party Master        
         Task<(string, int)> DeleteParty(int party_Id);
-        Task<IList<Party_Master_Replica>> GetParty(int party_Id, string party_Type);
+        Task<List<Dictionary<string, object>>> GetParty(int party_Id, string party_Type);
+        Task<IList<Party_Master_Replica>> GetParty_Raplicate(int party_Id, string party_Type);
         //Task<List<Dictionary<string, object>>> GetParty(int party_Id, string party_Type);
         Task<List<Dictionary<string, object>>> GetPartyCustomer(int party_Id, string party_Type);
         #endregion
