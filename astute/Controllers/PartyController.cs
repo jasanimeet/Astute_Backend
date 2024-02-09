@@ -4042,11 +4042,11 @@ namespace astute.Controllers
         [HttpPost]
         [Route("get_report_search")]
         [Authorize]
-        public async Task<IActionResult> Get_Report_Search(Report_Filter report_Filter)
+        public async Task<IActionResult> Get_Report_Search(Report_Filter report_Filter, int iPgNo, int iPgSize)
         {
             try
             {
-                var result = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter);
+                var result = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, iPgNo, iPgSize);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new

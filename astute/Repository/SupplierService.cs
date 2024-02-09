@@ -1536,7 +1536,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters)
+        public async Task<List<Dictionary<string, object>>> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters, int iPgNo, int iPgSize)
         {
             var result = new List<Dictionary<string, object>>();
             var _id = new SqlParameter("@Id", id);
@@ -1556,6 +1556,8 @@ namespace astute.Repository
                         {
                             command.Parameters.Add(!string.IsNullOrEmpty(item.Category_Value) ? new SqlParameter("@" + item.Column_Name.Replace(" ","_"), item.Category_Value) : new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), DBNull.Value));
                         }
+                        command.Parameters.Add(iPgNo > 0 ? new SqlParameter("@iPgNo", iPgNo) : new SqlParameter("@iPgNo", DBNull.Value));
+                        command.Parameters.Add(iPgSize > 0 ? new SqlParameter("@iPgSize", iPgSize) : new SqlParameter("@iPgSize", DBNull.Value));
                         command.CommandTimeout = 1800;
                         await connection.OpenAsync();
 
