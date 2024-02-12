@@ -244,7 +244,7 @@ namespace astute.Repository
             var catId = new SqlParameter("@CatId", Cat_Id);
 
             var result = await Task.Run(() => _dbContext.Database
-            .ExecuteSqlRawAsync(@"exec Category_Value_Insert_Update @CatvalId,@CatId" , Cat_Val_Id, Cat_Id));
+            .ExecuteSqlRawAsync(@"exec Supplier_Pricing_Category_Value_Insert_Update @CatvalId,@CatId", Cat_Val_Id, Cat_Id));
 
             return result;
         }
