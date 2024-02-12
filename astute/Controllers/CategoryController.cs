@@ -327,6 +327,7 @@ namespace astute.Controllers
                     }
                     else
                     {
+                        var result_p = await _categoryService.InsertCategoryValuePricing(result, (int)category_Value.Cat_Id);
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,

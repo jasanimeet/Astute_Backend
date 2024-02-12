@@ -238,6 +238,16 @@ namespace astute.Repository
 
             return result;
         }
+        public async Task<int> InsertCategoryValuePricing(int Cat_Val_Id,int Cat_Id)
+        {
+            var catvalId = new SqlParameter("@CatvalId", Cat_Val_Id);
+            var catId = new SqlParameter("@CatId", Cat_Id);
+
+            var result = await Task.Run(() => _dbContext.Database
+            .ExecuteSqlRawAsync(@"exec Category_Value_Insert_Update @CatvalId,@CatId" , Cat_Val_Id, Cat_Id));
+
+            return result;
+        }
         public async Task<int> UpdateCategoryValue(Category_Value category_Value)
         {
             var catvalId = new SqlParameter("@CatvalId", category_Value.Cat_val_Id);

@@ -14,6 +14,7 @@ namespace astute.Repository
 
         #region Category Value
         Task<int> InsertCategoryValue(Category_Value category_Value);
+        Task<int> InsertCategoryValuePricing(int Cat_Val_Id, int Cat_Id);
         Task<int> UpdateCategoryValue(Category_Value category_Value);
         Task<int> DeleteCategoryValue(int id);
         Task<Category_Value> GetCategoryValueByCatValId(int catValId);
