@@ -214,11 +214,16 @@ namespace astute.Repository
                 Direction = ParameterDirection.Output
             };
 
+            var inserted_Id = new SqlParameter("@Inserted_Id", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+
             var result = await Task.Run(() => _dbContext.Database
             .ExecuteSqlRawAsync(@"exec Category_Value_Insert_Update @CatvalId, @CatName, @GroupName, @RapaportName, @Rapnetname,
-            @Synonyms, @OrderNo, @SortNo, @Status, @Icon_Url, @CatId, @DisplayName, @ShortName, @RecordType, @IsExistsCatVal OUT, @IsExistsOrderNo OUT, @IsExistsSortNo OUT, @IsForceInsert",
+            @Synonyms, @OrderNo, @SortNo, @Status, @Icon_Url, @CatId, @DisplayName, @ShortName, @RecordType, @IsExistsCatVal OUT, @IsExistsOrderNo OUT, @IsExistsSortNo OUT, @IsForceInsert,@Inserted_Id OUT",
             catvalId, catName, groupName, rapaportName, rapnetname, synonyms, orderNo, sortNo, status, icon_Url, catId, displayName, shortName, recordType,
-            isExistCatVal, isExistOrderNo, isExistSortNo, isForce_Insert));
+            isExistCatVal, isExistOrderNo, isExistSortNo, isForce_Insert, inserted_Id));
 
             bool isExist = (bool)isExistCatVal.Value;
             if (isExist)
@@ -231,12 +236,14 @@ namespace astute.Repository
             bool isExistSort_No = (bool)isExistSortNo.Value;
             if (isExistSort_No)
                 return 4;
+          
             if (CoreService.Enable_Trace_Records(_configuration))
             {
                 await Insert_Category_Value_Trace(category_Value, "Insert");
             }
 
-            return result;
+            int inserted_id = (int)inserted_Id.Value;
+            return inserted_id;
         }
         public async Task<int> InsertCategoryValuePricing(int Cat_Val_Id,int Cat_Id)
         {
@@ -244,7 +251,7 @@ namespace astute.Repository
             var catId = new SqlParameter("@CatId", Cat_Id);
 
             var result = await Task.Run(() => _dbContext.Database
-            .ExecuteSqlRawAsync(@"exec Supplier_Pricing_Category_Value_Insert_Update @CatvalId,@CatId", Cat_Val_Id, Cat_Id));
+            .ExecuteSqlRawAsync(@"exec Supplier_Pricing_Category_Value_Insert_Update @CatvalId, @CatId", catvalId, catId));
 
             return result;
         }
