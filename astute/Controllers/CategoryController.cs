@@ -301,15 +301,7 @@ namespace astute.Controllers
                         category_Value.Icon_Url = strFile;
                     }
                     var result = await _categoryService.InsertCategoryValue(category_Value);
-                    if (result == 1)
-                    {
-                        return Ok(new
-                        {
-                            statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.CategoryValueCreated
-                        });
-                    }
-                    else if (result == 2)
+                    if (result == 2)
                     {
                         return Conflict(new
                         {
@@ -331,6 +323,14 @@ namespace astute.Controllers
                         {
                             statusCode = HttpStatusCode.Conflict,
                             message = CoreCommonMessage.CategoryValueSortNoExists
+                        });
+                    }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.CategoryValueCreated
                         });
                     }
                 }
@@ -558,11 +558,11 @@ namespace astute.Controllers
             try
             {
                 var result = await _categoryService.Get_Column_Master();
-                if(result != null && result.Count > 0)
+                if (result != null && result.Count > 0)
                 {
                     return Ok(new
                     {
-                        statusCode= HttpStatusCode.OK,
+                        statusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.DataSuccessfullyFound,
                         data = result
                     });
