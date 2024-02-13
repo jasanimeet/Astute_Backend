@@ -3164,6 +3164,7 @@ namespace astute.Controllers
                                                                 string columnName = columnNames[col - 1];
                                                                 var cell = worksheet.Cells[row, col];
                                                                 var cellValue = cell.Value;
+                                                                var formula = cell.Formula;
 
                                                                 if (cell.Hyperlink != null)
                                                                 {
@@ -3179,6 +3180,41 @@ namespace astute.Controllers
                                                                         rowData.Add(columnName, cellValue);
                                                                     }
                                                                 }
+                                                                //else if (!string.IsNullOrEmpty(formula) && formula.Contains("HYPERLINK"))
+                                                                //{
+                                                                //    int urlStartIndex = formula.IndexOf("\"") + 1;
+                                                                //    int urlEndIndex = formula.IndexOf("\",\"");
+
+                                                                //    if (urlStartIndex > 0 && urlEndIndex > urlStartIndex)
+                                                                //    {
+                                                                //        string url = formula.Substring(urlStartIndex, urlEndIndex - urlStartIndex);
+
+                                                                //        int textStartIndex = urlEndIndex + 3;
+                                                                //        int textEndIndex = formula.LastIndexOf("\"");
+
+                                                                //        if (textStartIndex > 0 && textEndIndex > textStartIndex)
+                                                                //        {
+                                                                //            string text = formula.Substring(textStartIndex, textEndIndex - textStartIndex);
+                                                                //            //bool containsOnlyNumbers = Regex.IsMatch(text, @"^[0-9]+$");
+                                                                //            //object link_value = new { };
+                                                                //            cell.Clear();
+                                                                //            cell.Value = String.Format("{0},{1}", url, text);
+                                                                //            rowData.Add(columnName, cell.Value);
+                                                                //            //if (containsOnlyNumbers)
+                                                                //            //{
+                                                                //            //    cell.Clear();
+                                                                //            //    //string val = String.Format("{0},{1}", url, text);
+                                                                //            //    cell.Value = String.Format("{0},{1}", url, text);
+                                                                //            //    link_value = cell.Value;
+                                                                //            //    rowData.Add(columnName, link_value);
+                                                                //            //}
+                                                                //            //else
+                                                                //            //{
+                                                                //            //    rowData.Add(columnName, link_value);
+                                                                //            //}
+                                                                //        }
+                                                                //    }
+                                                                //}
                                                                 else
                                                                 {
                                                                     rowData.Add(columnName, cellValue);
@@ -3333,7 +3369,8 @@ namespace astute.Controllers
                                     dt_stock_data.Columns.Add("VIDEO_LINK", typeof(string));
                                     dt_stock_data.Columns.Add("Video2", typeof(string));
                                     dt_stock_data.Columns.Add("CERTIFICATE_LINK", typeof(string));
-                                    dt_stock_data.Columns.Add("DNA_LINK", typeof(string));
+                                    //dt_stock_data.Columns.Add("DNA_LINK", typeof(string));
+                                    dt_stock_data.Columns.Add("DNA", typeof(string));
                                     dt_stock_data.Columns.Add("IMAGE_HEART_LINK", typeof(string));
                                     dt_stock_data.Columns.Add("IMAGE_ARROW_LINK", typeof(string));
                                     dt_stock_data.Columns.Add("H_A_LINK", typeof(string));
@@ -3384,12 +3421,32 @@ namespace astute.Controllers
                                                      finalRow[displayColName] = CoreService.RemoveNonNumericAndDotAndNegativeCharacters(
                                                          Convert.ToString(finalRow[displayColName]));
                                                  }
-                                                 else if (displayColName == "CERTIFICATE_NO")
+                                                 else if (!string.IsNullOrEmpty(displayColName) && displayColName == "DNA")
+                                                 {
+                                                     finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
+                                                        Convert.ToString(finalRow[displayColName]), false);
+                                                 }
+                                                 else if (!string.IsNullOrEmpty(displayColName) && displayColName == "IMAGE_LINK")
+                                                 {
+                                                     finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
+                                                        Convert.ToString(finalRow[displayColName]), false);
+                                                 }
+                                                 else if (!string.IsNullOrEmpty(displayColName) && displayColName == "VIDEO_LINK")
+                                                 {
+                                                     finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
+                                                        Convert.ToString(finalRow[displayColName]), false);
+                                                 }
+                                                 else if (!string.IsNullOrEmpty(displayColName) && displayColName == "LAB")
                                                  {
                                                      finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
                                                         Convert.ToString(finalRow[displayColName]), true);
                                                  }
-                                                 else if (displayColName == "CERTIFICATE_LINK")
+                                                 else if (!string.IsNullOrEmpty(displayColName) && displayColName == "CERTIFICATE_NO")
+                                                 {
+                                                     finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
+                                                        Convert.ToString(finalRow[displayColName]), true);
+                                                 }
+                                                 else if (!string.IsNullOrEmpty(displayColName) && displayColName == "CERTIFICATE_LINK")
                                                  {
                                                      finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
                                                         Convert.ToString(finalRow[displayColName]), false);

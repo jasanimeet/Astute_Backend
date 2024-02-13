@@ -1669,11 +1669,25 @@ namespace astute.Repository
             var user_Id = new SqlParameter("@User_Id", report_Layout_Save.User_Id);
             var name = !string.IsNullOrEmpty(report_Layout_Save.Name) ? new SqlParameter("@Name", report_Layout_Save.Name) : new SqlParameter("@Name", DBNull.Value);
             var layout_Value = !string.IsNullOrEmpty(report_Layout_Save.Layout_Value) ? new SqlParameter("@Layout_Value", report_Layout_Save.Layout_Value) : new SqlParameter("@Layout_Value", DBNull.Value);
+            var colId = !string.IsNullOrEmpty(report_Layout_Save.colId) ? new SqlParameter("@colId", report_Layout_Save.colId) : new SqlParameter("@colId", DBNull.Value);
+            var width = report_Layout_Save.width > 0 ? new SqlParameter("@width", report_Layout_Save.width) : new SqlParameter("@width", DBNull.Value);
+            var hide = new SqlParameter("@hide", report_Layout_Save.hide ?? false);
+            var pinned = !string.IsNullOrEmpty(report_Layout_Save.pinned) ? new SqlParameter("@pinned", report_Layout_Save.pinned) : new SqlParameter("@pinned", DBNull.Value);
+            var sort = !string.IsNullOrEmpty(report_Layout_Save.sort) ? new SqlParameter("@sort", report_Layout_Save.sort) : new SqlParameter("@sort", DBNull.Value);
+            var sortIndex = report_Layout_Save.sortIndex > 0 ? new SqlParameter("@sortIndex", report_Layout_Save.sortIndex) : new SqlParameter("@sortIndex", DBNull.Value);
+            var aggFunc = !string.IsNullOrEmpty(report_Layout_Save.aggFunc) ? new SqlParameter("@aggFunc", report_Layout_Save.aggFunc) : new SqlParameter("@aggFunc", DBNull.Value);
+            var rowGroup = new SqlParameter("@rowGroup", report_Layout_Save.rowGroup ?? false);
+            var rowGroupIndex = report_Layout_Save.rowGroupIndex > 0 ? new SqlParameter("@rowGroupIndex", report_Layout_Save.rowGroupIndex) : new SqlParameter("@rowGroupIndex", DBNull.Value);
+            var pivot = new SqlParameter("@pivot", report_Layout_Save.pivot ?? false);
+            var pivotIndex = report_Layout_Save.pivotIndex > 0 ? new SqlParameter("@pivotIndex", report_Layout_Save.pivotIndex) : new SqlParameter("@pivotIndex", DBNull.Value);
+            var flex = report_Layout_Save.flex > 0 ? new SqlParameter("@flex", report_Layout_Save.flex) : new SqlParameter("@flex", DBNull.Value);
             var is_Exist = new SqlParameter("@IsExist", SqlDbType.Int)
             {
                 Direction = ParameterDirection.Output
             };
-            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Layout_Save_Insert_Update @Id,@User_Id, @Name, @Layout_Value,@IsExist OUT", id, user_Id,name, layout_Value, is_Exist));
+            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Layout_Save_Insert_Update @Id, @User_Id, @Name, @Layout_Value, @colId, @width, @hide,
+                        @pinned, @sort, @sortIndex, @aggFunc, @rowGroup, @rowGroupIndex, @pivot, @pivotIndex, @flex, @IsExist OUT", 
+                id, user_Id,name, layout_Value, colId, width, hide, pinned, sort, sortIndex, aggFunc, rowGroup, rowGroupIndex, pivot, pivotIndex, flex, is_Exist));
 
             if ((int)is_Exist.Value == 1)
             {
