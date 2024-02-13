@@ -3180,41 +3180,41 @@ namespace astute.Controllers
                                                                         rowData.Add(columnName, cellValue);
                                                                     }
                                                                 }
-                                                                //else if (!string.IsNullOrEmpty(formula) && formula.Contains("HYPERLINK"))
-                                                                //{
-                                                                //    int urlStartIndex = formula.IndexOf("\"") + 1;
-                                                                //    int urlEndIndex = formula.IndexOf("\",\"");
+                                                                else if (!string.IsNullOrEmpty(formula) && formula.Contains("HYPERLINK"))
+                                                                {
+                                                                    int urlStartIndex = formula.IndexOf("\"") + 1;
+                                                                    int urlEndIndex = formula.IndexOf("\",\"");
 
-                                                                //    if (urlStartIndex > 0 && urlEndIndex > urlStartIndex)
-                                                                //    {
-                                                                //        string url = formula.Substring(urlStartIndex, urlEndIndex - urlStartIndex);
+                                                                    if (urlStartIndex > 0 && urlEndIndex > urlStartIndex)
+                                                                    {
+                                                                        string url = formula.Substring(urlStartIndex, urlEndIndex - urlStartIndex);
 
-                                                                //        int textStartIndex = urlEndIndex + 3;
-                                                                //        int textEndIndex = formula.LastIndexOf("\"");
+                                                                        int textStartIndex = urlEndIndex + 3;
+                                                                        int textEndIndex = formula.LastIndexOf("\"");
 
-                                                                //        if (textStartIndex > 0 && textEndIndex > textStartIndex)
-                                                                //        {
-                                                                //            string text = formula.Substring(textStartIndex, textEndIndex - textStartIndex);
-                                                                //            //bool containsOnlyNumbers = Regex.IsMatch(text, @"^[0-9]+$");
-                                                                //            //object link_value = new { };
-                                                                //            cell.Clear();
-                                                                //            cell.Value = String.Format("{0},{1}", url, text);
-                                                                //            rowData.Add(columnName, cell.Value);
-                                                                //            //if (containsOnlyNumbers)
-                                                                //            //{
-                                                                //            //    cell.Clear();
-                                                                //            //    //string val = String.Format("{0},{1}", url, text);
-                                                                //            //    cell.Value = String.Format("{0},{1}", url, text);
-                                                                //            //    link_value = cell.Value;
-                                                                //            //    rowData.Add(columnName, link_value);
-                                                                //            //}
-                                                                //            //else
-                                                                //            //{
-                                                                //            //    rowData.Add(columnName, link_value);
-                                                                //            //}
-                                                                //        }
-                                                                //    }
-                                                                //}
+                                                                        if (textStartIndex > 0 && textEndIndex > textStartIndex)
+                                                                        {
+                                                                            string text = formula.Substring(textStartIndex, textEndIndex - textStartIndex);
+                                                                            //bool containsOnlyNumbers = Regex.IsMatch(text, @"^[0-9]+$");
+                                                                            //object link_value = new { };
+                                                                            cell.Clear();
+                                                                            cell.Value = String.Format("{0},{1}", url, text);
+                                                                            rowData.Add(columnName, cell.Value);
+                                                                            //if (containsOnlyNumbers)
+                                                                            //{
+                                                                            //    cell.Clear();
+                                                                            //    //string val = String.Format("{0},{1}", url, text);
+                                                                            //    cell.Value = String.Format("{0},{1}", url, text);
+                                                                            //    link_value = cell.Value;
+                                                                            //    rowData.Add(columnName, link_value);
+                                                                            //}
+                                                                            //else
+                                                                            //{
+                                                                            //    rowData.Add(columnName, link_value);
+                                                                            //}
+                                                                        }
+                                                                    }
+                                                                }
                                                                 else
                                                                 {
                                                                     rowData.Add(columnName, cellValue);
@@ -4281,16 +4281,38 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _supplierService.Create_Update_Report_Layout_Save(report_Layout_Save);
-                    if (result == "success")
+                    var (message, Id) = await _supplierService.Create_Update_Report_Layout_Save(report_Layout_Save);
+                    if (message == "success" && Id > 0)
                     {
+                        if(report_Layout_Save.Report_Layout_Save_Detail_List != null && report_Layout_Save.Report_Layout_Save_Detail_List.Count > 0)
+                        {
+                            DataTable dataTable = new DataTable();
+                            dataTable.Columns.Add("colId");
+                            dataTable.Columns.Add("width");
+                            dataTable.Columns.Add("hide");
+                            dataTable.Columns.Add("pinned");
+                            dataTable.Columns.Add("sort");
+                            dataTable.Columns.Add("sortIndex");
+                            dataTable.Columns.Add("aggFunc");
+                            dataTable.Columns.Add("rowGroup");
+                            dataTable.Columns.Add("rowGroupIndex");
+                            dataTable.Columns.Add("pivot");
+                            dataTable.Columns.Add("pivotIndex");
+                            dataTable.Columns.Add("flex");
+
+                            foreach (var item in report_Layout_Save.Report_Layout_Save_Detail_List)
+                            {
+                                dataTable.Rows.Add(Id, item.colId, item.width, item.hide, item.pinned, item.sort, item.sortIndex, item.aggFunc, item.rowGroup, item.rowGroupIndex, item.pivot, item.pivotIndex, item.flex);
+                            }
+                            await _supplierService.Insert_Update_Report_Layout_Save_Detail(dataTable);
+                        }
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
                             message = report_Layout_Save.Id > 0 ? CoreCommonMessage.LayoutReportUpdated : CoreCommonMessage.LayoutReportCreated
                         });
                     }
-                    else if (result == "exist")
+                    else if (message == "exist")
                     {
                         return Conflict(new
                         {

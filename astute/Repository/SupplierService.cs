@@ -1663,39 +1663,43 @@ namespace astute.Repository
         {   
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Report_Search_Save_Delete {id}"));
         }
-        public async Task<string> Create_Update_Report_Layout_Save(Report_Layout_Save report_Layout_Save)
+        public async Task<(string, int)> Create_Update_Report_Layout_Save(Report_Layout_Save report_Layout_Save)
         {
             var id = new SqlParameter("@Id", report_Layout_Save.Id);
             var user_Id = new SqlParameter("@User_Id", report_Layout_Save.User_Id);
             var name = !string.IsNullOrEmpty(report_Layout_Save.Name) ? new SqlParameter("@Name", report_Layout_Save.Name) : new SqlParameter("@Name", DBNull.Value);
-            var layout_Value = !string.IsNullOrEmpty(report_Layout_Save.Layout_Value) ? new SqlParameter("@Layout_Value", report_Layout_Save.Layout_Value) : new SqlParameter("@Layout_Value", DBNull.Value);
-            var colId = !string.IsNullOrEmpty(report_Layout_Save.colId) ? new SqlParameter("@colId", report_Layout_Save.colId) : new SqlParameter("@colId", DBNull.Value);
-            var width = report_Layout_Save.width > 0 ? new SqlParameter("@width", report_Layout_Save.width) : new SqlParameter("@width", DBNull.Value);
-            var hide = new SqlParameter("@hide", report_Layout_Save.hide ?? false);
-            var pinned = !string.IsNullOrEmpty(report_Layout_Save.pinned) ? new SqlParameter("@pinned", report_Layout_Save.pinned) : new SqlParameter("@pinned", DBNull.Value);
-            var sort = !string.IsNullOrEmpty(report_Layout_Save.sort) ? new SqlParameter("@sort", report_Layout_Save.sort) : new SqlParameter("@sort", DBNull.Value);
-            var sortIndex = report_Layout_Save.sortIndex > 0 ? new SqlParameter("@sortIndex", report_Layout_Save.sortIndex) : new SqlParameter("@sortIndex", DBNull.Value);
-            var aggFunc = !string.IsNullOrEmpty(report_Layout_Save.aggFunc) ? new SqlParameter("@aggFunc", report_Layout_Save.aggFunc) : new SqlParameter("@aggFunc", DBNull.Value);
-            var rowGroup = new SqlParameter("@rowGroup", report_Layout_Save.rowGroup ?? false);
-            var rowGroupIndex = report_Layout_Save.rowGroupIndex > 0 ? new SqlParameter("@rowGroupIndex", report_Layout_Save.rowGroupIndex) : new SqlParameter("@rowGroupIndex", DBNull.Value);
-            var pivot = new SqlParameter("@pivot", report_Layout_Save.pivot ?? false);
-            var pivotIndex = report_Layout_Save.pivotIndex > 0 ? new SqlParameter("@pivotIndex", report_Layout_Save.pivotIndex) : new SqlParameter("@pivotIndex", DBNull.Value);
-            var flex = report_Layout_Save.flex > 0 ? new SqlParameter("@flex", report_Layout_Save.flex) : new SqlParameter("@flex", DBNull.Value);
+            var insertedId = new SqlParameter("@Inserted_Id", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
             var is_Exist = new SqlParameter("@IsExist", SqlDbType.Int)
             {
                 Direction = ParameterDirection.Output
             };
-            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Layout_Save_Insert_Update @Id, @User_Id, @Name, @Layout_Value, @colId, @width, @hide,
-                        @pinned, @sort, @sortIndex, @aggFunc, @rowGroup, @rowGroupIndex, @pivot, @pivotIndex, @flex, @IsExist OUT", 
-                id, user_Id,name, layout_Value, colId, width, hide, pinned, sort, sortIndex, aggFunc, rowGroup, rowGroupIndex, pivot, pivotIndex, flex, is_Exist));
+            
+            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Layout_Save_Insert_Update @Id, @User_Id, @Name, @Inserted_Id OUT, @IsExist OUT", 
+                id, user_Id, name, insertedId, is_Exist));
 
+            var _inserted_Id = (int)insertedId.Value;
             if ((int)is_Exist.Value == 1)
             {
-                return "exist";
+                return ("exist",0);
             }
             else {  
-                return "success";
+                return ("success", _inserted_Id);
             }
+        }
+        public async Task<int> Insert_Update_Report_Layout_Save_Detail(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@tblReport_Layout_Save_Detail", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Report_Layout_Save_Detail_Table_Type",
+                Value = dataTable
+            };
+
+            var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Report_Layout_Save_Detail_Insert_Update @tblReport_Layout_Save_Detail", parameter);
+
+            return result;
         }
         public async Task<List<Dictionary<string, object>>> Get_Report_Layout_Save(int User_Id)
         {
