@@ -4281,28 +4281,30 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var (message, Id) = await _supplierService.Create_Update_Report_Layout_Save(report_Layout_Save);
-                    if (message == "success" && Id > 0)
+                    var (message, report_layout_save_Id) = await _supplierService.Create_Update_Report_Layout_Save(report_Layout_Save);
+                    if (message == "success" && report_layout_save_Id > 0)
                     {
                         if(report_Layout_Save.Report_Layout_Save_Detail_List != null && report_Layout_Save.Report_Layout_Save_Detail_List.Count > 0)
                         {
                             DataTable dataTable = new DataTable();
-                            dataTable.Columns.Add("colId");
-                            dataTable.Columns.Add("width");
-                            dataTable.Columns.Add("hide");
-                            dataTable.Columns.Add("pinned");
-                            dataTable.Columns.Add("sort");
-                            dataTable.Columns.Add("sortIndex");
-                            dataTable.Columns.Add("aggFunc");
-                            dataTable.Columns.Add("rowGroup");
-                            dataTable.Columns.Add("rowGroupIndex");
-                            dataTable.Columns.Add("pivot");
-                            dataTable.Columns.Add("pivotIndex");
-                            dataTable.Columns.Add("flex");
+                            dataTable.Columns.Add("Id", typeof(int));
+                            dataTable.Columns.Add("Report_Layout_Id", typeof(int));
+                            dataTable.Columns.Add("colId", typeof(string));
+                            dataTable.Columns.Add("width", typeof(int));
+                            dataTable.Columns.Add("hide", typeof(bool));
+                            dataTable.Columns.Add("pinned", typeof(string));
+                            dataTable.Columns.Add("sort", typeof(string));
+                            dataTable.Columns.Add("sortIndex", typeof(int));
+                            dataTable.Columns.Add("aggFunc", typeof(string));
+                            dataTable.Columns.Add("rowGroup", typeof(bool));
+                            dataTable.Columns.Add("rowGroupIndex", typeof(int));
+                            dataTable.Columns.Add("pivot", typeof(bool));
+                            dataTable.Columns.Add("pivotIndex", typeof(int));
+                            dataTable.Columns.Add("flex", typeof(int));
 
                             foreach (var item in report_Layout_Save.Report_Layout_Save_Detail_List)
                             {
-                                dataTable.Rows.Add(Id, item.colId, item.width, item.hide, item.pinned, item.sort, item.sortIndex, item.aggFunc, item.rowGroup, item.rowGroupIndex, item.pivot, item.pivotIndex, item.flex);
+                                dataTable.Rows.Add(item.Id, report_layout_save_Id, item.colId, item.width, item.hide, item.pinned, item.sort, item.sortIndex, item.aggFunc, item.rowGroup, item.rowGroupIndex, item.pivot, item.pivotIndex, item.flex);
                             }
                             await _supplierService.Insert_Update_Report_Layout_Save_Detail(dataTable);
                         }
@@ -4362,6 +4364,38 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Delete_Report_Layout_Save", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPut]
+        [Route("update_report_layout_save_status")]
+        [Authorize]
+        public async Task<IActionResult> Update_Report_Layout_Save_Status(int id, int user_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Update_Report_Layout_Save_Status(id, user_Id);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.TempLayoutStatusUpdate
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Report_Layout_Save_Status", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

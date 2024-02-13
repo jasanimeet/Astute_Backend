@@ -6,6 +6,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Crypto.Operators;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -1701,39 +1702,70 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Report_Layout_Save(int User_Id)
+        public async Task<IList<Report_Layout_Save>> Get_Report_Layout_Save(int User_Id)
         {
-            var result = new List<Dictionary<string, object>>();
+            var user_Id = User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value);
 
-            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            var result = await Task.Run(() => _dbContext.Report_Layout_Save
+                            .FromSqlRaw(@"EXEC Report_Layout_Save_Select @User_Id", user_Id)
+                            .ToListAsync());
+            if(result != null && result.Count > 0)
             {
-                using (var command = new SqlCommand("Report_Layout_Save_Select", connection))
+                foreach (var item in result)
                 {
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@Id", DBNull.Value));
-                    await connection.OpenAsync();
+                    var report_layout_Id = item.Id > 0 ? new SqlParameter("@Report_Layout_Id", item.Id) : new SqlParameter("@Report_Layout_Id", DBNull.Value);
 
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            var dict = new Dictionary<string, object>();
-
-                            for (int i = 0; i < reader.FieldCount; i++)
-                            {
-                                var columnName = reader.GetName(i);
-                                var columnValue = reader.GetValue(i);
-
-                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
-                            }
-
-                            result.Add(dict);
-                        }
-                    }
+                    item.Report_Layout_Save_Detail_List = await Task.Run(() => _dbContext.Report_Layout_Save_Detail
+                            .FromSqlRaw(@"EXEC Report_Layout_Save_Detail_Select @Report_Layout_Id", report_layout_Id)
+                            .ToListAsync());
                 }
             }
             return result;
         }
+        public async Task<int> Update_Report_Layout_Save_Status(int id, int user_Id)
+        {
+            var _id = id > 0 ? new SqlParameter("@Id", id) : new SqlParameter("@Id", DBNull.Value);
+            var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Layout_Save_Status_Update @Id, @User_Id",
+                _id, _user_Id));
+
+            return result;
+        }
+
+        //public async Task<List<Dictionary<string, object>>> Get_Report_Layout_Save(int User_Id)
+        //{
+        //    var result = new List<Dictionary<string, object>>();
+
+        //    using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+        //    {
+        //        using (var command = new SqlCommand("Report_Layout_Save_Select", connection))
+        //        {
+        //            command.CommandType = CommandType.StoredProcedure;
+        //            command.Parameters.Add(User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@Id", DBNull.Value));
+        //            await connection.OpenAsync();
+
+        //            using (var reader = await command.ExecuteReaderAsync())
+        //            {
+        //                while (await reader.ReadAsync())
+        //                {
+        //                    var dict = new Dictionary<string, object>();
+
+        //                    for (int i = 0; i < reader.FieldCount; i++)
+        //                    {
+        //                        var columnName = reader.GetName(i);
+        //                        var columnValue = reader.GetValue(i);
+
+        //                        dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+        //                    }
+
+        //                    result.Add(dict);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return result;
+        //}
         public async Task<int> Delete_Report_Layout_Save(int id)
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Report_Layout_Save_Delete {id}"));
