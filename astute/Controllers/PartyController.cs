@@ -3197,7 +3197,7 @@ namespace astute.Controllers
                                                                             string text = formula.Substring(textStartIndex, textEndIndex - textStartIndex);
                                                                             //bool containsOnlyNumbers = Regex.IsMatch(text, @"^[0-9]+$");
                                                                             //object link_value = new { };
-                                                                            cell.Clear();
+                                                                           // cell.Clear();
                                                                             cell.Value = String.Format("{0},{1}", url, text);
                                                                             rowData.Add(columnName, cell.Value);
                                                                             //if (containsOnlyNumbers)
