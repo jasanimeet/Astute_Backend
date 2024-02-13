@@ -11,6 +11,7 @@ namespace astute.Models
         public int Id { get; set; }
         public int? User_Id { get; set; }
         public string? Name { get; set; }
+        public bool? Status { get; set; }
         [NotMapped]
         public IList<Report_Layout_Save_Detail> Report_Layout_Save_Detail_List { get; set; }
     }

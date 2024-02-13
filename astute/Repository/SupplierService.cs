@@ -1669,6 +1669,7 @@ namespace astute.Repository
             var id = new SqlParameter("@Id", report_Layout_Save.Id);
             var user_Id = new SqlParameter("@User_Id", report_Layout_Save.User_Id);
             var name = !string.IsNullOrEmpty(report_Layout_Save.Name) ? new SqlParameter("@Name", report_Layout_Save.Name) : new SqlParameter("@Name", DBNull.Value);
+            var status = new SqlParameter("@Status", report_Layout_Save.Status);
             var insertedId = new SqlParameter("@Inserted_Id", SqlDbType.Int)
             {
                 Direction = ParameterDirection.Output
@@ -1678,15 +1679,16 @@ namespace astute.Repository
                 Direction = ParameterDirection.Output
             };
             
-            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Layout_Save_Insert_Update @Id, @User_Id, @Name, @Inserted_Id OUT, @IsExist OUT", 
-                id, user_Id, name, insertedId, is_Exist));
+            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Layout_Save_Insert_Update @Id, @User_Id, @Name, @Status, @Inserted_Id OUT, @IsExist OUT", 
+                id, user_Id, name, status, insertedId, is_Exist));
 
-            var _inserted_Id = (int)insertedId.Value;
+            
             if ((int)is_Exist.Value == 1)
             {
                 return ("exist",0);
             }
-            else {  
+            else {
+                var _inserted_Id = (int)insertedId.Value;
                 return ("success", _inserted_Id);
             }
         }
