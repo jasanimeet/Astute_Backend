@@ -8,6 +8,9 @@ namespace astute.Models
     public partial class Cart_Model
     {
         public int? User_Id { get; set; }
+        public string? Customer_Name { get; set; }
+        public string? Remarks { get; set; }
+        public int? Validity_Days { get; set; }
         public IList<Cart_Detail> Cart_Detail { get; set; } = new List<Cart_Detail>();
 
     }

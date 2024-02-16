@@ -37,5 +37,7 @@ namespace astute.Models
     {
         public int id { get; set; }
         public IList<Report_Filter_Parameter> Report_Filter_Parameter { get; set; } = new List<Report_Filter_Parameter>();
+        public int iPgNo { get; set; }
+        public int iPgSize { get; set; }
     }
 }

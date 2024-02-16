@@ -4069,11 +4069,11 @@ namespace astute.Controllers
         [HttpPost]
         [Route("get_report_search")]
         [Authorize]
-        public async Task<IActionResult> Get_Report_Search(Report_Filter report_Filter, int iPgNo, int iPgSize)
+        public async Task<IActionResult> Get_Report_Search(Report_Filter report_Filter)
         {
             try
             {
-                var result = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, iPgNo, iPgSize);
+                var result = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo, report_Filter.iPgSize);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -4406,7 +4406,7 @@ namespace astute.Controllers
                         dataTable.Rows.Add(item.Supp_Stock_Id, item.Base_Disc, item.Base_Amt, item.Final_Disc, item.Final_Amt, item.Final_Disc_Max_Slab, item.Final_Amt_Max_Slab, item.Buyer_Disc, item.Buyer_Amt, item.Buyer_Price_Per_Cts, item.Expected_Final_Disc, item.Expected_Final_Amt, item.Cart_Status, item.Customer_Id);
                     }
 
-                    var result = await _cartService.Insert_Cart(dataTable, (int)cart_Model.User_Id);
+                    var result = await _cartService.Insert_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
                     if (result > 0)
                     {
                         return Ok(new
@@ -4433,11 +4433,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_cart")]
         [Authorize]
-        public async Task<IActionResult> Get_Cart(string upload_Type, string userIds)
+        public async Task<IActionResult> Get_Cart(string USER_ID)
         {
             try
             {
-                var result = await _cartService.Get_Cart(upload_Type, userIds);
+                var result = await _cartService.Get_Cart(USER_ID);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -4922,9 +4922,9 @@ namespace astute.Controllers
         #region Create Stock In Excel Format
         [HttpPost]
         [Route("export_stock_excel")]
-        public async Task<IActionResult> Export_Stock_Excel(string supplier_Ref_No, string excel_Format)
+        public async Task<IActionResult> Export_Stock_Excel(Excel_Model excel_Model)
         {   
-            DataTable supp_stock_dt = await _supplierService.Get_Stock_In_Datatable(supplier_Ref_No, excel_Format);
+            DataTable supp_stock_dt = await _supplierService.Get_Stock_In_Datatable(excel_Model.supplier_Ref_No, excel_Model.excel_Format);
             if (supp_stock_dt != null && supp_stock_dt.Rows.Count > 0)
             {
                 List<string> columnNames = new List<string>();
@@ -4946,19 +4946,19 @@ namespace astute.Controllers
                 {
                     Directory.CreateDirectory(filePath);
                 }
-                if (excel_Format == "Customer")
+                if (excel_Model.excel_Format == "Customer")
                 {
                     string filename = "Customer_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     EpExcelExport.Create_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
                     excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                 }
-                else if(excel_Format == "Buyer")
+                else if(excel_Model.excel_Format == "Buyer")
                 {
                     string filename = "Buyer_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     EpExcelExport.Create_Buyer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
                     excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                 }
-                else if(excel_Format == "Supplier")
+                else if(excel_Model.excel_Format == "Supplier")
                 {
                     string filename = "Supplier_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     EpExcelExport.Create_Supplier_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);

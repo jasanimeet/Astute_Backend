@@ -26,7 +26,7 @@ namespace astute.Repository
         #endregion
 
         #region Methods
-        public async Task<int> Insert_Cart(DataTable dataTable, int User_Id)
+        public async Task<int> Insert_Cart(DataTable dataTable, int User_Id, string customer_Name, string remarks, int validity_Days)
         {
             var parameter = new SqlParameter("@Cart_Table_Type", SqlDbType.Structured)
             {
@@ -34,13 +34,17 @@ namespace astute.Repository
                 Value = dataTable
             };
             var user_Id = User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value);
+            var _customer_Name = !string.IsNullOrEmpty(customer_Name) ? new SqlParameter("@Customer_Name", customer_Name) : new SqlParameter("@Customer_Name", DBNull.Value);
+            var _remarks = !string.IsNullOrEmpty(remarks) ? new SqlParameter("@Remarks", remarks) : new SqlParameter("@Remarks", DBNull.Value);
+            var _validity_Days = validity_Days > 0 ? new SqlParameter("@Validity_Days", validity_Days) : new SqlParameter("@Validity_Days", DBNull.Value);
             var is_Exists = new SqlParameter("@IsExist", SqlDbType.Bit)
             {
                 Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Cart_Insert_Update] @Cart_Table_Type, @User_Id, @IsExist OUT", parameter, user_Id, is_Exists));
+                        .ExecuteSqlRawAsync(@"EXEC [Cart_Insert_Update] @Cart_Table_Type, @User_Id, @Customer_Name, @Remarks, @Validity_Days, @IsExist OUT",
+                        parameter, user_Id, _customer_Name, _remarks, _validity_Days, is_Exists));
             var _is_Exists = (bool)is_Exists.Value;
             if (_is_Exists)
                 return 409;
@@ -48,7 +52,7 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Cart(string upload_Type, string userIds)
+        public async Task<List<Dictionary<string, object>>> Get_Cart(string USER_ID)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -56,8 +60,7 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Cart_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(!string.IsNullOrEmpty(upload_Type) ? new SqlParameter("@Upload_Type", upload_Type) : new SqlParameter("@Upload_Type", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(userIds) ? new SqlParameter("@User_Ids", userIds) : new SqlParameter("@User_Ids", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(USER_ID) ? new SqlParameter("@USER_ID", USER_ID) : new SqlParameter("@USER_ID", DBNull.Value));
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -87,7 +90,7 @@ namespace astute.Repository
             var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Cart_Delete @Supp_Stock_Ids, @User_Id", supp_Stock_Ids, user_Id));
+                        .ExecuteSqlRawAsync(@"EXEC Cart_Delete @Ids, @User_Id", supp_Stock_Ids, user_Id));
 
             return result;
         }

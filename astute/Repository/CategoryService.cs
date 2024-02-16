@@ -286,12 +286,16 @@ namespace astute.Repository
             {
                 Direction = ParameterDirection.Output
             };
+            var inserted_Id = new SqlParameter("@Inserted_Id", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
 
             var result = await Task.Run(() => _dbContext.Database
             .ExecuteSqlRawAsync(@"exec Category_Value_Insert_Update @CatvalId, @CatName, @GroupName, @RapaportName, @Rapnetname,
-            @Synonyms, @OrderNo, @SortNo, @Status, @Icon_Url, @CatId, @DisplayName, @ShortName, @RecordType, @IsExistsCatVal OUT, @IsExistsOrderNo OUT, @IsExistsSortNo OUT, @IsForceInsert",
+            @Synonyms, @OrderNo, @SortNo, @Status, @Icon_Url, @CatId, @DisplayName, @ShortName, @RecordType, @IsExistsCatVal OUT, @IsExistsOrderNo OUT, @IsExistsSortNo OUT, @IsForceInsert,@Inserted_Id OUT",
             catvalId, catName, groupName, rapaportName, rapnetname, synonyms, orderNo, sortNo, status, icon_Url, catId, displayName, shortName, recordType,
-            isExistCatVal, isExistOrderNo, isExistSortNo, isForce_Insert));
+            isExistCatVal, isExistOrderNo, isExistSortNo, isForce_Insert, inserted_Id));
 
             bool isExist = (bool)isExistCatVal.Value;
             if (isExist)
