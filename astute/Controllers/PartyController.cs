@@ -3195,75 +3195,53 @@ namespace astute.Controllers
                                                                         if (textStartIndex > 0 && textEndIndex > textStartIndex)
                                                                         {
                                                                             string text = formula.Substring(textStartIndex, textEndIndex - textStartIndex);
-                                                                            //bool containsOnlyNumbers = Regex.IsMatch(text, @"^[0-9]+$");
-                                                                            //object link_value = new { };
-                                                                           // cell.Clear();
                                                                             cell.Value = String.Format("{0},{1}", url, text);
                                                                             rowData.Add(columnName, cell.Value);
-                                                                            //if (containsOnlyNumbers)
-                                                                            //{
-                                                                            //    cell.Clear();
-                                                                            //    //string val = String.Format("{0},{1}", url, text);
-                                                                            //    cell.Value = String.Format("{0},{1}", url, text);
-                                                                            //    link_value = cell.Value;
-                                                                            //    rowData.Add(columnName, link_value);
-                                                                            //}
-                                                                            //else
-                                                                            //{
-                                                                            //    rowData.Add(columnName, link_value);
-                                                                            //}
                                                                         }
                                                                     }
                                                                 }
                                                                 else
                                                                 {
-                                                                    rowData.Add(columnName, cellValue);
+                                                                    rowData.Add(columnName, cellValue != null ? cellValue : DBNull.Value);
                                                                 }
                                                             }
-
-                                                            //if (cell.Hyperlink != null && cell.Hyperlink.AbsoluteUri != null)
-                                                            //{
-                                                            //    string linkUrl = cell.Hyperlink.AbsoluteUri;
-                                                            //    rowData.Add(columnName, linkUrl);
-                                                            //}
-                                                            //else
-                                                            //{
-                                                            //    rowData.Add(columnName, cellValue);
-                                                            //}
                                                         }
 
                                                         rowsData.Add(rowData);
                                                     }
+                                                    excel_dataTable = CoreService.ConvertToDataTable(rowsData);
+                                                    goto dataExist;
+                                                    ////Save File
+                                                    //int colIndex = 1;
+                                                    //foreach (var columnName in columnNames)
+                                                    //{
+                                                    //    worksheet.Cells[1, colIndex].Value = columnName;
+                                                    //    colIndex++;
+                                                    //}
 
-                                                    //Save File
-                                                    int colIndex = 1;
-                                                    foreach (var columnName in columnNames)
-                                                    {
-                                                        worksheet.Cells[1, colIndex].Value = columnName;
-                                                        colIndex++;
-                                                    }
+                                                    //// Write row data
+                                                    //int rowIndex = 2;
+                                                    //foreach (var row in rowsData)
+                                                    //{
+                                                    //    colIndex = 1;
+                                                    //    foreach (var cellValue in row.Values)
+                                                    //    {
+                                                    //        worksheet.Cells[rowIndex, colIndex].Value = cellValue != null ? cellValue : DBNull.Value;
+                                                    //        colIndex++;
+                                                    //    }
+                                                    //    rowIndex++;
+                                                    //}
+                                                    //try
+                                                    //{
+                                                    //    worksheet.Cells["A1"].LoadFromDataTable(excel_dataTable, true);
+                                                    //    goto dataExist;
+                                                    //    //string updatefile = Path.Combine(filePath, strFile);
+                                                    //    //package.SaveAs(new FileInfo(updatefile));
+                                                    //}
+                                                    //catch (Exception ex)
+                                                    //{
 
-                                                    // Write row data
-                                                    int rowIndex = 2;
-                                                    foreach (var row in rowsData)
-                                                    {
-                                                        colIndex = 1;
-                                                        foreach (var cellValue in row.Values)
-                                                        {
-                                                            worksheet.Cells[rowIndex, colIndex].Value = cellValue;
-                                                            colIndex++;
-                                                        }
-                                                        rowIndex++;
-                                                    }
-                                                    try
-                                                    {
-                                                        string outputFilePath2 = Path.Combine(filePath, strFile);
-                                                        package.SaveAs(new FileInfo(outputFilePath2));
-                                                    }
-                                                    catch (Exception ex)
-                                                    {
-
-                                                    }
+                                                    //}
                                                 }
                                             }
                                         }
@@ -3307,6 +3285,7 @@ namespace astute.Controllers
                                     excel_dataTable = CoreService.Convert_File_To_DataTable(".csv", fileLocation, "");
                                 }
 
+                                dataExist:
                                 if (excel_dataTable != null && excel_dataTable.Rows.Count > 0)
                                 {
                                     #region Add column to datatable
@@ -4379,18 +4358,10 @@ namespace astute.Controllers
             try
             {
                 var result = await _supplierService.Update_Report_Layout_Save_Status(id, user_Id);
-                if (result > 0)
+                return Ok(new
                 {
-                    return Ok(new
-                    {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.TempLayoutStatusUpdate
-                    });
-                }
-                return BadRequest(new
-                {
-                    statusCode = HttpStatusCode.BadRequest,
-                    message = CoreCommonMessage.ParameterMismatched
+                    statusCode = HttpStatusCode.OK,
+                    message = CoreCommonMessage.TempLayoutStatusUpdate
                 });
             }
             catch (Exception ex)

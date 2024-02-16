@@ -587,7 +587,8 @@ namespace astute.Controllers
                         user_Id = response.Id,
                         user_Name = response.Username,
                         is_Admin = response.Is_Admin,
-                        token = response.Token
+                        token = response.Token,
+                        user_Type = response.Usert_Type
                     });
                 }
             }

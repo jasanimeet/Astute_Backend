@@ -681,5 +681,31 @@ namespace astute.CoreServices
 
             return dataTable;
         }
+        public static DataTable ConvertToDataTable(List<Dictionary<string, object>> rowsData)
+        {
+            DataTable dataTable = new DataTable();
+
+            if (rowsData.Count > 0)
+            {
+                // Create columns
+                foreach (string columnName in rowsData[0].Keys)
+                {
+                    dataTable.Columns.Add(columnName);
+                }
+
+                // Add rows
+                foreach (Dictionary<string, object> rowData in rowsData)
+                {
+                    DataRow newRow = dataTable.NewRow();
+                    foreach (KeyValuePair<string, object> kvp in rowData)
+                    {
+                        newRow[kvp.Key] = kvp.Value;
+                    }
+                    dataTable.Rows.Add(newRow);
+                }
+            }
+
+            return dataTable;
+        }
     }
 }
