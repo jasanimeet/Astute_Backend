@@ -4417,12 +4417,12 @@ namespace astute.Controllers
                 {
                     DataTable dataTable = new DataTable();
                     dataTable.Columns.Add("Supp_Stock_Id", typeof(int));
-                    dataTable.Columns.Add("Current_Base_Disc", typeof(double));
-                    dataTable.Columns.Add("Current_Base_Amt", typeof(double));
-                    dataTable.Columns.Add("Current_Final_Disc", typeof(double));
-                    dataTable.Columns.Add("Current_Final_Amt", typeof(double));
-                    dataTable.Columns.Add("Current_Final_Disc_Max_Slab", typeof(double));
-                    dataTable.Columns.Add("Current_Final_Amt_Max_Slab", typeof(double));
+                    dataTable.Columns.Add("Cart_Base_Disc", typeof(double));
+                    dataTable.Columns.Add("Cart_Base_Amt", typeof(double));
+                    dataTable.Columns.Add("Cart_Final_Disc", typeof(double));
+                    dataTable.Columns.Add("Cart_Final_Amt", typeof(double));
+                    dataTable.Columns.Add("Cart_Final_Disc_Max_Slab", typeof(double));
+                    dataTable.Columns.Add("Cart_Final_Amt_Max_Slab", typeof(double));
                     dataTable.Columns.Add("Buyer_Disc", typeof(double));
                     dataTable.Columns.Add("Buyer_Amt", typeof(double));
                     dataTable.Columns.Add("Buyer_Price_Per_Cts", typeof(double));
@@ -4432,12 +4432,13 @@ namespace astute.Controllers
 
                     foreach (var item in cart_Model.Cart_Detail)
                     {
-                        dataTable.Rows.Add(item.Supp_Stock_Id, item.Current_Base_Disc, item.Current_Base_Amt, item.Current_Final_Disc, item.Current_Final_Amt, item.Current_Final_Disc_Max_Slab, item.Current_Final_Amt_Max_Slab, item.Buyer_Disc, item.Buyer_Amt, item.Buyer_Price_Per_Cts, item.Expected_Final_Disc, item.Expected_Final_Amt, item.Cart_Status);
+                        dataTable.Rows.Add(item.Supp_Stock_Id, item.Cart_Base_Disc, item.Cart_Base_Amt, item.Cart_Final_Disc, item.Cart_Final_Amt, item.Cart_Final_Disc_Max_Slab, item.Cart_Final_Amt_Max_Slab, item.Buyer_Disc, item.Buyer_Amt, item.Buyer_Price_Per_Cts, item.Expected_Final_Disc, item.Expected_Final_Amt, item.Cart_Status);
                     }
 
-                    var result = await _cartService.Insert_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
+                    var (message,result) = await _cartService.Insert_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
                     if (result > 0)
                     {
+                        // if alredy exists stone add again then message should show succsessfully added.
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,

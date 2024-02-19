@@ -26,7 +26,7 @@ namespace astute.Repository
         #endregion
 
         #region Methods
-        public async Task<int> Insert_Cart(DataTable dataTable, int User_Id, string customer_Name, string remarks, int validity_Days)
+        public async Task<(string, int)> Insert_Cart(DataTable dataTable, int User_Id, string customer_Name, string remarks, int validity_Days)
         {
             var parameter = new SqlParameter("@Cart_Table_Type", SqlDbType.Structured)
             {
@@ -45,12 +45,12 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC [Cart_Insert_Update] @Cart_Table_Type, @User_Id, @Customer_Name, @Remarks, @Validity_Days, @IsExist OUT",
                         parameter, user_Id, _customer_Name, _remarks, _validity_Days, is_Exists));
+
             var _is_Exists = (bool)is_Exists.Value;
             if (_is_Exists)
-                return 409;
+                return ("exist",0);
 
-
-            return result;
+            return ("success", result);
         }
         public async Task<List<Dictionary<string, object>>> Get_Cart(string USER_ID)
         {
