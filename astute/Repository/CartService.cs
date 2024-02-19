@@ -106,7 +106,6 @@ namespace astute.Repository
 
             return result;
         }
-
         public async Task<int> Create_Approved_Management(string supp_Stock_Id, int user_Id, string remarks)
         {
             var _supp_Stock_Id = !string.IsNullOrEmpty(supp_Stock_Id) ? new SqlParameter("@Supp_Stock_Id", supp_Stock_Id) : new SqlParameter("@Supp_Stock_Id", DBNull.Value);
@@ -115,6 +114,17 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC [Approval_Management_Insert_Update] @Supp_Stock_Id, @User_Id, @Remarks", _supp_Stock_Id, _user_Id, _remarks ));
+
+            return result;
+        }
+        public async Task<int> Create_Order_Processing(string supp_Stock_Id, int user_Id, string remarks)
+        {
+            var _supp_Stock_Id = !string.IsNullOrEmpty(supp_Stock_Id) ? new SqlParameter("@Supp_Stock_Id", supp_Stock_Id) : new SqlParameter("@Supp_Stock_Id", DBNull.Value);
+            var _remarks = !string.IsNullOrEmpty(remarks) ? new SqlParameter("@Remarks", remarks) : new SqlParameter("@Remarks", DBNull.Value);
+            var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Insert_Update] @Supp_Stock_Id, @User_Id, @Remarks", _supp_Stock_Id, _user_Id, _remarks));
 
             return result;
         }

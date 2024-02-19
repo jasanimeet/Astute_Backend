@@ -350,6 +350,7 @@ namespace astute.CoreModel
         public static string CartExists = "Stone alredy exists in to cart.";
         public static string ReviewAdded = "Stone has been added to review successfully.";
         public static string StockApproved = "Stone has been send to management successfully for the approval.";
+        public static string StockOrderProcessing= "Stone has been send to order processing successfully.";
         public static string CartStockDeleted = "Stone hase been deleted from the cart successfully.";
         public static string ApprovalStockDeleted = "Stone hase been deleted from the approval list successfully.";
         public static string StokeApprovedByManagement = "Stone has been approved successfully.";

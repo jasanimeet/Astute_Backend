@@ -12,5 +12,6 @@ namespace astute.Repository
         Task<int> Delete_Cart(string ids, int user_Id);
         Task<int> Approved_Or_Rejected_by_Management(string ids, bool is_Approved, bool is_Rejected, int user_Id);
         Task<int> Create_Approved_Management(string supp_Stock_Id, int user_Id, string remarks);
+        Task<int> Create_Order_Processing(string supp_Stock_Id, int user_Id, string remarks);
     }
 }
