@@ -4547,6 +4547,36 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("create_approved_management")]
+        [Authorize]
+        public async Task<IActionResult> Create_Approved_Management(string supp_Stock_Id, int user_Id,string remarks)
+        {
+            try
+            {
+                var result = await _cartService.Create_Approved_Management(supp_Stock_Id, user_Id, remarks);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message =  CoreCommonMessage.StockApproved
+                    });
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Approved_Or_Rejected_by_Management", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+
         #endregion
 
         #region Get GIA Certificate Data
