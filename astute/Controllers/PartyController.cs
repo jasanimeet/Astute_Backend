@@ -832,6 +832,35 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_party_search_result")]
+        [Authorize]
+        public async Task<IActionResult> Get_Party_Search_Result(string common_Search)
+        {
+            try
+            {
+                var result = await _partyService.Get_Party_Search_Select(common_Search);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Party_Search_Result", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Party Bank
@@ -4080,6 +4109,7 @@ namespace astute.Controllers
                     {
                         statusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.DataSuccessfullyFound,
+                        total_Records = result[0].Where(x => x.Key == "iTotalRec").Select(x => x.Value).FirstOrDefault(),
                         data = result
                     });
                 }
@@ -4387,23 +4417,22 @@ namespace astute.Controllers
                 {
                     DataTable dataTable = new DataTable();
                     dataTable.Columns.Add("Supp_Stock_Id", typeof(int));
-                    dataTable.Columns.Add("Base_Disc", typeof(double));
-                    dataTable.Columns.Add("Base_Amt", typeof(double));
-                    dataTable.Columns.Add("Final_Disc", typeof(double));
-                    dataTable.Columns.Add("Final_Amt", typeof(double));
-                    dataTable.Columns.Add("Final_Disc_Max_Slab", typeof(double));
-                    dataTable.Columns.Add("Final_Amt_Max_Slab", typeof(double));
+                    dataTable.Columns.Add("Current_Base_Disc", typeof(double));
+                    dataTable.Columns.Add("Current_Base_Amt", typeof(double));
+                    dataTable.Columns.Add("Current_Final_Disc", typeof(double));
+                    dataTable.Columns.Add("Current_Final_Amt", typeof(double));
+                    dataTable.Columns.Add("Current_Final_Disc_Max_Slab", typeof(double));
+                    dataTable.Columns.Add("Current_Final_Amt_Max_Slab", typeof(double));
                     dataTable.Columns.Add("Buyer_Disc", typeof(double));
                     dataTable.Columns.Add("Buyer_Amt", typeof(double));
                     dataTable.Columns.Add("Buyer_Price_Per_Cts", typeof(double));
                     dataTable.Columns.Add("Expected_Final_Disc", typeof(double));
                     dataTable.Columns.Add("Expected_Final_Amt", typeof(double));
                     dataTable.Columns.Add("Cart_Status", typeof(string));
-                    dataTable.Columns.Add("User_Id", typeof(int));
 
                     foreach (var item in cart_Model.Cart_Detail)
                     {
-                        dataTable.Rows.Add(item.Supp_Stock_Id, item.Base_Disc, item.Base_Amt, item.Final_Disc, item.Final_Amt, item.Final_Disc_Max_Slab, item.Final_Amt_Max_Slab, item.Buyer_Disc, item.Buyer_Amt, item.Buyer_Price_Per_Cts, item.Expected_Final_Disc, item.Expected_Final_Amt, item.Cart_Status, item.Customer_Id);
+                        dataTable.Rows.Add(item.Supp_Stock_Id, item.Current_Base_Disc, item.Current_Base_Amt, item.Current_Final_Disc, item.Current_Final_Amt, item.Current_Final_Disc_Max_Slab, item.Current_Final_Amt_Max_Slab, item.Buyer_Disc, item.Buyer_Amt, item.Buyer_Price_Per_Cts, item.Expected_Final_Disc, item.Expected_Final_Amt, item.Cart_Status);
                     }
 
                     var result = await _cartService.Insert_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
@@ -4416,7 +4445,6 @@ namespace astute.Controllers
 
                         });
                     }
-
                 }
                 return BadRequest(ModelState);
             }

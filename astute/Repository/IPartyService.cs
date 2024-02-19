@@ -86,5 +86,6 @@ namespace astute.Repository
         Task<IList<DropdownModel>> Get_Party_Suplier_For_Manual_File();
         Task<IList<DropdownModel>> Get_Party_Type_Courier();
         Task<IList<DropdownModel>> Get_Party_Type_Customer();
+        Task<List<Dictionary<string, object>>> Get_Party_Search_Select(string common_Search);
     }
 }

@@ -11,7 +11,7 @@ namespace astute.Models
         public int Party_Id { get; set; }
         //public string? Party_Type { get; set; }
         public string? Party_Type_Value { get; set; }
-        //public string? Party_Code { get; set; }
+        public string? Party_Code { get; set; }
         //[NotMapped]
         //public string? Adress_1 { get; set; }
         //[NotMapped]
