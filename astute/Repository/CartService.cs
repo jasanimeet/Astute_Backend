@@ -52,38 +52,38 @@ namespace astute.Repository
 
             return ("success", result);
         }
-        public async Task<List<Dictionary<string, object>>> Get_Cart(string USER_ID)
-        {
-            var result = new List<Dictionary<string, object>>();
-            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
-            {
-                using (var command = new SqlCommand("Cart_Select", connection))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(!string.IsNullOrEmpty(USER_ID) ? new SqlParameter("@USER_ID", USER_ID) : new SqlParameter("@USER_ID", DBNull.Value));
-                    await connection.OpenAsync();
+        //public async Task<List<Dictionary<string, object>>> Get_Cart(string USER_ID)
+        //{
+        //    var result = new List<Dictionary<string, object>>();
+        //    using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+        //    {
+        //        using (var command = new SqlCommand("Cart_Select", connection))
+        //        {
+        //            command.CommandType = CommandType.StoredProcedure;
+        //            command.Parameters.Add(!string.IsNullOrEmpty(USER_ID) ? new SqlParameter("@USER_ID", USER_ID) : new SqlParameter("@USER_ID", DBNull.Value));
+        //            await connection.OpenAsync();
 
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            var dict = new Dictionary<string, object>();
+        //            using (var reader = await command.ExecuteReaderAsync())
+        //            {
+        //                while (await reader.ReadAsync())
+        //                {
+        //                    var dict = new Dictionary<string, object>();
 
-                            for (int i = 0; i < reader.FieldCount; i++)
-                            {
-                                var columnName = reader.GetName(i);
-                                var columnValue = reader.GetValue(i);
+        //                    for (int i = 0; i < reader.FieldCount; i++)
+        //                    {
+        //                        var columnName = reader.GetName(i);
+        //                        var columnValue = reader.GetValue(i);
 
-                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
-                            }
+        //                        dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+        //                    }
 
-                            result.Add(dict);
-                        }
-                    }
-                }
-            }
-            return result;
-        }
+        //                    result.Add(dict);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return result;
+        //}
         public async Task<int> Delete_Cart(string ids, int user_Id)
         {
             var supp_Stock_Ids = !string.IsNullOrEmpty(ids) ? new SqlParameter("@Ids", ids) : new SqlParameter("@Ids", DBNull.Value);
