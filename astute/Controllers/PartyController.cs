@@ -4551,11 +4551,11 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_order_processing")]
         [Authorize]
-        public async Task<IActionResult> Create_Order_Processing(string supp_Stock_Id, int user_Id,string remarks)
+        public async Task<IActionResult> Create_Order_Processing(string supp_Stock_Id, int user_Id,string remarks, string status)
         {
             try
             {
-                var result = await _cartService.Create_Order_Processing(supp_Stock_Id, user_Id, remarks);
+                var result = await _cartService.Create_Order_Processing(supp_Stock_Id, user_Id, remarks, status);
                 if (result > 0)
                 {
                     return Ok(new
