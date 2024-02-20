@@ -4065,7 +4065,6 @@ namespace astute.Controllers
             }
         }
 
-
         [HttpGet]
         [Route("get_report_column_format")]
         [Authorize]
@@ -4250,7 +4249,6 @@ namespace astute.Controllers
                 });
             }
         }
-
 
         [HttpGet]
         [Route("get_report_layout_save")]
@@ -4578,11 +4576,11 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_approved_management")]
         [Authorize]
-        public async Task<IActionResult> Create_Approved_Management(string supp_Stock_Id, int user_Id, string remarks)
+        public async Task<IActionResult> Create_Approved_Management(string supp_Stock_Id, int user_Id, string remarks, string status)
         {
             try
             {
-                var result = await _cartService.Create_Approved_Management(supp_Stock_Id, user_Id, remarks);
+                var result = await _cartService.Create_Approved_Management(supp_Stock_Id, user_Id, remarks, status);
                 if (result > 0)
                 {
                     return Ok(new
