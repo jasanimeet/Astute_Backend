@@ -681,7 +681,7 @@ namespace astute.Controllers
         [Route("getparty")]
         [Authorize]
         public async Task<IActionResult> GetParty(int party_Id, string party_Type)
-        {   
+        {
             try
             {
                 var result = await _partyService.GetParty(party_Id, party_Type);
@@ -3107,7 +3107,7 @@ namespace astute.Controllers
                                             using (var package = new ExcelPackage(new FileInfo(fileLocation)))
                                             {
                                                 ExcelWorksheet worksheet = package.Workbook.Worksheets[sheet_name];
-
+                                                worksheet.Calculate();
                                                 #region Start Remove above unused rows and columns
                                                 var (hasDataInFirstTenRowsAndColumns, row_count) = CoreService.CheckDataInFirstTenRowsAndColumns(worksheet);
                                                 if (hasDataInFirstTenRowsAndColumns && row_count > 1)
@@ -3174,7 +3174,7 @@ namespace astute.Controllers
                                                         var cellValue = worksheet.Cells[headerRow, col].Value;
                                                         if (cellValue != null)
                                                         {
-                                                            columnNames.Add(cellValue.ToString());
+                                                            columnNames.Add(cellValue.ToString().Trim());
                                                         }
                                                     }
 
@@ -3194,7 +3194,7 @@ namespace astute.Controllers
                                                                 var cell = worksheet.Cells[row, col];
                                                                 var cellValue = cell.Value;
                                                                 var formula = cell.Formula;
-
+                                                                
                                                                 if (cell.Hyperlink != null)
                                                                 {
                                                                     string url = cell.Hyperlink.OriginalString.Replace("%22", "");
@@ -3314,7 +3314,7 @@ namespace astute.Controllers
                                     excel_dataTable = CoreService.Convert_File_To_DataTable(".csv", fileLocation, "");
                                 }
 
-                                dataExist:
+                            dataExist:
                                 if (excel_dataTable != null && excel_dataTable.Rows.Count > 0)
                                 {
                                     #region Add column to datatable
@@ -3428,6 +3428,11 @@ namespace astute.Controllers
                                                  {
                                                      finalRow[displayColName] = CoreService.RemoveNonNumericAndDotAndNegativeCharacters(
                                                          Convert.ToString(finalRow[displayColName]));
+                                                 }
+                                                 else if(!string.IsNullOrEmpty(displayColName) && displayColName == "BASE_AMOUNT")
+                                                 {
+                                                     var base_amt = Convert.ToDecimal(finalRow[displayColName]);
+                                                     finalRow[displayColName] = base_amt.ToString("0.00");
                                                  }
                                                  else if (!string.IsNullOrEmpty(displayColName) && displayColName == "DNA")
                                                  {
@@ -3563,7 +3568,7 @@ namespace astute.Controllers
                 return Ok(new
                 {
                     Party_Name = party_Name,
-                    message = ex.Message 
+                    message = ex.Message
                 });
             }
         }
@@ -4293,7 +4298,7 @@ namespace astute.Controllers
                     var (message, report_layout_save_Id) = await _supplierService.Create_Update_Report_Layout_Save(report_Layout_Save);
                     if (message == "success" && report_layout_save_Id > 0)
                     {
-                        if(report_Layout_Save.Report_Layout_Save_Detail_List != null && report_Layout_Save.Report_Layout_Save_Detail_List.Count > 0)
+                        if (report_Layout_Save.Report_Layout_Save_Detail_List != null && report_Layout_Save.Report_Layout_Save_Detail_List.Count > 0)
                         {
                             DataTable dataTable = new DataTable();
                             dataTable.Columns.Add("Id", typeof(int));
@@ -4435,7 +4440,7 @@ namespace astute.Controllers
                         dataTable.Rows.Add(item.Supp_Stock_Id, item.Cart_Base_Disc, item.Cart_Base_Amt, item.Cart_Final_Disc, item.Cart_Final_Amt, item.Cart_Final_Disc_Max_Slab, item.Cart_Final_Amt_Max_Slab, item.Buyer_Disc, item.Buyer_Amt, item.Buyer_Price_Per_Cts, item.Expected_Final_Disc, item.Expected_Final_Amt, item.Cart_Status);
                     }
 
-                    var (message,result) = await _cartService.Insert_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
+                    var (message, result) = await _cartService.Insert_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
                     if (result > 0)
                     {
                         // if alredy exists stone add again then message should show succsessfully added.
@@ -4551,7 +4556,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_order_processing")]
         [Authorize]
-        public async Task<IActionResult> Create_Order_Processing(string supp_Stock_Id, int user_Id,string remarks, string status)
+        public async Task<IActionResult> Create_Order_Processing(string supp_Stock_Id, int user_Id, string remarks, string status)
         {
             try
             {
@@ -4561,7 +4566,7 @@ namespace astute.Controllers
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
-                        message =  CoreCommonMessage.StockOrderProcessing
+                        message = CoreCommonMessage.StockOrderProcessing
                     });
                 }
                 return BadRequest();
@@ -5008,7 +5013,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("export_stock_excel")]
         public async Task<IActionResult> Export_Stock_Excel(Excel_Model excel_Model)
-        {   
+        {
             DataTable supp_stock_dt = await _supplierService.Get_Stock_In_Datatable(excel_Model.supplier_Ref_No, excel_Model.excel_Format);
             if (supp_stock_dt != null && supp_stock_dt.Rows.Count > 0)
             {
@@ -5037,13 +5042,13 @@ namespace astute.Controllers
                     EpExcelExport.Create_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
                     excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                 }
-                else if(excel_Model.excel_Format == "Buyer")
+                else if (excel_Model.excel_Format == "Buyer")
                 {
                     string filename = "Buyer_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     EpExcelExport.Create_Buyer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
                     excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                 }
-                else if(excel_Model.excel_Format == "Supplier")
+                else if (excel_Model.excel_Format == "Supplier")
                 {
                     string filename = "Supplier_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     EpExcelExport.Create_Supplier_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
