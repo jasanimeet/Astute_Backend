@@ -4568,7 +4568,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Approved_Or_Rejected_by_Management", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Create_Order_Processing", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
@@ -4595,7 +4595,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Approved_Or_Rejected_by_Management", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Create_Approved_Management", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
