@@ -26,7 +26,7 @@ namespace astute.Repository
         #endregion
 
         #region Methods
-        public async Task<(string, int)> Insert_Cart(DataTable dataTable, int User_Id, string customer_Name, string remarks, int validity_Days)
+        public async Task<(string, int)> Create_Update_Cart(DataTable dataTable, int User_Id, string customer_Name, string remarks, int validity_Days)
         {
             var parameter = new SqlParameter("@Cart_Table_Type", SqlDbType.Structured)
             {

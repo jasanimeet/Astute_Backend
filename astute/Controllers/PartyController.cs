@@ -3194,7 +3194,7 @@ namespace astute.Controllers
                                                                 var cell = worksheet.Cells[row, col];
                                                                 var cellValue = cell.Value;
                                                                 var formula = cell.Formula;
-                                                                
+
                                                                 if (cell.Hyperlink != null)
                                                                 {
                                                                     string url = cell.Hyperlink.OriginalString.Replace("%22", "");
@@ -3429,7 +3429,7 @@ namespace astute.Controllers
                                                      finalRow[displayColName] = CoreService.RemoveNonNumericAndDotAndNegativeCharacters(
                                                          Convert.ToString(finalRow[displayColName]));
                                                  }
-                                                 else if(!string.IsNullOrEmpty(displayColName) && displayColName == "BASE_AMOUNT")
+                                                 else if (!string.IsNullOrEmpty(displayColName) && displayColName == "BASE_AMOUNT")
                                                  {
                                                      var base_amt = Convert.ToDecimal(finalRow[displayColName]);
                                                      finalRow[displayColName] = base_amt.ToString("0.00");
@@ -4413,16 +4413,20 @@ namespace astute.Controllers
 
         #region Cart/Approval Management        
         [HttpPost]
-        [Route("create_cart")]
+        [Route("create_update_cart")]
         [Authorize]
-        public async Task<IActionResult> Create_Cart(Cart_Model cart_Model)
+        public async Task<IActionResult> Create_Update_Cart(Cart_Model cart_Model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    IList<Cart_Detail> CartResult = JsonConvert.DeserializeObject<IList<Cart_Detail>>(cart_Model.Cart_Detail.ToString());
+
                     DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Id", typeof(int));
                     dataTable.Columns.Add("Supp_Stock_Id", typeof(int));
+                    dataTable.Columns.Add("Cts", typeof(double));
                     dataTable.Columns.Add("Cart_Base_Disc", typeof(double));
                     dataTable.Columns.Add("Cart_Base_Amt", typeof(double));
                     dataTable.Columns.Add("Cart_Final_Disc", typeof(double));
@@ -4436,13 +4440,14 @@ namespace astute.Controllers
                     dataTable.Columns.Add("Expected_Final_Amt", typeof(double));
                     dataTable.Columns.Add("Cart_Status", typeof(string));
 
-                    foreach (var item in cart_Model.Cart_Detail)
+
+                    foreach (var item in CartResult)
                     {
-                        dataTable.Rows.Add(item.Supp_Stock_Id, item.Cart_Base_Disc, item.Cart_Base_Amt, item.Cart_Final_Disc, item.Cart_Final_Amt, item.Cart_Final_Disc_Max_Slab, item.Cart_Final_Amt_Max_Slab, item.Buyer_Disc, item.Buyer_Amt, item.Buyer_Price_Per_Cts, item.Expected_Final_Disc, item.Expected_Final_Amt, item.Cart_Status);
+                        dataTable.Rows.Add(item.Id, item.Supp_Stock_Id,item.Cts, item.Cart_Base_Disc, item.Cart_Base_Amt, item.Cart_Final_Disc, item.Cart_Final_Amt, item.Cart_Final_Disc_Max_Slab, item.Cart_Final_Amt_Max_Slab, item.Buyer_Disc, item.Buyer_Amt, item.Buyer_Price_Per_Cts, item.Expected_Final_Disc, item.Expected_Final_Amt, item.Cart_Status);
                     }
 
-                    var (message, result) = await _cartService.Insert_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
-                    if (result > 0)
+                    var (message, result) = await _cartService.Create_Update_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
+                    if (message == "exist" || (message == "success" && result > 0))
                     {
                         // if alredy exists stone add again then message should show succsessfully added.
                         return Ok(new
@@ -4457,7 +4462,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Create_Cart", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Cart", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
