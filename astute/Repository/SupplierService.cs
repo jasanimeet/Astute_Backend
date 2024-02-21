@@ -1539,7 +1539,6 @@ namespace astute.Repository
         }
         public async Task<(List<Dictionary<string, object>>,string, string, string, string)> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters, int iPgNo, int iPgSize)
         {
-
             var result = new List<Dictionary<string, object>>();
             var totalRecordr = string.Empty;
             var totalCtsr = string.Empty;
@@ -1552,7 +1551,6 @@ namespace astute.Repository
 
             if (result_Master != null)
             {
-
                 string report_Sp = result_Master.Name;
 
                 using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -1568,15 +1566,19 @@ namespace astute.Repository
                         var totalRecordParameter = new SqlParameter("@iTotalRec", SqlDbType.Int);
                         totalRecordParameter.Direction = ParameterDirection.Output;
                         command.Parameters.Add(totalRecordParameter);
+
                         var totalCtsParameter = new SqlParameter("@iTotalCts", SqlDbType.Decimal);
                         totalCtsParameter.Direction = ParameterDirection.Output;
                         command.Parameters.Add(totalCtsParameter);
+
                         var totalAmtParameter = new SqlParameter("@iTotalAmt", SqlDbType.Decimal);
                         totalAmtParameter.Direction = ParameterDirection.Output;
                         command.Parameters.Add(totalAmtParameter);
+
                         var totalDiscParameter = new SqlParameter("@iTotalDisc", SqlDbType.Decimal);
                         totalDiscParameter.Direction = ParameterDirection.Output;
                         command.Parameters.Add(totalDiscParameter);
+
                         command.Parameters.Add(iPgNo > 0 ? new SqlParameter("@iPgNo", iPgNo) : new SqlParameter("@iPgNo", DBNull.Value));
                         command.Parameters.Add(iPgSize > 0 ? new SqlParameter("@iPgSize", iPgSize) : new SqlParameter("@iPgSize", DBNull.Value));
                         command.CommandTimeout = 1800;
@@ -1606,7 +1608,6 @@ namespace astute.Repository
                         totalDiscr = Convert.ToString(totalDiscParameter.Value);
                     }
                 }
-
             }
             return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr);
         }
