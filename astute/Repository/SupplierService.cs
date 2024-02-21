@@ -1537,15 +1537,22 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters, int iPgNo, int iPgSize)
+        public async Task<(List<Dictionary<string, object>>,string, string, string, string)> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters, int iPgNo, int iPgSize)
         {
+
             var result = new List<Dictionary<string, object>>();
+            var totalRecordr = string.Empty;
+            var totalCtsr = string.Empty;
+            var totalAmtr = string.Empty;
+            var totalDiscr = string.Empty;
+
             var _id = new SqlParameter("@Id", id);
             var result_Master = await Task.Run(() => _dbContext.Bank_Dropdown_Model
             .FromSqlRaw(@"exec Report_Master_Select @Id", _id).AsEnumerable().FirstOrDefault());
 
             if (result_Master != null)
             {
+
                 string report_Sp = result_Master.Name;
 
                 using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -1557,6 +1564,19 @@ namespace astute.Repository
                         {
                             command.Parameters.Add(!string.IsNullOrEmpty(item.Category_Value) ? new SqlParameter("@" + item.Column_Name.Replace(" ","_"), item.Category_Value) : new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), DBNull.Value));
                         }
+
+                        var totalRecordParameter = new SqlParameter("@iTotalRec", SqlDbType.Int);
+                        totalRecordParameter.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(totalRecordParameter);
+                        var totalCtsParameter = new SqlParameter("@iTotalCts", SqlDbType.Decimal);
+                        totalCtsParameter.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(totalCtsParameter);
+                        var totalAmtParameter = new SqlParameter("@iTotalAmt", SqlDbType.Decimal);
+                        totalAmtParameter.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(totalAmtParameter);
+                        var totalDiscParameter = new SqlParameter("@iTotalDisc", SqlDbType.Decimal);
+                        totalDiscParameter.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(totalDiscParameter);
                         command.Parameters.Add(iPgNo > 0 ? new SqlParameter("@iPgNo", iPgNo) : new SqlParameter("@iPgNo", DBNull.Value));
                         command.Parameters.Add(iPgSize > 0 ? new SqlParameter("@iPgSize", iPgSize) : new SqlParameter("@iPgSize", DBNull.Value));
                         command.CommandTimeout = 1800;
@@ -1579,11 +1599,16 @@ namespace astute.Repository
                                 result.Add(dict);
                             }
                         }
+
+                        totalRecordr = Convert.ToString(totalRecordParameter.Value);
+                        totalCtsr = Convert.ToString(totalCtsParameter.Value);
+                        totalAmtr = Convert.ToString(totalAmtParameter.Value);
+                        totalDiscr = Convert.ToString(totalDiscParameter.Value);
                     }
                 }
 
             }
-            return result;
+            return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr);
         }
         public async Task<List<Dictionary<string, object>>> Get_Report_Column_Format(int user_Id, int report_Id, string format_Type)
         {

@@ -4106,14 +4106,17 @@ namespace astute.Controllers
         {
             try
             {
-                var result = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo, report_Filter.iPgSize);
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo, report_Filter.iPgSize);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.DataSuccessfullyFound,
-                        total_Records = result[0].Where(x => x.Key == "iTotalRec").Select(x => x.Value).FirstOrDefault(),
+                        total_Records = totalRecordr,
+                        total_Cts = totalCtsr,
+                        total_Amt = totalAmtr,
+                        total_Disc = totalDiscr,
                         data = result
                     });
                 }
