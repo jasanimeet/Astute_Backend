@@ -553,6 +553,14 @@ namespace astute.Repository
             return result;
         }
         #endregion
+
+        public async Task<IList<DropdownModel>> Get_Buyer()
+        {
+            var result = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"exec Get_Employee_User_Type_Buyer")
+                            .ToListAsync());
+            return result;
+        }
         #endregion
     }
 }
