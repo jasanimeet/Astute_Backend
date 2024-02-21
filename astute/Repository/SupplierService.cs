@@ -1537,7 +1537,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<(List<Dictionary<string, object>>,string, string, string, string)> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters, int iPgNo, int iPgSize)
+        public async Task<(List<Dictionary<string, object>>,string, string, string, string)> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters, int iPgNo, int iPgSize ,IList<Report_Sorting> iSort)
         {
 
             var result = new List<Dictionary<string, object>>();
@@ -1565,6 +1565,21 @@ namespace astute.Repository
                             command.Parameters.Add(!string.IsNullOrEmpty(item.Category_Value) ? new SqlParameter("@" + item.Column_Name.Replace(" ","_"), item.Category_Value) : new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), DBNull.Value));
                         }
 
+                        if (iSort.Count() > 0)
+                        {
+                            string iSorting = string.Empty;
+
+                            foreach (var item in iSort)
+                            {
+                                iSorting += item.col_name +" "+ item.sort + " ";
+
+                                if (item != iSort.Last())
+                                {
+                                    iSorting += ",";
+                                }
+                            }
+                            command.Parameters.Add(!string.IsNullOrEmpty(iSorting) ? new SqlParameter("@iSort", iSorting) : new SqlParameter("@iSort", DBNull.Value));
+                        }
                         var totalRecordParameter = new SqlParameter("@iTotalRec", SqlDbType.Int);
                         totalRecordParameter.Direction = ParameterDirection.Output;
                         command.Parameters.Add(totalRecordParameter);
