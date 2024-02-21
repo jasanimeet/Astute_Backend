@@ -1569,7 +1569,7 @@ namespace astute.Repository
 
                             foreach (var item in iSort)
                             {
-                                iSorting += item.col_name +" "+ item.sort + " ";
+                                iSorting += "[" + item.col_name +"] "+ item.sort + " ";
 
                                 if (item != iSort.Last())
                                 {
