@@ -455,11 +455,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_employee_for_report")]
         [Authorize]
-        public async Task<IActionResult> Get_Employee_For_Report(bool is_Exist)
+        public async Task<IActionResult> Get_Employee_For_Report(bool is_Exist, int rm_Id)
         {
             try
             {
-                var result = await _employeeService.Get_Employee_For_Report(is_Exist);
+                var result = await _employeeService.Get_Employee_For_Report(is_Exist, rm_Id);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
