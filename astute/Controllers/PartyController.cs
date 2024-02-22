@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NPOI.HSSF.UserModel;
@@ -4443,7 +4444,20 @@ namespace astute.Controllers
 
                     foreach (var item in CartResult)
                     {
-                        dataTable.Rows.Add(item.Id, item.Supp_Stock_Id,item.Cts, item.Cart_Base_Disc, item.Cart_Base_Amt, item.Cart_Final_Disc, item.Cart_Final_Amt, item.Cart_Final_Disc_Max_Slab, item.Cart_Final_Amt_Max_Slab, item.Buyer_Disc, item.Buyer_Amt, item.Buyer_Price_Per_Cts, item.Expected_Final_Disc, item.Expected_Final_Amt, item.Cart_Status);
+                        dataTable.Rows.Add(item.Id, item.Supp_Stock_Id,
+                            (item.Cts != null ? !string.IsNullOrEmpty(item.Cts.ToString()) ? Convert.ToDouble(item.Cts.ToString()) : null : null),
+                            (item.Cart_Base_Disc != null ? !string.IsNullOrEmpty(item.Cart_Base_Disc.ToString()) ? Convert.ToDouble(item.Cart_Base_Disc.ToString()) : null : null),
+                            (item.Cart_Base_Amt != null ? !string.IsNullOrEmpty(item.Cart_Base_Amt.ToString()) ? Convert.ToDouble(item.Cart_Base_Amt.ToString()) : null : null),
+                            (item.Cart_Final_Disc != null ? !string.IsNullOrEmpty(item.Cart_Final_Disc.ToString()) ? Convert.ToDouble(item.Cart_Final_Disc.ToString()) : null : null),
+                            (item.Cart_Final_Amt != null ? !string.IsNullOrEmpty(item.Cart_Final_Amt.ToString()) ? Convert.ToDouble(item.Cart_Final_Amt.ToString()) : null : null),
+                            (item.Cart_Final_Disc_Max_Slab != null ? !string.IsNullOrEmpty(item.Cart_Final_Disc_Max_Slab.ToString()) ? Convert.ToDouble(item.Cart_Final_Disc_Max_Slab.ToString()) : null : null),
+                            (item.Cart_Final_Amt_Max_Slab != null ? !string.IsNullOrEmpty(item.Cart_Final_Amt_Max_Slab.ToString()) ? Convert.ToDouble(item.Cart_Final_Amt_Max_Slab.ToString()) : null : null),
+                            (item.Buyer_Disc != null ? !string.IsNullOrEmpty(item.Buyer_Disc.ToString()) ? Convert.ToDouble(item.Buyer_Disc.ToString()) : null : null),
+                            (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null),
+                            (item.Buyer_Price_Per_Cts != null ? !string.IsNullOrEmpty(item.Buyer_Price_Per_Cts.ToString()) ? Convert.ToDouble(item.Buyer_Price_Per_Cts.ToString()) : null : null),
+                            (item.Expected_Final_Disc != null ? !string.IsNullOrEmpty(item.Expected_Final_Disc.ToString()) ? Convert.ToDouble(item.Expected_Final_Disc.ToString()) : null : null),
+                            (item.Expected_Final_Amt != null ? !string.IsNullOrEmpty(item.Expected_Final_Amt.ToString()) ? Convert.ToDouble(item.Expected_Final_Amt.ToString()) : null : null),
+                            (!string.IsNullOrEmpty(item.Cart_Status) ? Convert.ToDouble(item.Cart_Status.ToString()) : null));
                     }
 
                     var (message, result) = await _cartService.Create_Update_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
@@ -4560,13 +4574,32 @@ namespace astute.Controllers
         }
 
         [HttpPost]
-        [Route("create_order_processing")]
+        [Route("create_update_order_processing")]
         [Authorize]
-        public async Task<IActionResult> Create_Order_Processing(string supp_Stock_Id, int user_Id, string remarks, string status)
+        public async Task<IActionResult> Create_Update_Order_Processing(Order_Processing order_Processing)
         {
             try
             {
-                var result = await _cartService.Create_Order_Processing(supp_Stock_Id, user_Id, remarks, status);
+                IList<Order_Processing_Detail> OrderResult = JsonConvert.DeserializeObject<IList<Order_Processing_Detail>>(order_Processing.Order_Detail.ToString());
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("Id", typeof(int));
+                dataTable.Columns.Add("Supp_Stock_Id", typeof(int));
+                dataTable.Columns.Add("Buyer_Disc", typeof(double));
+                dataTable.Columns.Add("Buyer_Amt", typeof(double));
+                dataTable.Columns.Add("Order_Cost_Disc", typeof(double));
+                dataTable.Columns.Add("Order_Cost_Amt", typeof(double));
+
+                foreach (var item in OrderResult)
+                {
+                    dataTable.Rows.Add(item.Id, item.Supp_Stock_Id,
+                        (item.Buyer_Disc != null ? !string.IsNullOrEmpty(item.Buyer_Disc.ToString()) ? Convert.ToDouble(item.Buyer_Disc.ToString()) : null : null),
+                        (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null),
+                        (item.Order_Cost_Disc != null ? !string.IsNullOrEmpty(item.Order_Cost_Disc.ToString()) ?  Convert.ToDouble(item.Order_Cost_Disc.ToString()) : null : null),
+                        (item.Order_Cost_Amt != null ? !string.IsNullOrEmpty(item.Order_Cost_Amt.ToString()) ?  Convert.ToDouble(item.Order_Cost_Amt.ToString()) : null : null)); ;
+                }
+
+                var result = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.User_Id, order_Processing.Remarks, order_Processing.Status);
                 if (result > 0)
                 {
                     return Ok(new
@@ -4579,7 +4612,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Create_Order_Processing", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Order_Processing", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
@@ -4589,11 +4622,11 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_approved_management")]
         [Authorize]
-        public async Task<IActionResult> Create_Approved_Management(Order_Processing order_Processing)
+        public async Task<IActionResult> Create_Approved_Management(Approval_Management approval_Management)
         {
             try
             {
-                var result = await _cartService.Create_Approved_Management(order_Processing);
+                var result = await _cartService.Create_Approved_Management(approval_Management);
                 if (result > 0)
                 {
                     return Ok(new
