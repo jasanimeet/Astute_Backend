@@ -4477,41 +4477,12 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_Cart", ex.StackTrace);
-                return Ok(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
             }
         }
-
-        //[HttpGet]
-        //[Route("get_cart")]
-        //[Authorize]
-        //public async Task<IActionResult> Get_Cart(string USER_ID)
-        //{
-        //    try
-        //    {
-        //        var result = await _cartService.Get_Cart(USER_ID);
-        //        if (result != null && result.Count > 0)
-        //        {
-        //            return Ok(new
-        //            {
-        //                statusCode = HttpStatusCode.OK,
-        //                message = CoreCommonMessage.DataSuccessfullyFound,
-        //                data = result
-        //            });
-        //        }
-        //        return NoContent();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await _commonService.InsertErrorLog(ex.Message, "Get_Cart", ex.StackTrace);
-        //        return Ok(new
-        //        {
-        //            message = ex.Message
-        //        });
-        //    }
-        //}
 
         [HttpPut]
         [Route("delete_cart")]
@@ -4538,7 +4509,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Delete_Cart", ex.StackTrace);
-                return Ok(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
@@ -4566,7 +4537,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Approved_Or_Rejected_by_Management", ex.StackTrace);
-                return Ok(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
@@ -4609,7 +4580,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_Order_Processing", ex.StackTrace);
-                return Ok(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
@@ -4636,7 +4607,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Approved_Management", ex.StackTrace);
-                return Ok(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
