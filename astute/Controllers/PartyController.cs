@@ -4587,16 +4587,12 @@ namespace astute.Controllers
                 dataTable.Columns.Add("Supp_Stock_Id", typeof(int));
                 dataTable.Columns.Add("Buyer_Disc", typeof(double));
                 dataTable.Columns.Add("Buyer_Amt", typeof(double));
-                dataTable.Columns.Add("Order_Cost_Disc", typeof(double));
-                dataTable.Columns.Add("Order_Cost_Amt", typeof(double));
 
                 foreach (var item in OrderResult)
                 {
                     dataTable.Rows.Add(item.Id, item.Supp_Stock_Id,
                         (item.Buyer_Disc != null ? !string.IsNullOrEmpty(item.Buyer_Disc.ToString()) ? Convert.ToDouble(item.Buyer_Disc.ToString()) : null : null),
-                        (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null),
-                        (item.Order_Cost_Disc != null ? !string.IsNullOrEmpty(item.Order_Cost_Disc.ToString()) ?  Convert.ToDouble(item.Order_Cost_Disc.ToString()) : null : null),
-                        (item.Order_Cost_Amt != null ? !string.IsNullOrEmpty(item.Order_Cost_Amt.ToString()) ?  Convert.ToDouble(item.Order_Cost_Amt.ToString()) : null : null)); ;
+                        (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null));
                 }
 
                 var result = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.User_Id, order_Processing.Remarks, order_Processing.Status);
