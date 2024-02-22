@@ -1709,6 +1709,7 @@ namespace astute.Repository
         {
             var id = new SqlParameter("@Id", report_Layout_Save.Id);
             var user_Id = new SqlParameter("@User_Id", report_Layout_Save.User_Id);
+            var rm_Id = new SqlParameter("@Rm_Id", report_Layout_Save.Rm_Id);
             var name = !string.IsNullOrEmpty(report_Layout_Save.Name) ? new SqlParameter("@Name", report_Layout_Save.Name) : new SqlParameter("@Name", DBNull.Value);
             var status = new SqlParameter("@Status", report_Layout_Save.Status);
             var insertedId = new SqlParameter("@Inserted_Id", SqlDbType.Int)
@@ -1720,10 +1721,9 @@ namespace astute.Repository
                 Direction = ParameterDirection.Output
             };
             
-            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Layout_Save_Insert_Update @Id, @User_Id, @Name, @Status, @Inserted_Id OUT, @IsExist OUT", 
-                id, user_Id, name, status, insertedId, is_Exist));
+            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Layout_Save_Insert_Update @Id, @User_Id,@Rm_Id, @Name, @Status, @Inserted_Id OUT, @IsExist OUT", 
+                id, user_Id,rm_Id, name, status, insertedId, is_Exist));
 
-            
             if ((int)is_Exist.Value == 1)
             {
                 return ("exist",0);
@@ -1745,12 +1745,13 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<IList<Report_Layout_Save>> Get_Report_Layout_Save(int User_Id)
+        public async Task<IList<Report_Layout_Save>> Get_Report_Layout_Save(int User_Id, int Rm_Id)
         {
             var user_Id = User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value);
+            var rm_Id = Rm_Id > 0 ? new SqlParameter("@Rm_Id", Rm_Id) : new SqlParameter("@Rm_Id", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Report_Layout_Save
-                            .FromSqlRaw(@"EXEC Report_Layout_Save_Select @User_Id", user_Id)
+                            .FromSqlRaw(@"EXEC Report_Layout_Save_Select @User_Id,@Rm_Id", user_Id, rm_Id)
                             .ToListAsync());
             if(result != null && result.Count > 0)
             {

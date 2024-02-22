@@ -4262,11 +4262,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_report_layout_save")]
         [Authorize]
-        public async Task<IActionResult> Get_Report_Layout_Save(int User_Id)
+        public async Task<IActionResult> Get_Report_Layout_Save(int User_Id,int Rm_Id)
         {
             try
             {
-                var result = await _supplierService.Get_Report_Layout_Save(User_Id);
+                var result = await _supplierService.Get_Report_Layout_Save(User_Id, Rm_Id);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new

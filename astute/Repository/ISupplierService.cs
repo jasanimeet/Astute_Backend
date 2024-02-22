@@ -86,7 +86,7 @@ namespace astute.Repository
         Task<int> Delete_Report_Search(int id);
         Task<(string, int)> Create_Update_Report_Layout_Save(Report_Layout_Save report_Layout_Save);
         Task<int> Insert_Update_Report_Layout_Save_Detail(DataTable dataTable);
-        Task<IList<Report_Layout_Save>> Get_Report_Layout_Save(int User_Id);
+        Task<IList<Report_Layout_Save>> Get_Report_Layout_Save(int User_Id,int Rm_Id);
         Task<int> Update_Report_Layout_Save_Status(int id, int user_Id);
         Task<int> Delete_Report_Layout_Save(int id);
         #endregion
