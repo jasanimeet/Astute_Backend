@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -94,15 +95,16 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<int> Approved_Or_Rejected_by_Management(string ids, bool is_Approved, bool is_Rejected, int user_Id)
+        public async Task<int> Approved_Or_Rejected_by_Management(Approval_Management approval_Management)
         {
-            var _ids = !string.IsNullOrEmpty(ids) ? new SqlParameter("@Ids", ids) : new SqlParameter("@Ids", DBNull.Value);
-            var _is_Approved = new SqlParameter("@Is_Approved", is_Approved);
-            var _is_Rejected = new SqlParameter("@Is_Rejected", is_Rejected);
-            var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
+            var _ids = !string.IsNullOrEmpty(approval_Management.Ids) ? new SqlParameter("@Ids", approval_Management.Ids) : new SqlParameter("@Ids", DBNull.Value);
+            var _is_Approved = new SqlParameter("@Is_Approved", approval_Management.Is_Approved);
+            var _is_Rejected = new SqlParameter("@Is_Rejected", approval_Management.Is_Rejected);
+            var _remarks = !string.IsNullOrEmpty(approval_Management.Remarks) ? new SqlParameter("@Remarks", approval_Management.Remarks) : new SqlParameter("@Remarks", DBNull.Value);
+            var _user_Id = approval_Management.User_Id > 0 ? new SqlParameter("@User_Id", approval_Management.User_Id) : new SqlParameter("@User_Id", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Approved_Or_Rejected_By_Management @Ids, @Is_Approved, @Is_Rejected, @User_Id", _ids, _is_Approved, _is_Rejected, _user_Id));
+                        .ExecuteSqlRawAsync(@"EXEC Approved_Or_Rejected_By_Management @Ids, @Is_Approved, @Is_Rejected, @Remarks, @User_Id", _ids, _is_Approved, _is_Rejected, _remarks, _user_Id));
 
             return result;
         }
