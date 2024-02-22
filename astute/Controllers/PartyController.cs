@@ -4595,8 +4595,8 @@ namespace astute.Controllers
                         (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null));
                 }
 
-                var result = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.User_Id, order_Processing.Remarks, order_Processing.Status);
-                if (result > 0)
+                var (message, result) = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.User_Id, order_Processing.Remarks, order_Processing.Status);
+                if (message == "exist" || (message == "success" && result > 0))
                 {
                     return Ok(new
                     {

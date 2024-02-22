@@ -119,7 +119,7 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<int> Create_Update_Order_Processing(DataTable dataTable, int? user_Id, string remarks, string status)
+        public async Task<(string, int)> Create_Update_Order_Processing(DataTable dataTable, int? user_Id, string remarks, string status)
         {
             var parameter = new SqlParameter("@Order_Processing_Table_Type", SqlDbType.Structured)
             {
@@ -129,11 +129,16 @@ namespace astute.Repository
             var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
             var _remarks = !string.IsNullOrEmpty(remarks) ? new SqlParameter("@Remarks", remarks) : new SqlParameter("@Remarks", DBNull.Value);
             var _status = !string.IsNullOrEmpty(status) ? new SqlParameter("@Status", status) : new SqlParameter("@Status", DBNull.Value);
-
+            var is_Exists = new SqlParameter("@IsExist", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Insert_Update] @Order_Processing_Table_Type, @User_Id, @Remarks ,@Status", parameter, _user_Id, _remarks, _status));
-
-            return result;
+                        .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Insert_Update] @Order_Processing_Table_Type, @User_Id, @Remarks ,@Status,@IsExist OUT", parameter, _user_Id, _remarks, _status, is_Exists));
+            var _is_Exists = (bool)is_Exists.Value;
+            if (_is_Exists)
+                return ("exist", 0);
+            return ("success", result);
         }
         #endregion
     }
