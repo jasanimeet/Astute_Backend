@@ -1751,7 +1751,7 @@ namespace astute.Repository
             var rm_Id = Rm_Id > 0 ? new SqlParameter("@Rm_Id", Rm_Id) : new SqlParameter("@Rm_Id", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Report_Layout_Save
-                            .FromSqlRaw(@"EXEC Report_Layout_Save_Select @User_Id,", user_Id, rm_Id)
+                            .FromSqlRaw(@"EXEC Report_Layout_Save_Select @User_Id,@Rm_Id", user_Id, rm_Id)
                             .ToListAsync());
             if(result != null && result.Count > 0)
             {
