@@ -1582,16 +1582,25 @@ namespace astute.Repository
                         totalRecordParameter.Direction = ParameterDirection.Output;
                         command.Parameters.Add(totalRecordParameter);
 
-                        var totalCtsParameter = new SqlParameter("@iTotalCts", SqlDbType.Decimal);
-                        totalCtsParameter.Direction = ParameterDirection.Output;
+                        var totalCtsParameter = new SqlParameter("@iTotalCts", SqlDbType.NVarChar)
+                        {
+                            Size = -1, // -1 is used for max size
+                            Direction = ParameterDirection.Output
+                        };
                         command.Parameters.Add(totalCtsParameter);
 
-                        var totalAmtParameter = new SqlParameter("@iTotalAmt", SqlDbType.Decimal);
-                        totalAmtParameter.Direction = ParameterDirection.Output;
+                        var totalAmtParameter = new SqlParameter("@iTotalAmt", SqlDbType.NVarChar)
+                        {
+                            Size = -1, // -1 is used for max size
+                            Direction = ParameterDirection.Output
+                        };
                         command.Parameters.Add(totalAmtParameter);
 
-                        var totalDiscParameter = new SqlParameter("@iTotalDisc", SqlDbType.Decimal);
-                        totalDiscParameter.Direction = ParameterDirection.Output;
+                        var totalDiscParameter = new SqlParameter("@iTotalDisc", SqlDbType.NVarChar)
+                        {
+                            Size = -1, // -1 is used for max size
+                            Direction = ParameterDirection.Output
+                        };
                         command.Parameters.Add(totalDiscParameter);
 
                         command.Parameters.Add(iPgNo > 0 ? new SqlParameter("@iPgNo", iPgNo) : new SqlParameter("@iPgNo", DBNull.Value));
