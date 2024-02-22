@@ -4589,11 +4589,11 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_approved_management")]
         [Authorize]
-        public async Task<IActionResult> Create_Approved_Management(string supp_Stock_Id, int user_Id, string remarks, string status)
+        public async Task<IActionResult> Create_Approved_Management(Order_Processing order_Processing)
         {
             try
             {
-                var result = await _cartService.Create_Approved_Management(supp_Stock_Id, user_Id, remarks, status);
+                var result = await _cartService.Create_Approved_Management(order_Processing);
                 if (result > 0)
                 {
                     return Ok(new
