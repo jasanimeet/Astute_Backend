@@ -108,7 +108,7 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<int> Create_Approved_Management(Approval_Management approval_Management)
+        public async Task<int> Create_Approved_Management(Approval_Management_Create_Update approval_Management)
         {
             var _supp_Stock_Id = !string.IsNullOrEmpty(approval_Management.Supp_Stock_Id) ? new SqlParameter("@Supp_Stock_Id", approval_Management.Supp_Stock_Id) : new SqlParameter("@Supp_Stock_Id", DBNull.Value);
             var _cart_Id = !string.IsNullOrEmpty(approval_Management.Cart_Id) ? new SqlParameter("@Cart_Id", approval_Management.Cart_Id) : new SqlParameter("@Cart_Id", DBNull.Value);

@@ -4618,7 +4618,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_approved_management")]
         [Authorize]
-        public async Task<IActionResult> Create_Approved_Management(Approval_Management approval_Management)
+        public async Task<IActionResult> Create_Approved_Management(Approval_Management_Create_Update approval_Management)
         {
             try
             {
