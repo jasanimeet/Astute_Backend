@@ -4281,7 +4281,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Report_Layout_Save", ex.StackTrace);
-                return Ok(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
@@ -4345,7 +4345,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_Report_Layout_Save", ex.StackTrace);
-                return Ok(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
@@ -4380,7 +4380,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Delete_Report_Layout_Save", ex.StackTrace);
-                return Ok(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
@@ -4404,7 +4404,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Update_Report_Layout_Save_Status", ex.StackTrace);
-                return Ok(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
