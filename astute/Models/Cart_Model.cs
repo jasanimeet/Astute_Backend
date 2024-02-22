@@ -25,40 +25,40 @@ namespace astute.Models
         public int? Supp_Stock_Id { get; set; }
 
         [JsonProperty("CTS")]
-        public double? Cts { get; set; }
+        public object? Cts { get; set; }
 
         [JsonProperty("BASE DISC")]
-        public double? Cart_Base_Disc { get; set; }
+        public object? Cart_Base_Disc { get; set; }
 
         [JsonProperty("BASE AMOUNT")]
-        public double? Cart_Base_Amt { get; set; }
+        public object? Cart_Base_Amt { get; set; }
 
         [JsonProperty("COST DISC")]
-        public double? Cart_Final_Disc { get; set; }
+        public object? Cart_Final_Disc { get; set; }
 
         [JsonProperty("COST AMOUNT")]
-        public double? Cart_Final_Amt { get; set; }
+        public object? Cart_Final_Amt { get; set; }
 
         [JsonProperty("MAX SLAB BASE DISC")]
-        public double? Cart_Final_Disc_Max_Slab { get; set; }
+        public object? Cart_Final_Disc_Max_Slab { get; set; }
 
         [JsonProperty("MAX SLAB BASE AMOUNT")]
-        public double? Cart_Final_Amt_Max_Slab { get; set; }
+        public object? Cart_Final_Amt_Max_Slab { get; set; }
 
         [JsonProperty("BUYER DISC")]
-        public double? Buyer_Disc { get; set; }
+        public object? Buyer_Disc { get; set; }
 
         [JsonProperty("BUYER AMOUNT")]
-        public double? Buyer_Amt { get; set; }
+        public object? Buyer_Amt { get; set; }
 
         [JsonProperty("BUYER PRICE PER CTS")]
-        public double? Buyer_Price_Per_Cts { get; set; }
+        public object? Buyer_Price_Per_Cts { get; set; }
 
         [JsonProperty("EXPECTED FINAL DISC")]
-        public double? Expected_Final_Disc { get; set; }
+        public object? Expected_Final_Disc { get; set; }
 
         [JsonProperty("EXPECTED FINAL AMT")]
-        public double? Expected_Final_Amt { get; set; }
+        public object? Expected_Final_Amt { get; set; }
         public string? Cart_Status { get; set; }
     }
 }
