@@ -4534,17 +4534,17 @@ namespace astute.Controllers
         [HttpPost]
         [Route("approved_or_rejected_by_management")]
         [Authorize]
-        public async Task<IActionResult> Approved_Or_Rejected_by_Management(string ids, bool? is_Approved, bool? is_Rejected, int user_Id)
+        public async Task<IActionResult> Approved_Or_Rejected_by_Management(Approval_Management approval_Management)
         {
             try
             {
-                var result = await _cartService.Approved_Or_Rejected_by_Management(ids, is_Approved ?? false, is_Rejected ?? false, user_Id);
+                var result = await _cartService.Approved_Or_Rejected_by_Management(approval_Management);
                 if (result > 0)
                 {
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
-                        message = is_Approved == true ? CoreCommonMessage.StokeApprovedByManagement : CoreCommonMessage.StokeRejectedByManagement
+                        message = approval_Management.Is_Approved == true ? CoreCommonMessage.StokeApprovedByManagement : CoreCommonMessage.StokeRejectedByManagement
                     });
                 }
                 return BadRequest();
