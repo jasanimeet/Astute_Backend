@@ -23,7 +23,7 @@ namespace astute.Models
     }
     public class Order_Processing_Inactive
     {
-        public int? Id { get; set; }
+        public string? Ids { get; set; }
         public bool? Is_Inactive { get; set; }
         public int? User_Id { get; set; }
     }
