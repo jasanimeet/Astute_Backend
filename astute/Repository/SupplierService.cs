@@ -345,7 +345,7 @@ namespace astute.Repository
                         @Table_Per_To, @Crown_Angle_From, @Crown_Angle_To, @Crown_Height_From, @Crown_Height_To, @Pavilion_Angle_From, @Pavilion_Angle_To, @Pavilion_Height_From,
                         @Pavilion_Height_To, @Girdle_Per_From, @Girdle_Per_To, @Lr_Half_From, @Lr_Half_To, @Star_Ln_From, @Star_Ln_To, @Shape_Group, @Shape,@User_Id", valueMap_ID, length_From, length_To,
                         width_From, width_To, depth_From, depth_To, depth_Per_From, depth_Per_To, table_Per_From, table_Per_To, crown_Angle_From, crown_Angle_To, crown_Height_From, crown_Height_To, pavilion_Angle_From,
-                        pavilion_Angle_To, pavilion_Height_From, pavilion_Height_To, girdle_Per_From, girdle_Per_To, lr_Half_From, lr_Half_To, star_Ln_From, star_Ln_To, shape_Group, shape,user_Id));
+                        pavilion_Angle_To, pavilion_Height_From, pavilion_Height_To, girdle_Per_From, girdle_Per_To, lr_Half_From, lr_Half_To, star_Ln_From, star_Ln_To, shape_Group, shape, user_Id));
 
             //if (CoreService.Enable_Trace_Records(_configuration))
             //{
@@ -633,7 +633,7 @@ namespace astute.Repository
             var customer_Pricing_Id = supplier_Pricing.Customer_Pricing_Id > 0 ? new SqlParameter("@Customer_Pricing_Id", supplier_Pricing.Customer_Pricing_Id) : new SqlParameter("@Customer_Pricing_Id", DBNull.Value);
             var user_Pricing_Id = !string.IsNullOrEmpty(supplier_Pricing.User_Pricing_Id) ? new SqlParameter("@User_Pricing_Id", supplier_Pricing.User_Pricing_Id) : new SqlParameter("@User_Pricing_Id", DBNull.Value);
             var map_Flag = !string.IsNullOrEmpty(supplier_Pricing.Map_Flag) ? new SqlParameter("@Map_Flag", supplier_Pricing.Map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
-            var stock_Lab = supplier_Pricing.Stock_Lab!= null ? new SqlParameter("@Stock_Lab", supplier_Pricing.Stock_Lab) : new SqlParameter("@Stock_Lab", DBNull.Value);
+            var stock_Lab = supplier_Pricing.Stock_Lab != null ? new SqlParameter("@Stock_Lab", supplier_Pricing.Stock_Lab) : new SqlParameter("@Stock_Lab", DBNull.Value);
             var stock_Overseas = supplier_Pricing.Stock_Overseas != null ? new SqlParameter("@Stock_Overseas", supplier_Pricing.Stock_Overseas) : new SqlParameter("@Stock_Overseas", DBNull.Value);
             var stock_Buyer = supplier_Pricing.Stock_Buyer != null ? new SqlParameter("@Stock_Buyer", supplier_Pricing.Stock_Buyer) : new SqlParameter("@Stock_Buyer", DBNull.Value);
             var shape = !string.IsNullOrEmpty(supplier_Pricing.Shape) ? new SqlParameter("@Shape", supplier_Pricing.Shape) : new SqlParameter("@Shape", DBNull.Value);
@@ -778,7 +778,7 @@ namespace astute.Repository
                         @Cost_Price_Flag, @Final_Price_Flag, @Is_All_Bgm,@Is_All_Clarity,@Is_All_Color,@Is_All_Culet,@Is_All_Cut,@Is_All_Fls_Intensity,@Is_All_Good_Type,@Is_All_Location,@Is_All_Lab,
                         @Is_All_Luster,@Is_All_Polish,@Is_All_Shade,@Is_All_Shape,@Is_All_Symm,@Is_All_Status,@Is_All_Cert_Type,@Is_All_Fancy_Color,@Is_All_Girdle_Open,@Is_All_Table_Open,@Is_All_Table_Black,
                         @Is_All_Table_White,@Is_All_Side_Black,@Is_All_Side_white,@Is_All_Pavilion_Open,@Is_All_Crown_Open,@Is_All_Company, @Query_Flag, @Inserted_Id OUT",
-                        supplier_Pricing_Id, supplier_Id, sunrise_Pricing_Id, customer_Pricing_Id, user_Pricing_Id, map_Flag,stock_Lab,stock_Overseas,stock_Buyer ,shape, cts, color, fancy_Color, clarity, cut, polish, symm, fls_Intensity, lab, shade, luster, bgm, culet, location, status, good_Type, length_From, length_To, width_From,
+                        supplier_Pricing_Id, supplier_Id, sunrise_Pricing_Id, customer_Pricing_Id, user_Pricing_Id, map_Flag, stock_Lab, stock_Overseas, stock_Buyer, shape, cts, color, fancy_Color, clarity, cut, polish, symm, fls_Intensity, lab, shade, luster, bgm, culet, location, status, good_Type, length_From, length_To, width_From,
                         width_To, depth_From, depth_To, depth_Per_From, depth_Per_To, table_Per_From, table_Per_To, crown_Angle_From, crown_Angle_To, crown_Height_From, crown_Height_To, pavilion_Angle_From,
                         pavilion_Angle_To, pavilion_Height_From, pavilion_Height_To, girdle_Per_From, girdle_Per_To, table_Black, side_Black, table_White, side_white, cert_Type, table_Open, crown_Open, pavilion_Open, girdle_Open,
                         base_Disc_From, base_Disc_To, base_Amount_From, base_Amount_To, final_Disc_From, final_Disc_To, final_Amount_From, final_Amount_To, company, supplier_Filter_Type, calculation_Type, sign, value_1, value_2, value_3, value_4, sp_calculation_Type, sp_sign, sp_start_date,
@@ -1199,7 +1199,7 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                    .ExecuteSqlRawAsync(@"exec Stock_Number_Generation_Replicate_Insert_Update @Stock_Number_Generation_Table_Type, @Ids", parameter, _ids));
 
-            
+
             return result;
         }
         #endregion
@@ -1221,7 +1221,7 @@ namespace astute.Repository
         #endregion
 
         #region Supplier Stock Error Log
-        public async Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Error_Log(string supplier_Ids, string upload_Type, string from_Date, string from_Time, string to_Date, string to_Time, bool is_Lab_Entry)
+        public async Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Error_Log(string supplier_Ids, string upload_Type, string from_Date, string from_Time, string to_Date, string to_Time, bool is_Last_Entry)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -1235,7 +1235,7 @@ namespace astute.Repository
                     command.Parameters.Add(!string.IsNullOrEmpty(from_Time) ? new SqlParameter("@From_Time", from_Time) : new SqlParameter("@From_Time", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(to_Date) ? new SqlParameter("@To_Date", to_Date) : new SqlParameter("@To_Date", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(to_Time) ? new SqlParameter("@To_Time", to_Time) : new SqlParameter("@To_Time", DBNull.Value));
-                    command.Parameters.Add(new SqlParameter("@Is_Last_Entry", is_Lab_Entry));
+                    command.Parameters.Add(new SqlParameter("@Is_Last_Entry", is_Last_Entry));
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -1503,7 +1503,7 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Report_Users_Role(int id, int user_Id,string user_Type)
+        public async Task<List<Dictionary<string, object>>> Get_Report_Users_Role(int id, int user_Id, string user_Type)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -1537,8 +1537,9 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<(List<Dictionary<string, object>>,string, string, string, string)> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters, int iPgNo, int iPgSize ,IList<Report_Sorting> iSort)
+        public async Task<(List<Dictionary<string, object>>, string, string, string, string)> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
         {
+            DataTable dataTable = new DataTable();
             var result = new List<Dictionary<string, object>>();
             var totalRecordr = string.Empty;
             var totalCtsr = string.Empty;
@@ -1558,9 +1559,9 @@ namespace astute.Repository
                     using (var command = new SqlCommand(report_Sp, connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        foreach (var item in report_Filter_Parameters.Where(x=>!string.IsNullOrEmpty(x.Category_Value)).ToList())
+                        foreach (var item in report_Filter_Parameters.Where(x => !string.IsNullOrEmpty(x.Category_Value)).ToList())
                         {
-                            command.Parameters.Add(!string.IsNullOrEmpty(item.Category_Value) ? new SqlParameter("@" + item.Column_Name.Replace(" ","_"), item.Category_Value) : new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), DBNull.Value));
+                            command.Parameters.Add(!string.IsNullOrEmpty(item.Category_Value) ? new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), item.Category_Value) : new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), DBNull.Value));
                         }
 
                         if (iSort.Count() > 0)
@@ -1569,7 +1570,7 @@ namespace astute.Repository
 
                             foreach (var item in iSort)
                             {
-                                iSorting += "[" + item.col_name +"] "+ item.sort + " ";
+                                iSorting += "[" + item.col_name + "] " + item.sort + " ";
 
                                 if (item != iSort.Last())
                                 {
@@ -1711,7 +1712,7 @@ namespace astute.Repository
             return result;
         }
         public async Task<int> Delete_Report_Search(int id)
-        {   
+        {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Report_Search_Save_Delete {id}"));
         }
         public async Task<(string, int)> Create_Update_Report_Layout_Save(Report_Layout_Save report_Layout_Save)
@@ -1729,15 +1730,16 @@ namespace astute.Repository
             {
                 Direction = ParameterDirection.Output
             };
-            
-            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Layout_Save_Insert_Update @Id, @User_Id,@Rm_Id, @Name, @Status, @Inserted_Id OUT, @IsExist OUT", 
-                id, user_Id,rm_Id, name, status, insertedId, is_Exist));
+
+            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Layout_Save_Insert_Update @Id, @User_Id,@Rm_Id, @Name, @Status, @Inserted_Id OUT, @IsExist OUT",
+                id, user_Id, rm_Id, name, status, insertedId, is_Exist));
 
             if ((int)is_Exist.Value == 1)
             {
-                return ("exist",0);
+                return ("exist", 0);
             }
-            else {
+            else
+            {
                 var _inserted_Id = (int)insertedId.Value;
                 return ("success", _inserted_Id);
             }
@@ -1762,7 +1764,7 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Report_Layout_Save
                             .FromSqlRaw(@"EXEC Report_Layout_Save_Select @User_Id,@Rm_Id", user_Id, rm_Id)
                             .ToListAsync());
-            if(result != null && result.Count > 0)
+            if (result != null && result.Count > 0)
             {
                 foreach (var item in result)
                 {
@@ -1881,7 +1883,7 @@ namespace astute.Repository
             {
                 using (var command = new SqlCommand("Excel_Format_Stock_Search_Select", connection))
                 {
-                    command.CommandType = CommandType.StoredProcedure;                    
+                    command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(!string.IsNullOrEmpty(supp_ref_no) ? new SqlParameter("@Supplier_Ref_No", supp_ref_no) : new SqlParameter("@Supplier_Ref_No", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(excel_Format) ? new SqlParameter("@Excel_Format", excel_Format) : new SqlParameter("@Excel_Format", DBNull.Value));
 
@@ -1897,6 +1899,34 @@ namespace astute.Repository
                 }
             }
 
+            return dataTable;
+        }
+        public async Task<DataTable> Get_Excel_Report_Search(IList<Report_Filter_Parameter> report_Filter_Parameters, string excel_Format)
+        {
+            DataTable dataTable = new DataTable();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Excel_Format_Stock_Search_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    foreach (var item in report_Filter_Parameters.Where(x => !string.IsNullOrEmpty(x.Category_Value)).ToList())
+                    {
+                        command.Parameters.Add(!string.IsNullOrEmpty(item.Category_Value) ? new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), item.Category_Value) : new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), DBNull.Value));
+                    }
+                    command.Parameters.Add(!string.IsNullOrEmpty(excel_Format) ? new SqlParameter("@Excel_Format", excel_Format) : new SqlParameter("@Excel_Format", DBNull.Value));
+
+                    command.CommandTimeout = 1800;
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    dataTable = ds.Tables[ds.Tables.Count - 1];
+                }
+            }
             return dataTable;
         }
         #endregion
