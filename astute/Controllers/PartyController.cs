@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NPOI.HSSF.UserModel;
+using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
 using System;
@@ -37,6 +38,7 @@ namespace astute.Controllers
         private readonly ISupplierService _supplierService;
         IExcelDataReader _excelDataReader;
         private readonly ICartService _cartService;
+        private readonly IEmailSender _emailSender;
         #endregion
 
         #region Ctor
@@ -45,7 +47,8 @@ namespace astute.Controllers
             ICommonService commonService,
             IHttpContextAccessor httpContextAccessor,
             ISupplierService supplierService,
-            ICartService cartService)
+            ICartService cartService,
+            IEmailSender emailSender)
         {
             _partyService = partyService;
             _configuration = configuration;
@@ -53,6 +56,7 @@ namespace astute.Controllers
             _httpContextAccessor = httpContextAccessor;
             _supplierService = supplierService;
             _cartService = cartService;
+            _emailSender = emailSender;
         }
         #endregion
 
@@ -5095,6 +5099,65 @@ namespace astute.Controllers
                 });
             }
             return NoContent();
+        }
+        #endregion
+
+        #region Send Stock On Email
+        [HttpPost]
+        [Route("send_stock_on_email")]
+        public async Task<IActionResult> Send_Stock_On_Email(Stock_Email_Model stock_Email_Model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    DataTable supp_stock_dt = await _supplierService.Get_Stock_In_Datatable(stock_Email_Model.Supp_Ref_No, "Customer");
+                    List<string> columnNames = new List<string>();
+                    foreach (DataColumn column in supp_stock_dt.Columns)
+                    {
+                        columnNames.Add(column.ColumnName);
+                    }
+
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in columnNames)
+                    {
+                        columnNamesTable.Rows.Add(columnName);
+                    }
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+
+                    string filename = "Customer_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    EpExcelExport.Create_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                    //excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                    byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
+                    using (MemoryStream memoryStream = new MemoryStream(fileBytes))
+                    {   
+                        IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
+                        _emailSender.SendEmail(toEmail: stock_Email_Model.To_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, strBody: stock_Email_Model.Remarks);
+                        return Ok(new 
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = "Maill sent successfully."
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Send_Stock_On_Email", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
         }
         #endregion
     }

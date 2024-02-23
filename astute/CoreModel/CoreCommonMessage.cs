@@ -36,6 +36,7 @@ namespace astute.CoreModel
 
         #region Email Subjects
         public static string ForgetPasswordSubject = "Forget Password Email";
+        public static string StoneSelectionSubject = "Stone Selection";
         #endregion
 
         #region Employee Master
