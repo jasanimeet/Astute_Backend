@@ -13,5 +13,6 @@ namespace astute.Repository
         Task<int> Approved_Or_Rejected_by_Management(Approval_Management approval_Management);
         Task<int> Create_Approved_Management(Approval_Management_Create_Update approval_Management);
         Task<(string, int)> Create_Update_Order_Processing(DataTable dataTable, int? user_Id, string remarks, string status);
+        Task<int> Order_Processing_Inactive(Order_Processing_Inactive order_processing);
     }
 }

@@ -9,7 +9,7 @@ namespace astute.Models
         public string? Status { get; set; }
         public object Order_Detail { get; set; }
     }
-
+   
     public class Order_Processing_Detail
     {
         public int Id { get; set; }
@@ -20,5 +20,11 @@ namespace astute.Models
 
         [JsonProperty("COST AMOUNT")]
         public object? Buyer_Amt { get; set; }
+    }
+    public class Order_Processing_Inactive
+    {
+        public int? Id { get; set; }
+        public bool? Is_Inactive { get; set; }
+        public int? User_Id { get; set; }
     }
 }

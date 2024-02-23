@@ -4543,6 +4543,33 @@ namespace astute.Controllers
                 });
             }
         }
+        [HttpPost]
+        [Route("create_approved_management")]
+        [Authorize]
+        public async Task<IActionResult> Create_Approved_Management(Approval_Management_Create_Update approval_Management)
+        {
+            try
+            {
+                var result = await _cartService.Create_Approved_Management(approval_Management);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.StockApproved
+                    });
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Approved_Management", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
 
         [HttpPost]
         [Route("create_update_order_processing")]
@@ -4587,26 +4614,26 @@ namespace astute.Controllers
             }
         }
         [HttpPost]
-        [Route("create_approved_management")]
+        [Route("order_processing_inactive")]
         [Authorize]
-        public async Task<IActionResult> Create_Approved_Management(Approval_Management_Create_Update approval_Management)
+        public async Task<IActionResult> Order_Processing_Inactive(Order_Processing_Inactive order_processing)
         {
             try
             {
-                var result = await _cartService.Create_Approved_Management(approval_Management);
+                var result = await _cartService.Order_Processing_Inactive(order_processing);
                 if (result > 0)
                 {
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.StockApproved
+                        message = CoreCommonMessage.OrderInactive
                     });
                 }
                 return BadRequest();
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Create_Approved_Management", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Order_Processing_Inactive", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message

@@ -355,6 +355,7 @@ namespace astute.CoreModel
         public static string ApprovalStockDeleted = "Stone hase been deleted from the approval list successfully.";
         public static string StokeApprovedByManagement = "Stone has been approved successfully.";
         public static string StokeRejectedByManagement = "Stone has been rejected successfully.";
+        public static string OrderInactive = "Order has been inactive successfully.";
         #endregion
     }
 }
