@@ -145,7 +145,7 @@ namespace astute.Repository
 
         public async Task<int> Order_Processing_Inactive(Order_Processing_Inactive order_processing)
         {
-            var _Ids = !string.IsNullOrEmpty(order_processing.Ids) ? new SqlParameter("@Ids", order_processing.Ids : new SqlParameter("@Ids", DBNull.Value);
+            var _Ids = !string.IsNullOrEmpty(order_processing.Ids) ? new SqlParameter("@Ids", order_processing.Ids) : new SqlParameter("@Ids", DBNull.Value);
             var _user_Id = order_processing.User_Id > 0 ? new SqlParameter("@User_Id", order_processing.User_Id) : new SqlParameter("@User_Id", DBNull.Value);
             var _is_Inactive = new SqlParameter("@Is_Inactive", order_processing.Is_Inactive);
 
