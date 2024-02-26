@@ -8,6 +8,7 @@ namespace astute.Models
         public string? Stock_Upload_Type { get; set; }
         public string? To_Email { get; set; }
         public string? Remarks { get; set; }
+        public string? Supplier_Ref_No { get; set; }
         public IList<Report_Filter_Parameter> Report_Filter_Parameter { get; set; } = new List<Report_Filter_Parameter>();
     }
 }

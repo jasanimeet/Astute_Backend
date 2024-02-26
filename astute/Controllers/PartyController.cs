@@ -4126,7 +4126,7 @@ namespace astute.Controllers
         {
             try
             {
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo, report_Filter.iPgSize, report_Filter.iSort);
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo ?? 0, report_Filter.iPgSize ?? 0, report_Filter.iSort);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -4423,6 +4423,38 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Update_Report_Layout_Save_Status", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("get_report_search_total")]
+        [Authorize]
+        public async Task<IActionResult> Get_Report_Search_Total(Report_Filter report_Filter)
+        {
+            try
+            {
+                var (_, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo ?? 0, report_Filter.iPgSize ?? 0, report_Filter.iSort);
+                if (!string.IsNullOrEmpty(totalRecordr) && !string.IsNullOrEmpty(totalCtsr) && !string.IsNullOrEmpty(totalAmtr) && !string.IsNullOrEmpty(totalDiscr))
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        total_Records = totalRecordr,
+                        total_Cts = totalCtsr,
+                        total_Amt = totalAmtr,
+                        total_Disc = totalDiscr
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Report_Search_Total", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
@@ -5067,7 +5099,7 @@ namespace astute.Controllers
         public async Task<IActionResult> Export_Stock_Excel(Excel_Model excel_Model)
         {
             //DataTable supp_stock_dt = await _supplierService.Get_Stock_In_Datatable(excel_Model.supplier_Ref_No, excel_Model.excel_Format);
-            DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(excel_Model.Report_Filter_Parameter, excel_Model.excel_Format);
+            DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(excel_Model.Report_Filter_Parameter, excel_Model.excel_Format, excel_Model.supplier_Ref_No);
             if (supp_stock_dt != null && supp_stock_dt.Rows.Count > 0)
             {
                 List<string> columnNames = new List<string>();
@@ -5129,7 +5161,7 @@ namespace astute.Controllers
                 if (ModelState.IsValid)
                 {
                     //DataTable supp_stock_dt = await _supplierService.Get_Stock_In_Datatable(stock_Email_Model.Supp_Ref_No, "Customer");
-                    DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(stock_Email_Model.Report_Filter_Parameter, "Customer");
+                    DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(stock_Email_Model.Report_Filter_Parameter, "Customer", stock_Email_Model.Supplier_Ref_No);
                     List<string> columnNames = new List<string>();
                     foreach (DataColumn column in supp_stock_dt.Columns)
                     {

@@ -1538,8 +1538,7 @@ namespace astute.Repository
             return result;
         }
         public async Task<(List<Dictionary<string, object>>, string, string, string, string)> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
-        {
-            DataTable dataTable = new DataTable();
+        {   
             var result = new List<Dictionary<string, object>>();
             var totalRecordr = string.Empty;
             var totalCtsr = string.Empty;
@@ -1901,7 +1900,7 @@ namespace astute.Repository
 
             return dataTable;
         }
-        public async Task<DataTable> Get_Excel_Report_Search(IList<Report_Filter_Parameter> report_Filter_Parameters, string excel_Format)
+        public async Task<DataTable> Get_Excel_Report_Search(IList<Report_Filter_Parameter> report_Filter_Parameters, string excel_Format, string supplier_Ref_No)
         {
             DataTable dataTable = new DataTable();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -1914,6 +1913,7 @@ namespace astute.Repository
                         command.Parameters.Add(!string.IsNullOrEmpty(item.Category_Value) ? new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), item.Category_Value) : new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), DBNull.Value));
                     }
                     command.Parameters.Add(!string.IsNullOrEmpty(excel_Format) ? new SqlParameter("@Excel_Format", excel_Format) : new SqlParameter("@Excel_Format", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(supplier_Ref_No) ? new SqlParameter("@Supplier_Ref_No", supplier_Ref_No) : new SqlParameter("@Supplier_Ref_No", DBNull.Value));
 
                     command.CommandTimeout = 1800;
                     await connection.OpenAsync();
