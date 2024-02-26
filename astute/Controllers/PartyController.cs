@@ -39,6 +39,7 @@ namespace astute.Controllers
         IExcelDataReader _excelDataReader;
         private readonly ICartService _cartService;
         private readonly IEmailSender _emailSender;
+        private readonly IJWTAuthentication _jWTAuthentication;
         #endregion
 
         #region Ctor
@@ -48,7 +49,8 @@ namespace astute.Controllers
             IHttpContextAccessor httpContextAccessor,
             ISupplierService supplierService,
             ICartService cartService,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IJWTAuthentication jWTAuthentication)
         {
             _partyService = partyService;
             _configuration = configuration;
@@ -57,6 +59,7 @@ namespace astute.Controllers
             _supplierService = supplierService;
             _cartService = cartService;
             _emailSender = emailSender;
+            _jWTAuthentication = jWTAuthentication;
         }
         #endregion
 
@@ -3593,11 +3596,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("supplier_stock_error_log")]
         [Authorize]
-        public async Task<IActionResult> Supplier_Stock_Error_Log(string supplier_Ids, string upload_Type, string from_Date, string from_Time, string to_Date, string to_Time, bool is_Lab_Entry)
+        public async Task<IActionResult> Supplier_Stock_Error_Log(string supplier_Ids, string upload_Type, string from_Date, string from_Time, string to_Date, string to_Time, bool is_Last_Entry)
         {
             try
             {
-                var result = await _supplierService.Get_Supplier_Stock_Error_Log(supplier_Ids, upload_Type, from_Date, from_Time, to_Date, to_Time, is_Lab_Entry);
+                var result = await _supplierService.Get_Supplier_Stock_Error_Log(supplier_Ids, upload_Type, from_Date, from_Time, to_Date, to_Time, is_Last_Entry);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -4140,7 +4143,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Report_Search", ex.StackTrace);
-                return Ok(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
@@ -5061,7 +5064,8 @@ namespace astute.Controllers
         [Route("export_stock_excel")]
         public async Task<IActionResult> Export_Stock_Excel(Excel_Model excel_Model)
         {
-            DataTable supp_stock_dt = await _supplierService.Get_Stock_In_Datatable(excel_Model.supplier_Ref_No, excel_Model.excel_Format);
+            //DataTable supp_stock_dt = await _supplierService.Get_Stock_In_Datatable(excel_Model.supplier_Ref_No, excel_Model.excel_Format);
+            DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(excel_Model.Report_Filter_Parameter, excel_Model.excel_Format);
             if (supp_stock_dt != null && supp_stock_dt.Rows.Count > 0)
             {
                 List<string> columnNames = new List<string>();
@@ -5115,13 +5119,15 @@ namespace astute.Controllers
         #region Send Stock On Email
         [HttpPost]
         [Route("send_stock_on_email")]
+        [Authorize]
         public async Task<IActionResult> Send_Stock_On_Email(Stock_Email_Model stock_Email_Model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    DataTable supp_stock_dt = await _supplierService.Get_Stock_In_Datatable(stock_Email_Model.Supp_Ref_No, "Customer");
+                    //DataTable supp_stock_dt = await _supplierService.Get_Stock_In_Datatable(stock_Email_Model.Supp_Ref_No, "Customer");
+                    DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(stock_Email_Model.Report_Filter_Parameter, "Customer");
                     List<string> columnNames = new List<string>();
                     foreach (DataColumn column in supp_stock_dt.Columns)
                     {
@@ -5149,12 +5155,14 @@ namespace astute.Controllers
                     byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
                     using (MemoryStream memoryStream = new MemoryStream(fileBytes))
                     {
+                        var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                        var user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                         IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
-                        _emailSender.SendEmail(toEmail: stock_Email_Model.To_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, strBody: stock_Email_Model.Remarks);
-                        return Ok(new
+                        _emailSender.Send_Stock_Email(toEmail: stock_Email_Model.To_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, strBody: stock_Email_Model.Remarks, user_Id: user_Id ?? 0);
+                        return Ok(new 
                         {
                             statusCode = HttpStatusCode.OK,
-                            message = "Maill sent successfully."
+                            message = CoreCommonMessage.EmailSendSuccessMessage
                         });
                     }
                 }

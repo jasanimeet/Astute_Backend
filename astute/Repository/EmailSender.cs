@@ -8,6 +8,7 @@ using System.Text;
 using astute.CoreServices;
 using System.Linq;
 using System.Threading.Tasks;
+using NPOI.HSSF.Record;
 
 namespace astute.Repository
 {
@@ -60,6 +61,40 @@ namespace astute.Repository
                 smptClient.UseDefaultCredentials = false;
                 smptClient.Credentials = new NetworkCredential(_configuration["EmailSetting:FromEmail"], _configuration["EmailSetting:FromPassword"]);
                 smptClient.Port = Convert.ToInt32(_configuration["EmailSetting:SmtpPort"]);
+                smptClient.Send(mailMessage);
+            }
+        }
+        public async void Send_Stock_Email(string toEmail = "", string externalLink = "", string subject = "", IFormFile formFile = null, string strBody = "", int user_Id = 0)
+        {
+            string from_Email = string.Empty;
+            string from_Password = string.Empty;
+            string smtp_Host = string.Empty;
+            int smtp_Port = 0;
+            var employee = await _employeeService.Get_Employee_Email_Details(user_Id);
+            if (employee != null)
+            {
+                from_Email = employee.Email_id;
+                from_Password = employee.Email_Password;
+                smtp_Host = employee.SMTP_Server_Address;
+                smtp_Port = employee.SMTP_Port;
+            }
+            MailMessage mailMessage = new MailMessage(from_Email, toEmail);
+            mailMessage.Subject = subject;
+            mailMessage.Body = strBody;
+            if (formFile != null && formFile.Length > 0)
+            {
+                string fileName = Path.GetFileName(formFile.FileName);
+                mailMessage.Attachments.Add(new Attachment(formFile.OpenReadStream(), fileName));
+            }
+            mailMessage.IsBodyHtml = true;
+
+            using (SmtpClient smptClient = new SmtpClient())
+            {
+                smptClient.Host = smtp_Host;
+                smptClient.EnableSsl = true;
+                smptClient.UseDefaultCredentials = false;
+                smptClient.Credentials = new NetworkCredential(from_Email, from_Password);
+                smptClient.Port = Convert.ToInt32(smtp_Port);
                 smptClient.Send(mailMessage);
             }
         }

@@ -539,6 +539,22 @@ namespace astute.Repository
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Employee_Mail_Delete {employeeId}"));
         }
+        public async Task<Employee_Mail> Get_Employee_Email_Details(int user_Id)
+        {
+            string password = "";
+            var _user_Id = user_Id > 0 ? new SqlParameter("@Employee_Id", user_Id) : new SqlParameter("@Employee_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Employee_Mail
+                            .FromSqlRaw(@"EXEC Employee_Mail_Select @Employee_Id", _user_Id)
+                            .AsEnumerable()
+                            .FirstOrDefault());
+            if (result != null)
+            {
+                password = CoreService.Decrypt(result.Email_Password);
+            }
+            result.Email_Password = password;
+            return result;
+        }
         #endregion
 
         #region Emergency Contact Detail

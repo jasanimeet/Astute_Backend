@@ -37,6 +37,7 @@ namespace astute.Repository
         Task<int> InsertEmployeeMail(Employee_Mail employee_Mail);
         Task<int> UpdateEmployeeMail(Employee_Mail employee_Mail);
         Task<int> DeleteEmployeeMail(int employeeId);
+        Task<Employee_Mail> Get_Employee_Email_Details(int user_Id);
         #endregion
 
         #region Emergency Contact Detail
