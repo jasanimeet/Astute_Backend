@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NPOI.HSSF.UserModel;
+using NPOI.OpenXmlFormats.Spreadsheet;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
@@ -1494,11 +1495,12 @@ namespace astute.Controllers
                         dataTable.Columns.Add("Sup_Id", typeof(int));
                         dataTable.Columns.Add("Supp_Cat_Name", typeof(string));
                         dataTable.Columns.Add("Cat_val_Id", typeof(int));
+                        dataTable.Columns.Add("Col_Id", typeof(int));
                         dataTable.Columns.Add("Status", typeof(bool));
 
                         foreach (var item in supplier_Details.Supplier_Value_Mapping_List)
                         {
-                            dataTable.Rows.Add(supplier_Details.Party_Id, item.Supp_Cat_Name, item.Cat_val_Id, item.Status);
+                            dataTable.Rows.Add(supplier_Details.Party_Id, item.Supp_Cat_Name, item.Cat_val_Id,item.Col_Id, item.Status);
                         }
                         var result = await _supplierService.Insert_Update_Supplier_Value_Mapping(dataTable);
                         if (result > 0)
@@ -5133,7 +5135,6 @@ namespace astute.Controllers
                     {
                         columnNames.Add(column.ColumnName);
                     }
-
                     DataTable columnNamesTable = new DataTable();
                     columnNamesTable.Columns.Add("Column_Name", typeof(string));
 
