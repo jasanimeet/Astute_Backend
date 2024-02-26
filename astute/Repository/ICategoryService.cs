@@ -22,7 +22,7 @@ namespace astute.Repository
         Task<IList<CategoryValueModel>> Get_Active_Category_Values(int catId);
         Task<int> ChangeStatus(int cat_val_Id, bool status);
         Task<DataTable> GetCategororyValues(int catId);
-        Task<int> Get_Category_Value_Max_Order_No();
+        Task<int> Get_Category_Value_Max_Order_No(int cat_Id);
         #endregion
 
         #region Column Master

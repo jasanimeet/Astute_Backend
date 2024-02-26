@@ -497,9 +497,10 @@ namespace astute.Controllers
 
         [HttpGet]
         [Route("get_category_value_max_order_no")]
-        public async Task<IActionResult> Get_Category_Value_Max_Order_No()
+        [Authorize]
+        public async Task<IActionResult> Get_Category_Value_Max_Order_No(int cat_Id)
         {
-            var result = await _categoryService.Get_Category_Value_Max_Order_No();
+            var result = await _categoryService.Get_Category_Value_Max_Order_No(cat_Id);
 
             return Ok(new
             {

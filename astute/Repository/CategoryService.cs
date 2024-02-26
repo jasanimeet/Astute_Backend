@@ -458,9 +458,9 @@ namespace astute.Repository
 
             return ds.Tables[ds.Tables.Count - 1];
         }
-        public async Task<int> Get_Category_Value_Max_Order_No()
+        public async Task<int> Get_Category_Value_Max_Order_No(int cat_Id)
         {
-            var result = await _dbContext.Category_Value.Select(x => x.Order_No).MaxAsync();
+            var result = await _dbContext.Category_Value.Where(x => x.Cat_Id == cat_Id).Select(x => x.Order_No).MaxAsync();
             if (result > 0)
             {
                 var maxValue = checked((int)result + 1);
