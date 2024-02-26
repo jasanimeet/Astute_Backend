@@ -212,7 +212,7 @@ namespace astute.Controllers
                         item.PAVILION_OPEN ?? null,
                         item.GIRDLE_OPEN ?? null,
                         !string.IsNullOrEmpty(item.GIRDLE_FROM) ? (item.GIRDLE_FROM.Contains("-") ? item.GIRDLE_FROM.Split(" - ")[0] : (item.GIRDLE_FROM.Contains(" to ") ? item.GIRDLE_FROM.Split(" to ")[0] : item.GIRDLE_FROM)) : null,
-                        !string.IsNullOrEmpty(item.GIRDLE_TO) ? (item.GIRDLE_TO.Contains("-") ? item.GIRDLE_TO.Split(" - ")[1] : (item.GIRDLE_TO.Contains(" to ") ? item.GIRDLE_TO.Split(" to ")[1] : null)) : null,
+                        !string.IsNullOrEmpty(item.GIRDLE_TO) ? (item.GIRDLE_TO.Contains("-") ? item.GIRDLE_TO.Split(" - ")[1] : (item.GIRDLE_TO.Contains(" to ") ? item.GIRDLE_TO.Split(" to ")[1] : item.GIRDLE_TO)) : null,
                         item.GIRDLE_CONDITION ?? null,
                         item.GIRDLE_TYPE ?? null,
                         item.LASER_INSCRIPTION ?? null,
@@ -407,7 +407,7 @@ namespace astute.Controllers
                         item.PAVILION_OPEN != null ? Convert.ToString(item.PAVILION_OPEN) : DBNull.Value,
                         item.GIRDLE_OPEN != null ? Convert.ToString(item.GIRDLE_OPEN) : DBNull.Value,
                         item.GIRDLE_FROM != null ? !string.IsNullOrEmpty(Convert.ToString(item.GIRDLE_FROM)) ? (Convert.ToString(item.GIRDLE_FROM).Contains("-") ? Convert.ToString(item.GIRDLE_FROM).Split(" - ")[0] : (Convert.ToString(item.GIRDLE_FROM).Contains(" to ") ? Convert.ToString(item.GIRDLE_FROM).Split(" to ")[0] : Convert.ToString(item.GIRDLE_FROM))) : null : DBNull.Value,
-                        item.GIRDLE_TO != null ? !string.IsNullOrEmpty(Convert.ToString(item.GIRDLE_TO)) ? (Convert.ToString(item.GIRDLE_TO).Contains("-") ? Convert.ToString(item.GIRDLE_TO).Split(" - ")[0] : (Convert.ToString(item.GIRDLE_TO).Contains(" to ") ? Convert.ToString(item.GIRDLE_TO).Split(" to ")[0] : null)) : null : DBNull.Value,
+                        item.GIRDLE_TO != null ? !string.IsNullOrEmpty(Convert.ToString(item.GIRDLE_TO)) ? (Convert.ToString(item.GIRDLE_TO).Contains("-") ? Convert.ToString(item.GIRDLE_TO).Split(" - ")[0] : (Convert.ToString(item.GIRDLE_TO).Contains(" to ") ? Convert.ToString(item.GIRDLE_TO).Split(" to ")[0] : Convert.ToString(item.GIRDLE_TO))) : null : DBNull.Value,
                         item.GIRDLE_CONDITION != null ? Convert.ToString(item.GIRDLE_CONDITION) : DBNull.Value,
                         item.GIRDLE_TYPE != null ? Convert.ToString(item.GIRDLE_TYPE) : DBNull.Value,
                         item.LASER_INSCRIPTION != null ? Convert.ToString(item.LASER_INSCRIPTION) : DBNull.Value,
@@ -3446,7 +3446,7 @@ namespace astute.Controllers
                                                  }
                                                  else if (!string.IsNullOrEmpty(displayColName) && displayColName == "GIRDLE_TO")
                                                  {
-                                                     finalRow[displayColName] = !string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName])) ? (Convert.ToString(finalRow[displayColName]).Contains("-") ? Convert.ToString(finalRow[displayColName]).Split(" - ")[1] : (Convert.ToString(finalRow[displayColName]).Contains(" to ") ? Convert.ToString(finalRow[displayColName]).Split(" to ")[1] : null)) : null;
+                                                     finalRow[displayColName] = !string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName])) ? (Convert.ToString(finalRow[displayColName]).Contains("-") ? Convert.ToString(finalRow[displayColName]).Split(" - ")[1] : (Convert.ToString(finalRow[displayColName]).Contains(" to ") ? Convert.ToString(finalRow[displayColName]).Split(" to ")[1] : Convert.ToString(finalRow[displayColName]))) : null;
 
                                                  }
                                                  else if (!string.IsNullOrEmpty(displayColName) && displayColName == "BASE_AMOUNT")
