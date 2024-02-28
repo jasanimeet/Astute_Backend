@@ -13,5 +13,6 @@ namespace astute.Repository
         Task<IList<MenuMasterModel>> Get_all_menus(int employeeId);
         Task<IList<MenuMasterModel>> Get_all_sub_menus(IList<MenuMasterModel> menus, int employeeId);
         Task<Menu_Rights_Model> Set_Menu_Rights(int employeeId, int menuId);
+        Task<int> Get_Menu_Max_Order_No();
     }
 }

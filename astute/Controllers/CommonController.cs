@@ -1621,6 +1621,31 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_process_max_order_no")]
+        [Authorize]
+        public async Task<IActionResult> Get_Process_Max_Order_No()
+        {
+            try
+            {
+                var result = await _processService.Get_Process_Max_Order_No();
+
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    order_no = result
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Process_Max_Order_No", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Currency Master
@@ -1856,6 +1881,31 @@ namespace astute.Controllers
             {
                 await _commonService.InsertErrorLog(ex.Message, "ChangeStatusCurrency", ex.StackTrace);
                 return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_currency_max_order_no")]
+        [Authorize]
+        public async Task<IActionResult> Get_Currency_Max_Order_No()
+        {
+            try
+            {
+                var result = await _currencyService.Get_Currency_Max_Order_No();
+
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    order_no = result
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Currency_Max_Order_No", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
@@ -2223,7 +2273,7 @@ namespace astute.Controllers
                     var (message, bgm_id) = await _bGMService.Add_Update_Bgm_Master(bGM_Master);
                     if (message == "success" && bgm_id > 0)
                     {
-                        if(bGM_Master.BGM_Detail_List != null && bGM_Master.BGM_Detail_List.Count > 0)
+                        if (bGM_Master.BGM_Detail_List != null && bGM_Master.BGM_Detail_List.Count > 0)
                         {
                             DataTable dataTable = new DataTable();
                             dataTable.Columns.Add("@Id", typeof(int));
@@ -2499,6 +2549,31 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_bgm_max_order_no")]
+        [Authorize]
+        public async Task<IActionResult> Get_BGM_Max_Order_No()
+        {
+            try
+            {
+                var result = await _bGMService.Get_BGM_Master_Max_Order_No();
+
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    order_no = result
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_BGM_Max_Order_No", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Bank
@@ -2730,6 +2805,31 @@ namespace astute.Controllers
                 });
             }
             return NoContent();
+        }
+
+        [HttpGet]
+        [Route("get_bank_max_order_no")]
+        [Authorize]
+        public async Task<IActionResult> Get_Bank_Max_Order_No()
+        {
+            try
+            {
+                var result = await _bankService.Get_Bank_Max_Order_No();
+
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    order_no = result
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Bank_Max_Order_No", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
         }
         #endregion
 
@@ -3445,6 +3545,31 @@ namespace astute.Controllers
             {
                 await _commonService.InsertErrorLog(ex.Message, "ChangeStatusTermsAndConditions", ex.StackTrace);
                 return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_termsandconditions_max_order_no")]
+        [Authorize]
+        public async Task<IActionResult> Get_TermsAndConditions_Max_Order_No()
+        {
+            try
+            {
+                var result = await _termsAndConditionService.Get_TermsAndCondition_Max_Order_No();
+
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    order_no = result
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_TermsAndConditions_Max_Order_No", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace astute.Repository
@@ -186,6 +187,16 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                                 .ExecuteSqlRawAsync(@"EXEC Currency_Master_Update_Status @Currency_Id, @Status", Currency_Id, Status));
             return result;
+        }
+        public async Task<int> Get_Currency_Max_Order_No()
+        {
+            var result = await _dbContext.Currency_Master.Select(x => x.Order_No).MaxAsync();
+            if (result > 0)
+            {
+                var maxValue = checked((int)result + 1);
+                return maxValue;
+            }
+            return 1;
         }
         #endregion
     }

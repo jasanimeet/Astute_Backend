@@ -262,6 +262,16 @@ namespace astute.Repository
             }
             return model;
         }
+        public async Task<int> Get_Menu_Max_Order_No()
+        {
+            var result = await _dbContext.Menu_Mas.Select(x => x.Order_No).MaxAsync();
+            if (result > 0)
+            {
+                var maxValue = checked((int)result + 1);
+                return maxValue;
+            }
+            return 1;
+        }
     }
     #endregion
 }

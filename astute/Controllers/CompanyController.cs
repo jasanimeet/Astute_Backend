@@ -435,6 +435,31 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_company_max_order_no")]
+        [Authorize]
+        public async Task<IActionResult> Get_Company_Max_Order_No()
+        {
+            try
+            {
+                var result = await _companyService.Get_Company_Max_Order_No();
+
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    order_no = result
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Company_Max_Order_No", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }

@@ -11,5 +11,6 @@ namespace astute.Repository
         Task<int> DeleteProcessMas(int proccessId);
         Task<IList<Process_Master>> GetProcess(int processId);
         Task<int> StateChangeStatus(int process_Id, bool status);
+        Task<int> Get_Process_Max_Order_No();
     }
 }

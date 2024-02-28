@@ -3,6 +3,7 @@ using astute.Models;
 using astute.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -14,12 +15,14 @@ namespace astute.Controllers
     {
         #region Fields
         private readonly IMenuService _menuService;
+        private readonly ICommonService _commonService;
         #endregion
 
         #region Ctor
-        public MenuController(IMenuService menuService)
+        public MenuController(IMenuService menuService, ICommonService commonService)
         {
             _menuService = menuService;
+            _commonService = commonService;
         }
         #endregion
 
@@ -169,6 +172,31 @@ namespace astute.Controllers
             catch
             {
                 throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("get_menu_max_order_no")]
+        [Authorize]
+        public async Task<IActionResult> Get_Menu_Max_Order_No()
+        {
+            try
+            {
+                var result = await _menuService.Get_Menu_Max_Order_No();
+
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    order_no = result
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Menu_Max_Order_No", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
             }
         }
         #endregion

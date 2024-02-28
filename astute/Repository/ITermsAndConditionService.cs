@@ -10,5 +10,6 @@ namespace astute.Repository
         Task<int> DeleteTermsAndCondition(int condition_Id);
         Task<IList<TermsAndCondition>> GetTermsAndCondition(int condition_Id, int process_Id);
         Task<int> TermsAndConditionChangeStatus(int condition_Id, bool status);
+        Task<int> Get_TermsAndCondition_Max_Order_No();
     }
 }

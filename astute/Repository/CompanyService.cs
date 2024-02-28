@@ -227,6 +227,16 @@ namespace astute.Repository
 
             return result;
         }
+        public async Task<int> Get_Company_Max_Order_No()
+        {
+            var result = await _dbContext.Company_Master.Select(x => x.Order_No).MaxAsync();
+            if (result > 0)
+            {
+                var maxValue = checked((int)result + 1);
+                return maxValue;
+            }
+            return 1;
+        }
         #endregion
 
         #region Company Document

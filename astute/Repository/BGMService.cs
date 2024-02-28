@@ -275,6 +275,16 @@ namespace astute.Repository
                                 .ExecuteSqlRawAsync(@"EXEC BGM_Detail_Update_Status @Id, @Status", _id, Status));
             return result;
         }
+        public async Task<int> Get_BGM_Master_Max_Order_No()
+        {
+            var result = await _dbContext.BGM_Master.Select(x => x.Order_No).MaxAsync();
+            if (result > 0)
+            {
+                var maxValue = checked((int)result + 1);
+                return maxValue;
+            }
+            return 1;
+        }
         #endregion
     }
 }

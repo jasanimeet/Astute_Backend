@@ -12,5 +12,6 @@ namespace astute.Repository
         Task<IList<Currency_Master>> GetCurrency(int currency_Id);
         Task<IList<Currency_Master>> Get_Active_Currency(int currency_Id);
         Task<int> CurrencyChangeStatus(int currency_Id, bool status);
+        Task<int> Get_Currency_Max_Order_No();
     }
 }

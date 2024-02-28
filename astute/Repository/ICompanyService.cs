@@ -21,6 +21,7 @@ namespace astute.Repository
         Task<IList<Company_Master>> GetCompany(int companyId);
         Task<int> CompanyChangeStatus(int company_Id, bool status);
         Task<IList<DropdownModel>> Get_Active_Company();
+        Task<int> Get_Company_Max_Order_No();
         #endregion
 
         #region Company Document

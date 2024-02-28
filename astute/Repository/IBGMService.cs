@@ -16,5 +16,6 @@ namespace astute.Repository
         Task<int> Insert_BGM_Detail(DataTable dataTable);
         Task<BGM_Master> Get_Bgm_Detail(int bgm_Id);
         Task<int> BGM_Detail_Change_Status(int id, bool status);
+        Task<int> Get_BGM_Master_Max_Order_No();
     }
 }
