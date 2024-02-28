@@ -7,12 +7,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NPOI.HSSF.UserModel;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
 using System;
@@ -3110,6 +3107,7 @@ namespace astute.Controllers
                                 }
                                 else if (fileExt == ".xlsx")
                                 {
+                                    List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
                                     if (sheet_list != null && sheet_list.Count > 0)
                                     {
                                         foreach (var sheet_name in sheet_list)
@@ -3171,8 +3169,6 @@ namespace astute.Controllers
                                                 #endregion
 
                                                 List<string> columnNames = new List<string>();
-                                                List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
-
                                                 if (worksheet != null)
                                                 {
                                                     // Get column names
@@ -3245,45 +3241,13 @@ namespace astute.Controllers
                                                                 }
                                                             }
                                                         }
-
                                                         rowsData.Add(rowData);
                                                     }
-                                                    excel_dataTable = CoreService.ConvertToDataTable(rowsData);
-                                                    goto dataExist;
-                                                    ////Save File
-                                                    //int colIndex = 1;
-                                                    //foreach (var columnName in columnNames)
-                                                    //{
-                                                    //    worksheet.Cells[1, colIndex].Value = columnName;
-                                                    //    colIndex++;
-                                                    //}
-
-                                                    //// Write row data
-                                                    //int rowIndex = 2;
-                                                    //foreach (var row in rowsData)
-                                                    //{
-                                                    //    colIndex = 1;
-                                                    //    foreach (var cellValue in row.Values)
-                                                    //    {
-                                                    //        worksheet.Cells[rowIndex, colIndex].Value = cellValue != null ? cellValue : DBNull.Value;
-                                                    //        colIndex++;
-                                                    //    }
-                                                    //    rowIndex++;
-                                                    //}
-                                                    //try
-                                                    //{
-                                                    //    worksheet.Cells["A1"].LoadFromDataTable(excel_dataTable, true);
-                                                    //    goto dataExist;
-                                                    //    //string updatefile = Path.Combine(filePath, strFile);
-                                                    //    //package.SaveAs(new FileInfo(updatefile));
-                                                    //}
-                                                    //catch (Exception ex)
-                                                    //{
-
-                                                    //}
                                                 }
                                             }
                                         }
+                                        excel_dataTable = CoreService.ConvertToDataTable(rowsData);
+                                        goto dataExist;
                                     }
                                 }
 
@@ -3324,7 +3288,7 @@ namespace astute.Controllers
                                     excel_dataTable = CoreService.Convert_File_To_DataTable(".csv", fileLocation, "");
                                 }
 
-                            dataExist:
+                                dataExist:
                                 if (excel_dataTable != null && excel_dataTable.Rows.Count > 0)
                                 {
                                     #region Add column to datatable
@@ -4636,12 +4600,14 @@ namespace astute.Controllers
                 dataTable.Columns.Add("Supp_Stock_Id", typeof(int));
                 dataTable.Columns.Add("Buyer_Disc", typeof(double));
                 dataTable.Columns.Add("Buyer_Amt", typeof(double));
+                dataTable.Columns.Add("Status", typeof(string));
+                dataTable.Columns.Add("QC_Remarks", typeof(string));
 
                 foreach (var item in OrderResult)
                 {
                     dataTable.Rows.Add(item.Id, item.Supp_Stock_Id,
                         (item.Buyer_Disc != null ? !string.IsNullOrEmpty(item.Buyer_Disc.ToString()) ? Convert.ToDouble(item.Buyer_Disc.ToString()) : null : null),
-                        (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null));
+                        (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null), Convert.ToString(item.Status), Convert.ToString(item.QC_Remarks));
                 }
 
                 var (message, result) = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.User_Id, order_Processing.Remarks, order_Processing.Status);

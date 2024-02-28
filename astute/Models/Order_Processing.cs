@@ -20,6 +20,10 @@ namespace astute.Models
 
         [JsonProperty("COST AMOUNT")]
         public object? Buyer_Amt { get; set; }
+        [JsonProperty("STATUS")]
+        public object? Status { get; set; }
+        [JsonProperty("QC REMARK")]
+        public object? QC_Remarks { get; set; }
     }
     public class Order_Processing_Inactive
     {
