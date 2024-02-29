@@ -3415,7 +3415,7 @@ namespace astute.Controllers
                                                  }
                                                  else if (!string.IsNullOrEmpty(displayColName) && displayColName == "BASE_AMOUNT")
                                                  {
-                                                     var base_amt = Convert.ToDecimal(finalRow[displayColName]);
+                                                     var base_amt = finalRow[displayColName].ToString().Contains("$") ? Convert.ToDecimal(finalRow[displayColName].ToString().Replace("$","")) : Convert.ToDecimal(finalRow[displayColName]);
                                                      finalRow[displayColName] = base_amt.ToString("0.00");
                                                  }
                                                  else if (!string.IsNullOrEmpty(displayColName) && displayColName == "DNA")
