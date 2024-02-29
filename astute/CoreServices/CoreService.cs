@@ -415,6 +415,7 @@ namespace astute.CoreServices
         }
         public static string Split_Supplier_Stock_Measurement(string expression, string dimension)
         {
+
             // Define a regular expression pattern to capture numeric values
             string pattern = @"[-+]?\d*\.\d+|[-+]?\d+";
 

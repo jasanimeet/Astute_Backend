@@ -3495,7 +3495,7 @@ namespace astute.Controllers
                                             && string.IsNullOrEmpty(Convert.ToString(stockDataRow["WIDTH"]))
                                             && string.IsNullOrEmpty(Convert.ToString(stockDataRow["DEPTH"]))))
                                         {
-                                            string measurementValue = Convert.ToString(stockDataRow["MEASUREMENT"]);
+                                            string measurementValue = Convert.ToString(stockDataRow["MEASUREMENT"]).Replace("-","*").Replace("x","*");
 
                                             // Call the function and handle possible null values
                                             string lengthValue = CoreService.Split_Supplier_Stock_Measurement(measurementValue, "LENGTH");
