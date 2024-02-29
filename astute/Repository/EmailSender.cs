@@ -9,6 +9,8 @@ using astute.CoreServices;
 using System.Linq;
 using System.Threading.Tasks;
 using NPOI.HSSF.Record;
+using NPOI.SS.Formula.Functions;
+using astute.Models;
 
 namespace astute.Repository
 {
@@ -64,19 +66,18 @@ namespace astute.Repository
                 smptClient.Send(mailMessage);
             }
         }
-        public async void Send_Stock_Email(string toEmail = "", string externalLink = "", string subject = "", IFormFile formFile = null, string strBody = "", int user_Id = 0)
+        public async void Send_Stock_Email(string toEmail = "", string externalLink = "", string subject = "", IFormFile formFile = null, string strBody = "", int user_Id = 0, Employee_Mail employee_Mail = null)
         {
             string from_Email = string.Empty;
             string from_Password = string.Empty;
             string smtp_Host = string.Empty;
             int smtp_Port = 0;
-            var employee = await _employeeService.Get_Employee_Email_Details(user_Id);
-            if (employee != null)
-            {
-                from_Email = employee.Email_id;
-                from_Password = employee.Email_Password;
-                smtp_Host = employee.SMTP_Server_Address;
-                smtp_Port = employee.SMTP_Port;
+            if (employee_Mail != null)
+            {   
+                from_Email = employee_Mail.Email_id;
+                from_Password = employee_Mail.Email_Password;
+                smtp_Host = employee_Mail.SMTP_Server_Address;
+                smtp_Port = employee_Mail.SMTP_Port ?? 0;
             }
             MailMessage mailMessage = new MailMessage(from_Email, toEmail);
             mailMessage.Subject = subject;
@@ -106,8 +107,8 @@ namespace astute.Repository
             string fromEmail = !string.IsNullOrEmpty(mailSetting.Email_id) ? mailSetting.Email_id : _configuration["EmailSetting:FromEmail"];
             string authPassword = !string.IsNullOrEmpty(mailSetting.Email_Password) ? mailSetting.Email_Password : _configuration["EmailSetting:FromPassword"];
             string smtpHost = !string.IsNullOrEmpty(mailSetting.SMTP_Server_Address) ? mailSetting.SMTP_Server_Address : _configuration["EmailSetting:SmtpHost"];
-            int smtpPort = mailSetting.SMTP_Port > 0 ? mailSetting.SMTP_Port : Convert.ToInt32(_configuration["EmailSetting:SmtpPort"]);
-            bool enableSSL = mailSetting.Enable_SSL;
+            int smtpPort = mailSetting.SMTP_Port > 0 ? mailSetting.SMTP_Port ?? 0 : Convert.ToInt32(_configuration["EmailSetting:SmtpPort"]);
+            bool enableSSL = mailSetting.Enable_SSL ?? false;
 
             MailMessage mailMessage = new MailMessage(fromEmail, toEmail);
             mailMessage.Subject = subject;

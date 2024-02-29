@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -543,18 +544,56 @@ namespace astute.Repository
         {
             string password = "";
             var _user_Id = user_Id > 0 ? new SqlParameter("@Employee_Id", user_Id) : new SqlParameter("@Employee_Id", DBNull.Value);
-
+            Employee_Mail emp = new Employee_Mail();
             var result = await Task.Run(() => _dbContext.Employee_Mail
-                            .FromSqlRaw(@"EXEC Employee_Mail_Select @Employee_Id", _user_Id)
-                            .AsEnumerable()
-                            .FirstOrDefault());
-            if (result != null)
+                                .FromSqlRaw(@"EXEC Employee_Mail_Select @Employee_Id", _user_Id)
+                                .ToListAsync());
+
+            if (result != null && result.Count > 0)
             {
-                password = CoreService.Decrypt(result.Email_Password);
+                emp = result.FirstOrDefault();
+                if (emp != null)
+                {
+                    password = CoreService.Decrypt(emp.Email_Password);
+                }
             }
-            result.Email_Password = password;
-            return result;
+            emp.Email_Password = password;
+            return emp;
         }
+
+        //public async Task<List<Dictionary<string, object>>> Get_Employee_Email_Details(int user_Id)
+        //{
+        //    var result = new List<Dictionary<string, object>>();
+        //    using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+        //    {
+        //        using (var command = new SqlCommand("Employee_Mail_Select", connection))
+        //        {
+        //            command.CommandType = CommandType.StoredProcedure;
+        //            command.Parameters.Add(user_Id > 0 ? new SqlParameter("@Employee_Id", user_Id) : new SqlParameter("@Employee_Id", DBNull.Value));
+
+        //            await connection.OpenAsync();
+
+        //            using (var reader = await command.ExecuteReaderAsync())
+        //            {
+        //                while (await reader.ReadAsync())
+        //                {
+        //                    var dict = new Dictionary<string, object>();
+
+        //                    for (int i = 0; i < reader.FieldCount; i++)
+        //                    {
+        //                        var columnName = reader.GetName(i);
+        //                        var columnValue = reader.GetValue(i);
+
+        //                        dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+        //                    }
+
+        //                    result.Add(dict);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return result;
+        //}
         #endregion
 
         #region Emergency Contact Detail
