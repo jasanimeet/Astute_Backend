@@ -2080,7 +2080,7 @@ namespace astute.CoreServices
                         else
                         {
                             kkk += 1;
-                            if (Column_Name == "Supplier Ref No")
+                            if (Column_Name == "Ref No")
                             {
                                 worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(103," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                                 worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;

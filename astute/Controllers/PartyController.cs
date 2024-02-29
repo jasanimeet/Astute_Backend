@@ -38,6 +38,7 @@ namespace astute.Controllers
         private readonly ICartService _cartService;
         private readonly IEmailSender _emailSender;
         private readonly IJWTAuthentication _jWTAuthentication;
+        private readonly IEmployeeService _employeeService;
         #endregion
 
         #region Ctor
@@ -48,7 +49,8 @@ namespace astute.Controllers
             ISupplierService supplierService,
             ICartService cartService,
             IEmailSender emailSender,
-            IJWTAuthentication jWTAuthentication)
+            IJWTAuthentication jWTAuthentication,
+            IEmployeeService employeeService)
         {
             _partyService = partyService;
             _configuration = configuration;
@@ -58,6 +60,7 @@ namespace astute.Controllers
             _cartService = cartService;
             _emailSender = emailSender;
             _jWTAuthentication = jWTAuthentication;
+            _employeeService = employeeService;
         }
         #endregion
 
@@ -5147,7 +5150,7 @@ namespace astute.Controllers
                         Directory.CreateDirectory(filePath);
                     }
 
-                    string filename = "Customer_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    string filename = "Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     EpExcelExport.Create_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
                     //excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                     excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
@@ -5155,9 +5158,15 @@ namespace astute.Controllers
                     using (MemoryStream memoryStream = new MemoryStream(fileBytes))
                     {
                         var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                        var user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-                        IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
-                        _emailSender.Send_Stock_Email(toEmail: stock_Email_Model.To_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, strBody: stock_Email_Model.Remarks, user_Id: user_Id ?? 0);
+                        int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                        var employeeEmails = await _employeeService.GetEmployeeMail(user_Id ?? 0);
+                        if (employeeEmails != null && employeeEmails.Count > 0)
+                        {
+                            var emp_email = employeeEmails.FirstOrDefault();
+
+                            IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
+                            _emailSender.Send_Stock_Email(toEmail: stock_Email_Model.To_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, strBody: stock_Email_Model.Remarks, user_Id: user_Id ?? 0, employee_Mail: emp_email);
+                        }
                         return Ok(new 
                         {
                             statusCode = HttpStatusCode.OK,
