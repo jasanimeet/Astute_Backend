@@ -4089,10 +4089,34 @@ namespace astute.Controllers
         [HttpPost]
         [Route("get_report_search")]
         [Authorize]
-        public async Task<IActionResult> Get_Report_Search(Report_Filter report_Filter)
+        public async Task<IActionResult> Get_Report_Search(Report_Filter report_Filter, IFormFile? File_Location)
         {
             try
             {
+                List<Stock_Excel_Model> stockList = new List<Stock_Excel_Model>();
+
+                if (File_Location != null)
+                {
+                    using (var package = new ExcelPackage(new FileInfo(File_Location)))
+                    {
+                        var worksheet = package.Workbook.Worksheets[0]; // Assuming the data is in the first sheet
+
+                        int startRow = 2; // Assuming the header is in the first row
+
+                        for (int row = startRow; row <= worksheet.Dimension.End.Row; row++)
+                        {
+                            Stock_Excel_Model stock = new Stock_Excel_Model
+                            {
+                                StockId = worksheet.Cells[row, 1].GetValue<string>(),
+                                FinalDicPercentage = worksheet.Cells[row, 2].GetValue<string>(),
+                                FinalAmount = worksheet.Cells[row, 3].GetValue<string>()
+                            };
+
+                            stockList.Add(stock);
+                        }
+                    }
+                }
+
                 var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo ?? 0, report_Filter.iPgSize ?? 0, report_Filter.iSort);
                 if (result != null && result.Count > 0)
                 {
