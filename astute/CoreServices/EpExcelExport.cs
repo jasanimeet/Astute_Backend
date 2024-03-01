@@ -1340,28 +1340,28 @@ namespace astute.CoreServices
                                 if (Column_Name == "Cts")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cts"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Cts"]) : DBNull.Value;
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Cts"]) : 0;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "Rap Rate($)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Rap Rate($)"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Rap Rate($)"]) : DBNull.Value;
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Rap Rate($)"]) : 0;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "Rap Amount($)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Rap Amount($)"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Rap Amount($)"]) : DBNull.Value;
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Rap Amount($)"]) : 0;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "Final Disc(%)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Final Disc(%)"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Final Disc(%)"]) : DBNull.Value;
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Final Disc(%)"]) : 0;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -1370,7 +1370,7 @@ namespace astute.CoreServices
                                 else if (Column_Name == "Final Amt US($)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Final Amt US($)"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Final Amt US($)"]) : DBNull.Value;
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Final Amt US($)"]) : 0;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -1379,7 +1379,7 @@ namespace astute.CoreServices
                                 else if (Column_Name == "Price / Cts")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Price / Cts"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Price / Cts"]) : DBNull.Value;
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Price / Cts"]) : 0;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -1540,7 +1540,7 @@ namespace astute.CoreServices
                             }
                             else if (Column_Name == "Final Disc(%)")
                             {
-                                worksheet.Cells[1, kkk].Formula = "ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(14) + "" + inStartIndex + ":" + GetExcelColumnLetter(14) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(12) + "" + inStartIndex + ":" + GetExcelColumnLetter(12) + "" + (inwrkrow - 1) + "))-100),2)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(14) + "" + inStartIndex + ":" + GetExcelColumnLetter(14) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(12) + "" + inStartIndex + ":" + GetExcelColumnLetter(12) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "Final Amt US($)")
@@ -1828,8 +1828,8 @@ namespace astute.CoreServices
                                     }
                                     else if (Column_Name == "Avg. Sales Disc(%)")
                                     {
-                                        string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cts"]);
-                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Cts"]) : DBNull.Value;
+                                        string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Avg. Sales Disc(%)"]);
+                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Avg. Sales Disc(%)"]) : DBNull.Value;
 
                                         worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                         worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -1880,28 +1880,28 @@ namespace astute.CoreServices
                                     else if (Column_Name == "Cts")
                                     {
                                         string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cts"]);
-                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Cts"]) : DBNull.Value;
+                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Cts"]) : 0;
 
                                         worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     }
                                     else if (Column_Name == "Rap Rate($)")
                                     {
                                         string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Rap Rate($)"]);
-                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Rap Rate($)"]) : DBNull.Value;
+                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Rap Rate($)"]) : 0;
 
                                         worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     }
                                     else if (Column_Name == "Rap Amount($)")
                                     {
                                         string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Rap Amount($)"]);
-                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Rap Amount($)"]) : DBNull.Value;
+                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Rap Amount($)"]) : 0;
 
                                         worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     }
                                     else if (Column_Name == "Supplier Base Offer(%)")
                                     {
                                         string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Supplier Base Offer(%)"]);
-                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Base Offer(%)"]) : DBNull.Value;
+                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Base Offer(%)"]) : 0;
 
                                         worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                         worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -1910,7 +1910,7 @@ namespace astute.CoreServices
                                     else if (Column_Name == "Supplier Base Offer Value($)")
                                     {
                                         string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Supplier Base Offer Value($)"]);
-                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Base Offer Value($)"]) : DBNull.Value;
+                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Base Offer Value($)"]) : 0;
 
                                         worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                         worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -1919,7 +1919,7 @@ namespace astute.CoreServices
                                     else if (Column_Name == "Supplier Final Disc(%)")
                                     {
                                         string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Supplier Final Disc(%)"]);
-                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Final Disc(%)"]) : DBNull.Value;
+                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Final Disc(%)"]) : 0;
 
                                         worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                         worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -1928,7 +1928,7 @@ namespace astute.CoreServices
                                     else if (Column_Name == "Supplier Final Value($)")
                                     {
                                         string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Supplier Final Value($)"]);
-                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Final Value($)"]) : DBNull.Value;
+                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Final Value($)"]) : 0;
 
                                         worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                         worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -1937,7 +1937,7 @@ namespace astute.CoreServices
                                     else if (Column_Name == "Supplier Final Disc. With Max Slab(%)")
                                     {
                                         string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Supplier Final Disc. With Max Slab(%)"]);
-                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Final Disc. With Max Slab(%)"]) : DBNull.Value;
+                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Final Disc. With Max Slab(%)"]) : 0;
 
                                         worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                         worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -1946,7 +1946,7 @@ namespace astute.CoreServices
                                     else if (Column_Name == "Supplier Final Value With Max Slab($)")
                                     {
                                         string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Supplier Final Value With Max Slab($)"]);
-                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Final Value With Max Slab($)"]) : DBNull.Value;
+                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Final Value With Max Slab($)"]) : 0;
 
                                         worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                         worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -2120,7 +2120,7 @@ namespace astute.CoreServices
                             }
                             else if (Column_Name == "Supplier Base Offer(%)")
                             {
-                                worksheet.Cells[1, kkk].Formula = "ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(19) + "" + inStartIndex + ":" + GetExcelColumnLetter(19) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(17) + "" + inStartIndex + ":" + GetExcelColumnLetter(17) + "" + (inwrkrow - 1) + "))-100),2)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(19) + "" + inStartIndex + ":" + GetExcelColumnLetter(19) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(17) + "" + inStartIndex + ":" + GetExcelColumnLetter(17) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "Supplier Base Offer Value($)")
@@ -2137,7 +2137,7 @@ namespace astute.CoreServices
                             }
                             else if (Column_Name == "Supplier Final Disc(%)")
                             {
-                                worksheet.Cells[1, kkk].Formula = "ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(21) + "" + inStartIndex + ":" + GetExcelColumnLetter(21) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(17) + "" + inStartIndex + ":" + GetExcelColumnLetter(17) + "" + (inwrkrow - 1) + "))-100),2)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(21) + "" + inStartIndex + ":" + GetExcelColumnLetter(21) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(17) + "" + inStartIndex + ":" + GetExcelColumnLetter(17) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "Supplier Final Value($)")
@@ -2154,7 +2154,7 @@ namespace astute.CoreServices
                             }
                             else if (Column_Name == "Supplier Final Disc. With Max Slab(%)")
                             {
-                                worksheet.Cells[1, kkk].Formula = "ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(23) + "" + inStartIndex + ":" + GetExcelColumnLetter(23) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(17) + "" + inStartIndex + ":" + GetExcelColumnLetter(17) + "" + (inwrkrow - 1) + "))-100),2)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(23) + "" + inStartIndex + ":" + GetExcelColumnLetter(23) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(17) + "" + inStartIndex + ":" + GetExcelColumnLetter(17) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "Supplier Final Value With Max Slab($)")
@@ -2348,25 +2348,25 @@ namespace astute.CoreServices
                                 if (Column_Name == "Cts")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cts"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Cts"]) : DBNull.Value;
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Cts"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "Rap Rate($)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Rap Rate($)"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Rap Rate($)"]) : DBNull.Value;
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Rap Rate($)"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "Rap Amount($)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Rap Amount($)"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Rap Amount($)"]) : DBNull.Value;
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Rap Amount($)"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "Supplier Cost Disc(%)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Supplier Cost Disc(%)"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Cost Disc(%)"]) : DBNull.Value;
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Cost Disc(%)"]) : 0;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -2375,7 +2375,7 @@ namespace astute.CoreServices
                                 else if (Column_Name == "Supplier Cost Value($)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Supplier Cost Value($)"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Cost Value($)"]) : DBNull.Value;
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Cost Value($)"]) : 0;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -2384,7 +2384,7 @@ namespace astute.CoreServices
                                 else if (Column_Name == "Final Disc(%)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Final Disc(%)"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Final Disc(%)"]) : DBNull.Value;
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Final Disc(%)"]) : 0;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -2393,7 +2393,7 @@ namespace astute.CoreServices
                                 else if (Column_Name == "Final Amt US($)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Final Amt US($)"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Final Amt US($)"]) : DBNull.Value;
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Final Amt US($)"]) : 0;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -2402,14 +2402,14 @@ namespace astute.CoreServices
                                 else if (Column_Name == "Supplier Base Offer(%)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Supplier Base Offer(%)"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Base Offer(%)"]) : DBNull.Value;
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Base Offer(%)"]) : 0;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "Supplier Base Offer Value($)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Supplier Base Offer Value($)"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Base Offer Value($)"]) : DBNull.Value;
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Base Offer Value($)"]) : 0;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
@@ -2568,7 +2568,7 @@ namespace astute.CoreServices
                             }
                             else if (Column_Name == "Supplier Cost Disc(%)")
                             {
-                                worksheet.Cells[1, kkk].Formula = "ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(17) + "" + inStartIndex + ":" + GetExcelColumnLetter(17) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(15) + "" + inStartIndex + ":" + GetExcelColumnLetter(15) + "" + (inwrkrow - 1) + "))-100),2)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(17) + "" + inStartIndex + ":" + GetExcelColumnLetter(17) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(15) + "" + inStartIndex + ":" + GetExcelColumnLetter(15) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "Supplier Cost Value($)")
@@ -2585,7 +2585,7 @@ namespace astute.CoreServices
                             }
                             else if (Column_Name == "Final Disc(%)")
                             {
-                                worksheet.Cells[1, kkk].Formula = "ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(19) + "" + inStartIndex + ":" + GetExcelColumnLetter(19) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(15) + "" + inStartIndex + ":" + GetExcelColumnLetter(15) + "" + (inwrkrow - 1) + "))-100),2)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(19) + "" + inStartIndex + ":" + GetExcelColumnLetter(19) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(15) + "" + inStartIndex + ":" + GetExcelColumnLetter(15) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "Final Amt US($)")
@@ -2602,7 +2602,7 @@ namespace astute.CoreServices
                             }
                             else if (Column_Name == "Supplier Base Offer(%)")
                             {
-                                worksheet.Cells[1, kkk].Formula = "ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(21) + "" + inStartIndex + ":" + GetExcelColumnLetter(21) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(15) + "" + inStartIndex + ":" + GetExcelColumnLetter(15) + "" + (inwrkrow - 1) + "))-100),2)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(21) + "" + inStartIndex + ":" + GetExcelColumnLetter(21) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(15) + "" + inStartIndex + ":" + GetExcelColumnLetter(15) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "Supplier Base Offer Value($)")
