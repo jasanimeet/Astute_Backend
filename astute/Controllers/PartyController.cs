@@ -5090,21 +5090,22 @@ namespace astute.Controllers
                 {
                     Directory.CreateDirectory(filePath);
                 }
+                string filename = string.Empty;
                 if (excel_Model.excel_Format == "Customer")
                 {
-                    string filename = "Customer_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                     filename = "Customer_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     EpExcelExport.Create_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
                     excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                 }
                 else if (excel_Model.excel_Format == "Buyer")
                 {
-                    string filename = "Buyer_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                     filename = "Buyer_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     EpExcelExport.Create_Buyer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
                     excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                 }
                 else if (excel_Model.excel_Format == "Supplier")
                 {
-                    string filename = "Supplier_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                     filename = "Supplier_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     EpExcelExport.Create_Supplier_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
                     excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                 }
@@ -5112,8 +5113,9 @@ namespace astute.Controllers
                 {
                     statusCode = HttpStatusCode.OK,
                     message = CoreCommonMessage.DataSuccessfullyFound,
-                    result = excelPath
-                });
+                    result = excelPath,
+                    file_name = filename
+                }); 
             }
             return NoContent();
         }
