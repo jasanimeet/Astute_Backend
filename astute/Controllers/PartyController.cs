@@ -1500,7 +1500,7 @@ namespace astute.Controllers
 
                         foreach (var item in supplier_Details.Supplier_Value_Mapping_List)
                         {
-                            dataTable.Rows.Add(supplier_Details.Party_Id, item.Supp_Cat_Name, item.Cat_val_Id,item.Col_Id, item.Status);
+                            dataTable.Rows.Add(supplier_Details.Party_Id, item.Supp_Cat_Name, item.Cat_val_Id, item.Col_Id, item.Status);
                         }
                         var result = await _supplierService.Insert_Update_Supplier_Value_Mapping(dataTable);
                         if (result > 0)
@@ -3291,7 +3291,7 @@ namespace astute.Controllers
                                     excel_dataTable = CoreService.Convert_File_To_DataTable(".csv", fileLocation, "");
                                 }
 
-                                dataExist:
+                            dataExist:
                                 if (excel_dataTable != null && excel_dataTable.Rows.Count > 0)
                                 {
                                     #region Add column to datatable
@@ -3409,7 +3409,7 @@ namespace astute.Controllers
                                                  else if (!string.IsNullOrEmpty(displayColName) && displayColName == "GIRDLE_FROM")
                                                  {
                                                      finalRow[displayColName] = !string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName])) ? (Convert.ToString(finalRow[displayColName]).Contains("-") ? Convert.ToString(finalRow[displayColName]).Split(" - ")[0] : (Convert.ToString(finalRow[displayColName]).ToUpper().Contains(" TO ") ? Convert.ToString(finalRow[displayColName]).ToUpper().Split(" TO ")[0] : Convert.ToString(finalRow[displayColName]))) : null;
-                       
+
                                                  }
                                                  else if (!string.IsNullOrEmpty(displayColName) && displayColName == "GIRDLE_TO")
                                                  {
@@ -3418,7 +3418,7 @@ namespace astute.Controllers
                                                  }
                                                  else if (!string.IsNullOrEmpty(displayColName) && displayColName == "BASE_AMOUNT")
                                                  {
-                                                     var base_amt = finalRow[displayColName].ToString().Contains("$") ? Convert.ToDecimal(finalRow[displayColName].ToString().Replace("$","")) : Convert.ToDecimal(finalRow[displayColName]);
+                                                     var base_amt = finalRow[displayColName].ToString().Contains("$") ? Convert.ToDecimal(finalRow[displayColName].ToString().Replace("$", "")) : Convert.ToDecimal(finalRow[displayColName]);
                                                      finalRow[displayColName] = base_amt.ToString("0.00");
                                                  }
                                                  else if (!string.IsNullOrEmpty(displayColName) && displayColName == "DNA")
@@ -3498,7 +3498,7 @@ namespace astute.Controllers
                                             && string.IsNullOrEmpty(Convert.ToString(stockDataRow["WIDTH"]))
                                             && string.IsNullOrEmpty(Convert.ToString(stockDataRow["DEPTH"]))))
                                         {
-                                            string measurementValue = Convert.ToString(stockDataRow["MEASUREMENT"]).Replace("-","*").Replace("x","*");
+                                            string measurementValue = Convert.ToString(stockDataRow["MEASUREMENT"]).Replace("-", "*").Replace("x", "*");
 
                                             // Call the function and handle possible null values
                                             string lengthValue = CoreService.Split_Supplier_Stock_Measurement(measurementValue, "LENGTH");
@@ -5093,19 +5093,19 @@ namespace astute.Controllers
                 string filename = string.Empty;
                 if (excel_Model.excel_Format == "Customer")
                 {
-                     filename = "Customer_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    filename = "Customer_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     EpExcelExport.Create_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
                     excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                 }
                 else if (excel_Model.excel_Format == "Buyer")
                 {
-                     filename = "Buyer_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    filename = "Buyer_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     EpExcelExport.Create_Buyer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
                     excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                 }
                 else if (excel_Model.excel_Format == "Supplier")
                 {
-                     filename = "Supplier_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    filename = "Supplier_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     EpExcelExport.Create_Supplier_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
                     excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                 }
@@ -5115,7 +5115,7 @@ namespace astute.Controllers
                     message = CoreCommonMessage.DataSuccessfullyFound,
                     result = excelPath,
                     file_name = filename
-                }); 
+                });
             }
             return NoContent();
         }
@@ -5169,7 +5169,7 @@ namespace astute.Controllers
                             IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
                             _emailSender.Send_Stock_Email(toEmail: stock_Email_Model.To_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, strBody: stock_Email_Model.Remarks, user_Id: user_Id ?? 0, employee_Mail: emp_email);
                         }
-                        return Ok(new 
+                        return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
                             message = CoreCommonMessage.EmailSendSuccessMessage
