@@ -670,7 +670,7 @@ namespace astute.Repository
             }
             return result;
         }
-        private async Task<List<Dictionary<string, object>>> Common_Funtion_To_Get_Supp_Col_Map(int supp_Id, string upload_Type)
+        public async Task<List<Dictionary<string, object>>> Common_Funtion_To_Get_Supp_Col_Map(int supp_Id, string upload_Type)
         {
             var result = new List<Dictionary<string, object>>();
 
@@ -753,7 +753,7 @@ namespace astute.Repository
         }
         public async Task<Party_FTP> Get_Party_FTP(int ftp_Id, int party_Id)
         {
-            var _ftp_Id = ftp_Id > 0 ? new SqlParameter("@FTP_Id", party_Id) : new SqlParameter("@FTP_Id", DBNull.Value);
+            var _ftp_Id = ftp_Id > 0 ? new SqlParameter("@FTP_Id", ftp_Id) : new SqlParameter("@FTP_Id", DBNull.Value);
             var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Party_FTP

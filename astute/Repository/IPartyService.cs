@@ -67,6 +67,7 @@ namespace astute.Repository
         Task<int> Delete_Party_API(int api_Id);
         Task<Party_Api> Get_Party_API(int api_Id, int party_Id);
         Task<IList<Party_API_With_Column_Mapping>> Get_Party_API_With_Column_Mapping();
+        Task<List<Dictionary<string, object>>> Common_Funtion_To_Get_Supp_Col_Map(int supp_Id, string upload_Type);
         #endregion
 
         #region Party FTP

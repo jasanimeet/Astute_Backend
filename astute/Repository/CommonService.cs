@@ -646,10 +646,10 @@ namespace astute.Repository
         public async Task<int> InsertErrorLog(string message, string method, string stackTrace)
         {
             var parameter = new List<SqlParameter>();
-            parameter.Add(new SqlParameter("@Error_Message", message));
-            parameter.Add(new SqlParameter("@Module_Name", method));
+            parameter.Add(new SqlParameter("@Error_Message", !string.IsNullOrEmpty(message) ? message : DBNull.Value));
+            parameter.Add(new SqlParameter("@Module_Name", !string.IsNullOrEmpty(method) ? method : DBNull.Value));
             parameter.Add(new SqlParameter("@Arise_Date", DateTime.UtcNow));
-            parameter.Add(new SqlParameter("@Error_Trace", stackTrace));
+            parameter.Add(new SqlParameter("@Error_Trace", !string.IsNullOrEmpty(stackTrace) ? stackTrace : DBNull.Value));
 
             var result = await Task.Run(() => _dbContext.Database
             .ExecuteSqlRawAsync(@" exec Error_Log_Insert @Error_Message, @Module_Name, @Arise_Date, @Error_Trace", parameter.ToArray()));

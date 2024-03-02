@@ -1740,6 +1740,98 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_supplier_api_ftp_file")]
+        [Authorize]
+        public async Task<IActionResult> Get_Supplier_API_FTP_File(int id, string upload_Type)
+        {
+            try
+            {
+                Party_API_With_Column_Mapping supplier_API_FTP_File_Details = new Party_API_With_Column_Mapping();
+                if (!string.IsNullOrEmpty(upload_Type) && upload_Type == "API")
+                {
+                    var result = await _partyService.Get_Party_API(id, 0);
+                    if (result != null)
+                    {
+                        supplier_API_FTP_File_Details.API_Id = result.API_Id;
+                        supplier_API_FTP_File_Details.Party_Id = result.Party_Id;
+                        supplier_API_FTP_File_Details.Upload_Type = upload_Type;
+                        supplier_API_FTP_File_Details.API_URL = result.API_URL;
+                        supplier_API_FTP_File_Details.API_User = result.API_User;
+                        supplier_API_FTP_File_Details.API_Password = result.API_Password;
+                        supplier_API_FTP_File_Details.API_Method = result.API_Method;
+                        supplier_API_FTP_File_Details.API_Response = result.API_Response;
+                        supplier_API_FTP_File_Details.API_Status = result.API_Status;
+                        supplier_API_FTP_File_Details.Disc_Inverse = result.Disc_Inverse;
+                        supplier_API_FTP_File_Details.Auto_Ref_No = result.Auto_Ref_No;
+                        supplier_API_FTP_File_Details.RepeateveryType = result.RepeateveryType;
+                        supplier_API_FTP_File_Details.Repeatevery = result.Repeatevery;
+                        supplier_API_FTP_File_Details.Lab = result.Lab;
+                        supplier_API_FTP_File_Details.Overseas = result.Overseas;
+                        supplier_API_FTP_File_Details.Stock_Url = result.Stock_Url;
+                        supplier_API_FTP_File_Details.User_Id = result.User_Id;
+                        supplier_API_FTP_File_Details.User_Caption = result.User_Caption;
+                        supplier_API_FTP_File_Details.Password_Caption = result.Password_Caption;
+                        supplier_API_FTP_File_Details.Action_Caption = result.Action_Caption;
+                        supplier_API_FTP_File_Details.Action_Value = result.Action_Value;
+                        supplier_API_FTP_File_Details.Action_Caption_1 = result.Action_Caption_1;
+                        supplier_API_FTP_File_Details.Action_Value_1 = result.Action_Value_1;
+                        supplier_API_FTP_File_Details.Action_Caption_2 = result.Action_Caption_2;
+                        supplier_API_FTP_File_Details.Action_Value_2 = result.Action_Value_2;
+                        supplier_API_FTP_File_Details.Short_Code = result.Short_Code;
+                        supplier_API_FTP_File_Details.Stock_Api_Method = result.Stock_Api_Method;
+                        supplier_API_FTP_File_Details.Method_Type = result.Method_Type;
+                        supplier_API_FTP_File_Details.Supplier_Column_Mapping_List = await _partyService.Common_Funtion_To_Get_Supp_Col_Map(supplier_API_FTP_File_Details.Party_Id ?? 0, "FTP");
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = supplier_API_FTP_File_Details
+                        });
+                    }
+                }
+                else if(!string.IsNullOrEmpty(upload_Type) && upload_Type == "FTP")
+                {
+                    var result = await _partyService.Get_Party_FTP(id, 0);
+                    if (result != null)
+                    {
+                        supplier_API_FTP_File_Details.FTP_Id = result.FTP_Id;
+                        supplier_API_FTP_File_Details.Party_Id = result.Party_Id;
+                        supplier_API_FTP_File_Details.Upload_Type = upload_Type;
+                        supplier_API_FTP_File_Details.Disc_Inverse = result.Disc_Inverse;
+                        supplier_API_FTP_File_Details.Auto_Ref_No = result.Auto_Ref_No;
+                        supplier_API_FTP_File_Details.RepeateveryType = result.RepeateveryType;
+                        supplier_API_FTP_File_Details.Repeatevery = result.Repeatevery;
+                        supplier_API_FTP_File_Details.Lab = result.Lab;
+                        supplier_API_FTP_File_Details.Overseas = result.Overseas;
+                        supplier_API_FTP_File_Details.Short_Code = result.Short_Code;
+                        supplier_API_FTP_File_Details.Host = result.Host;
+                        supplier_API_FTP_File_Details.Ftp_Port = result.Ftp_Port;
+                        supplier_API_FTP_File_Details.Ftp_User = result.Ftp_User;
+                        supplier_API_FTP_File_Details.Ftp_Password = result.Ftp_Password;
+                        supplier_API_FTP_File_Details.Ftp_File_Name = result.Ftp_File_Name;
+                        supplier_API_FTP_File_Details.Ftp_File_Type = result.Ftp_File_Type;
+                        supplier_API_FTP_File_Details.Secure_Ftp = result.Secure_Ftp;
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = supplier_API_FTP_File_Details
+                        });
+                    }
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Send_Stock_On_Email", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Value Config
@@ -2517,6 +2609,8 @@ namespace astute.Controllers
         [Route("create_update_supplier_stock_by_scheduler")]
         public async Task<IActionResult> Create_Update_Supplier_Stock_By_Scheduler(Stock_Data_Master_Schedular stock_Data_Master)
         {
+            var party_List = await _partyService.GetParty_Raplicate(stock_Data_Master.Supplier_Id ?? 0, null);
+            var party = party_List.FirstOrDefault();
             try
             {
                 if (ModelState.IsValid)
@@ -2537,6 +2631,10 @@ namespace astute.Controllers
                                 }
                             }
                         }
+                        else
+                        {
+                            await _commonService.InsertErrorLog(stock_Data_Master.Error_Message + ":- " + party.Party_Name, "Create_Update_Supplier_Stock_By_Scheduler", null);
+                        }
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
@@ -2548,7 +2646,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Supplier_Stock_By_Scheduler", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message + ":- " + party.Party_Name, "Create_Update_Supplier_Stock_By_Scheduler", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
