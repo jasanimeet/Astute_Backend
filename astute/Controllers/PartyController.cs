@@ -4128,7 +4128,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("STOCK_ID", typeof(string));
                 dataTable.Columns.Add("OFFER_AMOUNT", typeof(string));
                 dataTable.Columns.Add("OFFER_DISC", typeof(string));
-
+                string stock_Id = string.Empty;
                 if (File_Location != null)
                 {
                     // Save the uploaded file to a temporary location
@@ -4148,6 +4148,14 @@ namespace astute.Controllers
                         for (int row = startRow; row <= worksheet.Dimension.End.Row; row++)
                         {
                             dataTable.Rows.Add(worksheet.Cells[row, 1].GetValue<string>(), worksheet.Cells[row, 3].GetValue<string>(), worksheet.Cells[row, 2].GetValue<string>());
+                           
+                            stock_Id += worksheet.Cells[row, 1].GetValue<string>() + " ";
+
+                            if (row != worksheet.Dimension.End.Row)
+                            {
+                                stock_Id += ",";
+                            }
+
                         }
                     }
                 }
