@@ -602,13 +602,13 @@ namespace astute.Repository
             var api_Password = !string.IsNullOrEmpty(party_Api.API_Password) ? new SqlParameter("@API_Password", party_Api.API_Password) : new SqlParameter("@API_Password", DBNull.Value);
             var api_Method = !string.IsNullOrEmpty(party_Api.API_Method) ? new SqlParameter("@API_Method", party_Api.API_Method) : new SqlParameter("@API_Method", DBNull.Value);
             var api_Response = !string.IsNullOrEmpty(party_Api.API_Response) ? new SqlParameter("@API_Response", party_Api.API_Response) : new SqlParameter("@API_Response", DBNull.Value);
-            var api_Status = new SqlParameter("@API_Status", party_Api.API_Status);
-            var api_Inverse = new SqlParameter("@Disc_Inverse", party_Api.Disc_Inverse);
-            var auto_Ref_No = new SqlParameter("@Auto_Ref_No", party_Api.Auto_Ref_No);
+            var api_Status = new SqlParameter("@API_Status", party_Api.API_Status ?? false);
+            var api_Inverse = new SqlParameter("@Disc_Inverse", party_Api.Disc_Inverse ?? false);
+            var auto_Ref_No = new SqlParameter("@Auto_Ref_No", party_Api.Auto_Ref_No ?? false);
             var repeateveryType = !string.IsNullOrEmpty(party_Api.RepeateveryType) ? new SqlParameter("@RepeateveryType", party_Api.RepeateveryType) : new SqlParameter("@RepeateveryType", DBNull.Value);
             var repeatevery = !string.IsNullOrEmpty(party_Api.Repeatevery) ? new SqlParameter("@Repeatevery", party_Api.Repeatevery) : new SqlParameter("@Repeatevery", DBNull.Value);
-            var lab = new SqlParameter("@Lab", party_Api.Lab);
-            var overseas = new SqlParameter("@Overseas", party_Api.Overseas);
+            var lab = new SqlParameter("@Lab", party_Api.Lab ?? false);
+            var overseas = new SqlParameter("@Overseas", party_Api.Overseas ?? false);
             var stock_Url = !string.IsNullOrEmpty(party_Api.Stock_Url) ? new SqlParameter("@Stock_Url", party_Api.Stock_Url) : new SqlParameter("@Stock_Url", DBNull.Value);
             var user_Id = !string.IsNullOrEmpty(party_Api.User_Id) ? new SqlParameter("@User_Id", party_Api.User_Id) : new SqlParameter("@User_Id", DBNull.Value);
             var user_Caption = !string.IsNullOrEmpty(party_Api.User_Caption) ? new SqlParameter("@User_Caption", party_Api.User_Caption) : new SqlParameter("@User_Caption", DBNull.Value);
@@ -622,8 +622,8 @@ namespace astute.Repository
             var short_Code = !string.IsNullOrEmpty(party_Api.Short_Code) ? new SqlParameter("@Short_Code", party_Api.Short_Code) : new SqlParameter("@Short_Code", DBNull.Value);
             var stock_Api_Method = !string.IsNullOrEmpty(party_Api.Stock_Api_Method) ? new SqlParameter("@Stock_Api_Method", party_Api.Stock_Api_Method) : new SqlParameter("@Stock_Api_Method", DBNull.Value);
             var method_Type = !string.IsNullOrEmpty(party_Api.Method_Type) ? new SqlParameter("@Method_Type", party_Api.Method_Type) : new SqlParameter("@Method_Type", DBNull.Value);
-            var is_Same_Id = new SqlParameter("@Is_Same_Id", party_Api.Is_Same_Id);
-            var overseas_Same_Id = new SqlParameter("@Overseas_Same_Id", party_Api.Overseas_Same_Id);
+            var is_Same_Id = new SqlParameter("@Is_Same_Id", party_Api.Is_Same_Id ?? false);
+            var overseas_Same_Id = new SqlParameter("@Overseas_Same_Id", party_Api.Overseas_Same_Id ?? false);
             var _modified_By = new SqlParameter("@Modified_By", modified_By);
 
             var result = await Task.Run(() => _dbContext.Database
