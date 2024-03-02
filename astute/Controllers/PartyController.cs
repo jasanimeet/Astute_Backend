@@ -4215,7 +4215,74 @@ namespace astute.Controllers
                 });
             }
         }
+        [HttpPost]
+        [Route("get_stock_availibility_report_search")]
+        [Authorize]
+        public async Task<IActionResult> Get_Stock_Availibility_Report_Search([FromForm] Stock_Avalibility stock_Avalibility, IFormFile? File_Location)
+        {
+            try
+            {
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("STOCK_ID", typeof(string));
+                dataTable.Columns.Add("OFFER_AMOUNT", typeof(string));
+                dataTable.Columns.Add("OFFER_DISC", typeof(string));
+                string stock_Id = string.Empty;
+                if (File_Location != null)
+                {
+                    // Save the uploaded file to a temporary location
+                    var filePath = Path.GetTempFileName();
 
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await File_Location.CopyToAsync(stream);
+                    }
+                   
+                    using (var package = new ExcelPackage(new FileInfo(filePath)))
+                    {
+                        var worksheet = package.Workbook.Worksheets[0]; // Assuming the data is in the first sheet
+
+                        int startRow = 2; // Assuming the header is in the first row
+
+                        for (int row = startRow; row <= worksheet.Dimension.End.Row; row++)
+                        {
+                            dataTable.Rows.Add(worksheet.Cells[row, 1].GetValue<string>(), worksheet.Cells[row, 3].GetValue<string>(), worksheet.Cells[row, 2].GetValue<string>());
+                           
+                            stock_Id += worksheet.Cells[row, 1].GetValue<string>() + " ";
+
+                            if (row != worksheet.Dimension.End.Row)
+                            {
+                                stock_Id += ",";
+                            }
+
+                        }
+                    }
+                }
+
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Stock_Avalibility_Report_Search(dataTable,stock_Avalibility.stock_Id, stock_Avalibility.iPgNo ?? 0, stock_Avalibility.iPgSize ?? 0, stock_Avalibility.iSort);
+                if (result != null)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        total_Records = totalRecordr,
+                        total_Cts = totalCtsr,
+                        total_Amt = totalAmtr,
+                        total_Disc = totalDiscr,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Report_Search", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         [HttpGet]
         [Route("get_saved_report_serach")]
         [Authorize]
