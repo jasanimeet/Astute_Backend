@@ -211,8 +211,8 @@ namespace astute.Controllers
                         item.CROWN_OPEN ?? null,
                         item.PAVILION_OPEN ?? null,
                         item.GIRDLE_OPEN ?? null,
-                        !string.IsNullOrEmpty(item.GIRDLE_FROM) ? (item.GIRDLE_FROM.Contains("-") ? (item.GIRDLE_FROM.Split(" - ").Length == 1 ? item.GIRDLE_FROM.Split(" - ")[0]: item.GIRDLE_FROM) : (item.GIRDLE_FROM.ToUpper().Contains(" TO ") ? (item.GIRDLE_FROM.ToUpper().Split(" TO ").Length == 1 ? item.GIRDLE_FROM.ToUpper().Split(" TO ")[0] : item.GIRDLE_FROM) : item.GIRDLE_FROM)) : null,
-                        !string.IsNullOrEmpty(item.GIRDLE_TO) ? (item.GIRDLE_TO.Contains("-") ? (item.GIRDLE_TO.Split(" - ").Length == 2 ? item.GIRDLE_TO.Split(" - ")[0]: item.GIRDLE_TO) : (item.GIRDLE_TO.ToUpper().Contains(" TO ") ? (item.GIRDLE_TO.ToUpper().Split(" TO ").Length == 2 ? item.GIRDLE_TO.ToUpper().Split(" TO ")[0] : item.GIRDLE_TO) : item.GIRDLE_TO)) : null,
+                        !string.IsNullOrEmpty(item.GIRDLE_FROM) ? (item.GIRDLE_FROM.Contains("-") ? (item.GIRDLE_FROM.Split(" - ").Length == 1 ? item.GIRDLE_FROM.Split(" - ")[0] : item.GIRDLE_FROM) : (item.GIRDLE_FROM.ToUpper().Contains(" TO ") ? (item.GIRDLE_FROM.ToUpper().Split(" TO ").Length == 1 ? item.GIRDLE_FROM.ToUpper().Split(" TO ")[0] : item.GIRDLE_FROM) : item.GIRDLE_FROM)) : null,
+                        !string.IsNullOrEmpty(item.GIRDLE_TO) ? (item.GIRDLE_TO.Contains("-") ? (item.GIRDLE_TO.Split(" - ").Length == 2 ? item.GIRDLE_TO.Split(" - ")[0] : item.GIRDLE_TO) : (item.GIRDLE_TO.ToUpper().Contains(" TO ") ? (item.GIRDLE_TO.ToUpper().Split(" TO ").Length == 2 ? item.GIRDLE_TO.ToUpper().Split(" TO ")[0] : item.GIRDLE_TO) : item.GIRDLE_TO)) : null,
                         item.GIRDLE_CONDITION ?? null,
                         item.GIRDLE_TYPE ?? null,
                         item.LASER_INSCRIPTION ?? null,
@@ -1782,7 +1782,7 @@ namespace astute.Controllers
                         supplier_API_FTP_File_Details.Short_Code = result.Short_Code;
                         supplier_API_FTP_File_Details.Stock_Api_Method = result.Stock_Api_Method;
                         supplier_API_FTP_File_Details.Method_Type = result.Method_Type;
-                        supplier_API_FTP_File_Details.Supplier_Column_Mapping_List = await _partyService.Common_Funtion_To_Get_Supp_Col_Map(supplier_API_FTP_File_Details.Party_Id ?? 0, "FTP");
+                        supplier_API_FTP_File_Details.Supplier_Column_Mapping_List = await _partyService.Common_Funtion_To_Get_Supp_Col_Map(supplier_API_FTP_File_Details.Party_Id ?? 0, "API");
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
@@ -1791,7 +1791,7 @@ namespace astute.Controllers
                         });
                     }
                 }
-                else if(!string.IsNullOrEmpty(upload_Type) && upload_Type == "FTP")
+                else if (!string.IsNullOrEmpty(upload_Type) && upload_Type == "FTP")
                 {
                     var result = await _partyService.Get_Party_FTP(id, 0);
                     if (result != null)
@@ -1813,6 +1813,7 @@ namespace astute.Controllers
                         supplier_API_FTP_File_Details.Ftp_File_Name = result.Ftp_File_Name;
                         supplier_API_FTP_File_Details.Ftp_File_Type = result.Ftp_File_Type;
                         supplier_API_FTP_File_Details.Secure_Ftp = result.Secure_Ftp;
+                        supplier_API_FTP_File_Details.Supplier_Column_Mapping_List = await _partyService.Common_Funtion_To_Get_Supp_Col_Map(supplier_API_FTP_File_Details.Party_Id ?? 0, "FTP");
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
@@ -3510,7 +3511,7 @@ namespace astute.Controllers
                                                  }
                                                  else if (!string.IsNullOrEmpty(displayColName) && displayColName == "GIRDLE_TO")
                                                  {
-                                                     finalRow[displayColName] = !string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName])) ? (Convert.ToString(finalRow[displayColName]).Contains("-") ? (Convert.ToString(finalRow[displayColName]).Split(" - ").Length == 2 ? Convert.ToString(finalRow[displayColName]).Split(" - ")[1] : Convert.ToString(finalRow[displayColName])) : (Convert.ToString(finalRow[displayColName]).ToUpper().Contains(" TO ") ? (Convert.ToString(finalRow[displayColName]).ToUpper().Split(" TO ").Length ==2 ? Convert.ToString(finalRow[displayColName]).ToUpper().Split(" TO ")[1] : Convert.ToString(finalRow[displayColName])): Convert.ToString(finalRow[displayColName]))) : null;
+                                                     finalRow[displayColName] = !string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName])) ? (Convert.ToString(finalRow[displayColName]).Contains("-") ? (Convert.ToString(finalRow[displayColName]).Split(" - ").Length == 2 ? Convert.ToString(finalRow[displayColName]).Split(" - ")[1] : Convert.ToString(finalRow[displayColName])) : (Convert.ToString(finalRow[displayColName]).ToUpper().Contains(" TO ") ? (Convert.ToString(finalRow[displayColName]).ToUpper().Split(" TO ").Length == 2 ? Convert.ToString(finalRow[displayColName]).ToUpper().Split(" TO ")[1] : Convert.ToString(finalRow[displayColName])) : Convert.ToString(finalRow[displayColName]))) : null;
 
                                                  }
                                                  else if (!string.IsNullOrEmpty(displayColName) && displayColName == "BASE_AMOUNT")
@@ -4226,40 +4227,33 @@ namespace astute.Controllers
                 dataTable.Columns.Add("STOCK_ID", typeof(string));
                 dataTable.Columns.Add("OFFER_AMOUNT", typeof(string));
                 dataTable.Columns.Add("OFFER_DISC", typeof(string));
-                string stock_Id = string.Empty;
                 if (File_Location != null)
-                {
-                    // Save the uploaded file to a temporary location
+                {   
                     var filePath = Path.GetTempFileName();
-
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await File_Location.CopyToAsync(stream);
                     }
-                   
                     using (var package = new ExcelPackage(new FileInfo(filePath)))
                     {
-                        var worksheet = package.Workbook.Worksheets[0]; // Assuming the data is in the first sheet
+                        var worksheet = package.Workbook.Worksheets[0];
+                        int startRow = 2;
 
-                        int startRow = 2; // Assuming the header is in the first row
-
+                        HashSet<string> uniqueValues = new HashSet<string>();
                         for (int row = startRow; row <= worksheet.Dimension.End.Row; row++)
                         {
-                            dataTable.Rows.Add(worksheet.Cells[row, 1].GetValue<string>(), worksheet.Cells[row, 3].GetValue<string>(), worksheet.Cells[row, 2].GetValue<string>());
-                           
-                            stock_Id += worksheet.Cells[row, 1].GetValue<string>() + " ";
-
-                            if (row != worksheet.Dimension.End.Row)
+                            string value = worksheet.Cells[row, 1].GetValue<string>();
+                            if (!uniqueValues.Contains(value))
                             {
-                                stock_Id += ",";
+                                uniqueValues.Add(value);
+                                dataTable.Rows.Add(value, worksheet.Cells[row, 3].GetValue<string>(), worksheet.Cells[row, 2].GetValue<string>());
                             }
-
                         }
                     }
                 }
 
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Stock_Avalibility_Report_Search(dataTable,stock_Avalibility.stock_Id, stock_Avalibility.iPgNo ?? 0, stock_Avalibility.iPgSize ?? 0, stock_Avalibility.iSort);
-                if (result != null)
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Stock_Avalibility_Report_Search(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.iPgNo ?? 0, stock_Avalibility.iPgSize ?? 0, stock_Avalibility.iSort);
+                if (result != null && result.Count > 0)
                 {
                     return Ok(new
                     {

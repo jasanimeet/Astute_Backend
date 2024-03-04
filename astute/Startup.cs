@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -44,7 +45,15 @@ namespace astute
                 options.MultipartBodyLengthLimit = int.MaxValue; // Adjust as needed
             });
 
-            services.AddDbContext<AstuteDbContext>();
+            //services.AddDbContext<AstuteDbContext>();
+            services.AddDbContext<AstuteDbContext>(config =>
+            config.UseSqlServer(
+             "AstuteConnection",
+             providerOptions =>
+             {
+                 providerOptions.CommandTimeout(7200);
+             })
+            );
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISupplierService, SupplierService>();
             services.AddScoped<IEmployeeService, EmployeeService>();

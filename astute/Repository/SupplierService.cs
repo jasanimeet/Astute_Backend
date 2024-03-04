@@ -696,36 +696,36 @@ namespace astute.Repository
             var supplier_Filter_Type = !string.IsNullOrEmpty(supplier_Pricing.Supplier_Filter_Type) ? new SqlParameter("@Supplier_Filter_Type", supplier_Pricing.Supplier_Filter_Type) : new SqlParameter("@Supplier_Filter_Type", DBNull.Value);
             var calculation_Type = !string.IsNullOrEmpty(supplier_Pricing.Calculation_Type) ? new SqlParameter("@Calculation_Type", supplier_Pricing.Calculation_Type) : new SqlParameter("@Calculation_Type", DBNull.Value);
             var sign = !string.IsNullOrEmpty(supplier_Pricing.Sign) ? new SqlParameter("@Sign", supplier_Pricing.Sign) : new SqlParameter("@Sign", DBNull.Value);
-            var value_1 = supplier_Pricing.Value_1 > 0 ? new SqlParameter("@Value_1", supplier_Pricing.Value_1) : new SqlParameter("@Value_1", DBNull.Value);
-            var value_2 = supplier_Pricing.Value_2 > 0 ? new SqlParameter("@Value_2", supplier_Pricing.Value_2) : new SqlParameter("@Value_2", DBNull.Value);
-            var value_3 = supplier_Pricing.Value_3 > 0 ? new SqlParameter("@Value_3", supplier_Pricing.Value_3) : new SqlParameter("@Value_3", DBNull.Value);
-            var value_4 = supplier_Pricing.Value_4 > 0 ? new SqlParameter("@Value_4", supplier_Pricing.Value_4) : new SqlParameter("@Value_4", DBNull.Value);
+            var value_1 = supplier_Pricing.Value_1.HasValue ? new SqlParameter("@Value_1", supplier_Pricing.Value_1) : new SqlParameter("@Value_1", DBNull.Value);
+            var value_2 = supplier_Pricing.Value_2.HasValue ? new SqlParameter("@Value_2", supplier_Pricing.Value_2) : new SqlParameter("@Value_2", DBNull.Value);
+            var value_3 = supplier_Pricing.Value_3.HasValue ? new SqlParameter("@Value_3", supplier_Pricing.Value_3) : new SqlParameter("@Value_3", DBNull.Value);
+            var value_4 = supplier_Pricing.Value_4.HasValue ? new SqlParameter("@Value_4", supplier_Pricing.Value_4) : new SqlParameter("@Value_4", DBNull.Value);
             var sp_calculation_Type = !string.IsNullOrEmpty(supplier_Pricing.SP_Calculation_Type) ? new SqlParameter("@SP_Calculation_Type", supplier_Pricing.SP_Calculation_Type) : new SqlParameter("@SP_Calculation_Type", DBNull.Value);
             var sp_sign = !string.IsNullOrEmpty(supplier_Pricing.SP_Sign) ? new SqlParameter("@SP_Sign", supplier_Pricing.SP_Sign) : new SqlParameter("@SP_Sign", DBNull.Value);
             var sp_start_date = !string.IsNullOrEmpty(supplier_Pricing.SP_Start_Date) ? new SqlParameter("@SP_Start_Date", supplier_Pricing.SP_Start_Date) : new SqlParameter("@SP_Start_Date", DBNull.Value);
             var sp_start_time = !string.IsNullOrEmpty(supplier_Pricing.SP_Start_Time) ? new SqlParameter("@SP_Start_Time", supplier_Pricing.SP_Start_Time) : new SqlParameter("@SP_Start_Time", DBNull.Value);
             var sp_end_date = !string.IsNullOrEmpty(supplier_Pricing.SP_End_Date) ? new SqlParameter("@SP_End_Date", supplier_Pricing.SP_End_Date) : new SqlParameter("@SP_End_Date", DBNull.Value);
             var sp_end_time = !string.IsNullOrEmpty(supplier_Pricing.SP_End_Time) ? new SqlParameter("@SP_End_Time", supplier_Pricing.SP_End_Time) : new SqlParameter("@SP_End_Time", DBNull.Value);
-            var sp_value_1 = supplier_Pricing.SP_Value_1 > 0 ? new SqlParameter("@SP_Value_1", supplier_Pricing.SP_Value_1) : new SqlParameter("@SP_Value_1", DBNull.Value);
-            var sp_value_2 = supplier_Pricing.SP_Value_2 > 0 ? new SqlParameter("@SP_Value_2", supplier_Pricing.SP_Value_2) : new SqlParameter("@SP_Value_2", DBNull.Value);
-            var sp_value_3 = supplier_Pricing.SP_Value_3 > 0 ? new SqlParameter("@SP_Value_3", supplier_Pricing.SP_Value_3) : new SqlParameter("@SP_Value_3", DBNull.Value);
-            var sp_value_4 = supplier_Pricing.SP_Value_4 > 0 ? new SqlParameter("@SP_Value_4", supplier_Pricing.SP_Value_4) : new SqlParameter("@SP_Value_4", DBNull.Value);
+            var sp_value_1 = supplier_Pricing.SP_Value_1.HasValue ? new SqlParameter("@SP_Value_1", supplier_Pricing.SP_Value_1) : new SqlParameter("@SP_Value_1", DBNull.Value);
+            var sp_value_2 = supplier_Pricing.SP_Value_2.HasValue ? new SqlParameter("@SP_Value_2", supplier_Pricing.SP_Value_2) : new SqlParameter("@SP_Value_2", DBNull.Value);
+            var sp_value_3 = supplier_Pricing.SP_Value_3.HasValue ? new SqlParameter("@SP_Value_3", supplier_Pricing.SP_Value_3) : new SqlParameter("@SP_Value_3", DBNull.Value);
+            var sp_value_4 = supplier_Pricing.SP_Value_4.HasValue ? new SqlParameter("@SP_Value_4", supplier_Pricing.SP_Value_4) : new SqlParameter("@SP_Value_4", DBNull.Value);
             var ms_calculation_Type = !string.IsNullOrEmpty(supplier_Pricing.MS_Calculation_Type) ? new SqlParameter("@MS_Calculation_Type", supplier_Pricing.MS_Calculation_Type) : new SqlParameter("@MS_Calculation_Type", DBNull.Value);
             var ms_sign = !string.IsNullOrEmpty(supplier_Pricing.MS_Sign) ? new SqlParameter("@MS_Sign", supplier_Pricing.MS_Sign) : new SqlParameter("@MS_Sign", DBNull.Value);
-            var ms_value_1 = supplier_Pricing.MS_Value_1 > 0 ? new SqlParameter("@MS_Value_1", supplier_Pricing.MS_Value_1) : new SqlParameter("@MS_Value_1", DBNull.Value);
-            var ms_value_2 = supplier_Pricing.MS_Value_2 > 0 ? new SqlParameter("@MS_Value_2", supplier_Pricing.MS_Value_2) : new SqlParameter("@MS_Value_2", DBNull.Value);
-            var ms_value_3 = supplier_Pricing.MS_Value_3 > 0 ? new SqlParameter("@MS_Value_3", supplier_Pricing.MS_Value_3) : new SqlParameter("@MS_Value_3", DBNull.Value);
-            var ms_value_4 = supplier_Pricing.MS_Value_4 > 0 ? new SqlParameter("@MS_Value_4", supplier_Pricing.MS_Value_4) : new SqlParameter("@MS_Value_4", DBNull.Value);
+            var ms_value_1 = supplier_Pricing.MS_Value_1.HasValue ? new SqlParameter("@MS_Value_1", supplier_Pricing.MS_Value_1) : new SqlParameter("@MS_Value_1", DBNull.Value);
+            var ms_value_2 = supplier_Pricing.MS_Value_2.HasValue ? new SqlParameter("@MS_Value_2", supplier_Pricing.MS_Value_2) : new SqlParameter("@MS_Value_2", DBNull.Value);
+            var ms_value_3 = supplier_Pricing.MS_Value_3.HasValue ? new SqlParameter("@MS_Value_3", supplier_Pricing.MS_Value_3) : new SqlParameter("@MS_Value_3", DBNull.Value);
+            var ms_value_4 = supplier_Pricing.MS_Value_4.HasValue ? new SqlParameter("@MS_Value_4", supplier_Pricing.MS_Value_4) : new SqlParameter("@MS_Value_4", DBNull.Value);
             var ms_sp_calculation_Type = !string.IsNullOrEmpty(supplier_Pricing.MS_SP_Calculation_Type) ? new SqlParameter("@MS_SP_Calculation_Type", supplier_Pricing.MS_SP_Calculation_Type) : new SqlParameter("@MS_SP_Calculation_Type", DBNull.Value);
             var ms_sp_sign = !string.IsNullOrEmpty(supplier_Pricing.MS_SP_Sign) ? new SqlParameter("@MS_SP_Sign", supplier_Pricing.MS_SP_Sign) : new SqlParameter("@MS_SP_Sign", DBNull.Value);
             var ms_sp_start_date = !string.IsNullOrEmpty(supplier_Pricing.MS_SP_Start_Date) ? new SqlParameter("@MS_SP_Start_Date", supplier_Pricing.MS_SP_Start_Date) : new SqlParameter("@MS_SP_Start_Date", DBNull.Value);
             var ms_sp_start_time = !string.IsNullOrEmpty(supplier_Pricing.MS_SP_Start_Time) ? new SqlParameter("@MS_SP_Start_Time", supplier_Pricing.MS_SP_Start_Time) : new SqlParameter("@MS_SP_Start_Time", DBNull.Value);
             var ms_sp_end_date = !string.IsNullOrEmpty(supplier_Pricing.MS_SP_End_Date) ? new SqlParameter("@MS_SP_End_Date", supplier_Pricing.MS_SP_End_Date) : new SqlParameter("@MS_SP_End_Date", DBNull.Value);
             var ms_sp_end_time = !string.IsNullOrEmpty(supplier_Pricing.MS_SP_End_Time) ? new SqlParameter("@MS_SP_End_Time", supplier_Pricing.MS_SP_End_Time) : new SqlParameter("@MS_SP_End_Time", DBNull.Value);
-            var ms_sp_value_1 = supplier_Pricing.MS_SP_Value_1 > 0 ? new SqlParameter("@MS_SP_Value_1", supplier_Pricing.MS_SP_Value_1) : new SqlParameter("@MS_SP_Value_1", DBNull.Value);
-            var ms_sp_value_2 = supplier_Pricing.MS_SP_Value_2 > 0 ? new SqlParameter("@MS_SP_Value_2", supplier_Pricing.MS_SP_Value_2) : new SqlParameter("@MS_SP_Value_2", DBNull.Value);
-            var ms_sp_value_3 = supplier_Pricing.MS_SP_Value_3 > 0 ? new SqlParameter("@MS_SP_Value_3", supplier_Pricing.MS_SP_Value_3) : new SqlParameter("@MS_SP_Value_3", DBNull.Value);
-            var ms_sp_value_4 = supplier_Pricing.MS_SP_Value_4 > 0 ? new SqlParameter("@MS_SP_Value_4", supplier_Pricing.MS_SP_Value_4) : new SqlParameter("@MS_SP_Value_4", DBNull.Value);
+            var ms_sp_value_1 = supplier_Pricing.MS_SP_Value_1.HasValue ? new SqlParameter("@MS_SP_Value_1", supplier_Pricing.MS_SP_Value_1) : new SqlParameter("@MS_SP_Value_1", DBNull.Value);
+            var ms_sp_value_2 = supplier_Pricing.MS_SP_Value_2.HasValue ? new SqlParameter("@MS_SP_Value_2", supplier_Pricing.MS_SP_Value_2) : new SqlParameter("@MS_SP_Value_2", DBNull.Value);
+            var ms_sp_value_3 = supplier_Pricing.MS_SP_Value_3.HasValue ? new SqlParameter("@MS_SP_Value_3", supplier_Pricing.MS_SP_Value_3) : new SqlParameter("@MS_SP_Value_3", DBNull.Value);
+            var ms_sp_value_4 = supplier_Pricing.MS_SP_Value_4.HasValue ? new SqlParameter("@MS_SP_Value_4", supplier_Pricing.MS_SP_Value_4) : new SqlParameter("@MS_SP_Value_4", DBNull.Value);
             var sP_Toggle_Bar = new SqlParameter("@SP_Toggle_Bar", supplier_Pricing.SP_Toggle_Bar);
             var mSP_Toggle_Bar = new SqlParameter("@MS_SP_Toggle_Bar", supplier_Pricing.MS_SP_Toggle_Bar);
             var modified_By = supplier_Pricing.Modified_By > 0 ? new SqlParameter("@Modified_By", supplier_Pricing.Modified_By) : new SqlParameter("@Modified_By", DBNull.Value);
@@ -1013,7 +1013,7 @@ namespace astute.Repository
                     command.Parameters.Add(_stock_Data_Id);
 
                     // Set the command timeout to 30 minutes (in seconds)
-                    command.CommandTimeout = 1800;
+                    command.CommandTimeout = Convert.ToInt32(_configuration["CommandTimeout"]);
 
                     await _dbContext.Database.OpenConnectionAsync();
                     try
@@ -1046,7 +1046,7 @@ namespace astute.Repository
                     command.Parameters.Add(_stock_Data_Id);
 
                     // Set the command timeout to 30 minutes (in seconds)
-                    command.CommandTimeout = 1800;
+                    command.CommandTimeout = Convert.ToInt32(_configuration["CommandTimeout"]);
 
                     await _dbContext.Database.OpenConnectionAsync();
                     try
@@ -1712,7 +1712,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<(List<Dictionary<string, object>>, string, string,string,string)> Get_Stock_Avalibility_Report_Search(DataTable dataTable,string stock_Id, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
+        public async Task<(List<Dictionary<string, object>>, string, string,string,string)> Get_Stock_Avalibility_Report_Search(DataTable dataTable,string stock_Id, string stock_Type, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
         {
             var result = new List<Dictionary<string, object>>();
             var totalRecordr = string.Empty;
@@ -1744,6 +1744,12 @@ namespace astute.Repository
                     totalRecordParameter.Direction = ParameterDirection.Output;
                     command.Parameters.Add(totalRecordParameter);
 
+                    var parameter = new SqlParameter("@Stock_Availibity_Type", SqlDbType.Structured)
+                    {
+                        TypeName = "dbo.Stock_Availibity_Type",
+                        Value = dataTable
+                    };
+                    command.Parameters.Add(parameter);
                     var totalCtsParameter = new SqlParameter("@iTotalCts", SqlDbType.NVarChar)
                     {
                         Size = -1, // -1 is used for max size
@@ -1765,6 +1771,7 @@ namespace astute.Repository
                     };
                     command.Parameters.Add(totalDiscParameter);
                     command.Parameters.Add(!string.IsNullOrEmpty(stock_Id) ? new SqlParameter("@STOCK_ID", stock_Id) : new SqlParameter("@STOCK_ID", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(stock_Type) ? new SqlParameter("@STOCK_TYPE", stock_Type) : new SqlParameter("@STOCK_TYPE", DBNull.Value));
                     command.Parameters.Add(iPgNo > 0 ? new SqlParameter("@iPgNo", iPgNo) : new SqlParameter("@iPgNo", DBNull.Value));
                     command.Parameters.Add(iPgSize > 0 ? new SqlParameter("@iPgSize", iPgSize) : new SqlParameter("@iPgSize", DBNull.Value));
                     command.CommandTimeout = 1800;
