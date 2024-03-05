@@ -3653,11 +3653,20 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
+                string message = string.Empty;
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_Manual_Upload", ex.StackTrace);
+                if(ex.Message.Contains("An item with the same key has already been added"))
+                {
+                    message = "Some column name is missing";
+                }
+                else
+                {
+                    message = ex.Message;
+                }
                 return Ok(new
                 {
                     Party_Name = party_Name,
-                    message = ex.Message
+                    message = message
                 });
             }
         }
