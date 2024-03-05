@@ -1784,7 +1784,7 @@ namespace astute.Controllers
                         supplier_API_FTP_File_Details.Short_Code = result.Short_Code;
                         supplier_API_FTP_File_Details.Stock_Api_Method = result.Stock_Api_Method;
                         supplier_API_FTP_File_Details.Method_Type = result.Method_Type;
-                        supplier_API_FTP_File_Details.Supplier_Column_Mapping_List = await _partyService.Common_Funtion_To_Get_Supp_Col_Map(supplier_API_FTP_File_Details.Party_Id ?? 0, "FTP");
+                        supplier_API_FTP_File_Details.Supplier_Column_Mapping_List = await _partyService.Common_Funtion_To_Get_Supp_Col_Map(supplier_API_FTP_File_Details.Party_Id ?? 0, "API");
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
@@ -1815,6 +1815,7 @@ namespace astute.Controllers
                         supplier_API_FTP_File_Details.Ftp_File_Name = result.Ftp_File_Name;
                         supplier_API_FTP_File_Details.Ftp_File_Type = result.Ftp_File_Type;
                         supplier_API_FTP_File_Details.Secure_Ftp = result.Secure_Ftp;
+                        supplier_API_FTP_File_Details.Supplier_Column_Mapping_List = await _partyService.Common_Funtion_To_Get_Supp_Col_Map(supplier_API_FTP_File_Details.Party_Id ?? 0, "FTP");
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
@@ -3391,7 +3392,7 @@ namespace astute.Controllers
                                     excel_dataTable = CoreService.Convert_File_To_DataTable(".csv", fileLocation, "");
                                 }
 
-                            dataExist:
+                                dataExist:
                                 if (excel_dataTable != null && excel_dataTable.Rows.Count > 0)
                                 {
                                     #region Add column to datatable
@@ -3563,6 +3564,7 @@ namespace astute.Controllers
                                      })
                                      .ToList();
                                     var party_master = await _partyService.Get_Party_Details(party_File.Party_Id ?? 0);
+                                    var party_file = await _partyService.Get_Party_File(0, party_File.Party_Id ?? 0);
                                     dt_stock_data.AsEnumerable().ToList().ForEach(stockDataRow =>
                                     {
                                         //Start Center Inclusion AND Black Inclusion
@@ -3590,6 +3592,7 @@ namespace astute.Controllers
                                         stockDataRow["SIDE_WHITE"] = table_Black;
                                         stockDataRow["TABLE_BLACK"] = side_White;
                                         stockDataRow["SIDE_BLACK"] = side_Black;
+                                        stockDataRow["Short_Code"] = party_file.Short_Code;
                                         //END Center Inclusion AND Black Inclusion
 
                                         // Check if all three columns are currently null or empty
@@ -4438,7 +4441,7 @@ namespace astute.Controllers
             }
         }
 
-        [HttpPost]
+       [HttpPost]
         [Route("get_stock_availibility_report_search")]
         [Authorize]
         public async Task<IActionResult> Get_Stock_Availibility_Report_Search([FromForm] Stock_Avalibility stock_Avalibility, IFormFile? File_Location)
@@ -4449,40 +4452,33 @@ namespace astute.Controllers
                 dataTable.Columns.Add("STOCK_ID", typeof(string));
                 dataTable.Columns.Add("OFFER_AMOUNT", typeof(string));
                 dataTable.Columns.Add("OFFER_DISC", typeof(string));
-                string stock_Id = string.Empty;
                 if (File_Location != null)
-                {
-                    // Save the uploaded file to a temporary location
+                {   
                     var filePath = Path.GetTempFileName();
-
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await File_Location.CopyToAsync(stream);
                     }
-
                     using (var package = new ExcelPackage(new FileInfo(filePath)))
                     {
-                        var worksheet = package.Workbook.Worksheets[0]; // Assuming the data is in the first sheet
+                        var worksheet = package.Workbook.Worksheets[0];
+                        int startRow = 2;
 
-                        int startRow = 2; // Assuming the header is in the first row
-
+                        HashSet<string> uniqueValues = new HashSet<string>();
                         for (int row = startRow; row <= worksheet.Dimension.End.Row; row++)
                         {
-                            dataTable.Rows.Add(worksheet.Cells[row, 1].GetValue<string>(), worksheet.Cells[row, 3].GetValue<string>(), worksheet.Cells[row, 2].GetValue<string>());
-
-                            stock_Id += worksheet.Cells[row, 1].GetValue<string>() + " ";
-
-                            if (row != worksheet.Dimension.End.Row)
+                            string value = worksheet.Cells[row, 1].GetValue<string>();
+                            if (!uniqueValues.Contains(value))
                             {
-                                stock_Id += ",";
+                                uniqueValues.Add(value);
+                                dataTable.Rows.Add(value, worksheet.Cells[row, 3].GetValue<string>(), worksheet.Cells[row, 2].GetValue<string>());
                             }
-
                         }
                     }
                 }
 
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Stock_Avalibility_Report_Search(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.iPgNo ?? 0, stock_Avalibility.iPgSize ?? 0, stock_Avalibility.iSort);
-                if (result != null)
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Stock_Avalibility_Report_Search(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.iPgNo ?? 0, stock_Avalibility.iPgSize ?? 0, stock_Avalibility.iSort);
+                if (result != null && result.Count > 0)
                 {
                     return Ok(new
                     {
