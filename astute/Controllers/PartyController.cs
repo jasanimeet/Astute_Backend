@@ -4416,7 +4416,7 @@ namespace astute.Controllers
                         !string.IsNullOrEmpty(DISC_VALUE)? DISC_VALUE: DBNull.Value) ;
                 }
                 var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Lab_Search_Report_Search(dataTable, report_Lab_Filter.iPgNo ?? 0, report_Lab_Filter.iPgSize ?? 0, report_Lab_Filter.iSort);
-                if (result != null && result.Count > 0)
+                if (result != null)
                 {
                     return Ok(new
                     {
