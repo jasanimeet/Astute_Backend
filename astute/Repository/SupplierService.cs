@@ -6,6 +6,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Org.BouncyCastle.Crypto.Operators;
 using System;
@@ -1852,17 +1853,24 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<int> Create_Update_Report_Search(Report_Search_Save report_Search_Save)
+        public async Task<string> Create_Update_Report_Search(Report_Search_Save report_Search_Save,int user_Id)
         {
-            var id = new SqlParameter("@Id", report_Search_Save.Id);
             var name = new SqlParameter("@Name", report_Search_Save.Name);
-            var search_Value = new SqlParameter("@Search_Value", report_Search_Save.Search_Value);
-
-            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Search_Save_Insert_Update @Id, @Name, @Search_Value", id, name, search_Value));
-
-            return result;
+            var userId = new SqlParameter("@User_Id", user_Id);
+            var search_Value = new SqlParameter("@Search_Value", report_Search_Save.Search_Value.ToString());
+            var search_Display = new SqlParameter("@Search_Display", report_Search_Save.Search_Display);
+            var is_Exist = new SqlParameter("@IsExist", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Search_Save_Insert_Update  @Name, @Search_Value, @Search_Display,@User_Id, @IsExist OUT",  name, search_Value, search_Display,userId, is_Exist));
+            if ((int)is_Exist.Value == 1)
+            {
+                return "exist";
+            }
+            return "success";
         }
-        public async Task<List<Dictionary<string, object>>> Get_Report_Search()
+        public async Task<List<Dictionary<string, object>>> Get_Search_Save_Report_Search(int user_Id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -1870,6 +1878,8 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Report_Search_Save_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
+
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -1883,7 +1893,20 @@ namespace astute.Repository
                                 var columnName = reader.GetName(i);
                                 var columnValue = reader.GetValue(i);
 
-                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                                if (columnName == "Search_Value" && columnValue != null)
+                                {
+                                    Report_Lab_Filter report_Lab_Filter = JsonConvert.DeserializeObject<Report_Lab_Filter>(columnValue.ToString());
+                                    dict[columnName] = report_Lab_Filter;
+                                }
+                                else if (columnName == "Search_Display" && columnValue != null)
+                                {
+                                    IList<Report_Filter_Display> report_Filter_Display = JsonConvert.DeserializeObject<List<Report_Filter_Display>>(columnValue.ToString());
+                                    dict[columnName] = report_Filter_Display;
+                                }
+                                else {
+                                    dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                                }
+
                             }
 
                             result.Add(dict);

@@ -3392,7 +3392,7 @@ namespace astute.Controllers
                                     excel_dataTable = CoreService.Convert_File_To_DataTable(".csv", fileLocation, "");
                                 }
 
-                                dataExist:
+                            dataExist:
                                 if (excel_dataTable != null && excel_dataTable.Rows.Count > 0)
                                 {
                                     #region Add column to datatable
@@ -4302,118 +4302,118 @@ namespace astute.Controllers
 
                 foreach (var item in report_Lab_Filter.Report_Filter_Parameter_List)
                 {
-                   
-                    STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID").Select(x=>x.Category_Value).FirstOrDefault();
-                    SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER").Select(x=>x.Category_Value).FirstOrDefault();
-                    CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x=>x.Category_Value).FirstOrDefault();
-                    SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x=>x.Category_Value).FirstOrDefault();
-                    CTS = item.Where(x => x.Column_Name == "CTS").Select(x=>x.Category_Value).FirstOrDefault();
-                    COLOR = item.Where(x => x.Column_Name == "COLOR").Select(x=>x.Category_Value).FirstOrDefault();
-                    CLARITY = item.Where(x => x.Column_Name == "CLARITY").Select(x=>x.Category_Value).FirstOrDefault();
-                    CUT = item.Where(x => x.Column_Name == "CUT").Select(x=>x.Category_Value).FirstOrDefault();
-                    POLISH = item.Where(x => x.Column_Name == "POLISH").Select(x=>x.Category_Value).FirstOrDefault();
-                    SYMM = item.Where(x => x.Column_Name == "SYMM").Select(x=>x.Category_Value).FirstOrDefault();
-                    FLS_INTENSITY = item.Where(x => x.Column_Name == "FLS INTENSITY").Select(x=>x.Category_Value).FirstOrDefault();
-                    BGM = item.Where(x => x.Column_Name == "BGM").Select(x=>x.Category_Value).FirstOrDefault();
-                    LAB = item.Where(x => x.Column_Name == "LAB").Select(x=>x.Category_Value).FirstOrDefault();
-                    GOOD_TYPE = item.Where(x => x.Column_Name == "GOOD TYPE").Select(x=>x.Category_Value).FirstOrDefault();
-                    LOCATION = item.Where(x => x.Column_Name == "LOCATION").Select(x=>x.Category_Value).FirstOrDefault();
-                    STATUS = item.Where(x => x.Column_Name == "STATUS").Select(x=>x.Category_Value).FirstOrDefault();
-                    IMAGE_LINK = item.Where(x => x.Column_Name == "IMAGE LINK").Select(x=>x.Category_Value).FirstOrDefault();
-                    VIDEO_LINK = item.Where(x => x.Column_Name == "VIDEO LINK").Select(x=>x.Category_Value).FirstOrDefault();
-                    LENGTH = item.Where(x => x.Column_Name == "LENGTH").Select(x=>x.Category_Value).FirstOrDefault();
-                    WIDTH = item.Where(x => x.Column_Name == "WIDTH").Select(x=>x.Category_Value).FirstOrDefault();
-                    DEPTH = item.Where(x => x.Column_Name == "DEPTH").Select(x=>x.Category_Value).FirstOrDefault();
-                    TABLE_PER = item.Where(x => x.Column_Name == "TABLE PER").Select(x=>x.Category_Value).FirstOrDefault();
-                    DEPTH_PER = item.Where(x => x.Column_Name == "DEPTH PER").Select(x=>x.Category_Value).FirstOrDefault();
-                    CROWN_ANGLE = item.Where(x => x.Column_Name == "CROWN ANGLE").Select(x=>x.Category_Value).FirstOrDefault();
-                    CROWN_HEIGHT = item.Where(x => x.Column_Name == "CROWN HEIGHT").Select(x=>x.Category_Value).FirstOrDefault();
-                    PAVILION_ANGLE = item.Where(x => x.Column_Name == "PAVILION ANGLE").Select(x=>x.Category_Value).FirstOrDefault();
-                    PAVILION_HEIGHT = item.Where(x => x.Column_Name == "PAVILION HEIGHT").Select(x=>x.Category_Value).FirstOrDefault();
-                    GIRDLE_PER = item.Where(x => x.Column_Name == "GIRDLE PER").Select(x=>x.Category_Value).FirstOrDefault();
-                    OFFER_DISC = item.Where(x => x.Column_Name == "OFFER DISC").Select(x=>x.Category_Value).FirstOrDefault();
-                    OFFER_VALUE = item.Where(x => x.Column_Name == "OFFER VALUE").Select(x=>x.Category_Value).FirstOrDefault();
-                    PRICE_PER_CTS = item.Where(x => x.Column_Name == "PRICE PER CTS").Select(x=>x.Category_Value).FirstOrDefault();
-                    OFFER_VALUE = item.Where(x => x.Column_Name == "OFFER AMOUNT").Select(x=>x.Category_Value).FirstOrDefault();
-                    TABLE_BLACK = item.Where(x => x.Column_Name == "TABLE BLACK").Select(x=>x.Category_Value).FirstOrDefault();
-                    TABLE_WHITE = item.Where(x => x.Column_Name == "TABLE WHITE").Select(x=>x.Category_Value).FirstOrDefault();
-                    SIDE_BLACK = item.Where(x => x.Column_Name == "SIDE BLACK").Select(x=>x.Category_Value).FirstOrDefault();
-                    SIDE_WHITE = item.Where(x => x.Column_Name == "SIDE WHITE").Select(x=>x.Category_Value).FirstOrDefault();
-                    TABLE_OPEN = item.Where(x => x.Column_Name == "TABLE OPEN").Select(x=>x.Category_Value).FirstOrDefault();
-                    CROWN_OPEN = item.Where(x => x.Column_Name == "CROWN OPEN").Select(x=>x.Category_Value).FirstOrDefault();
-                    PAVILION_OPEN = item.Where(x => x.Column_Name == "PAVILION OPEN").Select(x=>x.Category_Value).FirstOrDefault();
-                    GIRDLE_OPEN = item.Where(x => x.Column_Name == "GIRDLE OPEN").Select(x=>x.Category_Value).FirstOrDefault();
-                    KEY_TO_SYMBOL_TRUE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x=>x.KEY_TO_SYMBOL_TRUE).FirstOrDefault();
-                    KEY_TO_SYMBOL_FALSE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x=>x.KEY_TO_SYMBOL_FALSE).FirstOrDefault();
-                    LAB_COMMENTS_TRUE = item.Where(x => x.Column_Name == "LAB COMMENTS").Select(x=>x.LAB_COMMENTS_TRUE).FirstOrDefault();
-                    LAB_COMMENTS_FALSE = item.Where(x => x.Column_Name == "LAB COMMENTS").Select(x=>x.LAB_COMMENTS_FALSE).FirstOrDefault();
-                    FANCY_COLOR = item.Where(x => x.Column_Name == "FANCY COLOR").Select(x=>x.Category_Value).FirstOrDefault();
-                    FANCY_INTENSITY = item.Where(x => x.Column_Name == "FANCY INTENSITY").Select(x=>x.Category_Value).FirstOrDefault();
-                    FANCY_OVERTONE = item.Where(x => x.Column_Name == "FANCY OVERTONE").Select(x=>x.Category_Value).FirstOrDefault();
-                    POINTER = item.Where(x => x.Column_Name == "POINTER").Select(x=>x.Category_Value).FirstOrDefault();
-                    STAR_LN = item.Where(x => x.Column_Name == "STAR LN").Select(x=>x.Category_Value).FirstOrDefault();
-                    LR_HALF = item.Where(x => x.Column_Name == "LR HALF").Select(x=>x.Category_Value).FirstOrDefault();
-                    CERT_TYPE = item.Where(x => x.Column_Name == "CERT TYPE").Select(x=>x.Category_Value).FirstOrDefault();
-                    COST_RATE = item.Where(x => x.Column_Name == "COST RATE").Select(x=>x.Category_Value).FirstOrDefault();
-                    DISCOUNT_TYPE = item.Where(x => x.Column_Name == "DISCOUNT TYPE").Select(x=>x.Category_Value).FirstOrDefault();
-                    SIGN = item.Where(x => x.Column_Name == "SIGN").Select(x=>x.Category_Value).FirstOrDefault();
-                    DISC_VALUE = item.Where(x => x.Column_Name == "DISC VALUE").Select(x=>x.Category_Value).FirstOrDefault();
 
-                    dataTable.Rows.Add(!string.IsNullOrEmpty(STOCK_ID) ? STOCK_ID : DBNull.Value , 
-                        !string.IsNullOrEmpty(SUPPLIER) ? SUPPLIER : DBNull.Value  , 
+                    STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
+                    SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER").Select(x => x.Category_Value).FirstOrDefault();
+                    CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x => x.Category_Value).FirstOrDefault();
+                    SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x => x.Category_Value).FirstOrDefault();
+                    CTS = item.Where(x => x.Column_Name == "CTS").Select(x => x.Category_Value).FirstOrDefault();
+                    COLOR = item.Where(x => x.Column_Name == "COLOR").Select(x => x.Category_Value).FirstOrDefault();
+                    CLARITY = item.Where(x => x.Column_Name == "CLARITY").Select(x => x.Category_Value).FirstOrDefault();
+                    CUT = item.Where(x => x.Column_Name == "CUT").Select(x => x.Category_Value).FirstOrDefault();
+                    POLISH = item.Where(x => x.Column_Name == "POLISH").Select(x => x.Category_Value).FirstOrDefault();
+                    SYMM = item.Where(x => x.Column_Name == "SYMM").Select(x => x.Category_Value).FirstOrDefault();
+                    FLS_INTENSITY = item.Where(x => x.Column_Name == "FLS INTENSITY").Select(x => x.Category_Value).FirstOrDefault();
+                    BGM = item.Where(x => x.Column_Name == "BGM").Select(x => x.Category_Value).FirstOrDefault();
+                    LAB = item.Where(x => x.Column_Name == "LAB").Select(x => x.Category_Value).FirstOrDefault();
+                    GOOD_TYPE = item.Where(x => x.Column_Name == "GOOD TYPE").Select(x => x.Category_Value).FirstOrDefault();
+                    LOCATION = item.Where(x => x.Column_Name == "LOCATION").Select(x => x.Category_Value).FirstOrDefault();
+                    STATUS = item.Where(x => x.Column_Name == "STATUS").Select(x => x.Category_Value).FirstOrDefault();
+                    IMAGE_LINK = item.Where(x => x.Column_Name == "IMAGE LINK").Select(x => x.Category_Value).FirstOrDefault();
+                    VIDEO_LINK = item.Where(x => x.Column_Name == "VIDEO LINK").Select(x => x.Category_Value).FirstOrDefault();
+                    LENGTH = item.Where(x => x.Column_Name == "LENGTH").Select(x => x.Category_Value).FirstOrDefault();
+                    WIDTH = item.Where(x => x.Column_Name == "WIDTH").Select(x => x.Category_Value).FirstOrDefault();
+                    DEPTH = item.Where(x => x.Column_Name == "DEPTH").Select(x => x.Category_Value).FirstOrDefault();
+                    TABLE_PER = item.Where(x => x.Column_Name == "TABLE PER").Select(x => x.Category_Value).FirstOrDefault();
+                    DEPTH_PER = item.Where(x => x.Column_Name == "DEPTH PER").Select(x => x.Category_Value).FirstOrDefault();
+                    CROWN_ANGLE = item.Where(x => x.Column_Name == "CROWN ANGLE").Select(x => x.Category_Value).FirstOrDefault();
+                    CROWN_HEIGHT = item.Where(x => x.Column_Name == "CROWN HEIGHT").Select(x => x.Category_Value).FirstOrDefault();
+                    PAVILION_ANGLE = item.Where(x => x.Column_Name == "PAVILION ANGLE").Select(x => x.Category_Value).FirstOrDefault();
+                    PAVILION_HEIGHT = item.Where(x => x.Column_Name == "PAVILION HEIGHT").Select(x => x.Category_Value).FirstOrDefault();
+                    GIRDLE_PER = item.Where(x => x.Column_Name == "GIRDLE PER").Select(x => x.Category_Value).FirstOrDefault();
+                    OFFER_DISC = item.Where(x => x.Column_Name == "OFFER DISC").Select(x => x.Category_Value).FirstOrDefault();
+                    OFFER_VALUE = item.Where(x => x.Column_Name == "OFFER VALUE").Select(x => x.Category_Value).FirstOrDefault();
+                    PRICE_PER_CTS = item.Where(x => x.Column_Name == "PRICE PER CTS").Select(x => x.Category_Value).FirstOrDefault();
+                    OFFER_VALUE = item.Where(x => x.Column_Name == "OFFER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                    TABLE_BLACK = item.Where(x => x.Column_Name == "TABLE BLACK").Select(x => x.Category_Value).FirstOrDefault();
+                    TABLE_WHITE = item.Where(x => x.Column_Name == "TABLE WHITE").Select(x => x.Category_Value).FirstOrDefault();
+                    SIDE_BLACK = item.Where(x => x.Column_Name == "SIDE BLACK").Select(x => x.Category_Value).FirstOrDefault();
+                    SIDE_WHITE = item.Where(x => x.Column_Name == "SIDE WHITE").Select(x => x.Category_Value).FirstOrDefault();
+                    TABLE_OPEN = item.Where(x => x.Column_Name == "TABLE OPEN").Select(x => x.Category_Value).FirstOrDefault();
+                    CROWN_OPEN = item.Where(x => x.Column_Name == "CROWN OPEN").Select(x => x.Category_Value).FirstOrDefault();
+                    PAVILION_OPEN = item.Where(x => x.Column_Name == "PAVILION OPEN").Select(x => x.Category_Value).FirstOrDefault();
+                    GIRDLE_OPEN = item.Where(x => x.Column_Name == "GIRDLE OPEN").Select(x => x.Category_Value).FirstOrDefault();
+                    KEY_TO_SYMBOL_TRUE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x => x.KEY_TO_SYMBOL_TRUE).FirstOrDefault();
+                    KEY_TO_SYMBOL_FALSE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x => x.KEY_TO_SYMBOL_FALSE).FirstOrDefault();
+                    LAB_COMMENTS_TRUE = item.Where(x => x.Column_Name == "LAB COMMENTS").Select(x => x.LAB_COMMENTS_TRUE).FirstOrDefault();
+                    LAB_COMMENTS_FALSE = item.Where(x => x.Column_Name == "LAB COMMENTS").Select(x => x.LAB_COMMENTS_FALSE).FirstOrDefault();
+                    FANCY_COLOR = item.Where(x => x.Column_Name == "FANCY COLOR").Select(x => x.Category_Value).FirstOrDefault();
+                    FANCY_INTENSITY = item.Where(x => x.Column_Name == "FANCY INTENSITY").Select(x => x.Category_Value).FirstOrDefault();
+                    FANCY_OVERTONE = item.Where(x => x.Column_Name == "FANCY OVERTONE").Select(x => x.Category_Value).FirstOrDefault();
+                    POINTER = item.Where(x => x.Column_Name == "POINTER").Select(x => x.Category_Value).FirstOrDefault();
+                    STAR_LN = item.Where(x => x.Column_Name == "STAR LN").Select(x => x.Category_Value).FirstOrDefault();
+                    LR_HALF = item.Where(x => x.Column_Name == "LR HALF").Select(x => x.Category_Value).FirstOrDefault();
+                    CERT_TYPE = item.Where(x => x.Column_Name == "CERT TYPE").Select(x => x.Category_Value).FirstOrDefault();
+                    COST_RATE = item.Where(x => x.Column_Name == "COST RATE").Select(x => x.Category_Value).FirstOrDefault();
+                    DISCOUNT_TYPE = item.Where(x => x.Column_Name == "DISCOUNT TYPE").Select(x => x.Category_Value).FirstOrDefault();
+                    SIGN = item.Where(x => x.Column_Name == "SIGN").Select(x => x.Category_Value).FirstOrDefault();
+                    DISC_VALUE = item.Where(x => x.Column_Name == "DISC VALUE").Select(x => x.Category_Value).FirstOrDefault();
+
+                    dataTable.Rows.Add(!string.IsNullOrEmpty(STOCK_ID) ? STOCK_ID : DBNull.Value,
+                        !string.IsNullOrEmpty(SUPPLIER) ? SUPPLIER : DBNull.Value,
                         !string.IsNullOrEmpty(CUSTOMER) ? CUSTOMER : DBNull.Value,
                         !string.IsNullOrEmpty(SHAPE) ? SHAPE : DBNull.Value,
                         !string.IsNullOrEmpty(CTS) ? CTS : DBNull.Value,
                         !string.IsNullOrEmpty(COLOR) ? COLOR : DBNull.Value,
-                        !string.IsNullOrEmpty(CLARITY) ? CLARITY : DBNull.Value, 
-                        !string.IsNullOrEmpty(CUT) ? CUT : DBNull.Value, 
-                        !string.IsNullOrEmpty(POLISH) ? POLISH : DBNull.Value, 
-                        !string.IsNullOrEmpty(SYMM) ? SYMM : DBNull.Value, 
-                        !string.IsNullOrEmpty(FLS_INTENSITY) ? FLS_INTENSITY : DBNull.Value, 
-                        !string.IsNullOrEmpty(BGM) ? BGM : DBNull.Value, 
-                        !string.IsNullOrEmpty(LAB) ? LAB : DBNull.Value, 
-                        !string.IsNullOrEmpty(GOOD_TYPE) ? GOOD_TYPE : DBNull.Value, 
-                        !string.IsNullOrEmpty(LOCATION) ? LOCATION : DBNull.Value, 
+                        !string.IsNullOrEmpty(CLARITY) ? CLARITY : DBNull.Value,
+                        !string.IsNullOrEmpty(CUT) ? CUT : DBNull.Value,
+                        !string.IsNullOrEmpty(POLISH) ? POLISH : DBNull.Value,
+                        !string.IsNullOrEmpty(SYMM) ? SYMM : DBNull.Value,
+                        !string.IsNullOrEmpty(FLS_INTENSITY) ? FLS_INTENSITY : DBNull.Value,
+                        !string.IsNullOrEmpty(BGM) ? BGM : DBNull.Value,
+                        !string.IsNullOrEmpty(LAB) ? LAB : DBNull.Value,
+                        !string.IsNullOrEmpty(GOOD_TYPE) ? GOOD_TYPE : DBNull.Value,
+                        !string.IsNullOrEmpty(LOCATION) ? LOCATION : DBNull.Value,
                         !string.IsNullOrEmpty(STATUS) ? STATUS : DBNull.Value,
-                        !string.IsNullOrEmpty(IMAGE_LINK) ? IMAGE_LINK : DBNull.Value, 
-                        !string.IsNullOrEmpty(VIDEO_LINK) ? VIDEO_LINK : DBNull.Value, 
-                        !string.IsNullOrEmpty(LENGTH) ? LENGTH : DBNull.Value, 
-                        !string.IsNullOrEmpty(WIDTH) ? WIDTH : DBNull.Value, 
-                        !string.IsNullOrEmpty(DEPTH) ? DEPTH : DBNull.Value, 
-                        !string.IsNullOrEmpty(TABLE_PER) ? TABLE_PER : DBNull.Value, 
-                        !string.IsNullOrEmpty(DEPTH_PER) ? DEPTH_PER : DBNull.Value, 
-                        !string.IsNullOrEmpty(CROWN_ANGLE) ? CROWN_ANGLE : DBNull.Value, 
-                        !string.IsNullOrEmpty(CROWN_HEIGHT) ? CROWN_HEIGHT : DBNull.Value, 
-                        !string.IsNullOrEmpty(PAVILION_ANGLE) ? PAVILION_ANGLE : DBNull.Value, 
-                        !string.IsNullOrEmpty(PAVILION_HEIGHT) ? PAVILION_HEIGHT : DBNull.Value, 
+                        !string.IsNullOrEmpty(IMAGE_LINK) ? IMAGE_LINK : DBNull.Value,
+                        !string.IsNullOrEmpty(VIDEO_LINK) ? VIDEO_LINK : DBNull.Value,
+                        !string.IsNullOrEmpty(LENGTH) ? LENGTH : DBNull.Value,
+                        !string.IsNullOrEmpty(WIDTH) ? WIDTH : DBNull.Value,
+                        !string.IsNullOrEmpty(DEPTH) ? DEPTH : DBNull.Value,
+                        !string.IsNullOrEmpty(TABLE_PER) ? TABLE_PER : DBNull.Value,
+                        !string.IsNullOrEmpty(DEPTH_PER) ? DEPTH_PER : DBNull.Value,
+                        !string.IsNullOrEmpty(CROWN_ANGLE) ? CROWN_ANGLE : DBNull.Value,
+                        !string.IsNullOrEmpty(CROWN_HEIGHT) ? CROWN_HEIGHT : DBNull.Value,
+                        !string.IsNullOrEmpty(PAVILION_ANGLE) ? PAVILION_ANGLE : DBNull.Value,
+                        !string.IsNullOrEmpty(PAVILION_HEIGHT) ? PAVILION_HEIGHT : DBNull.Value,
                         !string.IsNullOrEmpty(GIRDLE_PER) ? GIRDLE_PER : DBNull.Value,
                         !string.IsNullOrEmpty(OFFER_DISC) ? OFFER_DISC : DBNull.Value,
-                        !string.IsNullOrEmpty(OFFER_VALUE) ? OFFER_VALUE : DBNull.Value, 
+                        !string.IsNullOrEmpty(OFFER_VALUE) ? OFFER_VALUE : DBNull.Value,
                         !string.IsNullOrEmpty(PRICE_PER_CTS) ? PRICE_PER_CTS : DBNull.Value,
-                        !string.IsNullOrEmpty(TABLE_BLACK) ? TABLE_BLACK : DBNull.Value, 
-                        !string.IsNullOrEmpty(TABLE_WHITE) ? TABLE_WHITE : DBNull.Value, 
-                        !string.IsNullOrEmpty(SIDE_BLACK) ? SIDE_BLACK : DBNull.Value, 
+                        !string.IsNullOrEmpty(TABLE_BLACK) ? TABLE_BLACK : DBNull.Value,
+                        !string.IsNullOrEmpty(TABLE_WHITE) ? TABLE_WHITE : DBNull.Value,
+                        !string.IsNullOrEmpty(SIDE_BLACK) ? SIDE_BLACK : DBNull.Value,
                         !string.IsNullOrEmpty(SIDE_WHITE) ? SIDE_WHITE : DBNull.Value,
                         !string.IsNullOrEmpty(TABLE_OPEN) ? TABLE_OPEN : DBNull.Value,
-                        !string.IsNullOrEmpty(CROWN_OPEN) ? CROWN_OPEN : DBNull.Value, 
-                        !string.IsNullOrEmpty(PAVILION_OPEN) ? PAVILION_OPEN : DBNull.Value, 
-                        !string.IsNullOrEmpty(GIRDLE_OPEN) ? GIRDLE_OPEN : DBNull.Value, 
+                        !string.IsNullOrEmpty(CROWN_OPEN) ? CROWN_OPEN : DBNull.Value,
+                        !string.IsNullOrEmpty(PAVILION_OPEN) ? PAVILION_OPEN : DBNull.Value,
+                        !string.IsNullOrEmpty(GIRDLE_OPEN) ? GIRDLE_OPEN : DBNull.Value,
                         !string.IsNullOrEmpty(CULET) ? CULET : DBNull.Value,
-                        !string.IsNullOrEmpty(KEY_TO_SYMBOL_TRUE) ? KEY_TO_SYMBOL_TRUE : DBNull.Value, 
-                        !string.IsNullOrEmpty(KEY_TO_SYMBOL_FALSE) ? KEY_TO_SYMBOL_FALSE : DBNull.Value, 
+                        !string.IsNullOrEmpty(KEY_TO_SYMBOL_TRUE) ? KEY_TO_SYMBOL_TRUE : DBNull.Value,
+                        !string.IsNullOrEmpty(KEY_TO_SYMBOL_FALSE) ? KEY_TO_SYMBOL_FALSE : DBNull.Value,
                         !string.IsNullOrEmpty(LAB_COMMENTS_TRUE) ? LAB_COMMENTS_TRUE : DBNull.Value,
                         !string.IsNullOrEmpty(LAB_COMMENTS_FALSE) ? LAB_COMMENTS_FALSE : DBNull.Value,
                         !string.IsNullOrEmpty(FANCY_COLOR) ? FANCY_COLOR : DBNull.Value,
-                        !string.IsNullOrEmpty(FANCY_INTENSITY) ? FANCY_INTENSITY : DBNull.Value, 
+                        !string.IsNullOrEmpty(FANCY_INTENSITY) ? FANCY_INTENSITY : DBNull.Value,
                         !string.IsNullOrEmpty(FANCY_OVERTONE) ? FANCY_OVERTONE : DBNull.Value,
-                        !string.IsNullOrEmpty(POINTER) ? POINTER : DBNull.Value, 
-                        !string.IsNullOrEmpty(STAR_LN) ? STAR_LN : DBNull.Value, 
+                        !string.IsNullOrEmpty(POINTER) ? POINTER : DBNull.Value,
+                        !string.IsNullOrEmpty(STAR_LN) ? STAR_LN : DBNull.Value,
                         !string.IsNullOrEmpty(LR_HALF) ? LR_HALF : DBNull.Value,
                         !string.IsNullOrEmpty(CERT_TYPE) ? CERT_TYPE : DBNull.Value,
                         !string.IsNullOrEmpty(COST_RATE) ? COST_RATE : DBNull.Value,
                         !string.IsNullOrEmpty(DISCOUNT_TYPE) ? DISCOUNT_TYPE : DBNull.Value,
                         !string.IsNullOrEmpty(SIGN) ? SIGN : DBNull.Value,
-                        !string.IsNullOrEmpty(DISC_VALUE)? DISC_VALUE: DBNull.Value) ;
+                        !string.IsNullOrEmpty(DISC_VALUE) ? DISC_VALUE : DBNull.Value);
                 }
                 var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Lab_Search_Report_Search(dataTable, report_Lab_Filter.iPgNo ?? 0, report_Lab_Filter.iPgSize ?? 0, report_Lab_Filter.iSort);
                 if (result != null)
@@ -4441,7 +4441,7 @@ namespace astute.Controllers
             }
         }
 
-       [HttpPost]
+        [HttpPost]
         [Route("get_stock_availibility_report_search")]
         [Authorize]
         public async Task<IActionResult> Get_Stock_Availibility_Report_Search([FromForm] Stock_Avalibility stock_Avalibility, IFormFile? File_Location)
@@ -4453,7 +4453,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("OFFER_AMOUNT", typeof(string));
                 dataTable.Columns.Add("OFFER_DISC", typeof(string));
                 if (File_Location != null)
-                {   
+                {
                     var filePath = Path.GetTempFileName();
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
@@ -4506,11 +4506,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_saved_report_serach")]
         [Authorize]
-        public async Task<IActionResult> Get_Saved_Report_Serach()
+        public async Task<IActionResult> Get_Saved_Report_Serach(int user_Id)
         {
             try
             {
-                var result = await _supplierService.Get_Report_Search();
+                var result = await _supplierService.Get_Search_Save_Report_Search(user_Id);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -4541,13 +4541,164 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _supplierService.Create_Update_Report_Search(report_Search_Save);
-                    if (result > 0)
+                    string STOCK_ID = string.Empty, SUPPLIER = string.Empty, CUSTOMER = string.Empty, SHAPE = string.Empty,
+                        CTS = string.Empty, COLOR = string.Empty, CLARITY = string.Empty, CUT = string.Empty,
+                        POLISH = string.Empty, SYMM = string.Empty, FLS_INTENSITY = string.Empty, BGM = string.Empty,
+                        LAB = string.Empty, GOOD_TYPE = string.Empty, LOCATION = string.Empty, STATUS = string.Empty,
+                        IMAGE_LINK = string.Empty, VIDEO_LINK = string.Empty, LENGTH = string.Empty, WIDTH = string.Empty,
+                        DEPTH = string.Empty, TABLE_PER = string.Empty, DEPTH_PER = string.Empty, CROWN_ANGLE = string.Empty,
+                        CROWN_HEIGHT = string.Empty, PAVILION_ANGLE = string.Empty, PAVILION_HEIGHT = string.Empty, GIRDLE_PER = string.Empty,
+                        OFFER_DISC = string.Empty, OFFER_AMOUNT = string.Empty, PRICE_PER_CTS = string.Empty, TABLE_BLACK = string.Empty,
+                        TABLE_WHITE = string.Empty, SIDE_BLACK = string.Empty, SIDE_WHITE = string.Empty,
+                        TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
+                        GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
+                        KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
+                        FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty,
+                        STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, DISCOUNT_TYPE = string.Empty, SIGN = string.Empty, DISC_VALUE = string.Empty;
+
+                    Report_Lab_Filter report_Lab_Filter = JsonConvert.DeserializeObject<Report_Lab_Filter>(report_Search_Save.Search_Value.ToString());
+
+                    string Search_Display = string.Empty;
+                    Search_Display += "[";
+                    int i = 1;
+                    foreach (var item in report_Lab_Filter.Report_Filter_Parameter_List)
+                    {
+                        STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
+                        SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER").Select(x => x.Category_Name).FirstOrDefault();
+                        CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x => x.Category_Name).FirstOrDefault();
+                        SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x => x.Category_Name).FirstOrDefault();
+                        CTS = item.Where(x => x.Column_Name == "CTS").Select(x => x.Category_Value).FirstOrDefault();
+                        COLOR = item.Where(x => x.Column_Name == "COLOR").Select(x => x.Category_Name).FirstOrDefault();
+                        CLARITY = item.Where(x => x.Column_Name == "CLARITY").Select(x => x.Category_Name).FirstOrDefault();
+                        CUT = item.Where(x => x.Column_Name == "CUT").Select(x => x.Category_Name).FirstOrDefault();
+                        POLISH = item.Where(x => x.Column_Name == "POLISH").Select(x => x.Category_Name).FirstOrDefault();
+                        SYMM = item.Where(x => x.Column_Name == "SYMM").Select(x => x.Category_Name).FirstOrDefault();
+                        FLS_INTENSITY = item.Where(x => x.Column_Name == "FLS INTENSITY").Select(x => x.Category_Name).FirstOrDefault();
+                        BGM = item.Where(x => x.Column_Name == "BGM").Select(x => x.Category_Name).FirstOrDefault();
+                        LAB = item.Where(x => x.Column_Name == "LAB").Select(x => x.Category_Name).FirstOrDefault();
+                        GOOD_TYPE = item.Where(x => x.Column_Name == "GOOD TYPE").Select(x => x.Category_Name).FirstOrDefault();
+                        LOCATION = item.Where(x => x.Column_Name == "LOCATION").Select(x => x.Category_Name).FirstOrDefault();
+                        STATUS = item.Where(x => x.Column_Name == "STATUS").Select(x => x.Category_Name).FirstOrDefault();
+                        IMAGE_LINK = item.Where(x => x.Column_Name == "IMAGE LINK").Select(x => x.Category_Value).FirstOrDefault();
+                        VIDEO_LINK = item.Where(x => x.Column_Name == "VIDEO LINK").Select(x => x.Category_Value).FirstOrDefault();
+                        LENGTH = item.Where(x => x.Column_Name == "LENGTH").Select(x => x.Category_Value).FirstOrDefault();
+                        WIDTH = item.Where(x => x.Column_Name == "WIDTH").Select(x => x.Category_Value).FirstOrDefault();
+                        DEPTH = item.Where(x => x.Column_Name == "DEPTH").Select(x => x.Category_Value).FirstOrDefault();
+                        TABLE_PER = item.Where(x => x.Column_Name == "TABLE PER").Select(x => x.Category_Value).FirstOrDefault();
+                        DEPTH_PER = item.Where(x => x.Column_Name == "DEPTH PER").Select(x => x.Category_Value).FirstOrDefault();
+                        CROWN_ANGLE = item.Where(x => x.Column_Name == "CROWN ANGLE").Select(x => x.Category_Value).FirstOrDefault();
+                        CROWN_HEIGHT = item.Where(x => x.Column_Name == "CROWN HEIGHT").Select(x => x.Category_Value).FirstOrDefault();
+                        PAVILION_ANGLE = item.Where(x => x.Column_Name == "PAVILION ANGLE").Select(x => x.Category_Value).FirstOrDefault();
+                        PAVILION_HEIGHT = item.Where(x => x.Column_Name == "PAVILION HEIGHT").Select(x => x.Category_Value).FirstOrDefault();
+                        GIRDLE_PER = item.Where(x => x.Column_Name == "GIRDLE PER").Select(x => x.Category_Value).FirstOrDefault();
+                        OFFER_DISC = item.Where(x => x.Column_Name == "OFFER DISC").Select(x => x.Category_Value).FirstOrDefault();
+                        OFFER_AMOUNT = item.Where(x => x.Column_Name == "OFFER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                        PRICE_PER_CTS = item.Where(x => x.Column_Name == "PRICE PER CTS").Select(x => x.Category_Value).FirstOrDefault();
+                        TABLE_BLACK = item.Where(x => x.Column_Name == "TABLE BLACK").Select(x => x.Category_Name).FirstOrDefault();
+                        TABLE_WHITE = item.Where(x => x.Column_Name == "TABLE WHITE").Select(x => x.Category_Name).FirstOrDefault();
+                        SIDE_BLACK = item.Where(x => x.Column_Name == "SIDE BLACK").Select(x => x.Category_Name).FirstOrDefault();
+                        SIDE_WHITE = item.Where(x => x.Column_Name == "SIDE WHITE").Select(x => x.Category_Name).FirstOrDefault();
+                        TABLE_OPEN = item.Where(x => x.Column_Name == "TABLE OPEN").Select(x => x.Category_Name).FirstOrDefault();
+                        CROWN_OPEN = item.Where(x => x.Column_Name == "CROWN OPEN").Select(x => x.Category_Name).FirstOrDefault();
+                        PAVILION_OPEN = item.Where(x => x.Column_Name == "PAVILION OPEN").Select(x => x.Category_Name).FirstOrDefault();
+                        GIRDLE_OPEN = item.Where(x => x.Column_Name == "GIRDLE OPEN").Select(x => x.Category_Name).FirstOrDefault();
+                        KEY_TO_SYMBOL_TRUE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x => x.KEY_TO_SYMBOL_TRUE).FirstOrDefault();
+                        KEY_TO_SYMBOL_FALSE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x => x.KEY_TO_SYMBOL_FALSE).FirstOrDefault();
+                        LAB_COMMENTS_TRUE = item.Where(x => x.Column_Name == "LAB COMMENTS").Select(x => x.LAB_COMMENTS_TRUE).FirstOrDefault();
+                        LAB_COMMENTS_FALSE = item.Where(x => x.Column_Name == "LAB COMMENTS").Select(x => x.LAB_COMMENTS_FALSE).FirstOrDefault();
+                        FANCY_COLOR = item.Where(x => x.Column_Name == "FANCY COLOR").Select(x => x.Category_Name).FirstOrDefault();
+                        FANCY_INTENSITY = item.Where(x => x.Column_Name == "FANCY INTENSITY").Select(x => x.Category_Name).FirstOrDefault();
+                        FANCY_OVERTONE = item.Where(x => x.Column_Name == "FANCY OVERTONE").Select(x => x.Category_Name).FirstOrDefault();
+                        POINTER = item.Where(x => x.Column_Name == "POINTER").Select(x => x.Category_Name).FirstOrDefault();
+                        STAR_LN = item.Where(x => x.Column_Name == "STAR LN").Select(x => x.Category_Name).FirstOrDefault();
+                        LR_HALF = item.Where(x => x.Column_Name == "LR HALF").Select(x => x.Category_Name).FirstOrDefault();
+                        CERT_TYPE = item.Where(x => x.Column_Name == "CERT TYPE").Select(x => x.Category_Name).FirstOrDefault();
+                        COST_RATE = item.Where(x => x.Column_Name == "COST RATE").Select(x => x.Category_Value).FirstOrDefault();
+                        DISCOUNT_TYPE = item.Where(x => x.Column_Name == "DISCOUNT TYPE").Select(x => x.Category_Value).FirstOrDefault();
+                        SIGN = item.Where(x => x.Column_Name == "SIGN").Select(x => x.Category_Value).FirstOrDefault();
+                        DISC_VALUE = item.Where(x => x.Column_Name == "DISC VALUE").Select(x => x.Category_Value).FirstOrDefault();
+                        Search_Display += " { \"Filter\" : \"";
+                        Search_Display += !string.IsNullOrEmpty(STOCK_ID) ? " SUPPLIER NO/ CERT NO : " + STOCK_ID : "";
+                        Search_Display += !string.IsNullOrEmpty(SUPPLIER) ? " SUPPLIER : " + SUPPLIER : "";
+                        Search_Display += !string.IsNullOrEmpty(CUSTOMER) ? " CUSTOMER : " + CUSTOMER : "";
+                        Search_Display += !string.IsNullOrEmpty(SHAPE) ? " SHAPE : " + SHAPE : "";
+                        Search_Display += !string.IsNullOrEmpty(CTS) ? " CTS : " + CTS : "";
+                        Search_Display += !string.IsNullOrEmpty(COLOR) ? " COLOR : " + COLOR : "";
+                        Search_Display += !string.IsNullOrEmpty(CLARITY) ? " CLARITY : " + CLARITY : "";
+                        Search_Display += !string.IsNullOrEmpty(CUT) ? " CUT : " + CUT : "";
+                        Search_Display += !string.IsNullOrEmpty(POLISH) ? " POLISH : " + POLISH : "";
+                        Search_Display += !string.IsNullOrEmpty(SYMM) ? " SYMM : " + SYMM : "";
+                        Search_Display += !string.IsNullOrEmpty(FLS_INTENSITY) ? " FLS INTENSITY : " + FLS_INTENSITY : "";
+                        Search_Display += !string.IsNullOrEmpty(BGM) ? " BGM : " + BGM : "";
+                        Search_Display += !string.IsNullOrEmpty(LAB) ? " LAB : " + LAB : "";
+                        Search_Display += !string.IsNullOrEmpty(GOOD_TYPE) ? " GOOD TYPE : " + GOOD_TYPE : "";
+                        Search_Display += !string.IsNullOrEmpty(LOCATION) ? " LOCATION : " + LOCATION : "";
+                        Search_Display += !string.IsNullOrEmpty(STATUS) ? " STATUS : " + STATUS : "";
+                        Search_Display += !string.IsNullOrEmpty(IMAGE_LINK) ? " IMAGE LINK : " + IMAGE_LINK : "";
+                        Search_Display += !string.IsNullOrEmpty(VIDEO_LINK) ? " VIDEO LINK : " + VIDEO_LINK : "";
+                        Search_Display += !string.IsNullOrEmpty(LENGTH) ? " LENGTH : " + LENGTH : "";
+                        Search_Display += !string.IsNullOrEmpty(WIDTH) ? " WIDTH : " + WIDTH : "";
+                        Search_Display += !string.IsNullOrEmpty(DEPTH) ? " DEPTH : " + DEPTH : "";
+                        Search_Display += !string.IsNullOrEmpty(TABLE_PER) ? " TABLE PER : " + TABLE_PER : "";
+                        Search_Display += !string.IsNullOrEmpty(DEPTH_PER) ? " DEPTH PER : " + DEPTH_PER : "";
+                        Search_Display += !string.IsNullOrEmpty(CROWN_ANGLE) ? " CROWN ANGLE : " + CROWN_ANGLE : "";
+                        Search_Display += !string.IsNullOrEmpty(CROWN_HEIGHT) ? " CROWN HEIGHT : " + CROWN_HEIGHT : "";
+                        Search_Display += !string.IsNullOrEmpty(PAVILION_ANGLE) ? " PAVILION ANGLE : " + PAVILION_ANGLE : "";
+                        Search_Display += !string.IsNullOrEmpty(PAVILION_HEIGHT) ? " PAVILION HEIGHT : " + PAVILION_HEIGHT : "";
+                        Search_Display += !string.IsNullOrEmpty(GIRDLE_PER) ? " GIRDLE PER : " + GIRDLE_PER : "";
+                        Search_Display += !string.IsNullOrEmpty(OFFER_DISC) ? " OFFER DISC : " + OFFER_DISC : "";
+                        Search_Display += !string.IsNullOrEmpty(OFFER_AMOUNT) ? " OFFER AMOUNT : " + OFFER_AMOUNT : "";
+                        Search_Display += !string.IsNullOrEmpty(PRICE_PER_CTS) ? " PRICE PER CTS : " + PRICE_PER_CTS : "";
+                        Search_Display += !string.IsNullOrEmpty(TABLE_BLACK) ? " TABLE BLACK : " + TABLE_BLACK : "";
+                        Search_Display += !string.IsNullOrEmpty(TABLE_WHITE) ? " TABLE WHITE : " + TABLE_WHITE : "";
+                        Search_Display += !string.IsNullOrEmpty(SIDE_BLACK) ? " SIDE BLACK : " + SIDE_BLACK : "";
+                        Search_Display += !string.IsNullOrEmpty(SIDE_WHITE) ? " SIDE WHITE : " + SIDE_WHITE : "";
+                        Search_Display += !string.IsNullOrEmpty(TABLE_OPEN) ? " TABLE OPEN : " + TABLE_OPEN : "";
+                        Search_Display += !string.IsNullOrEmpty(CROWN_OPEN) ? " CROWN OPEN : " + CROWN_OPEN : "";
+                        Search_Display += !string.IsNullOrEmpty(PAVILION_OPEN) ? " PAVILION OPEN : " + PAVILION_OPEN : "";
+                        Search_Display += !string.IsNullOrEmpty(GIRDLE_OPEN) ? " GIRDLE OPEN : " + GIRDLE_OPEN : "";
+                        Search_Display += !string.IsNullOrEmpty(KEY_TO_SYMBOL_TRUE) ? " KEY TO SYMBOL TRUE : " + KEY_TO_SYMBOL_TRUE : "";
+                        Search_Display += !string.IsNullOrEmpty(KEY_TO_SYMBOL_FALSE) ? " KEY TO SYMBOL FALSE : " + KEY_TO_SYMBOL_FALSE : "";
+                        Search_Display += !string.IsNullOrEmpty(LAB_COMMENTS_TRUE) ? " LAB COMMENTS TRUE : " + LAB_COMMENTS_TRUE : "";
+                        Search_Display += !string.IsNullOrEmpty(LAB_COMMENTS_FALSE) ? " LAB COMMENTS FALSE : " + LAB_COMMENTS_FALSE : "";
+                        Search_Display += !string.IsNullOrEmpty(FANCY_COLOR) ? " FANCY COLOR : " + FANCY_COLOR : "";
+                        Search_Display += !string.IsNullOrEmpty(FANCY_INTENSITY) ? " FANCY INTENSITY : " + FANCY_INTENSITY : "";
+                        Search_Display += !string.IsNullOrEmpty(FANCY_OVERTONE) ? " FANCY OVERTONE : " + FANCY_OVERTONE : "";
+                        Search_Display += !string.IsNullOrEmpty(POINTER) ? " POINTER : " + POINTER : "";
+                        Search_Display += !string.IsNullOrEmpty(STAR_LN) ? " STAR LN : " + STAR_LN : "";
+                        Search_Display += !string.IsNullOrEmpty(LR_HALF) ? " LR HALF : " + LR_HALF : "";
+                        Search_Display += !string.IsNullOrEmpty(CERT_TYPE) ? " CERT TYPE : " + CERT_TYPE : "";
+                        Search_Display += !string.IsNullOrEmpty(COST_RATE) ? " COST RATE : " + COST_RATE : "";
+                        Search_Display += !string.IsNullOrEmpty(DISCOUNT_TYPE) ? " DISCOUNT TYPE : " + DISCOUNT_TYPE : "";
+                        Search_Display += !string.IsNullOrEmpty(SIGN) ? " SIGN : " + SIGN : "";
+                        Search_Display += !string.IsNullOrEmpty(DISC_VALUE) ? " DISC VALUE : " + DISC_VALUE : "";
+                        Search_Display += " \"}";
+
+                        if (report_Lab_Filter.Report_Filter_Parameter_List.Count()!=i)
+                        {
+                            Search_Display += ",";
+                        }
+                        i++;
+                    }
+                    Search_Display += "]";
+                    report_Search_Save.Search_Display = Search_Display;
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                    var result = await _supplierService.Create_Update_Report_Search(report_Search_Save,(int)user_Id);
+                    if (result == "success")
                     {
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
                             message = CoreCommonMessage.SearchedReportCreated
+                        });
+                    }
+                    else if (result == "exist")
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.SearchedReportNameExist,
                         });
                     }
                 }
@@ -4556,37 +4707,6 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Report_Search_Save", ex.StackTrace);
-                return Ok(new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-
-        [HttpPut]
-        [Route("update_report_search_save")]
-        [Authorize]
-        public async Task<IActionResult> Update_Report_Search_Save(Report_Search_Save report_Search_Save)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var result = await _supplierService.Create_Update_Report_Search(report_Search_Save);
-                    if (result > 0)
-                    {
-                        return Ok(new
-                        {
-                            statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.SearchedReportUpdated
-                        });
-                    }
-                }
-                return BadRequest(ModelState);
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Update_Report_Search_Save", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -70,5 +71,10 @@ namespace astute.Models
     {
         public string sort { get; set; }
         public string col_name { get; set; }
+    }
+
+    public class Report_Filter_Display
+    { 
+      public string Filter { get; set; }
     }
 }
