@@ -3390,7 +3390,7 @@ namespace astute.Controllers
                                     excel_dataTable = CoreService.Convert_File_To_DataTable(".csv", fileLocation, "");
                                 }
 
-                            dataExist:
+                                dataExist:
                                 if (excel_dataTable != null && excel_dataTable.Rows.Count > 0)
                                 {
                                     #region Add column to datatable
@@ -3562,6 +3562,7 @@ namespace astute.Controllers
                                      })
                                      .ToList();
                                     var party_master = await _partyService.Get_Party_Details(party_File.Party_Id ?? 0);
+                                    var party_file = await _partyService.Get_Party_File(0, party_File.Party_Id ?? 0);
                                     dt_stock_data.AsEnumerable().ToList().ForEach(stockDataRow =>
                                     {
                                         //Start Center Inclusion AND Black Inclusion
@@ -3589,6 +3590,7 @@ namespace astute.Controllers
                                         stockDataRow["SIDE_WHITE"] = table_Black;
                                         stockDataRow["TABLE_BLACK"] = side_White;
                                         stockDataRow["SIDE_BLACK"] = side_Black;
+                                        stockDataRow["Short_Code"] = party_file.Short_Code;
                                         //END Center Inclusion AND Black Inclusion
 
                                         // Check if all three columns are currently null or empty
