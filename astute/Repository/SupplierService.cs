@@ -1637,17 +1637,69 @@ namespace astute.Repository
             }
             return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr);
         }
-        public async Task<List<Dictionary<string, object>>> Get_Report_Column_Format(int user_Id, int report_Id, string format_Type)
+        public async Task<(List<Dictionary<string, object>>, string, string, string, string)> Get_Lab_Search_Report_Search(DataTable dataTable, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
         {
             var result = new List<Dictionary<string, object>>();
+            var totalRecordr = string.Empty;
+            var totalCtsr = string.Empty;
+            var totalAmtr = string.Empty;
+            var totalDiscr = string.Empty;
+
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
-                using (var command = new SqlCommand("Report_Column_Format_Select", connection))
+                using (var command = new SqlCommand("Report_Multiple_Search_Lab_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
-                    command.Parameters.Add(report_Id > 0 ? new SqlParameter("@Report_Id", report_Id) : new SqlParameter("@Report_Id", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(format_Type) ? new SqlParameter("@Format_Type", format_Type) : new SqlParameter("@Format_Type", DBNull.Value));
+                    var parameter = new SqlParameter("@Report_Search_Lab_Table_Type", SqlDbType.Structured)
+                    {
+                        TypeName = "dbo.Report_Search_Lab_Table_Type",
+                        Value = dataTable
+                    };
+                    command.Parameters.Add(parameter);
+                    command.Parameters.Add(iPgNo > 0 ? new SqlParameter("@iPgNo", iPgNo) : new SqlParameter("@iPgNo", DBNull.Value));
+                    command.Parameters.Add(iPgSize > 0 ? new SqlParameter("@iPgSize", iPgSize) : new SqlParameter("@iPgSize", DBNull.Value));
+
+                    if (iSort.Count() > 0)
+                    {
+                        string iSorting = string.Empty;
+
+                        foreach (var item in iSort)
+                        {
+                            iSorting += "[" + item.col_name + "] " + item.sort + " ";
+
+                            if (item != iSort.Last())
+                            {
+                                iSorting += ",";
+                            }
+                        }
+                        command.Parameters.Add(!string.IsNullOrEmpty(iSorting) ? new SqlParameter("@iSort", iSorting) : new SqlParameter("@iSort", DBNull.Value));
+                    }
+                    var totalRecordParameter = new SqlParameter("@iTotalRec", SqlDbType.Int);
+                    totalRecordParameter.Direction = ParameterDirection.Output;
+                    command.Parameters.Add(totalRecordParameter);
+                  
+                    var totalCtsParameter = new SqlParameter("@iTotalCts", SqlDbType.NVarChar)
+                    {
+                        Size = -1, // -1 is used for max size
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalCtsParameter);
+
+                    var totalAmtParameter = new SqlParameter("@iTotalAmt", SqlDbType.NVarChar)
+                    {
+                        Size = -1, // -1 is used for max size
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalAmtParameter);
+
+                    var totalDiscParameter = new SqlParameter("@iTotalDisc", SqlDbType.NVarChar)
+                    {
+                        Size = -1, // -1 is used for max size
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalDiscParameter);
+
+                   command.CommandTimeout = 1800;
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -1663,56 +1715,18 @@ namespace astute.Repository
 
                                 dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
                             }
-
                             result.Add(dict);
                         }
                     }
+                    totalRecordr = Convert.ToString(totalRecordParameter.Value);
+                    totalCtsr = Convert.ToString(totalCtsParameter.Value);
+                    totalAmtr = Convert.ToString(totalAmtParameter.Value);
+                    totalDiscr = Convert.ToString(totalDiscParameter.Value);
                 }
             }
-            return result;
+            return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr);
         }
-        public async Task<int> Create_Update_Report_Search(Report_Search_Save report_Search_Save)
-        {
-            var id = new SqlParameter("@Id", report_Search_Save.Id);
-            var name = new SqlParameter("@Name", report_Search_Save.Name);
-            var search_Value = new SqlParameter("@Search_Value", report_Search_Save.Search_Value);
-
-            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Search_Save_Insert_Update @Id, @Name, @Search_Value", id, name, search_Value));
-
-            return result;
-        }
-        public async Task<List<Dictionary<string, object>>> Get_Report_Search()
-        {
-            var result = new List<Dictionary<string, object>>();
-            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
-            {
-                using (var command = new SqlCommand("Report_Search_Save_Select", connection))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-                    await connection.OpenAsync();
-
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            var dict = new Dictionary<string, object>();
-
-                            for (int i = 0; i < reader.FieldCount; i++)
-                            {
-                                var columnName = reader.GetName(i);
-                                var columnValue = reader.GetValue(i);
-
-                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
-                            }
-
-                            result.Add(dict);
-                        }
-                    }
-                }
-            }
-            return result;
-        }
-        public async Task<(List<Dictionary<string, object>>, string, string,string,string)> Get_Stock_Avalibility_Report_Search(DataTable dataTable,string stock_Id, string stock_Type, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
+   public async Task<(List<Dictionary<string, object>>, string, string,string,string)> Get_Stock_Avalibility_Report_Search(DataTable dataTable,string stock_Id, string stock_Type, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
         {
             var result = new List<Dictionary<string, object>>();
             var totalRecordr = string.Empty;
@@ -1803,6 +1817,81 @@ namespace astute.Repository
             }
 
             return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr);
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Report_Column_Format(int user_Id, int report_Id, string format_Type)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Report_Column_Format_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
+                    command.Parameters.Add(report_Id > 0 ? new SqlParameter("@Report_Id", report_Id) : new SqlParameter("@Report_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(format_Type) ? new SqlParameter("@Format_Type", format_Type) : new SqlParameter("@Format_Type", DBNull.Value));
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public async Task<int> Create_Update_Report_Search(Report_Search_Save report_Search_Save)
+        {
+            var id = new SqlParameter("@Id", report_Search_Save.Id);
+            var name = new SqlParameter("@Name", report_Search_Save.Name);
+            var search_Value = new SqlParameter("@Search_Value", report_Search_Save.Search_Value);
+
+            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Search_Save_Insert_Update @Id, @Name, @Search_Value", id, name, search_Value));
+
+            return result;
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Report_Search()
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Report_Search_Save_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
         }
         public async Task<int> Delete_Report_Search(int id)
         {

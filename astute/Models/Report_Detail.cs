@@ -41,7 +41,31 @@ namespace astute.Models
         public int? iPgSize { get; set; }
         public IList<Report_Sorting> iSort { get; set; } = new List<Report_Sorting>();
     }
+    public class Report_Lab_Filter
+    {
+        public int id { get; set; }
+        public IList<IList<Report_Multiple_Filter_Parameter>> Report_Filter_Parameter_List { get; set; } = new List<IList<Report_Multiple_Filter_Parameter>>();
+        //public IList<Report_Filter_Parameter_List> Report_Filter_Parameter_List { get; set; } = new List<Report_Filter_Parameter_List>();
+        public int? iPgNo { get; set; }
+        public int? iPgSize { get; set; }
+        public IList<Report_Sorting> iSort { get; set; } = new List<Report_Sorting>();
+    }
+    public class Report_Filter_Parameter_List
+    {
+        public IList<Report_Multiple_Filter_Parameter> Report_Filter_Parameter { get; set; } = new List<Report_Multiple_Filter_Parameter>();
 
+    }
+    public class Report_Multiple_Filter_Parameter
+    {
+        public int Col_Id { get; set; }
+        public string Column_Name { get; set; }
+        public string Category_Value { get; set; }
+        public string Category_Name { get; set; }
+        public string? KEY_TO_SYMBOL_TRUE { get; set; }
+        public string? KEY_TO_SYMBOL_FALSE { get; set; }
+        public string? LAB_COMMENTS_TRUE { get; set; }
+        public string? LAB_COMMENTS_FALSE { get; set; }
+    }
     public class Report_Sorting
     {
         public string sort { get; set; }
