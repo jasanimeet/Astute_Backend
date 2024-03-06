@@ -4270,7 +4270,7 @@ namespace astute.Controllers
                            GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
                            KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
                            FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty,
-                           STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, DISCOUNT_TYPE = string.Empty, SIGN = string.Empty, DISC_VALUE = string.Empty;
+                           STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, DISCOUNT_TYPE = string.Empty, SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE = string.Empty;
 
                 DataTable dataTable = new DataTable();
                 dataTable.Columns.Add("STOCK_ID", typeof(string));
@@ -4328,6 +4328,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("DISCOUNT_TYPE", typeof(string));
                 dataTable.Columns.Add("SIGN", typeof(string));
                 dataTable.Columns.Add("DISC_VALUE", typeof(string));
+                dataTable.Columns.Add("BASE TYPE", typeof(string));
 
                 if (report_Lab_Filter.Report_Filter_Parameter_List != null && report_Lab_Filter.Report_Filter_Parameter_List.Count > 0)
                 {
@@ -4389,6 +4390,7 @@ namespace astute.Controllers
                         DISCOUNT_TYPE = item.Where(x => x.Column_Name == "DISCOUNT TYPE").Select(x => x.Category_Value).FirstOrDefault();
                         SIGN = item.Where(x => x.Column_Name == "SIGN").Select(x => x.Category_Value).FirstOrDefault();
                         DISC_VALUE = item.Where(x => x.Column_Name == "DISC VALUE").Select(x => x.Category_Value).FirstOrDefault();
+                        BASE_TYPE = item.Where(x => x.Column_Name == "BASE TYPE").Select(x => x.Category_Value).FirstOrDefault();
 
                         dataTable.Rows.Add(!string.IsNullOrEmpty(STOCK_ID) ? STOCK_ID : DBNull.Value,
                             !string.IsNullOrEmpty(SUPPLIER) ? SUPPLIER : DBNull.Value,
@@ -4444,7 +4446,8 @@ namespace astute.Controllers
                             !string.IsNullOrEmpty(COST_RATE) ? COST_RATE : DBNull.Value,
                             !string.IsNullOrEmpty(DISCOUNT_TYPE) ? DISCOUNT_TYPE : DBNull.Value,
                             !string.IsNullOrEmpty(SIGN) ? SIGN : DBNull.Value,
-                            !string.IsNullOrEmpty(DISC_VALUE) ? DISC_VALUE : DBNull.Value);
+                            !string.IsNullOrEmpty(DISC_VALUE) ? DISC_VALUE : DBNull.Value,
+                            !string.IsNullOrEmpty(BASE_TYPE) ? BASE_TYPE : DBNull.Value);
                     }
                 }
                 else
@@ -4994,7 +4997,7 @@ namespace astute.Controllers
                            GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
                            KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
                            FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty,
-                           STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, DISCOUNT_TYPE = string.Empty, SIGN = string.Empty, DISC_VALUE = string.Empty;
+                           STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, DISCOUNT_TYPE = string.Empty, SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE = string.Empty;
 
                 DataTable dataTable = new DataTable();
                 dataTable.Columns.Add("STOCK_ID", typeof(string));
@@ -5052,6 +5055,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("DISCOUNT_TYPE", typeof(string));
                 dataTable.Columns.Add("SIGN", typeof(string));
                 dataTable.Columns.Add("DISC_VALUE", typeof(string));
+                dataTable.Columns.Add("BASE_TYPE", typeof(string));
                 if (report_Lab_Filter.Report_Filter_Parameter_List != null && report_Lab_Filter.Report_Filter_Parameter_List.Count > 0)
                 {
                     foreach (var item in report_Lab_Filter.Report_Filter_Parameter_List)
@@ -5112,6 +5116,7 @@ namespace astute.Controllers
                         DISCOUNT_TYPE = item.Where(x => x.Column_Name == "DISCOUNT TYPE").Select(x => x.Category_Value).FirstOrDefault();
                         SIGN = item.Where(x => x.Column_Name == "SIGN").Select(x => x.Category_Value).FirstOrDefault();
                         DISC_VALUE = item.Where(x => x.Column_Name == "DISC VALUE").Select(x => x.Category_Value).FirstOrDefault();
+                        BASE_TYPE = item.Where(x => x.Column_Name == "BASE TYPE").Select(x => x.Category_Value).FirstOrDefault();
 
                         dataTable.Rows.Add(!string.IsNullOrEmpty(STOCK_ID) ? STOCK_ID : DBNull.Value,
                             !string.IsNullOrEmpty(SUPPLIER) ? SUPPLIER : DBNull.Value,
@@ -5167,7 +5172,8 @@ namespace astute.Controllers
                             !string.IsNullOrEmpty(COST_RATE) ? COST_RATE : DBNull.Value,
                             !string.IsNullOrEmpty(DISCOUNT_TYPE) ? DISCOUNT_TYPE : DBNull.Value,
                             !string.IsNullOrEmpty(SIGN) ? SIGN : DBNull.Value,
-                            !string.IsNullOrEmpty(DISC_VALUE) ? DISC_VALUE : DBNull.Value);
+                            !string.IsNullOrEmpty(DISC_VALUE) ? DISC_VALUE : DBNull.Value,
+                            !string.IsNullOrEmpty(BASE_TYPE) ? DISC_VALUE : DBNull.Value);
                     }
                 }
                 else
@@ -5916,7 +5922,7 @@ namespace astute.Controllers
                            KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
                            FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty,
                            STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, DISCOUNT_TYPE = string.Empty,
-                           SIGN = string.Empty, DISC_VALUE = string.Empty;
+                           SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE= string.Empty;
 
             DataTable dataTable = new DataTable();
             dataTable.Columns.Add("STOCK_ID", typeof(string));
@@ -5974,6 +5980,8 @@ namespace astute.Controllers
             dataTable.Columns.Add("DISCOUNT_TYPE", typeof(string));
             dataTable.Columns.Add("SIGN", typeof(string));
             dataTable.Columns.Add("DISC_VALUE", typeof(string));
+            dataTable.Columns.Add("BASE_TYPE", typeof(string));
+            
             if (excel_Model.Report_Filter_Parameter_List != null && excel_Model.Report_Filter_Parameter_List.Count > 0)
             {
                 foreach (var item in excel_Model.Report_Filter_Parameter_List)
@@ -6033,6 +6041,7 @@ namespace astute.Controllers
                     DISCOUNT_TYPE = item.Where(x => x.Column_Name == "DISCOUNT TYPE").Select(x => x.Category_Value).FirstOrDefault();
                     SIGN = item.Where(x => x.Column_Name == "SIGN").Select(x => x.Category_Value).FirstOrDefault();
                     DISC_VALUE = item.Where(x => x.Column_Name == "DISC VALUE").Select(x => x.Category_Value).FirstOrDefault();
+                    BASE_TYPE = item.Where(x => x.Column_Name == "BASE TYPE").Select(x => x.Category_Value).FirstOrDefault();
 
                     dataTable.Rows.Add(!string.IsNullOrEmpty(STOCK_ID) ? STOCK_ID : DBNull.Value,
                         !string.IsNullOrEmpty(SUPPLIER) ? SUPPLIER : DBNull.Value,
@@ -6088,7 +6097,8 @@ namespace astute.Controllers
                         !string.IsNullOrEmpty(COST_RATE) ? COST_RATE : DBNull.Value,
                         !string.IsNullOrEmpty(DISCOUNT_TYPE) ? DISCOUNT_TYPE : DBNull.Value,
                         !string.IsNullOrEmpty(SIGN) ? SIGN : DBNull.Value,
-                        !string.IsNullOrEmpty(DISC_VALUE) ? DISC_VALUE : DBNull.Value);
+                        !string.IsNullOrEmpty(DISC_VALUE) ? DISC_VALUE : DBNull.Value,
+                        !string.IsNullOrEmpty(BASE_TYPE) ? BASE_TYPE : DBNull.Value);
                 }
             }
             else
