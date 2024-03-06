@@ -3003,7 +3003,7 @@ namespace astute.Controllers
         [Authorize]
         public async Task<IActionResult> Create_Update_Manual_Upload([FromForm] Party_File party_File, IFormFile File_Location)
         {
-            string party_Name = string.Empty;
+            string party_name = string.Empty;
             try
             {
                 if (ModelState.IsValid)
@@ -3014,8 +3014,8 @@ namespace astute.Controllers
                     {
                         #region Update Party File
                         var party_file_obj = await _partyService.Get_Party_File(0, party_File.Party_Id ?? 0);
-                        var party = await _partyService.GetParty_Raplicate(party_File.Party_Id ?? 0, null);
-                        party_Name = party.Select(x => x.Party_Name).FirstOrDefault();
+                        var parties = await _partyService.GetParty_Raplicate(party_File.Party_Id ?? 0, null);
+                        party_name = parties.Select(x => x.Party_Name).FirstOrDefault();
                         if (party_file_obj != null)
                         {
                             party_file_obj.Sheet_Name = party_File.Sheet_Name;
@@ -3684,7 +3684,8 @@ namespace astute.Controllers
                 }
                 return Ok(new
                 {
-                    Party_Name = party_Name,
+                    Supplier_Id = party_File.Party_Id,
+                    Party_Name = party_name,
                     message = message
                 });
             }
@@ -6354,8 +6355,12 @@ namespace astute.Controllers
                 }
                 dataTable.Rows.Add(newRow);
             }
-
-            DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, excel_Model.excel_Format, excel_Model.supplier_Ref_No);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/PreGeneratedStockExcelFiles/");
+            if (!(Directory.Exists(filePath)))
+            {
+                Directory.CreateDirectory(filePath);
+            }
+            DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Supplier", excel_Model.supplier_Ref_No);
             if (supp_stock_dt != null && supp_stock_dt.Rows.Count > 0)
             {
                 List<string> columnNames = new List<string>();
@@ -6371,37 +6376,51 @@ namespace astute.Controllers
                 {
                     columnNamesTable.Rows.Add(columnName);
                 }
-                var excelPath = string.Empty;
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/PreGeneratedStockExcelFiles/");
-                if (!(Directory.Exists(filePath)))
-                {
-                    Directory.CreateDirectory(filePath);
-                }
-                string filename = string.Empty;
-                if (excel_Model.excel_Format == "Customer")
-                {
-                    filename = "Customer.xlsx";
-                    EpExcelExport.Pre_Generated_Create_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
-                }
-                else if (excel_Model.excel_Format == "Buyer")
-                {
-                    filename = "Buyer.xlsx";
-                    EpExcelExport.Create_Buyer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
-                }
-                else if (excel_Model.excel_Format == "Supplier")
-                {
-                    filename = "Supplier.xlsx";
-                    EpExcelExport.Create_Supplier_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
-                }
-                return Ok(new
-                {
-                    statusCode = HttpStatusCode.OK,
-                    message = CoreCommonMessage.DataSuccessfullyFound,
-                    result = excelPath,
-                    file_name = filename
-                });
+                EpExcelExport.Create_Supplier_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + "Supplier.xlsx");
+                
             }
-            return NoContent();
+            DataTable cust_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Customer", excel_Model.supplier_Ref_No);
+            if (cust_stock_dt != null && cust_stock_dt.Rows.Count > 0)
+            {
+                List<string> columnNames = new List<string>();
+                foreach (DataColumn column in cust_stock_dt.Columns)
+                {
+                    columnNames.Add(column.ColumnName);
+                }
+
+                DataTable columnNamesTable = new DataTable();
+                columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                foreach (string columnName in columnNames)
+                {
+                    columnNamesTable.Rows.Add(columnName);
+                }
+                EpExcelExport.Create_Customer_Excel(cust_stock_dt, columnNamesTable, filePath, filePath + "Customer.xlsx");
+            }
+            DataTable buyer_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Buyer", excel_Model.supplier_Ref_No);
+            if (buyer_stock_dt != null && buyer_stock_dt.Rows.Count > 0)
+            {
+                List<string> columnNames = new List<string>();
+                foreach (DataColumn column in buyer_stock_dt.Columns)
+                {
+                    columnNames.Add(column.ColumnName);
+                }
+
+                DataTable columnNamesTable = new DataTable();
+                columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                foreach (string columnName in columnNames)
+                {
+                    columnNamesTable.Rows.Add(columnName);
+                }
+                EpExcelExport.Create_Buyer_Excel(buyer_stock_dt, columnNamesTable, filePath, filePath + "Buyer.xlsx");
+            }
+
+            return Ok(new
+            {
+                statusCode = HttpStatusCode.OK,
+                message = CoreCommonMessage.DataSuccessfullyFound
+            });
         }
         #endregion
 
@@ -6414,7 +6433,7 @@ namespace astute.Controllers
             try
             {
                 if (ModelState.IsValid)
-                {   
+                {
                     DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search_New(stock_Email_Model.Report_Filter_Parameter, "Customer", stock_Email_Model.Supplier_Ref_No);
                     List<string> columnNames = new List<string>();
                     foreach (DataColumn column in supp_stock_dt.Columns)
