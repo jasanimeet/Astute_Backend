@@ -6122,7 +6122,7 @@ namespace astute.Controllers
                     columnNamesTable.Rows.Add(columnName);
                 }
                 var excelPath = string.Empty;
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/PreGeneratedStockExcelFiles/");
                 if (!(Directory.Exists(filePath)))
                 {
                     Directory.CreateDirectory(filePath);
@@ -6130,21 +6130,18 @@ namespace astute.Controllers
                 string filename = string.Empty;
                 if (excel_Model.excel_Format == "Customer")
                 {
-                    filename = "Customer_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                    EpExcelExport.Create_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
-                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                    filename = "Customer.xlsx";
+                    EpExcelExport.Pre_Generated_Create_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
                 }
                 else if (excel_Model.excel_Format == "Buyer")
                 {
-                    filename = "Buyer_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    filename = "Buyer.xlsx";
                     EpExcelExport.Create_Buyer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
-                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                 }
                 else if (excel_Model.excel_Format == "Supplier")
                 {
-                    filename = "Supplier_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    filename = "Supplier.xlsx";
                     EpExcelExport.Create_Supplier_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
-                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                 }
                 return Ok(new
                 {

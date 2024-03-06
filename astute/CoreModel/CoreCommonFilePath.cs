@@ -15,5 +15,6 @@
         public static string SupplierErrorLogFilesPath = "/Files/SupplierErrorLog/";
         public static string ManualUploadFilesPath = "/Files/ManualUploadFiles/";
         public static string DownloadStockExcelFilesPath = "/Files/DownloadStockExcelFiles/";
+        public static string PreGeneratedStockExcelFilesPath = "/Files/PreGeneratedStockExcelFiles/";
     }
 }
