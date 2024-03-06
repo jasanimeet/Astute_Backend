@@ -62,10 +62,10 @@ namespace astute.Models
         public string Column_Name { get; set; }
         public string Category_Value { get; set; }
         public string Category_Name { get; set; }
-        public string? KEY_TO_SYMBOL_TRUE { get; set; }
-        public string? KEY_TO_SYMBOL_FALSE { get; set; }
-        public string? LAB_COMMENTS_TRUE { get; set; }
-        public string? LAB_COMMENTS_FALSE { get; set; }
+        public string? KEY_TO_SYMBOL_TRUE { get; set; } = string.Empty;
+        public string? KEY_TO_SYMBOL_FALSE { get; set; } = string.Empty;
+        public string? LAB_COMMENTS_TRUE { get; set; } = string.Empty;
+        public string? LAB_COMMENTS_FALSE { get; set; } = string.Empty;
     }
     public class Report_Sorting
     {

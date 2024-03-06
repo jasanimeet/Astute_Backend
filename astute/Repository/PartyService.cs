@@ -735,9 +735,9 @@ namespace astute.Repository
             var overseas = new SqlParameter("@Overseas", party_FTP.Overseas ?? false);
             var secure_Ftp = new SqlParameter("@Secure_Ftp", party_FTP.Secure_Ftp ?? false);
             var short_Code = !string.IsNullOrEmpty(party_FTP.Short_Code) ? new SqlParameter("@Short_Code", party_FTP.Short_Code) : new SqlParameter("@Short_Code", DBNull.Value);
-            var ftp_Status = new SqlParameter("@Ftp_Status", party_FTP.Ftp_Status);
-            var is_Same_Id = new SqlParameter("@Is_Same_Id", party_FTP.Is_Same_Id);
-            var overseas_Same_Id = new SqlParameter("@Overseas_Same_Id", party_FTP.Overseas_Same_Id);
+            var ftp_Status = new SqlParameter("@Ftp_Status", party_FTP.Ftp_Status ?? false);
+            var is_Same_Id = new SqlParameter("@Is_Same_Id", party_FTP.Is_Same_Id ?? false);
+            var overseas_Same_Id = new SqlParameter("@Overseas_Same_Id", party_FTP.Overseas_Same_Id ?? false);
             var _modified_By = new SqlParameter("@Modified_By", modified_By);
 
             var result = await Task.Run(() => _dbContext.Database
@@ -772,16 +772,16 @@ namespace astute.Repository
             var _party_Id = party_File.Party_Id > 0 ? new SqlParameter("@Party_Id", party_File.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
             var file_Location = !string.IsNullOrEmpty(party_File.File_Location) ? new SqlParameter("@File_Location", party_File.File_Location) : new SqlParameter("@File_Location", DBNull.Value);
             var short_Code = !string.IsNullOrEmpty(party_File.Short_Code) ? new SqlParameter("@Short_Code", party_File.Short_Code) : new SqlParameter("@Short_Code", DBNull.Value);
-            var file_Status = new SqlParameter("@File_Status", party_File.File_Status);
-            var lab = new SqlParameter("@Lab", party_File.Lab);
-            var overseas = new SqlParameter("@Overseas", party_File.Overseas);
+            var file_Status = new SqlParameter("@File_Status", party_File.File_Status ?? false);
+            var lab = new SqlParameter("@Lab", party_File.Lab ?? false);
+            var overseas = new SqlParameter("@Overseas", party_File.Overseas ?? false);
             var validity_Days = party_File.Validity_Days > 0 ? new SqlParameter("@Validity_Days", party_File.Validity_Days) : new SqlParameter("@Validity_Days", DBNull.Value);
             var sheet_Name = !string.IsNullOrEmpty(party_File.Sheet_Name) ? new SqlParameter("@Sheet_Name", party_File.Sheet_Name) : new SqlParameter("@Sheet_Name", DBNull.Value);
-            var exclude = new SqlParameter("@Exclude", party_File.Exclude);
-            var aPI_Flag = new SqlParameter("@API_Flag", party_File.API_Flag);
+            var exclude = new SqlParameter("@Exclude", party_File.Exclude ?? false);
+            var aPI_Flag = new SqlParameter("@API_Flag", party_File.API_Flag ?? false);
             var upload_Type = !string.IsNullOrEmpty(party_File.Upload_Type) ? new SqlParameter("@Upload_Type", party_File.Upload_Type) : new SqlParameter("@Upload_Type", DBNull.Value);
-            var is_Same_Id = new SqlParameter("@Is_Same_Id", party_File.Is_Same_Id);
-            var overseas_Same_Id = new SqlParameter("@Overseas_Same_Id", party_File.Overseas_Same_Id);
+            var is_Same_Id = new SqlParameter("@Is_Same_Id", party_File.Is_Same_Id ?? false);
+            var overseas_Same_Id = new SqlParameter("@Overseas_Same_Id", party_File.Overseas_Same_Id ?? false);
             var _modified_By = new SqlParameter("@Modified_By", modified_By);
 
             var result = await Task.Run(() => _dbContext.Database

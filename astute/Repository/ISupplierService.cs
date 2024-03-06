@@ -102,7 +102,8 @@ namespace astute.Repository
 
         #region Get Excel Formet Stock Result
         Task<DataTable> Get_Stock_In_Datatable(string supp_ref_no, string excel_Format);
-        Task<DataTable> Get_Excel_Report_Search(IList<Report_Filter_Parameter> report_Filter_Parameters, string excel_Format, string supplier_Ref_No);
+        Task<DataTable> Get_Excel_Report_Search_New(IList<Report_Filter_Parameter> report_Filter_Parameters, string excel_Format, string supplier_Ref_No);
+        Task<DataTable> Get_Excel_Report_Search(DataTable dt_Search, string excel_Format, string supplier_Ref_No);
         #endregion
     }
 }
