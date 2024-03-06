@@ -2106,7 +2106,7 @@ namespace astute.Repository
 
             return dataTable;
         }
-        public async Task<DataTable> Get_Excel_Report_Search(IList<Report_Filter_Parameter> report_Filter_Parameters, string excel_Format, string supplier_Ref_No)
+        public async Task<DataTable> Get_Excel_Report_Search_New(IList<Report_Filter_Parameter> report_Filter_Parameters, string excel_Format, string supplier_Ref_No)
         {
             DataTable dataTable = new DataTable();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -2118,6 +2118,38 @@ namespace astute.Repository
                     {
                         command.Parameters.Add(!string.IsNullOrEmpty(item.Category_Value) ? new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), item.Category_Value) : new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), DBNull.Value));
                     }
+                    command.Parameters.Add(!string.IsNullOrEmpty(excel_Format) ? new SqlParameter("@Excel_Format", excel_Format) : new SqlParameter("@Excel_Format", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(supplier_Ref_No) ? new SqlParameter("@Supplier_Ref_No", supplier_Ref_No) : new SqlParameter("@Supplier_Ref_No", DBNull.Value));
+
+                    command.CommandTimeout = 1800;
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    dataTable = ds.Tables[ds.Tables.Count - 1];
+                }
+            }
+            return dataTable;
+        }
+
+        public async Task<DataTable> Get_Excel_Report_Search(DataTable dt_Search, string excel_Format, string supplier_Ref_No)
+        {
+            DataTable dataTable = new DataTable();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Excel_Format_Stock_Search_Select_05032024", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    var parameter = new SqlParameter("@Report_Search_Lab_Table_Type", SqlDbType.Structured)
+                    {
+                        TypeName = "dbo.Report_Search_Lab_Table_Type",
+                        Value = dt_Search
+                    };
+                    command.Parameters.Add(parameter);
                     command.Parameters.Add(!string.IsNullOrEmpty(excel_Format) ? new SqlParameter("@Excel_Format", excel_Format) : new SqlParameter("@Excel_Format", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(supplier_Ref_No) ? new SqlParameter("@Supplier_Ref_No", supplier_Ref_No) : new SqlParameter("@Supplier_Ref_No", DBNull.Value));
 
