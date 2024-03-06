@@ -1727,7 +1727,6 @@ namespace astute.Repository
             }
             return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr);
         }
-
         public async Task<(List<Dictionary<string, object>>, string, string, string, string)> Get_Lab_Search_Report_Search_Total(DataTable dataTable, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
         {
             var result = new List<Dictionary<string, object>>();
