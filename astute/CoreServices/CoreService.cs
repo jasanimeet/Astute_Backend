@@ -708,5 +708,35 @@ namespace astute.CoreServices
 
             return dataTable;
         }
+        static double ExtractNumericValue(string input)
+        {
+            Regex regex = new Regex(@"\d+(\.\d+)?");
+            Match match = regex.Match(input);
+
+            if (match.Success)
+            {
+                return double.Parse(match.Value);
+            }
+
+            return double.MinValue; // or some other appropriate default value
+        }
+        public static string ExtractStringWithLargestNumericValue(params string[] strings)
+        {
+            string result = null;
+            double maxValue = double.MinValue;
+
+            foreach (string input in strings)
+            {
+                double numericValue = ExtractNumericValue(input);
+
+                if (numericValue > maxValue)
+                {
+                    maxValue = numericValue;
+                    result = input;
+                }
+            }
+
+            return result ?? "";
+        }
     }
 }

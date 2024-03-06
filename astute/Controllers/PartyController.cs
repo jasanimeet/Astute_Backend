@@ -3493,7 +3493,30 @@ namespace astute.Controllers
 
                                              if (displayColName != "" && suppColName != "")
                                              {
-                                                 finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
+
+                                                 if (displayColName != "SHADE")
+                                                 {
+                                                     finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
+
+                                                 }
+                                                 else
+                                                 {
+                                                     if (suppColName.Contains(","))
+                                                     {
+                                                         string supp_Col_Name1 = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 3 || Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 2 ? Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",")[0] : "";
+                                                         string supp_Col_Name2 = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 3 || Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 2 ? Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",")[1] : "";
+                                                         string supp_Col_Name3 = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 3 ? Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",")[2] : "";
+                                                         string shade_Value_1 = row[supp_Col_Name1].ToString();
+                                                         string shade_Value_2 = row[supp_Col_Name2].ToString();
+                                                         string shade_Value_3 = row[supp_Col_Name3].ToString();
+
+                                                         finalRow[displayColName] = CoreService.ExtractStringWithLargestNumericValue(shade_Value_1, shade_Value_2, shade_Value_3);
+                                                     }
+                                                     else
+                                                     {
+                                                         finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
+                                                     }
+                                                 }
 
                                                  if (displayColName == "CTS" || displayColName == "BASE_DISC" || displayColName == "BASE_RATE" ||
                                                      displayColName == "LENGTH" || displayColName == "WIDTH" || displayColName == "DEPTH" ||
@@ -3506,10 +3529,6 @@ namespace astute.Controllers
                                                  {
                                                      finalRow[displayColName] = CoreService.RemoveNonNumericAndDotAndNegativeCharacters(
                                                          Convert.ToString(finalRow[displayColName]));
-                                                 }
-                                                 else if (!string.IsNullOrEmpty(displayColName) && displayColName == "GIRDLE_FROM")
-                                                 {
-                                                     finalRow[displayColName] = !string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName])) ? (Convert.ToString(finalRow[displayColName]).Contains("-") ? (Convert.ToString(finalRow[displayColName]).Split(" - ").Length == 1 ? Convert.ToString(finalRow[displayColName]).Split(" - ")[0] : Convert.ToString(finalRow[displayColName])) : (Convert.ToString(finalRow[displayColName]).ToUpper().Contains(" TO ") ? (Convert.ToString(finalRow[displayColName]).ToUpper().Split(" TO ").Length == 1 ? Convert.ToString(finalRow[displayColName]).ToUpper().Split(" TO ")[0] : Convert.ToString(finalRow[displayColName])) : Convert.ToString(finalRow[displayColName]))) : null;
                                                  }
                                                  else if (!string.IsNullOrEmpty(displayColName) && displayColName == "GIRDLE_TO")
                                                  {
@@ -3655,7 +3674,7 @@ namespace astute.Controllers
             {
                 string message = string.Empty;
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_Manual_Upload", ex.StackTrace);
-                if(ex.Message.Contains("An item with the same key has already been added"))
+                if (ex.Message.Contains("An item with the same key has already been added"))
                 {
                     message = "Some column name is missing";
                 }
@@ -4683,7 +4702,7 @@ namespace astute.Controllers
                         Search_Display += !string.IsNullOrEmpty(DISC_VALUE) ? " DISC VALUE : " + DISC_VALUE : "";
                         Search_Display += " \"}";
 
-                        if (report_Lab_Filter.Report_Filter_Parameter_List.Count()!=i)
+                        if (report_Lab_Filter.Report_Filter_Parameter_List.Count() != i)
                         {
                             Search_Display += ",";
                         }
@@ -4693,7 +4712,7 @@ namespace astute.Controllers
                     report_Search_Save.Search_Display = Search_Display;
                     var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                     int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-                    var result = await _supplierService.Create_Update_Report_Search(report_Search_Save,(int)user_Id);
+                    var result = await _supplierService.Create_Update_Report_Search(report_Search_Save, (int)user_Id);
                     if (result == "success")
                     {
                         return Ok(new
