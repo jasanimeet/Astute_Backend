@@ -3506,9 +3506,9 @@ namespace astute.Controllers
                                                          string supp_Col_Name1 = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 3 || Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 2 ? Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",")[0] : "";
                                                          string supp_Col_Name2 = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 3 || Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 2 ? Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",")[1] : "";
                                                          string supp_Col_Name3 = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 3 ? Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",")[2] : "";
-                                                         string shade_Value_1 = row[supp_Col_Name1].ToString();
-                                                         string shade_Value_2 = row[supp_Col_Name2].ToString();
-                                                         string shade_Value_3 = row[supp_Col_Name3].ToString();
+                                                         string shade_Value_1 = !string.IsNullOrEmpty(supp_Col_Name1) ? row[supp_Col_Name1].ToString() : "";
+                                                         string shade_Value_2 = !string.IsNullOrEmpty(supp_Col_Name2) ? row[supp_Col_Name2].ToString() : "";
+                                                         string shade_Value_3 = !string.IsNullOrEmpty(supp_Col_Name3) ? row[supp_Col_Name3].ToString() : "";
 
                                                          finalRow[displayColName] = CoreService.ExtractStringWithLargestNumericValue(shade_Value_1, shade_Value_2, shade_Value_3);
                                                      }
@@ -4328,6 +4328,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("DISCOUNT_TYPE", typeof(string));
                 dataTable.Columns.Add("SIGN", typeof(string));
                 dataTable.Columns.Add("DISC_VALUE", typeof(string));
+
                 if (report_Lab_Filter.Report_Filter_Parameter_List != null && report_Lab_Filter.Report_Filter_Parameter_List.Count > 0)
                 {
                     foreach (var item in report_Lab_Filter.Report_Filter_Parameter_List)
