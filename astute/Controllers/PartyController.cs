@@ -6222,7 +6222,7 @@ namespace astute.Controllers
             return NoContent();
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("pre_generated_export_stock_excel")]
         [Authorize]
         public async Task<IActionResult> Pre_Generated_Export_Stock_Excel()
@@ -6286,6 +6286,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("DISCOUNT_TYPE", typeof(string));
                 dataTable.Columns.Add("SIGN", typeof(string));
                 dataTable.Columns.Add("DISC_VALUE", typeof(string));
+                dataTable.Columns.Add("BASE_TYPE", typeof(string));
 
                 DataRow newRow = dataTable.NewRow();
                 for (int i = 0; i < dataTable.Columns.Count; i++)
@@ -6416,6 +6417,7 @@ namespace astute.Controllers
                 dataTable1.Columns.Add("DISCOUNT_TYPE", typeof(string));
                 dataTable1.Columns.Add("SIGN", typeof(string));
                 dataTable1.Columns.Add("DISC_VALUE", typeof(string));
+                dataTable1.Columns.Add("BASE_TYPE", typeof(string));
 
                 dataTable1.Rows.Add(DBNull.Value, DBNull.Value, DBNull.Value, "7446", DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
