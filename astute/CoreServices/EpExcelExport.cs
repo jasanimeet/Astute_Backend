@@ -1361,7 +1361,8 @@ namespace astute.CoreServices
                                 else if (Column_Name == "Final Disc(%)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Final Disc(%)"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Final Disc(%)"]) : 0;
+                                    //worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Final Disc(%)"]) : 0;
+                                    worksheet.Cells[inwrkrow, kk].Formula = "(100*" + GetExcelColumnLetter(14) + i + "/" + GetExcelColumnLetter(12) + i + ")-100";
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -1485,7 +1486,7 @@ namespace astute.CoreServices
                         inwrkrow++;
                         #endregion
                     }
-                    worksheet.Cells[inStartIndex, 1, (inwrkrow - 1), Row_Count].Style.Font.Size = 9;
+                    worksheet.Cells[inStartIndex, 1, inwrkrow, Row_Count].Style.Font.Size = 9;
 
                     int kkk = 0;
                     for (int j = 0; j < column_dt.Rows.Count; j++)
@@ -1901,7 +1902,8 @@ namespace astute.CoreServices
                                     else if (Column_Name == "Supplier Base Offer(%)")
                                     {
                                         string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Supplier Base Offer(%)"]);
-                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Base Offer(%)"]) : 0;
+                                        //worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Base Offer(%)"]) : 0;
+                                        worksheet.Cells[inwrkrow, kk].Formula = "(100*" + GetExcelColumnLetter(19) + i + "/" + GetExcelColumnLetter(17) + i + ")-100";
 
                                         worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                         worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -1919,8 +1921,8 @@ namespace astute.CoreServices
                                     else if (Column_Name == "Supplier Final Disc(%)")
                                     {
                                         string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Supplier Final Disc(%)"]);
-                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Final Disc(%)"]) : 0;
-
+                                        //worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Final Disc(%)"]) : 0;
+                                        worksheet.Cells[inwrkrow, kk].Formula = "(100*" + GetExcelColumnLetter(21) + i+ "/" + GetExcelColumnLetter(17) + i + ")-100";
                                         worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                         worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                         worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(supp_final_bg);
@@ -1937,8 +1939,8 @@ namespace astute.CoreServices
                                     else if (Column_Name == "Supplier Final Disc. With Max Slab(%)")
                                     {
                                         string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Supplier Final Disc. With Max Slab(%)"]);
-                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Final Disc. With Max Slab(%)"]) : 0;
-
+                                        //worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Final Disc. With Max Slab(%)"]) : 0;
+                                        worksheet.Cells[inwrkrow, kk].Formula = "(100*" + GetExcelColumnLetter(23) + i + "/" + GetExcelColumnLetter(17) + i + ")-100";
                                         worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                         worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                         worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(max_slab_bg);
@@ -2366,7 +2368,8 @@ namespace astute.CoreServices
                                 else if (Column_Name == "Supplier Cost Disc(%)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Supplier Cost Disc(%)"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Cost Disc(%)"]) : 0;
+                                    //worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Cost Disc(%)"]) : 0;
+                                    worksheet.Cells[inwrkrow, kk].Formula = "(100*" + GetExcelColumnLetter(19) + i + "/" + GetExcelColumnLetter(17) + i + ")-100";
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -2384,7 +2387,8 @@ namespace astute.CoreServices
                                 else if (Column_Name == "Final Disc(%)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Final Disc(%)"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Final Disc(%)"]) : 0;
+                                    //worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Final Disc(%)"]) : 0;
+                                    worksheet.Cells[inwrkrow, kk].Formula = "(100*" + GetExcelColumnLetter(21) + i + "/" + GetExcelColumnLetter(17) + i + ")-100";
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -2402,7 +2406,8 @@ namespace astute.CoreServices
                                 else if (Column_Name == "Supplier Base Offer(%)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Supplier Base Offer(%)"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Base Offer(%)"]) : 0;
+                                    //worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Base Offer(%)"]) : 0;
+                                    worksheet.Cells[inwrkrow, kk].Formula = "(100*" + GetExcelColumnLetter(23) + i + "/" + GetExcelColumnLetter(17) + i + ")-100";
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
