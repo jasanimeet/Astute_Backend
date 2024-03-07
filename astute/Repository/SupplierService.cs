@@ -2224,13 +2224,12 @@ namespace astute.Repository
             }
             return dataTable;
         }
-
         public async Task<DataTable> Get_Excel_Report_Search(DataTable dt_Search, string excel_Format, string supplier_Ref_No)
         {
             DataTable dataTable = new DataTable();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
-                using (var command = new SqlCommand("Excel_Format_Stock_Search_Select_05032024", connection))
+                using (var command = new SqlCommand("Excel_Format_Stock_Search_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     var parameter = new SqlParameter("@Report_Search_Lab_Table_Type", SqlDbType.Structured)

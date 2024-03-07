@@ -5923,7 +5923,7 @@ namespace astute.Controllers
                            KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
                            FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty,
                            STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, DISCOUNT_TYPE = string.Empty,
-                           SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE= string.Empty;
+                           SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE = string.Empty;
 
             DataTable dataTable = new DataTable();
             dataTable.Columns.Add("STOCK_ID", typeof(string));
@@ -5982,7 +5982,7 @@ namespace astute.Controllers
             dataTable.Columns.Add("SIGN", typeof(string));
             dataTable.Columns.Add("DISC_VALUE", typeof(string));
             dataTable.Columns.Add("BASE_TYPE", typeof(string));
-            
+
             if (excel_Model.Report_Filter_Parameter_List != null && excel_Model.Report_Filter_Parameter_List.Count > 0)
             {
                 foreach (var item in excel_Model.Report_Filter_Parameter_List)
@@ -6104,12 +6104,70 @@ namespace astute.Controllers
             }
             else
             {
-                DataRow newRow = dataTable.NewRow();
-                for (int i = 0; i < dataTable.Columns.Count; i++)
+                var destinationFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                if (excel_Model.excel_Format == "Customer")
                 {
-                    newRow[i] = DBNull.Value;
+                    string sourceFilePath = Directory.GetCurrentDirectory() + CoreCommonFilePath.PreGeneratedStockExcelFilesPath + "Customer.xlsx";
+                    string newFileName = "Customer_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    string destinationFilePath = Path.Combine(destinationFolderPath, newFileName);
+                    if (System.IO.File.Exists(sourceFilePath))
+                    {
+                        System.IO.File.Move(sourceFilePath, destinationFilePath);
+                        if (System.IO.File.Exists(destinationFilePath))
+                        {
+                            var excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + newFileName;
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.DataSuccessfullyFound,
+                                result = excelPath,
+                                file_name = newFileName
+                            });
+                        }
+                    }
                 }
-                dataTable.Rows.Add(newRow);
+                else if (excel_Model.excel_Format == "Buyer")
+                {
+                    string sourceFilePath = Directory.GetCurrentDirectory() + CoreCommonFilePath.PreGeneratedStockExcelFilesPath + "Buyer.xlsx";
+                    string newFileName = "Buyer_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    string destinationFilePath = Path.Combine(destinationFolderPath, newFileName);
+                    if (System.IO.File.Exists(sourceFilePath))
+                    {
+                        System.IO.File.Copy(sourceFilePath, destinationFilePath, true);
+                        if (System.IO.File.Exists(destinationFilePath))
+                        {
+                            var excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + newFileName;
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.DataSuccessfullyFound,
+                                result = excelPath,
+                                file_name = newFileName
+                            });
+                        }
+                    }
+                }
+                else if (excel_Model.excel_Format == "Supplier")
+                {
+                    string sourceFilePath = Directory.GetCurrentDirectory() + CoreCommonFilePath.PreGeneratedStockExcelFilesPath + "Supplier.xlsx";
+                    string newFileName = "Supplier_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    string destinationFilePath = Path.Combine(destinationFolderPath, newFileName);
+                    if (System.IO.File.Exists(sourceFilePath))
+                    {
+                        System.IO.File.Move(sourceFilePath, destinationFilePath);
+                        if (System.IO.File.Exists(destinationFilePath))
+                        {
+                            var excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + newFileName;
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.DataSuccessfullyFound,
+                                result = excelPath,
+                                file_name = newFileName
+                            });
+                        }
+                    }
+                }
             }
 
             DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, excel_Model.excel_Format, excel_Model.supplier_Ref_No);
@@ -6167,25 +6225,10 @@ namespace astute.Controllers
         [HttpPost]
         [Route("pre_generated_export_stock_excel")]
         [Authorize]
-        public async Task<IActionResult> Pre_Generated_Export_Stock_Excel(Excel_Model_New excel_Model)
+        public async Task<IActionResult> Pre_Generated_Export_Stock_Excel()
         {
             try
             {
-                string STOCK_ID = string.Empty, SUPPLIER = string.Empty, CUSTOMER = string.Empty, SHAPE = string.Empty,
-                               CTS = string.Empty, COLOR = string.Empty, CLARITY = string.Empty, CUT = string.Empty,
-                               POLISH = string.Empty, SYMM = string.Empty, FLS_INTENSITY = string.Empty, BGM = string.Empty,
-                               LAB = string.Empty, GOOD_TYPE = string.Empty, LOCATION = string.Empty, STATUS = string.Empty,
-                               IMAGE_LINK = string.Empty, VIDEO_LINK = string.Empty, LENGTH = string.Empty, WIDTH = string.Empty,
-                               DEPTH = string.Empty, TABLE_PER = string.Empty, DEPTH_PER = string.Empty, CROWN_ANGLE = string.Empty,
-                               CROWN_HEIGHT = string.Empty, PAVILION_ANGLE = string.Empty, PAVILION_HEIGHT = string.Empty, GIRDLE_PER = string.Empty,
-                               OFFER_DISC = string.Empty, OFFER_VALUE = string.Empty, PRICE_PER_CTS = string.Empty, TABLE_BLACK = string.Empty,
-                               TABLE_WHITE = string.Empty, SIDE_BLACK = string.Empty, SIDE_WHITE = string.Empty,
-                               TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
-                               GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
-                               KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
-                               FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty,
-                               STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, DISCOUNT_TYPE = string.Empty,
-                               SIGN = string.Empty, DISC_VALUE = string.Empty;
                 #region ALL STOCK
                 DataTable dataTable = new DataTable();
                 dataTable.Columns.Add("STOCK_ID", typeof(string));
@@ -6243,132 +6286,14 @@ namespace astute.Controllers
                 dataTable.Columns.Add("DISCOUNT_TYPE", typeof(string));
                 dataTable.Columns.Add("SIGN", typeof(string));
                 dataTable.Columns.Add("DISC_VALUE", typeof(string));
-                if (excel_Model.Report_Filter_Parameter_List != null && excel_Model.Report_Filter_Parameter_List.Count > 0)
-                {
-                    foreach (var item in excel_Model.Report_Filter_Parameter_List)
-                    {
-                        STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
-                        SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER").Select(x => x.Category_Value).FirstOrDefault();
-                        CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x => x.Category_Value).FirstOrDefault();
-                        SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x => x.Category_Value).FirstOrDefault();
-                        CTS = item.Where(x => x.Column_Name == "CTS").Select(x => x.Category_Value).FirstOrDefault();
-                        COLOR = item.Where(x => x.Column_Name == "COLOR").Select(x => x.Category_Value).FirstOrDefault();
-                        CLARITY = item.Where(x => x.Column_Name == "CLARITY").Select(x => x.Category_Value).FirstOrDefault();
-                        CUT = item.Where(x => x.Column_Name == "CUT").Select(x => x.Category_Value).FirstOrDefault();
-                        POLISH = item.Where(x => x.Column_Name == "POLISH").Select(x => x.Category_Value).FirstOrDefault();
-                        SYMM = item.Where(x => x.Column_Name == "SYMM").Select(x => x.Category_Value).FirstOrDefault();
-                        FLS_INTENSITY = item.Where(x => x.Column_Name == "FLS INTENSITY").Select(x => x.Category_Value).FirstOrDefault();
-                        BGM = item.Where(x => x.Column_Name == "BGM").Select(x => x.Category_Value).FirstOrDefault();
-                        LAB = item.Where(x => x.Column_Name == "LAB").Select(x => x.Category_Value).FirstOrDefault();
-                        GOOD_TYPE = item.Where(x => x.Column_Name == "GOOD TYPE").Select(x => x.Category_Value).FirstOrDefault();
-                        LOCATION = item.Where(x => x.Column_Name == "LOCATION").Select(x => x.Category_Value).FirstOrDefault();
-                        STATUS = item.Where(x => x.Column_Name == "STATUS").Select(x => x.Category_Value).FirstOrDefault();
-                        IMAGE_LINK = item.Where(x => x.Column_Name == "IMAGE LINK").Select(x => x.Category_Value).FirstOrDefault();
-                        VIDEO_LINK = item.Where(x => x.Column_Name == "VIDEO LINK").Select(x => x.Category_Value).FirstOrDefault();
-                        LENGTH = item.Where(x => x.Column_Name == "LENGTH").Select(x => x.Category_Value).FirstOrDefault();
-                        WIDTH = item.Where(x => x.Column_Name == "WIDTH").Select(x => x.Category_Value).FirstOrDefault();
-                        DEPTH = item.Where(x => x.Column_Name == "DEPTH").Select(x => x.Category_Value).FirstOrDefault();
-                        TABLE_PER = item.Where(x => x.Column_Name == "TABLE PER").Select(x => x.Category_Value).FirstOrDefault();
-                        DEPTH_PER = item.Where(x => x.Column_Name == "DEPTH PER").Select(x => x.Category_Value).FirstOrDefault();
-                        CROWN_ANGLE = item.Where(x => x.Column_Name == "CROWN ANGLE").Select(x => x.Category_Value).FirstOrDefault();
-                        CROWN_HEIGHT = item.Where(x => x.Column_Name == "CROWN HEIGHT").Select(x => x.Category_Value).FirstOrDefault();
-                        PAVILION_ANGLE = item.Where(x => x.Column_Name == "PAVILION ANGLE").Select(x => x.Category_Value).FirstOrDefault();
-                        PAVILION_HEIGHT = item.Where(x => x.Column_Name == "PAVILION HEIGHT").Select(x => x.Category_Value).FirstOrDefault();
-                        GIRDLE_PER = item.Where(x => x.Column_Name == "GIRDLE PER").Select(x => x.Category_Value).FirstOrDefault();
-                        OFFER_DISC = item.Where(x => x.Column_Name == "OFFER DISC").Select(x => x.Category_Value).FirstOrDefault();
-                        OFFER_VALUE = item.Where(x => x.Column_Name == "OFFER VALUE").Select(x => x.Category_Value).FirstOrDefault();
-                        PRICE_PER_CTS = item.Where(x => x.Column_Name == "PRICE PER CTS").Select(x => x.Category_Value).FirstOrDefault();
-                        OFFER_VALUE = item.Where(x => x.Column_Name == "OFFER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
-                        TABLE_BLACK = item.Where(x => x.Column_Name == "TABLE BLACK").Select(x => x.Category_Value).FirstOrDefault();
-                        TABLE_WHITE = item.Where(x => x.Column_Name == "TABLE WHITE").Select(x => x.Category_Value).FirstOrDefault();
-                        SIDE_BLACK = item.Where(x => x.Column_Name == "SIDE BLACK").Select(x => x.Category_Value).FirstOrDefault();
-                        SIDE_WHITE = item.Where(x => x.Column_Name == "SIDE WHITE").Select(x => x.Category_Value).FirstOrDefault();
-                        TABLE_OPEN = item.Where(x => x.Column_Name == "TABLE OPEN").Select(x => x.Category_Value).FirstOrDefault();
-                        CROWN_OPEN = item.Where(x => x.Column_Name == "CROWN OPEN").Select(x => x.Category_Value).FirstOrDefault();
-                        PAVILION_OPEN = item.Where(x => x.Column_Name == "PAVILION OPEN").Select(x => x.Category_Value).FirstOrDefault();
-                        GIRDLE_OPEN = item.Where(x => x.Column_Name == "GIRDLE OPEN").Select(x => x.Category_Value).FirstOrDefault();
-                        KEY_TO_SYMBOL_TRUE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x => x.KEY_TO_SYMBOL_TRUE).FirstOrDefault();
-                        KEY_TO_SYMBOL_FALSE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x => x.KEY_TO_SYMBOL_FALSE).FirstOrDefault();
-                        LAB_COMMENTS_TRUE = item.Where(x => x.Column_Name == "LAB COMMENTS").Select(x => x.LAB_COMMENTS_TRUE).FirstOrDefault();
-                        LAB_COMMENTS_FALSE = item.Where(x => x.Column_Name == "LAB COMMENTS").Select(x => x.LAB_COMMENTS_FALSE).FirstOrDefault();
-                        FANCY_COLOR = item.Where(x => x.Column_Name == "FANCY COLOR").Select(x => x.Category_Value).FirstOrDefault();
-                        FANCY_INTENSITY = item.Where(x => x.Column_Name == "FANCY INTENSITY").Select(x => x.Category_Value).FirstOrDefault();
-                        FANCY_OVERTONE = item.Where(x => x.Column_Name == "FANCY OVERTONE").Select(x => x.Category_Value).FirstOrDefault();
-                        POINTER = item.Where(x => x.Column_Name == "POINTER").Select(x => x.Category_Value).FirstOrDefault();
-                        STAR_LN = item.Where(x => x.Column_Name == "STAR LN").Select(x => x.Category_Value).FirstOrDefault();
-                        LR_HALF = item.Where(x => x.Column_Name == "LR HALF").Select(x => x.Category_Value).FirstOrDefault();
-                        CERT_TYPE = item.Where(x => x.Column_Name == "CERT TYPE").Select(x => x.Category_Value).FirstOrDefault();
-                        COST_RATE = item.Where(x => x.Column_Name == "COST RATE").Select(x => x.Category_Value).FirstOrDefault();
-                        DISCOUNT_TYPE = item.Where(x => x.Column_Name == "DISCOUNT TYPE").Select(x => x.Category_Value).FirstOrDefault();
-                        SIGN = item.Where(x => x.Column_Name == "SIGN").Select(x => x.Category_Value).FirstOrDefault();
-                        DISC_VALUE = item.Where(x => x.Column_Name == "DISC VALUE").Select(x => x.Category_Value).FirstOrDefault();
 
-                        dataTable.Rows.Add(!string.IsNullOrEmpty(STOCK_ID) ? STOCK_ID : DBNull.Value,
-                            !string.IsNullOrEmpty(SUPPLIER) ? SUPPLIER : DBNull.Value,
-                            !string.IsNullOrEmpty(CUSTOMER) ? CUSTOMER : DBNull.Value,
-                            !string.IsNullOrEmpty(SHAPE) ? SHAPE : DBNull.Value,
-                            !string.IsNullOrEmpty(CTS) ? CTS : DBNull.Value,
-                            !string.IsNullOrEmpty(COLOR) ? COLOR : DBNull.Value,
-                            !string.IsNullOrEmpty(CLARITY) ? CLARITY : DBNull.Value,
-                            !string.IsNullOrEmpty(CUT) ? CUT : DBNull.Value,
-                            !string.IsNullOrEmpty(POLISH) ? POLISH : DBNull.Value,
-                            !string.IsNullOrEmpty(SYMM) ? SYMM : DBNull.Value,
-                            !string.IsNullOrEmpty(FLS_INTENSITY) ? FLS_INTENSITY : DBNull.Value,
-                            !string.IsNullOrEmpty(BGM) ? BGM : DBNull.Value,
-                            !string.IsNullOrEmpty(LAB) ? LAB : DBNull.Value,
-                            !string.IsNullOrEmpty(GOOD_TYPE) ? GOOD_TYPE : DBNull.Value,
-                            !string.IsNullOrEmpty(LOCATION) ? LOCATION : DBNull.Value,
-                            !string.IsNullOrEmpty(STATUS) ? STATUS : DBNull.Value,
-                            !string.IsNullOrEmpty(IMAGE_LINK) ? IMAGE_LINK : DBNull.Value,
-                            !string.IsNullOrEmpty(VIDEO_LINK) ? VIDEO_LINK : DBNull.Value,
-                            !string.IsNullOrEmpty(LENGTH) ? LENGTH : DBNull.Value,
-                            !string.IsNullOrEmpty(WIDTH) ? WIDTH : DBNull.Value,
-                            !string.IsNullOrEmpty(DEPTH) ? DEPTH : DBNull.Value,
-                            !string.IsNullOrEmpty(TABLE_PER) ? TABLE_PER : DBNull.Value,
-                            !string.IsNullOrEmpty(DEPTH_PER) ? DEPTH_PER : DBNull.Value,
-                            !string.IsNullOrEmpty(CROWN_ANGLE) ? CROWN_ANGLE : DBNull.Value,
-                            !string.IsNullOrEmpty(CROWN_HEIGHT) ? CROWN_HEIGHT : DBNull.Value,
-                            !string.IsNullOrEmpty(PAVILION_ANGLE) ? PAVILION_ANGLE : DBNull.Value,
-                            !string.IsNullOrEmpty(PAVILION_HEIGHT) ? PAVILION_HEIGHT : DBNull.Value,
-                            !string.IsNullOrEmpty(GIRDLE_PER) ? GIRDLE_PER : DBNull.Value,
-                            !string.IsNullOrEmpty(OFFER_DISC) ? OFFER_DISC : DBNull.Value,
-                            !string.IsNullOrEmpty(OFFER_VALUE) ? OFFER_VALUE : DBNull.Value,
-                            !string.IsNullOrEmpty(PRICE_PER_CTS) ? PRICE_PER_CTS : DBNull.Value,
-                            !string.IsNullOrEmpty(TABLE_BLACK) ? TABLE_BLACK : DBNull.Value,
-                            !string.IsNullOrEmpty(TABLE_WHITE) ? TABLE_WHITE : DBNull.Value,
-                            !string.IsNullOrEmpty(SIDE_BLACK) ? SIDE_BLACK : DBNull.Value,
-                            !string.IsNullOrEmpty(SIDE_WHITE) ? SIDE_WHITE : DBNull.Value,
-                            !string.IsNullOrEmpty(TABLE_OPEN) ? TABLE_OPEN : DBNull.Value,
-                            !string.IsNullOrEmpty(CROWN_OPEN) ? CROWN_OPEN : DBNull.Value,
-                            !string.IsNullOrEmpty(PAVILION_OPEN) ? PAVILION_OPEN : DBNull.Value,
-                            !string.IsNullOrEmpty(GIRDLE_OPEN) ? GIRDLE_OPEN : DBNull.Value,
-                            !string.IsNullOrEmpty(CULET) ? CULET : DBNull.Value,
-                            !string.IsNullOrEmpty(KEY_TO_SYMBOL_TRUE) ? KEY_TO_SYMBOL_TRUE : DBNull.Value,
-                            !string.IsNullOrEmpty(KEY_TO_SYMBOL_FALSE) ? KEY_TO_SYMBOL_FALSE : DBNull.Value,
-                            !string.IsNullOrEmpty(LAB_COMMENTS_TRUE) ? LAB_COMMENTS_TRUE : DBNull.Value,
-                            !string.IsNullOrEmpty(LAB_COMMENTS_FALSE) ? LAB_COMMENTS_FALSE : DBNull.Value,
-                            !string.IsNullOrEmpty(FANCY_COLOR) ? FANCY_COLOR : DBNull.Value,
-                            !string.IsNullOrEmpty(FANCY_INTENSITY) ? FANCY_INTENSITY : DBNull.Value,
-                            !string.IsNullOrEmpty(FANCY_OVERTONE) ? FANCY_OVERTONE : DBNull.Value,
-                            !string.IsNullOrEmpty(POINTER) ? POINTER : DBNull.Value,
-                            !string.IsNullOrEmpty(STAR_LN) ? STAR_LN : DBNull.Value,
-                            !string.IsNullOrEmpty(LR_HALF) ? LR_HALF : DBNull.Value,
-                            !string.IsNullOrEmpty(CERT_TYPE) ? CERT_TYPE : DBNull.Value,
-                            !string.IsNullOrEmpty(COST_RATE) ? COST_RATE : DBNull.Value,
-                            !string.IsNullOrEmpty(DISCOUNT_TYPE) ? DISCOUNT_TYPE : DBNull.Value,
-                            !string.IsNullOrEmpty(SIGN) ? SIGN : DBNull.Value,
-                            !string.IsNullOrEmpty(DISC_VALUE) ? DISC_VALUE : DBNull.Value);
-                    }
-                }
-                else
+                DataRow newRow = dataTable.NewRow();
+                for (int i = 0; i < dataTable.Columns.Count; i++)
                 {
-                    DataRow newRow = dataTable.NewRow();
-                    for (int i = 0; i < dataTable.Columns.Count; i++)
-                    {
-                        newRow[i] = DBNull.Value;
-                    }
-                    dataTable.Rows.Add(newRow);
+                    newRow[i] = DBNull.Value;
                 }
+                dataTable.Rows.Add(newRow);
+
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/PreGeneratedStockExcelFiles/");
                 if (!(Directory.Exists(filePath)))
                 {
@@ -6376,7 +6301,7 @@ namespace astute.Controllers
                 }
 
                 //Supplier all stock
-                DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Supplier", excel_Model.supplier_Ref_No);
+                DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Supplier", null);
                 if (supp_stock_dt != null && supp_stock_dt.Rows.Count > 0)
                 {
                     List<string> columnNames = new List<string>();
@@ -6395,7 +6320,7 @@ namespace astute.Controllers
                     EpExcelExport.Create_Supplier_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + "Supplier.xlsx");
                 }
                 //Customer all stock
-                DataTable cust_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Customer", excel_Model.supplier_Ref_No);
+                DataTable cust_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Customer", null);
                 if (cust_stock_dt != null && cust_stock_dt.Rows.Count > 0)
                 {
                     List<string> columnNames = new List<string>();
@@ -6414,7 +6339,7 @@ namespace astute.Controllers
                     EpExcelExport.Create_Customer_Excel(cust_stock_dt, columnNamesTable, filePath, filePath + "Customer.xlsx");
                 }
                 //Buyer all stock
-                DataTable buyer_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Buyer", excel_Model.supplier_Ref_No);
+                DataTable buyer_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Buyer", null);
                 if (buyer_stock_dt != null && buyer_stock_dt.Rows.Count > 0)
                 {
                     List<string> columnNames = new List<string>();
@@ -6500,7 +6425,7 @@ namespace astute.Controllers
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value);
 
                 //Supplier round stock
-                DataTable supp_round_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable1, "Supplier", excel_Model.supplier_Ref_No);
+                DataTable supp_round_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable1, "Supplier", null);
                 if (supp_round_stock_dt != null && supp_round_stock_dt.Rows.Count > 0)
                 {
                     List<string> columnNames = new List<string>();
@@ -6519,7 +6444,7 @@ namespace astute.Controllers
                     EpExcelExport.Create_Supplier_Excel(supp_round_stock_dt, columnNamesTable, filePath, filePath + "Supplier_Round.xlsx");
                 }
                 //Customer round stock
-                DataTable cust_round_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable1, "Customer", excel_Model.supplier_Ref_No);
+                DataTable cust_round_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable1, "Customer", null);
                 if (cust_round_stock_dt != null && cust_round_stock_dt.Rows.Count > 0)
                 {
                     List<string> columnNames = new List<string>();
@@ -6538,7 +6463,7 @@ namespace astute.Controllers
                     EpExcelExport.Create_Customer_Excel(cust_round_stock_dt, columnNamesTable, filePath, filePath + "Customer_Round.xlsx");
                 }
                 //Buyer round stock
-                DataTable buyer_round_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable1, "Buyer", excel_Model.supplier_Ref_No);
+                DataTable buyer_round_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable1, "Buyer", null);
                 if (buyer_round_stock_dt != null && buyer_round_stock_dt.Rows.Count > 0)
                 {
                     List<string> columnNames = new List<string>();
