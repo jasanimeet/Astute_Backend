@@ -9,6 +9,6 @@ namespace astute.Models
         public string? To_Email { get; set; }
         public string? Remarks { get; set; }
         public string? Supplier_Ref_No { get; set; }
-        public IList<Report_Filter_Parameter> Report_Filter_Parameter { get; set; } = new List<Report_Filter_Parameter>();
+        public IList<IList<Report_Multiple_Filter_Parameter>> Report_Filter_Parameter_List { get; set; } = new List<IList<Report_Multiple_Filter_Parameter>>();
     }
 }
