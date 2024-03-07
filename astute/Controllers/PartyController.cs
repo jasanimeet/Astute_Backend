@@ -5983,7 +5983,23 @@ namespace astute.Controllers
             dataTable.Columns.Add("DISC_VALUE", typeof(string));
             dataTable.Columns.Add("BASE_TYPE", typeof(string));
 
-            if (excel_Model.Report_Filter_Parameter_List != null && excel_Model.Report_Filter_Parameter_List.Count > 0)
+
+            var Round_Cat_Val_Id = _configuration["Round_Cat_Val_Id"];
+            bool Is_Round = false;
+            if (excel_Model.Report_Filter_Parameter_List != null && excel_Model.Report_Filter_Parameter_List.Count == 1)
+            {
+                foreach (var item in excel_Model.Report_Filter_Parameter_List)
+                {
+                    SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x => x.Category_Value).FirstOrDefault();
+
+                    if (item.Count == 1 && SHAPE == Round_Cat_Val_Id)
+                    {
+                        Is_Round = true;
+                    }
+                }
+            }
+
+            if (excel_Model.Report_Filter_Parameter_List != null && excel_Model.Report_Filter_Parameter_List.Count > 0 && Is_Round == false)
             {
                 foreach (var item in excel_Model.Report_Filter_Parameter_List)
                 {
@@ -6105,7 +6121,7 @@ namespace astute.Controllers
             else
             {
                 var destinationFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
-                if (excel_Model.excel_Format == "Customer")
+                if (excel_Model.excel_Format == "Customer" && Is_Round == false)
                 {
                     string sourceFilePath = Directory.GetCurrentDirectory() + CoreCommonFilePath.PreGeneratedStockExcelFilesPath + "Customer.xlsx";
                     string newFileName = "Customer_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
@@ -6126,7 +6142,7 @@ namespace astute.Controllers
                         }
                     }
                 }
-                else if (excel_Model.excel_Format == "Buyer")
+                else if (excel_Model.excel_Format == "Buyer" && Is_Round == false)
                 {
                     string sourceFilePath = Directory.GetCurrentDirectory() + CoreCommonFilePath.PreGeneratedStockExcelFilesPath + "Buyer.xlsx";
                     string newFileName = "Buyer_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
@@ -6147,9 +6163,72 @@ namespace astute.Controllers
                         }
                     }
                 }
-                else if (excel_Model.excel_Format == "Supplier")
+                else if (excel_Model.excel_Format == "Supplier" && Is_Round == false)
                 {
                     string sourceFilePath = Directory.GetCurrentDirectory() + CoreCommonFilePath.PreGeneratedStockExcelFilesPath + "Supplier.xlsx";
+                    string newFileName = "Supplier_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    string destinationFilePath = Path.Combine(destinationFolderPath, newFileName);
+                    if (System.IO.File.Exists(sourceFilePath))
+                    {
+                        System.IO.File.Move(sourceFilePath, destinationFilePath);
+                        if (System.IO.File.Exists(destinationFilePath))
+                        {
+                            var excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + newFileName;
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.DataSuccessfullyFound,
+                                result = excelPath,
+                                file_name = newFileName
+                            });
+                        }
+                    }
+                }
+                else if (excel_Model.excel_Format == "Customer" && Is_Round == true)
+                {
+                    string sourceFilePath = Directory.GetCurrentDirectory() + CoreCommonFilePath.PreGeneratedStockExcelFilesPath + "Customer_Round.xlsx";
+                    string newFileName = "Customer_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    string destinationFilePath = Path.Combine(destinationFolderPath, newFileName);
+                    if (System.IO.File.Exists(sourceFilePath))
+                    {
+                        System.IO.File.Move(sourceFilePath, destinationFilePath);
+                        if (System.IO.File.Exists(destinationFilePath))
+                        {
+                            var excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + newFileName;
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.DataSuccessfullyFound,
+                                result = excelPath,
+                                file_name = newFileName
+                            });
+                        }
+                    }
+                }
+                else if (excel_Model.excel_Format == "Buyer" && Is_Round == true)
+                {
+                    string sourceFilePath = Directory.GetCurrentDirectory() + CoreCommonFilePath.PreGeneratedStockExcelFilesPath + "Buyer_Round.xlsx";
+                    string newFileName = "Buyer_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    string destinationFilePath = Path.Combine(destinationFolderPath, newFileName);
+                    if (System.IO.File.Exists(sourceFilePath))
+                    {
+                        System.IO.File.Copy(sourceFilePath, destinationFilePath, true);
+                        if (System.IO.File.Exists(destinationFilePath))
+                        {
+                            var excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + newFileName;
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.DataSuccessfullyFound,
+                                result = excelPath,
+                                file_name = newFileName
+                            });
+                        }
+                    }
+                }
+                else if (excel_Model.excel_Format == "Supplier" && Is_Round == true)
+                {
+                    string sourceFilePath = Directory.GetCurrentDirectory() + CoreCommonFilePath.PreGeneratedStockExcelFilesPath + "Supplier_Round.xlsx";
                     string newFileName = "Supplier_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     string destinationFilePath = Path.Combine(destinationFolderPath, newFileName);
                     if (System.IO.File.Exists(sourceFilePath))
@@ -6418,8 +6497,8 @@ namespace astute.Controllers
                 dataTable1.Columns.Add("SIGN", typeof(string));
                 dataTable1.Columns.Add("DISC_VALUE", typeof(string));
                 dataTable1.Columns.Add("BASE_TYPE", typeof(string));
-
-                dataTable1.Rows.Add(DBNull.Value, DBNull.Value, DBNull.Value, "7446", DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
+                var Round_Cat_Val_Id = _configuration["Round_Cat_Val_Id"];
+                dataTable1.Rows.Add(DBNull.Value, DBNull.Value, DBNull.Value, Round_Cat_Val_Id, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
