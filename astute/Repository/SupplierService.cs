@@ -1,20 +1,15 @@
 ﻿using astute.CoreServices;
 using astute.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using Org.BouncyCastle.Asn1.Ocsp;
-using Org.BouncyCastle.Crypto.Operators;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace astute.Repository
 {
@@ -1540,8 +1535,9 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<(List<Dictionary<string, object>>, string, string, string, string)> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
+        public async Task<(List<Dictionary<string, object>>, string, string, string, string, DataTable)> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
         {
+            DataTable dataTable = new DataTable();
             var result = new List<Dictionary<string, object>>();
             var totalRecordr = string.Empty;
             var totalCtsr = string.Empty;
@@ -1611,6 +1607,14 @@ namespace astute.Repository
                         command.CommandTimeout = 1800;
                         await connection.OpenAsync();
 
+                        using var da = new SqlDataAdapter();
+                        da.SelectCommand = command;
+
+                        using var ds = new DataSet();
+                        da.Fill(ds);
+
+                        dataTable = ds.Tables[ds.Tables.Count - 1];
+
                         using (var reader = await command.ExecuteReaderAsync())
                         {
                             while (await reader.ReadAsync())
@@ -1636,7 +1640,7 @@ namespace astute.Repository
                     }
                 }
             }
-            return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr);
+            return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, dataTable);
         }
         public async Task<(List<Dictionary<string, object>>, string, string, string, string)> Get_Lab_Search_Report_Search(DataTable dataTable, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
         {
@@ -2081,43 +2085,45 @@ namespace astute.Repository
 
             return result;
         }
-
-        //public async Task<List<Dictionary<string, object>>> Get_Report_Layout_Save(int User_Id)
-        //{
-        //    var result = new List<Dictionary<string, object>>();
-
-        //    using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
-        //    {
-        //        using (var command = new SqlCommand("Report_Layout_Save_Select", connection))
-        //        {
-        //            command.CommandType = CommandType.StoredProcedure;
-        //            command.Parameters.Add(User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@Id", DBNull.Value));
-        //            await connection.OpenAsync();
-
-        //            using (var reader = await command.ExecuteReaderAsync())
-        //            {
-        //                while (await reader.ReadAsync())
-        //                {
-        //                    var dict = new Dictionary<string, object>();
-
-        //                    for (int i = 0; i < reader.FieldCount; i++)
-        //                    {
-        //                        var columnName = reader.GetName(i);
-        //                        var columnValue = reader.GetValue(i);
-
-        //                        dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
-        //                    }
-
-        //                    result.Add(dict);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return result;
-        //}
         public async Task<int> Delete_Report_Layout_Save(int id)
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Report_Layout_Save_Delete {id}"));
+        }
+        public async Task<DataTable> Get_Report_Search_Excel(int id, IList<Report_Filter_Parameter> report_Filter_Parameters)
+        {
+            DataTable dataTable = new DataTable();
+
+            var _id = new SqlParameter("@Id", id);
+            var result_Master = await Task.Run(() => _dbContext.Bank_Dropdown_Model
+            .FromSqlRaw(@"exec Report_Master_Select @Id", _id).AsEnumerable().FirstOrDefault());
+
+            if (result_Master != null)
+            {
+                string report_Sp = result_Master.Name + "_Excel";
+
+                using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+                {
+                    using (var command = new SqlCommand(report_Sp, connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        foreach (var item in report_Filter_Parameters.Where(x => !string.IsNullOrEmpty(x.Category_Value)).ToList())
+                        {
+                            command.Parameters.Add(!string.IsNullOrEmpty(item.Category_Value) ? new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), item.Category_Value) : new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), DBNull.Value));
+                        }
+                        command.CommandTimeout = 1800;
+                        await connection.OpenAsync();
+
+                        using var da = new SqlDataAdapter();
+                        da.SelectCommand = command;
+
+                        using var ds = new DataSet();
+                        da.Fill(ds);
+
+                        dataTable = ds.Tables[ds.Tables.Count - 1];
+                    }
+                }
+            }
+            return dataTable;
         }
         #endregion
 

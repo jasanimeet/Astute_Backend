@@ -4226,7 +4226,7 @@ namespace astute.Controllers
         {
             try
             {
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo ?? 0, report_Filter.iPgSize ?? 0, report_Filter.iSort);
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, dt_stock) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo ?? 0, report_Filter.iPgSize ?? 0, report_Filter.iSort);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -4954,7 +4954,7 @@ namespace astute.Controllers
         {
             try
             {
-                var (_, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo ?? 0, report_Filter.iPgSize ?? 0, report_Filter.iSort);
+                var (_, totalRecordr, totalCtsr, totalAmtr, totalDiscr, _) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo ?? 0, report_Filter.iPgSize ?? 0, report_Filter.iSort);
                 if (!string.IsNullOrEmpty(totalRecordr) && !string.IsNullOrEmpty(totalCtsr) && !string.IsNullOrEmpty(totalAmtr) && !string.IsNullOrEmpty(totalDiscr))
                 {
                     return Ok(new
@@ -5445,6 +5445,81 @@ namespace astute.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("cart_approval_order_excel_download")]
+        [Authorize]
+        public async Task<IActionResult> Cart_Approval_Order_Excel_Download(Report_Filter report_Filter)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                report_Filter.Report_Filter_Parameter.Add(new Report_Filter_Parameter()
+                {
+                    Col_Id = 1163,
+                    Column_Name = "USER_ID",
+                    Category_Value = Convert.ToString(user_Id)
+                });
+                var dt_stock = await _supplierService.Get_Report_Search_Excel(report_Filter.id, report_Filter.Report_Filter_Parameter);
+                if (dt_stock != null && dt_stock.Rows.Count > 0)
+                {
+                    List<string> columnNames = new List<string>();
+                    foreach (DataColumn column in dt_stock.Columns)
+                    {
+                        columnNames.Add(column.ColumnName);
+                    }
+
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in columnNames)
+                    {
+                        columnNamesTable.Rows.Add(columnName);
+                    }
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string filename = string.Empty;
+                    if (report_Filter.id == 2)
+                    {
+                        filename = "Cart_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                        EpExcelExport.Create_Cart_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                        excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                    }
+                    else if(report_Filter.id == 3)
+                    {
+                        filename = "Approval_Management_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                        EpExcelExport.Create_Approval_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                        excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                    }
+                    else if (report_Filter.id == 4)
+                    {
+                        filename = "Order_Processing_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                        EpExcelExport.Create_Cart_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                        excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                    }
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Cart_Approval_Order_Excel_Download", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Get GIA Certificate Data

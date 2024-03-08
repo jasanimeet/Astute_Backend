@@ -80,7 +80,7 @@ namespace astute.Repository
         Task<int> Create_Update_Report_User_Role(DataTable dataTable);
 
         Task<List<Dictionary<string, object>>> Get_Report_Users_Role(int id, int user_Id, string user_Type);
-        Task<(List<Dictionary<string, object>>, string, string, string, string)> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters, int iPgNo, int iPgSize, IList<Report_Sorting> iSort);
+        Task<(List<Dictionary<string, object>>, string, string, string, string, DataTable)> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters, int iPgNo, int iPgSize, IList<Report_Sorting> iSort);
         Task<(List<Dictionary<string, object>>, string, string, string, string)> Get_Lab_Search_Report_Search(DataTable dataTable, int iPgNo, int iPgSize, IList<Report_Sorting> iSort);
         Task<(List<Dictionary<string, object>>, string, string, string, string)> Get_Lab_Search_Report_Search_Total(DataTable dataTable, int iPgNo, int iPgSize, IList<Report_Sorting> iSort);
         Task<(List<Dictionary<string, object>>, string, string, string, string)> Get_Stock_Avalibility_Report_Search(DataTable dataTable, string stock_Id, string stock_Type, int iPgNo, int iPgSize, IList<Report_Sorting> iSort);
@@ -94,6 +94,7 @@ namespace astute.Repository
         Task<IList<Report_Layout_Save>> Get_Report_Layout_Save(int User_Id, int Rm_Id);
         Task<int> Update_Report_Layout_Save_Status(int id, int user_Id);
         Task<int> Delete_Report_Layout_Save(int id);
+        Task<DataTable> Get_Report_Search_Excel(int id, IList<Report_Filter_Parameter> report_Filter_Parameters);
         #endregion
 
         #region GIA Lap Parameter
