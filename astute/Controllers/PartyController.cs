@@ -427,11 +427,11 @@ namespace astute.Controllers
                         item.FANCY_COLOR != null ? Convert.ToString(item.FANCY_COLOR) : DBNull.Value,
                         item.FANCY_INTENSITY != null ? Convert.ToString(item.FANCY_INTENSITY) : DBNull.Value,
                         item.FANCY_OVERTONE != null ? Convert.ToString(item.FANCY_OVERTONE) : DBNull.Value,
-                        item.IMAGE_LINK != null ? Convert.ToString(item.IMAGE_LINK) : DBNull.Value,
+                        item.IMAGE_LINK != null ? Convert.ToString(item.IMAGE_LINK).Length >= 20 ? Convert.ToString(item.IMAGE_LINK) : DBNull.Value : DBNull.Value,
                         item.Image2 != null ? Convert.ToString(item.Image2) : DBNull.Value,
-                        item.VIDEO_LINK != null ? Convert.ToString(item.VIDEO_LINK) : DBNull.Value,
+                        item.VIDEO_LINK != null ? Convert.ToString(item.VIDEO_LINK).Length >= 20 ? Convert.ToString(item.VIDEO_LINK) : DBNull.Value : DBNull.Value,
                         item.Video2 != null ? Convert.ToString(item.Video2) : DBNull.Value,
-                        item.CERTIFICATE_LINK != null ? Convert.ToString(item.CERTIFICATE_LINK) : DBNull.Value,
+                        item.CERTIFICATE_LINK != null ? Convert.ToString(item.CERTIFICATE_LINK).Length >= 20 ? Convert.ToString(item.CERTIFICATE_LINK) : DBNull.Value : DBNull.Value,
                         item.DNA != null ? Convert.ToString(item.DNA) : DBNull.Value,
                         item.IMAGE_HEART_LINK != null ? Convert.ToString(item.IMAGE_HEART_LINK) : DBNull.Value,
                         item.IMAGE_ARROW_LINK != null ? Convert.ToString(item.IMAGE_ARROW_LINK) : DBNull.Value,
@@ -5481,7 +5481,7 @@ namespace astute.Controllers
                         EpExcelExport.Create_Cart_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
                         excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                     }
-                    else if(report_Filter.id == 3)
+                    else if (report_Filter.id == 3)
                     {
                         filename = "Approval_Management_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                         EpExcelExport.Create_Approval_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
