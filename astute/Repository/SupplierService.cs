@@ -2125,6 +2125,37 @@ namespace astute.Repository
             }
             return dataTable;
         }
+        public async Task<DataTable> Get_Stock_Availability_Report_Excel(DataTable dataTable, string stock_Id, string stock_Type)
+        {
+           DataTable dataTable1 = new DataTable();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Stock_Availability_Select_Excel", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    var parameter = new SqlParameter("@Stock_Availibity_Type", SqlDbType.Structured)
+                    {
+                        TypeName = "dbo.Stock_Availibity_Type",
+                        Value = dataTable
+                    };
+                    command.Parameters.Add(parameter);
+                    command.Parameters.Add(!string.IsNullOrEmpty(stock_Id) ? new SqlParameter("@STOCK_ID", stock_Id) : new SqlParameter("@STOCK_ID", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(stock_Type) ? new SqlParameter("@STOCK_TYPE", stock_Type) : new SqlParameter("@STOCK_TYPE", DBNull.Value));
+                    command.CommandTimeout = 1800;
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    dataTable1 = ds.Tables[ds.Tables.Count - 1];
+                }
+            }
+            return dataTable1;
+        }
         #endregion
 
         #region GIA Lap Parameter

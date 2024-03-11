@@ -11,4 +11,12 @@ namespace astute.Models
         public string? Supplier_Ref_No { get; set; }
         public IList<IList<Report_Multiple_Filter_Parameter>> Report_Filter_Parameter_List { get; set; } = new List<IList<Report_Multiple_Filter_Parameter>>();
     }
+
+    public partial class Cart_Approval_Order_Email_Model
+    {   
+        public string? To_Email { get; set; }
+        public string? Remarks { get; set; }        
+        public int id { get; set; }        
+        public IList<Report_Filter_Parameter> Report_Filter_Parameter { get; set; } = new List<Report_Filter_Parameter>();
+    }
 }
