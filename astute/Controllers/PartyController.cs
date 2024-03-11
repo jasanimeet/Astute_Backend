@@ -5451,15 +5451,7 @@ namespace astute.Controllers
         public async Task<IActionResult> Cart_Approval_Order_Excel_Download(Report_Filter report_Filter)
         {
             try
-            {
-                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-                report_Filter.Report_Filter_Parameter.Add(new Report_Filter_Parameter()
-                {
-                    Col_Id = 1163,
-                    Column_Name = "USER_ID",
-                    Category_Value = Convert.ToString(user_Id)
-                });
+            {   
                 var dt_stock = await _supplierService.Get_Report_Search_Excel(report_Filter.id, report_Filter.Report_Filter_Parameter);
                 if (dt_stock != null && dt_stock.Rows.Count > 0)
                 {
@@ -5498,7 +5490,7 @@ namespace astute.Controllers
                     else if (report_Filter.id == 4)
                     {
                         filename = "Order_Processing_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                        EpExcelExport.Create_Cart_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                        EpExcelExport.Create_Order_Processing_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
                         excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                     }
                     return Ok(new
