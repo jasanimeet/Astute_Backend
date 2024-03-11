@@ -1298,7 +1298,7 @@ namespace astute.CoreServices
                                 kk += 1;
 
                                 string Image_URL = Convert.ToString(dtStock.Rows[i - inStartIndex]["Image"]);
-                                if (!string.IsNullOrEmpty(Image_URL))
+                                if (!string.IsNullOrEmpty(Image_URL) && Image_URL.Length >=80)
                                 {
                                     worksheet.Cells[inwrkrow, kk].Formula = "=HYPERLINK(\"" + Image_URL + "\",\" Image \")";
                                     worksheet.Cells[inwrkrow, kk].Style.Font.UnderLine = true;
