@@ -427,7 +427,7 @@ namespace astute.Controllers
                         item.FANCY_COLOR != null ? Convert.ToString(item.FANCY_COLOR) : DBNull.Value,
                         item.FANCY_INTENSITY != null ? Convert.ToString(item.FANCY_INTENSITY) : DBNull.Value,
                         item.FANCY_OVERTONE != null ? Convert.ToString(item.FANCY_OVERTONE) : DBNull.Value,
-                        item.IMAGE_LINK != null ? Convert.ToString(item.IMAGE_LINK).Length >= 20 ? Convert.ToString(item.IMAGE_LINK) : DBNull.Value : DBNull.Value,
+                        item.IMAGE_LINK != null ? Convert.ToString(item.IMAGE_LINK).Length >= 20 ? Convert.ToString(item.IMAGE_LINK).Contains(",")? Convert.ToString(item.IMAGE_LINK).Split(",")[0] : Convert.ToString(item.IMAGE_LINK) : DBNull.Value : DBNull.Value,
                         item.Image2 != null ? Convert.ToString(item.Image2) : DBNull.Value,
                         item.VIDEO_LINK != null ? Convert.ToString(item.VIDEO_LINK).Length >= 20 ? Convert.ToString(item.VIDEO_LINK) : DBNull.Value : DBNull.Value,
                         item.Video2 != null ? Convert.ToString(item.Video2) : DBNull.Value,
