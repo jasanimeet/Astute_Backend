@@ -4019,11 +4019,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_report_name")]
         [Authorize]
-        public async Task<IActionResult> Get_Report_Name(int id)
+        public async Task<IActionResult> Get_Report_Name(int id, int user_Id)
         {
             try
             {
-                var result = await _supplierService.Get_Report_Name(id);
+                var result = await _supplierService.Get_Report_Name(id, user_Id);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -5345,6 +5345,35 @@ namespace astute.Controllers
                 });
             }
         }
+
+        //[HttpPost]
+        //[Route("create_approved_management")]
+        //[Authorize]
+        //public async Task<IActionResult> Create_Approved_Management(Approval_Management_Create_Update approval_Management)
+        //{
+        //    try
+        //    {
+        //        var result = await _cartService.Create_Approved_Management(approval_Management);
+        //        if (result > 0)
+        //        {
+        //            return Ok(new
+        //            {
+        //                statusCode = HttpStatusCode.OK,
+        //                message = CoreCommonMessage.StockApproved
+        //            });
+        //        }
+        //        return BadRequest();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await _commonService.InsertErrorLog(ex.Message, "Create_Approved_Management", ex.StackTrace);
+        //        return StatusCode((int)HttpStatusCode.InternalServerError, new
+        //        {
+        //            message = ex.Message
+        //        });
+        //    }
+        //}
+
         [HttpPost]
         [Route("create_approved_management")]
         [Authorize]
@@ -5352,14 +5381,40 @@ namespace astute.Controllers
         {
             try
             {
-                var result = await _cartService.Create_Approved_Management(approval_Management);
-                if (result > 0)
+                if (ModelState.IsValid)
                 {
-                    return Ok(new
+                    IList<Approval_Detail> app_mang_Result = JsonConvert.DeserializeObject<IList<Approval_Detail>>(approval_Management.Approval_Detail.ToString());
+
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Id", typeof(int));
+                    dataTable.Columns.Add("Supp_Stock_Id", typeof(int));
+                    dataTable.Columns.Add("Cart_Id", typeof(int));
+                    dataTable.Columns.Add("Buyer_Disc", typeof(double));
+                    dataTable.Columns.Add("Buyer_Amt", typeof(double));
+                    dataTable.Columns.Add("Expected_Final_Disc", typeof(double));
+                    dataTable.Columns.Add("Expected_Final_Amt", typeof(double));
+
+                    if(app_mang_Result != null && app_mang_Result.Count > 0)
                     {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.StockApproved
-                    });
+                        foreach (var item in app_mang_Result)
+                        {
+                            dataTable.Rows.Add(item.Id, item.Supp_Stock_Id, item.Cart_Id,
+                                (item.Buyer_Disc != null ? !string.IsNullOrEmpty(item.Buyer_Disc.ToString()) ? Convert.ToDouble(item.Buyer_Disc.ToString()) : null : null),
+                            (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null),
+                            (item.Expected_Final_Disc != null ? !string.IsNullOrEmpty(item.Expected_Final_Disc.ToString()) ? Convert.ToDouble(item.Expected_Final_Disc.ToString()) : null : null),
+                            (item.Expected_Final_Amt != null ? !string.IsNullOrEmpty(item.Expected_Final_Amt.ToString()) ? Convert.ToDouble(item.Expected_Final_Amt.ToString()) : null : null));
+                        }
+                    }
+
+                    var result = await _cartService.Create_Approved_Management(dataTable, approval_Management.User_Id ?? 0, approval_Management.Remarks, approval_Management.Status);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.StockApproved
+                        });
+                    }
                 }
                 return BadRequest();
             }
@@ -5397,7 +5452,7 @@ namespace astute.Controllers
                         (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null), Convert.ToString(item.Status), Convert.ToString(item.QC_Remarks));
                 }
 
-                var (message, result) = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.User_Id, order_Processing.Remarks, order_Processing.Status);
+                var (message, result) = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.User_Id, order_Processing.Customer_Name, order_Processing.Remarks, order_Processing.Status);
                 if (message == "exist" || (message == "success" && result > 0))
                 {
                     return Ok(new
@@ -7170,6 +7225,60 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Send_Cart_Approval_Order_Email", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region Purchase Order
+        [HttpPost]
+        [Route("purchase_order")]
+        [Authorize]
+        public async Task<IActionResult> Purchase_Order(string supp_ref_No)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(supp_ref_No))
+                {
+                    var lst_sup_ref_no = supp_ref_No.Split(",").ToList();
+                    if(lst_sup_ref_no != null && lst_sup_ref_no.Count > 0)
+                    {
+                        foreach (var obj_ref_no in lst_sup_ref_no)
+                        {
+                            if(!string.IsNullOrEmpty(obj_ref_no))
+                            {
+                                var supplier = await _supplierService.Get_Purchase_Order_Supplier(obj_ref_no);
+                                if (supplier != null && !string.IsNullOrEmpty(supplier.Name))
+                                {
+                                    if (supplier.Name.Equals("J.B. AND BROTHERS PVT. LTD - (S)"))
+                                    {
+
+                                    }
+                                    else if (supplier.Name.Equals("SHAIRU GEMS DIAMONDS PVT. LTD - (S)"))
+                                    {
+
+                                    }
+                                    else if (supplier.Name.Equals("RATNA"))
+                                    {
+
+                                    }
+                                    else if (supplier.Name.Equals("VENUS JEWEL - (S)"))
+                                    {
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Purchase_Order", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message

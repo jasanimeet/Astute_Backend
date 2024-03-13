@@ -108,20 +108,36 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<int> Create_Approved_Management(Approval_Management_Create_Update approval_Management)
+        //public async Task<int> Create_Approved_Management(Approval_Management_Create_Update approval_Management)
+        //{
+        //    var _supp_Stock_Id = !string.IsNullOrEmpty(approval_Management.Supp_Stock_Id) ? new SqlParameter("@Supp_Stock_Id", approval_Management.Supp_Stock_Id) : new SqlParameter("@Supp_Stock_Id", DBNull.Value);
+        //    var _cart_Id = !string.IsNullOrEmpty(approval_Management.Cart_Id) ? new SqlParameter("@Cart_Id", approval_Management.Cart_Id) : new SqlParameter("@Cart_Id", DBNull.Value);
+        //    var _user_Id = approval_Management.User_Id > 0 ? new SqlParameter("@User_Id", approval_Management.User_Id) : new SqlParameter("@User_Id", DBNull.Value);
+        //    var _remarks = !string.IsNullOrEmpty(approval_Management.Remarks) ? new SqlParameter("@Remarks", approval_Management.Remarks) : new SqlParameter("@Remarks", DBNull.Value);
+        //    var _status = !string.IsNullOrEmpty(approval_Management.Status) ? new SqlParameter("@Status", approval_Management.Status) : new SqlParameter("@Status", DBNull.Value);
+
+        //    var result = await Task.Run(() => _dbContext.Database
+        //                .ExecuteSqlRawAsync(@"EXEC [Approval_Management_Insert_Update] @Supp_Stock_Id, @Cart_Id, @User_Id, @Remarks ,@Status", _supp_Stock_Id, _cart_Id, _user_Id, _remarks, _status));
+
+        //    return result;
+        //}
+        public async Task<int> Create_Approved_Management(DataTable dataTable, int user_Id, string remarks, string status)
         {
-            var _supp_Stock_Id = !string.IsNullOrEmpty(approval_Management.Supp_Stock_Id) ? new SqlParameter("@Supp_Stock_Id", approval_Management.Supp_Stock_Id) : new SqlParameter("@Supp_Stock_Id", DBNull.Value);
-            var _cart_Id = !string.IsNullOrEmpty(approval_Management.Cart_Id) ? new SqlParameter("@Cart_Id", approval_Management.Cart_Id) : new SqlParameter("@Cart_Id", DBNull.Value);
-            var _user_Id = approval_Management.User_Id > 0 ? new SqlParameter("@User_Id", approval_Management.User_Id) : new SqlParameter("@User_Id", DBNull.Value);
-            var _remarks = !string.IsNullOrEmpty(approval_Management.Remarks) ? new SqlParameter("@Remarks", approval_Management.Remarks) : new SqlParameter("@Remarks", DBNull.Value);
-            var _status = !string.IsNullOrEmpty(approval_Management.Status) ? new SqlParameter("@Status", approval_Management.Status) : new SqlParameter("@Status", DBNull.Value);
+            var parameter = new SqlParameter("@tblApproval_Management", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Approval_Management_Table_Type",
+                Value = dataTable
+            };
+            var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
+            var _remarks = !string.IsNullOrEmpty(remarks) ? new SqlParameter("@Remarks", remarks) : new SqlParameter("@Remarks", DBNull.Value);
+            var _status = !string.IsNullOrEmpty(status) ? new SqlParameter("@Status", status) : new SqlParameter("@Status", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Approval_Management_Insert_Update] @Supp_Stock_Id, @Cart_Id, @User_Id, @Remarks ,@Status", _supp_Stock_Id, _cart_Id, _user_Id, _remarks , _status));
+                        .ExecuteSqlRawAsync(@"EXEC [Approval_Management_Insert_Update] @tblApproval_Management, @User_Id, @Remarks ,@Status", parameter, _user_Id, _remarks, _status));
 
             return result;
         }
-        public async Task<(string, int)> Create_Update_Order_Processing(DataTable dataTable, int? user_Id, string remarks, string status)
+        public async Task<(string, int)> Create_Update_Order_Processing(DataTable dataTable, int? user_Id, string customer_Name, string remarks, string status)
         {
             var parameter = new SqlParameter("@Order_Processing_Table_Type", SqlDbType.Structured)
             {
@@ -129,6 +145,7 @@ namespace astute.Repository
                 Value = dataTable
             };
             var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
+            var _customer_Name = !string.IsNullOrEmpty(customer_Name) ? new SqlParameter("@Customer_Name", customer_Name) : new SqlParameter("@Customer_Name", DBNull.Value);
             var _remarks = !string.IsNullOrEmpty(remarks) ? new SqlParameter("@Remarks", remarks) : new SqlParameter("@Remarks", DBNull.Value);
             var _status = !string.IsNullOrEmpty(status) ? new SqlParameter("@Status", status) : new SqlParameter("@Status", DBNull.Value);
             var is_Exists = new SqlParameter("@IsExist", SqlDbType.Bit)
@@ -136,7 +153,7 @@ namespace astute.Repository
                 Direction = ParameterDirection.Output
             };
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Insert_Update] @Order_Processing_Table_Type, @User_Id, @Remarks ,@Status,@IsExist OUT", parameter, _user_Id, _remarks, _status, is_Exists));
+                        .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Insert_Update] @Order_Processing_Table_Type, @User_Id, @Customer_Name, @Remarks ,@Status,@IsExist OUT", parameter, _user_Id, _customer_Name, _remarks, _status, is_Exists));
             var _is_Exists = (bool)is_Exists.Value;
             if (_is_Exists)
                 return ("exist", 0);

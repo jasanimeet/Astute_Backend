@@ -50,7 +50,7 @@ namespace astute.Repository
         Task<int> Supplier_Stock_Insert_Update(int supplier_Id, int stock_Data_Id);
         Task<int> Supplier_Stock_Manual_File_Insert_Update(int supplier_Id, int stock_Data_Id);
         Task<int> Stock_Data_Shedular_Insert_Update(DataTable dataTable, int Stock_Data_Id);
-
+        Task<DropdownModel> Get_Purchase_Order_Supplier(string supp_Ref_No);
         #endregion
 
         #region Stock Number Generation
@@ -74,7 +74,7 @@ namespace astute.Repository
         #region Report
         Task<(string, int)> Create_Update_Report_Master(Report_Master report_Master);
         Task<int> Create_Update_Report_Detail(DataTable dataTable);
-        Task<List<Dictionary<string, object>>> Get_Report_Name(int id);
+        Task<List<Dictionary<string, object>>> Get_Report_Name(int id, int user_Id);
         Task<List<Dictionary<string, object>>> Get_Report_Detail(int id);
         Task<List<Dictionary<string, object>>> Get_Report_Detail_Filter_Parameter(int id);
         Task<int> Create_Update_Report_User_Role(DataTable dataTable);

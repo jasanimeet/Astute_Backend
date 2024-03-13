@@ -5,6 +5,7 @@ namespace astute.Models
     public class Order_Processing
     {
         public int? User_Id { get; set; }
+        public string? Customer_Name { get; set; }
         public string? Remarks { get; set; }
         public string? Status { get; set; }
         public object Order_Detail { get; set; }

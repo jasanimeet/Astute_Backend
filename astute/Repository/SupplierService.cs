@@ -1096,7 +1096,16 @@ namespace astute.Repository
 
             return result;
         }
+        public async Task<DropdownModel> Get_Purchase_Order_Supplier(string supp_Ref_No)
+        {
+            var _supp_Ref_No = new SqlParameter("@Supplier_Ref_No", supp_Ref_No);
 
+            var result = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"exec Purchase_Order_Supplier_Select @Supplier_Ref_No", _supp_Ref_No)
+                            .AsEnumerable()
+                            .FirstOrDefault());
+            return result;
+        }
         #endregion
 
         #region Stock Number Generation
@@ -1393,7 +1402,7 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Report_Name(int id)
+        public async Task<List<Dictionary<string, object>>> Get_Report_Name(int id, int user_Id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -1402,6 +1411,7 @@ namespace astute.Repository
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(id > 0 ? new SqlParameter("@Id", id) : new SqlParameter("@Id", DBNull.Value));
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
