@@ -2,9 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -91,7 +89,7 @@ namespace astute.Repository
             var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Cart_Delete @Ids, @User_Id", supp_Stock_Ids, user_Id));
+                        .ExecuteSqlRawAsync(@"EXEC Cart_Delete @Ids, @User_Id", supp_Stock_Ids, _user_Id));
 
             return result;
         }
@@ -159,7 +157,6 @@ namespace astute.Repository
                 return ("exist", 0);
             return ("success", result);
         }
-
         public async Task<int> Order_Processing_Inactive(Order_Processing_Inactive order_processing)
         {
             var _Ids = !string.IsNullOrEmpty(order_processing.Ids) ? new SqlParameter("@Ids", order_processing.Ids) : new SqlParameter("@Ids", DBNull.Value);

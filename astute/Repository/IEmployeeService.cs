@@ -20,7 +20,7 @@ namespace astute.Repository
         Task Insert_Employee_Document_Trace(DataTable dataTable);
         Task Insert_Employee_Salary_Trace(DataTable dataTable);
         Task Insert_Emergency_Contact_Detail_Trace(DataTable dataTable);
-        Task<IList<DropdownModel>> Get_Employee_For_Report(bool is_Exist, int rm_Id);
+        Task<IList<DropdownModel>> Get_Employee_For_Report(bool is_Exist, int rm_Id, int user_Id);
         Task<int> Employee_Master_Change_Status(int employee_Id, bool status);
         #endregion
 

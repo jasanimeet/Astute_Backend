@@ -7,12 +7,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NPOI.HPSF;
 using NPOI.HSSF.UserModel;
-using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
 using System;
@@ -22,7 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -5289,18 +5286,27 @@ namespace astute.Controllers
         [HttpPut]
         [Route("delete_cart")]
         [Authorize]
-        public async Task<IActionResult> Delete_Cart(string ids, int user_Id)
+        public async Task<IActionResult> Delete_Cart(JsonElement requestData)
         {
             try
             {
-                var result = await _cartService.Delete_Cart(ids, user_Id);
-                if (result > 0)
+                if (requestData.TryGetProperty("ids", out var idsElement) && idsElement.ValueKind == JsonValueKind.String)
                 {
-                    return Ok(new
+                    string ids = idsElement.GetString();
+                    if (!string.IsNullOrEmpty(ids))
                     {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.CartStockDeleted
-                    });
+                        var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                        int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                        var result = await _cartService.Delete_Cart(ids, user_Id ?? 0);
+                        if (result > 0)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.CartStockDeleted
+                            });
+                        }
+                    }
                 }
                 return BadRequest(new
                 {
