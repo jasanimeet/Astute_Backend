@@ -80,8 +80,7 @@ namespace astute
 
             services.AddCors(p => p.AddPolicy("corsapp", builder =>
             {
-                //builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
-                builder.WithOrigins("http://193.194.195.101:8009", "http://193.194.195.101:8011").AllowAnyMethod().AllowAnyHeader();
+                builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
             }));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -122,8 +121,15 @@ namespace astute
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
-            app.UseRouting();
+            app.UseRouting();   
             app.UseAuthorization();
+            app.UseCors(builder =>
+            {
+                builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+            });
             app.UseCors("corsapp");
             app.UseStaticFiles();
             app.UseMiddleware<JwtMiddleware>();
