@@ -80,7 +80,8 @@ namespace astute
 
             services.AddCors(p => p.AddPolicy("corsapp", builder =>
             {
-                builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+                //builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+                builder.WithOrigins("http://193.194.195.101:8009", "http://193.194.195.101:8011").AllowAnyMethod().AllowAnyHeader();
             }));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
