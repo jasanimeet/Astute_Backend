@@ -76,7 +76,7 @@ namespace astute.Repository
         Task<int> Create_Update_Report_Detail(DataTable dataTable);
         Task<List<Dictionary<string, object>>> Get_Report_Name(int id, int user_Id);
         Task<List<Dictionary<string, object>>> Get_Report_Detail(int id);
-        Task<List<Dictionary<string, object>>> Get_Report_Detail_Filter_Parameter(int id);
+        Task<List<Dictionary<string, object>>> Get_Report_Detail_Filter_Parameter(int id, int user_Id);
         Task<int> Create_Update_Report_User_Role(DataTable dataTable);
         Task<List<Dictionary<string, object>>> Get_Report_Users_Role(int id, int user_Id, string user_Type);
         Task<(List<Dictionary<string, object>>, string, string, string, string, DataTable)> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters, int iPgNo, int iPgSize, IList<Report_Sorting> iSort);
