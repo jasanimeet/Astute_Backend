@@ -14,5 +14,7 @@ namespace astute.Models
         public string? Column_Synonym { get; set; }
         public string? Display_Name { get; set; }
         public string? Display_Type { get; set; }
+        public bool? Is_Split { get; set; }
+        public string? Separator { get; set; }
     }
 }

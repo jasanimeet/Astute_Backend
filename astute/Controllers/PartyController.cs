@@ -1480,10 +1480,12 @@ namespace astute.Controllers
                         dataTable.Columns.Add("Supp_Col_Name", typeof(string));
                         dataTable.Columns.Add("Column_Type", typeof(string));
                         dataTable.Columns.Add("Column_Synonym", typeof(string));
+                        dataTable.Columns.Add("Is_Split", typeof(bool));
+                        dataTable.Columns.Add("Separator", typeof(string));
 
                         foreach (var item in supplier_Details.Supplier_Column_Mapping_List)
                         {
-                            dataTable.Rows.Add(item.Supp_Col_Id, supplier_Details.Party_Id, item.Col_Id, item.Supp_Col_Name, item.Column_Type, item.Column_Synonym);
+                            dataTable.Rows.Add(item.Supp_Col_Id, supplier_Details.Party_Id, item.Col_Id, item.Supp_Col_Name, item.Column_Type, item.Column_Synonym, item.Is_Split, item.Separator);
                         }
                         var result = await _supplierService.Add_Update_Supplier_Column_Mapping(dataTable);
                         if (result > 0)
@@ -4384,6 +4386,7 @@ namespace astute.Controllers
                         CROWN_OPEN = item.Where(x => x.Column_Name == "CROWN OPEN").Select(x => x.Category_Value).FirstOrDefault();
                         PAVILION_OPEN = item.Where(x => x.Column_Name == "PAVILION OPEN").Select(x => x.Category_Value).FirstOrDefault();
                         GIRDLE_OPEN = item.Where(x => x.Column_Name == "GIRDLE OPEN").Select(x => x.Category_Value).FirstOrDefault();
+                        CULET = item.Where(x => x.Column_Name == "CULET").Select(x => x.Category_Value).FirstOrDefault();
                         KEY_TO_SYMBOL_TRUE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x => x.KEY_TO_SYMBOL_TRUE).FirstOrDefault();
                         KEY_TO_SYMBOL_FALSE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x => x.KEY_TO_SYMBOL_FALSE).FirstOrDefault();
                         LAB_COMMENTS_TRUE = item.Where(x => x.Column_Name == "LAB COMMENTS").Select(x => x.LAB_COMMENTS_TRUE).FirstOrDefault();
@@ -4473,7 +4476,7 @@ namespace astute.Controllers
                     }
                     dataTable.Rows.Add(newRow);
                 }
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Lab_Search_Report_Search(dataTable, report_Lab_Filter.iPgNo ?? 0, report_Lab_Filter.iPgSize ?? 0, report_Lab_Filter.iSort);
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseDisc, totalBaseAmt, totalOfferDisc, totalOfferAmt, totalMaxSlabDisc, totalMaxSlabAmt) = await _supplierService.Get_Lab_Search_Report_Search(dataTable, report_Lab_Filter.iPgNo ?? 0, report_Lab_Filter.iPgSize ?? 0, report_Lab_Filter.iSort);
                 if (result != null)
                 {
                     return Ok(new
@@ -4484,6 +4487,12 @@ namespace astute.Controllers
                         total_Cts = totalCtsr,
                         total_Amt = totalAmtr,
                         total_Disc = totalDiscr,
+                        total_Base_Disc =totalBaseDisc,
+                        total_Base_Amt = totalBaseAmt,
+                        total_Offer_Disc = totalOfferDisc,
+                        total_Offer_Amt = totalOfferAmt,
+                        total_MaxSlab_Disc = totalMaxSlabDisc,
+                        total_MaxSlab_Amt = totalMaxSlabAmt,
                         data = result
                     });
                 }
@@ -5122,6 +5131,7 @@ namespace astute.Controllers
                         CROWN_OPEN = item.Where(x => x.Column_Name == "CROWN OPEN").Select(x => x.Category_Value).FirstOrDefault();
                         PAVILION_OPEN = item.Where(x => x.Column_Name == "PAVILION OPEN").Select(x => x.Category_Value).FirstOrDefault();
                         GIRDLE_OPEN = item.Where(x => x.Column_Name == "GIRDLE OPEN").Select(x => x.Category_Value).FirstOrDefault();
+                        CULET = item.Where(x => x.Column_Name == "CULET").Select(x => x.Category_Value).FirstOrDefault();
                         KEY_TO_SYMBOL_TRUE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x => x.KEY_TO_SYMBOL_TRUE).FirstOrDefault();
                         KEY_TO_SYMBOL_FALSE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x => x.KEY_TO_SYMBOL_FALSE).FirstOrDefault();
                         LAB_COMMENTS_TRUE = item.Where(x => x.Column_Name == "LAB COMMENTS").Select(x => x.LAB_COMMENTS_TRUE).FirstOrDefault();
@@ -5211,7 +5221,7 @@ namespace astute.Controllers
                     }
                     dataTable.Rows.Add(newRow);
                 }
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Lab_Search_Report_Search_Total(dataTable, report_Lab_Filter.iPgNo ?? 0, report_Lab_Filter.iPgSize ?? 0, report_Lab_Filter.iSort);
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseDisc, totalBaseAmt, totalOfferDisc, totalOfferAmt, totalMaxSlabDisc, totalMaxSlabAmt) = await _supplierService.Get_Lab_Search_Report_Search_Total(dataTable, report_Lab_Filter.iPgNo ?? 0, report_Lab_Filter.iPgSize ?? 0, report_Lab_Filter.iSort);
                 if (result != null)
                 {
                     return Ok(new
@@ -5222,6 +5232,12 @@ namespace astute.Controllers
                         total_Cts = totalCtsr,
                         total_Amt = totalAmtr,
                         total_Disc = totalDiscr,
+                        total_Base_Disc = totalBaseDisc,
+                        total_Base_Amt = totalBaseAmt,
+                        total_Offer_Disc = totalOfferDisc,
+                        total_Offer_Amt = totalOfferAmt,
+                        total_MaxSlab_Disc = totalMaxSlabDisc,
+                        total_MaxSlab_Amt = totalMaxSlabAmt,
                         data = result
                     });
                 }
@@ -5486,7 +5502,7 @@ namespace astute.Controllers
                 }
 
                 var (message, result) = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.User_Id, order_Processing.Customer_Name, order_Processing.Remarks, order_Processing.Status);
-                if (message == "exist" || (message == "success" && result > 0))
+                if (message == "exist"|| (message == "success" && result > 0))
                 {
                     return Ok(new
                     {
@@ -6289,6 +6305,7 @@ namespace astute.Controllers
                     CROWN_OPEN = item.Where(x => x.Column_Name == "CROWN OPEN").Select(x => x.Category_Value).FirstOrDefault();
                     PAVILION_OPEN = item.Where(x => x.Column_Name == "PAVILION OPEN").Select(x => x.Category_Value).FirstOrDefault();
                     GIRDLE_OPEN = item.Where(x => x.Column_Name == "GIRDLE OPEN").Select(x => x.Category_Value).FirstOrDefault();
+                    CULET = item.Where(x => x.Column_Name == "CULET").Select(x => x.Category_Value).FirstOrDefault();
                     KEY_TO_SYMBOL_TRUE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x => x.KEY_TO_SYMBOL_TRUE).FirstOrDefault();
                     KEY_TO_SYMBOL_FALSE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x => x.KEY_TO_SYMBOL_FALSE).FirstOrDefault();
                     LAB_COMMENTS_TRUE = item.Where(x => x.Column_Name == "LAB COMMENTS").Select(x => x.LAB_COMMENTS_TRUE).FirstOrDefault();
@@ -7071,6 +7088,7 @@ namespace astute.Controllers
                             CROWN_OPEN = item.Where(x => x.Column_Name == "CROWN OPEN").Select(x => x.Category_Value).FirstOrDefault();
                             PAVILION_OPEN = item.Where(x => x.Column_Name == "PAVILION OPEN").Select(x => x.Category_Value).FirstOrDefault();
                             GIRDLE_OPEN = item.Where(x => x.Column_Name == "GIRDLE OPEN").Select(x => x.Category_Value).FirstOrDefault();
+                            CULET = item.Where(x => x.Column_Name == "CULET").Select(x => x.Category_Value).FirstOrDefault();
                             KEY_TO_SYMBOL_TRUE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x => x.KEY_TO_SYMBOL_TRUE).FirstOrDefault();
                             KEY_TO_SYMBOL_FALSE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x => x.KEY_TO_SYMBOL_FALSE).FirstOrDefault();
                             LAB_COMMENTS_TRUE = item.Where(x => x.Column_Name == "LAB COMMENTS").Select(x => x.LAB_COMMENTS_TRUE).FirstOrDefault();

@@ -1333,10 +1333,10 @@ namespace astute.CoreServices
                                         worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Blue);
                                     }
                                 }
-                                if (Column_Name == "Cts")
+                                if (Column_Name == "CTS")
                                 {
-                                    string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cts"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Cts"]) : 0;
+                                    string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["CTS"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["CTS"]) : 0;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
@@ -1511,7 +1511,7 @@ namespace astute.CoreServices
                                         = cellStyleHeader_Total.Border.Top.Style = cellStyleHeader_Total.Border.Bottom.Style
                                         = ExcelBorderStyle.Medium;
                             }
-                            else if (Column_Name == "Cts")
+                            else if (Column_Name == "CTS")
                             {
                                 worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                                 worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -1874,10 +1874,10 @@ namespace astute.CoreServices
                                         worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                         worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(kts_bg);
                                     }
-                                    else if (Column_Name == "Cts")
+                                    else if (Column_Name == "CTS")
                                     {
-                                        string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cts"]);
-                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Cts"]) : 0;
+                                        string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["CTS"]);
+                                        worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["CTS"]) : 0;
 
                                         worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                     }
@@ -2090,7 +2090,7 @@ namespace astute.CoreServices
                                         = cellStyleHeader_Total.Border.Top.Style = cellStyleHeader_Total.Border.Bottom.Style
                                         = ExcelBorderStyle.Medium;
                             }
-                            else if (Column_Name == "Cts")
+                            else if (Column_Name == "CTS")
                             {
                                 worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                                 worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -2343,10 +2343,10 @@ namespace astute.CoreServices
                                         worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Blue);
                                     }
                                 }
-                                if (Column_Name == "Cts")
+                                if (Column_Name == "CTS")
                                 {
-                                    string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cts"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Cts"]) : 0;
+                                    string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["CTS"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["CTS"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "Rap Rate($)")
@@ -2543,7 +2543,7 @@ namespace astute.CoreServices
                                         = cellStyleHeader_Total.Border.Top.Style = cellStyleHeader_Total.Border.Bottom.Style
                                         = ExcelBorderStyle.Medium;
                             }
-                            else if (Column_Name == "Cts")
+                            else if (Column_Name == "CTS")
                             {
                                 worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                                 worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;

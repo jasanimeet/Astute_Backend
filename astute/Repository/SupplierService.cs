@@ -1653,13 +1653,19 @@ namespace astute.Repository
             }
             return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, dataTable);
         }
-        public async Task<(List<Dictionary<string, object>>, string, string, string, string)> Get_Lab_Search_Report_Search(DataTable dataTable, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
+        public async Task<(List<Dictionary<string, object>>, string, string, string, string, string, string, string, string, string, string)> Get_Lab_Search_Report_Search(DataTable dataTable, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
         {
             var result = new List<Dictionary<string, object>>();
             var totalRecordr = string.Empty;
             var totalCtsr = string.Empty;
             var totalAmtr = string.Empty;
             var totalDiscr = string.Empty;
+            string totalBaseDiscr = string.Empty;
+            string totalBaseAmtr = string.Empty;
+            string totalOfferDiscr = string.Empty;
+            string totalOfferAmtr = string.Empty;
+            string totalMaxSlabDiscr = string.Empty;
+            string totalMaxSlabAmtr = string.Empty;
 
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
@@ -1715,7 +1721,49 @@ namespace astute.Repository
                     };
                     command.Parameters.Add(totalDiscParameter);
 
-                   command.CommandTimeout = 1800;
+                    var totalBaseDiscParameter = new SqlParameter("@iTotalBaseDisc", SqlDbType.NVarChar)
+                    {
+                        Size = -1,
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalBaseDiscParameter);
+
+                    var totalBaseAmtParameter = new SqlParameter("@iTotalBaseAmt", SqlDbType.NVarChar)
+                    {
+                        Size = -1,
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalBaseAmtParameter);
+
+                    var totalOfferDiscParameter = new SqlParameter("@iTotalOfferDisc", SqlDbType.NVarChar)
+                    {
+                        Size = -1,
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalOfferDiscParameter);
+
+                    var totalOfferAmtParameter = new SqlParameter("@iTotalOfferAmt", SqlDbType.NVarChar)
+                    {
+                        Size = -1,
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalOfferAmtParameter);
+
+                    var totalMaxSlabDiscParameter = new SqlParameter("@iTotalMaxSlabDisc", SqlDbType.NVarChar)
+                    {
+                        Size = -1,
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalMaxSlabDiscParameter);
+
+                    var totalMaxSlabAmtParameter = new SqlParameter("@iTotalMaxSlabAmt", SqlDbType.NVarChar)
+                    {
+                        Size = -1,
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalMaxSlabAmtParameter);
+
+                    command.CommandTimeout = 1800;
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -1738,17 +1786,29 @@ namespace astute.Repository
                     totalCtsr = Convert.ToString(totalCtsParameter.Value);
                     totalAmtr = Convert.ToString(totalAmtParameter.Value);
                     totalDiscr = Convert.ToString(totalDiscParameter.Value);
+                    totalBaseDiscr = Convert.ToString(totalBaseDiscParameter.Value);
+                    totalBaseAmtr = Convert.ToString(totalBaseAmtParameter.Value);
+                    totalOfferDiscr = Convert.ToString(totalOfferDiscParameter.Value);
+                    totalOfferAmtr = Convert.ToString(totalOfferAmtParameter.Value);
+                    totalMaxSlabDiscr = Convert.ToString(totalMaxSlabDiscParameter.Value);
+                    totalMaxSlabAmtr = Convert.ToString(totalMaxSlabAmtParameter.Value);
                 }
             }
-            return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr);
+            return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseDiscr, totalBaseAmtr, totalOfferDiscr, totalOfferAmtr, totalMaxSlabDiscr, totalMaxSlabAmtr);
         }
-        public async Task<(List<Dictionary<string, object>>, string, string, string, string)> Get_Lab_Search_Report_Search_Total(DataTable dataTable, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
+        public async Task<(List<Dictionary<string, object>>, string, string, string, string, string, string, string, string, string, string)> Get_Lab_Search_Report_Search_Total(DataTable dataTable, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
         {
             var result = new List<Dictionary<string, object>>();
             var totalRecordr = string.Empty;
             var totalCtsr = string.Empty;
             var totalAmtr = string.Empty;
             var totalDiscr = string.Empty;
+            string totalBaseDiscr = string.Empty;
+            string totalBaseAmtr = string.Empty;
+            string totalOfferDiscr = string.Empty;
+            string totalOfferAmtr = string.Empty;
+            string totalMaxSlabDiscr = string.Empty;
+            string totalMaxSlabAmtr = string.Empty;
 
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
@@ -1804,6 +1864,48 @@ namespace astute.Repository
                     };
                     command.Parameters.Add(totalDiscParameter);
 
+                    var totalBaseDiscParameter = new SqlParameter("@iTotalBaseDisc", SqlDbType.NVarChar)
+                    {
+                        Size = -1,
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalBaseDiscParameter);
+
+                    var totalBaseAmtParameter = new SqlParameter("@iTotalBaseAmt", SqlDbType.NVarChar)
+                    {
+                        Size = -1,
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalBaseAmtParameter);
+
+                    var totalOfferDiscParameter = new SqlParameter("@iTotalOfferDisc", SqlDbType.NVarChar)
+                    {
+                        Size = -1,
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalOfferDiscParameter);
+
+                    var totalOfferAmtParameter = new SqlParameter("@iTotalOfferAmt", SqlDbType.NVarChar)
+                    {
+                        Size = -1,
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalOfferAmtParameter);
+
+                    var totalMaxSlabDiscParameter = new SqlParameter("@iTotalMaxSlabDisc", SqlDbType.NVarChar)
+                    {
+                        Size = -1,
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalMaxSlabDiscParameter);
+
+                    var totalMaxSlabAmtParameter = new SqlParameter("@iTotalMaxSlabAmt", SqlDbType.NVarChar)
+                    {
+                        Size = -1,
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalMaxSlabAmtParameter);
+
                     command.CommandTimeout = 1800;
                     await connection.OpenAsync();
 
@@ -1827,9 +1929,15 @@ namespace astute.Repository
                     totalCtsr = Convert.ToString(totalCtsParameter.Value);
                     totalAmtr = Convert.ToString(totalAmtParameter.Value);
                     totalDiscr = Convert.ToString(totalDiscParameter.Value);
+                    totalBaseDiscr = Convert.ToString(totalBaseDiscParameter.Value);
+                    totalBaseAmtr = Convert.ToString(totalBaseAmtParameter.Value);
+                    totalOfferDiscr = Convert.ToString(totalOfferDiscParameter.Value);
+                    totalOfferAmtr = Convert.ToString(totalOfferAmtParameter.Value);
+                    totalMaxSlabDiscr = Convert.ToString(totalMaxSlabDiscParameter.Value);
+                    totalMaxSlabAmtr = Convert.ToString(totalMaxSlabAmtParameter.Value);
                 }
             }
-            return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr);
+            return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseDiscr, totalBaseAmtr, totalOfferDiscr, totalOfferAmtr, totalMaxSlabDiscr, totalMaxSlabAmtr);
         }
         public async Task<(List<Dictionary<string, object>>, string, string,string,string)> Get_Stock_Avalibility_Report_Search(DataTable dataTable,string stock_Id, string stock_Type, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
         {

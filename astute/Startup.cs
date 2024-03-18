@@ -123,13 +123,6 @@ namespace astute
             app.UseAuthentication();
             app.UseRouting();   
             app.UseAuthorization();
-            app.UseCors(builder =>
-            {
-                builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader();
-            });
             app.UseCors("corsapp");
             app.UseStaticFiles();
             app.UseMiddleware<JwtMiddleware>();
