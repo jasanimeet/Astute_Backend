@@ -845,7 +845,7 @@ namespace astute.Repository
                             .ToListAsync());
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Party_Search_Select(string common_Search)
+        public async Task<List<Dictionary<string, object>>> Get_Party_Search_Select(string common_Search, int user_Id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -854,6 +854,7 @@ namespace astute.Repository
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(!string.IsNullOrEmpty(common_Search) ? new SqlParameter("@Common_Search", common_Search) : new SqlParameter("@Common_Search", DBNull.Value));
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
