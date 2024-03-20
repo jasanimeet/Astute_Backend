@@ -4949,6 +4949,14 @@ namespace astute.Controllers
                         }
                     }
                 }
+                else if(stock_Avalibility_Values != null && stock_Avalibility_Values.Count > 0)
+                {
+                    stock_Avalibility.stock_Id = null;
+                    foreach (var item in stock_Avalibility_Values)
+                    {
+                        dataTable.Rows.Add(!string.IsNullOrEmpty(item.Stock_Id) ? item.Stock_Id : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Amount) ? item.Offer_Amount : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Disc) ? item.Offer_Disc : DBNull.Value);
+                    }
+                }
 
                 var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Stock_Avalibility_Report_Search(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.iPgNo ?? 0, stock_Avalibility.iPgSize ?? 0, stock_Avalibility.iSort);
                 if (result != null && result.Count > 0)
