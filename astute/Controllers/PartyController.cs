@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NPOI.HSSF.UserModel;
+using NPOI.POIFS.Crypt.Dsig;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
 using System;
@@ -425,7 +426,7 @@ namespace astute.Controllers
                         item.FANCY_COLOR != null ? Convert.ToString(item.FANCY_COLOR) : DBNull.Value,
                         item.FANCY_INTENSITY != null ? Convert.ToString(item.FANCY_INTENSITY) : DBNull.Value,
                         item.FANCY_OVERTONE != null ? Convert.ToString(item.FANCY_OVERTONE) : DBNull.Value,
-                        item.IMAGE_LINK != null ? Convert.ToString(item.IMAGE_LINK).Length >= 20 ? Convert.ToString(item.IMAGE_LINK).Contains(",")? Convert.ToString(item.IMAGE_LINK).Split(",")[0] : Convert.ToString(item.IMAGE_LINK) : DBNull.Value : DBNull.Value,
+                        item.IMAGE_LINK != null ? Convert.ToString(item.IMAGE_LINK).Length >= 20 ? Convert.ToString(item.IMAGE_LINK).Contains(",") ? Convert.ToString(item.IMAGE_LINK).Split(",")[0] : Convert.ToString(item.IMAGE_LINK) : DBNull.Value : DBNull.Value,
                         item.Image2 != null ? Convert.ToString(item.Image2) : DBNull.Value,
                         item.VIDEO_LINK != null ? Convert.ToString(item.VIDEO_LINK).Length >= 20 ? Convert.ToString(item.VIDEO_LINK) : DBNull.Value : DBNull.Value,
                         item.Video2 != null ? Convert.ToString(item.Video2) : DBNull.Value,
@@ -684,6 +685,7 @@ namespace astute.Controllers
 
             return dataTable;
         }
+
         #endregion
 
         #region Methods
@@ -4344,7 +4346,6 @@ namespace astute.Controllers
                 {
                     foreach (var item in report_Lab_Filter.Report_Filter_Parameter_List)
                     {
-
                         STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
                         SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER").Select(x => x.Category_Value).FirstOrDefault();
                         CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x => x.Category_Value).FirstOrDefault();
@@ -4489,13 +4490,354 @@ namespace astute.Controllers
                         total_Cts = totalCtsr,
                         total_Amt = totalAmtr,
                         total_Disc = totalDiscr,
-                        total_Base_Disc =totalBaseDisc,
+                        total_Base_Disc = totalBaseDisc,
                         total_Base_Amt = totalBaseAmt,
                         total_Offer_Disc = totalOfferDisc,
                         total_Offer_Amt = totalOfferAmt,
                         total_MaxSlab_Disc = totalMaxSlabDisc,
                         total_MaxSlab_Amt = totalMaxSlabAmt,
                         data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Lab_Report_Search", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPost]
+        [Route("get_lab_distinct_report_search")]
+        [Authorize]
+        public async Task<IActionResult> Get_Lab_Distinct_Report_Search(Report_Lab_Filter report_Lab_Filter)
+        {
+            try
+            {
+                string STOCK_ID = string.Empty, SUPPLIER = string.Empty, CUSTOMER = string.Empty, SHAPE = string.Empty,
+                           CTS = string.Empty, COLOR = string.Empty, CLARITY = string.Empty, CUT = string.Empty,
+                           POLISH = string.Empty, SYMM = string.Empty, FLS_INTENSITY = string.Empty, BGM = string.Empty,
+                           LAB = string.Empty, GOOD_TYPE = string.Empty, LOCATION = string.Empty, STATUS = string.Empty,
+                           IMAGE_LINK = string.Empty, VIDEO_LINK = string.Empty, LENGTH = string.Empty, WIDTH = string.Empty,
+                           DEPTH = string.Empty, TABLE_PER = string.Empty, DEPTH_PER = string.Empty, CROWN_ANGLE = string.Empty,
+                           CROWN_HEIGHT = string.Empty, PAVILION_ANGLE = string.Empty, PAVILION_HEIGHT = string.Empty, GIRDLE_PER = string.Empty,
+                           OFFER_DISC = string.Empty, OFFER_VALUE = string.Empty, PRICE_PER_CTS = string.Empty, MAX_SLAB_BASE_DISC = string.Empty, MAX_SLAB_BASE_AMOUNT = string.Empty, MAX_SLAB_PRICE_PER_CTS = string.Empty, TABLE_BLACK = string.Empty,
+                           TABLE_WHITE = string.Empty, SIDE_BLACK = string.Empty, SIDE_WHITE = string.Empty,
+                           TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
+                           GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
+                           KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
+                           FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty,
+                           STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty, SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE = string.Empty;
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("STOCK_ID", typeof(string));
+                dataTable.Columns.Add("SUPPLIER", typeof(string));
+                dataTable.Columns.Add("CUSTOMER", typeof(string));
+                dataTable.Columns.Add("SHAPE", typeof(string));
+                dataTable.Columns.Add("CTS", typeof(string));
+                dataTable.Columns.Add("COLOR", typeof(string));
+                dataTable.Columns.Add("CLARITY", typeof(string));
+                dataTable.Columns.Add("CUT", typeof(string));
+                dataTable.Columns.Add("POLISH", typeof(string));
+                dataTable.Columns.Add("SYMM", typeof(string));
+                dataTable.Columns.Add("FLS_INTENSITY", typeof(string));
+                dataTable.Columns.Add("BGM", typeof(string));
+                dataTable.Columns.Add("LAB", typeof(string));
+                dataTable.Columns.Add("GOOD_TYPE", typeof(string));
+                dataTable.Columns.Add("LOCATION", typeof(string));
+                dataTable.Columns.Add("STATUS", typeof(string));
+                dataTable.Columns.Add("IMAGE_LINK", typeof(string));
+                dataTable.Columns.Add("VIDEO_LINK", typeof(string));
+                dataTable.Columns.Add("LENGTH", typeof(string));
+                dataTable.Columns.Add("WIDTH", typeof(string));
+                dataTable.Columns.Add("DEPTH", typeof(string));
+                dataTable.Columns.Add("TABLE_PER", typeof(string));
+                dataTable.Columns.Add("DEPTH_PER", typeof(string));
+                dataTable.Columns.Add("CROWN_ANGLE", typeof(string));
+                dataTable.Columns.Add("CROWN_HEIGHT", typeof(string));
+                dataTable.Columns.Add("PAVILION_ANGLE", typeof(string));
+                dataTable.Columns.Add("PAVILION_HEIGHT", typeof(string));
+                dataTable.Columns.Add("GIRDLE_PER", typeof(string));
+                dataTable.Columns.Add("OFFER_DISC", typeof(string));
+                dataTable.Columns.Add("OFFER_AMOUNT", typeof(string));
+                dataTable.Columns.Add("PRICE_PER_CTS", typeof(string));
+                dataTable.Columns.Add("MAX_SLAB_BASE_DISC", typeof(string));
+                dataTable.Columns.Add("MAX_SLAB_BASE_AMOUNT", typeof(string));
+                dataTable.Columns.Add("MAX_SLAB_PRICE_PER_CTS", typeof(string));
+                dataTable.Columns.Add("TABLE_BLACK", typeof(string));
+                dataTable.Columns.Add("TABLE_WHITE", typeof(string));
+                dataTable.Columns.Add("SIDE_BLACK", typeof(string));
+                dataTable.Columns.Add("SIDE_WHITE", typeof(string));
+                dataTable.Columns.Add("TABLE_OPEN", typeof(string));
+                dataTable.Columns.Add("CROWN_OPEN", typeof(string));
+                dataTable.Columns.Add("PAVILION_OPEN", typeof(string));
+                dataTable.Columns.Add("GIRDLE_OPEN", typeof(string));
+                dataTable.Columns.Add("CULET", typeof(string));
+                dataTable.Columns.Add("KEY_TO_SYMBOL_TRUE", typeof(string));
+                dataTable.Columns.Add("KEY_TO_SYMBOL_FALSE", typeof(string));
+                dataTable.Columns.Add("LAB_COMMENTS_TRUE", typeof(string));
+                dataTable.Columns.Add("LAB_COMMENTS_FALSE", typeof(string));
+                dataTable.Columns.Add("FANCY_COLOR", typeof(string));
+                dataTable.Columns.Add("FANCY_INTENSITY", typeof(string));
+                dataTable.Columns.Add("FANCY_OVERTONE", typeof(string));
+                dataTable.Columns.Add("POINTER", typeof(string));
+                dataTable.Columns.Add("STAR_LN", typeof(string));
+                dataTable.Columns.Add("LR_HALF", typeof(string));
+                dataTable.Columns.Add("CERT_TYPE", typeof(string));
+                dataTable.Columns.Add("COST_RATE", typeof(string));
+                dataTable.Columns.Add("RATIO", typeof(string));
+                dataTable.Columns.Add("DISCOUNT_TYPE", typeof(string));
+                dataTable.Columns.Add("SIGN", typeof(string));
+                dataTable.Columns.Add("DISC_VALUE", typeof(string));
+                dataTable.Columns.Add("BASE TYPE", typeof(string));
+
+                if (report_Lab_Filter.Report_Filter_Parameter_List != null && report_Lab_Filter.Report_Filter_Parameter_List.Count > 0)
+                {
+                    foreach (var item in report_Lab_Filter.Report_Filter_Parameter_List)
+                    {
+
+                        STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
+                        SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER").Select(x => x.Category_Value).FirstOrDefault();
+                        CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x => x.Category_Value).FirstOrDefault();
+                        SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x => x.Category_Value).FirstOrDefault();
+                        CTS = item.Where(x => x.Column_Name == "CTS").Select(x => x.Category_Value).FirstOrDefault();
+                        COLOR = item.Where(x => x.Column_Name == "COLOR").Select(x => x.Category_Value).FirstOrDefault();
+                        CLARITY = item.Where(x => x.Column_Name == "CLARITY").Select(x => x.Category_Value).FirstOrDefault();
+                        CUT = item.Where(x => x.Column_Name == "CUT").Select(x => x.Category_Value).FirstOrDefault();
+                        POLISH = item.Where(x => x.Column_Name == "POLISH").Select(x => x.Category_Value).FirstOrDefault();
+                        SYMM = item.Where(x => x.Column_Name == "SYMM").Select(x => x.Category_Value).FirstOrDefault();
+                        FLS_INTENSITY = item.Where(x => x.Column_Name == "FLS INTENSITY").Select(x => x.Category_Value).FirstOrDefault();
+                        BGM = item.Where(x => x.Column_Name == "BGM").Select(x => x.Category_Value).FirstOrDefault();
+                        LAB = item.Where(x => x.Column_Name == "LAB").Select(x => x.Category_Value).FirstOrDefault();
+                        GOOD_TYPE = item.Where(x => x.Column_Name == "GOOD TYPE").Select(x => x.Category_Value).FirstOrDefault();
+                        LOCATION = item.Where(x => x.Column_Name == "LOCATION").Select(x => x.Category_Value).FirstOrDefault();
+                        STATUS = item.Where(x => x.Column_Name == "STATUS").Select(x => x.Category_Value).FirstOrDefault();
+                        IMAGE_LINK = item.Where(x => x.Column_Name == "IMAGE LINK").Select(x => x.Category_Value).FirstOrDefault();
+                        VIDEO_LINK = item.Where(x => x.Column_Name == "VIDEO LINK").Select(x => x.Category_Value).FirstOrDefault();
+                        LENGTH = item.Where(x => x.Column_Name == "LENGTH").Select(x => x.Category_Value).FirstOrDefault();
+                        WIDTH = item.Where(x => x.Column_Name == "WIDTH").Select(x => x.Category_Value).FirstOrDefault();
+                        DEPTH = item.Where(x => x.Column_Name == "DEPTH").Select(x => x.Category_Value).FirstOrDefault();
+                        TABLE_PER = item.Where(x => x.Column_Name == "TABLE PER").Select(x => x.Category_Value).FirstOrDefault();
+                        DEPTH_PER = item.Where(x => x.Column_Name == "DEPTH PER").Select(x => x.Category_Value).FirstOrDefault();
+                        CROWN_ANGLE = item.Where(x => x.Column_Name == "CROWN ANGLE").Select(x => x.Category_Value).FirstOrDefault();
+                        CROWN_HEIGHT = item.Where(x => x.Column_Name == "CROWN HEIGHT").Select(x => x.Category_Value).FirstOrDefault();
+                        PAVILION_ANGLE = item.Where(x => x.Column_Name == "PAVILION ANGLE").Select(x => x.Category_Value).FirstOrDefault();
+                        PAVILION_HEIGHT = item.Where(x => x.Column_Name == "PAVILION HEIGHT").Select(x => x.Category_Value).FirstOrDefault();
+                        GIRDLE_PER = item.Where(x => x.Column_Name == "GIRDLE PER").Select(x => x.Category_Value).FirstOrDefault();
+                        OFFER_DISC = item.Where(x => x.Column_Name == "OFFER DISC").Select(x => x.Category_Value).FirstOrDefault();
+                        OFFER_VALUE = item.Where(x => x.Column_Name == "OFFER VALUE").Select(x => x.Category_Value).FirstOrDefault();
+                        PRICE_PER_CTS = item.Where(x => x.Column_Name == "PRICE PER CTS").Select(x => x.Category_Value).FirstOrDefault();
+                        MAX_SLAB_BASE_DISC = item.Where(x => x.Column_Name == "MAX SLAB BASE DISC").Select(x => x.Category_Value).FirstOrDefault();
+                        MAX_SLAB_BASE_AMOUNT = item.Where(x => x.Column_Name == "MAX SLAB BASE AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                        MAX_SLAB_PRICE_PER_CTS = item.Where(x => x.Column_Name == "MAX SLAB PRICE PER CTS").Select(x => x.Category_Value).FirstOrDefault();
+                        OFFER_VALUE = item.Where(x => x.Column_Name == "OFFER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                        TABLE_BLACK = item.Where(x => x.Column_Name == "TABLE BLACK").Select(x => x.Category_Value).FirstOrDefault();
+                        TABLE_WHITE = item.Where(x => x.Column_Name == "TABLE WHITE").Select(x => x.Category_Value).FirstOrDefault();
+                        SIDE_BLACK = item.Where(x => x.Column_Name == "SIDE BLACK").Select(x => x.Category_Value).FirstOrDefault();
+                        SIDE_WHITE = item.Where(x => x.Column_Name == "SIDE WHITE").Select(x => x.Category_Value).FirstOrDefault();
+                        TABLE_OPEN = item.Where(x => x.Column_Name == "TABLE OPEN").Select(x => x.Category_Value).FirstOrDefault();
+                        CROWN_OPEN = item.Where(x => x.Column_Name == "CROWN OPEN").Select(x => x.Category_Value).FirstOrDefault();
+                        PAVILION_OPEN = item.Where(x => x.Column_Name == "PAVILION OPEN").Select(x => x.Category_Value).FirstOrDefault();
+                        GIRDLE_OPEN = item.Where(x => x.Column_Name == "GIRDLE OPEN").Select(x => x.Category_Value).FirstOrDefault();
+                        CULET = item.Where(x => x.Column_Name == "CULET").Select(x => x.Category_Value).FirstOrDefault();
+                        KEY_TO_SYMBOL_TRUE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x => x.KEY_TO_SYMBOL_TRUE).FirstOrDefault();
+                        KEY_TO_SYMBOL_FALSE = item.Where(x => x.Column_Name == "KEY TO SYMBOL").Select(x => x.KEY_TO_SYMBOL_FALSE).FirstOrDefault();
+                        LAB_COMMENTS_TRUE = item.Where(x => x.Column_Name == "LAB COMMENTS").Select(x => x.LAB_COMMENTS_TRUE).FirstOrDefault();
+                        LAB_COMMENTS_FALSE = item.Where(x => x.Column_Name == "LAB COMMENTS").Select(x => x.LAB_COMMENTS_FALSE).FirstOrDefault();
+                        FANCY_COLOR = item.Where(x => x.Column_Name == "FANCY COLOR").Select(x => x.Category_Value).FirstOrDefault();
+                        FANCY_INTENSITY = item.Where(x => x.Column_Name == "FANCY INTENSITY").Select(x => x.Category_Value).FirstOrDefault();
+                        FANCY_OVERTONE = item.Where(x => x.Column_Name == "FANCY OVERTONE").Select(x => x.Category_Value).FirstOrDefault();
+                        POINTER = item.Where(x => x.Column_Name == "POINTER").Select(x => x.Category_Value).FirstOrDefault();
+                        STAR_LN = item.Where(x => x.Column_Name == "STAR LN").Select(x => x.Category_Value).FirstOrDefault();
+                        LR_HALF = item.Where(x => x.Column_Name == "LR HALF").Select(x => x.Category_Value).FirstOrDefault();
+                        CERT_TYPE = item.Where(x => x.Column_Name == "CERT TYPE").Select(x => x.Category_Value).FirstOrDefault();
+                        COST_RATE = item.Where(x => x.Column_Name == "COST RATE").Select(x => x.Category_Value).FirstOrDefault();
+                        RATIO = item.Where(x => x.Column_Name == "RATIO").Select(x => x.Category_Value).FirstOrDefault();
+                        DISCOUNT_TYPE = item.Where(x => x.Column_Name == "DISCOUNT TYPE").Select(x => x.Category_Value).FirstOrDefault();
+                        SIGN = item.Where(x => x.Column_Name == "SIGN").Select(x => x.Category_Value).FirstOrDefault();
+                        DISC_VALUE = item.Where(x => x.Column_Name == "DISC VALUE").Select(x => x.Category_Value).FirstOrDefault();
+                        BASE_TYPE = item.Where(x => x.Column_Name == "BASE TYPE").Select(x => x.Category_Value).FirstOrDefault();
+
+                        dataTable.Rows.Add(!string.IsNullOrEmpty(STOCK_ID) ? STOCK_ID : DBNull.Value,
+                            !string.IsNullOrEmpty(SUPPLIER) ? SUPPLIER : DBNull.Value,
+                            !string.IsNullOrEmpty(CUSTOMER) ? CUSTOMER : DBNull.Value,
+                            !string.IsNullOrEmpty(SHAPE) ? SHAPE : DBNull.Value,
+                            !string.IsNullOrEmpty(CTS) ? CTS : DBNull.Value,
+                            !string.IsNullOrEmpty(COLOR) ? COLOR : DBNull.Value,
+                            !string.IsNullOrEmpty(CLARITY) ? CLARITY : DBNull.Value,
+                            !string.IsNullOrEmpty(CUT) ? CUT : DBNull.Value,
+                            !string.IsNullOrEmpty(POLISH) ? POLISH : DBNull.Value,
+                            !string.IsNullOrEmpty(SYMM) ? SYMM : DBNull.Value,
+                            !string.IsNullOrEmpty(FLS_INTENSITY) ? FLS_INTENSITY : DBNull.Value,
+                            !string.IsNullOrEmpty(BGM) ? BGM : DBNull.Value,
+                            !string.IsNullOrEmpty(LAB) ? LAB : DBNull.Value,
+                            !string.IsNullOrEmpty(GOOD_TYPE) ? GOOD_TYPE : DBNull.Value,
+                            !string.IsNullOrEmpty(LOCATION) ? LOCATION : DBNull.Value,
+                            !string.IsNullOrEmpty(STATUS) ? STATUS : DBNull.Value,
+                            !string.IsNullOrEmpty(IMAGE_LINK) ? IMAGE_LINK : DBNull.Value,
+                            !string.IsNullOrEmpty(VIDEO_LINK) ? VIDEO_LINK : DBNull.Value,
+                            !string.IsNullOrEmpty(LENGTH) ? LENGTH : DBNull.Value,
+                            !string.IsNullOrEmpty(WIDTH) ? WIDTH : DBNull.Value,
+                            !string.IsNullOrEmpty(DEPTH) ? DEPTH : DBNull.Value,
+                            !string.IsNullOrEmpty(TABLE_PER) ? TABLE_PER : DBNull.Value,
+                            !string.IsNullOrEmpty(DEPTH_PER) ? DEPTH_PER : DBNull.Value,
+                            !string.IsNullOrEmpty(CROWN_ANGLE) ? CROWN_ANGLE : DBNull.Value,
+                            !string.IsNullOrEmpty(CROWN_HEIGHT) ? CROWN_HEIGHT : DBNull.Value,
+                            !string.IsNullOrEmpty(PAVILION_ANGLE) ? PAVILION_ANGLE : DBNull.Value,
+                            !string.IsNullOrEmpty(PAVILION_HEIGHT) ? PAVILION_HEIGHT : DBNull.Value,
+                            !string.IsNullOrEmpty(GIRDLE_PER) ? GIRDLE_PER : DBNull.Value,
+                            !string.IsNullOrEmpty(OFFER_DISC) ? OFFER_DISC : DBNull.Value,
+                            !string.IsNullOrEmpty(OFFER_VALUE) ? OFFER_VALUE : DBNull.Value,
+                            !string.IsNullOrEmpty(PRICE_PER_CTS) ? PRICE_PER_CTS : DBNull.Value,
+                            !string.IsNullOrEmpty(MAX_SLAB_BASE_DISC) ? MAX_SLAB_BASE_DISC : DBNull.Value,
+                            !string.IsNullOrEmpty(MAX_SLAB_BASE_AMOUNT) ? MAX_SLAB_BASE_AMOUNT : DBNull.Value,
+                            !string.IsNullOrEmpty(MAX_SLAB_PRICE_PER_CTS) ? MAX_SLAB_PRICE_PER_CTS : DBNull.Value,
+                            !string.IsNullOrEmpty(TABLE_BLACK) ? TABLE_BLACK : DBNull.Value,
+                            !string.IsNullOrEmpty(TABLE_WHITE) ? TABLE_WHITE : DBNull.Value,
+                            !string.IsNullOrEmpty(SIDE_BLACK) ? SIDE_BLACK : DBNull.Value,
+                            !string.IsNullOrEmpty(SIDE_WHITE) ? SIDE_WHITE : DBNull.Value,
+                            !string.IsNullOrEmpty(TABLE_OPEN) ? TABLE_OPEN : DBNull.Value,
+                            !string.IsNullOrEmpty(CROWN_OPEN) ? CROWN_OPEN : DBNull.Value,
+                            !string.IsNullOrEmpty(PAVILION_OPEN) ? PAVILION_OPEN : DBNull.Value,
+                            !string.IsNullOrEmpty(GIRDLE_OPEN) ? GIRDLE_OPEN : DBNull.Value,
+                            !string.IsNullOrEmpty(CULET) ? CULET : DBNull.Value,
+                            !string.IsNullOrEmpty(KEY_TO_SYMBOL_TRUE) ? KEY_TO_SYMBOL_TRUE : DBNull.Value,
+                            !string.IsNullOrEmpty(KEY_TO_SYMBOL_FALSE) ? KEY_TO_SYMBOL_FALSE : DBNull.Value,
+                            !string.IsNullOrEmpty(LAB_COMMENTS_TRUE) ? LAB_COMMENTS_TRUE : DBNull.Value,
+                            !string.IsNullOrEmpty(LAB_COMMENTS_FALSE) ? LAB_COMMENTS_FALSE : DBNull.Value,
+                            !string.IsNullOrEmpty(FANCY_COLOR) ? FANCY_COLOR : DBNull.Value,
+                            !string.IsNullOrEmpty(FANCY_INTENSITY) ? FANCY_INTENSITY : DBNull.Value,
+                            !string.IsNullOrEmpty(FANCY_OVERTONE) ? FANCY_OVERTONE : DBNull.Value,
+                            !string.IsNullOrEmpty(POINTER) ? POINTER : DBNull.Value,
+                            !string.IsNullOrEmpty(STAR_LN) ? STAR_LN : DBNull.Value,
+                            !string.IsNullOrEmpty(LR_HALF) ? LR_HALF : DBNull.Value,
+                            !string.IsNullOrEmpty(CERT_TYPE) ? CERT_TYPE : DBNull.Value,
+                            !string.IsNullOrEmpty(COST_RATE) ? COST_RATE : DBNull.Value,
+                            !string.IsNullOrEmpty(RATIO) ? RATIO : DBNull.Value,
+                            !string.IsNullOrEmpty(DISCOUNT_TYPE) ? DISCOUNT_TYPE : DBNull.Value,
+                            !string.IsNullOrEmpty(SIGN) ? SIGN : DBNull.Value,
+                            !string.IsNullOrEmpty(DISC_VALUE) ? DISC_VALUE : DBNull.Value,
+                            !string.IsNullOrEmpty(BASE_TYPE) ? BASE_TYPE : DBNull.Value);
+                    }
+                }
+                else
+                {
+                    DataRow newRow = dataTable.NewRow();
+                    for (int i = 0; i < dataTable.Columns.Count; i++)
+                    {
+                        newRow[i] = DBNull.Value;
+                    }
+                    dataTable.Rows.Add(newRow);
+                }
+                var result = await _supplierService.Get_Lab_Search_Distinct_Report_Search(dataTable);
+                if (result != null)
+                {
+                    List<Report_Column_Distinct> Report_Distinct_Data = new List<Report_Column_Distinct>();
+                    List<Report_Category_Value> Column_Values = new List<Report_Category_Value>();
+
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "STOCK ID", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("STOCK ID") && x.ContainsKey("STOCK ID")).Select(x => new { Category_Name = x["STOCK ID"].ToString(), Category_Value = x["STOCK ID"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "IMAGE LINK", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "VIDEO LINK", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "LAB", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("LAB") && x.ContainsKey("LAB_Id")).Select(x => new { Category_Name = x["LAB"].ToString(), Category_Value = x["LAB_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SUPPLIER NO", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("SUPPLIER NO")).Select(x => new { Category_Name = x["SUPPLIER NO"].ToString(), Category_Value = x["SUPPLIER NO"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "CERTIFICATE NO", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("CERTIFICATE NO")).Select(x => new { Category_Name = x["CERTIFICATE NO"].ToString(), Category_Value = x["CERTIFICATE NO"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "COMPANY", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("COMPANY")).Select(x => new { Category_Name = x["COMPANY"].ToString(), Category_Value = x["COMPANY"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SHAPE", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("SHAPE") && x.ContainsKey("SHAPE_Id")).Select(x => new { Category_Name = x["SHAPE"].ToString(), Category_Value = x["SHAPE_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "POINTER", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("POINTER") && x.ContainsKey("POINTER_Id")).Select(x => new { Category_Name = x["POINTER"].ToString(), Category_Value = x["POINTER_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BGM", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("BGM") && x.ContainsKey("BGM_Id")).Select(x => new { Category_Name = x["BGM"].ToString(), Category_Value = x["BGM_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "COLOR", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("COLOR") && x.ContainsKey("COLOR_Id")).Select(x => new { Category_Name = x["COLOR"].ToString(), Category_Value = x["COLOR_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "CLARITY", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("CLARITY") && x.ContainsKey("CLARITY_Id")).Select(x => new { Category_Name = x["CLARITY"].ToString(), Category_Value = x["CLARITY_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "CTS", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "RAP RATE", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "RAP AMOUNT", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "COST DISC", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "COST AMOUNT", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "OFFER DISC", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "OFFER AMOUNT", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BASE DISC", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BASE AMOUNT", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "PRICE PER CTS", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "MAX SLAB BASE DISC", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "MAX SLAB BASE AMOUNT", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "CUT", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("CUT") && x.ContainsKey("CUT_Id")).Select(x => new { Category_Name = x["CUT"].ToString(), Category_Value = x["CUT_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "POLISH", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("POLISH") && x.ContainsKey("POLISH_Id")).Select(x => new { Category_Name = x["POLISH"].ToString(), Category_Value = x["POLISH_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SYMM", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("SYMM") && x.ContainsKey("SYMM_Id")).Select(x => new { Category_Name = x["SYMM"].ToString(), Category_Value = x["SYMM_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "FLS INTENSITY", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("FLS INTENSITY") && x.ContainsKey("FLS_INTENSITY_Id")).Select(x => new { Category_Name = x["FLS INTENSITY"].ToString(), Category_Value = x["FLS_INTENSITY_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "RATIO", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "LENGTH", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "WIDTH", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "DEPTH", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "DEPTH PER", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "TABLE PER", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "KEY TO SYMBOL", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "COMMENT", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "GIRDLE PER", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "CROWN ANGLE", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "CROWN HEIGHT", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "PAVILION ANGLE", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "PAVILION HEIGHT", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "TABLE BLACK", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("TABLE BLACK") && x.ContainsKey("TABLE_BLACK_Id")).Select(x => new { Category_Name = x["TABLE BLACK"].ToString(), Category_Value = x["TABLE_BLACK_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "CROWN BLACK", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("CROWN BLACK") && x.ContainsKey("CROWN_BLACK_Id")).Select(x => new { Category_Name = x["CROWN BLACK"].ToString(), Category_Value = x["CROWN_BLACK_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "TABLE WHITE", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("TABLE WHITE") && x.ContainsKey("TABLE_WHITE_Id")).Select(x => new { Category_Name = x["TABLE WHITE"].ToString(), Category_Value = x["TABLE_WHITE_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "CROWN WHITE", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("CROWN WHITE") && x.ContainsKey("CROWN_WHITE_Id")).Select(x => new { Category_Name = x["CROWN WHITE"].ToString(), Category_Value = x["CROWN_WHITE_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "CULET", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("CULET") && x.ContainsKey("CULET_Id")).Select(x => new { Category_Name = x["CULET"].ToString(), Category_Value = x["CULET_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "TABLE OPEN", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("TABLE OPEN") && x.ContainsKey("TABLE_OPEN_Id")).Select(x => new { Category_Name = x["TABLE OPEN"].ToString(), Category_Value = x["TABLE_OPEN_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "CROWN OPEN", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("CROWN OPEN") && x.ContainsKey("CROWN_OPEN_Id")).Select(x => new { Category_Name = x["CROWN OPEN"].ToString(), Category_Value = x["CROWN_OPEN_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "PAV OPEN", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("PAV OPEN") && x.ContainsKey("PAV_OPEN_Id")).Select(x => new { Category_Name = x["PAV OPEN"].ToString(), Category_Value = x["PAV_OPEN_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "GIRDLE OPEN", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("GIRDLE OPEN") && x.ContainsKey("GIRDLE_OPEN_Id")).Select(x => new { Category_Name = x["GIRDLE OPEN"].ToString(), Category_Value = x["GIRDLE_OPEN_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "LUSTER", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("LUSTER") && x.ContainsKey("LUSTER_Id")).Select(x => new { Category_Name = x["LUSTER"].ToString(), Category_Value = x["LUSTER_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SHADE", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("SHADE") && x.ContainsKey("SHADE_Id")).Select(x => new { Category_Name = x["SHADE"].ToString(), Category_Value = x["SHADE_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "MILKY", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("MILKY") && x.ContainsKey("MILKY_Id")).Select(x => new { Category_Name = x["MILKY"].ToString(), Category_Value = x["MILKY_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "LOCATION", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("LOCATION") && x.ContainsKey("LOCATION_Id")).Select(x => new { Category_Name = x["LOCATION"].ToString(), Category_Value = x["LOCATION_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "GIRDLE FROM", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("GIRDLE FROM") && x.ContainsKey("GIRDLE_FROM_Id")).Select(x => new { Category_Name = x["GIRDLE FROM"].ToString(), Category_Value = x["GIRDLE_FROM_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "GIRDLE TO", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("GIRDLE TO") && x.ContainsKey("GIRDLE_TO_Id")).Select(x => new { Category_Name = x["GIRDLE TO"].ToString(), Category_Value = x["GIRDLE_TO_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "GIRDLE CONDITION", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("GIRDLE CONDITION") && x.ContainsKey("GIRDLE_CONDITION_Id")).Select(x => new { Category_Name = x["GIRDLE CONDITION"].ToString(), Category_Value = x["GIRDLE_CONDITION_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "GIRDLE TYPE", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("GIRDLE TYPE") && x.ContainsKey("GIRDLE_TYPE_Id")).Select(x => new { Category_Name = x["GIRDLE TYPE"].ToString(), Category_Value = x["GIRDLE_TYPE_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "FANCY COLOR", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("FANCY COLOR") && x.ContainsKey("FANCY_COLOR_Id")).Select(x => new { Category_Name = x["FANCY COLOR"].ToString(), Category_Value = x["FANCY_COLOR_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "FANCY INTENSITY", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("FANCY INTENSITY") && x.ContainsKey("FANCY_INTENSITY_Id")).Select(x => new { Category_Name = x["FANCY INTENSITY"].ToString(), Category_Value = x["FANCY_INTENSITY_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "FANCY OVERSTON", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("FANCY OVERSTON") && x.ContainsKey("FANCY_OVERSTON_Id")).Select(x => new { Category_Name = x["FANCY OVERSTON"].ToString(), Category_Value = x["FANCY_OVERSTON_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "ORIGIN", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("ORIGIN") && x.ContainsKey("ORIGIN_Id")).Select(x => new { Category_Name = x["ORIGIN"].ToString(), Category_Value = x["ORIGIN_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "EXTRA FACET TABLE", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("EXTRA FACET TABLE") && x.ContainsKey("EXTRA_FACET_TABLE_Id")).Select(x => new { Category_Name = x["EXTRA FACET TABLE"].ToString(), Category_Value = x["EXTRA_FACET_TABLE_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "EXTRA FACET CROWN", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("EXTRA FACET CROWN") && x.ContainsKey("EXTRA_FACET_CROWN_Id")).Select(x => new { Category_Name = x["EXTRA FACET CROWN"].ToString(), Category_Value = x["EXTRA_FACET_CROWN_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "EXTRA FACET PAVILION", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("EXTRA FACET PAVILION") && x.ContainsKey("EXTRA_FACET_PAV_Id")).Select(x => new { Category_Name = x["EXTRA FACET PAVILION"].ToString(), Category_Value = x["EXTRA_FACET_PAV_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "INTERNAL GRAINING", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("INTERNAL GRAINING") && x.ContainsKey("INTERNAL_GRAINING_Id")).Select(x => new { Category_Name = x["INTERNAL GRAINING"].ToString(), Category_Value = x["INTERNAL_GRAINING_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "H_A", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("H_A") && x.ContainsKey("H_A_Id")).Select(x => new { Category_Name = x["H_A"].ToString(), Category_Value = x["H_A_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "GOOD TYPE", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("GOOD TYPE") && x.ContainsKey("GOOD_TYPE_Id")).Select(x => new { Category_Name = x["GOOD TYPE"].ToString(), Category_Value = x["GOOD_TYPE_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "LR HALF", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "STR LN", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "CERTIFICATE LINK", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "DNA", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "RANK", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SUNRISE STATUS", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "STATUS", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SUB POINTER", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BID", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BUYER", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BUYER DISC", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BUYER AMOUNT", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "STATUS", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("STATUS") && x.ContainsKey("STATUS")).Select(x => new { Category_Name = x["STATUS"].ToString(), Category_Value = x["STATUS"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "AVG STOCK DISC", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "AVG STOCK PCS", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "AVG PURCHASE DISC", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "AVG PURCHASE PCS", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "AVG SALE DISC", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "AVG SALE PCS", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "KTS GRADE", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SUNRISE CLARITY GRADE", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "ZONE", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "PARAMETER GRADE", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "CERT TYPE", Display_Type = "", Column_Value = result.Where(x => x.ContainsKey("CERT TYPE") && x.ContainsKey("CERT_TYPE_Id")).Select(x => new { Category_Name = x["CERT TYPE"].ToString(), Category_Value = x["CERT_TYPE_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "LAB COMMENTS", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SUPPLIER COMMENTS", Display_Type = "", Column_Value = Column_Values });
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = Report_Distinct_Data
                     });
                 }
                 return NoContent();
@@ -5503,12 +5845,12 @@ namespace astute.Controllers
                     dataTable.Columns.Add("Expected_Final_Disc", typeof(double));
                     dataTable.Columns.Add("Expected_Final_Amt", typeof(double));
 
-                    if(app_mang_Result != null && app_mang_Result.Count > 0)
+                    if (app_mang_Result != null && app_mang_Result.Count > 0)
                     {
                         foreach (var item in app_mang_Result)
                         {
                             dataTable.Rows.Add(item.Id, item.Supp_Stock_Id, item.Cart_Id,
-                                (item.Buyer_Disc != null ? !string.IsNullOrEmpty(item.Buyer_Disc.ToString()) ? Convert.ToDouble(item.Buyer_Disc.ToString()) : null : null),
+                            (item.Buyer_Disc != null ? !string.IsNullOrEmpty(item.Buyer_Disc.ToString()) ? Convert.ToDouble(item.Buyer_Disc.ToString()) : null : null),
                             (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null),
                             (item.Expected_Final_Disc != null ? !string.IsNullOrEmpty(item.Expected_Final_Disc.ToString()) ? Convert.ToDouble(item.Expected_Final_Disc.ToString()) : null : null),
                             (item.Expected_Final_Amt != null ? !string.IsNullOrEmpty(item.Expected_Final_Amt.ToString()) ? Convert.ToDouble(item.Expected_Final_Amt.ToString()) : null : null));
@@ -6722,7 +7064,7 @@ namespace astute.Controllers
 
                 DataRow newRow = dataTable.NewRow();
                 for (int i = 0; i < dataTable.Columns.Count; i++)
-                {   
+                {
                     newRow[i] = DBNull.Value;
                 }
                 dataTable.Rows.Add(newRow);
@@ -7269,7 +7611,7 @@ namespace astute.Controllers
                     }
 
                     string filename = "Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                    EpExcelExport.Create_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);                    
+                    EpExcelExport.Create_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
                     excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                     byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
                     using (MemoryStream memoryStream = new MemoryStream(fileBytes))
@@ -7346,7 +7688,7 @@ namespace astute.Controllers
                     else if (cart_Approval_Order_Email_Model.id == 4)
                     {
                         filename = "Order_Processing_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                        EpExcelExport.Create_Order_Processing_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);                        
+                        EpExcelExport.Create_Order_Processing_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
                     }
                     excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                     byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
@@ -7393,11 +7735,11 @@ namespace astute.Controllers
                 if (!string.IsNullOrEmpty(supp_ref_No))
                 {
                     var lst_sup_ref_no = supp_ref_No.Split(",").ToList();
-                    if(lst_sup_ref_no != null && lst_sup_ref_no.Count > 0)
+                    if (lst_sup_ref_no != null && lst_sup_ref_no.Count > 0)
                     {
                         foreach (var obj_ref_no in lst_sup_ref_no)
                         {
-                            if(!string.IsNullOrEmpty(obj_ref_no))
+                            if (!string.IsNullOrEmpty(obj_ref_no))
                             {
                                 var supplier = await _supplierService.Get_Purchase_Order_Supplier(obj_ref_no);
                                 if (supplier != null && !string.IsNullOrEmpty(supplier.Name))

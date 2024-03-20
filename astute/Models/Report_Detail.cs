@@ -74,7 +74,21 @@ namespace astute.Models
     }
 
     public class Report_Filter_Display
-    { 
-      public string Filter { get; set; }
+    {
+        public string Filter { get; set; }
+    }
+
+    public class Report_Column_Distinct
+    {
+        public string Column_Name { get; set; }
+        public string Display_Type { get; set; }
+        public object Column_Value { get; set; }
+
+    }
+
+    public class Report_Category_Value
+    {
+        public string Category_Name { get; set; }
+        public string Category_Value { get; set; }
     }
 }
