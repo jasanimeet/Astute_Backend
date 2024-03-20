@@ -4812,13 +4812,12 @@ namespace astute.Controllers
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "DNA", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "RANK", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SUNRISE STATUS", Display_Type = "", Column_Value = Column_Values });
-                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "STATUS", Display_Type = "", Column_Value = Column_Values });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "STATUS ", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("STATUS") && x.ContainsKey("STATUS_Id")).Select(x => new { Category_Name = x["STATUS"].ToString(), Category_Value = x["STATUS_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SUB POINTER", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BID", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BUYER", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BUYER DISC", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BUYER AMOUNT", Display_Type = "", Column_Value = Column_Values });
-                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "STATUS", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("STATUS") && x.ContainsKey("STATUS")).Select(x => new { Category_Name = x["STATUS"].ToString(), Category_Value = x["STATUS"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "AVG STOCK DISC", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "AVG STOCK PCS", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "AVG PURCHASE DISC", Display_Type = "", Column_Value = Column_Values });
