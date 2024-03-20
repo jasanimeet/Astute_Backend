@@ -4864,23 +4864,23 @@ namespace astute.Controllers
                 //if (stock_Avalibility.stock_Id.Contains(";"))
                 //{
                 //    lst_Stock_Id = stock_Avalibility.stock_Id.Split(',').ToList();
-                //    if(lst_Stock_Id != null && lst_Stock_Id.Count > 0)
+                //    if (lst_Stock_Id != null && lst_Stock_Id.Count > 0)
                 //    {
                 //        foreach (var item in lst_Stock_Id)
                 //        {
                 //            var lst_stock_val = item.Split(';').ToList();
-                //            if(lst_stock_val != null && lst_stock_val.Count > 0)
+                //            if (lst_stock_val != null && lst_stock_val.Count > 0)
                 //            {
-                //                if(lst_stock_val.Count == 2)
+                //                if (lst_stock_val.Count == 2)
                 //                {
                 //                    for (int i = 0; i < lst_stock_val.Count; i++)
                 //                    {
                 //                        var model = new Stock_Avalibility_Values();
                 //                        model.Stock_Id = lst_stock_val[0];
                 //                        var con_val = Convert.ToDecimal(lst_stock_val[1]);
-                //                        if(con_val >= -0 && con_val <= 100)
+                //                        if (con_val >= -0 && con_val <= 100)
                 //                        {
-                //                            model.Offer_Disc = lst_stock_val[1];                                            
+                //                            model.Offer_Disc = lst_stock_val[1];
                 //                        }
                 //                        else
                 //                        {
@@ -4889,7 +4889,7 @@ namespace astute.Controllers
                 //                        stock_Avalibility_Values.Add(model);
                 //                    }
                 //                }
-                //                else if(lst_stock_val.Count == 3)
+                //                else if (lst_stock_val.Count == 3)
                 //                {
                 //                    var model = new Stock_Avalibility_Values();
                 //                    model.Stock_Id = lst_stock_val[0];
