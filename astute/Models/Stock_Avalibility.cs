@@ -11,4 +11,11 @@ namespace astute.Models
         public IList<Report_Sorting> iSort { get; set; } = new List<Report_Sorting>();
 
     }
+
+    public class Stock_Avalibility_Values
+    {
+        public string Stock_Id { get; set; }
+        public string Offer_Disc { get; set; }
+        public string Offer_Amount { get; set; }
+    }
 }
