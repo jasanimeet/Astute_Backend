@@ -1796,6 +1796,44 @@ namespace astute.Repository
             }
             return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseDiscr, totalBaseAmtr, totalOfferDiscr, totalOfferAmtr, totalMaxSlabDiscr, totalMaxSlabAmtr);
         }
+        public async Task<List<Dictionary<string, object>>> Get_Lab_Search_Distinct_Report_Search(DataTable dataTable)
+        {
+            var result = new List<Dictionary<string, object>>();
+
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Report_Multiple_Search_Lab_Distinct_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    var parameter = new SqlParameter("@Report_Search_Lab_Table_Type", SqlDbType.Structured)
+                    {
+                        TypeName = "dbo.Report_Search_Lab_Table_Type",
+                        Value = dataTable
+                    };
+                    command.Parameters.Add(parameter);
+                    command.CommandTimeout = 1800;
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
         public async Task<(List<Dictionary<string, object>>, string, string, string, string, string, string, string, string, string, string)> Get_Lab_Search_Report_Search_Total(DataTable dataTable, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
         {
             var result = new List<Dictionary<string, object>>();
