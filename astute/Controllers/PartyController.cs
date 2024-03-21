@@ -4860,12 +4860,11 @@ namespace astute.Controllers
             {
                 IList<Stock_Avalibility_Values> stock_Avalibility_Values = new List<Stock_Avalibility_Values>();
                 var lst_Stock_Id = new List<string>();
-                if (stock_Avalibility.stock_Id.Contains(";"))
+                if (!string.IsNullOrEmpty(stock_Avalibility.stock_Id) && stock_Avalibility.stock_Id.Contains(";"))
                 {
                     lst_Stock_Id = stock_Avalibility.stock_Id.Split(',').ToList();
                     if (lst_Stock_Id != null && lst_Stock_Id.Count > 0)
                     {
-                        
                         foreach (var item in lst_Stock_Id)
                         {
                             var model = new Stock_Avalibility_Values();
@@ -4874,44 +4873,60 @@ namespace astute.Controllers
                             {
                                 if (lst_stock_val.Count == 2)
                                 {
-                                    
                                     for (int i = 0; i < lst_stock_val.Count; i++)
-                                    {   
-                                        model.Stock_Id = lst_stock_val[0];
-                                        var con_val = Convert.ToDecimal(lst_stock_val[1]);
-                                        if (con_val >= -100 && con_val <= 100)
+                                    {
+                                        if (i == 0)
                                         {
-                                            model.Offer_Disc = lst_stock_val[1];
+                                            model.Stock_Id = lst_stock_val[0];
                                         }
                                         else
                                         {
-                                            model.Offer_Amount = lst_stock_val[1];
+                                            if (string.IsNullOrEmpty(lst_stock_val[i]))
+                                                continue;
+
+                                            var con_val = Convert.ToDecimal(lst_stock_val[i]);
+                                            if (con_val >= -100 && con_val <= 100)
+                                            {
+                                                model.Offer_Disc = lst_stock_val[i];
+                                            }
+                                            else
+                                            {
+                                                model.Offer_Amount = lst_stock_val[i];
+                                            }
                                         }
                                     }
                                 }
                                 else if (lst_stock_val.Count == 3)
-                                {   
+                                {
                                     for (int i = 0; i < lst_stock_val.Count; i++)
                                     {
-                                        
-                                        model.Stock_Id = lst_stock_val[0];
-                                        var con_val = Convert.ToDecimal(lst_stock_val[1]);
-                                        if (con_val >= -100 && con_val <= 100)
+                                        if (i == 0)
                                         {
-                                            model.Offer_Disc = lst_stock_val[1];
+                                            model.Stock_Id = lst_stock_val[0];
                                         }
                                         else
                                         {
-                                            model.Offer_Amount = lst_stock_val[1];
-                                        }
-                                        var con_val_1 = Convert.ToDecimal(lst_stock_val[2]);
-                                        if (con_val_1 >= -100 && con_val_1 <= 100)
-                                        {
-                                            model.Offer_Disc = lst_stock_val[2];
-                                        }
-                                        else
-                                        {
-                                            model.Offer_Amount = lst_stock_val[2];
+                                            if (string.IsNullOrEmpty(lst_stock_val[i]))
+                                                continue;
+
+                                            var con_val = Convert.ToDecimal(lst_stock_val[i]);
+                                            if (con_val >= -100 && con_val <= 100)
+                                            {
+                                                model.Offer_Disc = lst_stock_val[i];
+                                            }
+                                            else
+                                            {
+                                                model.Offer_Amount = lst_stock_val[i];
+                                            }
+                                            //var con_val_1 = Convert.ToDecimal(lst_stock_val[2]);
+                                            //if (con_val_1 >= -100 && con_val_1 <= 100)
+                                            //{
+                                            //    model.Offer_Disc = lst_stock_val[2];
+                                            //}
+                                            //else
+                                            //{
+                                            //    model.Offer_Amount = lst_stock_val[2];
+                                            //}
                                         }
                                     }
                                 }
@@ -4949,7 +4964,7 @@ namespace astute.Controllers
                         }
                     }
                 }
-                else if(stock_Avalibility_Values != null && stock_Avalibility_Values.Count > 0)
+                else if (stock_Avalibility_Values != null && stock_Avalibility_Values.Count > 0)
                 {
                     stock_Avalibility.stock_Id = null;
                     foreach (var item in stock_Avalibility_Values)
