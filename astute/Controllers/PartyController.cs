@@ -4871,7 +4871,17 @@ namespace astute.Controllers
                             var lst_stock_val = item.Split(';').ToList();
                             if (lst_stock_val != null && lst_stock_val.Count > 0)
                             {
-                                if (lst_stock_val.Count == 2)
+                                if (lst_stock_val.Count == 1)
+                                {
+                                    for (int i = 0; i < lst_stock_val.Count; i++)
+                                    {
+                                        if (string.IsNullOrEmpty(lst_stock_val[i]))
+                                            continue;
+
+                                        model.Stock_Id = lst_stock_val[0];
+                                    }
+                                }
+                                else if (lst_stock_val.Count == 2)
                                 {
                                     for (int i = 0; i < lst_stock_val.Count; i++)
                                     {
@@ -6104,7 +6114,17 @@ namespace astute.Controllers
                             var lst_stock_val = item.Split(';').ToList();
                             if (lst_stock_val != null && lst_stock_val.Count > 0)
                             {
-                                if (lst_stock_val.Count == 2)
+                                if (lst_stock_val.Count == 1)
+                                {
+                                    for (int i = 0; i < lst_stock_val.Count; i++)
+                                    {
+                                        if (string.IsNullOrEmpty(lst_stock_val[i]))
+                                            continue;
+
+                                        model.Stock_Id = lst_stock_val[0];
+                                    }
+                                }
+                                else if (lst_stock_val.Count == 2)
                                 {
                                     for (int i = 0; i < lst_stock_val.Count; i++)
                                     {
@@ -7912,6 +7932,54 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Purchase_Order", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region Lab User
+        [HttpPost]
+        [Route("create_update_lab_user")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Lab_User(IList<Lab_User_Master> lab_User_Masters)
+        {
+            try
+            {
+                if(ModelState.IsValid)
+                {
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Id", typeof(int));
+                    dataTable.Columns.Add("Party_Id", typeof(int));
+                    dataTable.Columns.Add("User_Name", typeof(string));
+                    dataTable.Columns.Add("Password", typeof(string));
+                    dataTable.Columns.Add("Active_Status", typeof(bool));
+                    dataTable.Columns.Add("User_Type", typeof(string));
+                    dataTable.Columns.Add("Stock_View", typeof(bool));
+                    dataTable.Columns.Add("Stock_Download", typeof(bool));
+                    dataTable.Columns.Add("Order_Placed", typeof(bool));
+                    dataTable.Columns.Add("Enable_Status", typeof(bool));
+                    dataTable.Columns.Add("Last_Login_Date", typeof(string));
+                    dataTable.Columns.Add("Query_Flag", typeof(string));
+
+                    if(lab_User_Masters != null && lab_User_Masters.Count > 0)
+                    {
+                        foreach (var item in lab_User_Masters)
+                        {
+                            dataTable.Rows.Add(item.Id, 
+                                item.Party_Id,
+                                item.User_Name,
+                                item.Password);
+                        }
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Lab_User", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
