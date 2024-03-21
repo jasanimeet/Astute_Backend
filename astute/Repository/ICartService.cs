@@ -11,6 +11,7 @@ namespace astute.Repository
         //Task<List<Dictionary<string, object>>> Get_Cart(string USER_ID);
         Task<int> Delete_Cart(string ids, int user_Id);
         Task<int> Approved_Or_Rejected_by_Management(Approval_Management approval_Management);
+        Task<int> Approved_Management_Update_Status(Approval_Management_Status approval_Management);
         //Task<int> Create_Approved_Management(Approval_Management_Create_Update approval_Management);
         Task<int> Create_Approved_Management(DataTable dataTable, int user_Id, string remarks, string status);
         Task<(string, int)> Create_Update_Order_Processing(DataTable dataTable, int? user_Id, string customer_Name, string remarks, string status);

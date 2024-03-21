@@ -11,6 +11,12 @@ namespace astute.Models
         public bool? Is_Rejected { get; set; }
         public string? Remarks { get; set; }
     }
+    public class Approval_Management_Status
+    {
+        public string? Ids { get; set; }
+        public int? User_Id { get; set; }
+        public string? Status { get; set; }
+    }
 
     //public partial class Approval_Management_Create_Update
     //{

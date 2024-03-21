@@ -106,6 +106,18 @@ namespace astute.Repository
 
             return result;
         }
+
+        public async Task<int> Approved_Management_Update_Status(Approval_Management_Status approval_Management)
+        {
+            var _ids = !string.IsNullOrEmpty(approval_Management.Ids) ? new SqlParameter("@Ids", approval_Management.Ids) : new SqlParameter("@Ids", DBNull.Value);
+            var _status = !string.IsNullOrEmpty(approval_Management.Status) ? new SqlParameter("@Status", approval_Management.Status) : new SqlParameter("@Status", DBNull.Value);
+            var _user_Id = approval_Management.User_Id > 0 ? new SqlParameter("@User_Id", approval_Management.User_Id) : new SqlParameter("@User_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Approved_Management_Update_Status @Ids, @Status, @User_Id", _ids, _status, _user_Id));
+
+            return result;
+        }
         //public async Task<int> Create_Approved_Management(Approval_Management_Create_Update approval_Management)
         //{
         //    var _supp_Stock_Id = !string.IsNullOrEmpty(approval_Management.Supp_Stock_Id) ? new SqlParameter("@Supp_Stock_Id", approval_Management.Supp_Stock_Id) : new SqlParameter("@Supp_Stock_Id", DBNull.Value);

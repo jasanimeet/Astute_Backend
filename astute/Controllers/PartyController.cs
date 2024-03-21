@@ -5824,6 +5824,35 @@ namespace astute.Controllers
             }
         }
 
+
+        [HttpPost]
+        [Route("approved_management_update_status")]
+        [Authorize]
+        public async Task<IActionResult> Approved_Management_Update_Status(Approval_Management_Status approval_Management)
+        {
+            try
+            {
+                var result = await _cartService.Approved_Management_Update_Status(approval_Management);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.StokeStatusManagement
+                    });
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Approved_Or_Rejected_by_Management", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         //[HttpPost]
         //[Route("create_approved_management")]
         //[Authorize]
