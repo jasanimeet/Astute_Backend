@@ -42,6 +42,7 @@ namespace astute.Controllers
         private readonly IEmailSender _emailSender;
         private readonly IJWTAuthentication _jWTAuthentication;
         private readonly IEmployeeService _employeeService;
+        private readonly ILabUserService _labUserService;
         #endregion
 
         #region Ctor
@@ -53,7 +54,8 @@ namespace astute.Controllers
             ICartService cartService,
             IEmailSender emailSender,
             IJWTAuthentication jWTAuthentication,
-            IEmployeeService employeeService)
+            IEmployeeService employeeService,
+            ILabUserService labUserService)
         {
             _partyService = partyService;
             _configuration = configuration;
@@ -64,6 +66,7 @@ namespace astute.Controllers
             _emailSender = emailSender;
             _jWTAuthentication = jWTAuthentication;
             _employeeService = employeeService;
+            _labUserService = labUserService;
         }
         #endregion
 
@@ -8037,7 +8040,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_update_lab_user")]
         [Authorize]
-        public async Task<IActionResult> Create_Update_Lab_User(IList<Lab_User_Master> lab_User_Masters)
+        public async Task<IActionResult> Create_Update_Lab_User(Lab_User_Detail lab_User_Detail)
         {
             try
             {
@@ -8045,7 +8048,6 @@ namespace astute.Controllers
                 {
                     DataTable dataTable = new DataTable();
                     dataTable.Columns.Add("Id", typeof(int));
-                    dataTable.Columns.Add("Party_Id", typeof(int));
                     dataTable.Columns.Add("User_Name", typeof(string));
                     dataTable.Columns.Add("Password", typeof(string));
                     dataTable.Columns.Add("Active_Status", typeof(bool));
@@ -8057,14 +8059,31 @@ namespace astute.Controllers
                     dataTable.Columns.Add("Last_Login_Date", typeof(string));
                     dataTable.Columns.Add("Query_Flag", typeof(string));
 
-                    if(lab_User_Masters != null && lab_User_Masters.Count > 0)
+                    if(lab_User_Detail.Lab_User_Masters != null && lab_User_Detail.Lab_User_Masters.Count > 0)
                     {
-                        foreach (var item in lab_User_Masters)
+                        foreach (var item in lab_User_Detail.Lab_User_Masters)
                         {
-                            dataTable.Rows.Add(item.Id, 
-                                item.Party_Id,
+                            dataTable.Rows.Add(item.Id,
                                 item.User_Name,
-                                item.Password);
+                                item.Password,
+                                item.Active_Status,
+                                item.User_Type,
+                                item.Stock_View,
+                                item.Stock_Download,
+                                item.Order_Placed,
+                                item.Enable_Status,
+                                DBNull.Value,
+                                item.Query_Flag);
+                        }
+
+                        var result = await _labUserService.Create_Update_Lab_User(dataTable, lab_User_Detail.Party_Id);
+                        if(result > 0)
+                        {
+                            return Ok(new 
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = "Lab user saved successfully."
+                            });
                         }
                     }
                 }
@@ -8073,6 +8092,35 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_Lab_User", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_lab_user")]
+        [Authorize]
+        public async Task<IActionResult> Get_Lab_User(int id, int party_Id)
+        {
+            try
+            {
+                var result = await _labUserService.Get_Lab_User(id, party_Id);
+                if(result != null && result.Count > 0)
+                {
+                    return Ok(new 
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Lab_User", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message

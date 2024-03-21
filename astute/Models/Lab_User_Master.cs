@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace astute.Models
 {
@@ -6,7 +7,6 @@ namespace astute.Models
     {
         [Key]
         public int Id { get; set; }
-        public int? Party_Id { get; set; }
         public string User_Name { get; set; }
         public string Password { get; set; }
         public bool Active_Status { get; set; }
@@ -17,5 +17,11 @@ namespace astute.Models
         public bool Enable_Status { get; set; }
         public string? Last_Login_Date { get; set; }
         public string Query_Flag { get; set; }
+    }
+
+    public class Lab_User_Detail
+    {
+        public int Party_Id { get; set; }
+        public IList<Lab_User_Master> Lab_User_Masters { get; set; } = new List<Lab_User_Master>();
     }
 }
