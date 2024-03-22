@@ -14,6 +14,7 @@ using NPOI.HSSF.UserModel;
 using NPOI.POIFS.Crypt.Dsig;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8065,7 +8066,7 @@ namespace astute.Controllers
                         {
                             dataTable.Rows.Add(item.Id,
                                 item.User_Name,
-                                item.Password,
+                                CoreService.Encrypt(item.Password),
                                 item.Active_Status,
                                 item.User_Type,
                                 item.Stock_View,
@@ -8075,8 +8076,9 @@ namespace astute.Controllers
                                 DBNull.Value,
                                 item.Query_Flag);
                         }
-
-                        var result = await _labUserService.Create_Update_Lab_User(dataTable, lab_User_Detail.Party_Id);
+                        var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                        int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                        var result = await _labUserService.Create_Update_Lab_User(dataTable, lab_User_Detail.Party_Id, user_Id ?? 0);
                         if(result > 0)
                         {
                             return Ok(new 
@@ -8106,7 +8108,9 @@ namespace astute.Controllers
         {
             try
             {
-                var result = await _labUserService.Get_Lab_User(id, party_Id);
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                var result = await _labUserService.Get_Lab_User(id, party_Id, user_Id ?? 0);
                 if(result != null && result.Count > 0)
                 {
                     return Ok(new 
@@ -8122,6 +8126,123 @@ namespace astute.Controllers
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Lab_User", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPut]
+        [Route("change_lab_user_active_status")]
+        [Authorize]
+        public async Task<IActionResult> Change_Lab_User_Active_Status(int id, bool active_Status)
+        {
+            try
+            {
+                var result = await _labUserService.Change_Active_Status(id, active_Status);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.StatusChangedSuccessMessage
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Change_Lab_User_Active_Status", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_suspend_day")]
+        [Authorize]
+        public async Task<IActionResult> Get_Suspend_Day()
+        {
+            try
+            {   
+                var result = await _labUserService.Get_Suspend_Day();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Suspend_Day", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_lab_user")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Lab_User(int id)
+        {
+            try
+            {
+                var result = await _labUserService.Delete_Lab_User(id);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = "Lab user deleted successfully.",
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Lab_User", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPut]
+        [Route("update_suspend_days")]
+        [Authorize]
+        public async Task<IActionResult> Update_Suspend_Days(int id, int days)
+        {
+            try
+            {
+                var result = await _labUserService.Create_Update_Suspend_Days(id, days);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = "Suspend days updated successfully."
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Suspend_Days", ex.StackTrace);
+                return Ok(new
                 {
                     message = ex.Message
                 });
