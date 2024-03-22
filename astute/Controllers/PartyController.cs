@@ -5876,8 +5876,6 @@ namespace astute.Controllers
                 });
             }
         }
-
-
         #endregion
 
         #region Cart/Approval Management        
@@ -8220,7 +8218,9 @@ namespace astute.Controllers
         {
             try
             {
-                var result = await _labUserService.Get_Lab_User(id, party_Id);
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                var result = await _labUserService.Get_Lab_User(id, party_Id, user_Id ?? 0);
                 if(result != null && result.Count > 0)
                 {
                     return Ok(new
