@@ -5792,7 +5792,7 @@ namespace astute.Controllers
                         {
                             string filename = item.Stock_Id + "_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".jpg";
                             filePath += filename;
-                            var path = _configuration["BaseUrl"] + "Files/Image/" + filename;
+                            var path = _configuration["BaseUrl"] + "/Files/Image/" + filename;
                             try
                             {
                                 using (WebClient client = new WebClient())
@@ -5815,7 +5815,7 @@ namespace astute.Controllers
                         {
                             string filename = item.Stock_Id + "_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".mp4";
                             filePath += filename;
-                            var path = _configuration["BaseUrl"] + "Files/Video/" + filename;
+                            var path = _configuration["BaseUrl"] + "/Files/Video/" + filename;
                             try
                             {
                                 using (WebClient client = new WebClient())
@@ -5839,7 +5839,7 @@ namespace astute.Controllers
                         {
                             string filename = item.Stock_Id + "_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".pdf";
                             filePath += filename;
-                            var path = _configuration["BaseUrl"] + "Files/Certificate/" + filename;
+                            var path = _configuration["BaseUrl"] + "/Files/Certificate/" + filename;
                             try
                             {
                                 using (WebClient client = new WebClient())
