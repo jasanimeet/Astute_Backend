@@ -8117,6 +8117,8 @@ namespace astute.Controllers
                     {
                         statusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.DataSuccessfullyFound,
+                        party_Id = party_Id > 0 ? party_Id : 0,
+                        party_Name = party_Id > 0 ? result.Where(x => x.ContainsKey("Party_Name")).Select(x => x["Party_Name"]).FirstOrDefault() : "",
                         data = result
                     });
                 }
