@@ -2313,6 +2313,17 @@ namespace astute.Repository
             }
             return dataTable1;
         }
+
+        public async Task<IList<Report_Image_Video_Certificate>> Download_Image_Video_Certificate_Stock(string? Ids, string? document_Type)
+        {
+            var ids = !string.IsNullOrEmpty(Ids) ? new SqlParameter("@Ids", Ids) : new SqlParameter("@Ids", DBNull.Value);
+            var documentType = !string.IsNullOrEmpty(document_Type) ? new SqlParameter("@Document_Type", document_Type) : new SqlParameter("@Document_Type", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Report_Image_Video_Certificate
+                            .FromSqlRaw(@"EXEC Get_Report_Image_Video_Certificate @Ids, @Document_Type", ids, documentType)
+                            .ToListAsync());
+            return result;
+        }
         #endregion
 
         #region GIA Lap Parameter

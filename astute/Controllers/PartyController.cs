@@ -4279,7 +4279,7 @@ namespace astute.Controllers
                            RAP_RATE = string.Empty, RAP_AMOUNT = string.Empty, COST_DISC = string.Empty, COST_AMOUNT = string.Empty,
                            OFFER_DISC = string.Empty, OFFER_VALUE = string.Empty, BASE_DISC = string.Empty, BASE_AMOUNT = string.Empty,
                            PRICE_PER_CTS = string.Empty, MAX_SLAB_BASE_DISC = string.Empty, MAX_SLAB_BASE_AMOUNT = string.Empty, MAX_SLAB_PRICE_PER_CTS = string.Empty,
-                           BUYER_DISC = string.Empty, BUYER_AMOUNT = string.Empty, TABLE_BLACK = string.Empty,TABLE_WHITE = string.Empty, SIDE_BLACK = string.Empty, SIDE_WHITE = string.Empty,
+                           BUYER_DISC = string.Empty, BUYER_AMOUNT = string.Empty, TABLE_BLACK = string.Empty, TABLE_WHITE = string.Empty, SIDE_BLACK = string.Empty, SIDE_WHITE = string.Empty,
                            TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
                            GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
                            KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
@@ -5766,6 +5766,118 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("download_image_video_certificate_stock")]
+        [Authorize]
+        public async Task<IActionResult> Download_Image_Video_Certificate_Stock(Report_Download report_Download)
+        {
+            try
+            {
+                var result = await _supplierService.Download_Image_Video_Certificate_Stock(report_Download.ids, report_Download.document_Type);
+                if (result != null && result.Count > 0)
+                {
+                    List<Report_Download_Model> result_List = new List<Report_Download_Model>();
+                    foreach (var item in result)
+                    {
+                        var filePath = report_Download.document_Type == "I" ?
+                                   Path.Combine(Directory.GetCurrentDirectory(), "Files/Image") : (report_Download.document_Type == "V" ?
+                                   Path.Combine(Directory.GetCurrentDirectory(), "Files/Video") : report_Download.document_Type == "C" ?
+                                   Path.Combine(Directory.GetCurrentDirectory(), "Files/Certificate") : "");
+                        if (!(Directory.Exists(filePath)))
+                        {
+                            Directory.CreateDirectory(filePath);
+                        }
+                        if (report_Download.document_Type == "I")
+                        {
+                            string filename = "/" + item.Stock_Id + "_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".jpg";
+                            filePath += filename;
+                            var path = _configuration["LocalPath"] + "Files/Image/" + filename;
+                            try
+                            {
+                                using (WebClient client = new WebClient())
+                                {
+                                    client.DownloadFile(item.Url, filePath);
+                                }
+                                Report_Download_Model r = new Report_Download_Model()
+                                {
+                                    Stock_Id = item.Stock_Id,
+                                    Url = path
+                                };
+                                result_List.Add(r);
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                        }
+                        else if (report_Download.document_Type == "V")
+                        {
+                            string filename = "/" + item.Stock_Id + "_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".mp4";
+                            filePath += filename;
+                            var path = _configuration["LocalPath"] + "Files/Video/" + filename;
+                            try
+                            {
+                                using (WebClient client = new WebClient())
+                                {
+                                    client.DownloadFile(item.Url, filePath);
+                                }
+                                Report_Download_Model r = new Report_Download_Model()
+                                {
+                                    Stock_Id = item.Stock_Id,
+                                    Url = path
+                                };
+                                result_List.Add(r);
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                            
+                        }
+                        else if (report_Download.document_Type == "C")
+                        {
+                            string filename = "/" + item.Stock_Id + "_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".pdf";
+                            filePath += filename;
+                            var path = _configuration["LocalPath"] + "Files/Certificate/" + filename;
+                            try
+                            {
+                                using (WebClient client = new WebClient())
+                                {
+                                    client.DownloadFile(item.Url, filePath);
+                                }
+                                Report_Download_Model r = new Report_Download_Model()
+                                {
+                                    Stock_Id = item.Stock_Id,
+                                    Url = path
+                                };
+                                result_List.Add(r);
+                            }
+                            catch (Exception)
+                            {
+                            }
+                        }
+                    }
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result_List
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Download_Image_Video_Certificate_Stock", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+
         #endregion
 
         #region Cart/Approval Management        
@@ -8045,7 +8157,7 @@ namespace astute.Controllers
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     DataTable dataTable = new DataTable();
                     dataTable.Columns.Add("Id", typeof(int));
@@ -8060,7 +8172,7 @@ namespace astute.Controllers
                     dataTable.Columns.Add("Last_Login_Date", typeof(string));
                     dataTable.Columns.Add("Query_Flag", typeof(string));
 
-                    if(lab_User_Detail.Lab_User_Masters != null && lab_User_Detail.Lab_User_Masters.Count > 0)
+                    if (lab_User_Detail.Lab_User_Masters != null && lab_User_Detail.Lab_User_Masters.Count > 0)
                     {
                         foreach (var item in lab_User_Detail.Lab_User_Masters)
                         {
@@ -8081,7 +8193,7 @@ namespace astute.Controllers
                         var result = await _labUserService.Create_Update_Lab_User(dataTable, lab_User_Detail.Party_Id, user_Id ?? 0);
                         if(result > 0)
                         {
-                            return Ok(new 
+                            return Ok(new
                             {
                                 statusCode = HttpStatusCode.OK,
                                 message = "Lab user saved successfully."
@@ -8108,12 +8220,10 @@ namespace astute.Controllers
         {
             try
             {
-                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-                var result = await _labUserService.Get_Lab_User(id, party_Id, user_Id ?? 0);
+                var result = await _labUserService.Get_Lab_User(id, party_Id);
                 if(result != null && result.Count > 0)
                 {
-                    return Ok(new 
+                    return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.DataSuccessfullyFound,
