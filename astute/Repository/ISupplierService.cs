@@ -95,6 +95,8 @@ namespace astute.Repository
         Task<int> Delete_Report_Layout_Save(int id);
         Task<DataTable> Get_Report_Search_Excel(int id, IList<Report_Filter_Parameter> report_Filter_Parameters);
         Task<DataTable> Get_Stock_Availability_Report_Excel(DataTable dataTable, string stock_Id, string stock_Type);
+
+        Task<IList<Report_Image_Video_Certificate>> Download_Image_Video_Certificate_Stock(string? Ids,string? document_Type);
         #endregion
 
         #region GIA Lap Parameter

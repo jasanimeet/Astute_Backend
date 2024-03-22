@@ -55,6 +55,9 @@
   <ItemGroup>
     <Folder Include="Files\CategoryValueIcon\" />
     <Folder Include="Files\CategoryExcel\" />
+    <Folder Include="Files\Certificate\" />
+    <Folder Include="Files\Video\" />
+    <Folder Include="Files\Image\" />
     <Folder Include="Files\UserDocuments\" />
     <Folder Include="Files\SupplierDetailFile\" />
     <Folder Include="Files\SupplierDetailFTP\" />

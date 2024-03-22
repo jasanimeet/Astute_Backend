@@ -91,4 +91,16 @@ namespace astute.Models
         public string Category_Name { get; set; }
         public string Category_Value { get; set; }
     }
+
+    public class Report_Download
+    {
+        public string? ids { get; set; }
+        public string document_Type { get; set; }
+    }
+
+    public class Report_Download_Model
+    {
+        public string Stock_Id { get; set; }
+        public string Url { get; set; }
+    }
 }
