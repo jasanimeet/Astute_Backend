@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -51,38 +52,6 @@ namespace astute.Repository
 
             return ("success", result);
         }
-        //public async Task<List<Dictionary<string, object>>> Get_Cart(string USER_ID)
-        //{
-        //    var result = new List<Dictionary<string, object>>();
-        //    using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
-        //    {
-        //        using (var command = new SqlCommand("Cart_Select", connection))
-        //        {
-        //            command.CommandType = CommandType.StoredProcedure;
-        //            command.Parameters.Add(!string.IsNullOrEmpty(USER_ID) ? new SqlParameter("@USER_ID", USER_ID) : new SqlParameter("@USER_ID", DBNull.Value));
-        //            await connection.OpenAsync();
-
-        //            using (var reader = await command.ExecuteReaderAsync())
-        //            {
-        //                while (await reader.ReadAsync())
-        //                {
-        //                    var dict = new Dictionary<string, object>();
-
-        //                    for (int i = 0; i < reader.FieldCount; i++)
-        //                    {
-        //                        var columnName = reader.GetName(i);
-        //                        var columnValue = reader.GetValue(i);
-
-        //                        dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
-        //                    }
-
-        //                    result.Add(dict);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return result;
-        //}
         public async Task<int> Delete_Cart(string ids, int user_Id)
         {
             var supp_Stock_Ids = !string.IsNullOrEmpty(ids) ? new SqlParameter("@Ids", ids) : new SqlParameter("@Ids", DBNull.Value);
@@ -106,7 +75,6 @@ namespace astute.Repository
 
             return result;
         }
-
         public async Task<int> Approved_Management_Update_Status(Approval_Management_Status approval_Management)
         {
             var _ids = !string.IsNullOrEmpty(approval_Management.Ids) ? new SqlParameter("@Ids", approval_Management.Ids) : new SqlParameter("@Ids", DBNull.Value);
@@ -178,6 +146,37 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Order_Processing_Inactive @Ids, @Is_Inactive, @User_Id", _Ids, _is_Inactive,_user_Id));
 
+            return result;
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Order_Summary(int order_no)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Order_Summary", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(order_no > 0 ? new SqlParameter("@Order_No", order_no) : new SqlParameter("@Order_No", DBNull.Value));
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
             return result;
         }
         #endregion

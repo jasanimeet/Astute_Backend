@@ -2532,7 +2532,7 @@ namespace astute.CoreServices
                         else
                         {
                             kkk += 1;
-                            if (Column_Name == "Stock Id")
+                            if (Column_Name == "Cert No")
                             {
                                 worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(103," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                                 worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -4643,7 +4643,7 @@ namespace astute.CoreServices
                         else
                         {
                             kkk += 1;
-                            if (Column_Name == "STOCK ID")
+                            if (Column_Name == "CERTIFICATE NO")
                             {
                                 worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(103," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                                 worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;

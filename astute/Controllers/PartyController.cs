@@ -6526,6 +6526,35 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_order_summary")]
+        [Authorize]
+        public async Task<IActionResult> Get_Order_Summary(int order_No)
+        {
+            try
+            {
+                var result = await _cartService.Get_Order_Summary(order_No);
+                if(result != null && result.Count > 0)
+                {
+                    return Ok(new 
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Order_Summary", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Get GIA Certificate Data
