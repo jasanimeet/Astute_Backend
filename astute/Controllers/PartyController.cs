@@ -4,7 +4,6 @@ using astute.Models;
 using astute.Repository;
 using ExcelDataReader;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -12,10 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NPOI.HSSF.UserModel;
-using NPOI.POIFS.Crypt.Dsig;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
-using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -5791,7 +5788,7 @@ namespace astute.Controllers
                         }
                         if (report_Download.document_Type == "I")
                         {
-                            string filename = "/"+item.Stock_Id + "_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".jpg";
+                            string filename = "/" + item.Stock_Id + "_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".jpg";
                             filePath += filename;
                             var path = _configuration["BaseUrl"] + "/Files/Image" + filename;
                             try
@@ -5834,7 +5831,7 @@ namespace astute.Controllers
                             {
 
                             }
-                            
+
                         }
                         else if (report_Download.document_Type == "C")
                         {
@@ -5859,12 +5856,15 @@ namespace astute.Controllers
                             }
                         }
                     }
-                    return Ok(new
+                    if (result_List.Count > 0)
                     {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.DataSuccessfullyFound,
-                        data = result_List
-                    });
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = result_List
+                        });
+                    }
                 }
                 return NoContent();
             }
@@ -6279,7 +6279,72 @@ namespace astute.Controllers
                 });
             }
         }
+        [HttpPost]
+        [Route("cart_approval_order_column_wise_excel_download")]
+        [Authorize]
+        public async Task<IActionResult> Cart_Approval_Order_Column_Wise_Excel_Download(Report_Filter report_Filter)
+        {
+            try
+            {
+                var dt_stock = await _supplierService.Get_Report_Search_Excel(report_Filter.id, report_Filter.Report_Filter_Parameter);
+                if (dt_stock != null && dt_stock.Rows.Count > 0)
+                {
 
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in report_Filter.column_Name)
+                    {
+                        if (columnName != "CERTIFICATE LINK")
+                        {
+                            columnNamesTable.Rows.Add(columnName);
+                        }
+                    }
+                    columnNamesTable.Rows.Add("CERTIFICATE LINK");
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string filename = string.Empty;
+                    //if (report_Filter.id == 2)
+                    //{
+                    //    filename = "Cart_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    //    EpExcelExport.Create_Cart_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                    //    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                    //}
+                    if (report_Filter.id == 3)
+                    {
+                        filename = "Approval_Management_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                        EpExcelExport.Create_Approval_Column_Wise_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                        excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                    }
+                    //else if (report_Filter.id == 4)
+                    //{
+                    //    filename = "Order_Processing_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    //    EpExcelExport.Create_Order_Processing_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                    //    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                    //}
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Cart_Approval_Order_Excel_Download", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         [HttpPost]
         [Route("stock_availability_report_excel_download")]
         [Authorize]
@@ -8219,7 +8284,7 @@ namespace astute.Controllers
                         var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                         int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                         var result = await _labUserService.Create_Update_Lab_User(dataTable, lab_User_Detail.Party_Id, user_Id ?? 0);
-                        if(result > 0)
+                        if (result > 0)
                         {
                             return Ok(new
                             {
@@ -8271,7 +8336,7 @@ namespace astute.Controllers
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                 var result = await _labUserService.Get_Lab_User(id, party_Id, user_Id ?? 0);
-                if(result != null && result.Count > 0)
+                if (result != null && result.Count > 0)
                 {
                     return Ok(new
                     {
@@ -8328,7 +8393,7 @@ namespace astute.Controllers
         public async Task<IActionResult> Get_Suspend_Day()
         {
             try
-            {   
+            {
                 var result = await _labUserService.Get_Suspend_Day();
                 if (result != null && result.Count > 0)
                 {
