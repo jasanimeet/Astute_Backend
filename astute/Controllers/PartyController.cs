@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -8204,10 +8205,10 @@ namespace astute.Controllers
                         foreach (var item in lab_User_Detail.Lab_User_Masters)
                         {
                             dataTable.Rows.Add(item.Id,
-                                item.User_Name,
-                                CoreService.Encrypt(item.Password),
+                                !string.IsNullOrEmpty(item.User_Name) ? item.User_Name : DBNull.Value,
+                                !string.IsNullOrEmpty(item.Password) ? CoreService.Encrypt(item.Password) : DBNull.Value,
                                 item.Active_Status,
-                                item.User_Type,
+                                !string.IsNullOrEmpty(item.User_Type) ? item.User_Type : DBNull.Value,
                                 item.Stock_View,
                                 item.Stock_Download,
                                 item.Order_Placed,
@@ -8230,12 +8231,32 @@ namespace astute.Controllers
                 }
                 return BadRequest(ModelState);
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
+                string message = ex.Message;
+                if(ex.Number == 515)
+                {
+                    if(message.Contains("User_Name") && message.Contains("Password"))
+                    {
+                        message = "User name and password is required.";
+                    }
+                    else if(message.Contains("User_Name"))
+                    {
+                        message = "User name is required.";
+                    }
+                    else if (message.Contains("Password"))
+                    {
+                        message = "Password is required.";
+                    }
+                    else if (message.Contains("User_Type"))
+                    {
+                        message = "User type is required.";
+                    }
+                }
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_Lab_User", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
-                    message = ex.Message
+                    message = message
                 });
             }
         }
