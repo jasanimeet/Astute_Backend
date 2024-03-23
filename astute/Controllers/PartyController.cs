@@ -6222,12 +6222,20 @@ namespace astute.Controllers
                 var dt_stock = await _supplierService.Get_Report_Search_Excel(report_Filter.id, report_Filter.Report_Filter_Parameter);
                 if (dt_stock != null && dt_stock.Rows.Count > 0)
                 {
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                    var result = await _supplierService.Get_Report_Users_Role(report_Filter.id, (int)user_Id, null);
                     List<string> columnNames = new List<string>();
-                    foreach (DataColumn column in dt_stock.Columns)
+                    if (result != null && result.Count > 0)
                     {
-                        columnNames.Add(column.ColumnName);
+                        foreach (var item in result)
+                        {
+                            if (item.ContainsKey("Display_Name") && item.ContainsKey("Display_Type") && item["Display_Type"].ToString()=="D")
+                            {
+                                columnNames.Add(item["Display_Name"].ToString().Trim());
+                            }
+                        }
                     }
-
                     DataTable columnNamesTable = new DataTable();
                     columnNamesTable.Columns.Add("Column_Name", typeof(string));
 
@@ -6308,24 +6316,24 @@ namespace astute.Controllers
                         Directory.CreateDirectory(filePath);
                     }
                     string filename = string.Empty;
-                    //if (report_Filter.id == 2)
-                    //{
-                    //    filename = "Cart_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                    //    EpExcelExport.Create_Cart_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
-                    //    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
-                    //}
+                    if (report_Filter.id == 2)
+                    {
+                        filename = "Cart_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                        EpExcelExport.Create_Cart_Column_Wise_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                        excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                    }
                     if (report_Filter.id == 3)
                     {
                         filename = "Approval_Management_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                         EpExcelExport.Create_Approval_Column_Wise_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
                         excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                     }
-                    //else if (report_Filter.id == 4)
-                    //{
-                    //    filename = "Order_Processing_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                    //    EpExcelExport.Create_Order_Processing_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
-                    //    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
-                    //}
+                    else if (report_Filter.id == 4)
+                    {
+                        filename = "Order_Processing_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                        EpExcelExport.Create_Order_Processing_Column_Wise_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                        excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                    }
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
