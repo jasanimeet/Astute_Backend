@@ -4740,7 +4740,7 @@ namespace astute.CoreServices
 
                     if (totalColumns >= 2)
                     {
-                        worksheet.DeleteColumn(totalColumns - 1, 2);
+                        worksheet.DeleteColumn(totalColumns, 1);
                     }
 
                     Byte[] bin = ep.GetAsByteArray();
