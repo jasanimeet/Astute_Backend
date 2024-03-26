@@ -4234,7 +4234,7 @@ namespace astute.Controllers
         {
             try
             {
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, dt_stock) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo ?? 0, report_Filter.iPgSize ?? 0, report_Filter.iSort);
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr, dt_stock) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo ?? 0, report_Filter.iPgSize ?? 0, report_Filter.iSort);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -4245,6 +4245,10 @@ namespace astute.Controllers
                         total_Cts = totalCtsr,
                         total_Amt = totalAmtr,
                         total_Disc = totalDiscr,
+                        total_Base_Amt = totalBaseAmtr,
+                        total_Base_Disc = totalBaseDiscr,
+                        total_Offer_Amt = totalOfferAmtr,
+                        total_Offer_Disc = totalOfferDiscr,
                         data = result
                     });
                 }
@@ -5032,7 +5036,7 @@ namespace astute.Controllers
                     }
                 }
 
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr) = await _supplierService.Get_Stock_Avalibility_Report_Search(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.iPgNo ?? 0, stock_Avalibility.iPgSize ?? 0, stock_Avalibility.iSort);
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr,totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr) = await _supplierService.Get_Stock_Avalibility_Report_Search(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.iPgNo ?? 0, stock_Avalibility.iPgSize ?? 0, stock_Avalibility.iSort);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -5043,6 +5047,10 @@ namespace astute.Controllers
                         total_Cts = totalCtsr,
                         total_Amt = totalAmtr,
                         total_Disc = totalDiscr,
+                        total_Base_Amt = totalBaseAmtr,
+                        total_Base_Disc = totalBaseDiscr,
+                        total_Offer_Amt = totalOfferAmtr,
+                        total_Offer_Disc = totalOfferDiscr,
                         data = result
                     });
                 }
@@ -5456,37 +5464,37 @@ namespace astute.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("get_report_search_total")]
-        [Authorize]
-        public async Task<IActionResult> Get_Report_Search_Total(Report_Filter report_Filter)
-        {
-            try
-            {
-                var (_, totalRecordr, totalCtsr, totalAmtr, totalDiscr, _) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo ?? 0, report_Filter.iPgSize ?? 0, report_Filter.iSort);
-                if (!string.IsNullOrEmpty(totalRecordr) && !string.IsNullOrEmpty(totalCtsr) && !string.IsNullOrEmpty(totalAmtr) && !string.IsNullOrEmpty(totalDiscr))
-                {
-                    return Ok(new
-                    {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.DataSuccessfullyFound,
-                        total_Records = totalRecordr,
-                        total_Cts = totalCtsr,
-                        total_Amt = totalAmtr,
-                        total_Disc = totalDiscr
-                    });
-                }
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Report_Search_Total", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
+        //[HttpPost]
+        //[Route("get_report_search_total")]
+        //[Authorize]
+        //public async Task<IActionResult> Get_Report_Search_Total(Report_Filter report_Filter)
+        //{
+        //    try
+        //    {
+        //        var (_, totalRecordr, totalCtsr, totalAmtr, totalDiscr, _) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo ?? 0, report_Filter.iPgSize ?? 0, report_Filter.iSort);
+        //        if (!string.IsNullOrEmpty(totalRecordr) && !string.IsNullOrEmpty(totalCtsr) && !string.IsNullOrEmpty(totalAmtr) && !string.IsNullOrEmpty(totalDiscr))
+        //        {
+        //            return Ok(new
+        //            {
+        //                statusCode = HttpStatusCode.OK,
+        //                message = CoreCommonMessage.DataSuccessfullyFound,
+        //                total_Records = totalRecordr,
+        //                total_Cts = totalCtsr,
+        //                total_Amt = totalAmtr,
+        //                total_Disc = totalDiscr
+        //            });
+        //        }
+        //        return NoContent();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await _commonService.InsertErrorLog(ex.Message, "Get_Report_Search_Total", ex.StackTrace);
+        //        return StatusCode((int)HttpStatusCode.InternalServerError, new
+        //        {
+        //            message = ex.Message
+        //        });
+        //    }
+        //}
 
         [HttpPost]
         [Route("get_lab_report_search_total")]
@@ -8292,7 +8300,15 @@ namespace astute.Controllers
                         var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                         int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                         var result = await _labUserService.Create_Update_Lab_User(dataTable, lab_User_Detail.Party_Id, user_Id ?? 0);
-                        if (result > 0)
+                        if (result == 409)
+                        {
+                            return Conflict(new
+                            {
+                                statusCode = HttpStatusCode.Conflict,
+                                message = "User name already exists."
+                            });
+                        }
+                        else if (result > 0)
                         {
                             return Ok(new
                             {
@@ -8325,6 +8341,10 @@ namespace astute.Controllers
                     {
                         message = "User type is required.";
                     }
+                }
+                else if(ex.Number == 547)
+                {
+                    message = "Company name is required.";
                 }
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_Lab_User", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new

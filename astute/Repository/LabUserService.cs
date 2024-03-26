@@ -36,12 +36,20 @@ namespace astute.Repository
                 TypeName = "dbo.Lab_User_Table_Type",
                 Value = dataTable
             };
+            var isExist_User_Name = new SqlParameter("@IsExist_User_Name", System.Data.SqlDbType.Bit)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
             var _party_Id = new SqlParameter("@Party_Id", party_Id);
             var _user_Id = new SqlParameter("@User_Id", user_Id);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Lab_User_Insert_Update] @tblLab_User, @Party_Id, @User_Id",
-                        parameter, _party_Id, _user_Id));
+                        .ExecuteSqlRawAsync(@"EXEC [Lab_User_Insert_Update] @tblLab_User, @Party_Id, @User_Id, @IsExist_User_Name OUT",
+                        parameter, _party_Id, _user_Id, isExist_User_Name));
+
+            bool _isExistUserName = (bool)isExist_User_Name.Value;
+            if (_isExistUserName)
+                return 409;
 
             return result;
         }
@@ -98,7 +106,7 @@ namespace astute.Repository
             {
                 using (var command = new SqlCommand("Suspend_Day_Select", connection))
                 {
-                    command.CommandType = CommandType.StoredProcedure;                    
+                    command.CommandType = CommandType.StoredProcedure;
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -127,7 +135,7 @@ namespace astute.Repository
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Lab_User_Delete {id}"));
         }
         public async Task<int> Create_Update_Suspend_Days(int id, int days)
-        {   
+        {
             var _id = new SqlParameter("@Id", id);
             var _days = new SqlParameter("@Days", days);
 
