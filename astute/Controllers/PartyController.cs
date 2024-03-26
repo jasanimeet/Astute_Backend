@@ -6479,7 +6479,7 @@ namespace astute.Controllers
                             if (!uniqueValues.Contains(value))
                             {
                                 uniqueValues.Add(value);
-                                dataTable.Rows.Add(value, worksheet.Cells[row, 3].GetValue<string>(), worksheet.Cells[row, 2].GetValue<string>());
+                                dataTable.Rows.Add(value, worksheet.Cells[row, 3].GetValue<string>().Replace(",",""), worksheet.Cells[row, 2].GetValue<string>());
                             }
                         }
                     }
