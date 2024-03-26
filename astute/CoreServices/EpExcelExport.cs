@@ -4348,6 +4348,7 @@ namespace astute.CoreServices
                     Color common_bg = ColorTranslator.FromHtml("#CCFFFF");
                     Color colFromHex_H1 = ColorTranslator.FromHtml("#8497b0");
                     Color col_color_Red = ColorTranslator.FromHtml("#ff0000");
+                    Color supp_cost_clr = ColorTranslator.FromHtml("#FF99CC");
 
                     #region Company Detail on Header
                     ep.Workbook.Worksheets.Add("Cart");
@@ -4499,23 +4500,31 @@ namespace astute.CoreServices
                                 {
                                     worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(17) + i + "/" + GetExcelColumnLetter(15) + i + ")-100,0)";
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(supp_cost_clr);
                                 }
                                 else if (Column_Name == "COST AMOUNT")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["COST AMOUNT"]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["COST AMOUNT"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(supp_cost_clr);
                                 }
                                 else if (Column_Name == "OFFER DISC")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(19) + i + "/" + GetExcelColumnLetter(15) + i + ")-100,0)";
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(common_bg);
                                 }
                                 else if (Column_Name == "OFFER AMOUNT")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["OFFER AMOUNT"]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["OFFER AMOUNT"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(common_bg);
                                 }
                                 else if (Column_Name == "BASE DISC")
                                 {
@@ -6151,8 +6160,6 @@ namespace astute.CoreServices
                 throw;
             }
         }
-
-        
         static string GetExcelColumnLetter(int columnNumber)
         {
             string columnLetter = "";
