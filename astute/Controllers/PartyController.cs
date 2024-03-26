@@ -8503,6 +8503,36 @@ namespace astute.Controllers
                 });
             }
         }
+
+
+        [HttpGet]
+        [Route("get_customer_lab_user")]
+        [Authorize]
+        public async Task<IActionResult> Get_Customer_Lab_User(int party_Id)
+        {
+            try
+            {
+                var result = await _labUserService.Get_Customer_Lab_User(party_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Customer_Lab_User", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }
