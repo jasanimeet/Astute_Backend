@@ -5019,10 +5019,11 @@ namespace astute.Controllers
                         for (int row = startRow; row <= worksheet.Dimension.End.Row; row++)
                         {
                             string value = worksheet.Cells[row, 1].GetValue<string>();
+                            string offer_amt = worksheet.Cells[row, 3].GetValue<string>();
                             if (!uniqueValues.Contains(value))
                             {
                                 uniqueValues.Add(value);
-                                dataTable.Rows.Add(value, worksheet.Cells[row, 3].GetValue<string>(), worksheet.Cells[row, 2].GetValue<string>());
+                                dataTable.Rows.Add(value, offer_amt.Replace(",",""), worksheet.Cells[row, 2].GetValue<string>());
                             }
                         }
                     }
