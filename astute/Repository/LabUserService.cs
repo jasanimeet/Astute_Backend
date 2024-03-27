@@ -40,16 +40,24 @@ namespace astute.Repository
             {
                 Direction = System.Data.ParameterDirection.Output
             };
+            var isExist_Primary_User = new SqlParameter("@IsExist_Primary_User", System.Data.SqlDbType.Bit)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
             var _party_Id = new SqlParameter("@Party_Id", party_Id);
             var _user_Id = new SqlParameter("@User_Id", user_Id);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Lab_User_Insert_Update] @tblLab_User, @Party_Id, @User_Id, @IsExist_User_Name OUT",
-                        parameter, _party_Id, _user_Id, isExist_User_Name));
+                        .ExecuteSqlRawAsync(@"EXEC [Lab_User_Insert_Update] @tblLab_User, @Party_Id, @User_Id, @IsExist_User_Name OUT, @IsExist_Primary_User OUT",
+                        parameter, _party_Id, _user_Id, isExist_User_Name, isExist_Primary_User));
 
             bool _isExistUserName = (bool)isExist_User_Name.Value;
             if (_isExistUserName)
                 return 409;
+
+            bool _isExist_Primary_User = (bool)isExist_Primary_User.Value;
+            if (_isExist_Primary_User)
+                return 410;
 
             return result;
         }

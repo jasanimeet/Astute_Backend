@@ -5023,7 +5023,7 @@ namespace astute.Controllers
                             if (!uniqueValues.Contains(value))
                             {
                                 uniqueValues.Add(value);
-                                dataTable.Rows.Add(value, offer_amt.Replace(",",""), worksheet.Cells[row, 2].GetValue<string>());
+                                dataTable.Rows.Add(value, !string.IsNullOrEmpty(offer_amt) ? offer_amt.Replace(",","") : DBNull.Value, worksheet.Cells[row, 2].GetValue<string>());
                             }
                         }
                     }
@@ -8307,6 +8307,14 @@ namespace astute.Controllers
                             {
                                 statusCode = HttpStatusCode.Conflict,
                                 message = "User name already exists."
+                            });
+                        }
+                        if (result == 410)
+                        {
+                            return Conflict(new
+                            {
+                                statusCode = HttpStatusCode.Conflict,
+                                message = "Primary user already exists."
                             });
                         }
                         else if (result > 0)
