@@ -8504,7 +8504,6 @@ namespace astute.Controllers
             }
         }
 
-
         [HttpGet]
         [Route("get_customer_lab_user")]
         [Authorize]
@@ -8533,6 +8532,71 @@ namespace astute.Controllers
                 });
             }
         }
+
+
+
+        #endregion
+
+        #region Customer API/FILE/FTP
+        [HttpPost]
+        [Route("create_update_customer_detail")]
+        [Authorize]
+        public virtual async Task<IActionResult> Create_Update_Customer_Detail([FromForm] Customer_Detail customer_Details)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    bool success = false;
+                    //if (supplier_Details.Party_Api != null)
+                    //{
+                    //    supplier_Details.Party_Api.Party_Id = supplier_Details.Party_Id;
+                    //    var party_Api = await _partyService.Add_Update_Party_API(supplier_Details.Party_Api, supplier_Details.User_Id ?? 0);
+                    //    if (party_Api > 0)
+                    //    {
+                    //        success = true;
+                    //    }
+                    //}
+                    if (customer_Details.Customer_Party_FTP != null)
+                    {
+                        customer_Details.Customer_Party_FTP.Party_Id = customer_Details.Party_Id;
+                        var party_ftp = await _partyService.Add_Update_Customer_Party_FTP(customer_Details.Customer_Party_FTP, customer_Details.User_Id ?? 0);
+                        if (party_ftp > 0)
+                        {
+                            success = true;
+                        }
+                    }
+                    if (customer_Details.Customer_Party_File != null)
+                    {
+                        customer_Details.Customer_Party_File.Party_Id = customer_Details.Party_Id;
+                        var party_file = await _partyService.Add_Update_Customer_Party_File(customer_Details.Customer_Party_File, customer_Details.User_Id ?? 0);
+                        if (party_file > 0)
+                        {
+                            success = true;
+                        }
+                    }
+                    if (success)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.SupplierDetailSavedSuccessfully
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Customer_Detail", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+
         #endregion
     }
 }

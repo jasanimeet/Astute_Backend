@@ -808,6 +808,86 @@ namespace astute.Repository
         }
         #endregion
 
+        #region Customer Party File
+        public async Task<int> Add_Update_Customer_Party_File(Customer_Party_File party_File, int modified_By)
+        {
+            var file_Id = new SqlParameter("@File_Id", party_File.File_Id);
+            var _party_Id = party_File.Party_Id > 0 ? new SqlParameter("@Party_Id", party_File.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+            var file_Name = !string.IsNullOrEmpty(party_File.File_Name) ? new SqlParameter("@File_Name", party_File.File_Name) : new SqlParameter("@File_Name", DBNull.Value);
+            var file_Type = !string.IsNullOrEmpty(party_File.File_Type) ? new SqlParameter("@File_Type", party_File.File_Type) : new SqlParameter("@File_Type", DBNull.Value);
+            var iP = !string.IsNullOrEmpty(party_File.IP) ? new SqlParameter("@IP", party_File.IP) : new SqlParameter("@IP", DBNull.Value);
+            var short_Code = !string.IsNullOrEmpty(party_File.Short_Code) ? new SqlParameter("@Short_Code", party_File.Short_Code) : new SqlParameter("@Short_Code", DBNull.Value);
+            var file_Status = new SqlParameter("@File_Status", party_File.File_Status ?? false);
+            var _modified_By = new SqlParameter("@Modified_By", modified_By);
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Customer_Party_File_Insert_Update @File_Id, @Party_Id, @File_Name,@File_Type,@IP, @Short_Code, @File_Status, @Modified_By", 
+                        file_Id, _party_Id, file_Name,file_Type,iP, short_Code, file_Status, _modified_By));
+
+            return result;
+        }
+        public async Task<int> Delete_Customer_Party_File(int file_Id)
+        {
+            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Customer_Party_File_Delete {file_Id}"));
+        }
+        public async Task<Party_File> Get_Customer_Party_File(int file_Id, int party_Id)
+        {
+            var _file_Id = file_Id > 0 ? new SqlParameter("@File_Id", file_Id) : new SqlParameter("@File_Id", DBNull.Value);
+            var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Party_File
+                            .FromSqlRaw(@"exec [Customer_Party_File_Select] @File_Id, @Party_Id", _file_Id, _party_Id)
+                            .AsEnumerable()
+                            .FirstOrDefault());
+
+            return result;
+        }
+        #endregion
+
+        #region Customer Party FTP
+        public async Task<int> Add_Update_Customer_Party_FTP(Customer_Party_FTP party_FTP, int modified_By)
+        {
+            var ftp_Id = new SqlParameter("@FTP_Id", party_FTP.FTP_Id);
+            var _party_Id = party_FTP.Party_Id > 0 ? new SqlParameter("@Party_Id", party_FTP.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+            var host = !string.IsNullOrEmpty(party_FTP.Host) ? new SqlParameter("@Host", party_FTP.Host) : new SqlParameter("@Host", DBNull.Value);
+            var ftp_Port = party_FTP.Ftp_Port > 0 ? new SqlParameter("@Ftp_Port", party_FTP.Ftp_Port) : new SqlParameter("@Ftp_Port", DBNull.Value);
+            var ftp_User = !string.IsNullOrEmpty(party_FTP.Ftp_User) ? new SqlParameter("@Ftp_User", party_FTP.Ftp_User) : new SqlParameter("@Ftp_User", DBNull.Value);
+            var ftp_Pasword = !string.IsNullOrEmpty(party_FTP.Ftp_Password) ? new SqlParameter("@Ftp_Password", party_FTP.Ftp_Password) : new SqlParameter("@Ftp_Password", DBNull.Value);
+            var ftp_File_Name = !string.IsNullOrEmpty(party_FTP.Ftp_File_Name) ? new SqlParameter("@Ftp_File_Name", party_FTP.Ftp_File_Name) : new SqlParameter("@Ftp_File_Name", DBNull.Value);
+            var ftp_File_Type = !string.IsNullOrEmpty(party_FTP.Ftp_File_Type) ? new SqlParameter("@Ftp_File_Type", party_FTP.Ftp_File_Type) : new SqlParameter("@Ftp_File_Type", DBNull.Value);
+            var api_Inverse = new SqlParameter("@Disc_Inverse", party_FTP.Disc_Inverse ?? false);
+            var repeateveryType = !string.IsNullOrEmpty(party_FTP.RepeateveryType) ? new SqlParameter("@RepeateveryType", party_FTP.RepeateveryType) : new SqlParameter("@RepeateveryType", DBNull.Value);
+            var repeatevery = !string.IsNullOrEmpty(party_FTP.Repeatevery) ? new SqlParameter("@Repeatevery", party_FTP.Repeatevery) : new SqlParameter("@Repeatevery", DBNull.Value);
+            var secure_Ftp = new SqlParameter("@Secure_Ftp", party_FTP.Secure_Ftp ?? false);
+            var short_Code = !string.IsNullOrEmpty(party_FTP.Short_Code) ? new SqlParameter("@Short_Code", party_FTP.Short_Code) : new SqlParameter("@Short_Code", DBNull.Value);
+            var ftp_Status = new SqlParameter("@Ftp_Status", party_FTP.Ftp_Status ?? false);
+            var _modified_By = new SqlParameter("@Modified_By", modified_By);
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Customer_Party_File_Insert_Update @FTP_Id, @Party_Id, @Host, @Ftp_Port, @Ftp_User, @Ftp_Password, @Ftp_File_Name, @Ftp_File_Type,
+                        @Disc_Inverse, @RepeateveryType, @Repeatevery, @Secure_Ftp, @Short_Code, @Ftp_Status, @Modified_By", ftp_Id, _party_Id, host, ftp_Port,
+                        ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Type, api_Inverse,repeateveryType, repeatevery, secure_Ftp, short_Code, ftp_Status,_modified_By));
+
+            return result;
+        }
+        public async Task<int> Delete_Customer_Party_FTP(int ftp_Id)
+        {
+            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Customer_Party_FTP_Delete {ftp_Id}"));
+        }
+        public async Task<Customer_Party_FTP> Get_Customer_Party_FTP(int ftp_Id, int party_Id)
+        {
+            var _ftp_Id = ftp_Id > 0 ? new SqlParameter("@FTP_Id", ftp_Id) : new SqlParameter("@FTP_Id", DBNull.Value);
+            var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Customer_Party_FTP
+                            .FromSqlRaw(@"exec Customer_Party_FTP_Select @FTP_Id, @Party_Id", _ftp_Id, _party_Id)
+                            .AsEnumerable()
+                            .FirstOrDefault());
+
+            return result;
+        }
+        #endregion
+
         public async Task<IList<Supplier_Details_List>> Get_Suplier_Detail_List(int party_Id)
         {
             var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
