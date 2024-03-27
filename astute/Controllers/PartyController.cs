@@ -8227,6 +8227,191 @@ namespace astute.Controllers
                 });
             }
         }
+
+
+        [HttpPost]
+        [Route("send_stock_availability_email")]
+        [Authorize]
+        public async Task<IActionResult> Send_Stock_Availability_Email([FromForm] Stock_Avalibility_Send_Email stock_Avalibility, IFormFile? File_Location)
+        {
+            try
+            {
+                IList<Stock_Avalibility_Values> stock_Avalibility_Values = new List<Stock_Avalibility_Values>();
+                var lst_Stock_Id = new List<string>();
+                if (!string.IsNullOrEmpty(stock_Avalibility.stock_Id) && stock_Avalibility.stock_Id.Contains(";"))
+                {
+                    lst_Stock_Id = stock_Avalibility.stock_Id.Split(',').ToList();
+                    if (lst_Stock_Id != null && lst_Stock_Id.Count > 0)
+                    {
+                        foreach (var item in lst_Stock_Id)
+                        {
+                            var model = new Stock_Avalibility_Values();
+                            var lst_stock_val = item.Split(';').ToList();
+                            if (lst_stock_val != null && lst_stock_val.Count > 0)
+                            {
+                                if (lst_stock_val.Count == 1)
+                                {
+                                    for (int i = 0; i < lst_stock_val.Count; i++)
+                                    {
+                                        if (string.IsNullOrEmpty(lst_stock_val[i]))
+                                            continue;
+
+                                        model.Stock_Id = lst_stock_val[0];
+                                    }
+                                }
+                                else if (lst_stock_val.Count == 2)
+                                {
+                                    for (int i = 0; i < lst_stock_val.Count; i++)
+                                    {
+                                        if (i == 0)
+                                        {
+                                            model.Stock_Id = lst_stock_val[0];
+                                        }
+                                        else
+                                        {
+                                            if (string.IsNullOrEmpty(lst_stock_val[i]))
+                                                continue;
+
+                                            var con_val = Convert.ToDecimal(lst_stock_val[i]);
+                                            if (con_val >= -100 && con_val <= 100)
+                                            {
+                                                model.Offer_Disc = lst_stock_val[i];
+                                            }
+                                            else
+                                            {
+                                                model.Offer_Amount = lst_stock_val[i];
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (lst_stock_val.Count == 3)
+                                {
+                                    for (int i = 0; i < lst_stock_val.Count; i++)
+                                    {
+                                        if (i == 0)
+                                        {
+                                            model.Stock_Id = lst_stock_val[0];
+                                        }
+                                        else
+                                        {
+                                            if (string.IsNullOrEmpty(lst_stock_val[i]))
+                                                continue;
+
+                                            var con_val = Convert.ToDecimal(lst_stock_val[i]);
+                                            if (con_val >= -100 && con_val <= 100)
+                                            {
+                                                model.Offer_Disc = lst_stock_val[i];
+                                            }
+                                            else
+                                            {
+                                                model.Offer_Amount = lst_stock_val[i];
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            stock_Avalibility_Values.Add(model);
+                        }
+                    }
+                }
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("STOCK_ID", typeof(string));
+                dataTable.Columns.Add("OFFER_AMOUNT", typeof(string));
+                dataTable.Columns.Add("OFFER_DISC", typeof(string));
+                if (File_Location != null)
+                {
+                    var filePath = Path.GetTempFileName();
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await File_Location.CopyToAsync(stream);
+                    }
+                    using (var package = new ExcelPackage(new FileInfo(filePath)))
+                    {
+                        var worksheet = package.Workbook.Worksheets[0];
+                        int startRow = 2;
+
+                        HashSet<string> uniqueValues = new HashSet<string>();
+                        for (int row = startRow; row <= worksheet.Dimension.End.Row; row++)
+                        {
+                            string value = worksheet.Cells[row, 1].GetValue<string>();
+                            string offer_amt = worksheet.Cells[row, 3].GetValue<string>();
+                            if (!uniqueValues.Contains(value))
+                            {
+                                uniqueValues.Add(value);
+                                dataTable.Rows.Add(value, !string.IsNullOrEmpty(offer_amt) ? offer_amt.Replace(",", "") : DBNull.Value, worksheet.Cells[row, 2].GetValue<string>());
+                            }
+                        }
+                    }
+                }
+                else if (stock_Avalibility_Values != null && stock_Avalibility_Values.Count > 0)
+                {
+                    stock_Avalibility.stock_Id = null;
+                    foreach (var item in stock_Avalibility_Values)
+                    {
+                        dataTable.Rows.Add(!string.IsNullOrEmpty(item.Stock_Id) ? item.Stock_Id : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Amount) ? item.Offer_Amount : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Disc) ? item.Offer_Disc : DBNull.Value);
+                    }
+                }
+                var dt_stock = await _supplierService.Get_Stock_Availability_Report_Excel(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type);
+                if (dt_stock != null && dt_stock.Rows.Count > 0)
+                {
+                    List<string> columnNames = new List<string>();
+                    foreach (DataColumn column in dt_stock.Columns)
+                    {
+                        columnNames.Add(column.ColumnName);
+                    }
+
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in columnNames)
+                    {
+                        columnNamesTable.Rows.Add(columnName);
+                    }
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string filename = string.Empty;
+
+                    filename = "Stock_Availability_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    EpExcelExport.Stock_Availability_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+
+                    excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                    byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
+                    using (MemoryStream memoryStream = new MemoryStream(fileBytes))
+                    {
+                        var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                        var user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                        int? login_user_id = Convert.ToInt32(user_Id);
+                        var employeeEmails = await _employeeService.GetEmployeeMail(login_user_id ?? 0);
+                        if (employeeEmails != null && employeeEmails.Count > 0)
+                        {
+                            var emp_email = employeeEmails.FirstOrDefault();
+
+                            IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
+                            _emailSender.Send_Stock_Email(toEmail: stock_Avalibility.To_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, strBody: stock_Avalibility.Remarks, user_Id: login_user_id ?? 0, employee_Mail: emp_email);
+                        }
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.EmailSendSuccessMessage
+                        });
+                    }
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Send_Stock_Availability_Email", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Purchase Order
