@@ -4404,6 +4404,7 @@ namespace astute.Controllers
                         MAX_SLAB_PRICE_PER_CTS = item.Where(x => x.Column_Name == "MAX SLAB PRICE PER CTS").Select(x => x.Category_Value).FirstOrDefault();
                         BUYER_DISC = item.Where(x => x.Column_Name == "BUYER DISC").Select(x => x.Category_Value).FirstOrDefault();
                         BUYER_AMOUNT = item.Where(x => x.Column_Name == "BUYER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                        TABLE_BLACK = item.Where(x => x.Column_Name == "TABLE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                         TABLE_WHITE = item.Where(x => x.Column_Name == "TABLE WHITE").Select(x => x.Category_Value).FirstOrDefault();
                         SIDE_BLACK = item.Where(x => x.Column_Name == "SIDE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                         SIDE_WHITE = item.Where(x => x.Column_Name == "SIDE WHITE").Select(x => x.Category_Value).FirstOrDefault();
@@ -4680,6 +4681,7 @@ namespace astute.Controllers
                         MAX_SLAB_PRICE_PER_CTS = item.Where(x => x.Column_Name == "MAX SLAB PRICE PER CTS").Select(x => x.Category_Value).FirstOrDefault();
                         BUYER_DISC = item.Where(x => x.Column_Name == "BUYER DISC").Select(x => x.Category_Value).FirstOrDefault();
                         BUYER_AMOUNT = item.Where(x => x.Column_Name == "BUYER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                        TABLE_BLACK = item.Where(x => x.Column_Name == "TABLE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                         TABLE_WHITE = item.Where(x => x.Column_Name == "TABLE WHITE").Select(x => x.Category_Value).FirstOrDefault();
                         SIDE_BLACK = item.Where(x => x.Column_Name == "SIDE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                         SIDE_WHITE = item.Where(x => x.Column_Name == "SIDE WHITE").Select(x => x.Category_Value).FirstOrDefault();
@@ -5637,6 +5639,7 @@ namespace astute.Controllers
                         MAX_SLAB_PRICE_PER_CTS = item.Where(x => x.Column_Name == "MAX SLAB PRICE PER CTS").Select(x => x.Category_Value).FirstOrDefault();
                         BUYER_DISC = item.Where(x => x.Column_Name == "BUYER DISC").Select(x => x.Category_Value).FirstOrDefault();
                         BUYER_AMOUNT = item.Where(x => x.Column_Name == "BUYER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                        TABLE_BLACK = item.Where(x => x.Column_Name == "TABLE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                         TABLE_WHITE = item.Where(x => x.Column_Name == "TABLE WHITE").Select(x => x.Category_Value).FirstOrDefault();
                         SIDE_BLACK = item.Where(x => x.Column_Name == "SIDE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                         SIDE_WHITE = item.Where(x => x.Column_Name == "SIDE WHITE").Select(x => x.Category_Value).FirstOrDefault();
@@ -7183,6 +7186,7 @@ namespace astute.Controllers
                     MAX_SLAB_PRICE_PER_CTS = item.Where(x => x.Column_Name == "MAX SLAB PRICE PER CTS").Select(x => x.Category_Value).FirstOrDefault();
                     BUYER_DISC = item.Where(x => x.Column_Name == "BUYER DISC").Select(x => x.Category_Value).FirstOrDefault();
                     BUYER_AMOUNT = item.Where(x => x.Column_Name == "BUYER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                    TABLE_BLACK = item.Where(x => x.Column_Name == "TABLE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                     TABLE_WHITE = item.Where(x => x.Column_Name == "TABLE WHITE").Select(x => x.Category_Value).FirstOrDefault();
                     SIDE_BLACK = item.Where(x => x.Column_Name == "SIDE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                     SIDE_WHITE = item.Where(x => x.Column_Name == "SIDE WHITE").Select(x => x.Category_Value).FirstOrDefault();
@@ -7989,6 +7993,7 @@ namespace astute.Controllers
                             MAX_SLAB_PRICE_PER_CTS = item.Where(x => x.Column_Name == "MAX SLAB PRICE PER CTS").Select(x => x.Category_Value).FirstOrDefault();
                             BUYER_DISC = item.Where(x => x.Column_Name == "BUYER DISC").Select(x => x.Category_Value).FirstOrDefault();
                             BUYER_AMOUNT = item.Where(x => x.Column_Name == "BUYER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                            TABLE_BLACK = item.Where(x => x.Column_Name == "TABLE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                             TABLE_WHITE = item.Where(x => x.Column_Name == "TABLE WHITE").Select(x => x.Category_Value).FirstOrDefault();
                             SIDE_BLACK = item.Where(x => x.Column_Name == "SIDE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                             SIDE_WHITE = item.Where(x => x.Column_Name == "SIDE WHITE").Select(x => x.Category_Value).FirstOrDefault();
