@@ -888,6 +888,25 @@ namespace astute.Repository
         }
         #endregion
 
+        #region Customer Column Caption
+
+        public async Task<int> Add_Update_Customer_Column_Caption(DataTable dataTable, int modified_By)
+        {
+            var _modified_By = new SqlParameter("@User_Id", modified_By);
+            var parameter = new SqlParameter("@Customer_Pricing_Column_Caption_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Customer_Pricing_Column_Caption_Table_Type",
+                Value = dataTable
+            };
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Create_Update_Customer_Column_Caption  @Customer_Pricing_Column_Caption_Table_Type, @User_Id",
+                        parameter, _modified_By));
+
+            return result;
+        }
+
+        #endregion
+
         public async Task<IList<Supplier_Details_List>> Get_Suplier_Detail_List(int party_Id)
         {
             var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
