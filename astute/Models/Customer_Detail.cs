@@ -12,7 +12,7 @@ namespace astute.Models
         public Customer_Party_File Customer_Party_File { get; set; }
 
         public List<Customer_Column_Caption> Customer_Column_Caption = new List<Customer_Column_Caption>();
-        public int? User_Id { get; set; }
+        public string? User_Id { get; set; }
 
     }
 }

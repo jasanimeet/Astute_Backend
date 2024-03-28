@@ -91,7 +91,11 @@ namespace astute.Repository
         #region Customer Party FTP
         Task<int> Add_Update_Customer_Party_FTP(Customer_Party_FTP party_FTP, int modified_By);
         Task<int> Delete_Customer_Party_FTP(int ftp_Id);
-        Task<Party_FTP> Get_Customer_Party_FTP(int ftp_Id, int party_Id);
+        Task<Customer_Party_FTP> Get_Customer_Party_FTP(int ftp_Id, int party_Id);
+        #endregion
+
+        #region Customer Column Caption
+        Task<int> Add_Update_Customer_Column_Caption(DataTable dataTable, int UserId);
         #endregion
         Task<IList<Supplier_Details_List>> Get_Suplier_Detail_List(int party_Id);
         Task<IList<DropdownModel>> Get_Party_Suplier();

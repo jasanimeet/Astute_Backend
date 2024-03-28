@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -5036,7 +5037,7 @@ namespace astute.Controllers
                     }
                 }
 
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr,totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr) = await _supplierService.Get_Stock_Avalibility_Report_Search(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.iPgNo ?? 0, stock_Avalibility.iPgSize ?? 0, stock_Avalibility.iSort);
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr) = await _supplierService.Get_Stock_Avalibility_Report_Search(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.iPgNo ?? 0, stock_Avalibility.iPgSize ?? 0, stock_Avalibility.iSort);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -6238,7 +6239,7 @@ namespace astute.Controllers
                     {
                         foreach (var item in result)
                         {
-                            if (item.ContainsKey("Display_Name") && item.ContainsKey("Display_Type") && item["Display_Type"].ToString()=="D")
+                            if (item.ContainsKey("Display_Name") && item.ContainsKey("Display_Type") && item["Display_Type"].ToString() == "D")
                             {
                                 columnNames.Add(item["Display_Name"].ToString().Trim());
                             }
@@ -6479,7 +6480,7 @@ namespace astute.Controllers
                             if (!uniqueValues.Contains(value))
                             {
                                 uniqueValues.Add(value);
-                                dataTable.Rows.Add(value, worksheet.Cells[row, 3].GetValue<string>().Replace(",",""), worksheet.Cells[row, 2].GetValue<string>());
+                                dataTable.Rows.Add(value, worksheet.Cells[row, 3].GetValue<string>().Replace(",", ""), worksheet.Cells[row, 2].GetValue<string>());
                             }
                         }
                     }
@@ -6548,9 +6549,9 @@ namespace astute.Controllers
             try
             {
                 var result = await _cartService.Get_Order_Summary(order_No);
-                if(result != null && result.Count > 0)
+                if (result != null && result.Count > 0)
                 {
-                    return Ok(new 
+                    return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.DataSuccessfullyFound,
@@ -8323,13 +8324,13 @@ namespace astute.Controllers
             catch (SqlException ex)
             {
                 string message = ex.Message;
-                if(ex.Number == 515)
+                if (ex.Number == 515)
                 {
-                    if(message.Contains("User_Name") && message.Contains("Password"))
+                    if (message.Contains("User_Name") && message.Contains("Password"))
                     {
                         message = "User name and password is required.";
                     }
-                    else if(message.Contains("User_Name"))
+                    else if (message.Contains("User_Name"))
                     {
                         message = "User name is required.";
                     }
@@ -8342,7 +8343,7 @@ namespace astute.Controllers
                         message = "User type is required.";
                     }
                 }
-                else if(ex.Number == 547)
+                else if (ex.Number == 547)
                 {
                     message = "Company name is required.";
                 }
@@ -8547,6 +8548,8 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                     bool success = false;
                     //if (supplier_Details.Party_Api != null)
                     //{
@@ -8560,7 +8563,7 @@ namespace astute.Controllers
                     if (customer_Details.Customer_Party_FTP != null)
                     {
                         customer_Details.Customer_Party_FTP.Party_Id = customer_Details.Party_Id;
-                        var party_ftp = await _partyService.Add_Update_Customer_Party_FTP(customer_Details.Customer_Party_FTP, customer_Details.User_Id ?? 0);
+                        var party_ftp = await _partyService.Add_Update_Customer_Party_FTP(customer_Details.Customer_Party_FTP, user_Id??0);
                         if (party_ftp > 0)
                         {
                             success = true;
@@ -8569,8 +8572,34 @@ namespace astute.Controllers
                     if (customer_Details.Customer_Party_File != null)
                     {
                         customer_Details.Customer_Party_File.Party_Id = customer_Details.Party_Id;
-                        var party_file = await _partyService.Add_Update_Customer_Party_File(customer_Details.Customer_Party_File, customer_Details.User_Id ?? 0);
+                        var party_file = await _partyService.Add_Update_Customer_Party_File(customer_Details.Customer_Party_File, user_Id??0);
                         if (party_file > 0)
+                        {
+                            success = true;
+                        }
+                    }
+                    if (customer_Details.Customer_Column_Caption != null && customer_Details.Customer_Column_Caption.Count > 0)
+                    {
+
+                        DataTable dataTable = new DataTable();
+                        dataTable.Columns.Add("Col_Id", typeof(int));
+                        dataTable.Columns.Add("Caption_Name", typeof(string));
+                        dataTable.Columns.Add("Upload_Method", typeof(string));
+                        dataTable.Columns.Add("Status", typeof(bool));
+                        dataTable.Columns.Add("User_Id", typeof(bool));
+
+                        string[] user_ids = !string.IsNullOrEmpty(customer_Details.User_Id) ? customer_Details.User_Id.Split(",") : null;
+
+                        foreach (var item1 in user_ids)
+                        {
+                            foreach (var item in customer_Details.Customer_Column_Caption)
+                            {
+                                dataTable.Rows.Add(item.Col_Id, item.Caption_Name, item.Upload_Method, item.Status, item.Status, item1);
+                            }
+                        }
+                        
+                        var column_Caption = await _partyService.Add_Update_Customer_Column_Caption(dataTable, user_Id ?? 0);
+                        if (column_Caption > 0)
                         {
                             success = true;
                         }
@@ -8595,7 +8624,6 @@ namespace astute.Controllers
                 });
             }
         }
-
 
         #endregion
     }
