@@ -8609,7 +8609,7 @@ namespace astute.Controllers
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.SupplierDetailSavedSuccessfully
+                            message = CoreCommonMessage.CustomerDetailSavedSuccessfully
                         });
                     }
                 }
@@ -8617,8 +8617,8 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Customer_Detail", ex.StackTrace);
-                return Ok(new
+                await _commonService.InsertErrorLog(ex.Message, "Add_Update_Customer_Column_Caption", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
