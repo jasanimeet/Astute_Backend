@@ -3688,7 +3688,7 @@ namespace astute.Controllers
                 }
                 else
                 {
-                    message = ex.Message;
+                    message = "Either column or value mapping is wrong";
                 }
                 return Ok(new
                 {
