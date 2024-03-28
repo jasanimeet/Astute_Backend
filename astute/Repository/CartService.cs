@@ -26,7 +26,7 @@ namespace astute.Repository
         #endregion
 
         #region Methods
-        public async Task<(string, int)> Create_Update_Cart(DataTable dataTable, int User_Id, string customer_Name, string remarks, int validity_Days)
+        public async Task<(string, int,string)> Create_Update_Cart(DataTable dataTable, int User_Id, string customer_Name, string remarks, int validity_Days)
         {
             var parameter = new SqlParameter("@Cart_Table_Type", SqlDbType.Structured)
             {
@@ -42,16 +42,22 @@ namespace astute.Repository
             {
                 Direction = ParameterDirection.Output
             };
+            var msg = new SqlParameter("@Msg", SqlDbType.NVarChar)
+            {
+                Size=-1,
+                Direction = ParameterDirection.Output
+            };
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Cart_Insert_Update] @Cart_Table_Type, @User_Id, @Customer_Name, @Remarks, @Validity_Days, @IsExist OUT",
-                        parameter, user_Id, _customer_Name, _remarks, _validity_Days, is_Exists));
+                        .ExecuteSqlRawAsync(@"EXEC [Cart_Insert_Update] @Cart_Table_Type, @User_Id, @Customer_Name, @Remarks, @Validity_Days, @IsExist OUT, @Msg OUT",
+                        parameter, user_Id, _customer_Name, _remarks, _validity_Days, is_Exists, msg));
 
             var _is_Exists = (bool)is_Exists.Value;
+            var _msg = (string)msg.Value;
             if (_is_Exists)
-                return ("exist",0);
+                return ("exist",0, _msg);
 
-            return ("success", result);
+            return ("success", result, _msg);
         }
         public async Task<int> Delete_Cart(string ids, int user_Id)
         {

@@ -5939,14 +5939,14 @@ namespace astute.Controllers
                             (!string.IsNullOrEmpty(item.Cart_Status) ? Convert.ToDouble(item.Cart_Status.ToString()) : null));
                     }
 
-                    var (message, result) = await _cartService.Create_Update_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
+                    var (message, result,msg) = await _cartService.Create_Update_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
                     if (message == "exist" || (message == "success" && result > 0))
                     {
                         // if alredy exists stone add again then message should show succsessfully added.
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.CartAdded
+                            message = msg
 
                         });
                     }
