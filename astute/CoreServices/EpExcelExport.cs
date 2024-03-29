@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.Intrinsics.X86;
 using System.Threading;
 
 namespace astute.CoreServices
@@ -1807,7 +1808,7 @@ namespace astute.CoreServices
                                         worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(bid_bg);
                                     }
                                     else if (Column_Name == "Avg. Stock Disc(%)")
-                                    {
+                                    {   
                                         string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Avg. Stock Disc(%)"]);
                                         worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Avg. Stock Disc(%)"]) : DBNull.Value;
 
@@ -2190,9 +2191,14 @@ namespace astute.CoreServices
 
                     int totalColumns = worksheet.Dimension.End.Column;
 
-                    if (totalColumns >= 2)
+                    //if (totalColumns >= 2)
+                    //{
+                    //    worksheet.DeleteColumn(totalColumns - 1, 3);
+                    //}
+
+                    if (totalColumns > 1)
                     {
-                        worksheet.DeleteColumn(totalColumns - 1, 2);
+                        worksheet.DeleteColumn(totalColumns, totalColumns);
                     }
 
                     Byte[] bin = ep.GetAsByteArray();
