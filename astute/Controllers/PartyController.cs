@@ -3689,7 +3689,7 @@ namespace astute.Controllers
                 }
                 else
                 {
-                    message = ex.Message;
+                    message = "Either column or value mapping is wrong";
                 }
                 return Ok(new
                 {
@@ -4286,7 +4286,7 @@ namespace astute.Controllers
                            TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
                            GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
                            KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
-                           FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty,
+                           FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
                            STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty, SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE = string.Empty;
 
                 DataTable dataTable = new DataTable();
@@ -4349,6 +4349,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("FANCY_INTENSITY", typeof(string));
                 dataTable.Columns.Add("FANCY_OVERTONE", typeof(string));
                 dataTable.Columns.Add("POINTER", typeof(string));
+                dataTable.Columns.Add("SUB_POINTER", typeof(string));
                 dataTable.Columns.Add("STAR_LN", typeof(string));
                 dataTable.Columns.Add("LR_HALF", typeof(string));
                 dataTable.Columns.Add("CERT_TYPE", typeof(string));
@@ -4405,6 +4406,7 @@ namespace astute.Controllers
                         MAX_SLAB_PRICE_PER_CTS = item.Where(x => x.Column_Name == "MAX SLAB PRICE PER CTS").Select(x => x.Category_Value).FirstOrDefault();
                         BUYER_DISC = item.Where(x => x.Column_Name == "BUYER DISC").Select(x => x.Category_Value).FirstOrDefault();
                         BUYER_AMOUNT = item.Where(x => x.Column_Name == "BUYER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                        TABLE_BLACK = item.Where(x => x.Column_Name == "TABLE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                         TABLE_WHITE = item.Where(x => x.Column_Name == "TABLE WHITE").Select(x => x.Category_Value).FirstOrDefault();
                         SIDE_BLACK = item.Where(x => x.Column_Name == "SIDE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                         SIDE_WHITE = item.Where(x => x.Column_Name == "SIDE WHITE").Select(x => x.Category_Value).FirstOrDefault();
@@ -4421,6 +4423,7 @@ namespace astute.Controllers
                         FANCY_INTENSITY = item.Where(x => x.Column_Name == "FANCY INTENSITY").Select(x => x.Category_Value).FirstOrDefault();
                         FANCY_OVERTONE = item.Where(x => x.Column_Name == "FANCY OVERTONE").Select(x => x.Category_Value).FirstOrDefault();
                         POINTER = item.Where(x => x.Column_Name == "POINTER").Select(x => x.Category_Value).FirstOrDefault();
+                        SUB_POINTER = item.Where(x => x.Column_Name == "SUB POINTER").Select(x => x.Category_Value).FirstOrDefault();
                         STAR_LN = item.Where(x => x.Column_Name == "STAR LN").Select(x => x.Category_Value).FirstOrDefault();
                         LR_HALF = item.Where(x => x.Column_Name == "LR HALF").Select(x => x.Category_Value).FirstOrDefault();
                         CERT_TYPE = item.Where(x => x.Column_Name == "CERT TYPE").Select(x => x.Category_Value).FirstOrDefault();
@@ -4490,6 +4493,7 @@ namespace astute.Controllers
                             !string.IsNullOrEmpty(FANCY_INTENSITY) ? FANCY_INTENSITY : DBNull.Value,
                             !string.IsNullOrEmpty(FANCY_OVERTONE) ? FANCY_OVERTONE : DBNull.Value,
                             !string.IsNullOrEmpty(POINTER) ? POINTER : DBNull.Value,
+                            !string.IsNullOrEmpty(SUB_POINTER) ? SUB_POINTER : DBNull.Value,
                             !string.IsNullOrEmpty(STAR_LN) ? STAR_LN : DBNull.Value,
                             !string.IsNullOrEmpty(LR_HALF) ? LR_HALF : DBNull.Value,
                             !string.IsNullOrEmpty(CERT_TYPE) ? CERT_TYPE : DBNull.Value,
@@ -4562,7 +4566,7 @@ namespace astute.Controllers
                           TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
                           GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
                           KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
-                          FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty,
+                          FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
                           STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty, SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE = string.Empty;
 
                 DataTable dataTable = new DataTable();
@@ -4625,6 +4629,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("FANCY_INTENSITY", typeof(string));
                 dataTable.Columns.Add("FANCY_OVERTONE", typeof(string));
                 dataTable.Columns.Add("POINTER", typeof(string));
+                dataTable.Columns.Add("SUB_POINTER", typeof(string));
                 dataTable.Columns.Add("STAR_LN", typeof(string));
                 dataTable.Columns.Add("LR_HALF", typeof(string));
                 dataTable.Columns.Add("CERT_TYPE", typeof(string));
@@ -4681,6 +4686,7 @@ namespace astute.Controllers
                         MAX_SLAB_PRICE_PER_CTS = item.Where(x => x.Column_Name == "MAX SLAB PRICE PER CTS").Select(x => x.Category_Value).FirstOrDefault();
                         BUYER_DISC = item.Where(x => x.Column_Name == "BUYER DISC").Select(x => x.Category_Value).FirstOrDefault();
                         BUYER_AMOUNT = item.Where(x => x.Column_Name == "BUYER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                        TABLE_BLACK = item.Where(x => x.Column_Name == "TABLE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                         TABLE_WHITE = item.Where(x => x.Column_Name == "TABLE WHITE").Select(x => x.Category_Value).FirstOrDefault();
                         SIDE_BLACK = item.Where(x => x.Column_Name == "SIDE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                         SIDE_WHITE = item.Where(x => x.Column_Name == "SIDE WHITE").Select(x => x.Category_Value).FirstOrDefault();
@@ -4697,6 +4703,7 @@ namespace astute.Controllers
                         FANCY_INTENSITY = item.Where(x => x.Column_Name == "FANCY INTENSITY").Select(x => x.Category_Value).FirstOrDefault();
                         FANCY_OVERTONE = item.Where(x => x.Column_Name == "FANCY OVERTONE").Select(x => x.Category_Value).FirstOrDefault();
                         POINTER = item.Where(x => x.Column_Name == "POINTER").Select(x => x.Category_Value).FirstOrDefault();
+                        SUB_POINTER = item.Where(x => x.Column_Name == "SUB POINTER").Select(x => x.Category_Value).FirstOrDefault();
                         STAR_LN = item.Where(x => x.Column_Name == "STAR LN").Select(x => x.Category_Value).FirstOrDefault();
                         LR_HALF = item.Where(x => x.Column_Name == "LR HALF").Select(x => x.Category_Value).FirstOrDefault();
                         CERT_TYPE = item.Where(x => x.Column_Name == "CERT TYPE").Select(x => x.Category_Value).FirstOrDefault();
@@ -4766,6 +4773,7 @@ namespace astute.Controllers
                             !string.IsNullOrEmpty(FANCY_INTENSITY) ? FANCY_INTENSITY : DBNull.Value,
                             !string.IsNullOrEmpty(FANCY_OVERTONE) ? FANCY_OVERTONE : DBNull.Value,
                             !string.IsNullOrEmpty(POINTER) ? POINTER : DBNull.Value,
+                            !string.IsNullOrEmpty(SUB_POINTER) ? SUB_POINTER : DBNull.Value,
                             !string.IsNullOrEmpty(STAR_LN) ? STAR_LN : DBNull.Value,
                             !string.IsNullOrEmpty(LR_HALF) ? LR_HALF : DBNull.Value,
                             !string.IsNullOrEmpty(CERT_TYPE) ? CERT_TYPE : DBNull.Value,
@@ -4801,6 +4809,7 @@ namespace astute.Controllers
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "COMPANY", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("COMPANY")).Select(x => new { Category_Name = x["COMPANY"].ToString(), Category_Value = x["COMPANY"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SHAPE", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("SHAPE") && x.ContainsKey("SHAPE_Id")).Select(x => new { Category_Name = x["SHAPE"].ToString(), Category_Value = x["SHAPE_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "POINTER", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("POINTER") && x.ContainsKey("POINTER_Id")).Select(x => new { Category_Name = x["POINTER"].ToString(), Category_Value = x["POINTER_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SUB POINTER", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("SUB POINTER") && x.ContainsKey("SUB_POINTER_Id")).Select(x => new { Category_Name = x["SUB POINTER"].ToString(), Category_Value = x["SUB_POINTER_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BGM", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("BGM") && x.ContainsKey("BGM_Id")).Select(x => new { Category_Name = x["BGM"].ToString(), Category_Value = x["BGM_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "COLOR", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("COLOR") && x.ContainsKey("COLOR_Id")).Select(x => new { Category_Name = x["COLOR"].ToString(), Category_Value = x["COLOR_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "CLARITY", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("CLARITY") && x.ContainsKey("CLARITY_Id")).Select(x => new { Category_Name = x["CLARITY"].ToString(), Category_Value = x["CLARITY_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
@@ -4867,7 +4876,6 @@ namespace astute.Controllers
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "RANK", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SUNRISE STATUS", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "STATUS", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("STATUS") && x.ContainsKey("STATUS_Id")).Select(x => new { Category_Name = x["STATUS"].ToString(), Category_Value = x["STATUS_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
-                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SUB POINTER", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BID", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BUYER", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BUYER DISC", Display_Type = "R", Column_Value = Column_Values });
@@ -5020,10 +5028,11 @@ namespace astute.Controllers
                         for (int row = startRow; row <= worksheet.Dimension.End.Row; row++)
                         {
                             string value = worksheet.Cells[row, 1].GetValue<string>();
+                            string offer_amt = worksheet.Cells[row, 3].GetValue<string>();
                             if (!uniqueValues.Contains(value))
                             {
                                 uniqueValues.Add(value);
-                                dataTable.Rows.Add(value, worksheet.Cells[row, 3].GetValue<string>(), worksheet.Cells[row, 2].GetValue<string>());
+                                dataTable.Rows.Add(value, !string.IsNullOrEmpty(offer_amt) ? offer_amt.Replace(",","") : DBNull.Value, worksheet.Cells[row, 2].GetValue<string>());
                             }
                         }
                     }
@@ -5518,7 +5527,7 @@ namespace astute.Controllers
                            TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
                            GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
                            KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
-                           FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty,
+                           FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
                            STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty, SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE = string.Empty;
 
                 DataTable dataTable = new DataTable();
@@ -5581,6 +5590,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("FANCY_INTENSITY", typeof(string));
                 dataTable.Columns.Add("FANCY_OVERTONE", typeof(string));
                 dataTable.Columns.Add("POINTER", typeof(string));
+                dataTable.Columns.Add("SUB_POINTER", typeof(string));
                 dataTable.Columns.Add("STAR_LN", typeof(string));
                 dataTable.Columns.Add("LR_HALF", typeof(string));
                 dataTable.Columns.Add("CERT_TYPE", typeof(string));
@@ -5637,6 +5647,7 @@ namespace astute.Controllers
                         MAX_SLAB_PRICE_PER_CTS = item.Where(x => x.Column_Name == "MAX SLAB PRICE PER CTS").Select(x => x.Category_Value).FirstOrDefault();
                         BUYER_DISC = item.Where(x => x.Column_Name == "BUYER DISC").Select(x => x.Category_Value).FirstOrDefault();
                         BUYER_AMOUNT = item.Where(x => x.Column_Name == "BUYER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                        TABLE_BLACK = item.Where(x => x.Column_Name == "TABLE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                         TABLE_WHITE = item.Where(x => x.Column_Name == "TABLE WHITE").Select(x => x.Category_Value).FirstOrDefault();
                         SIDE_BLACK = item.Where(x => x.Column_Name == "SIDE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                         SIDE_WHITE = item.Where(x => x.Column_Name == "SIDE WHITE").Select(x => x.Category_Value).FirstOrDefault();
@@ -5653,6 +5664,7 @@ namespace astute.Controllers
                         FANCY_INTENSITY = item.Where(x => x.Column_Name == "FANCY INTENSITY").Select(x => x.Category_Value).FirstOrDefault();
                         FANCY_OVERTONE = item.Where(x => x.Column_Name == "FANCY OVERTONE").Select(x => x.Category_Value).FirstOrDefault();
                         POINTER = item.Where(x => x.Column_Name == "POINTER").Select(x => x.Category_Value).FirstOrDefault();
+                        SUB_POINTER = item.Where(x => x.Column_Name == "SUB POINTER").Select(x => x.Category_Value).FirstOrDefault();
                         STAR_LN = item.Where(x => x.Column_Name == "STAR LN").Select(x => x.Category_Value).FirstOrDefault();
                         LR_HALF = item.Where(x => x.Column_Name == "LR HALF").Select(x => x.Category_Value).FirstOrDefault();
                         CERT_TYPE = item.Where(x => x.Column_Name == "CERT TYPE").Select(x => x.Category_Value).FirstOrDefault();
@@ -5722,6 +5734,7 @@ namespace astute.Controllers
                             !string.IsNullOrEmpty(FANCY_INTENSITY) ? FANCY_INTENSITY : DBNull.Value,
                             !string.IsNullOrEmpty(FANCY_OVERTONE) ? FANCY_OVERTONE : DBNull.Value,
                             !string.IsNullOrEmpty(POINTER) ? POINTER : DBNull.Value,
+                            !string.IsNullOrEmpty(SUB_POINTER) ? SUB_POINTER : DBNull.Value,
                             !string.IsNullOrEmpty(STAR_LN) ? STAR_LN : DBNull.Value,
                             !string.IsNullOrEmpty(LR_HALF) ? LR_HALF : DBNull.Value,
                             !string.IsNullOrEmpty(CERT_TYPE) ? CERT_TYPE : DBNull.Value,
@@ -5936,14 +5949,14 @@ namespace astute.Controllers
                             (!string.IsNullOrEmpty(item.Cart_Status) ? Convert.ToDouble(item.Cart_Status.ToString()) : null));
                     }
 
-                    var (message, result) = await _cartService.Create_Update_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
+                    var (message, result,msg) = await _cartService.Create_Update_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
                     if (message == "exist" || (message == "success" && result > 0))
                     {
                         // if alredy exists stone add again then message should show succsessfully added.
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.CartAdded
+                            message = msg
 
                         });
                     }
@@ -6477,10 +6490,13 @@ namespace astute.Controllers
                         for (int row = startRow; row <= worksheet.Dimension.End.Row; row++)
                         {
                             string value = worksheet.Cells[row, 1].GetValue<string>();
+                            string offer_amt = worksheet.Cells[row, 3].GetValue<string>();
                             if (!uniqueValues.Contains(value))
                             {
                                 uniqueValues.Add(value);
-                                dataTable.Rows.Add(value, worksheet.Cells[row, 3].GetValue<string>().Replace(",", ""), worksheet.Cells[row, 2].GetValue<string>());
+
+                                dataTable.Rows.Add(value, !string.IsNullOrEmpty(offer_amt) ? offer_amt.Replace(",", "") : DBNull.Value, worksheet.Cells[row, 2].GetValue<string>());
+
                             }
                         }
                     }
@@ -7048,7 +7064,7 @@ namespace astute.Controllers
                             TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
                             GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
                             KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
-                            FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty,
+                            FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER=string.Empty,
                             STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty, SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE = string.Empty;
 
             DataTable dataTable = new DataTable();
@@ -7111,6 +7127,7 @@ namespace astute.Controllers
             dataTable.Columns.Add("FANCY_INTENSITY", typeof(string));
             dataTable.Columns.Add("FANCY_OVERTONE", typeof(string));
             dataTable.Columns.Add("POINTER", typeof(string));
+            dataTable.Columns.Add("SUB_POINTER", typeof(string));
             dataTable.Columns.Add("STAR_LN", typeof(string));
             dataTable.Columns.Add("LR_HALF", typeof(string));
             dataTable.Columns.Add("CERT_TYPE", typeof(string));
@@ -7182,6 +7199,7 @@ namespace astute.Controllers
                     MAX_SLAB_PRICE_PER_CTS = item.Where(x => x.Column_Name == "MAX SLAB PRICE PER CTS").Select(x => x.Category_Value).FirstOrDefault();
                     BUYER_DISC = item.Where(x => x.Column_Name == "BUYER DISC").Select(x => x.Category_Value).FirstOrDefault();
                     BUYER_AMOUNT = item.Where(x => x.Column_Name == "BUYER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                    TABLE_BLACK = item.Where(x => x.Column_Name == "TABLE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                     TABLE_WHITE = item.Where(x => x.Column_Name == "TABLE WHITE").Select(x => x.Category_Value).FirstOrDefault();
                     SIDE_BLACK = item.Where(x => x.Column_Name == "SIDE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                     SIDE_WHITE = item.Where(x => x.Column_Name == "SIDE WHITE").Select(x => x.Category_Value).FirstOrDefault();
@@ -7198,6 +7216,7 @@ namespace astute.Controllers
                     FANCY_INTENSITY = item.Where(x => x.Column_Name == "FANCY INTENSITY").Select(x => x.Category_Value).FirstOrDefault();
                     FANCY_OVERTONE = item.Where(x => x.Column_Name == "FANCY OVERTONE").Select(x => x.Category_Value).FirstOrDefault();
                     POINTER = item.Where(x => x.Column_Name == "POINTER").Select(x => x.Category_Value).FirstOrDefault();
+                    SUB_POINTER = item.Where(x => x.Column_Name == "SUB POINTER").Select(x => x.Category_Value).FirstOrDefault();
                     STAR_LN = item.Where(x => x.Column_Name == "STAR LN").Select(x => x.Category_Value).FirstOrDefault();
                     LR_HALF = item.Where(x => x.Column_Name == "LR HALF").Select(x => x.Category_Value).FirstOrDefault();
                     CERT_TYPE = item.Where(x => x.Column_Name == "CERT TYPE").Select(x => x.Category_Value).FirstOrDefault();
@@ -7267,6 +7286,7 @@ namespace astute.Controllers
                         !string.IsNullOrEmpty(FANCY_INTENSITY) ? FANCY_INTENSITY : DBNull.Value,
                         !string.IsNullOrEmpty(FANCY_OVERTONE) ? FANCY_OVERTONE : DBNull.Value,
                         !string.IsNullOrEmpty(POINTER) ? POINTER : DBNull.Value,
+                        !string.IsNullOrEmpty(SUB_POINTER) ? SUB_POINTER : DBNull.Value,
                         !string.IsNullOrEmpty(STAR_LN) ? STAR_LN : DBNull.Value,
                         !string.IsNullOrEmpty(LR_HALF) ? LR_HALF : DBNull.Value,
                         !string.IsNullOrEmpty(CERT_TYPE) ? CERT_TYPE : DBNull.Value,
@@ -7510,12 +7530,20 @@ namespace astute.Controllers
                 dataTable.Columns.Add("PAVILION_ANGLE", typeof(string));
                 dataTable.Columns.Add("PAVILION_HEIGHT", typeof(string));
                 dataTable.Columns.Add("GIRDLE_PER", typeof(string));
+                dataTable.Columns.Add("RAP_RATE", typeof(string));
+                dataTable.Columns.Add("RAP_AMOUNT", typeof(string));
+                dataTable.Columns.Add("COST_DISC", typeof(string));
+                dataTable.Columns.Add("COST_AMOUNT", typeof(string));
                 dataTable.Columns.Add("OFFER_DISC", typeof(string));
                 dataTable.Columns.Add("OFFER_AMOUNT", typeof(string));
+                dataTable.Columns.Add("BASE_DISC", typeof(string));
+                dataTable.Columns.Add("BASE_AMOUNT", typeof(string));
                 dataTable.Columns.Add("PRICE_PER_CTS", typeof(string));
                 dataTable.Columns.Add("MAX_SLAB_BASE_DISC", typeof(string));
                 dataTable.Columns.Add("MAX_SLAB_BASE_AMOUNT", typeof(string));
                 dataTable.Columns.Add("MAX_SLAB_PRICE_PER_CTS", typeof(string));
+                dataTable.Columns.Add("BUYER_DISC", typeof(string));
+                dataTable.Columns.Add("BUYER AMOUNT", typeof(string));
                 dataTable.Columns.Add("TABLE_BLACK", typeof(string));
                 dataTable.Columns.Add("TABLE_WHITE", typeof(string));
                 dataTable.Columns.Add("SIDE_BLACK", typeof(string));
@@ -7533,6 +7561,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("FANCY_INTENSITY", typeof(string));
                 dataTable.Columns.Add("FANCY_OVERTONE", typeof(string));
                 dataTable.Columns.Add("POINTER", typeof(string));
+                dataTable.Columns.Add("SUB_POINTER", typeof(string));
                 dataTable.Columns.Add("STAR_LN", typeof(string));
                 dataTable.Columns.Add("LR_HALF", typeof(string));
                 dataTable.Columns.Add("CERT_TYPE", typeof(string));
@@ -7541,7 +7570,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("DISCOUNT_TYPE", typeof(string));
                 dataTable.Columns.Add("SIGN", typeof(string));
                 dataTable.Columns.Add("DISC_VALUE", typeof(string));
-                dataTable.Columns.Add("BASE_TYPE", typeof(string));
+                dataTable.Columns.Add("BASE TYPE", typeof(string));
 
                 DataRow newRow = dataTable.NewRow();
                 for (int i = 0; i < dataTable.Columns.Count; i++)
@@ -7645,12 +7674,20 @@ namespace astute.Controllers
                 dataTable1.Columns.Add("PAVILION_ANGLE", typeof(string));
                 dataTable1.Columns.Add("PAVILION_HEIGHT", typeof(string));
                 dataTable1.Columns.Add("GIRDLE_PER", typeof(string));
+                dataTable1.Columns.Add("RAP_RATE", typeof(string));
+                dataTable1.Columns.Add("RAP_AMOUNT", typeof(string));
+                dataTable1.Columns.Add("COST_DISC", typeof(string));
+                dataTable1.Columns.Add("COST_AMOUNT", typeof(string));
                 dataTable1.Columns.Add("OFFER_DISC", typeof(string));
                 dataTable1.Columns.Add("OFFER_AMOUNT", typeof(string));
+                dataTable1.Columns.Add("BASE_DISC", typeof(string));
+                dataTable1.Columns.Add("BASE_AMOUNT", typeof(string));
                 dataTable1.Columns.Add("PRICE_PER_CTS", typeof(string));
                 dataTable1.Columns.Add("MAX_SLAB_BASE_DISC", typeof(string));
                 dataTable1.Columns.Add("MAX_SLAB_BASE_AMOUNT", typeof(string));
                 dataTable1.Columns.Add("MAX_SLAB_PRICE_PER_CTS", typeof(string));
+                dataTable1.Columns.Add("BUYER_DISC", typeof(string));
+                dataTable1.Columns.Add("BUYER AMOUNT", typeof(string));
                 dataTable1.Columns.Add("TABLE_BLACK", typeof(string));
                 dataTable1.Columns.Add("TABLE_WHITE", typeof(string));
                 dataTable1.Columns.Add("SIDE_BLACK", typeof(string));
@@ -7668,6 +7705,7 @@ namespace astute.Controllers
                 dataTable1.Columns.Add("FANCY_INTENSITY", typeof(string));
                 dataTable1.Columns.Add("FANCY_OVERTONE", typeof(string));
                 dataTable1.Columns.Add("POINTER", typeof(string));
+                dataTable1.Columns.Add("SUB POINTER", typeof(string));
                 dataTable1.Columns.Add("STAR_LN", typeof(string));
                 dataTable1.Columns.Add("LR_HALF", typeof(string));
                 dataTable1.Columns.Add("CERT_TYPE", typeof(string));
@@ -7676,14 +7714,15 @@ namespace astute.Controllers
                 dataTable1.Columns.Add("DISCOUNT_TYPE", typeof(string));
                 dataTable1.Columns.Add("SIGN", typeof(string));
                 dataTable1.Columns.Add("DISC_VALUE", typeof(string));
-                dataTable1.Columns.Add("BASE_TYPE", typeof(string));
+                dataTable1.Columns.Add("BASE TYPE", typeof(string));
                 var Round_Cat_Val_Id = _configuration["Round_Cat_Val_Id"];
                 dataTable1.Rows.Add(DBNull.Value, DBNull.Value, DBNull.Value, Round_Cat_Val_Id, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
-                            DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value);
+                            DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, 
+                            DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,DBNull.Value);
 
                 //Supplier round stock
                 DataTable supp_round_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable1, "Supplier", null);
@@ -7862,14 +7901,15 @@ namespace astute.Controllers
                            IMAGE_LINK = string.Empty, VIDEO_LINK = string.Empty, LENGTH = string.Empty, WIDTH = string.Empty,
                            DEPTH = string.Empty, TABLE_PER = string.Empty, DEPTH_PER = string.Empty, CROWN_ANGLE = string.Empty,
                            CROWN_HEIGHT = string.Empty, PAVILION_ANGLE = string.Empty, PAVILION_HEIGHT = string.Empty, GIRDLE_PER = string.Empty,
-                           OFFER_DISC = string.Empty, OFFER_VALUE = string.Empty, PRICE_PER_CTS = string.Empty, MAX_SLAB_BASE_DISC = string.Empty, MAX_SLAB_BASE_AMOUNT = string.Empty, MAX_SLAB_PRICE_PER_CTS = string.Empty, TABLE_BLACK = string.Empty,
-                           TABLE_WHITE = string.Empty, SIDE_BLACK = string.Empty, SIDE_WHITE = string.Empty,
+                           RAP_RATE = string.Empty, RAP_AMOUNT = string.Empty, COST_DISC = string.Empty, COST_AMOUNT = string.Empty,
+                           OFFER_DISC = string.Empty, OFFER_VALUE = string.Empty, BASE_DISC = string.Empty, BASE_AMOUNT = string.Empty,
+                           PRICE_PER_CTS = string.Empty, MAX_SLAB_BASE_DISC = string.Empty, MAX_SLAB_BASE_AMOUNT = string.Empty, MAX_SLAB_PRICE_PER_CTS = string.Empty,
+                           BUYER_DISC = string.Empty, BUYER_AMOUNT = string.Empty, TABLE_BLACK = string.Empty, TABLE_WHITE = string.Empty, SIDE_BLACK = string.Empty, SIDE_WHITE = string.Empty,
                            TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
                            GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
                            KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
-                           FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty,
-                           STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty,
-                           SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE = string.Empty;
+                           FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
+                           STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty, SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE = string.Empty;
 
                     DataTable dataTable = new DataTable();
                     dataTable.Columns.Add("STOCK_ID", typeof(string));
@@ -7900,12 +7940,20 @@ namespace astute.Controllers
                     dataTable.Columns.Add("PAVILION_ANGLE", typeof(string));
                     dataTable.Columns.Add("PAVILION_HEIGHT", typeof(string));
                     dataTable.Columns.Add("GIRDLE_PER", typeof(string));
+                    dataTable.Columns.Add("RAP_RATE", typeof(string));
+                    dataTable.Columns.Add("RAP_AMOUNT", typeof(string));
+                    dataTable.Columns.Add("COST_DISC", typeof(string));
+                    dataTable.Columns.Add("COST_AMOUNT", typeof(string));
                     dataTable.Columns.Add("OFFER_DISC", typeof(string));
                     dataTable.Columns.Add("OFFER_AMOUNT", typeof(string));
+                    dataTable.Columns.Add("BASE_DISC", typeof(string));
+                    dataTable.Columns.Add("BASE_AMOUNT", typeof(string));
                     dataTable.Columns.Add("PRICE_PER_CTS", typeof(string));
                     dataTable.Columns.Add("MAX_SLAB_BASE_DISC", typeof(string));
                     dataTable.Columns.Add("MAX_SLAB_BASE_AMOUNT", typeof(string));
                     dataTable.Columns.Add("MAX_SLAB_PRICE_PER_CTS", typeof(string));
+                    dataTable.Columns.Add("BUYER_DISC", typeof(string));
+                    dataTable.Columns.Add("BUYER AMOUNT", typeof(string));
                     dataTable.Columns.Add("TABLE_BLACK", typeof(string));
                     dataTable.Columns.Add("TABLE_WHITE", typeof(string));
                     dataTable.Columns.Add("SIDE_BLACK", typeof(string));
@@ -7923,6 +7971,7 @@ namespace astute.Controllers
                     dataTable.Columns.Add("FANCY_INTENSITY", typeof(string));
                     dataTable.Columns.Add("FANCY_OVERTONE", typeof(string));
                     dataTable.Columns.Add("POINTER", typeof(string));
+                    dataTable.Columns.Add("SUB_POINTER", typeof(string));
                     dataTable.Columns.Add("STAR_LN", typeof(string));
                     dataTable.Columns.Add("LR_HALF", typeof(string));
                     dataTable.Columns.Add("CERT_TYPE", typeof(string));
@@ -7931,7 +7980,7 @@ namespace astute.Controllers
                     dataTable.Columns.Add("DISCOUNT_TYPE", typeof(string));
                     dataTable.Columns.Add("SIGN", typeof(string));
                     dataTable.Columns.Add("DISC_VALUE", typeof(string));
-                    dataTable.Columns.Add("BASE_TYPE", typeof(string));
+                    dataTable.Columns.Add("BASE TYPE", typeof(string));
 
                     if (stock_Email_Model.Report_Filter_Parameter_List != null && stock_Email_Model.Report_Filter_Parameter_List.Count > 0)
                     {
@@ -7965,13 +8014,20 @@ namespace astute.Controllers
                             PAVILION_ANGLE = item.Where(x => x.Column_Name == "PAVILION ANGLE").Select(x => x.Category_Value).FirstOrDefault();
                             PAVILION_HEIGHT = item.Where(x => x.Column_Name == "PAVILION HEIGHT").Select(x => x.Category_Value).FirstOrDefault();
                             GIRDLE_PER = item.Where(x => x.Column_Name == "GIRDLE PER").Select(x => x.Category_Value).FirstOrDefault();
+                            RAP_RATE = item.Where(x => x.Column_Name == "RAP RATE").Select(x => x.Category_Value).FirstOrDefault();
+                            RAP_AMOUNT = item.Where(x => x.Column_Name == "RAP AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                            COST_DISC = item.Where(x => x.Column_Name == "COST DISC").Select(x => x.Category_Value).FirstOrDefault();
+                            COST_AMOUNT = item.Where(x => x.Column_Name == "COST AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
                             OFFER_DISC = item.Where(x => x.Column_Name == "OFFER DISC").Select(x => x.Category_Value).FirstOrDefault();
-                            OFFER_VALUE = item.Where(x => x.Column_Name == "OFFER VALUE").Select(x => x.Category_Value).FirstOrDefault();
+                            OFFER_VALUE = item.Where(x => x.Column_Name == "OFFER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                            BASE_DISC = item.Where(x => x.Column_Name == "BASE DISC").Select(x => x.Category_Value).FirstOrDefault();
+                            BASE_AMOUNT = item.Where(x => x.Column_Name == "BASE AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
                             PRICE_PER_CTS = item.Where(x => x.Column_Name == "PRICE PER CTS").Select(x => x.Category_Value).FirstOrDefault();
                             MAX_SLAB_BASE_DISC = item.Where(x => x.Column_Name == "MAX SLAB BASE DISC").Select(x => x.Category_Value).FirstOrDefault();
                             MAX_SLAB_BASE_AMOUNT = item.Where(x => x.Column_Name == "MAX SLAB BASE AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
                             MAX_SLAB_PRICE_PER_CTS = item.Where(x => x.Column_Name == "MAX SLAB PRICE PER CTS").Select(x => x.Category_Value).FirstOrDefault();
-                            OFFER_VALUE = item.Where(x => x.Column_Name == "OFFER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                            BUYER_DISC = item.Where(x => x.Column_Name == "BUYER DISC").Select(x => x.Category_Value).FirstOrDefault();
+                            BUYER_AMOUNT = item.Where(x => x.Column_Name == "BUYER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
                             TABLE_BLACK = item.Where(x => x.Column_Name == "TABLE BLACK").Select(x => x.Category_Value).FirstOrDefault();
                             TABLE_WHITE = item.Where(x => x.Column_Name == "TABLE WHITE").Select(x => x.Category_Value).FirstOrDefault();
                             SIDE_BLACK = item.Where(x => x.Column_Name == "SIDE BLACK").Select(x => x.Category_Value).FirstOrDefault();
@@ -7989,6 +8045,7 @@ namespace astute.Controllers
                             FANCY_INTENSITY = item.Where(x => x.Column_Name == "FANCY INTENSITY").Select(x => x.Category_Value).FirstOrDefault();
                             FANCY_OVERTONE = item.Where(x => x.Column_Name == "FANCY OVERTONE").Select(x => x.Category_Value).FirstOrDefault();
                             POINTER = item.Where(x => x.Column_Name == "POINTER").Select(x => x.Category_Value).FirstOrDefault();
+                            SUB_POINTER = item.Where(x => x.Column_Name == "SUB POINTER").Select(x => x.Category_Value).FirstOrDefault();
                             STAR_LN = item.Where(x => x.Column_Name == "STAR LN").Select(x => x.Category_Value).FirstOrDefault();
                             LR_HALF = item.Where(x => x.Column_Name == "LR HALF").Select(x => x.Category_Value).FirstOrDefault();
                             CERT_TYPE = item.Where(x => x.Column_Name == "CERT TYPE").Select(x => x.Category_Value).FirstOrDefault();
@@ -8027,12 +8084,20 @@ namespace astute.Controllers
                                 !string.IsNullOrEmpty(PAVILION_ANGLE) ? PAVILION_ANGLE : DBNull.Value,
                                 !string.IsNullOrEmpty(PAVILION_HEIGHT) ? PAVILION_HEIGHT : DBNull.Value,
                                 !string.IsNullOrEmpty(GIRDLE_PER) ? GIRDLE_PER : DBNull.Value,
+                                !string.IsNullOrEmpty(RAP_RATE) ? RAP_RATE : DBNull.Value,
+                                !string.IsNullOrEmpty(RAP_AMOUNT) ? RAP_AMOUNT : DBNull.Value,
+                                !string.IsNullOrEmpty(COST_DISC) ? COST_DISC : DBNull.Value,
+                                !string.IsNullOrEmpty(COST_AMOUNT) ? COST_AMOUNT : DBNull.Value,
                                 !string.IsNullOrEmpty(OFFER_DISC) ? OFFER_DISC : DBNull.Value,
                                 !string.IsNullOrEmpty(OFFER_VALUE) ? OFFER_VALUE : DBNull.Value,
+                                !string.IsNullOrEmpty(BASE_DISC) ? BASE_DISC : DBNull.Value,
+                                !string.IsNullOrEmpty(BASE_AMOUNT) ? BASE_AMOUNT : DBNull.Value,
                                 !string.IsNullOrEmpty(PRICE_PER_CTS) ? PRICE_PER_CTS : DBNull.Value,
                                 !string.IsNullOrEmpty(MAX_SLAB_BASE_DISC) ? MAX_SLAB_BASE_DISC : DBNull.Value,
                                 !string.IsNullOrEmpty(MAX_SLAB_BASE_AMOUNT) ? MAX_SLAB_BASE_AMOUNT : DBNull.Value,
                                 !string.IsNullOrEmpty(MAX_SLAB_PRICE_PER_CTS) ? MAX_SLAB_PRICE_PER_CTS : DBNull.Value,
+                                !string.IsNullOrEmpty(BUYER_DISC) ? BUYER_DISC : DBNull.Value,
+                                !string.IsNullOrEmpty(BUYER_AMOUNT) ? BUYER_AMOUNT : DBNull.Value,
                                 !string.IsNullOrEmpty(TABLE_BLACK) ? TABLE_BLACK : DBNull.Value,
                                 !string.IsNullOrEmpty(TABLE_WHITE) ? TABLE_WHITE : DBNull.Value,
                                 !string.IsNullOrEmpty(SIDE_BLACK) ? SIDE_BLACK : DBNull.Value,
@@ -8050,6 +8115,7 @@ namespace astute.Controllers
                                 !string.IsNullOrEmpty(FANCY_INTENSITY) ? FANCY_INTENSITY : DBNull.Value,
                                 !string.IsNullOrEmpty(FANCY_OVERTONE) ? FANCY_OVERTONE : DBNull.Value,
                                 !string.IsNullOrEmpty(POINTER) ? POINTER : DBNull.Value,
+                                !string.IsNullOrEmpty(SUB_POINTER) ? SUB_POINTER : DBNull.Value,
                                 !string.IsNullOrEmpty(STAR_LN) ? STAR_LN : DBNull.Value,
                                 !string.IsNullOrEmpty(LR_HALF) ? LR_HALF : DBNull.Value,
                                 !string.IsNullOrEmpty(CERT_TYPE) ? CERT_TYPE : DBNull.Value,
@@ -8203,6 +8269,191 @@ namespace astute.Controllers
                 });
             }
         }
+
+
+        [HttpPost]
+        [Route("send_stock_availability_email")]
+        [Authorize]
+        public async Task<IActionResult> Send_Stock_Availability_Email([FromForm] Stock_Avalibility_Send_Email stock_Avalibility, IFormFile? File_Location)
+        {
+            try
+            {
+                IList<Stock_Avalibility_Values> stock_Avalibility_Values = new List<Stock_Avalibility_Values>();
+                var lst_Stock_Id = new List<string>();
+                if (!string.IsNullOrEmpty(stock_Avalibility.stock_Id) && stock_Avalibility.stock_Id.Contains(";"))
+                {
+                    lst_Stock_Id = stock_Avalibility.stock_Id.Split(',').ToList();
+                    if (lst_Stock_Id != null && lst_Stock_Id.Count > 0)
+                    {
+                        foreach (var item in lst_Stock_Id)
+                        {
+                            var model = new Stock_Avalibility_Values();
+                            var lst_stock_val = item.Split(';').ToList();
+                            if (lst_stock_val != null && lst_stock_val.Count > 0)
+                            {
+                                if (lst_stock_val.Count == 1)
+                                {
+                                    for (int i = 0; i < lst_stock_val.Count; i++)
+                                    {
+                                        if (string.IsNullOrEmpty(lst_stock_val[i]))
+                                            continue;
+
+                                        model.Stock_Id = lst_stock_val[0];
+                                    }
+                                }
+                                else if (lst_stock_val.Count == 2)
+                                {
+                                    for (int i = 0; i < lst_stock_val.Count; i++)
+                                    {
+                                        if (i == 0)
+                                        {
+                                            model.Stock_Id = lst_stock_val[0];
+                                        }
+                                        else
+                                        {
+                                            if (string.IsNullOrEmpty(lst_stock_val[i]))
+                                                continue;
+
+                                            var con_val = Convert.ToDecimal(lst_stock_val[i]);
+                                            if (con_val >= -100 && con_val <= 100)
+                                            {
+                                                model.Offer_Disc = lst_stock_val[i];
+                                            }
+                                            else
+                                            {
+                                                model.Offer_Amount = lst_stock_val[i];
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (lst_stock_val.Count == 3)
+                                {
+                                    for (int i = 0; i < lst_stock_val.Count; i++)
+                                    {
+                                        if (i == 0)
+                                        {
+                                            model.Stock_Id = lst_stock_val[0];
+                                        }
+                                        else
+                                        {
+                                            if (string.IsNullOrEmpty(lst_stock_val[i]))
+                                                continue;
+
+                                            var con_val = Convert.ToDecimal(lst_stock_val[i]);
+                                            if (con_val >= -100 && con_val <= 100)
+                                            {
+                                                model.Offer_Disc = lst_stock_val[i];
+                                            }
+                                            else
+                                            {
+                                                model.Offer_Amount = lst_stock_val[i];
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            stock_Avalibility_Values.Add(model);
+                        }
+                    }
+                }
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("STOCK_ID", typeof(string));
+                dataTable.Columns.Add("OFFER_AMOUNT", typeof(string));
+                dataTable.Columns.Add("OFFER_DISC", typeof(string));
+                if (File_Location != null)
+                {
+                    var filePath = Path.GetTempFileName();
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await File_Location.CopyToAsync(stream);
+                    }
+                    using (var package = new ExcelPackage(new FileInfo(filePath)))
+                    {
+                        var worksheet = package.Workbook.Worksheets[0];
+                        int startRow = 2;
+
+                        HashSet<string> uniqueValues = new HashSet<string>();
+                        for (int row = startRow; row <= worksheet.Dimension.End.Row; row++)
+                        {
+                            string value = worksheet.Cells[row, 1].GetValue<string>();
+                            string offer_amt = worksheet.Cells[row, 3].GetValue<string>();
+                            if (!uniqueValues.Contains(value))
+                            {
+                                uniqueValues.Add(value);
+                                dataTable.Rows.Add(value, !string.IsNullOrEmpty(offer_amt) ? offer_amt.Replace(",", "") : DBNull.Value, worksheet.Cells[row, 2].GetValue<string>());
+                            }
+                        }
+                    }
+                }
+                else if (stock_Avalibility_Values != null && stock_Avalibility_Values.Count > 0)
+                {
+                    stock_Avalibility.stock_Id = null;
+                    foreach (var item in stock_Avalibility_Values)
+                    {
+                        dataTable.Rows.Add(!string.IsNullOrEmpty(item.Stock_Id) ? item.Stock_Id : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Amount) ? item.Offer_Amount : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Disc) ? item.Offer_Disc : DBNull.Value);
+                    }
+                }
+                var dt_stock = await _supplierService.Get_Stock_Availability_Report_Excel(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type);
+                if (dt_stock != null && dt_stock.Rows.Count > 0)
+                {
+                    List<string> columnNames = new List<string>();
+                    foreach (DataColumn column in dt_stock.Columns)
+                    {
+                        columnNames.Add(column.ColumnName);
+                    }
+
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in columnNames)
+                    {
+                        columnNamesTable.Rows.Add(columnName);
+                    }
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string filename = string.Empty;
+
+                    filename = "Stock_Availability_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    EpExcelExport.Stock_Availability_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+
+                    excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                    byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
+                    using (MemoryStream memoryStream = new MemoryStream(fileBytes))
+                    {
+                        var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                        var user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                        int? login_user_id = Convert.ToInt32(user_Id);
+                        var employeeEmails = await _employeeService.GetEmployeeMail(login_user_id ?? 0);
+                        if (employeeEmails != null && employeeEmails.Count > 0)
+                        {
+                            var emp_email = employeeEmails.FirstOrDefault();
+
+                            IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
+                            _emailSender.Send_Stock_Email(toEmail: stock_Avalibility.To_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, strBody: stock_Avalibility.Remarks, user_Id: login_user_id ?? 0, employee_Mail: emp_email);
+                        }
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.EmailSendSuccessMessage
+                        });
+                    }
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Send_Stock_Availability_Email", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Purchase Order
@@ -8307,6 +8558,14 @@ namespace astute.Controllers
                             {
                                 statusCode = HttpStatusCode.Conflict,
                                 message = "User name already exists."
+                            });
+                        }
+                        if (result == 410)
+                        {
+                            return Conflict(new
+                            {
+                                statusCode = HttpStatusCode.Conflict,
+                                message = "Primary user already exists."
                             });
                         }
                         else if (result > 0)
