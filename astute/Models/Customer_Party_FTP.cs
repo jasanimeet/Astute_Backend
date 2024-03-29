@@ -16,7 +16,6 @@ namespace astute.Models
         public string? RepeateveryType { get; set; }
         public string? Repeatevery { get; set; }
         public bool? Secure_Ftp { get; set; }
-        public string? Short_Code { get; set; }
         public bool? Ftp_Status { get; set; }
     }
 }

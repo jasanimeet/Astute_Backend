@@ -8542,7 +8542,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_update_customer_detail")]
         [Authorize]
-        public virtual async Task<IActionResult> Create_Update_Customer_Detail([FromForm] Customer_Detail customer_Details)
+        public virtual async Task<IActionResult> Create_Update_Customer_Detail(Customer_Detail customer_Details)
         {
             try
             {

@@ -858,14 +858,13 @@ namespace astute.Repository
             var repeateveryType = !string.IsNullOrEmpty(party_FTP.RepeateveryType) ? new SqlParameter("@RepeateveryType", party_FTP.RepeateveryType) : new SqlParameter("@RepeateveryType", DBNull.Value);
             var repeatevery = !string.IsNullOrEmpty(party_FTP.Repeatevery) ? new SqlParameter("@Repeatevery", party_FTP.Repeatevery) : new SqlParameter("@Repeatevery", DBNull.Value);
             var secure_Ftp = new SqlParameter("@Secure_Ftp", party_FTP.Secure_Ftp ?? false);
-            var short_Code = !string.IsNullOrEmpty(party_FTP.Short_Code) ? new SqlParameter("@Short_Code", party_FTP.Short_Code) : new SqlParameter("@Short_Code", DBNull.Value);
             var ftp_Status = new SqlParameter("@Ftp_Status", party_FTP.Ftp_Status ?? false);
             var _modified_By = new SqlParameter("@Modified_By", modified_By);
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Customer_Party_File_Insert_Update @FTP_Id, @Party_Id, @Host, @Ftp_Port, @Ftp_User, @Ftp_Password, @Ftp_File_Name, @Ftp_File_Format,
-                        @RepeateveryType, @Repeatevery, @Secure_Ftp, @Short_Code, @Ftp_Status, @Modified_By", ftp_Id, _party_Id, host, ftp_Port,
-                        ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Format, repeateveryType, repeatevery, secure_Ftp, short_Code, ftp_Status,_modified_By));
+                        @RepeateveryType, @Repeatevery, @Secure_Ftp, @Ftp_Status, @Modified_By", ftp_Id, _party_Id, host, ftp_Port,
+                        ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Format, repeateveryType, repeatevery, secure_Ftp, ftp_Status,_modified_By));
 
             return result;
         }
