@@ -12,8 +12,7 @@ namespace astute.Models
         public string? Ftp_User { get; set; }
         public string? Ftp_Password { get; set; }
         public string? Ftp_File_Name { get; set; }
-        public string? Ftp_File_Type { get; set; }
-        public bool? Disc_Inverse { get; set; }
+        public string? Ftp_File_Format { get; set; }
         public string? RepeateveryType { get; set; }
         public string? Repeatevery { get; set; }
         public bool? Secure_Ftp { get; set; }
