@@ -33,6 +33,7 @@ namespace astute.CoreModel
         public static string UserNameAlreadyExist = "User name already exist";
         public static string StockUploadedSuccessfully = "Stock uploaded successfully";
         public static string FileDownloadSuccessfully = "File downloaded successfully";
+        public static string CustomerDetailSavedSuccessfully = "Customer detail saved successfully.";
 
         #region Email Subjects
         public static string ForgetPasswordSubject = "Forget Password Email";
