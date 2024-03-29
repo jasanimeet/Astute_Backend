@@ -8594,7 +8594,7 @@ namespace astute.Controllers
                         {
                             foreach (var item in customer_Details.Customer_Column_Caption)
                             {
-                                dataTable.Rows.Add(item.Col_Id, item.Caption_Name, item.Upload_Method, item.Status, item.Status, item1);
+                                dataTable.Rows.Add(item.Col_Id, item.Caption_Name, item.Upload_Method, item.Status, item1);
                             }
                         }
                         
