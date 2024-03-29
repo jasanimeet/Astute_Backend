@@ -816,13 +816,12 @@ namespace astute.Repository
             var file_Name = !string.IsNullOrEmpty(party_File.File_Name) ? new SqlParameter("@File_Name", party_File.File_Name) : new SqlParameter("@File_Name", DBNull.Value);
             var file_Type = !string.IsNullOrEmpty(party_File.File_Type) ? new SqlParameter("@File_Type", party_File.File_Type) : new SqlParameter("@File_Type", DBNull.Value);
             var iP = !string.IsNullOrEmpty(party_File.IP) ? new SqlParameter("@IP", party_File.IP) : new SqlParameter("@IP", DBNull.Value);
-            var short_Code = !string.IsNullOrEmpty(party_File.Short_Code) ? new SqlParameter("@Short_Code", party_File.Short_Code) : new SqlParameter("@Short_Code", DBNull.Value);
             var file_Status = new SqlParameter("@File_Status", party_File.File_Status ?? false);
             var _modified_By = new SqlParameter("@Modified_By", modified_By);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Customer_Party_File_Insert_Update @File_Id, @Party_Id, @File_Name,@File_Type,@IP, @Short_Code, @File_Status, @Modified_By", 
-                        file_Id, _party_Id, file_Name,file_Type,iP, short_Code, file_Status, _modified_By));
+                        .ExecuteSqlRawAsync(@"EXEC Customer_Party_File_Insert_Update @File_Id, @Party_Id, @File_Name,@File_Type,@IP, @File_Status, @Modified_By", 
+                        file_Id, _party_Id, file_Name,file_Type,iP, file_Status, _modified_By));
 
             return result;
         }
@@ -862,9 +861,9 @@ namespace astute.Repository
             var _modified_By = new SqlParameter("@Modified_By", modified_By);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Customer_Party_File_Insert_Update @FTP_Id, @Party_Id, @Host, @Ftp_Port, @Ftp_User, @Ftp_Password, @Ftp_File_Name, @Ftp_File_Format,
-                        @RepeateveryType, @Repeatevery, @Secure_Ftp, @Ftp_Status, @Modified_By", ftp_Id, _party_Id, host, ftp_Port,
-                        ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Format, repeateveryType, repeatevery, secure_Ftp, ftp_Status,_modified_By));
+                        .ExecuteSqlRawAsync(@"EXEC Customer_Party_FTP_Insert_Update @FTP_Id, @Party_Id, @Host, @Ftp_Port, @Ftp_User, @Ftp_Password, @Ftp_File_Name, @Ftp_File_Format,
+                        @RepeateveryType, @Repeatevery, @Secure_Ftp, @Ftp_Status, @Modified_By", 
+                        ftp_Id, _party_Id, host, ftp_Port,ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Format, repeateveryType, repeatevery, secure_Ftp, ftp_Status,_modified_By));
 
             return result;
         }

@@ -8586,7 +8586,7 @@ namespace astute.Controllers
                         dataTable.Columns.Add("Caption_Name", typeof(string));
                         dataTable.Columns.Add("Upload_Method", typeof(string));
                         dataTable.Columns.Add("Status", typeof(bool));
-                        dataTable.Columns.Add("User_Id", typeof(bool));
+                        dataTable.Columns.Add("User_Id", typeof(int));
 
                         string[] user_ids = !string.IsNullOrEmpty(customer_Details.User_Id) ? customer_Details.User_Id.Split(",") : null;
 
@@ -8617,7 +8617,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Add_Update_Customer_Column_Caption", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Customer_Detail", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
