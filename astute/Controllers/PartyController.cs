@@ -4285,7 +4285,7 @@ namespace astute.Controllers
                            TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
                            GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
                            KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
-                           FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty,
+                           FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
                            STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty, SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE = string.Empty;
 
                 DataTable dataTable = new DataTable();
@@ -4348,6 +4348,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("FANCY_INTENSITY", typeof(string));
                 dataTable.Columns.Add("FANCY_OVERTONE", typeof(string));
                 dataTable.Columns.Add("POINTER", typeof(string));
+                dataTable.Columns.Add("SUB_POINTER", typeof(string));
                 dataTable.Columns.Add("STAR_LN", typeof(string));
                 dataTable.Columns.Add("LR_HALF", typeof(string));
                 dataTable.Columns.Add("CERT_TYPE", typeof(string));
@@ -4421,6 +4422,7 @@ namespace astute.Controllers
                         FANCY_INTENSITY = item.Where(x => x.Column_Name == "FANCY INTENSITY").Select(x => x.Category_Value).FirstOrDefault();
                         FANCY_OVERTONE = item.Where(x => x.Column_Name == "FANCY OVERTONE").Select(x => x.Category_Value).FirstOrDefault();
                         POINTER = item.Where(x => x.Column_Name == "POINTER").Select(x => x.Category_Value).FirstOrDefault();
+                        SUB_POINTER = item.Where(x => x.Column_Name == "SUB POINTER").Select(x => x.Category_Value).FirstOrDefault();
                         STAR_LN = item.Where(x => x.Column_Name == "STAR LN").Select(x => x.Category_Value).FirstOrDefault();
                         LR_HALF = item.Where(x => x.Column_Name == "LR HALF").Select(x => x.Category_Value).FirstOrDefault();
                         CERT_TYPE = item.Where(x => x.Column_Name == "CERT TYPE").Select(x => x.Category_Value).FirstOrDefault();
@@ -4490,6 +4492,7 @@ namespace astute.Controllers
                             !string.IsNullOrEmpty(FANCY_INTENSITY) ? FANCY_INTENSITY : DBNull.Value,
                             !string.IsNullOrEmpty(FANCY_OVERTONE) ? FANCY_OVERTONE : DBNull.Value,
                             !string.IsNullOrEmpty(POINTER) ? POINTER : DBNull.Value,
+                            !string.IsNullOrEmpty(SUB_POINTER) ? SUB_POINTER : DBNull.Value,
                             !string.IsNullOrEmpty(STAR_LN) ? STAR_LN : DBNull.Value,
                             !string.IsNullOrEmpty(LR_HALF) ? LR_HALF : DBNull.Value,
                             !string.IsNullOrEmpty(CERT_TYPE) ? CERT_TYPE : DBNull.Value,
@@ -4562,7 +4565,7 @@ namespace astute.Controllers
                           TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
                           GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
                           KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
-                          FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty,
+                          FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
                           STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty, SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE = string.Empty;
 
                 DataTable dataTable = new DataTable();
@@ -4625,6 +4628,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("FANCY_INTENSITY", typeof(string));
                 dataTable.Columns.Add("FANCY_OVERTONE", typeof(string));
                 dataTable.Columns.Add("POINTER", typeof(string));
+                dataTable.Columns.Add("SUB_POINTER", typeof(string));
                 dataTable.Columns.Add("STAR_LN", typeof(string));
                 dataTable.Columns.Add("LR_HALF", typeof(string));
                 dataTable.Columns.Add("CERT_TYPE", typeof(string));
@@ -4698,6 +4702,7 @@ namespace astute.Controllers
                         FANCY_INTENSITY = item.Where(x => x.Column_Name == "FANCY INTENSITY").Select(x => x.Category_Value).FirstOrDefault();
                         FANCY_OVERTONE = item.Where(x => x.Column_Name == "FANCY OVERTONE").Select(x => x.Category_Value).FirstOrDefault();
                         POINTER = item.Where(x => x.Column_Name == "POINTER").Select(x => x.Category_Value).FirstOrDefault();
+                        SUB_POINTER = item.Where(x => x.Column_Name == "SUB POINTER").Select(x => x.Category_Value).FirstOrDefault();
                         STAR_LN = item.Where(x => x.Column_Name == "STAR LN").Select(x => x.Category_Value).FirstOrDefault();
                         LR_HALF = item.Where(x => x.Column_Name == "LR HALF").Select(x => x.Category_Value).FirstOrDefault();
                         CERT_TYPE = item.Where(x => x.Column_Name == "CERT TYPE").Select(x => x.Category_Value).FirstOrDefault();
@@ -4767,6 +4772,7 @@ namespace astute.Controllers
                             !string.IsNullOrEmpty(FANCY_INTENSITY) ? FANCY_INTENSITY : DBNull.Value,
                             !string.IsNullOrEmpty(FANCY_OVERTONE) ? FANCY_OVERTONE : DBNull.Value,
                             !string.IsNullOrEmpty(POINTER) ? POINTER : DBNull.Value,
+                            !string.IsNullOrEmpty(SUB_POINTER) ? SUB_POINTER : DBNull.Value,
                             !string.IsNullOrEmpty(STAR_LN) ? STAR_LN : DBNull.Value,
                             !string.IsNullOrEmpty(LR_HALF) ? LR_HALF : DBNull.Value,
                             !string.IsNullOrEmpty(CERT_TYPE) ? CERT_TYPE : DBNull.Value,
@@ -4802,6 +4808,7 @@ namespace astute.Controllers
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "COMPANY", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("COMPANY")).Select(x => new { Category_Name = x["COMPANY"].ToString(), Category_Value = x["COMPANY"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SHAPE", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("SHAPE") && x.ContainsKey("SHAPE_Id")).Select(x => new { Category_Name = x["SHAPE"].ToString(), Category_Value = x["SHAPE_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "POINTER", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("POINTER") && x.ContainsKey("POINTER_Id")).Select(x => new { Category_Name = x["POINTER"].ToString(), Category_Value = x["POINTER_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SUB POINTER", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BGM", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("BGM") && x.ContainsKey("BGM_Id")).Select(x => new { Category_Name = x["BGM"].ToString(), Category_Value = x["BGM_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "COLOR", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("COLOR") && x.ContainsKey("COLOR_Id")).Select(x => new { Category_Name = x["COLOR"].ToString(), Category_Value = x["COLOR_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "CLARITY", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("CLARITY") && x.ContainsKey("CLARITY_Id")).Select(x => new { Category_Name = x["CLARITY"].ToString(), Category_Value = x["CLARITY_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
@@ -4868,7 +4875,6 @@ namespace astute.Controllers
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "RANK", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SUNRISE STATUS", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "STATUS", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("STATUS") && x.ContainsKey("STATUS_Id")).Select(x => new { Category_Name = x["STATUS"].ToString(), Category_Value = x["STATUS_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
-                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SUB POINTER", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BID", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BUYER", Display_Type = "", Column_Value = Column_Values });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "BUYER DISC", Display_Type = "R", Column_Value = Column_Values });
@@ -5520,7 +5526,7 @@ namespace astute.Controllers
                            TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
                            GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
                            KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
-                           FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty,
+                           FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
                            STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty, SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE = string.Empty;
 
                 DataTable dataTable = new DataTable();
@@ -5583,6 +5589,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("FANCY_INTENSITY", typeof(string));
                 dataTable.Columns.Add("FANCY_OVERTONE", typeof(string));
                 dataTable.Columns.Add("POINTER", typeof(string));
+                dataTable.Columns.Add("SUB_POINTER", typeof(string));
                 dataTable.Columns.Add("STAR_LN", typeof(string));
                 dataTable.Columns.Add("LR_HALF", typeof(string));
                 dataTable.Columns.Add("CERT_TYPE", typeof(string));
@@ -5656,6 +5663,7 @@ namespace astute.Controllers
                         FANCY_INTENSITY = item.Where(x => x.Column_Name == "FANCY INTENSITY").Select(x => x.Category_Value).FirstOrDefault();
                         FANCY_OVERTONE = item.Where(x => x.Column_Name == "FANCY OVERTONE").Select(x => x.Category_Value).FirstOrDefault();
                         POINTER = item.Where(x => x.Column_Name == "POINTER").Select(x => x.Category_Value).FirstOrDefault();
+                        SUB_POINTER = item.Where(x => x.Column_Name == "SUB POINTER").Select(x => x.Category_Value).FirstOrDefault();
                         STAR_LN = item.Where(x => x.Column_Name == "STAR LN").Select(x => x.Category_Value).FirstOrDefault();
                         LR_HALF = item.Where(x => x.Column_Name == "LR HALF").Select(x => x.Category_Value).FirstOrDefault();
                         CERT_TYPE = item.Where(x => x.Column_Name == "CERT TYPE").Select(x => x.Category_Value).FirstOrDefault();
@@ -5725,6 +5733,7 @@ namespace astute.Controllers
                             !string.IsNullOrEmpty(FANCY_INTENSITY) ? FANCY_INTENSITY : DBNull.Value,
                             !string.IsNullOrEmpty(FANCY_OVERTONE) ? FANCY_OVERTONE : DBNull.Value,
                             !string.IsNullOrEmpty(POINTER) ? POINTER : DBNull.Value,
+                            !string.IsNullOrEmpty(SUB_POINTER) ? SUB_POINTER : DBNull.Value,
                             !string.IsNullOrEmpty(STAR_LN) ? STAR_LN : DBNull.Value,
                             !string.IsNullOrEmpty(LR_HALF) ? LR_HALF : DBNull.Value,
                             !string.IsNullOrEmpty(CERT_TYPE) ? CERT_TYPE : DBNull.Value,
@@ -7052,7 +7061,7 @@ namespace astute.Controllers
                             TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
                             GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
                             KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
-                            FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty,
+                            FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER=string.Empty,
                             STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty, SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE = string.Empty;
 
             DataTable dataTable = new DataTable();
@@ -7115,6 +7124,7 @@ namespace astute.Controllers
             dataTable.Columns.Add("FANCY_INTENSITY", typeof(string));
             dataTable.Columns.Add("FANCY_OVERTONE", typeof(string));
             dataTable.Columns.Add("POINTER", typeof(string));
+            dataTable.Columns.Add("SUB_POINTER", typeof(string));
             dataTable.Columns.Add("STAR_LN", typeof(string));
             dataTable.Columns.Add("LR_HALF", typeof(string));
             dataTable.Columns.Add("CERT_TYPE", typeof(string));
@@ -7203,6 +7213,7 @@ namespace astute.Controllers
                     FANCY_INTENSITY = item.Where(x => x.Column_Name == "FANCY INTENSITY").Select(x => x.Category_Value).FirstOrDefault();
                     FANCY_OVERTONE = item.Where(x => x.Column_Name == "FANCY OVERTONE").Select(x => x.Category_Value).FirstOrDefault();
                     POINTER = item.Where(x => x.Column_Name == "POINTER").Select(x => x.Category_Value).FirstOrDefault();
+                    SUB_POINTER = item.Where(x => x.Column_Name == "SUB POINTER").Select(x => x.Category_Value).FirstOrDefault();
                     STAR_LN = item.Where(x => x.Column_Name == "STAR LN").Select(x => x.Category_Value).FirstOrDefault();
                     LR_HALF = item.Where(x => x.Column_Name == "LR HALF").Select(x => x.Category_Value).FirstOrDefault();
                     CERT_TYPE = item.Where(x => x.Column_Name == "CERT TYPE").Select(x => x.Category_Value).FirstOrDefault();
@@ -7272,6 +7283,7 @@ namespace astute.Controllers
                         !string.IsNullOrEmpty(FANCY_INTENSITY) ? FANCY_INTENSITY : DBNull.Value,
                         !string.IsNullOrEmpty(FANCY_OVERTONE) ? FANCY_OVERTONE : DBNull.Value,
                         !string.IsNullOrEmpty(POINTER) ? POINTER : DBNull.Value,
+                        !string.IsNullOrEmpty(SUB_POINTER) ? SUB_POINTER : DBNull.Value,
                         !string.IsNullOrEmpty(STAR_LN) ? STAR_LN : DBNull.Value,
                         !string.IsNullOrEmpty(LR_HALF) ? LR_HALF : DBNull.Value,
                         !string.IsNullOrEmpty(CERT_TYPE) ? CERT_TYPE : DBNull.Value,
@@ -7546,6 +7558,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("FANCY_INTENSITY", typeof(string));
                 dataTable.Columns.Add("FANCY_OVERTONE", typeof(string));
                 dataTable.Columns.Add("POINTER", typeof(string));
+                dataTable.Columns.Add("SUB_POINTER", typeof(string));
                 dataTable.Columns.Add("STAR_LN", typeof(string));
                 dataTable.Columns.Add("LR_HALF", typeof(string));
                 dataTable.Columns.Add("CERT_TYPE", typeof(string));
@@ -7689,6 +7702,7 @@ namespace astute.Controllers
                 dataTable1.Columns.Add("FANCY_INTENSITY", typeof(string));
                 dataTable1.Columns.Add("FANCY_OVERTONE", typeof(string));
                 dataTable1.Columns.Add("POINTER", typeof(string));
+                dataTable1.Columns.Add("SUB POINTER", typeof(string));
                 dataTable1.Columns.Add("STAR_LN", typeof(string));
                 dataTable1.Columns.Add("LR_HALF", typeof(string));
                 dataTable1.Columns.Add("CERT_TYPE", typeof(string));
@@ -7705,7 +7719,7 @@ namespace astute.Controllers
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, 
-                            DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value);
+                            DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,DBNull.Value);
 
                 //Supplier round stock
                 DataTable supp_round_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable1, "Supplier", null);
@@ -7891,7 +7905,7 @@ namespace astute.Controllers
                            TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
                            GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
                            KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
-                           FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty,
+                           FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
                            STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty, SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE = string.Empty;
 
                     DataTable dataTable = new DataTable();
@@ -7954,6 +7968,7 @@ namespace astute.Controllers
                     dataTable.Columns.Add("FANCY_INTENSITY", typeof(string));
                     dataTable.Columns.Add("FANCY_OVERTONE", typeof(string));
                     dataTable.Columns.Add("POINTER", typeof(string));
+                    dataTable.Columns.Add("SUB_POINTER", typeof(string));
                     dataTable.Columns.Add("STAR_LN", typeof(string));
                     dataTable.Columns.Add("LR_HALF", typeof(string));
                     dataTable.Columns.Add("CERT_TYPE", typeof(string));
@@ -8027,6 +8042,7 @@ namespace astute.Controllers
                             FANCY_INTENSITY = item.Where(x => x.Column_Name == "FANCY INTENSITY").Select(x => x.Category_Value).FirstOrDefault();
                             FANCY_OVERTONE = item.Where(x => x.Column_Name == "FANCY OVERTONE").Select(x => x.Category_Value).FirstOrDefault();
                             POINTER = item.Where(x => x.Column_Name == "POINTER").Select(x => x.Category_Value).FirstOrDefault();
+                            SUB_POINTER = item.Where(x => x.Column_Name == "SUB POINTER").Select(x => x.Category_Value).FirstOrDefault();
                             STAR_LN = item.Where(x => x.Column_Name == "STAR LN").Select(x => x.Category_Value).FirstOrDefault();
                             LR_HALF = item.Where(x => x.Column_Name == "LR HALF").Select(x => x.Category_Value).FirstOrDefault();
                             CERT_TYPE = item.Where(x => x.Column_Name == "CERT TYPE").Select(x => x.Category_Value).FirstOrDefault();
@@ -8096,6 +8112,7 @@ namespace astute.Controllers
                                 !string.IsNullOrEmpty(FANCY_INTENSITY) ? FANCY_INTENSITY : DBNull.Value,
                                 !string.IsNullOrEmpty(FANCY_OVERTONE) ? FANCY_OVERTONE : DBNull.Value,
                                 !string.IsNullOrEmpty(POINTER) ? POINTER : DBNull.Value,
+                                !string.IsNullOrEmpty(SUB_POINTER) ? SUB_POINTER : DBNull.Value,
                                 !string.IsNullOrEmpty(STAR_LN) ? STAR_LN : DBNull.Value,
                                 !string.IsNullOrEmpty(LR_HALF) ? LR_HALF : DBNull.Value,
                                 !string.IsNullOrEmpty(CERT_TYPE) ? CERT_TYPE : DBNull.Value,
