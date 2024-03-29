@@ -7515,12 +7515,20 @@ namespace astute.Controllers
                 dataTable.Columns.Add("PAVILION_ANGLE", typeof(string));
                 dataTable.Columns.Add("PAVILION_HEIGHT", typeof(string));
                 dataTable.Columns.Add("GIRDLE_PER", typeof(string));
+                dataTable.Columns.Add("RAP_RATE", typeof(string));
+                dataTable.Columns.Add("RAP_AMOUNT", typeof(string));
+                dataTable.Columns.Add("COST_DISC", typeof(string));
+                dataTable.Columns.Add("COST_AMOUNT", typeof(string));
                 dataTable.Columns.Add("OFFER_DISC", typeof(string));
                 dataTable.Columns.Add("OFFER_AMOUNT", typeof(string));
+                dataTable.Columns.Add("BASE_DISC", typeof(string));
+                dataTable.Columns.Add("BASE_AMOUNT", typeof(string));
                 dataTable.Columns.Add("PRICE_PER_CTS", typeof(string));
                 dataTable.Columns.Add("MAX_SLAB_BASE_DISC", typeof(string));
                 dataTable.Columns.Add("MAX_SLAB_BASE_AMOUNT", typeof(string));
                 dataTable.Columns.Add("MAX_SLAB_PRICE_PER_CTS", typeof(string));
+                dataTable.Columns.Add("BUYER_DISC", typeof(string));
+                dataTable.Columns.Add("BUYER AMOUNT", typeof(string));
                 dataTable.Columns.Add("TABLE_BLACK", typeof(string));
                 dataTable.Columns.Add("TABLE_WHITE", typeof(string));
                 dataTable.Columns.Add("SIDE_BLACK", typeof(string));
@@ -7546,7 +7554,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("DISCOUNT_TYPE", typeof(string));
                 dataTable.Columns.Add("SIGN", typeof(string));
                 dataTable.Columns.Add("DISC_VALUE", typeof(string));
-                dataTable.Columns.Add("BASE_TYPE", typeof(string));
+                dataTable.Columns.Add("BASE TYPE", typeof(string));
 
                 DataRow newRow = dataTable.NewRow();
                 for (int i = 0; i < dataTable.Columns.Count; i++)
@@ -7650,12 +7658,20 @@ namespace astute.Controllers
                 dataTable1.Columns.Add("PAVILION_ANGLE", typeof(string));
                 dataTable1.Columns.Add("PAVILION_HEIGHT", typeof(string));
                 dataTable1.Columns.Add("GIRDLE_PER", typeof(string));
+                dataTable1.Columns.Add("RAP_RATE", typeof(string));
+                dataTable1.Columns.Add("RAP_AMOUNT", typeof(string));
+                dataTable1.Columns.Add("COST_DISC", typeof(string));
+                dataTable1.Columns.Add("COST_AMOUNT", typeof(string));
                 dataTable1.Columns.Add("OFFER_DISC", typeof(string));
                 dataTable1.Columns.Add("OFFER_AMOUNT", typeof(string));
+                dataTable1.Columns.Add("BASE_DISC", typeof(string));
+                dataTable1.Columns.Add("BASE_AMOUNT", typeof(string));
                 dataTable1.Columns.Add("PRICE_PER_CTS", typeof(string));
                 dataTable1.Columns.Add("MAX_SLAB_BASE_DISC", typeof(string));
                 dataTable1.Columns.Add("MAX_SLAB_BASE_AMOUNT", typeof(string));
                 dataTable1.Columns.Add("MAX_SLAB_PRICE_PER_CTS", typeof(string));
+                dataTable1.Columns.Add("BUYER_DISC", typeof(string));
+                dataTable1.Columns.Add("BUYER AMOUNT", typeof(string));
                 dataTable1.Columns.Add("TABLE_BLACK", typeof(string));
                 dataTable1.Columns.Add("TABLE_WHITE", typeof(string));
                 dataTable1.Columns.Add("SIDE_BLACK", typeof(string));
@@ -7681,14 +7697,15 @@ namespace astute.Controllers
                 dataTable1.Columns.Add("DISCOUNT_TYPE", typeof(string));
                 dataTable1.Columns.Add("SIGN", typeof(string));
                 dataTable1.Columns.Add("DISC_VALUE", typeof(string));
-                dataTable1.Columns.Add("BASE_TYPE", typeof(string));
+                dataTable1.Columns.Add("BASE TYPE", typeof(string));
                 var Round_Cat_Val_Id = _configuration["Round_Cat_Val_Id"];
                 dataTable1.Rows.Add(DBNull.Value, DBNull.Value, DBNull.Value, Round_Cat_Val_Id, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
-                            DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value);
+                            DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, 
+                            DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value);
 
                 //Supplier round stock
                 DataTable supp_round_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable1, "Supplier", null);
