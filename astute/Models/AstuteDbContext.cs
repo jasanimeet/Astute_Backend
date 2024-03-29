@@ -97,6 +97,8 @@ namespace astute.Models
         public DbSet<Report_Layout_Save> Report_Layout_Save { get; set; }
         public DbSet<Report_Layout_Save_Detail> Report_Layout_Save_Detail { get; set; }
         public DbSet<Report_Image_Video_Certificate> Report_Image_Video_Certificate { get; set; }
-        
+        //public DbSet<Customer_Party_Api> Customer_Party_Api { get; set; }
+        public DbSet<Customer_Party_FTP> Customer_Party_FTP { get; set; }
+        public DbSet<Customer_Party_File> Customer_Party_File { get; set; }
     }
 }
