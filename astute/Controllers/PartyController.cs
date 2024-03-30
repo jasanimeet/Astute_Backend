@@ -8884,6 +8884,36 @@ namespace astute.Controllers
             }
         }
 
+
+        [HttpGet]
+        [Route("get_customer_pricing_column_caption")]
+        [Authorize]
+        public async Task<IActionResult> Get_Customer_Pricing_Column_Caption()
+        {
+            try
+            {
+                var result = await _partyService.Get_Customer_Pricing_Column_Caption();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Customer_Pricing_Column_Caption", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
     }
 }

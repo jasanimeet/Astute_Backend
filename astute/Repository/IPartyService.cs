@@ -96,6 +96,7 @@ namespace astute.Repository
 
         #region Customer Column Caption
         Task<int> Add_Update_Customer_Column_Caption(DataTable dataTable, int UserId);
+        Task<List<Dictionary<string, object>>> Get_Customer_Pricing_Column_Caption();
         #endregion
         Task<IList<Supplier_Details_List>> Get_Suplier_Detail_List(int party_Id);
         Task<IList<DropdownModel>> Get_Party_Suplier();
