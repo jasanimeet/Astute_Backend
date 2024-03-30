@@ -809,7 +809,7 @@ namespace astute.Repository
         #endregion
 
         #region Customer Party File
-        public async Task<int> Add_Update_Customer_Party_File(Customer_Party_File_Model party_File, int modified_By,string map_Flag)
+        public async Task<int> Add_Update_Customer_Party_File(Customer_Party_File party_File, int modified_By,string map_Flag)
         {
             var file_Id = new SqlParameter("@File_Id", party_File.File_Id);
             var _party_Id = party_File.Party_Id > 0 ? new SqlParameter("@Party_Id", party_File.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
@@ -830,13 +830,14 @@ namespace astute.Repository
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Customer_Party_File_Delete {file_Id}"));
         }
-        public async Task<Party_File> Get_Customer_Party_File(int file_Id, int party_Id)
+        public async Task<Customer_Party_File> Get_Customer_Party_File(int? file_Id, int party_Id,string map_Flag)
         {
             var _file_Id = file_Id > 0 ? new SqlParameter("@File_Id", file_Id) : new SqlParameter("@File_Id", DBNull.Value);
             var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+            var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
 
-            var result = await Task.Run(() => _dbContext.Party_File
-                            .FromSqlRaw(@"exec [Customer_Party_File_Select] @File_Id, @Party_Id", _file_Id, _party_Id)
+            var result = await Task.Run(() => _dbContext.Customer_Party_File
+                            .FromSqlRaw(@"exec [Customer_Party_File_Select] @File_Id, @Party_Id, @Map_Flag", _file_Id, _party_Id, _map_Flag)
                             .AsEnumerable()
                             .FirstOrDefault());
 
@@ -845,7 +846,7 @@ namespace astute.Repository
         #endregion
 
         #region Customer Party FTP
-        public async Task<int> Add_Update_Customer_Party_FTP(Customer_Party_FTP_Model party_FTP, int modified_By,string map_Flag)
+        public async Task<int> Add_Update_Customer_Party_FTP(Customer_Party_FTP party_FTP, int modified_By,string map_Flag)
         {
             var ftp_Id = new SqlParameter("@FTP_Id", party_FTP.FTP_Id);
             var _party_Id = party_FTP.Party_Id > 0 ? new SqlParameter("@Party_Id", party_FTP.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
@@ -873,13 +874,14 @@ namespace astute.Repository
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Customer_Party_FTP_Delete {ftp_Id}"));
         }
-        public async Task<Customer_Party_FTP> Get_Customer_Party_FTP(int ftp_Id, int party_Id)
+        public async Task<Customer_Party_FTP> Get_Customer_Party_FTP(int? ftp_Id, int party_Id,string map_Flag)
         {
             var _ftp_Id = ftp_Id > 0 ? new SqlParameter("@FTP_Id", ftp_Id) : new SqlParameter("@FTP_Id", DBNull.Value);
             var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+            var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Customer_Party_FTP
-                            .FromSqlRaw(@"exec Customer_Party_FTP_Select @FTP_Id, @Party_Id", _ftp_Id, _party_Id)
+                            .FromSqlRaw(@"exec Customer_Party_FTP_Select @FTP_Id, @Party_Id, @Map_Flag", _ftp_Id, _party_Id, _map_Flag)
                             .AsEnumerable()
                             .FirstOrDefault());
 

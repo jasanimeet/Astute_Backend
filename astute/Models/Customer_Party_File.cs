@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace astute.Models
 {
@@ -11,5 +13,8 @@ namespace astute.Models
         public string? File_Type { get; set; }
         public string? IP { get; set; }
         public bool? File_Status { get; set; }
+        public string? Map_Flag { get; set; }
+        [NotMapped]
+        public IList<Customer_Column_Caption> Customer_Column_Caption { get; set; } = new List<Customer_Column_Caption>();
     }
 }

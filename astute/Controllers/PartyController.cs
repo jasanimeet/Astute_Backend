@@ -8942,7 +8942,36 @@ namespace astute.Controllers
                 });
             }
         }
-       
+        [HttpGet]
+        [Route("get_customer_pricing_detail")]
+        [Authorize]
+        public async Task<IActionResult> Get_Customer_Pricing_Detail(int party_Id,string map_flag)
+        {
+            try
+            {
+                Customer_Detail customer_Detail = new Customer_Detail();
+                customer_Detail.Customer_Party_File= await _partyService.Get_Customer_Party_File(null,party_Id,map_flag);
+                customer_Detail.Customer_Party_FTP= await _partyService.Get_Customer_Party_FTP(null,party_Id,map_flag);
+                if (customer_Detail != null)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = customer_Detail
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Customer_Pricing_Detail", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }

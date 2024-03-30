@@ -83,15 +83,15 @@ namespace astute.Repository
         #endregion
 
         #region Customer Party File
-        Task<int> Add_Update_Customer_Party_File(Customer_Party_File_Model party_File, int modified_By,string map_Flag);
+        Task<int> Add_Update_Customer_Party_File(Customer_Party_File party_File, int modified_By,string map_Flag);
         Task<int> Delete_Customer_Party_File(int file_Id);
-        Task<Party_File> Get_Customer_Party_File(int file_Id, int party_Id);
+        Task<Customer_Party_File> Get_Customer_Party_File(int? file_Id, int party_Id,string map_Flag);
         #endregion
 
         #region Customer Party FTP
-        Task<int> Add_Update_Customer_Party_FTP(Customer_Party_FTP_Model party_FTP, int modified_By, string map_Flag);
+        Task<int> Add_Update_Customer_Party_FTP(Customer_Party_FTP party_FTP, int modified_By, string map_Flag);
         Task<int> Delete_Customer_Party_FTP(int ftp_Id);
-        Task<Customer_Party_FTP> Get_Customer_Party_FTP(int ftp_Id, int party_Id);
+        Task<Customer_Party_FTP> Get_Customer_Party_FTP(int? ftp_Id, int party_Id,string map_Flag);
         #endregion
 
         #region Customer Column Caption
