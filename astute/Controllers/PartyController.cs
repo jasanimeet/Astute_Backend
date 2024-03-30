@@ -5032,7 +5032,7 @@ namespace astute.Controllers
                             if (!uniqueValues.Contains(value))
                             {
                                 uniqueValues.Add(value);
-                                dataTable.Rows.Add(value, !string.IsNullOrEmpty(offer_amt) ? offer_amt.Replace(",","") : DBNull.Value, worksheet.Cells[row, 2].GetValue<string>());
+                                dataTable.Rows.Add(value, !string.IsNullOrEmpty(offer_amt) ? offer_amt.Replace(",", "") : DBNull.Value, worksheet.Cells[row, 2].GetValue<string>());
                             }
                         }
                     }
@@ -5949,7 +5949,7 @@ namespace astute.Controllers
                             (!string.IsNullOrEmpty(item.Cart_Status) ? Convert.ToDouble(item.Cart_Status.ToString()) : null));
                     }
 
-                    var (message, result,msg) = await _cartService.Create_Update_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
+                    var (message, result, msg) = await _cartService.Create_Update_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
                     if (message == "exist" || (message == "success" && result > 0))
                     {
                         // if alredy exists stone add again then message should show succsessfully added.
@@ -7064,7 +7064,7 @@ namespace astute.Controllers
                             TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
                             GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
                             KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
-                            FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER=string.Empty,
+                            FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
                             STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty, SIGN = string.Empty, DISC_VALUE = string.Empty, BASE_TYPE = string.Empty;
 
             DataTable dataTable = new DataTable();
@@ -7721,8 +7721,8 @@ namespace astute.Controllers
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
-                            DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, 
-                            DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,DBNull.Value);
+                            DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
+                            DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value);
 
                 //Supplier round stock
                 DataTable supp_round_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable1, "Supplier", null);
@@ -8822,45 +8822,72 @@ namespace astute.Controllers
                     if (customer_Details.Customer_Party_FTP != null)
                     {
                         customer_Details.Customer_Party_FTP.Party_Id = customer_Details.Party_Id;
-                        var party_ftp = await _partyService.Add_Update_Customer_Party_FTP(customer_Details.Customer_Party_FTP, user_Id??0);
+                        var party_ftp = await _partyService.Add_Update_Customer_Party_FTP(customer_Details.Customer_Party_FTP, user_Id ?? 0);
                         if (party_ftp > 0)
                         {
                             success = true;
+                            if (customer_Details.Customer_Party_FTP.Customer_Column_Caption != null && customer_Details.Customer_Party_FTP.Customer_Column_Caption.Count > 0)
+                            {
+
+                                DataTable dataTable = new DataTable();
+                                dataTable.Columns.Add("Col_Id", typeof(int));
+                                dataTable.Columns.Add("Caption_Name", typeof(string));
+                                dataTable.Columns.Add("Upload_Method", typeof(string));
+                                dataTable.Columns.Add("Status", typeof(bool));
+                                dataTable.Columns.Add("User_Id", typeof(int));
+
+                                string[] user_ids = !string.IsNullOrEmpty(customer_Details.User_Id) ? customer_Details.User_Id.Split(",") : null;
+
+                                foreach (var item1 in user_ids)
+                                {
+                                    foreach (var item in customer_Details.Customer_Party_FTP.Customer_Column_Caption)
+                                    {
+                                        dataTable.Rows.Add(item.Col_Id, item.Caption_Name, "FTP", item.Status, item1);
+                                    }
+                                }
+
+                                var column_Caption = await _partyService.Add_Update_Customer_Column_Caption(dataTable, user_Id ?? 0);
+                                if (column_Caption > 0)
+                                {
+                                    success = true;
+                                }
+                            }
+
                         }
                     }
                     if (customer_Details.Customer_Party_File != null)
                     {
                         customer_Details.Customer_Party_File.Party_Id = customer_Details.Party_Id;
-                        var party_file = await _partyService.Add_Update_Customer_Party_File(customer_Details.Customer_Party_File, user_Id??0);
+                        var party_file = await _partyService.Add_Update_Customer_Party_File(customer_Details.Customer_Party_File, user_Id ?? 0);
                         if (party_file > 0)
                         {
                             success = true;
-                        }
-                    }
-                    if (customer_Details.Customer_Column_Caption != null && customer_Details.Customer_Column_Caption.Count > 0)
-                    {
-
-                        DataTable dataTable = new DataTable();
-                        dataTable.Columns.Add("Col_Id", typeof(int));
-                        dataTable.Columns.Add("Caption_Name", typeof(string));
-                        dataTable.Columns.Add("Upload_Method", typeof(string));
-                        dataTable.Columns.Add("Status", typeof(bool));
-                        dataTable.Columns.Add("User_Id", typeof(int));
-
-                        string[] user_ids = !string.IsNullOrEmpty(customer_Details.User_Id) ? customer_Details.User_Id.Split(",") : null;
-
-                        foreach (var item1 in user_ids)
-                        {
-                            foreach (var item in customer_Details.Customer_Column_Caption)
+                            if (customer_Details.Customer_Party_File.Customer_Column_Caption != null && customer_Details.Customer_Party_File.Customer_Column_Caption.Count > 0)
                             {
-                                dataTable.Rows.Add(item.Col_Id, item.Caption_Name, item.Upload_Method, item.Status, item1);
+
+                                DataTable dataTable = new DataTable();
+                                dataTable.Columns.Add("Col_Id", typeof(int));
+                                dataTable.Columns.Add("Caption_Name", typeof(string));
+                                dataTable.Columns.Add("Upload_Method", typeof(string));
+                                dataTable.Columns.Add("Status", typeof(bool));
+                                dataTable.Columns.Add("User_Id", typeof(int));
+
+                                string[] user_ids = !string.IsNullOrEmpty(customer_Details.User_Id) ? customer_Details.User_Id.Split(",") : null;
+
+                                foreach (var item1 in user_ids)
+                                {
+                                    foreach (var item in customer_Details.Customer_Party_File.Customer_Column_Caption)
+                                    {
+                                        dataTable.Rows.Add(item.Col_Id, item.Caption_Name, "URL", item.Status, item1);
+                                    }
+                                }
+
+                                var column_Caption = await _partyService.Add_Update_Customer_Column_Caption(dataTable, user_Id ?? 0);
+                                if (column_Caption > 0)
+                                {
+                                    success = true;
+                                }
                             }
-                        }
-                        
-                        var column_Caption = await _partyService.Add_Update_Customer_Column_Caption(dataTable, user_Id ?? 0);
-                        if (column_Caption > 0)
-                        {
-                            success = true;
                         }
                     }
                     if (success)
