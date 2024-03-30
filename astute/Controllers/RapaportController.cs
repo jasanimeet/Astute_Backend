@@ -427,7 +427,7 @@ namespace astute.Controllers
                                     From_Cts = csvReader.GetField<decimal>(3),
                                     To_Cts = csvReader.GetField<decimal>(4),
                                     Rate = csvReader.GetField<decimal>(5),
-                                    Date = csvReader.GetField<string>(6) //DateTime.ParseExact(csvReader.GetField<string>(6).Trim(), "M/d/yyyy", CultureInfo.InvariantCulture)
+                                    Date = csvReader.GetField<string>(6).Trim() //DateTime.ParseExact(csvReader.GetField<string>(6).Trim(), "M/d/yyyy", CultureInfo.InvariantCulture)
                                 };
                                 dataList.Add(dataItem);
                             }
@@ -463,7 +463,7 @@ namespace astute.Controllers
                                     From_Cts = csvReader.GetField<decimal>(3),
                                     To_Cts = csvReader.GetField<decimal>(4),
                                     Rate = csvReader.GetField<decimal>(5),
-                                    Date = csvReader.GetField<string>(6) //ateTime.ParseExact(csvReader.GetField<string>(6).Trim(), "M/d/yyyy", CultureInfo.InvariantCulture)
+                                    Date = csvReader.GetField<string>(6).Trim() //ateTime.ParseExact(csvReader.GetField<string>(6).Trim(), "M/d/yyyy", CultureInfo.InvariantCulture)
                                 };
                                 dataList.Add(dataItem);
                             }
