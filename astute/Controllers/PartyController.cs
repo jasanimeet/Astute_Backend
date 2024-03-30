@@ -8822,7 +8822,7 @@ namespace astute.Controllers
                     if (customer_Details.Customer_Party_FTP != null)
                     {
                         customer_Details.Customer_Party_FTP.Party_Id = customer_Details.Party_Id;
-                        var party_ftp = await _partyService.Add_Update_Customer_Party_FTP(customer_Details.Customer_Party_FTP, user_Id ?? 0);
+                        var party_ftp = await _partyService.Add_Update_Customer_Party_FTP(customer_Details.Customer_Party_FTP, user_Id ?? 0, customer_Details.Map_Flag);
                         if (party_ftp > 0)
                         {
                             success = true;
@@ -8835,6 +8835,7 @@ namespace astute.Controllers
                                 dataTable.Columns.Add("Upload_Method", typeof(string));
                                 dataTable.Columns.Add("Status", typeof(bool));
                                 dataTable.Columns.Add("User_Id", typeof(int));
+                                dataTable.Columns.Add("Map_Flag", typeof(string));
 
                                 string[] user_ids = !string.IsNullOrEmpty(customer_Details.User_Id) ? customer_Details.User_Id.Split(",") : null;
 
@@ -8842,7 +8843,7 @@ namespace astute.Controllers
                                 {
                                     foreach (var item in customer_Details.Customer_Party_FTP.Customer_Column_Caption)
                                     {
-                                        dataTable.Rows.Add(item.Col_Id, item.Caption_Name, "FTP", item.Status, item1);
+                                        dataTable.Rows.Add(item.Col_Id, item.Caption_Name, "FTP", item.Status, item1, customer_Details.Map_Flag);
                                     }
                                 }
 
@@ -8858,7 +8859,7 @@ namespace astute.Controllers
                     if (customer_Details.Customer_Party_File != null)
                     {
                         customer_Details.Customer_Party_File.Party_Id = customer_Details.Party_Id;
-                        var party_file = await _partyService.Add_Update_Customer_Party_File(customer_Details.Customer_Party_File, user_Id ?? 0);
+                        var party_file = await _partyService.Add_Update_Customer_Party_File(customer_Details.Customer_Party_File, user_Id ?? 0, customer_Details.Map_Flag);
                         if (party_file > 0)
                         {
                             success = true;
@@ -8871,6 +8872,7 @@ namespace astute.Controllers
                                 dataTable.Columns.Add("Upload_Method", typeof(string));
                                 dataTable.Columns.Add("Status", typeof(bool));
                                 dataTable.Columns.Add("User_Id", typeof(int));
+                                dataTable.Columns.Add("Map_Flag", typeof(string));
 
                                 string[] user_ids = !string.IsNullOrEmpty(customer_Details.User_Id) ? customer_Details.User_Id.Split(",") : null;
 
@@ -8878,7 +8880,7 @@ namespace astute.Controllers
                                 {
                                     foreach (var item in customer_Details.Customer_Party_File.Customer_Column_Caption)
                                     {
-                                        dataTable.Rows.Add(item.Col_Id, item.Caption_Name, "URL", item.Status, item1);
+                                        dataTable.Rows.Add(item.Col_Id, item.Caption_Name, "URL", item.Status, item1, customer_Details.Map_Flag);
                                     }
                                 }
 
@@ -8940,7 +8942,7 @@ namespace astute.Controllers
                 });
             }
         }
-
+       
         #endregion
     }
 }

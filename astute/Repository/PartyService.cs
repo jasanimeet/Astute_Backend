@@ -809,7 +809,7 @@ namespace astute.Repository
         #endregion
 
         #region Customer Party File
-        public async Task<int> Add_Update_Customer_Party_File(Customer_Party_File_Model party_File, int modified_By)
+        public async Task<int> Add_Update_Customer_Party_File(Customer_Party_File_Model party_File, int modified_By,string map_Flag)
         {
             var file_Id = new SqlParameter("@File_Id", party_File.File_Id);
             var _party_Id = party_File.Party_Id > 0 ? new SqlParameter("@Party_Id", party_File.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
@@ -818,10 +818,11 @@ namespace astute.Repository
             var iP = !string.IsNullOrEmpty(party_File.IP) ? new SqlParameter("@IP", party_File.IP) : new SqlParameter("@IP", DBNull.Value);
             var file_Status = new SqlParameter("@File_Status", party_File.File_Status ?? false);
             var _modified_By = new SqlParameter("@Modified_By", modified_By);
+            var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Customer_Party_File_Insert_Update @File_Id, @Party_Id, @File_Name,@File_Type,@IP, @File_Status, @Modified_By", 
-                        file_Id, _party_Id, file_Name,file_Type,iP, file_Status, _modified_By));
+                        .ExecuteSqlRawAsync(@"EXEC Customer_Party_File_Insert_Update @File_Id, @Party_Id, @File_Name,@File_Type,@IP, @File_Status, @Modified_By, @Map_Flag", 
+                        file_Id, _party_Id, file_Name,file_Type,iP, file_Status, _modified_By, _map_Flag));
 
             return result;
         }
@@ -844,7 +845,7 @@ namespace astute.Repository
         #endregion
 
         #region Customer Party FTP
-        public async Task<int> Add_Update_Customer_Party_FTP(Customer_Party_FTP_Model party_FTP, int modified_By)
+        public async Task<int> Add_Update_Customer_Party_FTP(Customer_Party_FTP_Model party_FTP, int modified_By,string map_Flag)
         {
             var ftp_Id = new SqlParameter("@FTP_Id", party_FTP.FTP_Id);
             var _party_Id = party_FTP.Party_Id > 0 ? new SqlParameter("@Party_Id", party_FTP.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
@@ -856,14 +857,15 @@ namespace astute.Repository
             var ftp_File_Format = !string.IsNullOrEmpty(party_FTP.Ftp_File_Format) ? new SqlParameter("@Ftp_File_Format", party_FTP.Ftp_File_Format) : new SqlParameter("@Ftp_File_Format", DBNull.Value);
             var repeateveryType = !string.IsNullOrEmpty(party_FTP.RepeateveryType) ? new SqlParameter("@RepeateveryType", party_FTP.RepeateveryType) : new SqlParameter("@RepeateveryType", DBNull.Value);
             var repeatevery = !string.IsNullOrEmpty(party_FTP.Repeatevery) ? new SqlParameter("@Repeatevery", party_FTP.Repeatevery) : new SqlParameter("@Repeatevery", DBNull.Value);
+            var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
             var secure_Ftp = new SqlParameter("@Secure_Ftp", party_FTP.Secure_Ftp ?? false);
             var ftp_Status = new SqlParameter("@Ftp_Status", party_FTP.Ftp_Status ?? false);
             var _modified_By = new SqlParameter("@Modified_By", modified_By);
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Customer_Party_FTP_Insert_Update @FTP_Id, @Party_Id, @Host, @Ftp_Port, @Ftp_User, @Ftp_Password, @Ftp_File_Name, @Ftp_File_Format,
-                        @RepeateveryType, @Repeatevery, @Secure_Ftp, @Ftp_Status, @Modified_By", 
-                        ftp_Id, _party_Id, host, ftp_Port,ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Format, repeateveryType, repeatevery, secure_Ftp, ftp_Status,_modified_By));
+                        @RepeateveryType, @Repeatevery, @Secure_Ftp, @Ftp_Status, @Modified_By, @Map_Flag", 
+                        ftp_Id, _party_Id, host, ftp_Port,ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Format, repeateveryType, repeatevery, secure_Ftp, ftp_Status,_modified_By, _map_Flag));
 
             return result;
         }

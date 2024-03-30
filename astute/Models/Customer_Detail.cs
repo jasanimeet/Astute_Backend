@@ -8,6 +8,7 @@ namespace astute.Models
         [Key]
         public int Party_Id { get; set; }
         public string? User_Id { get; set; }
+        public string? Map_Flag { get; set; }
         public Customer_Party_Api_Model Customer_Party_Api { get; set; }
         public Customer_Party_FTP_Model Customer_Party_FTP { get; set; }
         public Customer_Party_File_Model Customer_Party_File { get; set; }
