@@ -809,7 +809,7 @@ namespace astute.Repository
         #endregion
 
         #region Customer Party File
-        public async Task<int> Add_Update_Customer_Party_File(Customer_Party_File party_File, int modified_By)
+        public async Task<int> Add_Update_Customer_Party_File(Customer_Party_File_Model party_File, int modified_By)
         {
             var file_Id = new SqlParameter("@File_Id", party_File.File_Id);
             var _party_Id = party_File.Party_Id > 0 ? new SqlParameter("@Party_Id", party_File.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
@@ -844,7 +844,7 @@ namespace astute.Repository
         #endregion
 
         #region Customer Party FTP
-        public async Task<int> Add_Update_Customer_Party_FTP(Customer_Party_FTP party_FTP, int modified_By)
+        public async Task<int> Add_Update_Customer_Party_FTP(Customer_Party_FTP_Model party_FTP, int modified_By)
         {
             var ftp_Id = new SqlParameter("@FTP_Id", party_FTP.FTP_Id);
             var _party_Id = party_FTP.Party_Id > 0 ? new SqlParameter("@Party_Id", party_FTP.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
