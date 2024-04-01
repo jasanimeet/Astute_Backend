@@ -6,7 +6,7 @@ namespace astute.Models
     public class Customer_Detail
     {
         [Key]
-        public int Party_Id { get; set; }
+        public int? Party_Id { get; set; }
         public string? User_Id { get; set; }
         public string? Map_Flag { get; set; }
         public Customer_Party_Api Customer_Party_Api { get; set; }

@@ -7,7 +7,7 @@ namespace astute.Models
     public class Customer_Party_FTP
     {
         [Key]
-        public int FTP_Id { get; set; }
+        public int? FTP_Id { get; set; }
         public int? Party_Id { get; set; }
         public string? Host { get; set; }
         public int? Ftp_Port { get; set; }
