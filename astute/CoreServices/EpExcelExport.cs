@@ -1791,30 +1791,78 @@ namespace astute.CoreServices
                             worksheet.Cells[2, k].Value = "Video";
                             worksheet.Cells[2, k].AutoFitColumns(7);
                         }
-                        //else if(Column_Name == "Cert No")
-                        //{
-                        //    k += 1;
-                        //    worksheet.Cells[2, k].Value = "Cert No";
-                        //    worksheet.Cells[2, k].AutoFitColumns(0);
-                        //}
-                        //else if (Column_Name == "Pointer")
-                        //{
-                        //    k += 1;
-                        //    worksheet.Cells[2, k].Value = "Pointer";
-                        //    worksheet.Cells[2, k].AutoFitColumns(0);
-                        //}
-                        //else if (Column_Name == "Rap Rate($)")
-                        //{
-                        //    k += 1;
-                        //    worksheet.Cells[2, k].Value = "Rap Rate($)";
-                        //    worksheet.Cells[2, k].AutoFitColumns(0);
-                        //}
-                        //else if (Column_Name == "Rap Amount($)")
-                        //{
-                        //    k += 1;
-                        //    worksheet.Cells[2, k].Value = "Rap Amount($)";
-                        //    worksheet.Cells[2, k].AutoFitColumns(0);
-                        //}
+                        else if (Column_Name == "Cert No")
+                        {
+                            k += 1;
+                            worksheet.Cells[2, k].Value = "Cert No";
+                            worksheet.Cells[2, k].AutoFitColumns(0);
+                        }
+                        else if (Column_Name == "Pointer")
+                        {
+                            k += 1;
+                            worksheet.Cells[2, k].Value = "Pointer";
+                            worksheet.Cells[2, k].AutoFitColumns(0);
+                        }
+                        else if (Column_Name == "Rap Rate($)")
+                        {
+                            k += 1;
+                            worksheet.Cells[2, k].Value = "Rap Rate($)";
+                            worksheet.Cells[2, k].AutoFitColumns(0);
+                        }
+                        else if (Column_Name == "Rap Amount($)")
+                        {
+                            k += 1;
+                            worksheet.Cells[2, k].Value = "Rap Amount($)";
+                            worksheet.Cells[2, k].AutoFitColumns(0);
+                        }
+                        else if (Column_Name == "Supplier Base Offer(%)")
+                        {
+                            k += 1;
+                            worksheet.Cells[2, k].Value = "Supplier Base Offer(%)";
+                            worksheet.Cells[2, k].AutoFitColumns(0);
+                        }
+                        else if (Column_Name == "Supplier Base Offer Value($)")
+                        {
+                            k += 1;
+                            worksheet.Cells[2, k].Value = "Supplier Base Offer Value($)";
+                            worksheet.Cells[2, k].AutoFitColumns(0);
+                        }
+                        else if (Column_Name == "Supplier Final Disc(%)")
+                        {
+                            k += 1;
+                            worksheet.Cells[2, k].Value = "Supplier Final Disc(%)";
+                            worksheet.Cells[2, k].AutoFitColumns(0);
+                        }
+                        else if (Column_Name == "Supplier Final Value($)")
+                        {
+                            k += 1;
+                            worksheet.Cells[2, k].Value = "Supplier Final Value($)";
+                            worksheet.Cells[2, k].AutoFitColumns(0);
+                        }
+                        else if (Column_Name == "Bid Disc(%)")
+                        {
+                            k += 1;
+                            worksheet.Cells[2, k].Value = "Bid Disc(%)";
+                            worksheet.Cells[2, k].AutoFitColumns(0);
+                        }
+                        else if (Column_Name == "Bid Amt")
+                        {
+                            k += 1;
+                            worksheet.Cells[2, k].Value = "Bid Amt";
+                            worksheet.Cells[2, k].AutoFitColumns(0);
+                        }
+                        else if (Column_Name == "Bid/Ct")
+                        {
+                            k += 1;
+                            worksheet.Cells[2, k].Value = "Bid/Ct";
+                            worksheet.Cells[2, k].AutoFitColumns(0);
+                        }
+                        else if (Column_Name == "Depth")
+                        {
+                            k += 1;
+                            worksheet.Cells[2, k].Value = "Depth";
+                            worksheet.Cells[2, k].AutoFitColumns(0);
+                        }
                         else
                         {
                             k += 1;
