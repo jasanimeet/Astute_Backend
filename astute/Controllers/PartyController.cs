@@ -8905,6 +8905,7 @@ namespace astute.Controllers
                             {
 
                                 DataTable dataTable = new DataTable();
+                                dataTable.Columns.Add("Party_Id", typeof(int));
                                 dataTable.Columns.Add("Col_Id", typeof(int));
                                 dataTable.Columns.Add("Caption_Name", typeof(string));
                                 dataTable.Columns.Add("Upload_Method", typeof(string));
@@ -8918,7 +8919,7 @@ namespace astute.Controllers
                                 {
                                     foreach (var item in customer_Details.Customer_Party_FTP.Customer_Column_Caption)
                                     {
-                                        dataTable.Rows.Add(item.Col_Id, item.Caption_Name, "FTP", item.Status, item1, customer_Details.Map_Flag);
+                                        dataTable.Rows.Add(customer_Details.Party_Id, item.Col_Id, item.Caption_Name, "FTP", item.Status, item1, customer_Details.Map_Flag);
                                     }
                                 }
 
@@ -8942,6 +8943,7 @@ namespace astute.Controllers
                             {
 
                                 DataTable dataTable = new DataTable();
+                                dataTable.Columns.Add("Party_Id", typeof(int));
                                 dataTable.Columns.Add("Col_Id", typeof(int));
                                 dataTable.Columns.Add("Caption_Name", typeof(string));
                                 dataTable.Columns.Add("Upload_Method", typeof(string));
@@ -8955,7 +8957,7 @@ namespace astute.Controllers
                                 {
                                     foreach (var item in customer_Details.Customer_Party_File.Customer_Column_Caption)
                                     {
-                                        dataTable.Rows.Add(item.Col_Id, item.Caption_Name, "URL", item.Status, item1, customer_Details.Map_Flag);
+                                        dataTable.Rows.Add(customer_Details.Party_Id,item.Col_Id, item.Caption_Name, "URL", item.Status, item1, customer_Details.Map_Flag);
                                     }
                                 }
 
@@ -8996,7 +8998,7 @@ namespace astute.Controllers
         {
             try
             {
-                var result = await _partyService.Get_Customer_Pricing_Column_Caption();
+                var result = await _partyService.Get_Customer_Pricing_Column_Caption(null,null,null);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -9020,13 +9022,18 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_customer_pricing_detail")]
         [Authorize]
-        public async Task<IActionResult> Get_Customer_Pricing_Detail(int party_Id,string map_flag)
+        public async Task<IActionResult> Get_Customer_Pricing_Detail(int party_Id,string map_flag,string user_Id)
         {
             try
             {
                 Customer_Detail customer_Detail = new Customer_Detail();
+                customer_Detail.Party_Id = party_Id;
+                customer_Detail.Map_Flag = map_flag;
+                customer_Detail.User_Id = user_Id;
                 customer_Detail.Customer_Party_File = await _partyService.Get_Customer_Party_File(null,party_Id,map_flag);
+                customer_Detail.Customer_Party_File.Customer_Column_Caption = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag, user_Id);
                 customer_Detail.Customer_Party_FTP = await _partyService.Get_Customer_Party_FTP(null,party_Id,map_flag);
+                customer_Detail.Customer_Party_FTP.Customer_Column_Caption = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag, user_Id);
                 if (customer_Detail != null)
                 {
                     return Ok(new
