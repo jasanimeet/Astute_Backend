@@ -9071,7 +9071,7 @@ namespace astute.Controllers
         {
             try
             {
-                var result = await _partyService.Get_Customer_Pricing_Column_Caption(null, null);
+                var result = await _partyService.Get_Customer_Pricing_Column_Caption(null, null,null);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -9101,19 +9101,19 @@ namespace astute.Controllers
             {
                 Customer_Detail customer_Detail = new Customer_Detail();
                 customer_Detail.Customer_Party_Api = await _partyService.Get_Customer_Party_API(null, party_Id, map_flag);
-                var Customer_Party_Api = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag);
+                var Customer_Party_Api = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag,"API");
                 if (customer_Detail.Customer_Party_Api != null && Customer_Party_Api != null && Customer_Party_Api.Count > 0)
                 {
                     customer_Detail.Customer_Party_Api.Customer_Column_Caption = Customer_Party_Api;
                 }
                 customer_Detail.Customer_Party_File = await _partyService.Get_Customer_Party_File(null, party_Id, map_flag);
-                var Customer_Party_File = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag);
+                var Customer_Party_File = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag,"URL");
                 if (customer_Detail.Customer_Party_File != null && Customer_Party_File != null && Customer_Party_File.Count > 0)
                 {
                     customer_Detail.Customer_Party_File.Customer_Column_Caption = Customer_Party_File;
                 }
                 customer_Detail.Customer_Party_FTP = await _partyService.Get_Customer_Party_FTP(null, party_Id, map_flag);
-                var Customer_Party_FTP = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag);
+                var Customer_Party_FTP = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag,"FTP");
                 if (customer_Detail.Customer_Party_FTP != null && Customer_Party_FTP != null && Customer_Party_FTP.Count > 0)
                 {
                     customer_Detail.Customer_Party_FTP.Customer_Column_Caption = Customer_Party_FTP;

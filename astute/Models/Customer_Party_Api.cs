@@ -12,6 +12,7 @@ namespace astute.Models
         public string? Format_Type { get; set; }
         public string? IP { get; set; }
         public string? Country { get; set; }
+        public string? Country_Id { get; set; }
         public string? Map_Flag { get; set; }
         public bool? API_Status { get; set; }
 
