@@ -891,6 +891,43 @@ namespace astute.Repository
         }
         #endregion
 
+        #region Customer Party API
+        public async Task<int> Add_Update_Customer_Party_API(Customer_Party_Api party_API, int modified_By, string map_Flag)
+        {
+            var api_Id = new SqlParameter("@API_Id", party_API.API_Id);
+            var _party_Id = party_API.Party_Id > 0 ? new SqlParameter("@Party_Id", party_API.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+            var format_Type = !string.IsNullOrEmpty(party_API.Format_Type) ? new SqlParameter("@Format_Type", party_API.Format_Type) : new SqlParameter("@Format_Type", DBNull.Value);
+            var iP = !string.IsNullOrEmpty(party_API.IP) ? new SqlParameter("@IP", party_API.IP) : new SqlParameter("@IP", DBNull.Value);
+            var country = !string.IsNullOrEmpty(party_API.IP) ? new SqlParameter("@Country", party_API.Country) : new SqlParameter("@Country", DBNull.Value);
+            var api_Status = new SqlParameter("@API_Status", party_API.API_Status ?? false);
+            var _modified_By = new SqlParameter("@Modified_By", modified_By);
+            var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Customer_Party_API_Insert_Update @API_Id, @Party_Id, @Format_Type,@IP,@Country, @API_Status, @Modified_By, @Map_Flag",
+                        api_Id, _party_Id, format_Type, iP, country, api_Status, _modified_By, _map_Flag));
+
+            return result;
+        }
+        public async Task<int> Delete_Customer_Part_API(int api_Id)
+        {
+            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Customer_Party_API_Delete {api_Id}"));
+        }
+        public async Task<Customer_Party_Api> Get_Customer_Party_API(int? api_Id, int party_Id, string map_Flag)
+        {
+            var _api_Id = api_Id > 0 ? new SqlParameter("@API_Id", api_Id) : new SqlParameter("@API_Id", DBNull.Value);
+            var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+            var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Customer_Party_Api
+                            .FromSqlRaw(@"exec [Customer_Party_API_Select] @API_Id, @Party_Id, @Map_Flag", _api_Id, _party_Id, _map_Flag)
+                            .AsEnumerable()
+                            .FirstOrDefault());
+
+            return result;
+        }
+        #endregion
+
         #region Customer Column Caption
 
         public async Task<int> Add_Update_Customer_Column_Caption(DataTable dataTable, int modified_By)

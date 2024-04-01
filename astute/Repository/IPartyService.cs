@@ -94,6 +94,12 @@ namespace astute.Repository
         Task<Customer_Party_FTP> Get_Customer_Party_FTP(int? ftp_Id, int party_Id,string map_Flag);
         #endregion
 
+        #region Customer Party API
+        Task<int> Add_Update_Customer_Party_API(Customer_Party_Api party_API, int modified_By, string map_Flag);
+        Task<int> Delete_Customer_Part_API(int api_Id);
+        Task<Customer_Party_Api> Get_Customer_Party_API(int? api_Id, int party_Id, string map_Flag);
+        #endregion
+
         #region Customer Column Caption
         Task<int> Add_Update_Customer_Column_Caption(DataTable dataTable, int UserId);
         Task<List<Customer_Column_Caption>> Get_Customer_Pricing_Column_Caption(int? party_Id, string? map_Flag, string? user_Id);

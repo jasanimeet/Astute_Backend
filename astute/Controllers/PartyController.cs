@@ -8893,15 +8893,44 @@ namespace astute.Controllers
                     var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                     int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                     bool success = false;
-                    //if (supplier_Details.Party_Api != null)
-                    //{
-                    //    supplier_Details.Party_Api.Party_Id = supplier_Details.Party_Id;
-                    //    var party_Api = await _partyService.Add_Update_Party_API(supplier_Details.Party_Api, supplier_Details.User_Id ?? 0);
-                    //    if (party_Api > 0)
-                    //    {
-                    //        success = true;
-                    //    }
-                    //}
+                    if (customer_Details.Customer_Party_Api != null)
+                    {
+                        customer_Details.Customer_Party_Api.Party_Id = customer_Details.Party_Id;
+                        var party_ftp = await _partyService.Add_Update_Customer_Party_API(customer_Details.Customer_Party_Api, user_Id ?? 0, customer_Details.Map_Flag);
+                        if (party_ftp > 0)
+                        {
+                            success = true;
+                            if (customer_Details.Customer_Party_Api.Customer_Column_Caption != null && customer_Details.Customer_Party_Api.Customer_Column_Caption.Count > 0)
+                            {
+
+                                DataTable dataTable = new DataTable();
+                                dataTable.Columns.Add("Party_Id", typeof(int));
+                                dataTable.Columns.Add("Col_Id", typeof(int));
+                                dataTable.Columns.Add("Caption_Name", typeof(string));
+                                dataTable.Columns.Add("Upload_Method", typeof(string));
+                                dataTable.Columns.Add("Status", typeof(bool));
+                                dataTable.Columns.Add("User_Id", typeof(int));
+                                dataTable.Columns.Add("Map_Flag", typeof(string));
+
+                                string[] user_ids = !string.IsNullOrEmpty(customer_Details.User_Id) ? customer_Details.User_Id.Split(",") : null;
+
+                                foreach (var item1 in user_ids)
+                                {
+                                    foreach (var item in customer_Details.Customer_Party_Api.Customer_Column_Caption)
+                                    {
+                                        dataTable.Rows.Add(customer_Details.Party_Id, item.Col_Id, item.Caption_Name, "API", item.Status, item1, customer_Details.Map_Flag);
+                                    }
+                                }
+
+                                var column_Caption = await _partyService.Add_Update_Customer_Column_Caption(dataTable, user_Id ?? 0);
+                                if (column_Caption > 0)
+                                {
+                                    success = true;
+                                }
+                            }
+
+                        }
+                    }
                     if (customer_Details.Customer_Party_FTP != null)
                     {
                         customer_Details.Customer_Party_FTP.Party_Id = customer_Details.Party_Id;
@@ -9038,6 +9067,8 @@ namespace astute.Controllers
                 customer_Detail.Party_Id = party_Id;
                 customer_Detail.Map_Flag = map_flag;
                 customer_Detail.User_Id = user_Id;
+                customer_Detail.Customer_Party_Api = await _partyService.Get_Customer_Party_API(null, party_Id, map_flag);
+                customer_Detail.Customer_Party_Api.Customer_Column_Caption = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag, user_Id);
                 customer_Detail.Customer_Party_File = await _partyService.Get_Customer_Party_File(null,party_Id,map_flag);
                 customer_Detail.Customer_Party_File.Customer_Column_Caption = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag, user_Id);
                 customer_Detail.Customer_Party_FTP = await _partyService.Get_Customer_Party_FTP(null,party_Id,map_flag);
