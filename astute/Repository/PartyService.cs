@@ -817,13 +817,14 @@ namespace astute.Repository
             var file_Name = !string.IsNullOrEmpty(party_File.File_Name) ? new SqlParameter("@File_Name", party_File.File_Name) : new SqlParameter("@File_Name", DBNull.Value);
             var file_Type = !string.IsNullOrEmpty(party_File.File_Type) ? new SqlParameter("@File_Type", party_File.File_Type) : new SqlParameter("@File_Type", DBNull.Value);
             var iP = !string.IsNullOrEmpty(party_File.IP) ? new SqlParameter("@IP", party_File.IP) : new SqlParameter("@IP", DBNull.Value);
+            var country = !string.IsNullOrEmpty(party_File.IP) ? new SqlParameter("@Country", party_File.Country) : new SqlParameter("@Country", DBNull.Value);
             var file_Status = new SqlParameter("@File_Status", party_File.File_Status ?? false);
             var _modified_By = new SqlParameter("@Modified_By", modified_By);
             var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Customer_Party_File_Insert_Update @File_Id, @Party_Id, @File_Name,@File_Type,@IP, @File_Status, @Modified_By, @Map_Flag",
-                        file_Id, _party_Id, file_Name, file_Type, iP, file_Status, _modified_By, _map_Flag));
+                        .ExecuteSqlRawAsync(@"EXEC Customer_Party_File_Insert_Update @File_Id, @Party_Id, @File_Name,@File_Type,@IP,@Country, @File_Status, @Modified_By, @Map_Flag",
+                        file_Id, _party_Id, file_Name, file_Type, iP, country, file_Status, _modified_By, _map_Flag));
 
             return result;
         }
