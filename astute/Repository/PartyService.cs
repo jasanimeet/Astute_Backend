@@ -944,14 +944,13 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<List<Customer_Column_Caption>> Get_Customer_Pricing_Column_Caption(int? party_Id, string? map_Flag, string? user_Id)
+        public async Task<List<Customer_Column_Caption>> Get_Customer_Pricing_Column_Caption(int? party_Id, string? map_Flag)
         {
             var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
             var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
-            var _user_Id = !string.IsNullOrEmpty(user_Id) ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Customer_Column_Caption
-                            .FromSqlRaw(@"exec Customer_Pricing_Column_Caption_Select @Party_Id, @Map_Flag, @User_Id",  _party_Id, _map_Flag,_user_Id)
+                            .FromSqlRaw(@"exec Customer_Pricing_Column_Caption_Select @Party_Id, @Map_Flag",  _party_Id, _map_Flag)
                             .AsEnumerable()
                             .ToList());
 

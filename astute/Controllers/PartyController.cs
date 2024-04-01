@@ -8939,7 +8939,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_update_customer_detail")]
         [Authorize]
-        public virtual async Task<IActionResult> Create_Update_Customer_Detail(Customer_Detail customer_Details)
+        public virtual async Task<IActionResult> Create_Update_Customer_Detail(List<Customer_Detail> customer_Details_data)
         {
             try
             {
@@ -8948,115 +8948,96 @@ namespace astute.Controllers
                     var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                     int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                     bool success = false;
-                    if (customer_Details.Customer_Party_Api != null && customer_Details.Customer_Party_Api.Customer_Column_Caption != null && customer_Details.Customer_Party_Api.Customer_Column_Caption.Count > 0)
+                    foreach (var customer_Details in customer_Details_data)
                     {
-                        customer_Details.Customer_Party_Api.Party_Id = customer_Details.Party_Id;
-                        var party_ftp = await _partyService.Add_Update_Customer_Party_API(customer_Details.Customer_Party_Api, user_Id ?? 0, customer_Details.Map_Flag);
-                        if (party_ftp > 0)
+                        if (customer_Details.Customer_Party_Api != null && customer_Details.Customer_Party_Api.Customer_Column_Caption != null && customer_Details.Customer_Party_Api.Customer_Column_Caption.Count > 0)
                         {
-                            success = true;
-                            if (customer_Details.Customer_Party_Api.Customer_Column_Caption != null && customer_Details.Customer_Party_Api.Customer_Column_Caption.Count > 0)
+                            customer_Details.Customer_Party_Api.Party_Id = customer_Details.Party_Id;
+                            var party_ftp = await _partyService.Add_Update_Customer_Party_API(customer_Details.Customer_Party_Api, user_Id ?? 0, customer_Details.Map_Flag);
+                            if (party_ftp > 0)
                             {
-
-                                DataTable dataTable = new DataTable();
-                                dataTable.Columns.Add("Party_Id", typeof(int));
-                                dataTable.Columns.Add("Col_Id", typeof(int));
-                                dataTable.Columns.Add("Caption_Name", typeof(string));
-                                dataTable.Columns.Add("Upload_Method", typeof(string));
-                                dataTable.Columns.Add("Status", typeof(bool));
-                                dataTable.Columns.Add("User_Id", typeof(int));
-                                dataTable.Columns.Add("Map_Flag", typeof(string));
-
-                                string[] user_ids = !string.IsNullOrEmpty(customer_Details.User_Id) ? customer_Details.User_Id.Split(",") : null;
-
-                                foreach (var item1 in user_ids)
+                                success = true;
+                                if (customer_Details.Customer_Party_Api.Customer_Column_Caption != null && customer_Details.Customer_Party_Api.Customer_Column_Caption.Count > 0)
                                 {
+
+                                    DataTable dataTable = new DataTable();
+                                    dataTable.Columns.Add("Party_Id", typeof(int));
+                                    dataTable.Columns.Add("Col_Id", typeof(int));
+                                    dataTable.Columns.Add("Caption_Name", typeof(string));
+                                    dataTable.Columns.Add("Upload_Method", typeof(string));
+                                    dataTable.Columns.Add("Status", typeof(bool));
+                                    dataTable.Columns.Add("Map_Flag", typeof(string));
+
                                     foreach (var item in customer_Details.Customer_Party_Api.Customer_Column_Caption)
                                     {
-                                        dataTable.Rows.Add(customer_Details.Party_Id, item.Col_Id, item.Caption_Name, "API", item.Status, item1, customer_Details.Map_Flag);
+                                        dataTable.Rows.Add(customer_Details.Party_Id, item.Col_Id, item.Caption_Name, "API", item.Status, customer_Details.Map_Flag);
+                                    }
+                                    var column_Caption = await _partyService.Add_Update_Customer_Column_Caption(dataTable, user_Id ?? 0);
+                                    if (column_Caption > 0)
+                                    {
+                                        success = true;
                                     }
                                 }
 
-                                var column_Caption = await _partyService.Add_Update_Customer_Column_Caption(dataTable, user_Id ?? 0);
-                                if (column_Caption > 0)
-                                {
-                                    success = true;
-                                }
                             }
-
                         }
-                    }
-                    if (customer_Details.Customer_Party_FTP != null && customer_Details.Customer_Party_FTP.Customer_Column_Caption != null && customer_Details.Customer_Party_FTP.Customer_Column_Caption.Count > 0)
-                    {
-                        customer_Details.Customer_Party_FTP.Party_Id = customer_Details.Party_Id;
-                        var party_ftp = await _partyService.Add_Update_Customer_Party_FTP(customer_Details.Customer_Party_FTP, user_Id ?? 0, customer_Details.Map_Flag);
-                        if (party_ftp > 0)
+                        if (customer_Details.Customer_Party_FTP != null && customer_Details.Customer_Party_FTP.Customer_Column_Caption != null && customer_Details.Customer_Party_FTP.Customer_Column_Caption.Count > 0)
                         {
-                            success = true;
-                            if (customer_Details.Customer_Party_FTP.Customer_Column_Caption != null && customer_Details.Customer_Party_FTP.Customer_Column_Caption.Count > 0)
+                            customer_Details.Customer_Party_FTP.Party_Id = customer_Details.Party_Id;
+                            var party_ftp = await _partyService.Add_Update_Customer_Party_FTP(customer_Details.Customer_Party_FTP, user_Id ?? 0, customer_Details.Map_Flag);
+                            if (party_ftp > 0)
                             {
-
-                                DataTable dataTable = new DataTable();
-                                dataTable.Columns.Add("Party_Id", typeof(int));
-                                dataTable.Columns.Add("Col_Id", typeof(int));
-                                dataTable.Columns.Add("Caption_Name", typeof(string));
-                                dataTable.Columns.Add("Upload_Method", typeof(string));
-                                dataTable.Columns.Add("Status", typeof(bool));
-                                dataTable.Columns.Add("User_Id", typeof(int));
-                                dataTable.Columns.Add("Map_Flag", typeof(string));
-
-                                string[] user_ids = !string.IsNullOrEmpty(customer_Details.User_Id) ? customer_Details.User_Id.Split(",") : null;
-
-                                foreach (var item1 in user_ids)
+                                success = true;
+                                if (customer_Details.Customer_Party_FTP.Customer_Column_Caption != null && customer_Details.Customer_Party_FTP.Customer_Column_Caption.Count > 0)
                                 {
+                                    DataTable dataTable = new DataTable();
+                                    dataTable.Columns.Add("Party_Id", typeof(int));
+                                    dataTable.Columns.Add("Col_Id", typeof(int));
+                                    dataTable.Columns.Add("Caption_Name", typeof(string));
+                                    dataTable.Columns.Add("Upload_Method", typeof(string));
+                                    dataTable.Columns.Add("Status", typeof(bool));
+                                    dataTable.Columns.Add("Map_Flag", typeof(string));
+
                                     foreach (var item in customer_Details.Customer_Party_FTP.Customer_Column_Caption)
                                     {
-                                        dataTable.Rows.Add(customer_Details.Party_Id, item.Col_Id, item.Caption_Name, "FTP", item.Status, item1, customer_Details.Map_Flag);
+                                        dataTable.Rows.Add(customer_Details.Party_Id, item.Col_Id, item.Caption_Name, "API", item.Status, customer_Details.Map_Flag);
+                                    }
+                                    var column_Caption = await _partyService.Add_Update_Customer_Column_Caption(dataTable, user_Id ?? 0);
+                                    if (column_Caption > 0)
+                                    {
+                                        success = true;
                                     }
                                 }
 
-                                var column_Caption = await _partyService.Add_Update_Customer_Column_Caption(dataTable, user_Id ?? 0);
-                                if (column_Caption > 0)
-                                {
-                                    success = true;
-                                }
                             }
-
                         }
-                    }
-                    if (customer_Details.Customer_Party_File != null && customer_Details.Customer_Party_File.Customer_Column_Caption != null && customer_Details.Customer_Party_File.Customer_Column_Caption.Count > 0)
-                    {
-                        customer_Details.Customer_Party_File.Party_Id = customer_Details.Party_Id;
-                        var party_file = await _partyService.Add_Update_Customer_Party_File(customer_Details.Customer_Party_File, user_Id ?? 0, customer_Details.Map_Flag);
-                        if (party_file > 0)
+                        if (customer_Details.Customer_Party_File != null && customer_Details.Customer_Party_File.Customer_Column_Caption != null && customer_Details.Customer_Party_File.Customer_Column_Caption.Count > 0)
                         {
-                            success = true;
-                            if (customer_Details.Customer_Party_File.Customer_Column_Caption != null && customer_Details.Customer_Party_File.Customer_Column_Caption.Count > 0)
+                            customer_Details.Customer_Party_File.Party_Id = customer_Details.Party_Id;
+                            var party_file = await _partyService.Add_Update_Customer_Party_File(customer_Details.Customer_Party_File, user_Id ?? 0, customer_Details.Map_Flag);
+                            if (party_file > 0)
                             {
-
-                                DataTable dataTable = new DataTable();
-                                dataTable.Columns.Add("Party_Id", typeof(int));
-                                dataTable.Columns.Add("Col_Id", typeof(int));
-                                dataTable.Columns.Add("Caption_Name", typeof(string));
-                                dataTable.Columns.Add("Upload_Method", typeof(string));
-                                dataTable.Columns.Add("Status", typeof(bool));
-                                dataTable.Columns.Add("User_Id", typeof(int));
-                                dataTable.Columns.Add("Map_Flag", typeof(string));
-
-                                string[] user_ids = !string.IsNullOrEmpty(customer_Details.User_Id) ? customer_Details.User_Id.Split(",") : null;
-
-                                foreach (var item1 in user_ids)
+                                success = true;
+                                if (customer_Details.Customer_Party_File.Customer_Column_Caption != null && customer_Details.Customer_Party_File.Customer_Column_Caption.Count > 0)
                                 {
+                                    DataTable dataTable = new DataTable();
+                                    dataTable.Columns.Add("Party_Id", typeof(int));
+                                    dataTable.Columns.Add("Col_Id", typeof(int));
+                                    dataTable.Columns.Add("Caption_Name", typeof(string));
+                                    dataTable.Columns.Add("Upload_Method", typeof(string));
+                                    dataTable.Columns.Add("Status", typeof(bool));
+                                    dataTable.Columns.Add("Map_Flag", typeof(string));
+
                                     foreach (var item in customer_Details.Customer_Party_File.Customer_Column_Caption)
                                     {
-                                        dataTable.Rows.Add(customer_Details.Party_Id, item.Col_Id, item.Caption_Name, "URL", item.Status, item1, customer_Details.Map_Flag);
+                                        dataTable.Rows.Add(customer_Details.Party_Id, item.Col_Id, item.Caption_Name, "API", item.Status, customer_Details.Map_Flag);
                                     }
-                                }
+                                    var column_Caption = await _partyService.Add_Update_Customer_Column_Caption(dataTable, user_Id ?? 0);
+                                    if (column_Caption > 0)
+                                    {
+                                        success = true;
+                                    }
 
-                                var column_Caption = await _partyService.Add_Update_Customer_Column_Caption(dataTable, user_Id ?? 0);
-                                if (column_Caption > 0)
-                                {
-                                    success = true;
                                 }
                             }
                         }
@@ -9090,7 +9071,7 @@ namespace astute.Controllers
         {
             try
             {
-                var result = await _partyService.Get_Customer_Pricing_Column_Caption(null, null, null);
+                var result = await _partyService.Get_Customer_Pricing_Column_Caption(null, null);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -9114,22 +9095,33 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_customer_pricing_detail")]
         [Authorize]
-        public async Task<IActionResult> Get_Customer_Pricing_Detail(int party_Id, string map_flag, string user_Id)
+        public async Task<IActionResult> Get_Customer_Pricing_Detail(int party_Id, string map_flag)
         {
             try
             {
                 Customer_Detail customer_Detail = new Customer_Detail();
-                customer_Detail.Party_Id = party_Id;
-                customer_Detail.Map_Flag = map_flag;
-                customer_Detail.User_Id = user_Id;
                 customer_Detail.Customer_Party_Api = await _partyService.Get_Customer_Party_API(null, party_Id, map_flag);
-                customer_Detail.Customer_Party_Api.Customer_Column_Caption = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag, user_Id);
-                customer_Detail.Customer_Party_File = await _partyService.Get_Customer_Party_File(null, party_Id, map_flag);
-                customer_Detail.Customer_Party_File.Customer_Column_Caption = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag, user_Id);
-                customer_Detail.Customer_Party_FTP = await _partyService.Get_Customer_Party_FTP(null, party_Id, map_flag);
-                customer_Detail.Customer_Party_FTP.Customer_Column_Caption = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag, user_Id);
-                if (customer_Detail != null)
+                var Customer_Party_Api = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag);
+                if (customer_Detail.Customer_Party_Api != null && Customer_Party_Api != null && Customer_Party_Api.Count > 0)
                 {
+                    customer_Detail.Customer_Party_Api.Customer_Column_Caption = Customer_Party_Api;
+                }
+                customer_Detail.Customer_Party_File = await _partyService.Get_Customer_Party_File(null, party_Id, map_flag);
+                var Customer_Party_File = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag);
+                if (customer_Detail.Customer_Party_File != null && Customer_Party_File != null && Customer_Party_File.Count > 0)
+                {
+                    customer_Detail.Customer_Party_File.Customer_Column_Caption = Customer_Party_File;
+                }
+                customer_Detail.Customer_Party_FTP = await _partyService.Get_Customer_Party_FTP(null, party_Id, map_flag);
+                var Customer_Party_FTP = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag);
+                if (customer_Detail.Customer_Party_FTP != null && Customer_Party_FTP != null && Customer_Party_FTP.Count > 0)
+                {
+                    customer_Detail.Customer_Party_FTP.Customer_Column_Caption = Customer_Party_FTP;
+                }
+                if (customer_Detail != null && (customer_Detail.Customer_Party_FTP != null || customer_Detail.Customer_Party_Api != null || customer_Detail.Customer_Party_File!= null))
+                {
+                    customer_Detail.Party_Id = party_Id;
+                    customer_Detail.Map_Flag = map_flag;
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
