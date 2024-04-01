@@ -1632,6 +1632,148 @@ namespace astute.CoreServices
                     #endregion
 
                     #region Header Name Declaration
+
+                    //worksheet.Cells[2, 1].Value = "DNA";
+                    //worksheet.Cells[2, 1].AutoFitColumns(7);
+
+                    //worksheet.Cells[2, 1].Value = "Image";
+                    //worksheet.Cells[2, 1].AutoFitColumns(7);
+
+                    //worksheet.Cells[2, 1].Value = "Video";
+                    //worksheet.Cells[2, 1].AutoFitColumns(7);
+
+                    //worksheet.Cells[2, 1].Value = "Lab";
+                    //worksheet.Cells[2, 1].AutoFitColumns(5);
+
+                    //worksheet.Cells[2, 1].Value = "Supplier Name";
+                    //worksheet.Cells[2, 1].AutoFitColumns(10);
+
+                    //worksheet.Cells[2, 1].Value = "Rank";
+                    //worksheet.Cells[2, 1].AutoFitColumns(4.7);
+
+                    //worksheet.Cells[2, 1].Value = "Supplier Status";
+                    //worksheet.Cells[2, 1].AutoFitColumns(5);
+
+                    //worksheet.Cells[2, 1].Value = "Buyer Name";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6.5);
+
+                    //worksheet.Cells[2, 1].Value = "Status";
+                    //worksheet.Cells[2, 1].AutoFitColumns(7);
+
+                    //worksheet.Cells[2, 1].Value = "Supplier No";
+                    //worksheet.Cells[2, 1].AutoFitColumns(8);
+
+                    //worksheet.Cells[2, 1].Value = "Cert No";
+                    //worksheet.Cells[2, 1].AutoFitColumns(0);
+
+                    //worksheet.Cells[2, 1].Value = "Shape";
+                    //worksheet.Cells[2, 1].AutoFitColumns(9);
+
+                    //worksheet.Cells[2, 1].Value = "Pointer";
+                    //worksheet.Cells[2, 1].AutoFitColumns(0);
+
+                    //worksheet.Cells[2, 1].Value = "Sub Pointer";
+                    //worksheet.Cells[2, 1].AutoFitColumns(9);
+
+                    //worksheet.Cells[2, 1].Value = "Color";////////
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Clarity";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "CTS";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Rap Rate($)";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Rap Amount($)";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Supplier Base Offer(%)";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Supplier Base Offer Value($)";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Supplier Final Disc(%)";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Supplier Final Value($)";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Supplier Final Disc. With Max Slab(%)";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Supplier Final Value With Max Slab($)";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Bid Disc(%)";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Bid Amt";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Bid/Ct";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Avg. Stock Disc(%)";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Avg. Stock Pcs";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Avg. Pur. Disc(%)";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Avg. Pur. Pcs";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Avg. Sales Disc(%)";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Sales Pcs";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "KTS Grade";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Comm. Grade";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Zone";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Para. Grade";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Cut";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Polish";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Symm";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Fls";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Key To Symbol";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "RATIO";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Length";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Width";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
+                    //worksheet.Cells[2, 1].Value = "Width";
+                    //worksheet.Cells[2, 1].AutoFitColumns(6);
+
                     int k = 0;
                     for (int j = 0; j < column_dt.Rows.Count; j++)
                     {
@@ -1649,6 +1791,30 @@ namespace astute.CoreServices
                             worksheet.Cells[2, k].Value = "Video";
                             worksheet.Cells[2, k].AutoFitColumns(7);
                         }
+                        //else if(Column_Name == "Cert No")
+                        //{
+                        //    k += 1;
+                        //    worksheet.Cells[2, k].Value = "Cert No";
+                        //    worksheet.Cells[2, k].AutoFitColumns(0);
+                        //}
+                        //else if (Column_Name == "Pointer")
+                        //{
+                        //    k += 1;
+                        //    worksheet.Cells[2, k].Value = "Pointer";
+                        //    worksheet.Cells[2, k].AutoFitColumns(0);
+                        //}
+                        //else if (Column_Name == "Rap Rate($)")
+                        //{
+                        //    k += 1;
+                        //    worksheet.Cells[2, k].Value = "Rap Rate($)";
+                        //    worksheet.Cells[2, k].AutoFitColumns(0);
+                        //}
+                        //else if (Column_Name == "Rap Amount($)")
+                        //{
+                        //    k += 1;
+                        //    worksheet.Cells[2, k].Value = "Rap Amount($)";
+                        //    worksheet.Cells[2, k].AutoFitColumns(0);
+                        //}
                         else
                         {
                             k += 1;
