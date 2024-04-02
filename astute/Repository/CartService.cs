@@ -26,7 +26,7 @@ namespace astute.Repository
         #endregion
 
         #region Methods
-        public async Task<(string, int,string)> Create_Update_Cart(DataTable dataTable, int User_Id, string customer_Name, string remarks, int validity_Days)
+        public async Task<(string, int, string)> Create_Update_Cart(DataTable dataTable, int User_Id, string customer_Name, string remarks, int validity_Days)
         {
             var parameter = new SqlParameter("@Cart_Table_Type", SqlDbType.Structured)
             {
@@ -44,7 +44,7 @@ namespace astute.Repository
             };
             var msg = new SqlParameter("@Msg", SqlDbType.NVarChar)
             {
-                Size=-1,
+                Size = -1,
                 Direction = ParameterDirection.Output
             };
 
@@ -55,7 +55,7 @@ namespace astute.Repository
             var _is_Exists = (bool)is_Exists.Value;
             var _msg = (string)msg.Value;
             if (_is_Exists)
-                return ("exist",0, _msg);
+                return ("exist", 0, _msg);
 
             return ("success", result, _msg);
         }
@@ -106,7 +106,7 @@ namespace astute.Repository
 
         //    return result;
         //}
-        public async Task<int> Create_Approved_Management(DataTable dataTable, int user_Id, string remarks, string status)
+        public async Task<(string,int, string)> Create_Approved_Management(DataTable dataTable, int user_Id, string remarks, string status)
         {
             var parameter = new SqlParameter("@tblApproval_Management", SqlDbType.Structured)
             {
@@ -116,13 +116,26 @@ namespace astute.Repository
             var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
             var _remarks = !string.IsNullOrEmpty(remarks) ? new SqlParameter("@Remarks", remarks) : new SqlParameter("@Remarks", DBNull.Value);
             var _status = !string.IsNullOrEmpty(status) ? new SqlParameter("@Status", status) : new SqlParameter("@Status", DBNull.Value);
-
+            var msg = new SqlParameter("@Msg", SqlDbType.NVarChar)
+            {
+                Size = -1,
+                Direction = ParameterDirection.Output
+            };
+            var is_Exists = new SqlParameter("@IsExist", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Approval_Management_Insert_Update] @tblApproval_Management, @User_Id, @Remarks ,@Status", parameter, _user_Id, _remarks, _status));
+                        .ExecuteSqlRawAsync(@"EXEC [Approval_Management_Insert_Update] @tblApproval_Management, @User_Id, @Remarks ,@Status,@IsExist, @Msg", parameter, _user_Id, _remarks, _status, is_Exists, msg));
 
-            return result;
+            var _is_Exists = (bool)is_Exists.Value;
+            var _msg = (string)msg.Value;
+            if (_is_Exists)
+                return ("exist", 0, _msg);
+
+            return ("success", result, _msg);
         }
-        public async Task<(string, int)> Create_Update_Order_Processing(DataTable dataTable, int? user_Id, string customer_Name, string remarks, string status)
+        public async Task<(string, int,string)> Create_Update_Order_Processing(DataTable dataTable, int? user_Id, string customer_Name, string remarks, string status)
         {
             var parameter = new SqlParameter("@Order_Processing_Table_Type", SqlDbType.Structured)
             {
@@ -137,12 +150,19 @@ namespace astute.Repository
             {
                 Direction = ParameterDirection.Output
             };
+            var msg = new SqlParameter("@Msg", SqlDbType.NVarChar)
+            {
+                Size = -1,
+                Direction = ParameterDirection.Output
+            };
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Insert_Update] @Order_Processing_Table_Type, @User_Id, @Customer_Name, @Remarks ,@Status,@IsExist OUT", parameter, _user_Id, _customer_Name, _remarks, _status, is_Exists));
             var _is_Exists = (bool)is_Exists.Value;
+            var _msg = (string)msg.Value;
             if (_is_Exists)
-                return ("exist", 0);
-            return ("success", result);
+                return ("exist", 0, _msg);
+
+            return ("success", result, _msg);
         }
         public async Task<int> Order_Processing_Inactive(Order_Processing_Inactive order_processing)
         {
@@ -151,7 +171,7 @@ namespace astute.Repository
             var _is_Inactive = new SqlParameter("@Is_Inactive", order_processing.Is_Inactive);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Order_Processing_Inactive @Ids, @Is_Inactive, @User_Id", _Ids, _is_Inactive,_user_Id));
+                        .ExecuteSqlRawAsync(@"EXEC Order_Processing_Inactive @Ids, @Is_Inactive, @User_Id", _Ids, _is_Inactive, _user_Id));
 
             return result;
         }

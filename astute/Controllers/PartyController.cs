@@ -6211,13 +6211,14 @@ namespace astute.Controllers
                         }
                     }
 
-                    var result = await _cartService.Create_Approved_Management(dataTable, approval_Management.User_Id ?? 0, approval_Management.Remarks, approval_Management.Status);
-                    if (result > 0)
+                    var (message, result, msg) = await _cartService.Create_Approved_Management(dataTable, approval_Management.User_Id ?? 0, approval_Management.Remarks, approval_Management.Status);
+                    if (message == "exist" || (message == "success" && result > 0))
                     {
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.StockApproved
+                            message = msg
+
                         });
                     }
                 }
@@ -6257,22 +6258,14 @@ namespace astute.Controllers
                         (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null), Convert.ToString(item.Status), Convert.ToString(item.QC_Remarks));
                 }
 
-                var (message, result) = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.User_Id, order_Processing.Customer_Name, order_Processing.Remarks, order_Processing.Status);
-                await _commonService.InsertErrorLog(message + ":-" + result, "Create_Update_Order_Processing", "");
-                if (message == "success" && result > 0)
+                var (message, result, msg) = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.User_Id, order_Processing.Customer_Name, order_Processing.Remarks, order_Processing.Status);
+                if (message == "exist" || (message == "success" && result > 0))
                 {
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.StockOrderProcessing
-                    });
-                }
-                else if (message == "exist" && result == 0)
-                {
-                    return Ok(new
-                    {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.StockOrderProcessing
+                        message = msg
+
                     });
                 }
                 return BadRequest();
