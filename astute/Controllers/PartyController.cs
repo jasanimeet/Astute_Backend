@@ -9000,7 +9000,7 @@ namespace astute.Controllers
 
                                     foreach (var item in customer_Details.Customer_Party_FTP.Customer_Column_Caption)
                                     {
-                                        dataTable.Rows.Add(customer_Details.Party_Id, item.Col_Id, item.Caption_Name, "API", item.Status, customer_Details.Map_Flag);
+                                        dataTable.Rows.Add(customer_Details.Party_Id, item.Col_Id, item.Caption_Name, "FTP", item.Status, customer_Details.Map_Flag);
                                     }
                                     var column_Caption = await _partyService.Add_Update_Customer_Column_Caption(dataTable, user_Id ?? 0);
                                     if (column_Caption > 0)
@@ -9030,7 +9030,7 @@ namespace astute.Controllers
 
                                     foreach (var item in customer_Details.Customer_Party_File.Customer_Column_Caption)
                                     {
-                                        dataTable.Rows.Add(customer_Details.Party_Id, item.Col_Id, item.Caption_Name, "API", item.Status, customer_Details.Map_Flag);
+                                        dataTable.Rows.Add(customer_Details.Party_Id, item.Col_Id, item.Caption_Name, "URL", item.Status, customer_Details.Map_Flag);
                                     }
                                     var column_Caption = await _partyService.Add_Update_Customer_Column_Caption(dataTable, user_Id ?? 0);
                                     if (column_Caption > 0)
