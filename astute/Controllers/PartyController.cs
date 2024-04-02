@@ -8309,6 +8309,12 @@ namespace astute.Controllers
                         if (employeeEmails != null && employeeEmails.Count > 0)
                         {
                             var emp_email = employeeEmails.FirstOrDefault();
+                            if(!(stock_Email_Model.Send_From_Default ?? false) && (emp_email.Is_Default ?? false))
+                                return Conflict(new
+                                {
+                                    statusCode = HttpStatusCode.Conflict,
+                                    message = CoreCommonMessage.EmailSendFromDefaultSuccessMessage
+                                });
 
                             IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
                             _emailSender.Send_Stock_Email(toEmail: stock_Email_Model.To_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, strBody: stock_Email_Model.Remarks, user_Id: user_Id ?? 0, employee_Mail: emp_email);
@@ -8381,15 +8387,23 @@ namespace astute.Controllers
                     byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
                     using (MemoryStream memoryStream = new MemoryStream(fileBytes))
                     {
-                        string user_Id = cart_Approval_Order_Email_Model.Report_Filter_Parameter.Where(x => x.Column_Name == "USER_ID").Select(x => x.Category_Value).FirstOrDefault();
-                        int? login_user_id = Convert.ToInt32(user_Id);
-                        var employeeEmails = await _employeeService.GetEmployeeMail(login_user_id ?? 0);
+                        //string user_Id = cart_Approval_Order_Email_Model.Report_Filter_Parameter.Where(x => x.Column_Name == "USER_ID").Select(x => x.Category_Value).FirstOrDefault();
+                        //int? login_user_id = Convert.ToInt32(user_Id);
+                        var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                        int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                        var employeeEmails = await _employeeService.GetEmployeeMail(user_Id ?? 0);
                         if (employeeEmails != null && employeeEmails.Count > 0)
                         {
                             var emp_email = employeeEmails.FirstOrDefault();
+                            if (!(cart_Approval_Order_Email_Model.Send_From_Default ?? false) && (emp_email.Is_Default ?? false))
+                                return Conflict(new
+                                {
+                                    statusCode = HttpStatusCode.Conflict,
+                                    message = CoreCommonMessage.EmailSendFromDefaultSuccessMessage
+                                });
 
                             IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
-                            _emailSender.Send_Stock_Email(toEmail: cart_Approval_Order_Email_Model.To_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, strBody: cart_Approval_Order_Email_Model.Remarks, user_Id: login_user_id ?? 0, employee_Mail: emp_email);
+                            _emailSender.Send_Stock_Email(toEmail: cart_Approval_Order_Email_Model.To_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, strBody: cart_Approval_Order_Email_Model.Remarks, user_Id: user_Id ?? 0, employee_Mail: emp_email);
                         }
                         return Ok(new
                         {
@@ -8572,6 +8586,12 @@ namespace astute.Controllers
                         if (employeeEmails != null && employeeEmails.Count > 0)
                         {
                             var emp_email = employeeEmails.FirstOrDefault();
+                            if (!(stock_Avalibility.Send_From_Default ?? false) && (emp_email.Is_Default ?? false))
+                                return Conflict(new
+                                {
+                                    statusCode = HttpStatusCode.Conflict,
+                                    message = CoreCommonMessage.EmailSendFromDefaultSuccessMessage
+                                });
 
                             IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
                             _emailSender.Send_Stock_Email(toEmail: stock_Avalibility.To_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, strBody: stock_Avalibility.Remarks, user_Id: login_user_id ?? 0, employee_Mail: emp_email);

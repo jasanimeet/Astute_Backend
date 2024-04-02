@@ -17,6 +17,7 @@ namespace astute.CoreModel
         public static string UnauthorizedUser = "User is unauthorized";
         public static string ForgetPasswordSuccessMessage = "Email successfully sent on your registered email address.";
         public static string EmailSendSuccessMessage = "Email successfully sent.";
+        public static string EmailSendFromDefaultSuccessMessage = "User mail not found. Do you want to send mail with default Email.";
         public static string OldPasswordNotMatched = "Your old password dose not match!";
         public static string PasswordChengedSuccessMessage = "Password changed successfully.";
         public static string LayoutAddedSuccessMessage = "Layout added successfully.";
