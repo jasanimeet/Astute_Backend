@@ -126,7 +126,7 @@ namespace astute.Repository
                 Direction = ParameterDirection.Output
             };
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Approval_Management_Insert_Update] @tblApproval_Management, @User_Id, @Remarks ,@Status,@IsExist, @Msg", parameter, _user_Id, _remarks, _status, is_Exists, msg));
+                        .ExecuteSqlRawAsync(@"EXEC [Approval_Management_Insert_Update] @tblApproval_Management, @User_Id, @Remarks ,@Status,@IsExist OUT, @Msg OUT", parameter, _user_Id, _remarks, _status, is_Exists, msg));
 
             var _is_Exists = (bool)is_Exists.Value;
             var _msg = (string)msg.Value;
@@ -156,7 +156,7 @@ namespace astute.Repository
                 Direction = ParameterDirection.Output
             };
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Insert_Update] @Order_Processing_Table_Type, @User_Id, @Customer_Name, @Remarks ,@Status,@IsExist OUT", parameter, _user_Id, _customer_Name, _remarks, _status, is_Exists));
+                        .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Insert_Update] @Order_Processing_Table_Type, @User_Id, @Customer_Name, @Remarks ,@Status,@IsExist OUT,@Msg OUT", parameter, _user_Id, _customer_Name, _remarks, _status, is_Exists,msg));
             var _is_Exists = (bool)is_Exists.Value;
             var _msg = (string)msg.Value;
             if (_is_Exists)
