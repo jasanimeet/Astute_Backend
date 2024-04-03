@@ -8009,19 +8009,19 @@ namespace astute.Controllers
                 dataTable1.Columns.Add("BID_SUPP_STOCK_ID", typeof(string));
                 dataTable1.Columns.Add("BID_BUYER_DISC", typeof(string));
                 dataTable1.Columns.Add("BID_BUYER_AMOUNT", typeof(string));
-                dataTable.Columns.Add("LUSTER", typeof(string));
-                dataTable.Columns.Add("SHADE", typeof(string));
-                dataTable.Columns.Add("MILKY", typeof(string));
-                dataTable.Columns.Add("GIRDLE_FROM", typeof(string));
-                dataTable.Columns.Add("GIRDLE_TO", typeof(string));
-                dataTable.Columns.Add("GIRDLE_CONDITION", typeof(string));
-                dataTable.Columns.Add("ORIGIN", typeof(string));
-                dataTable.Columns.Add("EXTRA_FACET_TABLE", typeof(string));
-                dataTable.Columns.Add("EXTRA_FACET_CROWN", typeof(string));
-                dataTable.Columns.Add("EXTRA_FACET_PAV", typeof(string));
-                dataTable.Columns.Add("INTERNAL_GRAINING", typeof(string));
-                dataTable.Columns.Add("H_A", typeof(string));
-                dataTable.Columns.Add("SUPPLIER_COMMENTS", typeof(string));
+                dataTable1.Columns.Add("LUSTER", typeof(string));
+                dataTable1.Columns.Add("SHADE", typeof(string));
+                dataTable1.Columns.Add("MILKY", typeof(string));
+                dataTable1.Columns.Add("GIRDLE_FROM", typeof(string));
+                dataTable1.Columns.Add("GIRDLE_TO", typeof(string));
+                dataTable1.Columns.Add("GIRDLE_CONDITION", typeof(string));
+                dataTable1.Columns.Add("ORIGIN", typeof(string));
+                dataTable1.Columns.Add("EXTRA_FACET_TABLE", typeof(string));
+                dataTable1.Columns.Add("EXTRA_FACET_CROWN", typeof(string));
+                dataTable1.Columns.Add("EXTRA_FACET_PAV", typeof(string));
+                dataTable1.Columns.Add("INTERNAL_GRAINING", typeof(string));
+                dataTable1.Columns.Add("H_A", typeof(string));
+                dataTable1.Columns.Add("SUPPLIER_COMMENTS", typeof(string));
                 var Round_Cat_Val_Id = _configuration["Round_Cat_Val_Id"];
                 dataTable1.Rows.Add(DBNull.Value, DBNull.Value, DBNull.Value, Round_Cat_Val_Id, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
