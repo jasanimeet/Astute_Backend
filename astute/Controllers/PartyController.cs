@@ -9383,7 +9383,8 @@ namespace astute.Controllers
                 if (customer_Detail != null && (customer_Detail.Customer_Party_FTP != null || customer_Detail.Customer_Party_Api != null || customer_Detail.Customer_Party_File!= null))
                 {
                     customer_Detail.Party_Id = party_Id;
-                    customer_Detail.Map_Flag = map_flag;
+                    customer_Detail.Map_Flag = customer_Detail.Customer_Party_FTP!=null ? customer_Detail.Customer_Party_FTP.Map_Flag:
+                        (customer_Detail.Customer_Party_Api != null ? customer_Detail.Customer_Party_Api.Map_Flag :(customer_Detail.Customer_Party_File != null ? customer_Detail.Customer_Party_File.Map_Flag:map_flag));
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
