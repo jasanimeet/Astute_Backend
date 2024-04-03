@@ -5845,6 +5845,18 @@ namespace astute.CoreServices
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["MILKY"]);
                                 }
+                                else if (Column_Name == "CUSTOMER")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["CUSTOMER"]);
+                                }
+                                else if (Column_Name == "VALIDITY DAYS")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["VALIDITY DAYS"]);
+                                }
+                                else if (Column_Name == "REMARKS")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["REMARKS"]);
+                                }
                             }
                         }
 
