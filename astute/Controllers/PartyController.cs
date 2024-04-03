@@ -2098,7 +2098,7 @@ namespace astute.Controllers
                 if (ModelState.IsValid)
                 {
                     int supplier_Id = 0, sunrise_Pricing_Id = 0, customer_Pricing_Id = 0;
-                    int sun_price_Id = 0;
+                    int sun_price_Id = 0;int supplier_Pricing_Id = 0;
                     var map_flag = string.Empty;
                     var selected_sun_price_Id = supplier_Pricings.Where(x => x.Sunrise_Pricing_Id > 0).Select(x => x.Sunrise_Pricing_Id).FirstOrDefault() ?? 0;
                     map_flag = supplier_Pricings.Select(x => x.Map_Flag).FirstOrDefault();
@@ -2141,7 +2141,7 @@ namespace astute.Controllers
                                     if (message == "success" && supplier_pricing_Id > 0)
                                     {
                                         success = true;
-
+                                        supplier_Pricing_Id = supplier_pricing_Id;
                                         if (item.Key_To_Symbol != null && item.Key_To_Symbol.Count > 0)
                                         {
                                             DataTable dataTable = new DataTable();
@@ -2205,7 +2205,8 @@ namespace astute.Controllers
                                 message = resurn_message,
                                 supplier_Id = supplier_Id,
                                 sunrise_Pricing_Id = sunrise_Pricing_Id,
-                                customer_Pricing_Id = customer_Pricing_Id
+                                customer_Pricing_Id = customer_Pricing_Id,
+                                supplier_pricing_Id= supplier_Pricing_Id
                             });
                         }
                     }
@@ -4273,23 +4274,26 @@ namespace astute.Controllers
             try
             {
                 string STOCK_ID = string.Empty, SUPPLIER = string.Empty, CUSTOMER = string.Empty, SHAPE = string.Empty,
-                         CTS = string.Empty, COLOR = string.Empty, CLARITY = string.Empty, CUT = string.Empty,
-                         POLISH = string.Empty, SYMM = string.Empty, FLS_INTENSITY = string.Empty, BGM = string.Empty,
-                         LAB = string.Empty, GOOD_TYPE = string.Empty, LOCATION = string.Empty, STATUS = string.Empty,
-                         IMAGE_LINK = string.Empty, VIDEO_LINK = string.Empty, LENGTH = string.Empty, WIDTH = string.Empty,
-                         DEPTH = string.Empty, TABLE_PER = string.Empty, DEPTH_PER = string.Empty, CROWN_ANGLE = string.Empty,
-                         CROWN_HEIGHT = string.Empty, PAVILION_ANGLE = string.Empty, PAVILION_HEIGHT = string.Empty, GIRDLE_PER = string.Empty,
-                         RAP_RATE = string.Empty, RAP_AMOUNT = string.Empty, COST_DISC = string.Empty, COST_AMOUNT = string.Empty,
-                         OFFER_DISC = string.Empty, OFFER_VALUE = string.Empty, BASE_DISC = string.Empty, BASE_AMOUNT = string.Empty,
-                         PRICE_PER_CTS = string.Empty, MAX_SLAB_BASE_DISC = string.Empty, MAX_SLAB_BASE_AMOUNT = string.Empty, MAX_SLAB_PRICE_PER_CTS = string.Empty,
-                         BUYER_DISC = string.Empty, BUYER_AMOUNT = string.Empty, TABLE_BLACK = string.Empty, TABLE_WHITE = string.Empty, SIDE_BLACK = string.Empty, SIDE_WHITE = string.Empty,
-                         TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
-                         GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
-                         KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
-                         FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
-                         STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty,
-                         SIGN = string.Empty, DISC_VALUE = string.Empty, DISC_VALUE1 = string.Empty, DISC_VALUE2 = string.Empty, DISC_VALUE3 = string.Empty, BASE_TYPE = string.Empty, SUPP_STOCK_ID = string.Empty,
-                         BID_SUPP_STOCK_ID = string.Empty, BID_BUYER_DISC = string.Empty, BID_BUYER_AMOUNT = string.Empty;
+                        CTS = string.Empty, COLOR = string.Empty, CLARITY = string.Empty, CUT = string.Empty,
+                        POLISH = string.Empty, SYMM = string.Empty, FLS_INTENSITY = string.Empty, BGM = string.Empty,
+                        LAB = string.Empty, GOOD_TYPE = string.Empty, LOCATION = string.Empty, STATUS = string.Empty,
+                        IMAGE_LINK = string.Empty, VIDEO_LINK = string.Empty, LENGTH = string.Empty, WIDTH = string.Empty,
+                        DEPTH = string.Empty, TABLE_PER = string.Empty, DEPTH_PER = string.Empty, CROWN_ANGLE = string.Empty,
+                        CROWN_HEIGHT = string.Empty, PAVILION_ANGLE = string.Empty, PAVILION_HEIGHT = string.Empty, GIRDLE_PER = string.Empty,
+                        RAP_RATE = string.Empty, RAP_AMOUNT = string.Empty, COST_DISC = string.Empty, COST_AMOUNT = string.Empty,
+                        OFFER_DISC = string.Empty, OFFER_VALUE = string.Empty, BASE_DISC = string.Empty, BASE_AMOUNT = string.Empty,
+                        PRICE_PER_CTS = string.Empty, MAX_SLAB_BASE_DISC = string.Empty, MAX_SLAB_BASE_AMOUNT = string.Empty, MAX_SLAB_PRICE_PER_CTS = string.Empty,
+                        BUYER_DISC = string.Empty, BUYER_AMOUNT = string.Empty, TABLE_BLACK = string.Empty, TABLE_WHITE = string.Empty, SIDE_BLACK = string.Empty, SIDE_WHITE = string.Empty,
+                        TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
+                        GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
+                        KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
+                        FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
+                        STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty,
+                        SIGN = string.Empty, DISC_VALUE = string.Empty, DISC_VALUE1 = string.Empty, DISC_VALUE2 = string.Empty, DISC_VALUE3 = string.Empty, BASE_TYPE = string.Empty, SUPP_STOCK_ID = string.Empty,
+                        BID_SUPP_STOCK_ID = string.Empty, BID_BUYER_DISC = string.Empty, BID_BUYER_AMOUNT = string.Empty,
+                        LUSTER = string.Empty, SHADE = string.Empty, MILKY = string.Empty, GIRDLE_FROM = string.Empty, GIRDLE_TO = string.Empty, GIRDLE_CONDITION = string.Empty, ORIGIN = string.Empty,
+                        EXTRA_FACET_TABLE = string.Empty, EXTRA_FACET_CROWN = string.Empty, EXTRA_FACET_PAV = string.Empty,
+                        INTERNAL_GRAINING = string.Empty, H_A = string.Empty, SUPPLIER_COMMENTS = string.Empty;
 
                 DataTable dataTable = new DataTable();
                 dataTable.Columns.Add("STOCK_ID", typeof(string));
@@ -4368,13 +4372,26 @@ namespace astute.Controllers
                 dataTable.Columns.Add("BID_SUPP_STOCK_ID", typeof(string));
                 dataTable.Columns.Add("BID_BUYER_DISC", typeof(string));
                 dataTable.Columns.Add("BID_BUYER_AMOUNT", typeof(string));
+                dataTable.Columns.Add("LUSTER", typeof(string));
+                dataTable.Columns.Add("SHADE", typeof(string));
+                dataTable.Columns.Add("MILKY", typeof(string));
+                dataTable.Columns.Add("GIRDLE_FROM", typeof(string));
+                dataTable.Columns.Add("GIRDLE_TO", typeof(string));
+                dataTable.Columns.Add("GIRDLE_CONDITION", typeof(string));
+                dataTable.Columns.Add("ORIGIN", typeof(string));
+                dataTable.Columns.Add("EXTRA_FACET_TABLE", typeof(string));
+                dataTable.Columns.Add("EXTRA_FACET_CROWN", typeof(string));
+                dataTable.Columns.Add("EXTRA_FACET_PAV", typeof(string));
+                dataTable.Columns.Add("INTERNAL_GRAINING", typeof(string));
+                dataTable.Columns.Add("H_A", typeof(string));
+                dataTable.Columns.Add("SUPPLIER_COMMENTS", typeof(string));
 
                 if (report_Lab_Filter.Report_Filter_Parameter_List != null && report_Lab_Filter.Report_Filter_Parameter_List.Count > 0)
                 {
                     foreach (var item in report_Lab_Filter.Report_Filter_Parameter_List)
                     {
                         STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
-                        SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER").Select(x => x.Category_Value).FirstOrDefault();
+                        SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER" || x.Column_Name == "COMPANY").Select(x => x.Category_Value).FirstOrDefault();
                         CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x => x.Category_Value).FirstOrDefault();
                         SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x => x.Category_Value).FirstOrDefault();
                         CTS = item.Where(x => x.Column_Name == "CTS").Select(x => x.Category_Value).FirstOrDefault();
@@ -4449,6 +4466,19 @@ namespace astute.Controllers
                         BID_SUPP_STOCK_ID = item.Where(x => x.Column_Name == "BID SUPP STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
                         BID_BUYER_DISC = item.Where(x => x.Column_Name == "BID BUYER DISC").Select(x => x.Category_Value).FirstOrDefault();
                         BID_BUYER_AMOUNT = item.Where(x => x.Column_Name == "BID BUYER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                        LUSTER = item.Where(x => x.Column_Name == "LUSTER").Select(x => x.Category_Value).FirstOrDefault();
+                        SHADE = item.Where(x => x.Column_Name == "SHADE").Select(x => x.Category_Value).FirstOrDefault();
+                        MILKY = item.Where(x => x.Column_Name == "MILKY").Select(x => x.Category_Value).FirstOrDefault();
+                        GIRDLE_FROM = item.Where(x => x.Column_Name == "GIRDLE_FROM").Select(x => x.Category_Value).FirstOrDefault();
+                        GIRDLE_TO = item.Where(x => x.Column_Name == "GIRDLE_TO").Select(x => x.Category_Value).FirstOrDefault();
+                        GIRDLE_CONDITION = item.Where(x => x.Column_Name == "GIRDLE_CONDITION").Select(x => x.Category_Value).FirstOrDefault();
+                        ORIGIN = item.Where(x => x.Column_Name == "ORIGIN").Select(x => x.Category_Value).FirstOrDefault();
+                        EXTRA_FACET_TABLE = item.Where(x => x.Column_Name == "EXTRA_FACET_TABLE").Select(x => x.Category_Value).FirstOrDefault();
+                        EXTRA_FACET_CROWN = item.Where(x => x.Column_Name == "EXTRA_FACET_CROWN").Select(x => x.Category_Value).FirstOrDefault();
+                        EXTRA_FACET_PAV = item.Where(x => x.Column_Name == "EXTRA_FACET_PAV").Select(x => x.Category_Value).FirstOrDefault();
+                        INTERNAL_GRAINING = item.Where(x => x.Column_Name == "INTERNAL_GRAINING").Select(x => x.Category_Value).FirstOrDefault();
+                        H_A = item.Where(x => x.Column_Name == "H_A").Select(x => x.Category_Value).FirstOrDefault();
+                        SUPPLIER_COMMENTS = item.Where(x => x.Column_Name == "SUPPLIER_COMMENTS").Select(x => x.Category_Value).FirstOrDefault();
 
                         dataTable.Rows.Add(!string.IsNullOrEmpty(STOCK_ID) ? STOCK_ID : DBNull.Value,
                             !string.IsNullOrEmpty(SUPPLIER) ? SUPPLIER : DBNull.Value,
@@ -4525,7 +4555,20 @@ namespace astute.Controllers
                             !string.IsNullOrEmpty(SUPP_STOCK_ID) ? SUPP_STOCK_ID : DBNull.Value,
                             !string.IsNullOrEmpty(BID_SUPP_STOCK_ID) ? BID_SUPP_STOCK_ID : DBNull.Value,
                             !string.IsNullOrEmpty(BID_BUYER_DISC) ? BID_BUYER_DISC : DBNull.Value,
-                            !string.IsNullOrEmpty(BID_BUYER_AMOUNT) ? BID_BUYER_AMOUNT : DBNull.Value);
+                            !string.IsNullOrEmpty(BID_BUYER_AMOUNT) ? BID_BUYER_AMOUNT : DBNull.Value,
+                            !string.IsNullOrEmpty(LUSTER) ? LUSTER : DBNull.Value,
+                            !string.IsNullOrEmpty(SHADE) ? SHADE : DBNull.Value,
+                            !string.IsNullOrEmpty(MILKY) ? MILKY : DBNull.Value,
+                            !string.IsNullOrEmpty(GIRDLE_FROM) ? GIRDLE_FROM : DBNull.Value,
+                            !string.IsNullOrEmpty(GIRDLE_TO) ? GIRDLE_TO : DBNull.Value,
+                            !string.IsNullOrEmpty(GIRDLE_CONDITION) ? GIRDLE_CONDITION : DBNull.Value,
+                            !string.IsNullOrEmpty(ORIGIN) ? ORIGIN : DBNull.Value,
+                            !string.IsNullOrEmpty(EXTRA_FACET_TABLE) ? EXTRA_FACET_TABLE : DBNull.Value,
+                            !string.IsNullOrEmpty(EXTRA_FACET_CROWN) ? EXTRA_FACET_CROWN : DBNull.Value,
+                            !string.IsNullOrEmpty(EXTRA_FACET_PAV) ? EXTRA_FACET_PAV : DBNull.Value,
+                            !string.IsNullOrEmpty(INTERNAL_GRAINING) ? INTERNAL_GRAINING : DBNull.Value,
+                            !string.IsNullOrEmpty(H_A) ? H_A : DBNull.Value,
+                            !string.IsNullOrEmpty(SUPPLIER_COMMENTS) ? SUPPLIER_COMMENTS : DBNull.Value);
                     }
                 }
                 else
@@ -4576,23 +4619,26 @@ namespace astute.Controllers
             try
             {
                 string STOCK_ID = string.Empty, SUPPLIER = string.Empty, CUSTOMER = string.Empty, SHAPE = string.Empty,
-                         CTS = string.Empty, COLOR = string.Empty, CLARITY = string.Empty, CUT = string.Empty,
-                         POLISH = string.Empty, SYMM = string.Empty, FLS_INTENSITY = string.Empty, BGM = string.Empty,
-                         LAB = string.Empty, GOOD_TYPE = string.Empty, LOCATION = string.Empty, STATUS = string.Empty,
-                         IMAGE_LINK = string.Empty, VIDEO_LINK = string.Empty, LENGTH = string.Empty, WIDTH = string.Empty,
-                         DEPTH = string.Empty, TABLE_PER = string.Empty, DEPTH_PER = string.Empty, CROWN_ANGLE = string.Empty,
-                         CROWN_HEIGHT = string.Empty, PAVILION_ANGLE = string.Empty, PAVILION_HEIGHT = string.Empty, GIRDLE_PER = string.Empty,
-                         RAP_RATE = string.Empty, RAP_AMOUNT = string.Empty, COST_DISC = string.Empty, COST_AMOUNT = string.Empty,
-                         OFFER_DISC = string.Empty, OFFER_VALUE = string.Empty, BASE_DISC = string.Empty, BASE_AMOUNT = string.Empty,
-                         PRICE_PER_CTS = string.Empty, MAX_SLAB_BASE_DISC = string.Empty, MAX_SLAB_BASE_AMOUNT = string.Empty, MAX_SLAB_PRICE_PER_CTS = string.Empty,
-                         BUYER_DISC = string.Empty, BUYER_AMOUNT = string.Empty, TABLE_BLACK = string.Empty, TABLE_WHITE = string.Empty, SIDE_BLACK = string.Empty, SIDE_WHITE = string.Empty,
-                         TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
-                         GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
-                         KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
-                         FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
-                         STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty,
-                         SIGN = string.Empty, DISC_VALUE = string.Empty, DISC_VALUE1 = string.Empty, DISC_VALUE2 = string.Empty, DISC_VALUE3 = string.Empty, BASE_TYPE = string.Empty, SUPP_STOCK_ID = string.Empty,
-                         BID_SUPP_STOCK_ID = string.Empty, BID_BUYER_DISC = string.Empty, BID_BUYER_AMOUNT = string.Empty;
+                        CTS = string.Empty, COLOR = string.Empty, CLARITY = string.Empty, CUT = string.Empty,
+                        POLISH = string.Empty, SYMM = string.Empty, FLS_INTENSITY = string.Empty, BGM = string.Empty,
+                        LAB = string.Empty, GOOD_TYPE = string.Empty, LOCATION = string.Empty, STATUS = string.Empty,
+                        IMAGE_LINK = string.Empty, VIDEO_LINK = string.Empty, LENGTH = string.Empty, WIDTH = string.Empty,
+                        DEPTH = string.Empty, TABLE_PER = string.Empty, DEPTH_PER = string.Empty, CROWN_ANGLE = string.Empty,
+                        CROWN_HEIGHT = string.Empty, PAVILION_ANGLE = string.Empty, PAVILION_HEIGHT = string.Empty, GIRDLE_PER = string.Empty,
+                        RAP_RATE = string.Empty, RAP_AMOUNT = string.Empty, COST_DISC = string.Empty, COST_AMOUNT = string.Empty,
+                        OFFER_DISC = string.Empty, OFFER_VALUE = string.Empty, BASE_DISC = string.Empty, BASE_AMOUNT = string.Empty,
+                        PRICE_PER_CTS = string.Empty, MAX_SLAB_BASE_DISC = string.Empty, MAX_SLAB_BASE_AMOUNT = string.Empty, MAX_SLAB_PRICE_PER_CTS = string.Empty,
+                        BUYER_DISC = string.Empty, BUYER_AMOUNT = string.Empty, TABLE_BLACK = string.Empty, TABLE_WHITE = string.Empty, SIDE_BLACK = string.Empty, SIDE_WHITE = string.Empty,
+                        TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
+                        GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
+                        KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
+                        FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
+                        STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty,
+                        SIGN = string.Empty, DISC_VALUE = string.Empty, DISC_VALUE1 = string.Empty, DISC_VALUE2 = string.Empty, DISC_VALUE3 = string.Empty, BASE_TYPE = string.Empty, SUPP_STOCK_ID = string.Empty,
+                        BID_SUPP_STOCK_ID = string.Empty, BID_BUYER_DISC = string.Empty, BID_BUYER_AMOUNT = string.Empty,
+                        LUSTER = string.Empty, SHADE = string.Empty, MILKY = string.Empty, GIRDLE_FROM = string.Empty, GIRDLE_TO = string.Empty, GIRDLE_CONDITION = string.Empty, ORIGIN = string.Empty,
+                        EXTRA_FACET_TABLE = string.Empty, EXTRA_FACET_CROWN = string.Empty, EXTRA_FACET_PAV = string.Empty,
+                        INTERNAL_GRAINING = string.Empty, H_A = string.Empty, SUPPLIER_COMMENTS = string.Empty;
 
                 DataTable dataTable = new DataTable();
                 dataTable.Columns.Add("STOCK_ID", typeof(string));
@@ -4671,13 +4717,26 @@ namespace astute.Controllers
                 dataTable.Columns.Add("BID_SUPP_STOCK_ID", typeof(string));
                 dataTable.Columns.Add("BID_BUYER_DISC", typeof(string));
                 dataTable.Columns.Add("BID_BUYER_AMOUNT", typeof(string));
+                dataTable.Columns.Add("LUSTER", typeof(string));
+                dataTable.Columns.Add("SHADE", typeof(string));
+                dataTable.Columns.Add("MILKY", typeof(string));
+                dataTable.Columns.Add("GIRDLE_FROM", typeof(string));
+                dataTable.Columns.Add("GIRDLE_TO", typeof(string));
+                dataTable.Columns.Add("GIRDLE_CONDITION", typeof(string));
+                dataTable.Columns.Add("ORIGIN", typeof(string));
+                dataTable.Columns.Add("EXTRA_FACET_TABLE", typeof(string));
+                dataTable.Columns.Add("EXTRA_FACET_CROWN", typeof(string));
+                dataTable.Columns.Add("EXTRA_FACET_PAV", typeof(string));
+                dataTable.Columns.Add("INTERNAL_GRAINING", typeof(string));
+                dataTable.Columns.Add("H_A", typeof(string));
+                dataTable.Columns.Add("SUPPLIER_COMMENTS", typeof(string));
 
                 if (report_Lab_Filter.Report_Filter_Parameter_List != null && report_Lab_Filter.Report_Filter_Parameter_List.Count > 0)
                 {
                     foreach (var item in report_Lab_Filter.Report_Filter_Parameter_List)
                     {
                         STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
-                        SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER").Select(x => x.Category_Value).FirstOrDefault();
+                        SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER" || x.Column_Name == "COMPANY").Select(x => x.Category_Value).FirstOrDefault();
                         CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x => x.Category_Value).FirstOrDefault();
                         SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x => x.Category_Value).FirstOrDefault();
                         CTS = item.Where(x => x.Column_Name == "CTS").Select(x => x.Category_Value).FirstOrDefault();
@@ -4752,6 +4811,19 @@ namespace astute.Controllers
                         BID_SUPP_STOCK_ID = item.Where(x => x.Column_Name == "BID SUPP STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
                         BID_BUYER_DISC = item.Where(x => x.Column_Name == "BID BUYER DISC").Select(x => x.Category_Value).FirstOrDefault();
                         BID_BUYER_AMOUNT = item.Where(x => x.Column_Name == "BID BUYER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                        LUSTER = item.Where(x => x.Column_Name == "LUSTER").Select(x => x.Category_Value).FirstOrDefault();
+                        SHADE = item.Where(x => x.Column_Name == "SHADE").Select(x => x.Category_Value).FirstOrDefault();
+                        MILKY = item.Where(x => x.Column_Name == "MILKY").Select(x => x.Category_Value).FirstOrDefault();
+                        GIRDLE_FROM = item.Where(x => x.Column_Name == "GIRDLE_FROM").Select(x => x.Category_Value).FirstOrDefault();
+                        GIRDLE_TO = item.Where(x => x.Column_Name == "GIRDLE_TO").Select(x => x.Category_Value).FirstOrDefault();
+                        GIRDLE_CONDITION = item.Where(x => x.Column_Name == "GIRDLE_CONDITION").Select(x => x.Category_Value).FirstOrDefault();
+                        ORIGIN = item.Where(x => x.Column_Name == "ORIGIN").Select(x => x.Category_Value).FirstOrDefault();
+                        EXTRA_FACET_TABLE = item.Where(x => x.Column_Name == "EXTRA_FACET_TABLE").Select(x => x.Category_Value).FirstOrDefault();
+                        EXTRA_FACET_CROWN = item.Where(x => x.Column_Name == "EXTRA_FACET_CROWN").Select(x => x.Category_Value).FirstOrDefault();
+                        EXTRA_FACET_PAV = item.Where(x => x.Column_Name == "EXTRA_FACET_PAV").Select(x => x.Category_Value).FirstOrDefault();
+                        INTERNAL_GRAINING = item.Where(x => x.Column_Name == "INTERNAL_GRAINING").Select(x => x.Category_Value).FirstOrDefault();
+                        H_A = item.Where(x => x.Column_Name == "H_A").Select(x => x.Category_Value).FirstOrDefault();
+                        SUPPLIER_COMMENTS = item.Where(x => x.Column_Name == "SUPPLIER_COMMENTS").Select(x => x.Category_Value).FirstOrDefault();
 
                         dataTable.Rows.Add(!string.IsNullOrEmpty(STOCK_ID) ? STOCK_ID : DBNull.Value,
                             !string.IsNullOrEmpty(SUPPLIER) ? SUPPLIER : DBNull.Value,
@@ -4828,7 +4900,20 @@ namespace astute.Controllers
                             !string.IsNullOrEmpty(SUPP_STOCK_ID) ? SUPP_STOCK_ID : DBNull.Value,
                             !string.IsNullOrEmpty(BID_SUPP_STOCK_ID) ? BID_SUPP_STOCK_ID : DBNull.Value,
                             !string.IsNullOrEmpty(BID_BUYER_DISC) ? BID_BUYER_DISC : DBNull.Value,
-                            !string.IsNullOrEmpty(BID_BUYER_AMOUNT) ? BID_BUYER_AMOUNT : DBNull.Value);
+                            !string.IsNullOrEmpty(BID_BUYER_AMOUNT) ? BID_BUYER_AMOUNT : DBNull.Value,
+                            !string.IsNullOrEmpty(LUSTER) ? LUSTER : DBNull.Value,
+                            !string.IsNullOrEmpty(SHADE) ? SHADE : DBNull.Value,
+                            !string.IsNullOrEmpty(MILKY) ? MILKY : DBNull.Value,
+                            !string.IsNullOrEmpty(GIRDLE_FROM) ? GIRDLE_FROM : DBNull.Value,
+                            !string.IsNullOrEmpty(GIRDLE_TO) ? GIRDLE_TO : DBNull.Value,
+                            !string.IsNullOrEmpty(GIRDLE_CONDITION) ? GIRDLE_CONDITION : DBNull.Value,
+                            !string.IsNullOrEmpty(ORIGIN) ? ORIGIN : DBNull.Value,
+                            !string.IsNullOrEmpty(EXTRA_FACET_TABLE) ? EXTRA_FACET_TABLE : DBNull.Value,
+                            !string.IsNullOrEmpty(EXTRA_FACET_CROWN) ? EXTRA_FACET_CROWN : DBNull.Value,
+                            !string.IsNullOrEmpty(EXTRA_FACET_PAV) ? EXTRA_FACET_PAV : DBNull.Value,
+                            !string.IsNullOrEmpty(INTERNAL_GRAINING) ? INTERNAL_GRAINING : DBNull.Value,
+                            !string.IsNullOrEmpty(H_A) ? H_A : DBNull.Value,
+                            !string.IsNullOrEmpty(SUPPLIER_COMMENTS) ? SUPPLIER_COMMENTS : DBNull.Value);
                     }
                 }
                 else
@@ -4852,7 +4937,7 @@ namespace astute.Controllers
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "LAB", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("LAB") && x.ContainsKey("LAB_Id")).Select(x => new { Category_Name = x["LAB"].ToString(), Category_Value = x["LAB_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SUPPLIER NO", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("SUPPLIER NO")).Select(x => new { Category_Name = x["SUPPLIER NO"].ToString(), Category_Value = x["SUPPLIER NO"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "CERTIFICATE NO", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("CERTIFICATE NO")).Select(x => new { Category_Name = x["CERTIFICATE NO"].ToString(), Category_Value = x["CERTIFICATE NO"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
-                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "COMPANY", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("COMPANY")).Select(x => new { Category_Name = x["COMPANY"].ToString(), Category_Value = x["COMPANY"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
+                    Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "COMPANY", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("COMPANY")).Select(x => new { Category_Name = x["COMPANY"].ToString(), Category_Value = x["COMPANY_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SHAPE", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("SHAPE") && x.ContainsKey("SHAPE_Id")).Select(x => new { Category_Name = x["SHAPE"].ToString(), Category_Value = x["SHAPE_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "POINTER", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("POINTER") && x.ContainsKey("POINTER_Id")).Select(x => new { Category_Name = x["POINTER"].ToString(), Category_Value = x["POINTER_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
                     Report_Distinct_Data.Add(new Report_Column_Distinct { Column_Name = "SUB POINTER", Display_Type = "M", Column_Value = result.Where(x => x.ContainsKey("SUB POINTER") && x.ContainsKey("SUB_POINTER_Id")).Select(x => new { Category_Name = x["SUB POINTER"].ToString(), Category_Value = x["SUB_POINTER_Id"].ToString() }).Distinct().ToList().Select(x => new Report_Category_Value { Category_Name = x.Category_Name, Category_Value = x.Category_Value }) });
@@ -5571,23 +5656,26 @@ namespace astute.Controllers
             try
             {
                 string STOCK_ID = string.Empty, SUPPLIER = string.Empty, CUSTOMER = string.Empty, SHAPE = string.Empty,
-                          CTS = string.Empty, COLOR = string.Empty, CLARITY = string.Empty, CUT = string.Empty,
-                          POLISH = string.Empty, SYMM = string.Empty, FLS_INTENSITY = string.Empty, BGM = string.Empty,
-                          LAB = string.Empty, GOOD_TYPE = string.Empty, LOCATION = string.Empty, STATUS = string.Empty,
-                          IMAGE_LINK = string.Empty, VIDEO_LINK = string.Empty, LENGTH = string.Empty, WIDTH = string.Empty,
-                          DEPTH = string.Empty, TABLE_PER = string.Empty, DEPTH_PER = string.Empty, CROWN_ANGLE = string.Empty,
-                          CROWN_HEIGHT = string.Empty, PAVILION_ANGLE = string.Empty, PAVILION_HEIGHT = string.Empty, GIRDLE_PER = string.Empty,
-                          RAP_RATE = string.Empty, RAP_AMOUNT = string.Empty, COST_DISC = string.Empty, COST_AMOUNT = string.Empty,
-                          OFFER_DISC = string.Empty, OFFER_VALUE = string.Empty, BASE_DISC = string.Empty, BASE_AMOUNT = string.Empty,
-                          PRICE_PER_CTS = string.Empty, MAX_SLAB_BASE_DISC = string.Empty, MAX_SLAB_BASE_AMOUNT = string.Empty, MAX_SLAB_PRICE_PER_CTS = string.Empty,
-                          BUYER_DISC = string.Empty, BUYER_AMOUNT = string.Empty, TABLE_BLACK = string.Empty, TABLE_WHITE = string.Empty, SIDE_BLACK = string.Empty, SIDE_WHITE = string.Empty,
-                          TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
-                          GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
-                          KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
-                          FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
-                          STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty,
-                          SIGN = string.Empty, DISC_VALUE = string.Empty, DISC_VALUE1 = string.Empty, DISC_VALUE2 = string.Empty, DISC_VALUE3 = string.Empty, BASE_TYPE = string.Empty, SUPP_STOCK_ID = string.Empty,
-                          BID_SUPP_STOCK_ID = string.Empty, BID_BUYER_DISC = string.Empty, BID_BUYER_AMOUNT = string.Empty;
+                         CTS = string.Empty, COLOR = string.Empty, CLARITY = string.Empty, CUT = string.Empty,
+                         POLISH = string.Empty, SYMM = string.Empty, FLS_INTENSITY = string.Empty, BGM = string.Empty,
+                         LAB = string.Empty, GOOD_TYPE = string.Empty, LOCATION = string.Empty, STATUS = string.Empty,
+                         IMAGE_LINK = string.Empty, VIDEO_LINK = string.Empty, LENGTH = string.Empty, WIDTH = string.Empty,
+                         DEPTH = string.Empty, TABLE_PER = string.Empty, DEPTH_PER = string.Empty, CROWN_ANGLE = string.Empty,
+                         CROWN_HEIGHT = string.Empty, PAVILION_ANGLE = string.Empty, PAVILION_HEIGHT = string.Empty, GIRDLE_PER = string.Empty,
+                         RAP_RATE = string.Empty, RAP_AMOUNT = string.Empty, COST_DISC = string.Empty, COST_AMOUNT = string.Empty,
+                         OFFER_DISC = string.Empty, OFFER_VALUE = string.Empty, BASE_DISC = string.Empty, BASE_AMOUNT = string.Empty,
+                         PRICE_PER_CTS = string.Empty, MAX_SLAB_BASE_DISC = string.Empty, MAX_SLAB_BASE_AMOUNT = string.Empty, MAX_SLAB_PRICE_PER_CTS = string.Empty,
+                         BUYER_DISC = string.Empty, BUYER_AMOUNT = string.Empty, TABLE_BLACK = string.Empty, TABLE_WHITE = string.Empty, SIDE_BLACK = string.Empty, SIDE_WHITE = string.Empty,
+                         TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
+                         GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
+                         KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
+                         FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
+                         STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty,
+                         SIGN = string.Empty, DISC_VALUE = string.Empty, DISC_VALUE1 = string.Empty, DISC_VALUE2 = string.Empty, DISC_VALUE3 = string.Empty, BASE_TYPE = string.Empty, SUPP_STOCK_ID = string.Empty,
+                         BID_SUPP_STOCK_ID = string.Empty, BID_BUYER_DISC = string.Empty, BID_BUYER_AMOUNT = string.Empty,
+                         LUSTER = string.Empty, SHADE = string.Empty, MILKY = string.Empty, GIRDLE_FROM = string.Empty, GIRDLE_TO = string.Empty, GIRDLE_CONDITION = string.Empty, ORIGIN = string.Empty,
+                         EXTRA_FACET_TABLE = string.Empty, EXTRA_FACET_CROWN = string.Empty, EXTRA_FACET_PAV = string.Empty,
+                         INTERNAL_GRAINING = string.Empty, H_A = string.Empty, SUPPLIER_COMMENTS = string.Empty;
 
                 DataTable dataTable = new DataTable();
                 dataTable.Columns.Add("STOCK_ID", typeof(string));
@@ -5666,13 +5754,26 @@ namespace astute.Controllers
                 dataTable.Columns.Add("BID_SUPP_STOCK_ID", typeof(string));
                 dataTable.Columns.Add("BID_BUYER_DISC", typeof(string));
                 dataTable.Columns.Add("BID_BUYER_AMOUNT", typeof(string));
+                dataTable.Columns.Add("LUSTER", typeof(string));
+                dataTable.Columns.Add("SHADE", typeof(string));
+                dataTable.Columns.Add("MILKY", typeof(string));
+                dataTable.Columns.Add("GIRDLE_FROM", typeof(string));
+                dataTable.Columns.Add("GIRDLE_TO", typeof(string));
+                dataTable.Columns.Add("GIRDLE_CONDITION", typeof(string));
+                dataTable.Columns.Add("ORIGIN", typeof(string));
+                dataTable.Columns.Add("EXTRA_FACET_TABLE", typeof(string));
+                dataTable.Columns.Add("EXTRA_FACET_CROWN", typeof(string));
+                dataTable.Columns.Add("EXTRA_FACET_PAV", typeof(string));
+                dataTable.Columns.Add("INTERNAL_GRAINING", typeof(string));
+                dataTable.Columns.Add("H_A", typeof(string));
+                dataTable.Columns.Add("SUPPLIER_COMMENTS", typeof(string));
 
                 if (report_Lab_Filter.Report_Filter_Parameter_List != null && report_Lab_Filter.Report_Filter_Parameter_List.Count > 0)
                 {
                     foreach (var item in report_Lab_Filter.Report_Filter_Parameter_List)
                     {
                         STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
-                        SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER").Select(x => x.Category_Value).FirstOrDefault();
+                        SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER" || x.Column_Name == "COMPANY").Select(x => x.Category_Value).FirstOrDefault();
                         CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x => x.Category_Value).FirstOrDefault();
                         SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x => x.Category_Value).FirstOrDefault();
                         CTS = item.Where(x => x.Column_Name == "CTS").Select(x => x.Category_Value).FirstOrDefault();
@@ -5747,6 +5848,19 @@ namespace astute.Controllers
                         BID_SUPP_STOCK_ID = item.Where(x => x.Column_Name == "BID SUPP STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
                         BID_BUYER_DISC = item.Where(x => x.Column_Name == "BID BUYER DISC").Select(x => x.Category_Value).FirstOrDefault();
                         BID_BUYER_AMOUNT = item.Where(x => x.Column_Name == "BID BUYER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                        LUSTER = item.Where(x => x.Column_Name == "LUSTER").Select(x => x.Category_Value).FirstOrDefault();
+                        SHADE = item.Where(x => x.Column_Name == "SHADE").Select(x => x.Category_Value).FirstOrDefault();
+                        MILKY = item.Where(x => x.Column_Name == "MILKY").Select(x => x.Category_Value).FirstOrDefault();
+                        GIRDLE_FROM = item.Where(x => x.Column_Name == "GIRDLE_FROM").Select(x => x.Category_Value).FirstOrDefault();
+                        GIRDLE_TO = item.Where(x => x.Column_Name == "GIRDLE_TO").Select(x => x.Category_Value).FirstOrDefault();
+                        GIRDLE_CONDITION = item.Where(x => x.Column_Name == "GIRDLE_CONDITION").Select(x => x.Category_Value).FirstOrDefault();
+                        ORIGIN = item.Where(x => x.Column_Name == "ORIGIN").Select(x => x.Category_Value).FirstOrDefault();
+                        EXTRA_FACET_TABLE = item.Where(x => x.Column_Name == "EXTRA_FACET_TABLE").Select(x => x.Category_Value).FirstOrDefault();
+                        EXTRA_FACET_CROWN = item.Where(x => x.Column_Name == "EXTRA_FACET_CROWN").Select(x => x.Category_Value).FirstOrDefault();
+                        EXTRA_FACET_PAV = item.Where(x => x.Column_Name == "EXTRA_FACET_PAV").Select(x => x.Category_Value).FirstOrDefault();
+                        INTERNAL_GRAINING = item.Where(x => x.Column_Name == "INTERNAL_GRAINING").Select(x => x.Category_Value).FirstOrDefault();
+                        H_A = item.Where(x => x.Column_Name == "H_A").Select(x => x.Category_Value).FirstOrDefault();
+                        SUPPLIER_COMMENTS = item.Where(x => x.Column_Name == "SUPPLIER_COMMENTS").Select(x => x.Category_Value).FirstOrDefault();
 
                         dataTable.Rows.Add(!string.IsNullOrEmpty(STOCK_ID) ? STOCK_ID : DBNull.Value,
                             !string.IsNullOrEmpty(SUPPLIER) ? SUPPLIER : DBNull.Value,
@@ -5823,7 +5937,20 @@ namespace astute.Controllers
                             !string.IsNullOrEmpty(SUPP_STOCK_ID) ? SUPP_STOCK_ID : DBNull.Value,
                             !string.IsNullOrEmpty(BID_SUPP_STOCK_ID) ? BID_SUPP_STOCK_ID : DBNull.Value,
                             !string.IsNullOrEmpty(BID_BUYER_DISC) ? BID_BUYER_DISC : DBNull.Value,
-                            !string.IsNullOrEmpty(BID_BUYER_AMOUNT) ? BID_BUYER_AMOUNT : DBNull.Value);
+                            !string.IsNullOrEmpty(BID_BUYER_AMOUNT) ? BID_BUYER_AMOUNT : DBNull.Value,
+                            !string.IsNullOrEmpty(LUSTER) ? LUSTER : DBNull.Value,
+                            !string.IsNullOrEmpty(SHADE) ? SHADE : DBNull.Value,
+                            !string.IsNullOrEmpty(MILKY) ? MILKY : DBNull.Value,
+                            !string.IsNullOrEmpty(GIRDLE_FROM) ? GIRDLE_FROM : DBNull.Value,
+                            !string.IsNullOrEmpty(GIRDLE_TO) ? GIRDLE_TO : DBNull.Value,
+                            !string.IsNullOrEmpty(GIRDLE_CONDITION) ? GIRDLE_CONDITION : DBNull.Value,
+                            !string.IsNullOrEmpty(ORIGIN) ? ORIGIN : DBNull.Value,
+                            !string.IsNullOrEmpty(EXTRA_FACET_TABLE) ? EXTRA_FACET_TABLE : DBNull.Value,
+                            !string.IsNullOrEmpty(EXTRA_FACET_CROWN) ? EXTRA_FACET_CROWN : DBNull.Value,
+                            !string.IsNullOrEmpty(EXTRA_FACET_PAV) ? EXTRA_FACET_PAV : DBNull.Value,
+                            !string.IsNullOrEmpty(INTERNAL_GRAINING) ? INTERNAL_GRAINING : DBNull.Value,
+                            !string.IsNullOrEmpty(H_A) ? H_A : DBNull.Value,
+                            !string.IsNullOrEmpty(SUPPLIER_COMMENTS) ? SUPPLIER_COMMENTS : DBNull.Value);
                     }
                 }
                 else
@@ -7123,24 +7250,29 @@ namespace astute.Controllers
         [Authorize]
         public async Task<IActionResult> Export_Stock_Excel(Excel_Model_New excel_Model)
         {
+
+
             string STOCK_ID = string.Empty, SUPPLIER = string.Empty, CUSTOMER = string.Empty, SHAPE = string.Empty,
-                           CTS = string.Empty, COLOR = string.Empty, CLARITY = string.Empty, CUT = string.Empty,
-                           POLISH = string.Empty, SYMM = string.Empty, FLS_INTENSITY = string.Empty, BGM = string.Empty,
-                           LAB = string.Empty, GOOD_TYPE = string.Empty, LOCATION = string.Empty, STATUS = string.Empty,
-                           IMAGE_LINK = string.Empty, VIDEO_LINK = string.Empty, LENGTH = string.Empty, WIDTH = string.Empty,
-                           DEPTH = string.Empty, TABLE_PER = string.Empty, DEPTH_PER = string.Empty, CROWN_ANGLE = string.Empty,
-                           CROWN_HEIGHT = string.Empty, PAVILION_ANGLE = string.Empty, PAVILION_HEIGHT = string.Empty, GIRDLE_PER = string.Empty,
-                           RAP_RATE = string.Empty, RAP_AMOUNT = string.Empty, COST_DISC = string.Empty, COST_AMOUNT = string.Empty,
-                           OFFER_DISC = string.Empty, OFFER_VALUE = string.Empty, BASE_DISC = string.Empty, BASE_AMOUNT = string.Empty,
-                           PRICE_PER_CTS = string.Empty, MAX_SLAB_BASE_DISC = string.Empty, MAX_SLAB_BASE_AMOUNT = string.Empty, MAX_SLAB_PRICE_PER_CTS = string.Empty,
-                           BUYER_DISC = string.Empty, BUYER_AMOUNT = string.Empty, TABLE_BLACK = string.Empty, TABLE_WHITE = string.Empty, SIDE_BLACK = string.Empty, SIDE_WHITE = string.Empty,
-                           TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
-                           GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
-                           KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
-                           FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
-                           STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty,
-                           SIGN = string.Empty, DISC_VALUE = string.Empty, DISC_VALUE1 = string.Empty, DISC_VALUE2 = string.Empty, DISC_VALUE3 = string.Empty, BASE_TYPE = string.Empty, SUPP_STOCK_ID = string.Empty,
-                           BID_SUPP_STOCK_ID = string.Empty, BID_BUYER_DISC = string.Empty, BID_BUYER_AMOUNT = string.Empty;
+                        CTS = string.Empty, COLOR = string.Empty, CLARITY = string.Empty, CUT = string.Empty,
+                        POLISH = string.Empty, SYMM = string.Empty, FLS_INTENSITY = string.Empty, BGM = string.Empty,
+                        LAB = string.Empty, GOOD_TYPE = string.Empty, LOCATION = string.Empty, STATUS = string.Empty,
+                        IMAGE_LINK = string.Empty, VIDEO_LINK = string.Empty, LENGTH = string.Empty, WIDTH = string.Empty,
+                        DEPTH = string.Empty, TABLE_PER = string.Empty, DEPTH_PER = string.Empty, CROWN_ANGLE = string.Empty,
+                        CROWN_HEIGHT = string.Empty, PAVILION_ANGLE = string.Empty, PAVILION_HEIGHT = string.Empty, GIRDLE_PER = string.Empty,
+                        RAP_RATE = string.Empty, RAP_AMOUNT = string.Empty, COST_DISC = string.Empty, COST_AMOUNT = string.Empty,
+                        OFFER_DISC = string.Empty, OFFER_VALUE = string.Empty, BASE_DISC = string.Empty, BASE_AMOUNT = string.Empty,
+                        PRICE_PER_CTS = string.Empty, MAX_SLAB_BASE_DISC = string.Empty, MAX_SLAB_BASE_AMOUNT = string.Empty, MAX_SLAB_PRICE_PER_CTS = string.Empty,
+                        BUYER_DISC = string.Empty, BUYER_AMOUNT = string.Empty, TABLE_BLACK = string.Empty, TABLE_WHITE = string.Empty, SIDE_BLACK = string.Empty, SIDE_WHITE = string.Empty,
+                        TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
+                        GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
+                        KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
+                        FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
+                        STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty,
+                        SIGN = string.Empty, DISC_VALUE = string.Empty, DISC_VALUE1 = string.Empty, DISC_VALUE2 = string.Empty, DISC_VALUE3 = string.Empty, BASE_TYPE = string.Empty, SUPP_STOCK_ID = string.Empty,
+                        BID_SUPP_STOCK_ID = string.Empty, BID_BUYER_DISC = string.Empty, BID_BUYER_AMOUNT = string.Empty,
+                        LUSTER = string.Empty, SHADE = string.Empty, MILKY = string.Empty, GIRDLE_FROM = string.Empty, GIRDLE_TO = string.Empty, GIRDLE_CONDITION = string.Empty, ORIGIN = string.Empty,
+                        EXTRA_FACET_TABLE = string.Empty, EXTRA_FACET_CROWN = string.Empty, EXTRA_FACET_PAV = string.Empty,
+                        INTERNAL_GRAINING = string.Empty, H_A = string.Empty, SUPPLIER_COMMENTS = string.Empty;
 
             DataTable dataTable = new DataTable();
             dataTable.Columns.Add("STOCK_ID", typeof(string));
@@ -7219,6 +7351,19 @@ namespace astute.Controllers
             dataTable.Columns.Add("BID_SUPP_STOCK_ID", typeof(string));
             dataTable.Columns.Add("BID_BUYER_DISC", typeof(string));
             dataTable.Columns.Add("BID_BUYER_AMOUNT", typeof(string));
+            dataTable.Columns.Add("LUSTER", typeof(string));
+            dataTable.Columns.Add("SHADE", typeof(string));
+            dataTable.Columns.Add("MILKY", typeof(string));
+            dataTable.Columns.Add("GIRDLE_FROM", typeof(string));
+            dataTable.Columns.Add("GIRDLE_TO", typeof(string));
+            dataTable.Columns.Add("GIRDLE_CONDITION", typeof(string));
+            dataTable.Columns.Add("ORIGIN", typeof(string));
+            dataTable.Columns.Add("EXTRA_FACET_TABLE", typeof(string));
+            dataTable.Columns.Add("EXTRA_FACET_CROWN", typeof(string));
+            dataTable.Columns.Add("EXTRA_FACET_PAV", typeof(string));
+            dataTable.Columns.Add("INTERNAL_GRAINING", typeof(string));
+            dataTable.Columns.Add("H_A", typeof(string));
+            dataTable.Columns.Add("SUPPLIER_COMMENTS", typeof(string));
 
             var Round_Cat_Val_Id = _configuration["Round_Cat_Val_Id"];
             bool Is_Round = false;
@@ -7234,13 +7379,12 @@ namespace astute.Controllers
                     }
                 }
             }
-
             if (excel_Model.Report_Filter_Parameter_List != null && excel_Model.Report_Filter_Parameter_List.Count > 0)
             {
                 foreach (var item in excel_Model.Report_Filter_Parameter_List)
                 {
                     STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
-                    SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER").Select(x => x.Category_Value).FirstOrDefault();
+                    SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER" || x.Column_Name == "COMPANY").Select(x => x.Category_Value).FirstOrDefault();
                     CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x => x.Category_Value).FirstOrDefault();
                     SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x => x.Category_Value).FirstOrDefault();
                     CTS = item.Where(x => x.Column_Name == "CTS").Select(x => x.Category_Value).FirstOrDefault();
@@ -7315,6 +7459,19 @@ namespace astute.Controllers
                     BID_SUPP_STOCK_ID = item.Where(x => x.Column_Name == "BID SUPP STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
                     BID_BUYER_DISC = item.Where(x => x.Column_Name == "BID BUYER DISC").Select(x => x.Category_Value).FirstOrDefault();
                     BID_BUYER_AMOUNT = item.Where(x => x.Column_Name == "BID BUYER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                    LUSTER = item.Where(x => x.Column_Name == "LUSTER").Select(x => x.Category_Value).FirstOrDefault();
+                    SHADE = item.Where(x => x.Column_Name == "SHADE").Select(x => x.Category_Value).FirstOrDefault();
+                    MILKY = item.Where(x => x.Column_Name == "MILKY").Select(x => x.Category_Value).FirstOrDefault();
+                    GIRDLE_FROM = item.Where(x => x.Column_Name == "GIRDLE_FROM").Select(x => x.Category_Value).FirstOrDefault();
+                    GIRDLE_TO = item.Where(x => x.Column_Name == "GIRDLE_TO").Select(x => x.Category_Value).FirstOrDefault();
+                    GIRDLE_CONDITION = item.Where(x => x.Column_Name == "GIRDLE_CONDITION").Select(x => x.Category_Value).FirstOrDefault();
+                    ORIGIN = item.Where(x => x.Column_Name == "ORIGIN").Select(x => x.Category_Value).FirstOrDefault();
+                    EXTRA_FACET_TABLE = item.Where(x => x.Column_Name == "EXTRA_FACET_TABLE").Select(x => x.Category_Value).FirstOrDefault();
+                    EXTRA_FACET_CROWN = item.Where(x => x.Column_Name == "EXTRA_FACET_CROWN").Select(x => x.Category_Value).FirstOrDefault();
+                    EXTRA_FACET_PAV = item.Where(x => x.Column_Name == "EXTRA_FACET_PAV").Select(x => x.Category_Value).FirstOrDefault();
+                    INTERNAL_GRAINING = item.Where(x => x.Column_Name == "INTERNAL_GRAINING").Select(x => x.Category_Value).FirstOrDefault();
+                    H_A = item.Where(x => x.Column_Name == "H_A").Select(x => x.Category_Value).FirstOrDefault();
+                    SUPPLIER_COMMENTS = item.Where(x => x.Column_Name == "SUPPLIER_COMMENTS").Select(x => x.Category_Value).FirstOrDefault();
 
                     dataTable.Rows.Add(!string.IsNullOrEmpty(STOCK_ID) ? STOCK_ID : DBNull.Value,
                         !string.IsNullOrEmpty(SUPPLIER) ? SUPPLIER : DBNull.Value,
@@ -7391,7 +7548,20 @@ namespace astute.Controllers
                         !string.IsNullOrEmpty(SUPP_STOCK_ID) ? SUPP_STOCK_ID : DBNull.Value,
                         !string.IsNullOrEmpty(BID_SUPP_STOCK_ID) ? BID_SUPP_STOCK_ID : DBNull.Value,
                         !string.IsNullOrEmpty(BID_BUYER_DISC) ? BID_BUYER_DISC : DBNull.Value,
-                        !string.IsNullOrEmpty(BID_BUYER_AMOUNT) ? BID_BUYER_AMOUNT : DBNull.Value);
+                        !string.IsNullOrEmpty(BID_BUYER_AMOUNT) ? BID_BUYER_AMOUNT : DBNull.Value,
+                        !string.IsNullOrEmpty(LUSTER) ? LUSTER : DBNull.Value,
+                        !string.IsNullOrEmpty(SHADE) ? SHADE : DBNull.Value,
+                        !string.IsNullOrEmpty(MILKY) ? MILKY : DBNull.Value,
+                        !string.IsNullOrEmpty(GIRDLE_FROM) ? GIRDLE_FROM : DBNull.Value,
+                        !string.IsNullOrEmpty(GIRDLE_TO) ? GIRDLE_TO : DBNull.Value,
+                        !string.IsNullOrEmpty(GIRDLE_CONDITION) ? GIRDLE_CONDITION : DBNull.Value,
+                        !string.IsNullOrEmpty(ORIGIN) ? ORIGIN : DBNull.Value,
+                        !string.IsNullOrEmpty(EXTRA_FACET_TABLE) ? EXTRA_FACET_TABLE : DBNull.Value,
+                        !string.IsNullOrEmpty(EXTRA_FACET_CROWN) ? EXTRA_FACET_CROWN : DBNull.Value,
+                        !string.IsNullOrEmpty(EXTRA_FACET_PAV) ? EXTRA_FACET_PAV : DBNull.Value,
+                        !string.IsNullOrEmpty(INTERNAL_GRAINING) ? INTERNAL_GRAINING : DBNull.Value,
+                        !string.IsNullOrEmpty(H_A) ? H_A : DBNull.Value,
+                        !string.IsNullOrEmpty(SUPPLIER_COMMENTS) ? SUPPLIER_COMMENTS : DBNull.Value);
                 }
             }
             else
@@ -7674,6 +7844,21 @@ namespace astute.Controllers
                 dataTable.Columns.Add("BID_SUPP_STOCK_ID", typeof(string));
                 dataTable.Columns.Add("BID_BUYER_DISC", typeof(string));
                 dataTable.Columns.Add("BID_BUYER_AMOUNT", typeof(string));
+                dataTable.Columns.Add("LUSTER", typeof(string));
+                dataTable.Columns.Add("SHADE", typeof(string));
+                dataTable.Columns.Add("MILKY", typeof(string));
+                dataTable.Columns.Add("GIRDLE_FROM", typeof(string));
+                dataTable.Columns.Add("GIRDLE_TO", typeof(string));
+                dataTable.Columns.Add("GIRDLE_CONDITION", typeof(string));
+                dataTable.Columns.Add("ORIGIN", typeof(string));
+                dataTable.Columns.Add("EXTRA_FACET_TABLE", typeof(string));
+                dataTable.Columns.Add("EXTRA_FACET_CROWN", typeof(string));
+                dataTable.Columns.Add("EXTRA_FACET_PAV", typeof(string));
+                dataTable.Columns.Add("INTERNAL_GRAINING", typeof(string));
+                dataTable.Columns.Add("H_A", typeof(string));
+                dataTable.Columns.Add("SUPPLIER_COMMENTS", typeof(string));
+
+
                 DataRow newRow = dataTable.NewRow();
                 for (int i = 0; i < dataTable.Columns.Count; i++)
                 {
@@ -7824,6 +8009,19 @@ namespace astute.Controllers
                 dataTable1.Columns.Add("BID_SUPP_STOCK_ID", typeof(string));
                 dataTable1.Columns.Add("BID_BUYER_DISC", typeof(string));
                 dataTable1.Columns.Add("BID_BUYER_AMOUNT", typeof(string));
+                dataTable.Columns.Add("LUSTER", typeof(string));
+                dataTable.Columns.Add("SHADE", typeof(string));
+                dataTable.Columns.Add("MILKY", typeof(string));
+                dataTable.Columns.Add("GIRDLE_FROM", typeof(string));
+                dataTable.Columns.Add("GIRDLE_TO", typeof(string));
+                dataTable.Columns.Add("GIRDLE_CONDITION", typeof(string));
+                dataTable.Columns.Add("ORIGIN", typeof(string));
+                dataTable.Columns.Add("EXTRA_FACET_TABLE", typeof(string));
+                dataTable.Columns.Add("EXTRA_FACET_CROWN", typeof(string));
+                dataTable.Columns.Add("EXTRA_FACET_PAV", typeof(string));
+                dataTable.Columns.Add("INTERNAL_GRAINING", typeof(string));
+                dataTable.Columns.Add("H_A", typeof(string));
+                dataTable.Columns.Add("SUPPLIER_COMMENTS", typeof(string));
                 var Round_Cat_Val_Id = _configuration["Round_Cat_Val_Id"];
                 dataTable1.Rows.Add(DBNull.Value, DBNull.Value, DBNull.Value, Round_Cat_Val_Id, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
@@ -7832,7 +8030,8 @@ namespace astute.Controllers
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
-                            DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value);
+                            DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, 
+                            DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value);
 
                 //Supplier round stock
                 DataTable supp_round_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable1, "Supplier", null);
@@ -8005,23 +8204,26 @@ namespace astute.Controllers
                 if (ModelState.IsValid)
                 {
                     string STOCK_ID = string.Empty, SUPPLIER = string.Empty, CUSTOMER = string.Empty, SHAPE = string.Empty,
-                          CTS = string.Empty, COLOR = string.Empty, CLARITY = string.Empty, CUT = string.Empty,
-                          POLISH = string.Empty, SYMM = string.Empty, FLS_INTENSITY = string.Empty, BGM = string.Empty,
-                          LAB = string.Empty, GOOD_TYPE = string.Empty, LOCATION = string.Empty, STATUS = string.Empty,
-                          IMAGE_LINK = string.Empty, VIDEO_LINK = string.Empty, LENGTH = string.Empty, WIDTH = string.Empty,
-                          DEPTH = string.Empty, TABLE_PER = string.Empty, DEPTH_PER = string.Empty, CROWN_ANGLE = string.Empty,
-                          CROWN_HEIGHT = string.Empty, PAVILION_ANGLE = string.Empty, PAVILION_HEIGHT = string.Empty, GIRDLE_PER = string.Empty,
-                          RAP_RATE = string.Empty, RAP_AMOUNT = string.Empty, COST_DISC = string.Empty, COST_AMOUNT = string.Empty,
-                          OFFER_DISC = string.Empty, OFFER_VALUE = string.Empty, BASE_DISC = string.Empty, BASE_AMOUNT = string.Empty,
-                          PRICE_PER_CTS = string.Empty, MAX_SLAB_BASE_DISC = string.Empty, MAX_SLAB_BASE_AMOUNT = string.Empty, MAX_SLAB_PRICE_PER_CTS = string.Empty,
-                          BUYER_DISC = string.Empty, BUYER_AMOUNT = string.Empty, TABLE_BLACK = string.Empty, TABLE_WHITE = string.Empty, SIDE_BLACK = string.Empty, SIDE_WHITE = string.Empty,
-                          TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
-                          GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
-                          KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
-                          FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
-                          STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty,
-                          SIGN = string.Empty, DISC_VALUE = string.Empty, DISC_VALUE1 = string.Empty, DISC_VALUE2 = string.Empty, DISC_VALUE3 = string.Empty, BASE_TYPE = string.Empty, SUPP_STOCK_ID = string.Empty,
-                          BID_SUPP_STOCK_ID = string.Empty, BID_BUYER_DISC = string.Empty, BID_BUYER_AMOUNT = string.Empty;
+                        CTS = string.Empty, COLOR = string.Empty, CLARITY = string.Empty, CUT = string.Empty,
+                        POLISH = string.Empty, SYMM = string.Empty, FLS_INTENSITY = string.Empty, BGM = string.Empty,
+                        LAB = string.Empty, GOOD_TYPE = string.Empty, LOCATION = string.Empty, STATUS = string.Empty,
+                        IMAGE_LINK = string.Empty, VIDEO_LINK = string.Empty, LENGTH = string.Empty, WIDTH = string.Empty,
+                        DEPTH = string.Empty, TABLE_PER = string.Empty, DEPTH_PER = string.Empty, CROWN_ANGLE = string.Empty,
+                        CROWN_HEIGHT = string.Empty, PAVILION_ANGLE = string.Empty, PAVILION_HEIGHT = string.Empty, GIRDLE_PER = string.Empty,
+                        RAP_RATE = string.Empty, RAP_AMOUNT = string.Empty, COST_DISC = string.Empty, COST_AMOUNT = string.Empty,
+                        OFFER_DISC = string.Empty, OFFER_VALUE = string.Empty, BASE_DISC = string.Empty, BASE_AMOUNT = string.Empty,
+                        PRICE_PER_CTS = string.Empty, MAX_SLAB_BASE_DISC = string.Empty, MAX_SLAB_BASE_AMOUNT = string.Empty, MAX_SLAB_PRICE_PER_CTS = string.Empty,
+                        BUYER_DISC = string.Empty, BUYER_AMOUNT = string.Empty, TABLE_BLACK = string.Empty, TABLE_WHITE = string.Empty, SIDE_BLACK = string.Empty, SIDE_WHITE = string.Empty,
+                        TABLE_OPEN = string.Empty, CROWN_OPEN = string.Empty, PAVILION_OPEN = string.Empty,
+                        GIRDLE_OPEN = string.Empty, CULET = string.Empty, KEY_TO_SYMBOL_TRUE = string.Empty,
+                        KEY_TO_SYMBOL_FALSE = string.Empty, LAB_COMMENTS_TRUE = string.Empty, LAB_COMMENTS_FALSE = string.Empty,
+                        FANCY_COLOR = string.Empty, FANCY_INTENSITY = string.Empty, FANCY_OVERTONE = string.Empty, POINTER = string.Empty, SUB_POINTER = string.Empty,
+                        STAR_LN = string.Empty, LR_HALF = string.Empty, CERT_TYPE = string.Empty, COST_RATE = string.Empty, RATIO = string.Empty, DISCOUNT_TYPE = string.Empty,
+                        SIGN = string.Empty, DISC_VALUE = string.Empty, DISC_VALUE1 = string.Empty, DISC_VALUE2 = string.Empty, DISC_VALUE3 = string.Empty, BASE_TYPE = string.Empty, SUPP_STOCK_ID = string.Empty,
+                        BID_SUPP_STOCK_ID = string.Empty, BID_BUYER_DISC = string.Empty, BID_BUYER_AMOUNT = string.Empty,
+                        LUSTER = string.Empty, SHADE = string.Empty, MILKY = string.Empty, GIRDLE_FROM = string.Empty, GIRDLE_TO = string.Empty, GIRDLE_CONDITION = string.Empty, ORIGIN = string.Empty,
+                        EXTRA_FACET_TABLE = string.Empty, EXTRA_FACET_CROWN = string.Empty, EXTRA_FACET_PAV = string.Empty,
+                        INTERNAL_GRAINING = string.Empty, H_A = string.Empty, SUPPLIER_COMMENTS = string.Empty;
 
                     DataTable dataTable = new DataTable();
                     dataTable.Columns.Add("STOCK_ID", typeof(string));
@@ -8100,13 +8302,26 @@ namespace astute.Controllers
                     dataTable.Columns.Add("BID_SUPP_STOCK_ID", typeof(string));
                     dataTable.Columns.Add("BID_BUYER_DISC", typeof(string));
                     dataTable.Columns.Add("BID_BUYER_AMOUNT", typeof(string));
+                    dataTable.Columns.Add("LUSTER", typeof(string));
+                    dataTable.Columns.Add("SHADE", typeof(string));
+                    dataTable.Columns.Add("MILKY", typeof(string));
+                    dataTable.Columns.Add("GIRDLE_FROM", typeof(string));
+                    dataTable.Columns.Add("GIRDLE_TO", typeof(string));
+                    dataTable.Columns.Add("GIRDLE_CONDITION", typeof(string));
+                    dataTable.Columns.Add("ORIGIN", typeof(string));
+                    dataTable.Columns.Add("EXTRA_FACET_TABLE", typeof(string));
+                    dataTable.Columns.Add("EXTRA_FACET_CROWN", typeof(string));
+                    dataTable.Columns.Add("EXTRA_FACET_PAV", typeof(string));
+                    dataTable.Columns.Add("INTERNAL_GRAINING", typeof(string));
+                    dataTable.Columns.Add("H_A", typeof(string));
+                    dataTable.Columns.Add("SUPPLIER_COMMENTS", typeof(string));
 
                     if (stock_Email_Model.Report_Filter_Parameter_List != null && stock_Email_Model.Report_Filter_Parameter_List.Count > 0)
                     {
                         foreach (var item in stock_Email_Model.Report_Filter_Parameter_List)
                         {
                             STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
-                            SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER").Select(x => x.Category_Value).FirstOrDefault();
+                            SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER" || x.Column_Name == "COMPANY").Select(x => x.Category_Value).FirstOrDefault();
                             CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x => x.Category_Value).FirstOrDefault();
                             SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x => x.Category_Value).FirstOrDefault();
                             CTS = item.Where(x => x.Column_Name == "CTS").Select(x => x.Category_Value).FirstOrDefault();
@@ -8181,6 +8396,19 @@ namespace astute.Controllers
                             BID_SUPP_STOCK_ID = item.Where(x => x.Column_Name == "BID SUPP STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
                             BID_BUYER_DISC = item.Where(x => x.Column_Name == "BID BUYER DISC").Select(x => x.Category_Value).FirstOrDefault();
                             BID_BUYER_AMOUNT = item.Where(x => x.Column_Name == "BID BUYER AMOUNT").Select(x => x.Category_Value).FirstOrDefault();
+                            LUSTER = item.Where(x => x.Column_Name == "LUSTER").Select(x => x.Category_Value).FirstOrDefault();
+                            SHADE = item.Where(x => x.Column_Name == "SHADE").Select(x => x.Category_Value).FirstOrDefault();
+                            MILKY = item.Where(x => x.Column_Name == "MILKY").Select(x => x.Category_Value).FirstOrDefault();
+                            GIRDLE_FROM = item.Where(x => x.Column_Name == "GIRDLE_FROM").Select(x => x.Category_Value).FirstOrDefault();
+                            GIRDLE_TO = item.Where(x => x.Column_Name == "GIRDLE_TO").Select(x => x.Category_Value).FirstOrDefault();
+                            GIRDLE_CONDITION = item.Where(x => x.Column_Name == "GIRDLE_CONDITION").Select(x => x.Category_Value).FirstOrDefault();
+                            ORIGIN = item.Where(x => x.Column_Name == "ORIGIN").Select(x => x.Category_Value).FirstOrDefault();
+                            EXTRA_FACET_TABLE = item.Where(x => x.Column_Name == "EXTRA_FACET_TABLE").Select(x => x.Category_Value).FirstOrDefault();
+                            EXTRA_FACET_CROWN = item.Where(x => x.Column_Name == "EXTRA_FACET_CROWN").Select(x => x.Category_Value).FirstOrDefault();
+                            EXTRA_FACET_PAV = item.Where(x => x.Column_Name == "EXTRA_FACET_PAV").Select(x => x.Category_Value).FirstOrDefault();
+                            INTERNAL_GRAINING = item.Where(x => x.Column_Name == "INTERNAL_GRAINING").Select(x => x.Category_Value).FirstOrDefault();
+                            H_A = item.Where(x => x.Column_Name == "H_A").Select(x => x.Category_Value).FirstOrDefault();
+                            SUPPLIER_COMMENTS = item.Where(x => x.Column_Name == "SUPPLIER_COMMENTS").Select(x => x.Category_Value).FirstOrDefault();
 
                             dataTable.Rows.Add(!string.IsNullOrEmpty(STOCK_ID) ? STOCK_ID : DBNull.Value,
                                 !string.IsNullOrEmpty(SUPPLIER) ? SUPPLIER : DBNull.Value,
@@ -8257,7 +8485,20 @@ namespace astute.Controllers
                                 !string.IsNullOrEmpty(SUPP_STOCK_ID) ? SUPP_STOCK_ID : DBNull.Value,
                                 !string.IsNullOrEmpty(BID_SUPP_STOCK_ID) ? BID_SUPP_STOCK_ID : DBNull.Value,
                                 !string.IsNullOrEmpty(BID_BUYER_DISC) ? BID_BUYER_DISC : DBNull.Value,
-                                !string.IsNullOrEmpty(BID_BUYER_AMOUNT) ? BID_BUYER_AMOUNT : DBNull.Value);
+                                !string.IsNullOrEmpty(BID_BUYER_AMOUNT) ? BID_BUYER_AMOUNT : DBNull.Value,
+                                !string.IsNullOrEmpty(LUSTER) ? LUSTER : DBNull.Value,
+                                !string.IsNullOrEmpty(SHADE) ? SHADE : DBNull.Value,
+                                !string.IsNullOrEmpty(MILKY) ? MILKY : DBNull.Value,
+                                !string.IsNullOrEmpty(GIRDLE_FROM) ? GIRDLE_FROM : DBNull.Value,
+                                !string.IsNullOrEmpty(GIRDLE_TO) ? GIRDLE_TO : DBNull.Value,
+                                !string.IsNullOrEmpty(GIRDLE_CONDITION) ? GIRDLE_CONDITION : DBNull.Value,
+                                !string.IsNullOrEmpty(ORIGIN) ? ORIGIN : DBNull.Value,
+                                !string.IsNullOrEmpty(EXTRA_FACET_TABLE) ? EXTRA_FACET_TABLE : DBNull.Value,
+                                !string.IsNullOrEmpty(EXTRA_FACET_CROWN) ? EXTRA_FACET_CROWN : DBNull.Value,
+                                !string.IsNullOrEmpty(EXTRA_FACET_PAV) ? EXTRA_FACET_PAV : DBNull.Value,
+                                !string.IsNullOrEmpty(INTERNAL_GRAINING) ? INTERNAL_GRAINING : DBNull.Value,
+                                !string.IsNullOrEmpty(H_A) ? H_A : DBNull.Value,
+                                !string.IsNullOrEmpty(SUPPLIER_COMMENTS) ? SUPPLIER_COMMENTS : DBNull.Value);
                         }
                     }
                     else
