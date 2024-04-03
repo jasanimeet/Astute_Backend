@@ -9304,6 +9304,14 @@ namespace astute.Controllers
                             message = CoreCommonMessage.CustomerDetailSavedSuccessfully
                         });
                     }
+                    else
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.CustomerDetailRequired
+                        });
+                    }
                 }
                 return BadRequest(ModelState);
             }
