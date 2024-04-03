@@ -4390,7 +4390,7 @@ namespace astute.Controllers
                 {
                     foreach (var item in report_Lab_Filter.Report_Filter_Parameter_List)
                     {
-                        STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
+                        STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID" || x.Column_Name == "CERTIFICATE NO"|| x.Column_Name == "SUPPLIER NO").Select(x => x.Category_Value).FirstOrDefault();
                         SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER" || x.Column_Name == "COMPANY").Select(x => x.Category_Value).FirstOrDefault();
                         CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x => x.Category_Value).FirstOrDefault();
                         SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x => x.Category_Value).FirstOrDefault();
@@ -4735,7 +4735,7 @@ namespace astute.Controllers
                 {
                     foreach (var item in report_Lab_Filter.Report_Filter_Parameter_List)
                     {
-                        STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
+                        STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID" || x.Column_Name == "CERTIFICATE NO" || x.Column_Name == "SUPPLIER NO").Select(x => x.Category_Value).FirstOrDefault();
                         SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER" || x.Column_Name == "COMPANY").Select(x => x.Category_Value).FirstOrDefault();
                         CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x => x.Category_Value).FirstOrDefault();
                         SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x => x.Category_Value).FirstOrDefault();
@@ -5270,7 +5270,7 @@ namespace astute.Controllers
                     int i = 1;
                     foreach (var item in report_Lab_Filter.Report_Filter_Parameter_List)
                     {
-                        STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
+                        STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID" || x.Column_Name == "CERTIFICATE NO" || x.Column_Name == "SUPPLIER NO").Select(x => x.Category_Value).FirstOrDefault();
                         SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER").Select(x => x.Category_Name).FirstOrDefault();
                         CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x => x.Category_Name).FirstOrDefault();
                         SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x => x.Category_Name).FirstOrDefault();
@@ -5772,7 +5772,7 @@ namespace astute.Controllers
                 {
                     foreach (var item in report_Lab_Filter.Report_Filter_Parameter_List)
                     {
-                        STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
+                        STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID" || x.Column_Name == "CERTIFICATE NO" || x.Column_Name == "SUPPLIER NO").Select(x => x.Category_Value).FirstOrDefault();
                         SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER" || x.Column_Name == "COMPANY").Select(x => x.Category_Value).FirstOrDefault();
                         CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x => x.Category_Value).FirstOrDefault();
                         SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x => x.Category_Value).FirstOrDefault();
@@ -7383,7 +7383,7 @@ namespace astute.Controllers
             {
                 foreach (var item in excel_Model.Report_Filter_Parameter_List)
                 {
-                    STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
+                    STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID" || x.Column_Name == "CERTIFICATE NO" || x.Column_Name == "SUPPLIER NO").Select(x => x.Category_Value).FirstOrDefault();
                     SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER" || x.Column_Name == "COMPANY").Select(x => x.Category_Value).FirstOrDefault();
                     CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x => x.Category_Value).FirstOrDefault();
                     SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x => x.Category_Value).FirstOrDefault();
@@ -8320,7 +8320,7 @@ namespace astute.Controllers
                     {
                         foreach (var item in stock_Email_Model.Report_Filter_Parameter_List)
                         {
-                            STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID").Select(x => x.Category_Value).FirstOrDefault();
+                            STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID" || x.Column_Name == "CERTIFICATE NO" || x.Column_Name == "SUPPLIER NO").Select(x => x.Category_Value).FirstOrDefault();
                             SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER" || x.Column_Name == "COMPANY").Select(x => x.Category_Value).FirstOrDefault();
                             CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x => x.Category_Value).FirstOrDefault();
                             SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x => x.Category_Value).FirstOrDefault();
