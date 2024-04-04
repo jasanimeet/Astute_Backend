@@ -2290,11 +2290,11 @@ namespace astute.Controllers
         [HttpDelete]
         [Route("delete_customer_pricing")]
         [Authorize]
-        public async Task<IActionResult> Delete_Customer_Pricing(int customer_Pricing_Id)
+        public async Task<IActionResult> Delete_Customer_Pricing(int supplier_Pricing_Id)
         {
             try
             {
-                var result = await _supplierService.Delete_Customer_Pricing(customer_Pricing_Id);
+                var result = await _supplierService.Delete_Customer_Pricing(supplier_Pricing_Id);
                 if (result > 0)
                 {
                     return Ok(new

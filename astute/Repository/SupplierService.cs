@@ -852,9 +852,9 @@ namespace astute.Repository
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Sunrise_Pricing_Delete {sunrise_Pricing_Id}"));
         }
-        public async Task<int> Delete_Customer_Pricing(int customer_Pricing_Id)
+        public async Task<int> Delete_Customer_Pricing(int supplier_Pricing_Id)
         {
-            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Customer_Pricing_Delete {customer_Pricing_Id}"));
+            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Customer_Pricing_Delete {supplier_Pricing_Id}"));
         }
         #endregion
 
