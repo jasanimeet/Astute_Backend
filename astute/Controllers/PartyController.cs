@@ -6159,7 +6159,7 @@ namespace astute.Controllers
                     }
 
                     var (message, result, msg) = await _cartService.Create_Update_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
-                    if (message == "exist" || (message == "success" && result > 0))
+                    if ((message == "exist" && msg.Length > 0 )|| (message == "success" && msg.Length > 0))
                     {
                         // if alredy exists stone add again then message should show succsessfully added.
                         return Ok(new
@@ -6341,8 +6341,9 @@ namespace astute.Controllers
                     }
 
                     var (message, result, msg) = await _cartService.Create_Approved_Management(dataTable, approval_Management.User_Id ?? 0, approval_Management.Remarks, approval_Management.Status);
-                    if (message == "exist" || (message == "success" && result > 0))
+                    if ((message == "exist" && msg.Length > 0) || (message == "success" && msg.Length > 0))
                     {
+                        // if alredy exists stone add again then message should show succsessfully added.
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
@@ -6388,8 +6389,9 @@ namespace astute.Controllers
                 }
 
                 var (message, result, msg) = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.User_Id, order_Processing.Customer_Name, order_Processing.Remarks, order_Processing.Status);
-                if (message == "exist" || (message == "success" && result > 0))
+                if ((message == "exist" && msg.Length > 0) || (message == "success" && msg.Length > 0))
                 {
+                    // if alredy exists stone add again then message should show succsessfully added.
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
