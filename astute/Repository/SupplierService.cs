@@ -504,7 +504,7 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type, string map_Flag, int sunrise_pricing_Id, int customer_pricing_Id)
+        public async Task<List<Dictionary<string, object>>> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type, string map_Flag, int sunrise_pricing_Id, int customer_pricing_Id, int user_pricing_Id)
         {
             var result = new List<Dictionary<string, object>>();
 
@@ -520,6 +520,7 @@ namespace astute.Repository
                     command.Parameters.Add(!string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value));
                     command.Parameters.Add(sunrise_pricing_Id > 0 ? new SqlParameter("@Sunrise_pricing_Id", sunrise_pricing_Id) : new SqlParameter("@Sunrise_pricing_Id", DBNull.Value));
                     command.Parameters.Add(customer_pricing_Id > 0 ? new SqlParameter("@Customer_Pricing_Id", customer_pricing_Id) : new SqlParameter("@Customer_Pricing_Id", DBNull.Value));
+                    command.Parameters.Add(user_pricing_Id > 0 ? new SqlParameter("@User_Pricing_Id", user_pricing_Id) : new SqlParameter("@User_Pricing_Id", DBNull.Value));
 
                     using var da = new SqlDataAdapter();
                     da.SelectCommand = command;
