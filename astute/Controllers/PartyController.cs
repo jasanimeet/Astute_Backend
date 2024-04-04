@@ -2062,7 +2062,7 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_supplier_pricing")]
         [Authorize]
-        public async Task<IActionResult> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type, string map_Flag, int sunrise_pricing_Id, int customer_pricing_Id, int user_pricing_Id)
+        public async Task<IActionResult> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type, string map_Flag, int sunrise_pricing_Id, int customer_pricing_Id, string? user_pricing_Id)
         {
             try
             {

@@ -27,7 +27,7 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Supplier_Pricing_List();
         Task<List<Dictionary<string, object>>> Get_Sunrise_Pricing_List();
         Task<List<Dictionary<string, object>>> Get_Customer_Pricing_List();
-        Task<List<Dictionary<string, object>>> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type, string map_Flag, int sunrise_pricing_Id, int customer_pricing_Id, int user_pricing_Id);
+        Task<List<Dictionary<string, object>>> Get_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id, string supplier_Filter_Type, string map_Flag, int sunrise_pricing_Id, int customer_pricing_Id, string? user_pricing_Id);
         Task<(string, int)> Add_Update_Supplier_Pricing(Supplier_Pricing supplier_Pricing);
         Task<int> Delete_Supplier_Pricing(int supplier_Pricing_Id, int supplier_Id);
         Task<int> Delete_Supplier_Pricing_By_Supplier(int supplier_Id);
