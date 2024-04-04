@@ -144,6 +144,7 @@ namespace astute.Models
         public bool? Is_All_Pavilion_Open { get; set; }
         public bool? Is_All_Crown_Open { get; set; }
         public bool? Is_All_Company { get; set; }
+        public bool? Is_API_FTP_URL { get; set; }
         [NotMapped]
         public string? Query_Flag { get; set; }
         [NotMapped]
