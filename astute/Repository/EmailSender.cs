@@ -68,35 +68,43 @@ namespace astute.Repository
         }
         public async void Send_Stock_Email(string toEmail = "", string externalLink = "", string subject = "", IFormFile formFile = null, string strBody = "", int user_Id = 0, Employee_Mail employee_Mail = null)
         {
-            string from_Email = string.Empty;
-            string from_Password = string.Empty;
-            string smtp_Host = string.Empty;
-            int smtp_Port = 0;
-            if (employee_Mail != null)
-            {   
-                from_Email = employee_Mail.Email_id;
-                from_Password = employee_Mail.Email_Password;
-                smtp_Host = employee_Mail.SMTP_Server_Address;
-                smtp_Port = employee_Mail.SMTP_Port ?? 0;
-            }
-            MailMessage mailMessage = new MailMessage(from_Email, toEmail);
-            mailMessage.Subject = subject;
-            mailMessage.Body = strBody;
-            if (formFile != null && formFile.Length > 0)
+            try
             {
-                string fileName = Path.GetFileName(formFile.FileName);
-                mailMessage.Attachments.Add(new Attachment(formFile.OpenReadStream(), fileName));
-            }
-            mailMessage.IsBodyHtml = true;
+                string from_Email = string.Empty;
+                string from_Password = string.Empty;
+                string smtp_Host = string.Empty;
+                int smtp_Port = 0;
+                if (employee_Mail != null)
+                {
+                    from_Email = employee_Mail.Email_id;
+                    from_Password = employee_Mail.Email_Password;
+                    smtp_Host = employee_Mail.SMTP_Server_Address;
+                    smtp_Port = employee_Mail.SMTP_Port ?? 0;
+                }
+                MailMessage mailMessage = new MailMessage(from_Email, toEmail);
+                mailMessage.Subject = subject;
+                mailMessage.Body = strBody;
+                if (formFile != null && formFile.Length > 0)
+                {
+                    string fileName = Path.GetFileName(formFile.FileName);
+                    mailMessage.Attachments.Add(new Attachment(formFile.OpenReadStream(), fileName));
+                }
+                mailMessage.IsBodyHtml = true;
 
-            using (SmtpClient smptClient = new SmtpClient())
+                using (SmtpClient smptClient = new SmtpClient())
+                {
+                    smptClient.Host = smtp_Host;
+                    smptClient.EnableSsl = true;
+                    smptClient.UseDefaultCredentials = false;
+                    smptClient.Credentials = new NetworkCredential(from_Email, from_Password);
+                    smptClient.Port = Convert.ToInt32(smtp_Port);
+                    smptClient.Send(mailMessage);
+                }
+            }
+            catch (Exception ex)
             {
-                smptClient.Host = smtp_Host;
-                smptClient.EnableSsl = true;
-                smptClient.UseDefaultCredentials = false;
-                smptClient.Credentials = new NetworkCredential(from_Email, from_Password);
-                smptClient.Port = Convert.ToInt32(smtp_Port);
-                smptClient.Send(mailMessage);
+
+                throw;
             }
         }
         public async Task SendTestEmail(string toEmail = "", string subject = "", string strBody = "", int employeeId = 0)
@@ -126,5 +134,5 @@ namespace astute.Repository
             }
         }
         #endregion
-    } 
+    }
 }
