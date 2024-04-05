@@ -560,6 +560,26 @@ namespace astute.Repository
             emp.Email_Password = password;
             return emp;
         }
+        public async Task<Employee_Mail> Get_Employee_Email_Or_Default_Email(int user_Id)
+        {
+            string password = "";
+            var _user_Id = user_Id > 0 ? new SqlParameter("@Employee_Id", user_Id) : new SqlParameter("@Employee_Id", DBNull.Value);
+            Employee_Mail emp = new Employee_Mail();
+            var result = await Task.Run(() => _dbContext.Employee_Mail
+                                .FromSqlRaw(@"EXEC Employee_Mail_Default_Select @Employee_Id", _user_Id)
+                                .ToListAsync());
+
+            if (result != null && result.Count > 0)
+            {
+                emp = result.FirstOrDefault();
+                if (emp != null)
+                {
+                    password = CoreService.Decrypt(emp.Email_Password);
+                }
+            }
+            emp.Email_Password = password;
+            return emp;
+        }
         #endregion
 
         #region Emergency Contact Detail

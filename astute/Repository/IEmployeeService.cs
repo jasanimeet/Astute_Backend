@@ -38,6 +38,7 @@ namespace astute.Repository
         Task<int> UpdateEmployeeMail(Employee_Mail employee_Mail);
         Task<int> DeleteEmployeeMail(int employeeId);
         Task<Employee_Mail> Get_Employee_Email_Details(int user_Id);
+        Task<Employee_Mail> Get_Employee_Email_Or_Default_Email(int user_Id);
         //Task<List<Dictionary<string, object>>> Get_Employee_Email_Details(int user_Id);
         #endregion
 

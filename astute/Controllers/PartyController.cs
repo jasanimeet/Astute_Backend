@@ -8543,10 +8543,10 @@ namespace astute.Controllers
                     {
                         var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                         int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-                        var employeeEmails = await _employeeService.GetEmployeeMail(user_Id ?? 0);
-                        if (employeeEmails != null && employeeEmails.Count > 0)
-                        {
-                            var emp_email = employeeEmails.FirstOrDefault();
+                        //var employeeEmails = await _employeeService.GetEmployeeMail(user_Id ?? 0);
+                        var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(user_Id ?? 0);
+                        if (emp_email != null)
+                        {   
                             if(!(stock_Email_Model.Send_From_Default ?? false) && (emp_email.Is_Default ?? false))
                                 return Conflict(new
                                 {
@@ -8629,10 +8629,10 @@ namespace astute.Controllers
                         //int? login_user_id = Convert.ToInt32(user_Id);
                         var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                         int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-                        var employeeEmails = await _employeeService.GetEmployeeMail(user_Id ?? 0);
-                        if (employeeEmails != null && employeeEmails.Count > 0)
-                        {
-                            var emp_email = employeeEmails.FirstOrDefault();
+                        //var employeeEmails = await _employeeService.GetEmployeeMail(user_Id ?? 0);
+                        var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(user_Id ?? 0);
+                        if (emp_email != null)
+                        {   
                             if (!(cart_Approval_Order_Email_Model.Send_From_Default ?? false) && (emp_email.Is_Default ?? false))
                                 return Conflict(new
                                 {
@@ -8820,10 +8820,10 @@ namespace astute.Controllers
                         var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                         var user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                         int? login_user_id = Convert.ToInt32(user_Id);
-                        var employeeEmails = await _employeeService.GetEmployeeMail(login_user_id ?? 0);
-                        if (employeeEmails != null && employeeEmails.Count > 0)
-                        {
-                            var emp_email = employeeEmails.FirstOrDefault();
+                        //var employeeEmails = await _employeeService.GetEmployeeMail(user_Id ?? 0);
+                        var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(user_Id ?? 0);
+                        if (emp_email != null)
+                        {   
                             if (!(stock_Avalibility.Send_From_Default ?? false) && (emp_email.Is_Default ?? false))
                                 return Conflict(new
                                 {
