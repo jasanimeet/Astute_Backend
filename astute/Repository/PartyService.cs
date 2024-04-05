@@ -817,7 +817,7 @@ namespace astute.Repository
             var file_Name = !string.IsNullOrEmpty(party_File.File_Name) ? new SqlParameter("@File_Name", party_File.File_Name) : new SqlParameter("@File_Name", DBNull.Value);
             var file_Type = !string.IsNullOrEmpty(party_File.File_Type) ? new SqlParameter("@File_Type", party_File.File_Type) : new SqlParameter("@File_Type", DBNull.Value);
             var iP = !string.IsNullOrEmpty(party_File.IP) ? new SqlParameter("@IP", party_File.IP) : new SqlParameter("@IP", DBNull.Value);
-            var country = !string.IsNullOrEmpty(party_File.IP) ? new SqlParameter("@Country", party_File.Country) : new SqlParameter("@Country", DBNull.Value);
+            var country = !string.IsNullOrEmpty(party_File.Country) ? new SqlParameter("@Country", party_File.Country) : new SqlParameter("@Country", DBNull.Value);
             var file_Status = new SqlParameter("@File_Status", party_File.File_Status ?? false);
             var _modified_By = new SqlParameter("@Modified_By", modified_By);
             var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
@@ -898,7 +898,7 @@ namespace astute.Repository
             var _party_Id = party_API.Party_Id > 0 ? new SqlParameter("@Party_Id", party_API.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
             var format_Type = !string.IsNullOrEmpty(party_API.Format_Type) ? new SqlParameter("@Format_Type", party_API.Format_Type) : new SqlParameter("@Format_Type", DBNull.Value);
             var iP = !string.IsNullOrEmpty(party_API.IP) ? new SqlParameter("@IP", party_API.IP) : new SqlParameter("@IP", DBNull.Value);
-            var country = !string.IsNullOrEmpty(party_API.IP) ? new SqlParameter("@Country", party_API.Country) : new SqlParameter("@Country", DBNull.Value);
+            var country = !string.IsNullOrEmpty(party_API.Country) ? new SqlParameter("@Country", party_API.Country) : new SqlParameter("@Country", DBNull.Value);
             var api_Status = new SqlParameter("@API_Status", party_API.API_Status ?? false);
             var _modified_By = new SqlParameter("@Modified_By", modified_By);
             var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
