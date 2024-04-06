@@ -2880,6 +2880,7 @@ namespace astute.CoreServices
                             else
                             {
                                 kk += 1;
+                                //worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
                                 if (Column_Name == "DNA")
                                 {
                                     string DNA_URL = Convert.ToString(dtStock.Rows[i - inStartIndex]["DNA"]);
@@ -3000,6 +3001,10 @@ namespace astute.CoreServices
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["CART MAX SLAB FINAL AMT"]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["CART MAX SLAB FINAL AMT"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                }
+                                else if (Column_Name == "STATUS")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["STATUS"]);
                                 }
                                 else if (Column_Name == "BASE DISC")
                                 {
@@ -5056,7 +5061,21 @@ namespace astute.CoreServices
 
                                 worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
 
-                                if (Column_Name == "LAB")
+                                if (Column_Name == "DNA")
+                                {
+                                    string DNA_URL = Convert.ToString(dtStock.Rows[i - inStartIndex]["DNA"]);
+                                    if (!string.IsNullOrEmpty(DNA_URL))
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Formula = "=HYPERLINK(\"" + Convert.ToString(DNA_URL) + "\",\" DNA \")";
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.UnderLine = true;
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Blue);
+                                    }
+                                    else
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["DNA"]);
+                                    }
+                                }
+                                else if (Column_Name == "LAB")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["LAB"]);
                                     string Certificate_URL = Convert.ToString(s_dt.Rows[i - inStartIndex]["CERTIFICATE LINK"]);
@@ -5453,9 +5472,20 @@ namespace astute.CoreServices
                             else
                             {
                                 kk += 1;
+                                //worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
                                 if (Column_Name == "DNA")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["DNA"]);
+                                    string DNA_URL = Convert.ToString(dtStock.Rows[i - inStartIndex]["DNA"]);
+                                    if (!string.IsNullOrEmpty(DNA_URL))
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Formula = "=HYPERLINK(\"" + Convert.ToString(DNA_URL) + "\",\" DNA \")";
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.UnderLine = true;
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Blue);
+                                    }
+                                    else
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["DNA"]);
+                                    }
                                 }
                                 else if (Column_Name == "LAB")
                                 {
@@ -5566,6 +5596,10 @@ namespace astute.CoreServices
                                     string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex]["CART MAX SLAB FINAL AMT"]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex]["CART MAX SLAB FINAL AMT"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                }
+                                else if (Column_Name == "STATUS")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["STATUS"]);
                                 }
                                 else if (Column_Name == "BASE DISC")
                                 {
@@ -6073,7 +6107,21 @@ namespace astute.CoreServices
 
                                 worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
 
-                                if (Column_Name == "LAB")
+                                if (Column_Name == "DNA")
+                                {
+                                    string DNA_URL = Convert.ToString(dtStock.Rows[i - inStartIndex]["DNA"]);
+                                    if (!string.IsNullOrEmpty(DNA_URL))
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Formula = "=HYPERLINK(\"" + Convert.ToString(DNA_URL) + "\",\" DNA \")";
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.UnderLine = true;
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Blue);
+                                    }
+                                    else
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["DNA"]);
+                                    }
+                                }
+                                else if (Column_Name == "LAB")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["LAB"]);
                                     string Certificate_URL = Convert.ToString(s_dt.Rows[i - inStartIndex]["CERTIFICATE LINK"]);
