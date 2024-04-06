@@ -3230,9 +3230,9 @@ namespace astute.CoreServices
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["CULET"]);
                                 }
-                                else if (Column_Name == "COMMENTS")
+                                else if (Column_Name == "LAB COMMENTS")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["COMMENTS"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["LAB COMMENTS"]);
                                 }
                                 else if (Column_Name == "SUPPLIER COMMENTS")
                                 {
@@ -5801,9 +5801,9 @@ namespace astute.CoreServices
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["CULET"]);
                                 }
-                                else if (Column_Name == "COMMENTS")
+                                else if (Column_Name == "LAB COMMENTS")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["COMMENTS"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["LAB COMMENTS"]);
                                 }
                                 else if (Column_Name == "SUPPLIER COMMENTS")
                                 {
