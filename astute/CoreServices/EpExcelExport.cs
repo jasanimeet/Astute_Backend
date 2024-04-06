@@ -3056,10 +3056,10 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["EXPECTED FINAL AMT"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
-                                else if (Column_Name == "DIFFRENCE")
+                                else if (Column_Name == "DIFFERENCE")
                                 {
-                                    string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["DIFFRENCE"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["DIFFRENCE"]) : 0;
+                                    string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["DIFFERENCE"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["DIFFERENCE"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "AVG STOCK DISC")
@@ -5627,10 +5627,10 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex]["EXPECTED FINAL AMT"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
-                                else if (Column_Name == "DIFFRENCE")
+                                else if (Column_Name == "DIFFERENCE")
                                 {
-                                    string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex]["DIFFRENCE"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex]["DIFFRENCE"]) : 0;
+                                    string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex]["DIFFERENCE"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex]["DIFFERENCE"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "AVG STOCK DISC")
