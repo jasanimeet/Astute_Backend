@@ -2969,6 +2969,10 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["RAP AMOUNT"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
+                                else if (Column_Name == "CART STATUS")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["CART STATUS"]);
+                                }
                                 else if (Column_Name == "CART BASE DISC")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(21) + i + "/" + GetExcelColumnLetter(18) + i + ")-100,0)";
@@ -5560,6 +5564,10 @@ namespace astute.CoreServices
                                     string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex]["RAP AMOUNT"]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex]["RAP AMOUNT"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                }
+                                else if (Column_Name == "CART STATUS")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["CART STATUS"]);
                                 }
                                 else if (Column_Name == "CART BASE DISC")
                                 {
