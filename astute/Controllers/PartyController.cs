@@ -2098,7 +2098,7 @@ namespace astute.Controllers
                 if (ModelState.IsValid)
                 {
                     int supplier_Id = 0, sunrise_Pricing_Id = 0, customer_Pricing_Id = 0;
-                    int sun_price_Id = 0;int supplier_Pricing_Id = 0;
+                    int sun_price_Id = 0; int supplier_Pricing_Id = 0;
                     var map_flag = string.Empty;
                     var selected_sun_price_Id = supplier_Pricings.Where(x => x.Sunrise_Pricing_Id > 0).Select(x => x.Sunrise_Pricing_Id).FirstOrDefault() ?? 0;
                     map_flag = supplier_Pricings.Select(x => x.Map_Flag).FirstOrDefault();
@@ -2206,7 +2206,7 @@ namespace astute.Controllers
                                 supplier_Id = supplier_Id,
                                 sunrise_Pricing_Id = sunrise_Pricing_Id,
                                 customer_Pricing_Id = customer_Pricing_Id,
-                                supplier_pricing_Id= supplier_Pricing_Id
+                                supplier_pricing_Id = supplier_Pricing_Id
                             });
                         }
                     }
@@ -4390,7 +4390,7 @@ namespace astute.Controllers
                 {
                     foreach (var item in report_Lab_Filter.Report_Filter_Parameter_List)
                     {
-                        STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID" || x.Column_Name == "CERTIFICATE NO"|| x.Column_Name == "SUPPLIER NO").Select(x => x.Category_Value).FirstOrDefault();
+                        STOCK_ID = item.Where(x => x.Column_Name == "STOCK ID" || x.Column_Name == "CERTIFICATE NO" || x.Column_Name == "SUPPLIER NO").Select(x => x.Category_Value).FirstOrDefault();
                         SUPPLIER = item.Where(x => x.Column_Name == "SUPPLIER" || x.Column_Name == "COMPANY").Select(x => x.Category_Value).FirstOrDefault();
                         CUSTOMER = item.Where(x => x.Column_Name == "CUSTOMER").Select(x => x.Category_Value).FirstOrDefault();
                         SHAPE = item.Where(x => x.Column_Name == "SHAPE").Select(x => x.Category_Value).FirstOrDefault();
@@ -4582,7 +4582,7 @@ namespace astute.Controllers
                 }
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseDisc, totalBaseAmt, totalOfferDisc, totalOfferAmt, totalMaxSlabDisc, totalMaxSlabAmt) = await _supplierService.Get_Lab_Search_Report_Search(dataTable, report_Lab_Filter.iPgNo ?? 0, report_Lab_Filter.iPgSize ?? 0, report_Lab_Filter.iSort,user_Id);
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseDisc, totalBaseAmt, totalOfferDisc, totalOfferAmt, totalMaxSlabDisc, totalMaxSlabAmt) = await _supplierService.Get_Lab_Search_Report_Search(dataTable, report_Lab_Filter.iPgNo ?? 0, report_Lab_Filter.iPgSize ?? 0, report_Lab_Filter.iSort, user_Id);
                 if (result != null)
                 {
                     return Ok(new
@@ -6159,7 +6159,7 @@ namespace astute.Controllers
                     }
 
                     var (message, result, msg) = await _cartService.Create_Update_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
-                    if ((message == "exist" && msg.Length > 0 )|| (message == "success" && msg.Length > 0))
+                    if ((message == "exist" && msg.Length > 0) || (message == "success" && msg.Length > 0))
                     {
                         // if alredy exists stone add again then message should show succsessfully added.
                         return Ok(new
@@ -8034,7 +8034,7 @@ namespace astute.Controllers
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
-                            DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, 
+                            DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value);
 
                 //Supplier round stock
@@ -8546,8 +8546,8 @@ namespace astute.Controllers
                         //var employeeEmails = await _employeeService.GetEmployeeMail(user_Id ?? 0);
                         var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(user_Id ?? 0);
                         if (emp_email != null)
-                        {   
-                            if(!(stock_Email_Model.Send_From_Default ?? false) && (emp_email.Is_Default ?? false))
+                        {
+                            if (!(stock_Email_Model.Send_From_Default ?? false) && (emp_email.Is_Default ?? false))
                                 return Conflict(new
                                 {
                                     statusCode = HttpStatusCode.Conflict,
@@ -8583,6 +8583,17 @@ namespace astute.Controllers
         {
             try
             {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                if (cart_Approval_Order_Email_Model.Report_Filter_Parameter != null)
+                {   
+                    cart_Approval_Order_Email_Model.Report_Filter_Parameter.Add(new Report_Filter_Parameter()
+                    {
+                        Column_Name = "USER ID",
+                        Category_Value = Convert.ToString(user_Id ?? 0),
+                        Col_Id = 1163
+                    });
+                }
                 var dt_stock = await _supplierService.Get_Report_Search_Excel(cart_Approval_Order_Email_Model.id, cart_Approval_Order_Email_Model.Report_Filter_Parameter);
                 if (dt_stock != null && dt_stock.Rows.Count > 0)
                 {
@@ -8627,12 +8638,10 @@ namespace astute.Controllers
                     {
                         //string user_Id = cart_Approval_Order_Email_Model.Report_Filter_Parameter.Where(x => x.Column_Name == "USER_ID").Select(x => x.Category_Value).FirstOrDefault();
                         //int? login_user_id = Convert.ToInt32(user_Id);
-                        var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                        int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                         //var employeeEmails = await _employeeService.GetEmployeeMail(user_Id ?? 0);
                         var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(user_Id ?? 0);
                         if (emp_email != null)
-                        {   
+                        {
                             if (!(cart_Approval_Order_Email_Model.Send_From_Default ?? false) && (emp_email.Is_Default ?? false))
                                 return Conflict(new
                                 {
@@ -8823,7 +8832,7 @@ namespace astute.Controllers
                         //var employeeEmails = await _employeeService.GetEmployeeMail(user_Id ?? 0);
                         var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(user_Id ?? 0);
                         if (emp_email != null)
-                        {   
+                        {
                             if (!(stock_Avalibility.Send_From_Default ?? false) && (emp_email.Is_Default ?? false))
                                 return Conflict(new
                                 {
@@ -9337,7 +9346,7 @@ namespace astute.Controllers
         {
             try
             {
-                var result = await _partyService.Get_Customer_Pricing_Column_Caption(null, null,null);
+                var result = await _partyService.Get_Customer_Pricing_Column_Caption(null, null, null);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -9367,28 +9376,28 @@ namespace astute.Controllers
             {
                 Customer_Detail customer_Detail = new Customer_Detail();
                 customer_Detail.Customer_Party_Api = await _partyService.Get_Customer_Party_API(null, party_Id, map_flag);
-                var Customer_Party_Api = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag,"API");
+                var Customer_Party_Api = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag, "API");
                 if (customer_Detail.Customer_Party_Api != null && Customer_Party_Api != null && Customer_Party_Api.Count > 0)
                 {
                     customer_Detail.Customer_Party_Api.Customer_Column_Caption = Customer_Party_Api;
                 }
                 customer_Detail.Customer_Party_File = await _partyService.Get_Customer_Party_File(null, party_Id, map_flag);
-                var Customer_Party_File = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag,"URL");
+                var Customer_Party_File = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag, "URL");
                 if (customer_Detail.Customer_Party_File != null && Customer_Party_File != null && Customer_Party_File.Count > 0)
                 {
                     customer_Detail.Customer_Party_File.Customer_Column_Caption = Customer_Party_File;
                 }
                 customer_Detail.Customer_Party_FTP = await _partyService.Get_Customer_Party_FTP(null, party_Id, map_flag);
-                var Customer_Party_FTP = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag,"FTP");
+                var Customer_Party_FTP = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag, "FTP");
                 if (customer_Detail.Customer_Party_FTP != null && Customer_Party_FTP != null && Customer_Party_FTP.Count > 0)
                 {
                     customer_Detail.Customer_Party_FTP.Customer_Column_Caption = Customer_Party_FTP;
                 }
-                if (customer_Detail != null && (customer_Detail.Customer_Party_FTP != null || customer_Detail.Customer_Party_Api != null || customer_Detail.Customer_Party_File!= null))
+                if (customer_Detail != null && (customer_Detail.Customer_Party_FTP != null || customer_Detail.Customer_Party_Api != null || customer_Detail.Customer_Party_File != null))
                 {
                     customer_Detail.Party_Id = party_Id;
-                    customer_Detail.Map_Flag = customer_Detail.Customer_Party_FTP!=null ? customer_Detail.Customer_Party_FTP.Map_Flag:
-                        (customer_Detail.Customer_Party_Api != null ? customer_Detail.Customer_Party_Api.Map_Flag :(customer_Detail.Customer_Party_File != null ? customer_Detail.Customer_Party_File.Map_Flag:map_flag));
+                    customer_Detail.Map_Flag = customer_Detail.Customer_Party_FTP != null ? customer_Detail.Customer_Party_FTP.Map_Flag :
+                        (customer_Detail.Customer_Party_Api != null ? customer_Detail.Customer_Party_Api.Map_Flag : (customer_Detail.Customer_Party_File != null ? customer_Detail.Customer_Party_File.Map_Flag : map_flag));
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
