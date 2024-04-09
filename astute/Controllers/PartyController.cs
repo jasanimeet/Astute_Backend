@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NPOI.HSSF.UserModel;
@@ -3547,7 +3548,7 @@ namespace astute.Controllers
                                                  }
                                                  else if (!string.IsNullOrEmpty(displayColName) && displayColName == "BASE_AMOUNT")
                                                  {
-                                                     var base_amt = finalRow[displayColName].ToString().Contains("$") ? Convert.ToDecimal(finalRow[displayColName].ToString().Replace("$", "")) : Convert.ToDecimal(finalRow[displayColName]);
+                                                     var base_amt = !string.IsNullOrEmpty(finalRow[displayColName].ToString())? (finalRow[displayColName].ToString().Contains("$") ? Convert.ToDecimal(finalRow[displayColName].ToString().Replace("$", "")) : Convert.ToDecimal(finalRow[displayColName].ToString())) : 0;
                                                      finalRow[displayColName] = base_amt.ToString("0.00");
                                                  }
                                                  else if (!string.IsNullOrEmpty(displayColName) && displayColName == "DNA")
