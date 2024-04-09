@@ -4312,6 +4312,10 @@ namespace astute.CoreServices
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
                                 }
+                                else if (Column_Name == "MANAGEMENT STATUS")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
+                                }
                             }
                         }
 
@@ -6298,6 +6302,10 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(girdle_Per) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex]["GIRDLE PER"]) : DBNull.Value;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
+                                }
+                                else if (Column_Name == "MANAGEMENT STATUS")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
                                 }
                             }
                         }
