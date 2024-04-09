@@ -1691,7 +1691,7 @@ namespace astute.Repository
             }
             return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr, dataTable);
         }
-        public async Task<(List<Dictionary<string, object>>, string, string, string, string, string, string, string, string, string, string)> Get_Lab_Search_Report_Search(DataTable dataTable, int iPgNo, int iPgSize, IList<Report_Sorting> iSort,int? user_Id)
+        public async Task<(List<Dictionary<string, object>>, string, string, string, string, string, string, string, string, string, string)> Get_Lab_Search_Report_Search(DataTable dataTable, int iPgNo, int iPgSize, IList<Report_Sorting> iSort, int? user_Id)
         {
             var result = new List<Dictionary<string, object>>();
             var totalRecordr = string.Empty;
@@ -1738,7 +1738,7 @@ namespace astute.Repository
                     var totalRecordParameter = new SqlParameter("@iTotalRec", SqlDbType.Int);
                     totalRecordParameter.Direction = ParameterDirection.Output;
                     command.Parameters.Add(totalRecordParameter);
-                  
+
                     var totalCtsParameter = new SqlParameter("@iTotalCts", SqlDbType.NVarChar)
                     {
                         Size = -1, // -1 is used for max size
@@ -1873,7 +1873,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<(List<Dictionary<string, object>>, string, string, string, string, string, string, string, string, string, string)> Get_Lab_Search_Report_Search_Total(DataTable dataTable, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
+        public async Task<(List<Dictionary<string, object>>, string, string, string, string, string, string, string, string, string, string, string)> Get_Lab_Search_Report_Search_Total(DataTable dataTable, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
         {
             var result = new List<Dictionary<string, object>>();
             var totalRecordr = string.Empty;
@@ -1886,6 +1886,7 @@ namespace astute.Repository
             string totalOfferAmtr = string.Empty;
             string totalMaxSlabDiscr = string.Empty;
             string totalMaxSlabAmtr = string.Empty;
+            string totalRaP_Amount = string.Empty;
 
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
@@ -1982,6 +1983,12 @@ namespace astute.Repository
                         Direction = ParameterDirection.Output
                     };
                     command.Parameters.Add(totalMaxSlabAmtParameter);
+                    var totalRap_Amount = new SqlParameter("@iTotalRapAmt", SqlDbType.NVarChar)
+                    {
+                        Size = -1,
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalRap_Amount);
 
                     command.CommandTimeout = 1800;
                     await connection.OpenAsync();
@@ -2012,11 +2019,12 @@ namespace astute.Repository
                     totalOfferAmtr = Convert.ToString(totalOfferAmtParameter.Value);
                     totalMaxSlabDiscr = Convert.ToString(totalMaxSlabDiscParameter.Value);
                     totalMaxSlabAmtr = Convert.ToString(totalMaxSlabAmtParameter.Value);
+                    totalRaP_Amount = Convert.ToString(totalRap_Amount.Value);
                 }
             }
-            return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseDiscr, totalBaseAmtr, totalOfferDiscr, totalOfferAmtr, totalMaxSlabDiscr, totalMaxSlabAmtr);
+            return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseDiscr, totalBaseAmtr, totalOfferDiscr, totalOfferAmtr, totalMaxSlabDiscr, totalMaxSlabAmtr, totalRaP_Amount);
         }
-        public async Task<(List<Dictionary<string, object>>, string, string,string,string,string,string,string,string)> Get_Stock_Avalibility_Report_Search(DataTable dataTable,string stock_Id, string stock_Type, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
+        public async Task<(List<Dictionary<string, object>>, string, string, string, string, string, string, string, string)> Get_Stock_Avalibility_Report_Search(DataTable dataTable, string stock_Id, string stock_Type, int iPgNo, int iPgSize, IList<Report_Sorting> iSort)
         {
             var result = new List<Dictionary<string, object>>();
             var totalRecordr = string.Empty;
@@ -2178,7 +2186,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<string> Create_Update_Report_Search(Report_Search_Save report_Search_Save,int user_Id)
+        public async Task<string> Create_Update_Report_Search(Report_Search_Save report_Search_Save, int user_Id)
         {
             var name = new SqlParameter("@Name", report_Search_Save.Name);
             var userId = new SqlParameter("@User_Id", user_Id);
@@ -2188,7 +2196,7 @@ namespace astute.Repository
             {
                 Direction = ParameterDirection.Output
             };
-            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Search_Save_Insert_Update  @Name, @Search_Value, @Search_Display,@User_Id, @IsExist OUT",  name, search_Value, search_Display,userId, is_Exist));
+            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Search_Save_Insert_Update  @Name, @Search_Value, @Search_Display,@User_Id, @IsExist OUT", name, search_Value, search_Display, userId, is_Exist));
             if ((int)is_Exist.Value == 1)
             {
                 return "exist";
@@ -2228,7 +2236,8 @@ namespace astute.Repository
                                     IList<Report_Filter_Display> report_Filter_Display = JsonConvert.DeserializeObject<List<Report_Filter_Display>>(columnValue.ToString());
                                     dict[columnName] = report_Filter_Display;
                                 }
-                                else {
+                                else
+                                {
                                     dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
                                 }
 
@@ -2359,7 +2368,7 @@ namespace astute.Repository
         }
         public async Task<DataTable> Get_Stock_Availability_Report_Excel(DataTable dataTable, string stock_Id, string stock_Type)
         {
-           DataTable dataTable1 = new DataTable();
+            DataTable dataTable1 = new DataTable();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
                 using (var command = new SqlCommand("Stock_Availability_Select_Excel", connection))

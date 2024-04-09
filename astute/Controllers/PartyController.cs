@@ -5965,7 +5965,7 @@ namespace astute.Controllers
                     }
                     dataTable.Rows.Add(newRow);
                 }
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseDisc, totalBaseAmt, totalOfferDisc, totalOfferAmt, totalMaxSlabDisc, totalMaxSlabAmt) = await _supplierService.Get_Lab_Search_Report_Search_Total(dataTable, report_Lab_Filter.iPgNo ?? 0, report_Lab_Filter.iPgSize ?? 0, report_Lab_Filter.iSort);
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseDisc, totalBaseAmt, totalOfferDisc, totalOfferAmt, totalMaxSlabDisc, totalMaxSlabAmt,totalRap_Amount) = await _supplierService.Get_Lab_Search_Report_Search_Total(dataTable, report_Lab_Filter.iPgNo ?? 0, report_Lab_Filter.iPgSize ?? 0, report_Lab_Filter.iSort);
                 if (result != null)
                 {
                     return Ok(new
@@ -5982,6 +5982,7 @@ namespace astute.Controllers
                         total_Offer_Amt = totalOfferAmt,
                         total_MaxSlab_Disc = totalMaxSlabDisc,
                         total_MaxSlab_Amt = totalMaxSlabAmt,
+                        total_Rap_Amt = totalRap_Amount,
                         data = result
                     });
                 }
