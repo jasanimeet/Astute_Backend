@@ -4452,10 +4452,10 @@ namespace astute.CoreServices
 
                     int totalColumns = worksheet.Dimension.End.Column;
 
-                    if (totalColumns >= 2)
-                    {
-                        worksheet.DeleteColumn(totalColumns - 1, 2);
-                    }
+                    //if (totalColumns >= 2)
+                    //{
+                    //    worksheet.DeleteColumn(totalColumns - 1, 2);
+                    //}
 
                     Byte[] bin = ep.GetAsByteArray();
 

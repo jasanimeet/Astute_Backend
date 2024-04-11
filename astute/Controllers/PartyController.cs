@@ -6381,7 +6381,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("Buyer_Disc", typeof(double));
                 dataTable.Columns.Add("Buyer_Amt", typeof(double));
                 dataTable.Columns.Add("Status", typeof(string));
-                dataTable.Columns.Add("QC_Remarks", typeof(string));
+                dataTable.Columns.Add("QC_Remarks", typeof(string)); 
 
                 foreach (var item in OrderResult)
                 {
