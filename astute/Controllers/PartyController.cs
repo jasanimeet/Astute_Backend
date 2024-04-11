@@ -6160,7 +6160,7 @@ namespace astute.Controllers
                             (!string.IsNullOrEmpty(item.Cart_Status) ? Convert.ToDouble(item.Cart_Status.ToString()) : null));
                     }
 
-                    var (message, result, msg) = await _cartService.Create_Update_Cart(dataTable, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
+                    var (message, result, msg) = await _cartService.Create_Update_Cart(dataTable, cart_Model.Id, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
                     if ((message == "exist" && msg.Length > 0) || (message == "success" && msg.Length > 0))
                     {
                         // if alredy exists stone add again then message should show succsessfully added.
@@ -6342,7 +6342,7 @@ namespace astute.Controllers
                         }
                     }
 
-                    var (message, result, msg) = await _cartService.Create_Approved_Management(dataTable, approval_Management.User_Id ?? 0, approval_Management.Remarks, approval_Management.Status);
+                    var (message, result, msg) = await _cartService.Create_Approved_Management(dataTable, approval_Management.Id, approval_Management.User_Id ?? 0, approval_Management.Remarks, approval_Management.Status);
                     if ((message == "exist" && msg.Length > 0) || (message == "success" && msg.Length > 0))
                     {
                         // if alredy exists stone add again then message should show succsessfully added.
@@ -6390,7 +6390,7 @@ namespace astute.Controllers
                         (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null), Convert.ToString(item.Status), Convert.ToString(item.QC_Remarks));
                 }
 
-                var (message, result, msg) = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.User_Id, order_Processing.Customer_Name, order_Processing.Remarks, order_Processing.Status);
+                var (message, result, msg) = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.Id, order_Processing.User_Id, order_Processing.Customer_Name, order_Processing.Remarks, order_Processing.Status);
                 if ((message == "exist" && msg.Length > 0) || (message == "success" && msg.Length > 0))
                 {
                     // if alredy exists stone add again then message should show succsessfully added.

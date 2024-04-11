@@ -30,6 +30,7 @@ namespace astute.Models
 
     public partial class Approval_Management_Create_Update
     {   
+        public int Id { get; set; }
         public int? User_Id { get; set; }
         public string? Remarks { get; set; }
         public string? Status { get; set; }

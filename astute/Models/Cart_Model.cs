@@ -9,6 +9,7 @@ namespace astute.Models
     [Keyless]
     public partial class Cart_Model
     {
+        public int Id { get; set; }
         public int? User_Id { get; set; }
         public string? Customer_Name { get; set; }
         public string? Remarks { get; set; }
