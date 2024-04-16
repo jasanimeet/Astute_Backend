@@ -3508,23 +3508,24 @@ namespace astute.Controllers
 
                                                  if (displayColName != "SHADE")
                                                  {
-                                                     if (displayColName == "TABLE_OPEN" || displayColName == "CROWN_OPEN" || displayColName == "PAVILION_OPEN" || displayColName == "GIRDLE_OPEN")
-                                                     {
-                                                         string foundColumnName = excel_dataTable.Columns.Cast<DataColumn>().FirstOrDefault(column => column.ColumnName == Convert.ToString(suppColRow["Supp_Col_Name"]))?.ColumnName;
-                                                         if (!string.IsNullOrEmpty(foundColumnName))
-                                                         {
-                                                             finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
-                                                         }
-                                                         else
-                                                         {
-                                                             finalRow[displayColName] = "";
-                                                         }
+                                                     finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
+                                                     //if (displayColName == "TABLE_OPEN" || displayColName == "CROWN_OPEN" || displayColName == "PAVILION_OPEN" || displayColName == "GIRDLE_OPEN")
+                                                     //{
+                                                     //    string foundColumnName = excel_dataTable.Columns.Cast<DataColumn>().FirstOrDefault(column => column.ColumnName == Convert.ToString(suppColRow["Supp_Col_Name"]))?.ColumnName;
+                                                     //    if (!string.IsNullOrEmpty(foundColumnName))
+                                                     //    {
+                                                     //        finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
+                                                     //    }
+                                                     //    else
+                                                     //    {
+                                                     //        finalRow[displayColName] = "";
+                                                     //    }
 
-                                                     }
-                                                     else
-                                                     {
-                                                         finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
-                                                     }
+                                                     //}
+                                                     //else
+                                                     //{
+                                                     //    finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
+                                                     //}
 
                                                  }
                                                  else
@@ -3542,7 +3543,6 @@ namespace astute.Controllers
                                                      }
                                                      else
                                                      {
-                                                         var c = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
                                                          finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
                                                      }
                                                  }
@@ -3599,19 +3599,19 @@ namespace astute.Controllers
                                                      finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
                                                         Convert.ToString(finalRow[displayColName]), false);
                                                  }
-                                                 else if (displayColName == "TABLE_OPEN" || displayColName == "CROWN_OPEN" || displayColName == "PAVILION_OPEN" || displayColName == "GIRDLE_OPEN")
-                                                 {
-                                                     string foundColumnName = excel_dataTable.Columns.Cast<DataColumn>().FirstOrDefault(column => column.ColumnName == Convert.ToString(suppColRow["Supp_Col_Name"]))?.ColumnName;
-                                                     if (!string.IsNullOrEmpty(foundColumnName))
-                                                     {
-                                                         finalRow[displayColName] = string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName]))
-                                                         ? null : Convert.ToString(finalRow[displayColName]);
-                                                     }
-                                                     else
-                                                     {
-                                                         finalRow[displayColName] = "";
-                                                     }
-                                                 }
+                                                 //else if (displayColName == "TABLE_OPEN" || displayColName == "CROWN_OPEN" || displayColName == "PAVILION_OPEN" || displayColName == "GIRDLE_OPEN")
+                                                 //{
+                                                 //    string foundColumnName = excel_dataTable.Columns.Cast<DataColumn>().FirstOrDefault(column => column.ColumnName == Convert.ToString(suppColRow["Supp_Col_Name"]))?.ColumnName;
+                                                 //    if (!string.IsNullOrEmpty(foundColumnName))
+                                                 //    {
+                                                 //        finalRow[displayColName] = string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName]))
+                                                 //        ? null : Convert.ToString(finalRow[displayColName]);
+                                                 //    }
+                                                 //    else
+                                                 //    {
+                                                 //        finalRow[displayColName] = "";
+                                                 //    }
+                                                 //}
                                                  else
                                                  {
 
