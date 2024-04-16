@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.Contracts;
+using System.Text.Json.Serialization;
 
 namespace astute.Models
 {
@@ -23,6 +24,7 @@ namespace astute.Models
         public bool? Is_Same_Id { get; set; }
         public bool? Overseas_Same_Id { get; set; }
         [NotMapped]
+        [JsonIgnore]
         public bool? Is_Overwrite { get; set; } = false;
 
     }

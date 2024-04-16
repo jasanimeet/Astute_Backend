@@ -1034,7 +1034,7 @@ namespace astute.Repository
             var _stock_Data_Id = new SqlParameter("@Stock_Data_Id", stock_Data_Id);
             var _is_Overwrite = new SqlParameter("@Is_Overwrite", is_Overwrite);
 
-            var sqlCommand = @"exec [Supplier_Stock_Manual_File_Insert_Update] @Supplier_Id, @Stock_Data_Id";
+            var sqlCommand = @"exec [Supplier_Stock_Manual_File_Insert_Update] @Supplier_Id, @Stock_Data_Id, @Is_Overwrite";
 
             var result = await Task.Run(async () =>
             {
