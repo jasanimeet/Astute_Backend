@@ -33,4 +33,16 @@ namespace astute.Models
         public bool? Is_Inactive { get; set; }
         public int? User_Id { get; set; }
     }
+
+    #region Order_Processing_New
+
+    public class Order_Processing_Summary
+    {
+        public string? Order_Status { get; set; }
+        public string? Stone_Status { get; set; }
+        public string? From_Date { get; set; }
+        public string? To_Date { get; set; }
+    }
+
+    #endregion
 }

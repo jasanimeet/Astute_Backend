@@ -3548,7 +3548,7 @@ namespace astute.Controllers
                                                  }
                                                  else if (!string.IsNullOrEmpty(displayColName) && displayColName == "BASE_AMOUNT")
                                                  {
-                                                     var base_amt = !string.IsNullOrEmpty(finalRow[displayColName].ToString())? (finalRow[displayColName].ToString().Contains("$") ? Convert.ToDecimal(finalRow[displayColName].ToString().Replace("$", "")) : Convert.ToDecimal(finalRow[displayColName].ToString())) : 0;
+                                                     var base_amt = !string.IsNullOrEmpty(finalRow[displayColName].ToString()) ? (finalRow[displayColName].ToString().Contains("$") ? Convert.ToDecimal(finalRow[displayColName].ToString().Replace("$", "")) : Convert.ToDecimal(finalRow[displayColName].ToString())) : 0;
                                                      finalRow[displayColName] = base_amt.ToString("0.00");
                                                  }
                                                  else if (!string.IsNullOrEmpty(displayColName) && displayColName == "DNA")
@@ -3659,7 +3659,7 @@ namespace astute.Controllers
                                         {
                                             if (stock_Data_Master_Schedular.Upload_Type == "O")
                                             {
-                                                await _supplierService.Supplier_Stock_Manual_File_Insert_Update((int)stock_Data_Master_Schedular.Supplier_Id, stock_Data_Id);
+                                                await _supplierService.Supplier_Stock_Manual_File_Insert_Update((int)stock_Data_Master_Schedular.Supplier_Id, stock_Data_Id, party_File.Is_Overwrite ?? false);
                                             }
                                         }
                                         return Ok(new
@@ -5965,7 +5965,7 @@ namespace astute.Controllers
                     }
                     dataTable.Rows.Add(newRow);
                 }
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseDisc, totalBaseAmt, totalOfferDisc, totalOfferAmt, totalMaxSlabDisc, totalMaxSlabAmt,totalRap_Amount) = await _supplierService.Get_Lab_Search_Report_Search_Total(dataTable, report_Lab_Filter.iPgNo ?? 0, report_Lab_Filter.iPgSize ?? 0, report_Lab_Filter.iSort);
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseDisc, totalBaseAmt, totalOfferDisc, totalOfferAmt, totalMaxSlabDisc, totalMaxSlabAmt, totalRap_Amount) = await _supplierService.Get_Lab_Search_Report_Search_Total(dataTable, report_Lab_Filter.iPgNo ?? 0, report_Lab_Filter.iPgSize ?? 0, report_Lab_Filter.iSort);
                 if (result != null)
                 {
                     return Ok(new
@@ -6381,7 +6381,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("Buyer_Disc", typeof(double));
                 dataTable.Columns.Add("Buyer_Amt", typeof(double));
                 dataTable.Columns.Add("Status", typeof(string));
-                dataTable.Columns.Add("QC_Remarks", typeof(string)); 
+                dataTable.Columns.Add("QC_Remarks", typeof(string));
 
                 foreach (var item in OrderResult)
                 {
@@ -8588,7 +8588,7 @@ namespace astute.Controllers
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                 if (cart_Approval_Order_Email_Model.Report_Filter_Parameter != null)
-                {   
+                {
                     cart_Approval_Order_Email_Model.Report_Filter_Parameter.Add(new Report_Filter_Parameter()
                     {
                         Column_Name = "USER ID",
@@ -9419,5 +9419,38 @@ namespace astute.Controllers
             }
         }
         #endregion
+
+        //#region Order Processing New
+
+        //[HttpGet]
+        //[Route("get_order_processing_summary")]
+        //[Authorize]
+        //public async Task<IActionResult> Get_Order_Processing_Summary(Order_Processing_Summary order)
+        //{
+        //    try
+        //    {
+        //        var result = await _supplierService.Get_Report_Name(id, user_Id);
+        //        if (result != null && result.Count > 0)
+        //        {
+        //            return Ok(new
+        //            {
+        //                statusCode = HttpStatusCode.OK,
+        //                message = CoreCommonMessage.DataSuccessfullyFound,
+        //                data = result
+        //            });
+        //        }
+        //        return NoContent();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await _commonService.InsertErrorLog(ex.Message, "Get_Order_Processing_Summary", ex.StackTrace);
+        //        return StatusCode((int)HttpStatusCode.InternalServerError, new
+        //        {
+        //            message = ex.Message
+        //        });
+        //    }
+        //}
+
+        //#endregion
     }
 }

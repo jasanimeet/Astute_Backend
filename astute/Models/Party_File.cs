@@ -22,5 +22,8 @@ namespace astute.Models
         public string? Upload_Type { get; set; }
         public bool? Is_Same_Id { get; set; }
         public bool? Overseas_Same_Id { get; set; }
+        [NotMapped]
+        public bool? Is_Overwrite { get; set; } = false;
+
     }
 }

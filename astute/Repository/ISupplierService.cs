@@ -48,7 +48,7 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Stock_Data_Distinct_Column_Values(string column_Name, int supplier_Id);
         Task<IList<Stock_Data>> Get_Not_Uploaded_Stock_Data(int stock_data_Id);
         Task<int> Supplier_Stock_Insert_Update(int supplier_Id, int stock_Data_Id);
-        Task<int> Supplier_Stock_Manual_File_Insert_Update(int supplier_Id, int stock_Data_Id);
+        Task<int> Supplier_Stock_Manual_File_Insert_Update(int supplier_Id, int stock_Data_Id, bool is_Overwrite);
         Task<int> Stock_Data_Shedular_Insert_Update(DataTable dataTable, int Stock_Data_Id);
         Task<DropdownModel> Get_Purchase_Order_Supplier(string supp_Ref_No);
         #endregion
