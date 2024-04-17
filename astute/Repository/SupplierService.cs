@@ -1304,7 +1304,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Supplier_Stock_File_Error_Log(int supplier_Id)
+        public async Task<List<Dictionary<string, object>>> Get_Supplier_Stock_File_Error_Log(int supplier_Id, int stock_Data_Id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -1313,6 +1313,7 @@ namespace astute.Repository
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
+                    command.Parameters.Add(stock_Data_Id > 0 ? new SqlParameter("@Stock_Data_Id", stock_Data_Id) : new SqlParameter("@Stock_Data_Id", DBNull.Value));
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())

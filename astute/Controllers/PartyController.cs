@@ -3698,7 +3698,9 @@ namespace astute.Controllers
                                         return Ok(new
                                         {
                                             statusCode = HttpStatusCode.OK,
-                                            message = "File uploaded successfully."
+                                            message = "File uploaded successfully.",
+                                            Party_Name = party_name,
+                                            Stock_Data_Id = stock_Data_Id
                                         });
                                     }
                                 }
@@ -3726,11 +3728,13 @@ namespace astute.Controllers
                 {
                     message = "Either column or value mapping is wrong";
                 }
+                
                 return Ok(new
                 {
                     Supplier_Id = party_File.Party_Id,
                     Party_Name = party_name,
-                    message = message
+                    message = message,
+
                 });
             }
         }
@@ -3798,11 +3802,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("supplier_stock_file_error_error_log")]
         [Authorize]
-        public async Task<IActionResult> Supplier_Stock_File_Error_Error_Log(int supplier_Id)
+        public async Task<IActionResult> Supplier_Stock_File_Error_Error_Log(int supplier_Id, int stock_Data_Id)
         {
             try
             {
-                var result = await _supplierService.Get_Supplier_Stock_File_Error_Log(supplier_Id);
+                var result = await _supplierService.Get_Supplier_Stock_File_Error_Log(supplier_Id, stock_Data_Id);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
