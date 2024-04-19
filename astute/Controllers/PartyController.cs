@@ -3711,6 +3711,8 @@ namespace astute.Controllers
                     return Conflict(new
                     {
                         statusCode = HttpStatusCode.Conflict,
+                        Supplier_Id = party_File.Party_Id,
+                        Party_Name = party_name,
                         message = "No column mapping found!"
                     });
                 }
@@ -6800,34 +6802,34 @@ namespace astute.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("get_order_summary")]
-        [Authorize]
-        public async Task<IActionResult> Get_Order_Summary(int order_No)
-        {
-            try
-            {
-                var result = await _cartService.Get_Order_Summary(order_No);
-                if (result != null && result.Count > 0)
-                {
-                    return Ok(new
-                    {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.DataSuccessfullyFound,
-                        data = result
-                    });
-                }
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Order_Summary", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
+        //[HttpGet]
+        //[Route("get_order_summary")]
+        //[Authorize]
+        //public async Task<IActionResult> Get_Order_Summary(int order_No)
+        //{
+        //    try
+        //    {
+        //        var result = await _cartService.Get_Order_Summary(order_No);
+        //        if (result != null && result.Count > 0)
+        //        {
+        //            return Ok(new
+        //            {
+        //                statusCode = HttpStatusCode.OK,
+        //                message = CoreCommonMessage.DataSuccessfullyFound,
+        //                data = result
+        //            });
+        //        }
+        //        return NoContent();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await _commonService.InsertErrorLog(ex.Message, "Get_Order_Summary", ex.StackTrace);
+        //        return StatusCode((int)HttpStatusCode.InternalServerError, new
+        //        {
+        //            message = ex.Message
+        //        });
+        //    }
+        //}
         #endregion
 
         #region Get GIA Certificate Data
@@ -9153,17 +9155,33 @@ namespace astute.Controllers
         [HttpDelete]
         [Route("delete_lab_user")]
         [Authorize]
-        public async Task<IActionResult> Delete_Lab_User(int id)
+        public async Task<IActionResult> Delete_Lab_User(int id, bool check_Primary_User)
         {
             try
             {
-                var result = await _labUserService.Delete_Lab_User(id);
-                if (result > 0)
+                var (result, message) = await _labUserService.Delete_Lab_User(id, check_Primary_User);
+                if (result > 0 && message == "success")
                 {
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
                         message = "Lab user deleted successfully.",
+                    });
+                }
+                else if(result == 409 && message == "exist")
+                {
+                    return Conflict(new 
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        message = "Sub user available are you sure you want to delete?",
+                    });
+                }
+                else if(result == 409 && message == "subExist")
+                {
+                    return Conflict(new
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        message = "Are you sure you want to delete?",
                     });
                 }
                 return BadRequest(new
@@ -9457,37 +9475,70 @@ namespace astute.Controllers
         }
         #endregion
 
-        //#region Order Processing New
+        #region Order Processing New
+        [HttpPost]
+        [Route("get_order_summary")]
+        [Authorize]
+        public async Task<IActionResult> Get_Order_Summary(Order_Processing_Summary order_Processing_Summary)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                var result = await _supplierService.Get_Order_Summary(user_Id ?? 0, order_Processing_Summary);
+                if(result != null && result.Count > 0)
+                {
+                    return Ok(new 
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Order_Summary", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
 
-        //[HttpGet]
-        //[Route("get_order_processing_summary")]
-        //[Authorize]
-        //public async Task<IActionResult> Get_Order_Processing_Summary(Order_Processing_Summary order)
-        //{
-        //    try
-        //    {
-        //        var result = await _supplierService.Get_Report_Name(id, user_Id);
-        //        if (result != null && result.Count > 0)
-        //        {
-        //            return Ok(new
-        //            {
-        //                statusCode = HttpStatusCode.OK,
-        //                message = CoreCommonMessage.DataSuccessfullyFound,
-        //                data = result
-        //            });
-        //        }
-        //        return NoContent();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await _commonService.InsertErrorLog(ex.Message, "Get_Order_Processing_Summary", ex.StackTrace);
-        //        return StatusCode((int)HttpStatusCode.InternalServerError, new
-        //        {
-        //            message = ex.Message
-        //        });
-        //    }
-        //}
-
-        //#endregion
+        [HttpPost]
+        [Route("create_stone_order_process")]
+        [Authorize]
+        public async Task<IActionResult> Create_Stone_Order_Process(Order_Stone_Process order_Stone_Process)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                    var result = await _supplierService.Create_Stone_Order_Process(order_Stone_Process, user_Id ?? 0);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = "Stone has been proceed successfully."
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Order_Summary", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
     }
 }

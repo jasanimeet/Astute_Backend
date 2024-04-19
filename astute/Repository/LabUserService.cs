@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -170,9 +171,34 @@ namespace astute.Repository
             }
             return result.FirstOrDefault();
         }
-        public async Task<int> Delete_Lab_User(int id)
+        public async Task<(int,string)> Delete_Lab_User(int id, bool check_Primary_User)
         {
-            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Lab_User_Delete {id}"));
+            var _id = new SqlParameter("@Id", id);
+            var _check_Primary_User = new SqlParameter("@Check_Primary_User", check_Primary_User);
+            var is_Exist = new SqlParameter("@Is_Exist", System.Data.SqlDbType.Bit)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
+
+            var is_Sub_Exist = new SqlParameter("@Is_Sub_Exist", System.Data.SqlDbType.Bit)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC [Lab_User_Delete] @Id, @Check_Primary_User, @Is_Exist OUT, @Is_Sub_Exist OUT",
+                        _id, _check_Primary_User, is_Exist, is_Sub_Exist));
+            var _is_Exist = (bool)is_Exist.Value;
+            if (_is_Exist)
+                return (409,"exist");
+
+            var _is_Sub_Exist = (bool)is_Sub_Exist.Value;
+            if (_is_Sub_Exist)
+                return (409, "subExist");
+
+            return (result,"success");
+
+            //return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Lab_User_Delete {id}"));
         }
         public async Task<int> Create_Update_Suspend_Days(int id, int days)
         {

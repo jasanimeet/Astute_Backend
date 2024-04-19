@@ -35,7 +35,6 @@ namespace astute.Models
     }
 
     #region Order_Processing_New
-
     public class Order_Processing_Summary
     {
         public string? Order_Status { get; set; }
@@ -44,5 +43,13 @@ namespace astute.Models
         public string? To_Date { get; set; }
     }
 
+    public class Order_Stone_Process
+    {
+        public string? Order_Id { get; set; }
+        public int? Order_No { get; set; }
+        public string? Order_Status { get; set;}
+        public string? Stone_Status { get; set;}
+        public string? Remarks { get; set; }
+    }
     #endregion
 }

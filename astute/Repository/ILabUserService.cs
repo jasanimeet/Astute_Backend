@@ -10,7 +10,7 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Lab_User(int id, int party_Id, int user_Id);
         Task<int> Change_Active_Status(int id, bool active_Status);
         Task<Dictionary<string, object>> Get_Suspend_Day();
-        Task<int> Delete_Lab_User(int id);
+        Task<(int, string)> Delete_Lab_User(int id, bool check_Primary_User);
         Task<int> Create_Update_Suspend_Days(int id, int days);
         Task<List<Dictionary<string, object>>> Get_Customer_Lab_User(int party_Id);
     }

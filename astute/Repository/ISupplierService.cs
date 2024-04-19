@@ -108,5 +108,10 @@ namespace astute.Repository
         Task<DataTable> Get_Excel_Report_Search_New(IList<Report_Filter_Parameter> report_Filter_Parameters, string excel_Format, string supplier_Ref_No);
         Task<DataTable> Get_Excel_Report_Search(DataTable dt_Search, string excel_Format, string supplier_Ref_No);
         #endregion
+
+        #region Order Processing New
+        Task<List<Dictionary<string, object>>> Get_Order_Summary(int user_Id, Order_Processing_Summary order_Processing_Summary);
+        Task<int> Create_Stone_Order_Process(Order_Stone_Process order_Stone_Processing, int user_Id);
+        #endregion
     }
 }

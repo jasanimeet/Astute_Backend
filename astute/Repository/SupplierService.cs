@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -2550,8 +2551,57 @@ namespace astute.Repository
         #endregion
 
         #region Order Processing New
+        public async Task<List<Dictionary<string, object>>> Get_Order_Summary(int user_Id, Order_Processing_Summary order_Processing_Summary)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Order_Processing_Summary_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.From_Date) ? new SqlParameter("@From_Date", order_Processing_Summary.From_Date) : new SqlParameter("@From_Date", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.To_Date) ? new SqlParameter("@To_Date", order_Processing_Summary.To_Date) : new SqlParameter("@To_Date", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.Order_Status) ? new SqlParameter("@Order_Status", order_Processing_Summary.Order_Status) : new SqlParameter("@Order_Status", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.Stone_Status) ? new SqlParameter("@Stone_Status", order_Processing_Summary.Stone_Status) : new SqlParameter("@Stone_Status", DBNull.Value));
+                    await connection.OpenAsync();
 
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
 
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public async Task<int> Create_Stone_Order_Process(Order_Stone_Process order_Stone_Processing, int user_Id)
+        {
+            var _user_Id = new SqlParameter("@User_Id", user_Id);
+            var order_Id = !string.IsNullOrEmpty(order_Stone_Processing.Order_Id) ? new SqlParameter("@Order_Id", order_Stone_Processing.Order_Id) : new SqlParameter("@Order_Id", DBNull.Value);
+            var order_No = order_Stone_Processing.Order_No > 0 ? new SqlParameter("@Order_No", order_Stone_Processing.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
+            var order_Status = !string.IsNullOrEmpty(order_Stone_Processing.Order_Status) ? new SqlParameter("@Order_Status", order_Stone_Processing.Order_Status) : new SqlParameter("@Order_Status", DBNull.Value);
+            var stone_Status = !string.IsNullOrEmpty(order_Stone_Processing.Stone_Status) ? new SqlParameter("@Stone_Status", order_Stone_Processing.Stone_Status) : new SqlParameter("@Stone_Status", DBNull.Value);
+            var remarks = !string.IsNullOrEmpty(order_Stone_Processing.Remarks) ? new SqlParameter("@Remarks", order_Stone_Processing.Remarks) : new SqlParameter("@Remarks", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Create_Stone_Process_For_Order_Processing @User_Id, @Order_Id, @Order_No, @Order_Status, @Stone_Status,
+                    @Remarks", _user_Id, order_Id, order_No, order_Status, stone_Status, remarks));
+
+            return result;
+        }
         #endregion
     }
 }
