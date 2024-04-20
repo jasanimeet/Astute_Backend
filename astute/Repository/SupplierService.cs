@@ -1,5 +1,6 @@
 ﻿using astute.CoreServices;
 using astute.Models;
+using MathNet.Numerics.Random;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -2599,6 +2600,52 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                    .ExecuteSqlRawAsync(@"EXEC Create_Stone_Process_For_Order_Processing @User_Id, @Order_Id, @Order_No, @Order_Status, @Stone_Status,
                     @Remarks", _user_Id, order_Id, order_No, order_Status, stone_Status, remarks));
+
+            return result;
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Order_Detail(int user_Id, Order_Process_Detail order_Process_Detail)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Get_Order_Processing_Detail", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
+                    command.Parameters.Add(order_Process_Detail.Order_No > 0 ? new SqlParameter("@Order_No", order_Process_Detail.Order_No) : new SqlParameter("@Order_No", DBNull.Value));
+                    command.Parameters.Add(order_Process_Detail.Sub_Order_Id > 0 ? new SqlParameter("@Sub_Order_Id", order_Process_Detail.Sub_Order_Id) : new SqlParameter("@Sub_Order_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public async Task<int> Delete_Order_Process(int order_No, int sub_Order_Id, int user_Id)
+        {
+            var _order_No = order_No > 0 ? new SqlParameter("@Order_No", order_No) : new SqlParameter("@Order_No", DBNull.Value);
+            var _sub_Order_Id = sub_Order_Id > 0 ? new SqlParameter("@Sub_Order_Id", sub_Order_Id) : new SqlParameter("@Sub_Order_Id", DBNull.Value);
+            var _user_Id = new SqlParameter("@User_Id", user_Id);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Order_Processing_Delete @Order_No, @Sub_Order_Id, @User_Id", _order_No, _sub_Order_Id, _user_Id));
 
             return result;
         }

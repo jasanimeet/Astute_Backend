@@ -51,5 +51,11 @@ namespace astute.Models
         public string? Stone_Status { get; set;}
         public string? Remarks { get; set; }
     }
+
+    public class Order_Process_Detail
+    {
+        public int? Order_No { get; set; }
+        public int? Sub_Order_Id { get; set; }
+    }
     #endregion
 }

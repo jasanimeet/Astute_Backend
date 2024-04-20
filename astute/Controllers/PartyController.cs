@@ -9532,7 +9532,71 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Order_Summary", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Create_Stone_Order_Process", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("get_order_detail")]
+        [Authorize]
+        public async Task<IActionResult> Get_Order_Detail(Order_Process_Detail order_Process_Detail)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                var result = await _supplierService.Get_Order_Detail(user_Id ?? 0, order_Process_Detail);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Order_Detail", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("order_processing_delete")]
+        public async Task<IActionResult> Order_Processing_Delete(int Order_No, int Sub_Order_Id)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                var result = await _supplierService.Delete_Order_Process(Order_No, Sub_Order_Id, user_Id ?? 0);
+                if(result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = "order deleted successfully.",
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Order_Detail", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
