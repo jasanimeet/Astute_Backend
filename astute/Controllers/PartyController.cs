@@ -5097,7 +5097,7 @@ namespace astute.Controllers
                 var lst_Stock_Id = new List<string>();
                 if (!string.IsNullOrEmpty(stock_Avalibility.stock_Id) && stock_Avalibility.stock_Id.Contains(";"))
                 {
-                    lst_Stock_Id = stock_Avalibility.stock_Id.Split(',').ToList();
+                    lst_Stock_Id = stock_Avalibility.stock_Id.Split('/').ToList();
                     if (lst_Stock_Id != null && lst_Stock_Id.Count > 0)
                     {
                         foreach (var item in lst_Stock_Id)
@@ -6631,7 +6631,7 @@ namespace astute.Controllers
                 var lst_Stock_Id = new List<string>();
                 if (!string.IsNullOrEmpty(stock_Avalibility.stock_Id) && stock_Avalibility.stock_Id.Contains(";"))
                 {
-                    lst_Stock_Id = stock_Avalibility.stock_Id.Split(',').ToList();
+                    lst_Stock_Id = stock_Avalibility.stock_Id.Split('/').ToList();
                     if (lst_Stock_Id != null && lst_Stock_Id.Count > 0)
                     {
                         foreach (var item in lst_Stock_Id)
@@ -8724,7 +8724,7 @@ namespace astute.Controllers
                 var lst_Stock_Id = new List<string>();
                 if (!string.IsNullOrEmpty(stock_Avalibility.stock_Id) && stock_Avalibility.stock_Id.Contains(";"))
                 {
-                    lst_Stock_Id = stock_Avalibility.stock_Id.Split(',').ToList();
+                    lst_Stock_Id = stock_Avalibility.stock_Id.Split('/').ToList();
                     if (lst_Stock_Id != null && lst_Stock_Id.Count > 0)
                     {
                         foreach (var item in lst_Stock_Id)
@@ -8790,6 +8790,15 @@ namespace astute.Controllers
                                             {
                                                 model.Offer_Amount = lst_stock_val[i];
                                             }
+                                            //var con_val_1 = Convert.ToDecimal(lst_stock_val[2]);
+                                            //if (con_val_1 >= -100 && con_val_1 <= 100)
+                                            //{
+                                            //    model.Offer_Disc = lst_stock_val[2];
+                                            //}
+                                            //else
+                                            //{
+                                            //    model.Offer_Amount = lst_stock_val[2];
+                                            //}
                                         }
                                     }
                                 }
