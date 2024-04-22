@@ -3030,6 +3030,17 @@ namespace astute.Controllers
                         party_name = parties.Select(x => x.Party_Name).FirstOrDefault();
                         if (party_file_obj != null)
                         {
+                            if (party_file_obj.Lab == false && party_file_obj.Overseas == false)
+                            {
+                                return Conflict(new
+                                {
+                                    statusCode = HttpStatusCode.Conflict,
+                                    Supplier_Id = party_File.Party_Id,
+                                    Party_Name = party_name,
+                                    message = "Kindly check status on supplier api."
+                                });
+                            }
+
                             party_file_obj.Sheet_Name = party_File.Sheet_Name;
                             party_file_obj.Validity_Days = party_File.Validity_Days;
                             party_file_obj.API_Flag = party_File.API_Flag;
