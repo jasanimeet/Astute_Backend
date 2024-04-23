@@ -3779,31 +3779,33 @@ namespace astute.Controllers
         [HttpGet]
         [Route("check_api_ftp_exist")]
         [Authorize]
-        public async Task<IActionResult> Check_Api_Ftp_Exist(int party_Id)
+        public async Task<IActionResult> Check_Api_Ftp_Exist(int party_Id, bool is_Continue)
         {
             try
             {
-                var party_Api = await _partyService.Get_Party_API(0, party_Id);
-                var party_FTP = await _partyService.Get_Party_FTP(0, party_Id);
-                if (party_Api != null && party_Api.API_Status == true && party_Api.Lab == true)
+                if (!is_Continue)
                 {
-                    return Conflict(new
+                    var party_Api = await _partyService.Get_Party_API(0, party_Id);
+                    var party_FTP = await _partyService.Get_Party_FTP(0, party_Id);
+                    if (party_Api != null && party_Api.API_Status == true && party_Api.Lab == true)
                     {
-                        statusCode = HttpStatusCode.Conflict,
-                        api_Active = true,
-                        message = "API is active for this supplier, Do you want to continue ?"
-                    });
-                }
-                else if (party_FTP != null && party_FTP.Ftp_Status == true && party_FTP.Lab == true)
-                {
-                    return Conflict(new
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            api_Active = true,
+                            message = "API is active for this supplier, Do you want to continue ?"
+                        });
+                    }
+                    else if (party_FTP != null && party_FTP.Ftp_Status == true && party_FTP.Lab == true)
                     {
-                        statusCode = HttpStatusCode.Conflict,
-                        api_Active = true,
-                        message = "FTP is active for this supplier, Do you want to continue ?"
-                    });
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            api_Active = true,
+                            message = "FTP is active for this supplier, Do you want to continue ?"
+                        });
+                    }
                 }
-
                 return Ok(new
                 {
                     statusCode = HttpStatusCode.OK,
