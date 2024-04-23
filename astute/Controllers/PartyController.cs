@@ -16,6 +16,7 @@ using Newtonsoft.Json.Linq;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
+using Org.BouncyCastle.Crypto.Operators;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -3020,28 +3021,28 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var party_Api = await _partyService.Get_Party_API(0,party_File.Party_Id ?? 0);
-                    var party_FTP = await _partyService.Get_Party_FTP(0, party_File.Party_Id ?? 0);
-                    if (!party_File.is_Continue && party_Api != null && party_Api.API_Status == true && party_Api.Lab == true)
-                    {
-                        return Conflict(new
-                        {
-                            statusCode = HttpStatusCode.Conflict,
-                            api_Active = true,
-                            message = "API is active for this supplier, Do you want to continue ?"
-                        });
-                    }
-                    else if (!party_File.is_Continue && party_FTP != null && party_FTP.Ftp_Status == true && party_FTP.Lab == true)
-                    {
-                        return Conflict(new
-                        {
-                            statusCode = HttpStatusCode.Conflict,
-                            ftp_Active = true,
-                            message = "FTP is active for this supplier, Do you want to continue ?"
-                        });
-                    }
-                    else
-                    {
+                    //var party_Api = await _partyService.Get_Party_API(0,party_File.Party_Id ?? 0);
+                    //var party_FTP = await _partyService.Get_Party_FTP(0, party_File.Party_Id ?? 0);
+                    //if (!party_File.is_Continue && party_Api != null && party_Api.API_Status == true && party_Api.Lab == true)
+                    //{
+                    //    return Conflict(new
+                    //    {
+                    //        statusCode = HttpStatusCode.Conflict,
+                    //        api_Active = true,
+                    //        message = "API is active for this supplier, Do you want to continue ?"
+                    //    });
+                    //}
+                    //else if (!party_File.is_Continue && party_FTP != null && party_FTP.Ftp_Status == true && party_FTP.Lab == true)
+                    //{
+                    //    return Conflict(new
+                    //    {
+                    //        statusCode = HttpStatusCode.Conflict,
+                    //        api_Active = true,
+                    //        message = "FTP is active for this supplier, Do you want to continue ?"
+                    //    });
+                    //}
+                    //else
+                    //{
                         var supp_col_Map = await _supplierService.Get_Supplier_Column_Mapping(party_File.Party_Id ?? 0, "C", "FILE");
                         int? col_Map_sup_Id = supp_col_Map.Select(x => x.Supp_Id).FirstOrDefault();
                         if (col_Map_sup_Id > 0)
@@ -3748,7 +3749,7 @@ namespace astute.Controllers
                             Party_Name = party_name,
                             message = "No column mapping found!"
                         });
-                    }
+                    //}
                 }
                 return BadRequest(ModelState);
             }
@@ -3771,6 +3772,50 @@ namespace astute.Controllers
                     Party_Name = party_name,
                     message = message,
 
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("check_api_ftp_exist")]
+        [Authorize]
+        public async Task<IActionResult> Check_Api_Ftp_Exist(int party_Id)
+        {
+            try
+            {
+                var party_Api = await _partyService.Get_Party_API(0, party_Id);
+                var party_FTP = await _partyService.Get_Party_FTP(0, party_Id);
+                if (party_Api != null && party_Api.API_Status == true && party_Api.Lab == true)
+                {
+                    return Conflict(new
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        api_Active = true,
+                        message = "API is active for this supplier, Do you want to continue ?"
+                    });
+                }
+                else if (party_FTP != null && party_FTP.Ftp_Status == true && party_FTP.Lab == true)
+                {
+                    return Conflict(new
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        api_Active = true,
+                        message = "FTP is active for this supplier, Do you want to continue ?"
+                    });
+                }
+
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    message = "Continue"
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "check_api_ftp_exist", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
                 });
             }
         }
