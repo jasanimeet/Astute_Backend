@@ -3467,12 +3467,12 @@ namespace astute.CoreServices
                     int rowEnd = worksheet.Dimension.End.Row;
                     removingGreenTagWarning(worksheet, worksheet.Cells[1, 1, rowEnd, 100].Address);
 
-                    int totalColumns = worksheet.Dimension.End.Column;
+                    //int totalColumns = worksheet.Dimension.End.Column;
 
-                    if (totalColumns >= 2)
-                    {
-                        worksheet.DeleteColumn(totalColumns - 1, 2);
-                    }
+                    //if (totalColumns >= 2)
+                    //{
+                    //    worksheet.DeleteColumn(totalColumns - 1, 2);
+                    //}
 
                     Byte[] bin = ep.GetAsByteArray();
 

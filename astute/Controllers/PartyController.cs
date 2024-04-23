@@ -3013,719 +3013,742 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_update_manual_upload")]
         [Authorize]
-        public async Task<IActionResult> Create_Update_Manual_Upload([FromForm] Party_File party_File, IFormFile File_Location)
+        public async Task<IActionResult> Create_Update_Manual_Upload([FromForm] Party_File party_File, IFormFile File_Location, bool is_Continue)
         {
             string party_name = string.Empty;
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var supp_col_Map = await _supplierService.Get_Supplier_Column_Mapping(party_File.Party_Id ?? 0, "C", "FILE");
-                    int? col_Map_sup_Id = supp_col_Map.Select(x => x.Supp_Id).FirstOrDefault();
-                    if (col_Map_sup_Id > 0)
+                    var party_Api = await _partyService.Get_Party_API(0,party_File.Party_Id ?? 0);
+                    var party_FTP = await _partyService.Get_Party_FTP(0, party_File.Party_Id ?? 0);
+                    if (!is_Continue && party_Api != null && party_Api.API_Status == true && party_Api.Lab == true)
                     {
-                        #region Update Party File
-                        var party_file_obj = await _partyService.Get_Party_File(0, party_File.Party_Id ?? 0);
-                        var parties = await _partyService.GetParty_Raplicate(party_File.Party_Id ?? 0, null);
-                        party_name = parties.Select(x => x.Party_Name).FirstOrDefault();
-                        if (party_file_obj != null)
+                        return Conflict(new
                         {
-                            if (party_file_obj.Lab == false && party_file_obj.Overseas == false)
+                            statusCode = HttpStatusCode.Conflict,
+                            api_Active = true,
+                            message = "API is active for this supplier, Do you want to continue ?"
+                        });
+                    }
+                    else if (!is_Continue && party_FTP != null && party_FTP.Ftp_Status == true && party_FTP.Lab == true)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            ftp_Active = true,
+                            message = "FTP is active for this supplier, Do you want to continue ?"
+                        });
+                    }
+                    else
+                    {
+                        var supp_col_Map = await _supplierService.Get_Supplier_Column_Mapping(party_File.Party_Id ?? 0, "C", "FILE");
+                        int? col_Map_sup_Id = supp_col_Map.Select(x => x.Supp_Id).FirstOrDefault();
+                        if (col_Map_sup_Id > 0)
+                        {
+                            #region Update Party File
+                            var party_file_obj = await _partyService.Get_Party_File(0, party_File.Party_Id ?? 0);
+                            var parties = await _partyService.GetParty_Raplicate(party_File.Party_Id ?? 0, null);
+                            party_name = parties.Select(x => x.Party_Name).FirstOrDefault();
+                            if (party_file_obj != null)
                             {
-                                return Conflict(new
+                                if (party_file_obj.Lab == false && party_file_obj.Overseas == false)
                                 {
-                                    statusCode = HttpStatusCode.Conflict,
-                                    Supplier_Id = party_File.Party_Id,
-                                    Party_Name = party_name,
-                                    message = "Kindly check status on supplier api."
-                                });
-                            }
-
-                            party_file_obj.Sheet_Name = party_File.Sheet_Name;
-                            party_file_obj.Validity_Days = party_File.Validity_Days;
-                            party_file_obj.API_Flag = party_File.API_Flag;
-                            party_file_obj.Exclude = party_File.Exclude;
-                            party_file_obj.Overseas_Same_Id = party_File.Overseas_Same_Id;
-
-                            var result = await _partyService.Add_Update_Party_File(party_file_obj, 0);
-
-                            if (result > 0)
-                            {
-                                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/ManualUploadFiles");
-                                if (!(Directory.Exists(filePath)))
-                                {
-                                    Directory.CreateDirectory(filePath);
-                                }
-                                string fileName = Path.GetFileNameWithoutExtension(File_Location.FileName);
-                                string fileExt = Path.GetExtension(File_Location.FileName);
-                                string strFile = fileName + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + fileExt;
-
-                                using (var fileStream = new FileStream(Path.Combine(filePath, strFile), FileMode.Create))
-                                {
-                                    await File_Location.CopyToAsync(fileStream);
-                                }
-                                party_File.File_Location = strFile;
-
-                                DataTable excel_dataTable = new DataTable();
-                                DataTable supplier_column_Mapping = await _supplierService.Get_Supplier_Column_Mapping_In_Datatable(party_File.Party_Id ?? 0, "C", "FILE");
-
-                                var sheet_list = party_File.Sheet_Name.Split(",").ToList();
-                                var fileLocation = Path.Combine(filePath, strFile);
-                                if (fileExt == ".xls")
-                                {
-                                    if (sheet_list != null && sheet_list.Count > 0)
+                                    return Conflict(new
                                     {
-                                        foreach (var sheet_name in sheet_list)
-                                        {
-                                            using (FileStream file = new FileStream(fileLocation, FileMode.Open, FileAccess.Read))
-                                            {
-                                                HSSFWorkbook workbook = new HSSFWorkbook(file);
-                                                HSSFSheet sheet = (HSSFSheet)workbook.GetSheet(sheet_name);
-                                                #region Start Remove above unused rows and columns
-                                                var (hasDataInFirstTenRowsAndColumns, rowcnt) = CoreService.CheckDataInFirstTenRowsAndColumns(sheet);
+                                        statusCode = HttpStatusCode.Conflict,
+                                        Supplier_Id = party_File.Party_Id,
+                                        Party_Name = party_name,
+                                        message = "Kindly check status on supplier api."
+                                    });
+                                }
 
-                                                if (hasDataInFirstTenRowsAndColumns && rowcnt > 1)
+                                party_file_obj.Sheet_Name = party_File.Sheet_Name;
+                                party_file_obj.Validity_Days = party_File.Validity_Days;
+                                party_file_obj.API_Flag = party_File.API_Flag;
+                                party_file_obj.Exclude = party_File.Exclude;
+                                party_file_obj.Overseas_Same_Id = party_File.Overseas_Same_Id;
+
+                                var result = await _partyService.Add_Update_Party_File(party_file_obj, 0);
+
+                                if (result > 0)
+                                {
+                                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/ManualUploadFiles");
+                                    if (!(Directory.Exists(filePath)))
+                                    {
+                                        Directory.CreateDirectory(filePath);
+                                    }
+                                    string fileName = Path.GetFileNameWithoutExtension(File_Location.FileName);
+                                    string fileExt = Path.GetExtension(File_Location.FileName);
+                                    string strFile = fileName + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + fileExt;
+
+                                    using (var fileStream = new FileStream(Path.Combine(filePath, strFile), FileMode.Create))
+                                    {
+                                        await File_Location.CopyToAsync(fileStream);
+                                    }
+                                    party_File.File_Location = strFile;
+
+                                    DataTable excel_dataTable = new DataTable();
+                                    DataTable supplier_column_Mapping = await _supplierService.Get_Supplier_Column_Mapping_In_Datatable(party_File.Party_Id ?? 0, "C", "FILE");
+
+                                    var sheet_list = party_File.Sheet_Name.Split(",").ToList();
+                                    var fileLocation = Path.Combine(filePath, strFile);
+                                    if (fileExt == ".xls")
+                                    {
+                                        if (sheet_list != null && sheet_list.Count > 0)
+                                        {
+                                            foreach (var sheet_name in sheet_list)
+                                            {
+                                                using (FileStream file = new FileStream(fileLocation, FileMode.Open, FileAccess.Read))
                                                 {
-                                                    sheet.ShiftRows(1, rowcnt - 1, 0);
-                                                    string outputFilePath = Path.Combine(filePath, strFile);
-                                                    using (FileStream outputFile = new FileStream(outputFilePath, FileMode.Create))
+                                                    HSSFWorkbook workbook = new HSSFWorkbook(file);
+                                                    HSSFSheet sheet = (HSSFSheet)workbook.GetSheet(sheet_name);
+                                                    #region Start Remove above unused rows and columns
+                                                    var (hasDataInFirstTenRowsAndColumns, rowcnt) = CoreService.CheckDataInFirstTenRowsAndColumns(sheet);
+
+                                                    if (hasDataInFirstTenRowsAndColumns && rowcnt > 1)
+                                                    {
+                                                        sheet.ShiftRows(1, rowcnt - 1, 0);
+                                                        string outputFilePath = Path.Combine(filePath, strFile);
+                                                        using (FileStream outputFile = new FileStream(outputFilePath, FileMode.Create))
+                                                        {
+                                                            workbook.Write(outputFile);
+                                                        }
+                                                    }
+                                                    #endregion
+
+                                                    #region Start Remove belowe unused rows and columns
+                                                    int rowCount = sheet.LastRowNum + 1;
+                                                    int colCount = sheet.GetRow(0).LastCellNum;
+
+                                                    int rowsToCheck = Math.Max(rowCount - (rowCount - 1), 1);
+                                                    bool is_Removed = false;
+
+                                                    for (int row = rowCount - 1; row >= rowsToCheck; row--)
+                                                    {
+                                                        bool hasData = false;
+
+                                                        IRow currentRow = sheet.GetRow(row);
+                                                        if (currentRow != null)
+                                                        {
+                                                            for (int col = colCount - 1; col >= colCount - 20; col--)
+                                                            {
+                                                                ICell cell = currentRow.GetCell(col);
+                                                                if (cell != null && !string.IsNullOrEmpty(cell.ToString()))
+                                                                {
+                                                                    hasData = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+
+                                                        if (!hasData)
+                                                        {
+                                                            sheet.RemoveRow(currentRow);
+                                                            rowCount--;
+                                                            is_Removed = true;
+                                                        }
+                                                    }
+
+                                                    if (is_Removed)
+                                                    {
+                                                        try
+                                                        {
+                                                            string outputFilePath2 = Path.Combine(filePath, strFile);
+                                                            using (FileStream outputFile = new FileStream(outputFilePath2, FileMode.Create))
+                                                            {
+                                                                workbook.Write(outputFile);
+                                                            }
+                                                        }
+                                                        catch (Exception ex)
+                                                        {
+                                                            // Handle exception
+                                                        }
+                                                    }
+                                                    #endregion
+
+                                                    #region Start Update URL
+                                                    List<string> columnNames = new List<string>();
+                                                    List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
+
+                                                    int totalColumns = sheet.GetRow(0).LastCellNum;
+                                                    IRow headerRow = sheet.GetRow(0);
+
+                                                    for (int col = 0; col < totalColumns; col++)
+                                                    {
+                                                        var cellValue = headerRow.GetCell(col)?.ToString();
+                                                        if (!string.IsNullOrEmpty(cellValue))
+                                                        {
+                                                            columnNames.Add(cellValue);
+                                                        }
+                                                    }
+                                                    int _rowCount = sheet.PhysicalNumberOfRows;
+                                                    for (int row = 1; row < _rowCount; row++)
+                                                    {
+                                                        IRow currentRow = sheet.GetRow(row);
+                                                        Dictionary<string, object> rowData = new Dictionary<string, object>();
+
+                                                        for (int col = 0; col < totalColumns; col++)
+                                                        {
+                                                            string columnName = columnNames[col];
+                                                            var cell = currentRow.GetCell(col);
+                                                            var cellValue = cell?.ToString();
+                                                            string formula = string.Empty;
+                                                            if (cell.CellType == CellType.Formula)
+                                                            {
+                                                                formula = cell?.CellFormula;
+                                                            }
+                                                            if (!string.IsNullOrEmpty(cell.Hyperlink?.Address))
+                                                            {
+                                                                string linkUrl = cell.Hyperlink.Address;
+                                                                rowData.Add(columnName, linkUrl);
+                                                            }
+                                                            else if (cell.CellType == CellType.Formula && !string.IsNullOrEmpty(formula))
+                                                            {
+                                                                var urlMatch = Regex.Match(formula, "\"(.*?)\"");
+                                                                if (urlMatch.Success)
+                                                                {
+                                                                    string url = urlMatch.Groups[1].Value;
+                                                                    string text = Regex.Match(formula, ",\"(.*?)\"").Groups[1].Value;
+                                                                    bool containsOnlyNumbers = Regex.IsMatch(text, @"^[0-9]+$");
+                                                                    if (containsOnlyNumbers)
+                                                                    {
+                                                                        rowData.Add(columnName, url + "," + text);
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        rowData.Add(columnName, url);
+                                                                    }
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                rowData.Add(columnName, cellValue);
+                                                            }
+                                                        }
+
+                                                        rowsData.Add(rowData);
+                                                    }
+
+                                                    for (int colIndex = 0; colIndex < columnNames.Count; colIndex++)
+                                                    {
+                                                        headerRow.GetCell(colIndex).SetCellValue(columnNames[colIndex]);
+                                                    }
+
+                                                    for (int rowIndex = 0; rowIndex < rowsData.Count; rowIndex++)
+                                                    {
+                                                        IRow currentRow = sheet.GetRow(rowIndex + 1);
+                                                        for (int colIndex = 0; colIndex < columnNames.Count; colIndex++)
+                                                        {
+                                                            currentRow.GetCell(colIndex)?.SetCellValue(rowsData[rowIndex][columnNames[colIndex]].ToString());
+                                                        }
+                                                    }
+
+                                                    string outputFilePath1 = Path.Combine(filePath, strFile);
+                                                    using (FileStream outputFile = new FileStream(outputFilePath1, FileMode.Create))
                                                     {
                                                         workbook.Write(outputFile);
                                                     }
+                                                    #endregion
                                                 }
-                                                #endregion
-
-                                                #region Start Remove belowe unused rows and columns
-                                                int rowCount = sheet.LastRowNum + 1;
-                                                int colCount = sheet.GetRow(0).LastCellNum;
-
-                                                int rowsToCheck = Math.Max(rowCount - (rowCount - 1), 1);
-                                                bool is_Removed = false;
-
-                                                for (int row = rowCount - 1; row >= rowsToCheck; row--)
+                                            }
+                                        }
+                                    }
+                                    else if (fileExt == ".xlsx")
+                                    {
+                                        List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
+                                        if (sheet_list != null && sheet_list.Count > 0)
+                                        {
+                                            foreach (var sheet_name in sheet_list)
+                                            {
+                                                using (var package = new ExcelPackage(new FileInfo(fileLocation)))
                                                 {
-                                                    bool hasData = false;
-
-                                                    IRow currentRow = sheet.GetRow(row);
-                                                    if (currentRow != null)
+                                                    ExcelWorksheet worksheet = package.Workbook.Worksheets[sheet_name];
+                                                    worksheet.Calculate();
+                                                    #region Start Remove above unused rows and columns
+                                                    var (hasDataInFirstTenRowsAndColumns, row_count) = CoreService.CheckDataInFirstTenRowsAndColumns(worksheet);
+                                                    if (hasDataInFirstTenRowsAndColumns && row_count > 1)
                                                     {
-                                                        for (int col = colCount - 1; col >= colCount - 20; col--)
+                                                        worksheet.DeleteRow(1, row_count - 1);
+                                                        string outputFilePath = Path.Combine(filePath, strFile);
+                                                        package.SaveAs(new FileInfo(outputFilePath));
+                                                    }
+                                                    #endregion
+
+                                                    #region Start Remove belowe unused rows and columns
+                                                    var rowCount = worksheet.Dimension.End.Row;
+                                                    var colCount = worksheet.Dimension.End.Column;
+
+                                                    int rowsToCheck = Math.Max(rowCount - (rowCount - 1), 1);
+                                                    bool is_Removed = false;
+                                                    for (int row = rowCount; row >= rowsToCheck; row--)
+                                                    {
+                                                        bool hasData = false;
+
+                                                        for (int col = colCount; col > colCount - 20; col--)
                                                         {
-                                                            ICell cell = currentRow.GetCell(col);
-                                                            if (cell != null && !string.IsNullOrEmpty(cell.ToString()))
+                                                            var cell = worksheet.Cells[row, col];
+
+                                                            if (!string.IsNullOrEmpty(cell.Text))
                                                             {
                                                                 hasData = true;
                                                                 break;
                                                             }
                                                         }
-                                                    }
 
-                                                    if (!hasData)
-                                                    {
-                                                        sheet.RemoveRow(currentRow);
-                                                        rowCount--;
-                                                        is_Removed = true;
-                                                    }
-                                                }
-
-                                                if (is_Removed)
-                                                {
-                                                    try
-                                                    {
-                                                        string outputFilePath2 = Path.Combine(filePath, strFile);
-                                                        using (FileStream outputFile = new FileStream(outputFilePath2, FileMode.Create))
+                                                        if (!hasData)
                                                         {
-                                                            workbook.Write(outputFile);
+                                                            worksheet.DeleteRow(row);
+                                                            rowCount--;
+                                                            is_Removed = true;
                                                         }
                                                     }
-                                                    catch (Exception ex)
+                                                    if (is_Removed)
                                                     {
-                                                        // Handle exception
-                                                    }
-                                                }
-                                                #endregion
-
-                                                #region Start Update URL
-                                                List<string> columnNames = new List<string>();
-                                                List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
-
-                                                int totalColumns = sheet.GetRow(0).LastCellNum;
-                                                IRow headerRow = sheet.GetRow(0);
-
-                                                for (int col = 0; col < totalColumns; col++)
-                                                {
-                                                    var cellValue = headerRow.GetCell(col)?.ToString();
-                                                    if (!string.IsNullOrEmpty(cellValue))
-                                                    {
-                                                        columnNames.Add(cellValue);
-                                                    }
-                                                }
-                                                int _rowCount = sheet.PhysicalNumberOfRows;
-                                                for (int row = 1; row < _rowCount; row++)
-                                                {
-                                                    IRow currentRow = sheet.GetRow(row);
-                                                    Dictionary<string, object> rowData = new Dictionary<string, object>();
-
-                                                    for (int col = 0; col < totalColumns; col++)
-                                                    {
-                                                        string columnName = columnNames[col];
-                                                        var cell = currentRow.GetCell(col);
-                                                        var cellValue = cell?.ToString();
-                                                        string formula = string.Empty;
-                                                        if (cell.CellType == CellType.Formula)
+                                                        try
                                                         {
-                                                            formula = cell?.CellFormula;
+                                                            string outputFilePath1 = Path.Combine(filePath, strFile);
+                                                            package.SaveAs(new FileInfo(outputFilePath1));
                                                         }
-                                                        if (!string.IsNullOrEmpty(cell.Hyperlink?.Address))
+                                                        catch (Exception ex)
                                                         {
-                                                            string linkUrl = cell.Hyperlink.Address;
-                                                            rowData.Add(columnName, linkUrl);
-                                                        }
-                                                        else if (cell.CellType == CellType.Formula && !string.IsNullOrEmpty(formula))
-                                                        {
-                                                            var urlMatch = Regex.Match(formula, "\"(.*?)\"");
-                                                            if (urlMatch.Success)
-                                                            {
-                                                                string url = urlMatch.Groups[1].Value;
-                                                                string text = Regex.Match(formula, ",\"(.*?)\"").Groups[1].Value;
-                                                                bool containsOnlyNumbers = Regex.IsMatch(text, @"^[0-9]+$");
-                                                                if (containsOnlyNumbers)
-                                                                {
-                                                                    rowData.Add(columnName, url + "," + text);
-                                                                }
-                                                                else
-                                                                {
-                                                                    rowData.Add(columnName, url);
-                                                                }
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            rowData.Add(columnName, cellValue);
+
                                                         }
                                                     }
+                                                    #endregion
 
-                                                    rowsData.Add(rowData);
-                                                }
-
-                                                for (int colIndex = 0; colIndex < columnNames.Count; colIndex++)
-                                                {
-                                                    headerRow.GetCell(colIndex).SetCellValue(columnNames[colIndex]);
-                                                }
-
-                                                for (int rowIndex = 0; rowIndex < rowsData.Count; rowIndex++)
-                                                {
-                                                    IRow currentRow = sheet.GetRow(rowIndex + 1);
-                                                    for (int colIndex = 0; colIndex < columnNames.Count; colIndex++)
+                                                    List<string> columnNames = new List<string>();
+                                                    if (worksheet != null)
                                                     {
-                                                        currentRow.GetCell(colIndex)?.SetCellValue(rowsData[rowIndex][columnNames[colIndex]].ToString());
-                                                    }
-                                                }
-
-                                                string outputFilePath1 = Path.Combine(filePath, strFile);
-                                                using (FileStream outputFile = new FileStream(outputFilePath1, FileMode.Create))
-                                                {
-                                                    workbook.Write(outputFile);
-                                                }
-                                                #endregion
-                                            }
-                                        }
-                                    }
-                                }
-                                else if (fileExt == ".xlsx")
-                                {
-                                    List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
-                                    if (sheet_list != null && sheet_list.Count > 0)
-                                    {
-                                        foreach (var sheet_name in sheet_list)
-                                        {
-                                            using (var package = new ExcelPackage(new FileInfo(fileLocation)))
-                                            {
-                                                ExcelWorksheet worksheet = package.Workbook.Worksheets[sheet_name];
-                                                worksheet.Calculate();
-                                                #region Start Remove above unused rows and columns
-                                                var (hasDataInFirstTenRowsAndColumns, row_count) = CoreService.CheckDataInFirstTenRowsAndColumns(worksheet);
-                                                if (hasDataInFirstTenRowsAndColumns && row_count > 1)
-                                                {
-                                                    worksheet.DeleteRow(1, row_count - 1);
-                                                    string outputFilePath = Path.Combine(filePath, strFile);
-                                                    package.SaveAs(new FileInfo(outputFilePath));
-                                                }
-                                                #endregion
-
-                                                #region Start Remove belowe unused rows and columns
-                                                var rowCount = worksheet.Dimension.End.Row;
-                                                var colCount = worksheet.Dimension.End.Column;
-
-                                                int rowsToCheck = Math.Max(rowCount - (rowCount - 1), 1);
-                                                bool is_Removed = false;
-                                                for (int row = rowCount; row >= rowsToCheck; row--)
-                                                {
-                                                    bool hasData = false;
-
-                                                    for (int col = colCount; col > colCount - 20; col--)
-                                                    {
-                                                        var cell = worksheet.Cells[row, col];
-
-                                                        if (!string.IsNullOrEmpty(cell.Text))
-                                                        {
-                                                            hasData = true;
-                                                            break;
-                                                        }
-                                                    }
-
-                                                    if (!hasData)
-                                                    {
-                                                        worksheet.DeleteRow(row);
-                                                        rowCount--;
-                                                        is_Removed = true;
-                                                    }
-                                                }
-                                                if (is_Removed)
-                                                {
-                                                    try
-                                                    {
-                                                        string outputFilePath1 = Path.Combine(filePath, strFile);
-                                                        package.SaveAs(new FileInfo(outputFilePath1));
-                                                    }
-                                                    catch (Exception ex)
-                                                    {
-
-                                                    }
-                                                }
-                                                #endregion
-
-                                                List<string> columnNames = new List<string>();
-                                                if (worksheet != null)
-                                                {
-                                                    // Get column names
-                                                    int totalColumns = worksheet.Dimension.End.Column;
-                                                    int headerRow = 1;
-
-                                                    for (int col = 1; col <= totalColumns; col++)
-                                                    {
-                                                        var cellValue = worksheet.Cells[headerRow, col].Value;
-                                                        if (cellValue != null)
-                                                        {
-                                                            columnNames.Add(cellValue.ToString().Trim());
-                                                        }
-                                                    }
-
-                                                    // Get row values
-                                                    int totalRows = worksheet.Dimension.End.Row;
-
-                                                    for (int row = headerRow + 1; row <= totalRows; row++)
-                                                    {
-                                                        Dictionary<string, object> rowData = new Dictionary<string, object>();
+                                                        // Get column names
+                                                        int totalColumns = worksheet.Dimension.End.Column;
+                                                        int headerRow = 1;
 
                                                         for (int col = 1; col <= totalColumns; col++)
                                                         {
-                                                            var _cellValue = worksheet.Cells[headerRow, col].Value;
-                                                            if (_cellValue != null)
+                                                            var cellValue = worksheet.Cells[headerRow, col].Value;
+                                                            if (cellValue != null)
                                                             {
-                                                                string columnName = columnNames[col - 1];
-                                                                var cell = worksheet.Cells[row, col];
-                                                                var cellValue = cell.Value;
-                                                                var formula = cell.Formula;
+                                                                columnNames.Add(cellValue.ToString().Trim());
+                                                            }
+                                                        }
 
-                                                                if (cell.Hyperlink != null)
+                                                        // Get row values
+                                                        int totalRows = worksheet.Dimension.End.Row;
+
+                                                        for (int row = headerRow + 1; row <= totalRows; row++)
+                                                        {
+                                                            Dictionary<string, object> rowData = new Dictionary<string, object>();
+
+                                                            for (int col = 1; col <= totalColumns; col++)
+                                                            {
+                                                                var _cellValue = worksheet.Cells[headerRow, col].Value;
+                                                                if (_cellValue != null)
                                                                 {
-                                                                    string url = cell.Hyperlink.OriginalString.Replace("%22", "");
+                                                                    string columnName = columnNames[col - 1];
+                                                                    var cell = worksheet.Cells[row, col];
+                                                                    var cellValue = cell.Value;
+                                                                    var formula = cell.Formula;
 
-                                                                    if (url.Length > 0)
+                                                                    if (cell.Hyperlink != null)
                                                                     {
-                                                                        string linkUrl = url;
-                                                                        rowData.Add(columnName, linkUrl + ", " + cellValue);
+                                                                        string url = cell.Hyperlink.OriginalString.Replace("%22", "");
+
+                                                                        if (url.Length > 0)
+                                                                        {
+                                                                            string linkUrl = url;
+                                                                            rowData.Add(columnName, linkUrl + ", " + cellValue);
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            rowData.Add(columnName, cellValue);
+                                                                        }
+                                                                    }
+                                                                    else if (!string.IsNullOrEmpty(formula) && formula.Contains("HYPERLINK"))
+                                                                    {
+                                                                        int urlStartIndex = formula.IndexOf("\"") + 1;
+                                                                        int urlEndIndex = formula.IndexOf("\",\"");
+
+                                                                        if (urlStartIndex > 0 && urlEndIndex > urlStartIndex)
+                                                                        {
+                                                                            string url = formula.Substring(urlStartIndex, urlEndIndex - urlStartIndex);
+
+                                                                            int textStartIndex = urlEndIndex + 3;
+                                                                            int textEndIndex = formula.LastIndexOf("\"");
+
+                                                                            if (textStartIndex > 0 && textEndIndex > textStartIndex)
+                                                                            {
+                                                                                string text = formula.Substring(textStartIndex, textEndIndex - textStartIndex);
+                                                                                cell.Value = String.Format("{0},{1}", url, text);
+                                                                                rowData.Add(columnName, cell.Value);
+                                                                            }
+                                                                        }
                                                                     }
                                                                     else
                                                                     {
-                                                                        rowData.Add(columnName, cellValue);
+                                                                        rowData.Add(columnName, cellValue != null ? cellValue : DBNull.Value);
                                                                     }
-                                                                }
-                                                                else if (!string.IsNullOrEmpty(formula) && formula.Contains("HYPERLINK"))
-                                                                {
-                                                                    int urlStartIndex = formula.IndexOf("\"") + 1;
-                                                                    int urlEndIndex = formula.IndexOf("\",\"");
-
-                                                                    if (urlStartIndex > 0 && urlEndIndex > urlStartIndex)
-                                                                    {
-                                                                        string url = formula.Substring(urlStartIndex, urlEndIndex - urlStartIndex);
-
-                                                                        int textStartIndex = urlEndIndex + 3;
-                                                                        int textEndIndex = formula.LastIndexOf("\"");
-
-                                                                        if (textStartIndex > 0 && textEndIndex > textStartIndex)
-                                                                        {
-                                                                            string text = formula.Substring(textStartIndex, textEndIndex - textStartIndex);
-                                                                            cell.Value = String.Format("{0},{1}", url, text);
-                                                                            rowData.Add(columnName, cell.Value);
-                                                                        }
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-                                                                    rowData.Add(columnName, cellValue != null ? cellValue : DBNull.Value);
                                                                 }
                                                             }
+                                                            rowsData.Add(rowData);
                                                         }
-                                                        rowsData.Add(rowData);
                                                     }
                                                 }
                                             }
+                                            excel_dataTable = CoreService.ConvertToDataTable(rowsData);
+                                            goto dataExist;
                                         }
-                                        excel_dataTable = CoreService.ConvertToDataTable(rowsData);
-                                        goto dataExist;
                                     }
-                                }
 
-                                if (fileExt == ".xls")
-                                {
-                                    var modifiedRows = supplier_column_Mapping.AsEnumerable()
-                                                       .Select(row =>
-                                                       {
-                                                           string originalValue = Convert.ToString(row["Supp_Col_Name"]);
-                                                           if (originalValue.Contains("."))
+                                    if (fileExt == ".xls")
+                                    {
+                                        var modifiedRows = supplier_column_Mapping.AsEnumerable()
+                                                           .Select(row =>
                                                            {
-                                                               string modifiedValue = originalValue.Replace(".", "#");
-                                                               row.SetField("Supp_Col_Name", modifiedValue);
-                                                           }
-                                                           return row;
-                                                       }).CopyToDataTable();
-                                    string connString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + fileLocation + ";Extended Properties=\"Excel 12.0;HDR=YES;\"";
-                                    excel_dataTable = CoreService.Convert_File_To_DataTable(".xls", connString, party_File.Sheet_Name);
-                                }
-                                else if (fileExt == ".xlsx")
-                                {
-                                    var modifiedRows = supplier_column_Mapping.AsEnumerable()
-                                                       .Select(row =>
-                                                       {
-                                                           string originalValue = Convert.ToString(row["Supp_Col_Name"]);
-                                                           if (originalValue.Contains("."))
+                                                               string originalValue = Convert.ToString(row["Supp_Col_Name"]);
+                                                               if (originalValue.Contains("."))
+                                                               {
+                                                                   string modifiedValue = originalValue.Replace(".", "#");
+                                                                   row.SetField("Supp_Col_Name", modifiedValue);
+                                                               }
+                                                               return row;
+                                                           }).CopyToDataTable();
+                                        string connString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + fileLocation + ";Extended Properties=\"Excel 12.0;HDR=YES;\"";
+                                        excel_dataTable = CoreService.Convert_File_To_DataTable(".xls", connString, party_File.Sheet_Name);
+                                    }
+                                    else if (fileExt == ".xlsx")
+                                    {
+                                        var modifiedRows = supplier_column_Mapping.AsEnumerable()
+                                                           .Select(row =>
                                                            {
-                                                               string modifiedValue = originalValue.Replace(".", "#");
-                                                               row.SetField("Supp_Col_Name", modifiedValue);
-                                                           }
-                                                           return row;
-                                                       }).CopyToDataTable();
-                                    string connString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + fileLocation + ";Extended Properties='Excel 12.0 Xml;HDR=YES;IMEX=1;'";
-                                    excel_dataTable = CoreService.Convert_File_To_DataTable(".xlsx", connString, party_File.Sheet_Name);
-                                }
-                                else if (fileExt == ".csv")
-                                {
-                                    excel_dataTable = CoreService.Convert_File_To_DataTable(".csv", fileLocation, "");
-                                }
+                                                               string originalValue = Convert.ToString(row["Supp_Col_Name"]);
+                                                               if (originalValue.Contains("."))
+                                                               {
+                                                                   string modifiedValue = originalValue.Replace(".", "#");
+                                                                   row.SetField("Supp_Col_Name", modifiedValue);
+                                                               }
+                                                               return row;
+                                                           }).CopyToDataTable();
+                                        string connString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + fileLocation + ";Extended Properties='Excel 12.0 Xml;HDR=YES;IMEX=1;'";
+                                        excel_dataTable = CoreService.Convert_File_To_DataTable(".xlsx", connString, party_File.Sheet_Name);
+                                    }
+                                    else if (fileExt == ".csv")
+                                    {
+                                        excel_dataTable = CoreService.Convert_File_To_DataTable(".csv", fileLocation, "");
+                                    }
 
-                            dataExist:
-                                if (excel_dataTable != null && excel_dataTable.Rows.Count > 0)
-                                {
-                                    #region Add column to datatable
-                                    DataTable dt_stock_data = new DataTable();
-                                    dt_stock_data.Columns.Add("SUPPLIER_NO", typeof(string));
-                                    dt_stock_data.Columns.Add("CERTIFICATE_NO", typeof(string));
-                                    dt_stock_data.Columns.Add("LAB", typeof(string));
-                                    dt_stock_data.Columns.Add("SHAPE", typeof(string));
-                                    dt_stock_data.Columns.Add("CTS", typeof(string));
-                                    dt_stock_data.Columns.Add("BASE_DISC", typeof(string));
-                                    dt_stock_data.Columns.Add("BASE_RATE", typeof(string));
-                                    dt_stock_data.Columns.Add("BASE_AMOUNT", typeof(string));
-                                    dt_stock_data.Columns.Add("COLOR", typeof(string));
-                                    dt_stock_data.Columns.Add("CLARITY", typeof(string));
-                                    dt_stock_data.Columns.Add("CUT", typeof(string));
-                                    dt_stock_data.Columns.Add("POLISH", typeof(string));
-                                    dt_stock_data.Columns.Add("SYMM", typeof(string));
-                                    dt_stock_data.Columns.Add("FLS_COLOR", typeof(string));
-                                    dt_stock_data.Columns.Add("FLS_INTENSITY", typeof(string));
-                                    dt_stock_data.Columns.Add("LENGTH", typeof(string));
-                                    dt_stock_data.Columns.Add("WIDTH", typeof(string));
-                                    dt_stock_data.Columns.Add("DEPTH", typeof(string));
-                                    dt_stock_data.Columns.Add("MEASUREMENT", typeof(string));
-                                    dt_stock_data.Columns.Add("DEPTH_PER", typeof(string));
-                                    dt_stock_data.Columns.Add("TABLE_PER", typeof(string));
-                                    dt_stock_data.Columns.Add("CULET", typeof(string));
-                                    dt_stock_data.Columns.Add("SHADE", typeof(string));
-                                    dt_stock_data.Columns.Add("LUSTER", typeof(string));
-                                    dt_stock_data.Columns.Add("MILKY", typeof(string));
-                                    dt_stock_data.Columns.Add("BGM", typeof(string));
-                                    dt_stock_data.Columns.Add("LOCATION", typeof(string));
-                                    dt_stock_data.Columns.Add("STATUS", typeof(string));
-                                    dt_stock_data.Columns.Add("TABLE_BLACK", typeof(string));
-                                    dt_stock_data.Columns.Add("SIDE_BLACK", typeof(string));
-                                    dt_stock_data.Columns.Add("TABLE_WHITE", typeof(string));
-                                    dt_stock_data.Columns.Add("SIDE_WHITE", typeof(string));
-                                    dt_stock_data.Columns.Add("TABLE_OPEN", typeof(string));
-                                    dt_stock_data.Columns.Add("CROWN_OPEN", typeof(string));
-                                    dt_stock_data.Columns.Add("PAVILION_OPEN", typeof(string));
-                                    dt_stock_data.Columns.Add("GIRDLE_OPEN", typeof(string));
-                                    dt_stock_data.Columns.Add("GIRDLE_FROM", typeof(string));
-                                    dt_stock_data.Columns.Add("GIRDLE_TO", typeof(string));
-                                    dt_stock_data.Columns.Add("GIRDLE_CONDITION", typeof(string));
-                                    dt_stock_data.Columns.Add("GIRDLE_TYPE", typeof(string));
-                                    dt_stock_data.Columns.Add("LASER_INSCRIPTION", typeof(string));
-                                    dt_stock_data.Columns.Add("CERTIFICATE_DATE", typeof(string));
-                                    dt_stock_data.Columns.Add("CROWN_ANGLE", typeof(string));
-                                    dt_stock_data.Columns.Add("CROWN_HEIGHT", typeof(string));
-                                    dt_stock_data.Columns.Add("PAVILION_ANGLE", typeof(string));
-                                    dt_stock_data.Columns.Add("PAVILION_HEIGHT", typeof(string));
-                                    dt_stock_data.Columns.Add("GIRDLE_PER", typeof(string));
-                                    dt_stock_data.Columns.Add("LR_HALF", typeof(string));
-                                    dt_stock_data.Columns.Add("STAR_LN", typeof(string));
-                                    dt_stock_data.Columns.Add("CERT_TYPE", typeof(string));
-                                    dt_stock_data.Columns.Add("FANCY_COLOR", typeof(string));
-                                    dt_stock_data.Columns.Add("FANCY_INTENSITY", typeof(string));
-                                    dt_stock_data.Columns.Add("FANCY_OVERTONE", typeof(string));
-                                    dt_stock_data.Columns.Add("IMAGE_LINK", typeof(string));
-                                    dt_stock_data.Columns.Add("Image2", typeof(string));
-                                    dt_stock_data.Columns.Add("VIDEO_LINK", typeof(string));
-                                    dt_stock_data.Columns.Add("Video2", typeof(string));
-                                    dt_stock_data.Columns.Add("CERTIFICATE_LINK", typeof(string));
-                                    //dt_stock_data.Columns.Add("DNA_LINK", typeof(string));
-                                    dt_stock_data.Columns.Add("DNA", typeof(string));
-                                    dt_stock_data.Columns.Add("IMAGE_HEART_LINK", typeof(string));
-                                    dt_stock_data.Columns.Add("IMAGE_ARROW_LINK", typeof(string));
-                                    dt_stock_data.Columns.Add("H_A_LINK", typeof(string));
-                                    dt_stock_data.Columns.Add("CERTIFICATE_TYPE_LINK", typeof(string));
-                                    dt_stock_data.Columns.Add("KEY_TO_SYMBOL", typeof(string));
-                                    dt_stock_data.Columns.Add("LAB_COMMENTS", typeof(string));
-                                    dt_stock_data.Columns.Add("SUPPLIER_COMMENTS", typeof(string));
-                                    dt_stock_data.Columns.Add("ORIGIN", typeof(string));
-                                    dt_stock_data.Columns.Add("BOW_TIE", typeof(string));
-                                    dt_stock_data.Columns.Add("EXTRA_FACET_TABLE", typeof(string));
-                                    dt_stock_data.Columns.Add("EXTRA_FACET_CROWN", typeof(string));
-                                    dt_stock_data.Columns.Add("EXTRA_FACET_PAVILION", typeof(string));
-                                    dt_stock_data.Columns.Add("INTERNAL_GRAINING", typeof(string));
-                                    dt_stock_data.Columns.Add("H_A", typeof(string));
-                                    dt_stock_data.Columns.Add("SUPPLIER_DISC", typeof(string));
-                                    dt_stock_data.Columns.Add("SUPPLIER_AMOUNT", typeof(string));
-                                    dt_stock_data.Columns.Add("OFFER_DISC", typeof(string));
-                                    dt_stock_data.Columns.Add("OFFER_VALUE", typeof(string));
-                                    dt_stock_data.Columns.Add("MAX_SLAB_BASE_DISC", typeof(string));
-                                    dt_stock_data.Columns.Add("MAX_SLAB_BASE_VALUE", typeof(string));
-                                    dt_stock_data.Columns.Add("EYE_CLEAN", typeof(string));
-                                    dt_stock_data.Columns.Add("GOOD_TYPE", typeof(string));
-                                    dt_stock_data.Columns.Add("Short_Code", typeof(string));
-                                    #endregion
-                                    var mappedRows = excel_dataTable.AsEnumerable()
-                                     .Select(row =>
-                                     {
-                                         var finalRow = dt_stock_data.NewRow();
-
-                                         supplier_column_Mapping.AsEnumerable().ToList().ForEach(suppColRow =>
+                                dataExist:
+                                    if (excel_dataTable != null && excel_dataTable.Rows.Count > 0)
+                                    {
+                                        #region Add column to datatable
+                                        DataTable dt_stock_data = new DataTable();
+                                        dt_stock_data.Columns.Add("SUPPLIER_NO", typeof(string));
+                                        dt_stock_data.Columns.Add("CERTIFICATE_NO", typeof(string));
+                                        dt_stock_data.Columns.Add("LAB", typeof(string));
+                                        dt_stock_data.Columns.Add("SHAPE", typeof(string));
+                                        dt_stock_data.Columns.Add("CTS", typeof(string));
+                                        dt_stock_data.Columns.Add("BASE_DISC", typeof(string));
+                                        dt_stock_data.Columns.Add("BASE_RATE", typeof(string));
+                                        dt_stock_data.Columns.Add("BASE_AMOUNT", typeof(string));
+                                        dt_stock_data.Columns.Add("COLOR", typeof(string));
+                                        dt_stock_data.Columns.Add("CLARITY", typeof(string));
+                                        dt_stock_data.Columns.Add("CUT", typeof(string));
+                                        dt_stock_data.Columns.Add("POLISH", typeof(string));
+                                        dt_stock_data.Columns.Add("SYMM", typeof(string));
+                                        dt_stock_data.Columns.Add("FLS_COLOR", typeof(string));
+                                        dt_stock_data.Columns.Add("FLS_INTENSITY", typeof(string));
+                                        dt_stock_data.Columns.Add("LENGTH", typeof(string));
+                                        dt_stock_data.Columns.Add("WIDTH", typeof(string));
+                                        dt_stock_data.Columns.Add("DEPTH", typeof(string));
+                                        dt_stock_data.Columns.Add("MEASUREMENT", typeof(string));
+                                        dt_stock_data.Columns.Add("DEPTH_PER", typeof(string));
+                                        dt_stock_data.Columns.Add("TABLE_PER", typeof(string));
+                                        dt_stock_data.Columns.Add("CULET", typeof(string));
+                                        dt_stock_data.Columns.Add("SHADE", typeof(string));
+                                        dt_stock_data.Columns.Add("LUSTER", typeof(string));
+                                        dt_stock_data.Columns.Add("MILKY", typeof(string));
+                                        dt_stock_data.Columns.Add("BGM", typeof(string));
+                                        dt_stock_data.Columns.Add("LOCATION", typeof(string));
+                                        dt_stock_data.Columns.Add("STATUS", typeof(string));
+                                        dt_stock_data.Columns.Add("TABLE_BLACK", typeof(string));
+                                        dt_stock_data.Columns.Add("SIDE_BLACK", typeof(string));
+                                        dt_stock_data.Columns.Add("TABLE_WHITE", typeof(string));
+                                        dt_stock_data.Columns.Add("SIDE_WHITE", typeof(string));
+                                        dt_stock_data.Columns.Add("TABLE_OPEN", typeof(string));
+                                        dt_stock_data.Columns.Add("CROWN_OPEN", typeof(string));
+                                        dt_stock_data.Columns.Add("PAVILION_OPEN", typeof(string));
+                                        dt_stock_data.Columns.Add("GIRDLE_OPEN", typeof(string));
+                                        dt_stock_data.Columns.Add("GIRDLE_FROM", typeof(string));
+                                        dt_stock_data.Columns.Add("GIRDLE_TO", typeof(string));
+                                        dt_stock_data.Columns.Add("GIRDLE_CONDITION", typeof(string));
+                                        dt_stock_data.Columns.Add("GIRDLE_TYPE", typeof(string));
+                                        dt_stock_data.Columns.Add("LASER_INSCRIPTION", typeof(string));
+                                        dt_stock_data.Columns.Add("CERTIFICATE_DATE", typeof(string));
+                                        dt_stock_data.Columns.Add("CROWN_ANGLE", typeof(string));
+                                        dt_stock_data.Columns.Add("CROWN_HEIGHT", typeof(string));
+                                        dt_stock_data.Columns.Add("PAVILION_ANGLE", typeof(string));
+                                        dt_stock_data.Columns.Add("PAVILION_HEIGHT", typeof(string));
+                                        dt_stock_data.Columns.Add("GIRDLE_PER", typeof(string));
+                                        dt_stock_data.Columns.Add("LR_HALF", typeof(string));
+                                        dt_stock_data.Columns.Add("STAR_LN", typeof(string));
+                                        dt_stock_data.Columns.Add("CERT_TYPE", typeof(string));
+                                        dt_stock_data.Columns.Add("FANCY_COLOR", typeof(string));
+                                        dt_stock_data.Columns.Add("FANCY_INTENSITY", typeof(string));
+                                        dt_stock_data.Columns.Add("FANCY_OVERTONE", typeof(string));
+                                        dt_stock_data.Columns.Add("IMAGE_LINK", typeof(string));
+                                        dt_stock_data.Columns.Add("Image2", typeof(string));
+                                        dt_stock_data.Columns.Add("VIDEO_LINK", typeof(string));
+                                        dt_stock_data.Columns.Add("Video2", typeof(string));
+                                        dt_stock_data.Columns.Add("CERTIFICATE_LINK", typeof(string));
+                                        //dt_stock_data.Columns.Add("DNA_LINK", typeof(string));
+                                        dt_stock_data.Columns.Add("DNA", typeof(string));
+                                        dt_stock_data.Columns.Add("IMAGE_HEART_LINK", typeof(string));
+                                        dt_stock_data.Columns.Add("IMAGE_ARROW_LINK", typeof(string));
+                                        dt_stock_data.Columns.Add("H_A_LINK", typeof(string));
+                                        dt_stock_data.Columns.Add("CERTIFICATE_TYPE_LINK", typeof(string));
+                                        dt_stock_data.Columns.Add("KEY_TO_SYMBOL", typeof(string));
+                                        dt_stock_data.Columns.Add("LAB_COMMENTS", typeof(string));
+                                        dt_stock_data.Columns.Add("SUPPLIER_COMMENTS", typeof(string));
+                                        dt_stock_data.Columns.Add("ORIGIN", typeof(string));
+                                        dt_stock_data.Columns.Add("BOW_TIE", typeof(string));
+                                        dt_stock_data.Columns.Add("EXTRA_FACET_TABLE", typeof(string));
+                                        dt_stock_data.Columns.Add("EXTRA_FACET_CROWN", typeof(string));
+                                        dt_stock_data.Columns.Add("EXTRA_FACET_PAVILION", typeof(string));
+                                        dt_stock_data.Columns.Add("INTERNAL_GRAINING", typeof(string));
+                                        dt_stock_data.Columns.Add("H_A", typeof(string));
+                                        dt_stock_data.Columns.Add("SUPPLIER_DISC", typeof(string));
+                                        dt_stock_data.Columns.Add("SUPPLIER_AMOUNT", typeof(string));
+                                        dt_stock_data.Columns.Add("OFFER_DISC", typeof(string));
+                                        dt_stock_data.Columns.Add("OFFER_VALUE", typeof(string));
+                                        dt_stock_data.Columns.Add("MAX_SLAB_BASE_DISC", typeof(string));
+                                        dt_stock_data.Columns.Add("MAX_SLAB_BASE_VALUE", typeof(string));
+                                        dt_stock_data.Columns.Add("EYE_CLEAN", typeof(string));
+                                        dt_stock_data.Columns.Add("GOOD_TYPE", typeof(string));
+                                        dt_stock_data.Columns.Add("Short_Code", typeof(string));
+                                        #endregion
+                                        var mappedRows = excel_dataTable.AsEnumerable()
+                                         .Select(row =>
                                          {
-                                             string displayColName = Convert.ToString(suppColRow["Display_Name"]);
-                                             string suppColName = Convert.ToString(suppColRow["Supp_Col_Name"]);
+                                             var finalRow = dt_stock_data.NewRow();
 
-                                             if (displayColName != "" && suppColName != "")
+                                             supplier_column_Mapping.AsEnumerable().ToList().ForEach(suppColRow =>
                                              {
+                                                 string displayColName = Convert.ToString(suppColRow["Display_Name"]);
+                                                 string suppColName = Convert.ToString(suppColRow["Supp_Col_Name"]);
 
-                                                 if (displayColName != "SHADE")
+                                                 if (displayColName != "" && suppColName != "")
                                                  {
-                                                     finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
-                                                     //if (displayColName == "TABLE_OPEN" || displayColName == "CROWN_OPEN" || displayColName == "PAVILION_OPEN" || displayColName == "GIRDLE_OPEN")
+
+                                                     if (displayColName != "SHADE")
+                                                     {
+                                                         finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
+                                                         //if (displayColName == "TABLE_OPEN" || displayColName == "CROWN_OPEN" || displayColName == "PAVILION_OPEN" || displayColName == "GIRDLE_OPEN")
+                                                         //{
+                                                         //    string foundColumnName = excel_dataTable.Columns.Cast<DataColumn>().FirstOrDefault(column => column.ColumnName == Convert.ToString(suppColRow["Supp_Col_Name"]))?.ColumnName;
+                                                         //    if (!string.IsNullOrEmpty(foundColumnName))
+                                                         //    {
+                                                         //        finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
+                                                         //    }
+                                                         //    else
+                                                         //    {
+                                                         //        finalRow[displayColName] = "";
+                                                         //    }
+
+                                                         //}
+                                                         //else
+                                                         //{
+                                                         //    finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
+                                                         //}
+
+                                                     }
+                                                     else
+                                                     {
+                                                         if (suppColName.Contains(","))
+                                                         {
+                                                             string supp_Col_Name1 = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 3 || Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 2 ? Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",")[0] : "";
+                                                             string supp_Col_Name2 = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 3 || Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 2 ? Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",")[1] : "";
+                                                             string supp_Col_Name3 = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 3 ? Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",")[2] : "";
+                                                             string shade_Value_1 = !string.IsNullOrEmpty(supp_Col_Name1) ? row[supp_Col_Name1].ToString() : "";
+                                                             string shade_Value_2 = !string.IsNullOrEmpty(supp_Col_Name2) ? row[supp_Col_Name2].ToString() : "";
+                                                             string shade_Value_3 = !string.IsNullOrEmpty(supp_Col_Name3) ? row[supp_Col_Name3].ToString() : "";
+
+                                                             finalRow[displayColName] = CoreService.ExtractStringWithLargestNumericValue(shade_Value_1, shade_Value_2, shade_Value_3);
+                                                         }
+                                                         else
+                                                         {
+                                                             finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
+                                                         }
+                                                     }
+
+                                                     if (displayColName == "CTS" || displayColName == "BASE_DISC" || displayColName == "BASE_RATE" ||
+                                                         displayColName == "LENGTH" || displayColName == "WIDTH" || displayColName == "DEPTH" ||
+                                                         displayColName == "DEPTH_PER" || displayColName == "TABLE_PER" || displayColName == "CROWN_ANGLE" ||
+                                                         displayColName == "CROWN_HEIGHT" || displayColName == "PAVILION_ANGLE" ||
+                                                         displayColName == "PAVILION_HEIGHT" || displayColName == "GIRDLE_PER" ||
+                                                         displayColName == "SUPPLIER_DISC" || displayColName == "SUPPLIER_AMOUNT" ||
+                                                         displayColName == "OFFER_DISC" || displayColName == "OFFER_VALUE" ||
+                                                         displayColName == "MAX_SLAB_BASE_DISC" || displayColName == "MAX_SLAB_BASE_VALUE")
+                                                     {
+                                                         finalRow[displayColName] = CoreService.RemoveNonNumericAndDotAndNegativeCharacters(
+                                                             Convert.ToString(finalRow[displayColName]));
+                                                     }
+                                                     else if (!string.IsNullOrEmpty(displayColName) && displayColName == "GIRDLE_TO")
+                                                     {
+                                                         finalRow[displayColName] = !string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName])) ? (Convert.ToString(finalRow[displayColName]).Contains("-") ? (Convert.ToString(finalRow[displayColName]).Split(" - ").Length == 2 ? Convert.ToString(finalRow[displayColName]).Split(" - ")[1] : Convert.ToString(finalRow[displayColName])) : (Convert.ToString(finalRow[displayColName]).ToUpper().Contains(" TO ") ? (Convert.ToString(finalRow[displayColName]).ToUpper().Split(" TO ").Length == 2 ? Convert.ToString(finalRow[displayColName]).ToUpper().Split(" TO ")[1] : Convert.ToString(finalRow[displayColName])) : Convert.ToString(finalRow[displayColName]))) : null;
+
+                                                     }
+                                                     else if (!string.IsNullOrEmpty(displayColName) && displayColName == "BASE_AMOUNT")
+                                                     {
+                                                         var base_amt = !string.IsNullOrEmpty(finalRow[displayColName].ToString()) ? (finalRow[displayColName].ToString().Contains("$") ? Convert.ToDecimal(finalRow[displayColName].ToString().Replace("$", "")) : Convert.ToDecimal(finalRow[displayColName].ToString())) : 0;
+                                                         finalRow[displayColName] = base_amt.ToString("0.00");
+                                                     }
+                                                     else if (!string.IsNullOrEmpty(displayColName) && displayColName == "DNA")
+                                                     {
+                                                         finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
+                                                            Convert.ToString(finalRow[displayColName]), false);
+                                                     }
+                                                     else if (!string.IsNullOrEmpty(displayColName) && displayColName == "IMAGE_LINK")
+                                                     {
+                                                         finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
+                                                            Convert.ToString(finalRow[displayColName]), false);
+                                                     }
+                                                     else if (!string.IsNullOrEmpty(displayColName) && displayColName == "VIDEO_LINK")
+                                                     {
+                                                         finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
+                                                            Convert.ToString(finalRow[displayColName]), false);
+                                                     }
+                                                     else if (!string.IsNullOrEmpty(displayColName) && displayColName == "LAB")
+                                                     {
+                                                         finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
+                                                            Convert.ToString(finalRow[displayColName]), true);
+                                                     }
+                                                     else if (!string.IsNullOrEmpty(displayColName) && displayColName == "CERTIFICATE_NO")
+                                                     {
+                                                         finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
+                                                            Convert.ToString(finalRow[displayColName]), true);
+                                                     }
+                                                     else if (!string.IsNullOrEmpty(displayColName) && displayColName == "CERTIFICATE_LINK")
+                                                     {
+                                                         finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
+                                                            Convert.ToString(finalRow[displayColName]), false);
+                                                     }
+                                                     //else if (displayColName == "TABLE_OPEN" || displayColName == "CROWN_OPEN" || displayColName == "PAVILION_OPEN" || displayColName == "GIRDLE_OPEN")
                                                      //{
                                                      //    string foundColumnName = excel_dataTable.Columns.Cast<DataColumn>().FirstOrDefault(column => column.ColumnName == Convert.ToString(suppColRow["Supp_Col_Name"]))?.ColumnName;
                                                      //    if (!string.IsNullOrEmpty(foundColumnName))
                                                      //    {
-                                                     //        finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
+                                                     //        finalRow[displayColName] = string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName]))
+                                                     //        ? null : Convert.ToString(finalRow[displayColName]);
                                                      //    }
                                                      //    else
                                                      //    {
                                                      //        finalRow[displayColName] = "";
                                                      //    }
-
                                                      //}
-                                                     //else
-                                                     //{
-                                                     //    finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
-                                                     //}
-
-                                                 }
-                                                 else
-                                                 {
-                                                     if (suppColName.Contains(","))
-                                                     {
-                                                         string supp_Col_Name1 = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 3 || Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 2 ? Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",")[0] : "";
-                                                         string supp_Col_Name2 = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 3 || Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 2 ? Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",")[1] : "";
-                                                         string supp_Col_Name3 = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 3 ? Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",")[2] : "";
-                                                         string shade_Value_1 = !string.IsNullOrEmpty(supp_Col_Name1) ? row[supp_Col_Name1].ToString() : "";
-                                                         string shade_Value_2 = !string.IsNullOrEmpty(supp_Col_Name2) ? row[supp_Col_Name2].ToString() : "";
-                                                         string shade_Value_3 = !string.IsNullOrEmpty(supp_Col_Name3) ? row[supp_Col_Name3].ToString() : "";
-
-                                                         finalRow[displayColName] = CoreService.ExtractStringWithLargestNumericValue(shade_Value_1, shade_Value_2, shade_Value_3);
-                                                     }
                                                      else
                                                      {
-                                                         finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
+
+                                                         finalRow[displayColName] = string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName]))
+                                                             ? null : Convert.ToString(finalRow[displayColName]);
+
                                                      }
                                                  }
+                                             });
 
-                                                 if (displayColName == "CTS" || displayColName == "BASE_DISC" || displayColName == "BASE_RATE" ||
-                                                     displayColName == "LENGTH" || displayColName == "WIDTH" || displayColName == "DEPTH" ||
-                                                     displayColName == "DEPTH_PER" || displayColName == "TABLE_PER" || displayColName == "CROWN_ANGLE" ||
-                                                     displayColName == "CROWN_HEIGHT" || displayColName == "PAVILION_ANGLE" ||
-                                                     displayColName == "PAVILION_HEIGHT" || displayColName == "GIRDLE_PER" ||
-                                                     displayColName == "SUPPLIER_DISC" || displayColName == "SUPPLIER_AMOUNT" ||
-                                                     displayColName == "OFFER_DISC" || displayColName == "OFFER_VALUE" ||
-                                                     displayColName == "MAX_SLAB_BASE_DISC" || displayColName == "MAX_SLAB_BASE_VALUE")
-                                                 {
-                                                     finalRow[displayColName] = CoreService.RemoveNonNumericAndDotAndNegativeCharacters(
-                                                         Convert.ToString(finalRow[displayColName]));
-                                                 }
-                                                 else if (!string.IsNullOrEmpty(displayColName) && displayColName == "GIRDLE_TO")
-                                                 {
-                                                     finalRow[displayColName] = !string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName])) ? (Convert.ToString(finalRow[displayColName]).Contains("-") ? (Convert.ToString(finalRow[displayColName]).Split(" - ").Length == 2 ? Convert.ToString(finalRow[displayColName]).Split(" - ")[1] : Convert.ToString(finalRow[displayColName])) : (Convert.ToString(finalRow[displayColName]).ToUpper().Contains(" TO ") ? (Convert.ToString(finalRow[displayColName]).ToUpper().Split(" TO ").Length == 2 ? Convert.ToString(finalRow[displayColName]).ToUpper().Split(" TO ")[1] : Convert.ToString(finalRow[displayColName])) : Convert.ToString(finalRow[displayColName]))) : null;
-
-                                                 }
-                                                 else if (!string.IsNullOrEmpty(displayColName) && displayColName == "BASE_AMOUNT")
-                                                 {
-                                                     var base_amt = !string.IsNullOrEmpty(finalRow[displayColName].ToString()) ? (finalRow[displayColName].ToString().Contains("$") ? Convert.ToDecimal(finalRow[displayColName].ToString().Replace("$", "")) : Convert.ToDecimal(finalRow[displayColName].ToString())) : 0;
-                                                     finalRow[displayColName] = base_amt.ToString("0.00");
-                                                 }
-                                                 else if (!string.IsNullOrEmpty(displayColName) && displayColName == "DNA")
-                                                 {
-                                                     finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
-                                                        Convert.ToString(finalRow[displayColName]), false);
-                                                 }
-                                                 else if (!string.IsNullOrEmpty(displayColName) && displayColName == "IMAGE_LINK")
-                                                 {
-                                                     finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
-                                                        Convert.ToString(finalRow[displayColName]), false);
-                                                 }
-                                                 else if (!string.IsNullOrEmpty(displayColName) && displayColName == "VIDEO_LINK")
-                                                 {
-                                                     finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
-                                                        Convert.ToString(finalRow[displayColName]), false);
-                                                 }
-                                                 else if (!string.IsNullOrEmpty(displayColName) && displayColName == "LAB")
-                                                 {
-                                                     finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
-                                                        Convert.ToString(finalRow[displayColName]), true);
-                                                 }
-                                                 else if (!string.IsNullOrEmpty(displayColName) && displayColName == "CERTIFICATE_NO")
-                                                 {
-                                                     finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
-                                                        Convert.ToString(finalRow[displayColName]), true);
-                                                 }
-                                                 else if (!string.IsNullOrEmpty(displayColName) && displayColName == "CERTIFICATE_LINK")
-                                                 {
-                                                     finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
-                                                        Convert.ToString(finalRow[displayColName]), false);
-                                                 }
-                                                 //else if (displayColName == "TABLE_OPEN" || displayColName == "CROWN_OPEN" || displayColName == "PAVILION_OPEN" || displayColName == "GIRDLE_OPEN")
-                                                 //{
-                                                 //    string foundColumnName = excel_dataTable.Columns.Cast<DataColumn>().FirstOrDefault(column => column.ColumnName == Convert.ToString(suppColRow["Supp_Col_Name"]))?.ColumnName;
-                                                 //    if (!string.IsNullOrEmpty(foundColumnName))
-                                                 //    {
-                                                 //        finalRow[displayColName] = string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName]))
-                                                 //        ? null : Convert.ToString(finalRow[displayColName]);
-                                                 //    }
-                                                 //    else
-                                                 //    {
-                                                 //        finalRow[displayColName] = "";
-                                                 //    }
-                                                 //}
-                                                 else
-                                                 {
-
-                                                     finalRow[displayColName] = string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName]))
-                                                         ? null : Convert.ToString(finalRow[displayColName]);
-
-                                                 }
-                                             }
-                                         });
-
-                                         dt_stock_data.Rows.Add(finalRow);
-                                         return finalRow;
-                                     })
-                                     .ToList();
-                                    var party_master = await _partyService.Get_Party_Details(party_File.Party_Id ?? 0);
-                                    var party_file = await _partyService.Get_Party_File(0, party_File.Party_Id ?? 0);
-                                    dt_stock_data.AsEnumerable().ToList().ForEach(stockDataRow =>
-                                    {
-                                        //Start Center Inclusion AND Black Inclusion
-                                        var lakhi_Party_Code = _configuration["Lakhi_Party_Code"];
-                                        var table_white = string.Empty;
-                                        var table_Black = string.Empty;
-                                        var side_White = string.Empty;
-                                        var side_Black = string.Empty;
-                                        if (party_master != null && party_master.Party_Code == lakhi_Party_Code)
+                                             dt_stock_data.Rows.Add(finalRow);
+                                             return finalRow;
+                                         })
+                                         .ToList();
+                                        var party_master = await _partyService.Get_Party_Details(party_File.Party_Id ?? 0);
+                                        var party_file = await _partyService.Get_Party_File(0, party_File.Party_Id ?? 0);
+                                        dt_stock_data.AsEnumerable().ToList().ForEach(stockDataRow =>
                                         {
-                                            (table_white, _) = CoreService.Table_And_Side_White(Convert.ToString(stockDataRow["TABLE_WHITE"]));
-                                            (_, side_White) = CoreService.Table_And_Side_White(Convert.ToString(stockDataRow["SIDE_WHITE"]));
-
-                                            (table_Black, _) = CoreService.Table_And_Side_Black(Convert.ToString(stockDataRow["TABLE_BLACK"]));
-                                            (_, side_Black) = CoreService.Table_And_Side_Black(Convert.ToString(stockDataRow["SIDE_BLACK"]));
-                                        }
-                                        else
-                                        {
-                                            table_white = Convert.ToString(stockDataRow["TABLE_WHITE"]);
-                                            table_Black = Convert.ToString(stockDataRow["SIDE_WHITE"]);
-                                            side_White = Convert.ToString(stockDataRow["TABLE_BLACK"]);
-                                            side_Black = Convert.ToString(stockDataRow["SIDE_BLACK"]);
-                                        }
-                                        stockDataRow["TABLE_WHITE"] = table_white;
-                                        stockDataRow["SIDE_WHITE"] = table_Black;
-                                        stockDataRow["TABLE_BLACK"] = side_White;
-                                        stockDataRow["SIDE_BLACK"] = side_Black;
-                                        stockDataRow["Short_Code"] = party_file.Short_Code;
-                                        //END Center Inclusion AND Black Inclusion
-
-                                        // Check if all three columns are currently null or empty
-                                        if ((string.IsNullOrEmpty(Convert.ToString(stockDataRow["LENGTH"]))
-                                            && string.IsNullOrEmpty(Convert.ToString(stockDataRow["WIDTH"]))
-                                            && string.IsNullOrEmpty(Convert.ToString(stockDataRow["DEPTH"]))))
-                                        {
-                                            string measurementValue = Convert.ToString(stockDataRow["MEASUREMENT"]).Replace("-", "*").Replace("x", "*");
-
-                                            // Call the function and handle possible null values
-                                            string lengthValue = CoreService.Split_Supplier_Stock_Measurement(measurementValue, "LENGTH");
-                                            string widthValue = CoreService.Split_Supplier_Stock_Measurement(measurementValue, "WIDTH");
-                                            string depthValue = CoreService.Split_Supplier_Stock_Measurement(measurementValue, "DEPTH");
-
-                                            // Set the values in the DataRow, handling nulls or empty strings
-                                            stockDataRow["LENGTH"] = !string.IsNullOrEmpty(lengthValue) ? lengthValue : stockDataRow["LENGTH"];
-                                            stockDataRow["WIDTH"] = !string.IsNullOrEmpty(widthValue) ? widthValue : stockDataRow["WIDTH"];
-                                            stockDataRow["DEPTH"] = !string.IsNullOrEmpty(depthValue) ? depthValue : stockDataRow["DEPTH"];
-                                        }
-                                    });
-
-                                    Stock_Data_Master_Schedular stock_Data_Master_Schedular = new Stock_Data_Master_Schedular();
-                                    stock_Data_Master_Schedular.Stock_Data_Id = 0;
-                                    stock_Data_Master_Schedular.Supplier_Id = party_File.Party_Id;
-                                    stock_Data_Master_Schedular.Upload_Method = "FILE";
-                                    stock_Data_Master_Schedular.Upload_Type = "O";
-
-                                    var (message, stock_Data_Id) = await _supplierService.Stock_Data_Custom_Insert_Update(stock_Data_Master_Schedular);
-
-                                    if (message == "success" && stock_Data_Id > 0)
-                                    {
-                                        var response = await _supplierService.Stock_Data_Detail_Insert_Update(dt_stock_data, stock_Data_Id);
-                                        if (response > 0)
-                                        {
-                                            if (stock_Data_Master_Schedular.Upload_Type == "O")
+                                            //Start Center Inclusion AND Black Inclusion
+                                            var lakhi_Party_Code = _configuration["Lakhi_Party_Code"];
+                                            var table_white = string.Empty;
+                                            var table_Black = string.Empty;
+                                            var side_White = string.Empty;
+                                            var side_Black = string.Empty;
+                                            if (party_master != null && party_master.Party_Code == lakhi_Party_Code)
                                             {
-                                                await _supplierService.Supplier_Stock_Manual_File_Insert_Update((int)stock_Data_Master_Schedular.Supplier_Id, stock_Data_Id, party_File.Is_Overwrite ?? false);
+                                                (table_white, _) = CoreService.Table_And_Side_White(Convert.ToString(stockDataRow["TABLE_WHITE"]));
+                                                (_, side_White) = CoreService.Table_And_Side_White(Convert.ToString(stockDataRow["SIDE_WHITE"]));
+
+                                                (table_Black, _) = CoreService.Table_And_Side_Black(Convert.ToString(stockDataRow["TABLE_BLACK"]));
+                                                (_, side_Black) = CoreService.Table_And_Side_Black(Convert.ToString(stockDataRow["SIDE_BLACK"]));
                                             }
-                                        }
-                                        return Ok(new
-                                        {
-                                            statusCode = HttpStatusCode.OK,
-                                            message = "File uploaded successfully.",
-                                            Party_Name = party_name,
-                                            Stock_Data_Id = stock_Data_Id
+                                            else
+                                            {
+                                                table_white = Convert.ToString(stockDataRow["TABLE_WHITE"]);
+                                                table_Black = Convert.ToString(stockDataRow["SIDE_WHITE"]);
+                                                side_White = Convert.ToString(stockDataRow["TABLE_BLACK"]);
+                                                side_Black = Convert.ToString(stockDataRow["SIDE_BLACK"]);
+                                            }
+                                            stockDataRow["TABLE_WHITE"] = table_white;
+                                            stockDataRow["SIDE_WHITE"] = table_Black;
+                                            stockDataRow["TABLE_BLACK"] = side_White;
+                                            stockDataRow["SIDE_BLACK"] = side_Black;
+                                            stockDataRow["Short_Code"] = party_file.Short_Code;
+                                            //END Center Inclusion AND Black Inclusion
+
+                                            // Check if all three columns are currently null or empty
+                                            if ((string.IsNullOrEmpty(Convert.ToString(stockDataRow["LENGTH"]))
+                                                && string.IsNullOrEmpty(Convert.ToString(stockDataRow["WIDTH"]))
+                                                && string.IsNullOrEmpty(Convert.ToString(stockDataRow["DEPTH"]))))
+                                            {
+                                                string measurementValue = Convert.ToString(stockDataRow["MEASUREMENT"]).Replace("-", "*").Replace("x", "*");
+
+                                                // Call the function and handle possible null values
+                                                string lengthValue = CoreService.Split_Supplier_Stock_Measurement(measurementValue, "LENGTH");
+                                                string widthValue = CoreService.Split_Supplier_Stock_Measurement(measurementValue, "WIDTH");
+                                                string depthValue = CoreService.Split_Supplier_Stock_Measurement(measurementValue, "DEPTH");
+
+                                                // Set the values in the DataRow, handling nulls or empty strings
+                                                stockDataRow["LENGTH"] = !string.IsNullOrEmpty(lengthValue) ? lengthValue : stockDataRow["LENGTH"];
+                                                stockDataRow["WIDTH"] = !string.IsNullOrEmpty(widthValue) ? widthValue : stockDataRow["WIDTH"];
+                                                stockDataRow["DEPTH"] = !string.IsNullOrEmpty(depthValue) ? depthValue : stockDataRow["DEPTH"];
+                                            }
                                         });
+
+                                        Stock_Data_Master_Schedular stock_Data_Master_Schedular = new Stock_Data_Master_Schedular();
+                                        stock_Data_Master_Schedular.Stock_Data_Id = 0;
+                                        stock_Data_Master_Schedular.Supplier_Id = party_File.Party_Id;
+                                        stock_Data_Master_Schedular.Upload_Method = "FILE";
+                                        stock_Data_Master_Schedular.Upload_Type = "O";
+
+                                        var (message, stock_Data_Id) = await _supplierService.Stock_Data_Custom_Insert_Update(stock_Data_Master_Schedular);
+
+                                        if (message == "success" && stock_Data_Id > 0)
+                                        {
+                                            var response = await _supplierService.Stock_Data_Detail_Insert_Update(dt_stock_data, stock_Data_Id);
+                                            if (response > 0)
+                                            {
+                                                if (stock_Data_Master_Schedular.Upload_Type == "O")
+                                                {
+                                                    await _supplierService.Supplier_Stock_Manual_File_Insert_Update((int)stock_Data_Master_Schedular.Supplier_Id, stock_Data_Id, party_File.Is_Overwrite ?? false);
+                                                }
+                                            }
+                                            return Ok(new
+                                            {
+                                                statusCode = HttpStatusCode.OK,
+                                                message = "File uploaded successfully.",
+                                                Party_Name = party_name,
+                                                Stock_Data_Id = stock_Data_Id
+                                            });
+                                        }
                                     }
                                 }
                             }
+                            #endregion
                         }
-                        #endregion
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            Supplier_Id = party_File.Party_Id,
+                            Party_Name = party_name,
+                            message = "No column mapping found!"
+                        });
                     }
-                    return Conflict(new
-                    {
-                        statusCode = HttpStatusCode.Conflict,
-                        Supplier_Id = party_File.Party_Id,
-                        Party_Name = party_name,
-                        message = "No column mapping found!"
-                    });
                 }
                 return BadRequest(ModelState);
             }
@@ -5230,7 +5253,7 @@ namespace astute.Controllers
                     }
                 }
 
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr) = await _supplierService.Get_Stock_Avalibility_Report_Search(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.iPgNo ?? 0, stock_Avalibility.iPgSize ?? 0, stock_Avalibility.iSort);
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr) = await _supplierService.Get_Stock_Avalibility_Report_Search(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.supp_Stock_Id, stock_Avalibility.iPgNo ?? 0, stock_Avalibility.iPgSize ?? 0, stock_Avalibility.iSort);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -9605,7 +9628,7 @@ namespace astute.Controllers
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
-                        message = "order deleted successfully.",
+                        message = "Order deleted successfully.",
                     });
                 }
                 return BadRequest(new
