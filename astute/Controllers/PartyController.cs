@@ -3013,7 +3013,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_update_manual_upload")]
         [Authorize]
-        public async Task<IActionResult> Create_Update_Manual_Upload([FromForm] Party_File party_File, IFormFile File_Location, bool is_Continue)
+        public async Task<IActionResult> Create_Update_Manual_Upload([FromForm] Party_File party_File, IFormFile File_Location)
         {
             string party_name = string.Empty;
             try
@@ -3022,7 +3022,7 @@ namespace astute.Controllers
                 {
                     var party_Api = await _partyService.Get_Party_API(0,party_File.Party_Id ?? 0);
                     var party_FTP = await _partyService.Get_Party_FTP(0, party_File.Party_Id ?? 0);
-                    if (!is_Continue && party_Api != null && party_Api.API_Status == true && party_Api.Lab == true)
+                    if (!party_File.is_Continue && party_Api != null && party_Api.API_Status == true && party_Api.Lab == true)
                     {
                         return Conflict(new
                         {
@@ -3031,7 +3031,7 @@ namespace astute.Controllers
                             message = "API is active for this supplier, Do you want to continue ?"
                         });
                     }
-                    else if (!is_Continue && party_FTP != null && party_FTP.Ftp_Status == true && party_FTP.Lab == true)
+                    else if (!party_File.is_Continue && party_FTP != null && party_FTP.Ftp_Status == true && party_FTP.Lab == true)
                     {
                         return Conflict(new
                         {

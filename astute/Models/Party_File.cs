@@ -26,6 +26,9 @@ namespace astute.Models
         [NotMapped]
         [JsonIgnore]
         public bool? Is_Overwrite { get; set; } = false;
+        [JsonIgnore]
+        [NotMapped] 
+        public bool is_Continue { get; set; }
 
     }
 }
