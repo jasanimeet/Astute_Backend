@@ -2983,7 +2983,7 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "CART BASE DISC")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(21) + i + "/" + GetExcelColumnLetter(19) + i + ")-100,0)";
+                                    worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(22) + i + "/" + GetExcelColumnLetter(19) + i + ")-100,0)";
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "CART BASE AMT")
