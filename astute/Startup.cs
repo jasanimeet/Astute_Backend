@@ -1,5 +1,6 @@
 using System;
 using System.Configuration;
+using System.Linq;
 using System.Text;
 using astute.Authorization;
 using astute.Models;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,6 +56,17 @@ namespace astute
                  providerOptions.CommandTimeout(7200);
              })
             );
+
+            services.AddResponseCompression(options =>
+            {
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+
+                options.EnableForHttps = true; 
+                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/json" });
+            });
+
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISupplierService, SupplierService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
@@ -78,7 +91,7 @@ namespace astute
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<ILabUserService, LabUserService>();
-
+            services.AddControllers();
             services.AddCors(p => p.AddPolicy("corsapp", builder =>
             {
                 builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
@@ -118,8 +131,8 @@ namespace astute
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }            
-
+            }
+            app.UseResponseCompression();
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseRouting();   
