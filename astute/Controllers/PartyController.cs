@@ -4357,7 +4357,7 @@ namespace astute.Controllers
         {
             try
             {
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr, dt_stock) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo ?? 0, report_Filter.iPgSize ?? 0, report_Filter.iSort);
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr, dt_stock) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo ?? 0, report_Filter.iPgSize ?? 0, report_Filter.iSort, report_Filter.Is_Selected_Supp_Stock_Id);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -4703,7 +4703,7 @@ namespace astute.Controllers
                 }
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseDisc, totalBaseAmt, totalOfferDisc, totalOfferAmt, totalMaxSlabDisc, totalMaxSlabAmt) = await _supplierService.Get_Lab_Search_Report_Search(dataTable, report_Lab_Filter.iPgNo ?? 0, report_Lab_Filter.iPgSize ?? 0, report_Lab_Filter.iSort, user_Id);
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseDisc, totalBaseAmt, totalOfferDisc, totalOfferAmt, totalMaxSlabDisc, totalMaxSlabAmt) = await _supplierService.Get_Lab_Search_Report_Search(dataTable, report_Lab_Filter.iPgNo ?? 0, report_Lab_Filter.iPgSize ?? 0, report_Lab_Filter.iSort, user_Id, report_Lab_Filter.Is_Selected_Supp_Stock_Id);
                 if (result != null)
                 {
                     return Ok(new
@@ -6401,34 +6401,6 @@ namespace astute.Controllers
                 });
             }
         }
-
-        //[HttpPost]
-        //[Route("create_approved_management")]
-        //[Authorize]
-        //public async Task<IActionResult> Create_Approved_Management(Approval_Management_Create_Update approval_Management)
-        //{
-        //    try
-        //    {
-        //        var result = await _cartService.Create_Approved_Management(approval_Management);
-        //        if (result > 0)
-        //        {
-        //            return Ok(new
-        //            {
-        //                statusCode = HttpStatusCode.OK,
-        //                message = CoreCommonMessage.StockApproved
-        //            });
-        //        }
-        //        return BadRequest();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await _commonService.InsertErrorLog(ex.Message, "Create_Approved_Management", ex.StackTrace);
-        //        return StatusCode((int)HttpStatusCode.InternalServerError, new
-        //        {
-        //            message = ex.Message
-        //        });
-        //    }
-        //}
 
         [HttpPost]
         [Route("create_approved_management")]
