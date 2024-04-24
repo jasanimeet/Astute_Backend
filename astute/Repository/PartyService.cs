@@ -162,12 +162,14 @@ namespace astute.Repository
         }
         public async Task<IList<Party_Master_Replica>> GetParty_Raplicate(int party_Id, string party_Type)
         {
-            var partyId = party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value);
-            var partyType = !string.IsNullOrEmpty(party_Type) ? new SqlParameter("@Party_Type", party_Type) : new SqlParameter("@Party_Type", DBNull.Value);
 
-            return await _dbContext.Party_Master_Replica
-            .FromSqlRaw("exec Party_Master_Select_Raplicate @PartyId, @Party_Type", partyId, partyType)
-            .ToListAsync();
+            var partyId = new SqlParameter("@PartyId", party_Id > 0 ? (object)party_Id : DBNull.Value);
+            var partyType = new SqlParameter("@Party_Type", !string.IsNullOrEmpty(party_Type) ? (object)party_Type : DBNull.Value);
+
+            return await _dbContext.Party_Master_Replica.FromSqlRaw("exec Party_Master_Select_Raplicate @PartyId, @Party_Type", partyId, partyType).AsNoTracking()
+                .ToListAsync();
+
+            //return await _dbContext.Party_Master_Replica.FromSqlRaw("exec Party_Master_Select_Raplicate @PartyId, @Party_Type", partyId, partyType).ToListAsync();
         }
 
         //public async Task<List<Dictionary<string, object>>> GetParty(int party_Id, string party_Type)
