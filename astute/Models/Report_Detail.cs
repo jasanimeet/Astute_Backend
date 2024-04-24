@@ -42,6 +42,7 @@ namespace astute.Models
         public int? iPgSize { get; set; }
         public IList<Report_Sorting> iSort { get; set; } = new List<Report_Sorting>();
         public List<string>? column_Name { get; set; }
+        public string? Is_Selected_Supp_Stock_Id { get; set; }
     }
     public class Report_Lab_Filter
     {
@@ -51,6 +52,7 @@ namespace astute.Models
         public int? iPgNo { get; set; }
         public int? iPgSize { get; set; }
         public IList<Report_Sorting> iSort { get; set; } = new List<Report_Sorting>();
+        public string? Is_Selected_Supp_Stock_Id { get; set; }
     }
     public class Report_Filter_Parameter_List
     {
