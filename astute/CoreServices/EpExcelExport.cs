@@ -3263,7 +3263,7 @@ namespace astute.CoreServices
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["CROWN OPEN"]);
                                 }
-                                else if (Column_Name == "PAV OPEN")
+                                else if (Column_Name == "PAVILION OPEN")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["PAV OPEN"]);
                                 }
