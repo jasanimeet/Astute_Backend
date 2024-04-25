@@ -1654,7 +1654,7 @@ namespace astute.Repository
 
                         command.Parameters.Add(iPgNo > 0 ? new SqlParameter("@iPgNo", iPgNo) : new SqlParameter("@iPgNo", DBNull.Value));
                         command.Parameters.Add(iPgSize > 0 ? new SqlParameter("@iPgSize", iPgSize) : new SqlParameter("@iPgSize", DBNull.Value));
-                        command.Parameters.Add(!string.IsNullOrEmpty(is_Selected_Supp_Stock_Id) ? new SqlParameter("@SUPP_STOCK_ID", is_Selected_Supp_Stock_Id) : new SqlParameter("@SUPP_STOCK_ID", DBNull.Value));
+                        command.Parameters.Add(!string.IsNullOrEmpty(is_Selected_Supp_Stock_Id) ? new SqlParameter("@Is_Selected_Supp_Stock_Id", is_Selected_Supp_Stock_Id) : new SqlParameter("@Is_Selected_Supp_Stock_Id", DBNull.Value));
                         command.CommandTimeout = 1800;
                         await connection.OpenAsync();
 

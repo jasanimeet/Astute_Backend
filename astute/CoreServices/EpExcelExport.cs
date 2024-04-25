@@ -3265,7 +3265,7 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "PAVILION OPEN")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["PAV OPEN"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["PAVILION OPEN"]);
                                 }
                                 else if (Column_Name == "GIRDLE OPEN")
                                 {

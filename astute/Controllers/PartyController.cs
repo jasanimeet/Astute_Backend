@@ -5259,6 +5259,7 @@ namespace astute.Controllers
                             }
                             stock_Avalibility_Values.Add(model);
                         }
+                        stock_Avalibility_Values = stock_Avalibility_Values.GroupBy(x => x.Stock_Id).Select(x => x.First()).ToList();
                     }
                 }
 
