@@ -20,7 +20,6 @@ namespace astute.Models
 
     public partial class Cart_Detail
     {
-
         public int? Id { get; set; }
 
         public int? Supp_Stock_Id { get; set; }
@@ -45,7 +44,10 @@ namespace astute.Models
 
         [JsonProperty("MAX SLAB BASE AMOUNT")]
         public object? Cart_Final_Amt_Max_Slab { get; set; }
-
+        [JsonProperty("OFFER DISC")]
+        public object? Cart_Offer_Disc { get; set; }
+        [JsonProperty("OFFER AMOUNT")]
+        public object? Cart_Offer_Amt { get; set; }
         [JsonProperty("BUYER DISC")]
         public object? Buyer_Disc { get; set; }
 

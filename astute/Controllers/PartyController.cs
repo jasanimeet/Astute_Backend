@@ -6254,6 +6254,8 @@ namespace astute.Controllers
                     dataTable.Columns.Add("Cart_Final_Amt", typeof(double));
                     dataTable.Columns.Add("Cart_Final_Disc_Max_Slab", typeof(double));
                     dataTable.Columns.Add("Cart_Final_Amt_Max_Slab", typeof(double));
+                    dataTable.Columns.Add("Cart_Offer_Disc", typeof(double));
+                    dataTable.Columns.Add("Cart_Offer_Amt", typeof(double));
                     dataTable.Columns.Add("Buyer_Disc", typeof(double));
                     dataTable.Columns.Add("Buyer_Amt", typeof(double));
                     dataTable.Columns.Add("Buyer_Price_Per_Cts", typeof(double));
@@ -6272,6 +6274,8 @@ namespace astute.Controllers
                             (item.Cart_Final_Amt != null ? !string.IsNullOrEmpty(item.Cart_Final_Amt.ToString()) ? Convert.ToDouble(item.Cart_Final_Amt.ToString()) : null : null),
                             (item.Cart_Final_Disc_Max_Slab != null ? !string.IsNullOrEmpty(item.Cart_Final_Disc_Max_Slab.ToString()) ? Convert.ToDouble(item.Cart_Final_Disc_Max_Slab.ToString()) : null : null),
                             (item.Cart_Final_Amt_Max_Slab != null ? !string.IsNullOrEmpty(item.Cart_Final_Amt_Max_Slab.ToString()) ? Convert.ToDouble(item.Cart_Final_Amt_Max_Slab.ToString()) : null : null),
+                            (item.Cart_Offer_Disc != null ? !string.IsNullOrEmpty(item.Cart_Offer_Disc.ToString()) ? Convert.ToDouble(item.Cart_Offer_Disc.ToString()) : null : null),
+                            (item.Cart_Offer_Amt != null ? !string.IsNullOrEmpty(item.Cart_Offer_Amt.ToString()) ? Convert.ToDouble(item.Cart_Offer_Amt.ToString()) : null : null),
                             (item.Buyer_Disc != null ? !string.IsNullOrEmpty(item.Buyer_Disc.ToString()) ? Convert.ToDouble(item.Buyer_Disc.ToString()) : null : null),
                             (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null),
                             (item.Buyer_Price_Per_Cts != null ? !string.IsNullOrEmpty(item.Buyer_Price_Per_Cts.ToString()) ? Convert.ToDouble(item.Buyer_Price_Per_Cts.ToString()) : null : null),
