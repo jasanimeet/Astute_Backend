@@ -5300,6 +5300,17 @@ namespace astute.Controllers
                         dataTable.Rows.Add(!string.IsNullOrEmpty(item.Stock_Id) ? item.Stock_Id : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Amount) ? item.Offer_Amount : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Disc) ? item.Offer_Disc : DBNull.Value);
                     }
                 }
+                else
+                {
+                    if (!string.IsNullOrEmpty(stock_Avalibility.stock_Id) && !stock_Avalibility.stock_Id.Contains(";"))
+                    {
+                        lst_Stock_Id = stock_Avalibility.stock_Id.Split('/').Distinct().ToList();
+                        foreach (var item in lst_Stock_Id)
+                        {
+                            dataTable.Rows.Add(!string.IsNullOrEmpty(item) ? item : DBNull.Value, DBNull.Value, DBNull.Value);
+                        }
+                    }
+                }
 
                 var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr) = await _supplierService.Get_Stock_Avalibility_Report_Search(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.supp_Stock_Id, stock_Avalibility.iPgNo ?? 0, stock_Avalibility.iPgSize ?? 0, stock_Avalibility.iSort);
                 if (result != null && result.Count > 0)
