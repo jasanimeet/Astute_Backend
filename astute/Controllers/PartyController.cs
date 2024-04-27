@@ -9723,7 +9723,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Order_Detail", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Order_Process_Request_Accept", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
