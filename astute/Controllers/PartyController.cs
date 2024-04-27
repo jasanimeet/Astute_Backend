@@ -6493,6 +6493,10 @@ namespace astute.Controllers
                 dataTable.Columns.Add("Supp_Stock_Id", typeof(int));
                 dataTable.Columns.Add("Buyer_Disc", typeof(double));
                 dataTable.Columns.Add("Buyer_Amt", typeof(double));
+                dataTable.Columns.Add("Base_Disc", typeof(double));
+                dataTable.Columns.Add("Base_Amt", typeof(double));
+                dataTable.Columns.Add("Offer_Disc", typeof(double));
+                dataTable.Columns.Add("Offer_Amt", typeof(double));
                 dataTable.Columns.Add("Status", typeof(string));
                 dataTable.Columns.Add("QC_Remarks", typeof(string));
 
@@ -6500,7 +6504,12 @@ namespace astute.Controllers
                 {
                     dataTable.Rows.Add(item.Id, item.Supp_Stock_Id,
                         (item.Buyer_Disc != null ? !string.IsNullOrEmpty(item.Buyer_Disc.ToString()) ? Convert.ToDouble(item.Buyer_Disc.ToString()) : null : null),
-                        (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null), Convert.ToString(item.Status), Convert.ToString(item.QC_Remarks));
+                        (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null),
+                        (item.Base_Disc != null ? !string.IsNullOrEmpty(item.Base_Disc.ToString()) ? Convert.ToDouble(item.Base_Disc.ToString()) : null : null),
+                        (item.Base_Amt != null ? !string.IsNullOrEmpty(item.Base_Amt.ToString()) ? Convert.ToDouble(item.Base_Amt.ToString()) : null : null),
+                        (item.Offer_Disc != null ? !string.IsNullOrEmpty(item.Offer_Disc.ToString()) ? Convert.ToDouble(item.Offer_Disc.ToString()) : null : null),
+                        (item.Offer_Amt != null ? !string.IsNullOrEmpty(item.Offer_Amt.ToString()) ? Convert.ToDouble(item.Offer_Amt.ToString()) : null : null),
+                        Convert.ToString(item.Status), Convert.ToString(item.QC_Remarks));
                 }
 
                 var (message, result, msg) = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.Id, order_Processing.User_Id, order_Processing.Customer_Name, order_Processing.Remarks, order_Processing.Status);

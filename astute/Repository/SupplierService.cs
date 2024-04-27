@@ -2611,7 +2611,7 @@ namespace astute.Repository
             var remarks = !string.IsNullOrEmpty(order_Stone_Processing.Remarks) ? new SqlParameter("@Remarks", order_Stone_Processing.Remarks) : new SqlParameter("@Remarks", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
-                   .ExecuteSqlRawAsync(@"EXEC Create_Stone_Process_For_Order_Processing @User_Id, @Order_Id, @Order_No, @Order_Status, @Stone_Status,
+                   .ExecuteSqlRawAsync(@"EXEC Order_Processing_Request_Process @User_Id, @Order_Id, @Order_No, @Order_Status, @Stone_Status,
                     @Remarks", _user_Id, order_Id, order_No, order_Status, stone_Status, remarks));
 
             return result;
@@ -2621,7 +2621,7 @@ namespace astute.Repository
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
-                using (var command = new SqlCommand("Get_Order_Processing_Detail", connection))
+                using (var command = new SqlCommand("Order_Processing_Detail", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));

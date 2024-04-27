@@ -22,6 +22,14 @@ namespace astute.Models
 
         [JsonProperty("COST AMOUNT")]
         public object? Buyer_Amt { get; set; }
+        [JsonProperty("BASE DISC")]
+        public object? Base_Disc { get; set; }
+        [JsonProperty("BASE AMOUNT")]
+        public object? Base_Amt { get; set; }
+        [JsonProperty("OFFER DISC")]
+        public object? Offer_Disc { get; set; }
+        [JsonProperty("OFFER AMOUNT")]
+        public object? Offer_Amt { get; set; }
         [JsonProperty("STATUS")]
         public object? Status { get; set; }
         [JsonProperty("QC REMARK")]
