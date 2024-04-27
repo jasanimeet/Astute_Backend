@@ -2593,11 +2593,21 @@ namespace astute.Repository
         }
         public async Task<int> Create_Stone_Order_Process(Order_Stone_Process order_Stone_Processing, int user_Id)
         {
+            string request_For = string.Empty;
+            if(!string.IsNullOrEmpty(order_Stone_Processing.QC_Request))
+            {
+                request_For = order_Stone_Processing.Order_Status + "," + order_Stone_Processing.QC_Request;
+            }
+            else
+            {
+                request_For = order_Stone_Processing.Order_Status;
+            }
+
             var _user_Id = new SqlParameter("@User_Id", user_Id);
             var order_Id = !string.IsNullOrEmpty(order_Stone_Processing.Order_Id) ? new SqlParameter("@Order_Id", order_Stone_Processing.Order_Id) : new SqlParameter("@Order_Id", DBNull.Value);
             var order_No = order_Stone_Processing.Order_No > 0 ? new SqlParameter("@Order_No", order_Stone_Processing.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
-            var order_Status = !string.IsNullOrEmpty(order_Stone_Processing.Order_Status) ? new SqlParameter("@Order_Status", order_Stone_Processing.Order_Status) : new SqlParameter("@Order_Status", DBNull.Value);
-            var stone_Status = !string.IsNullOrEmpty(order_Stone_Processing.Stone_Status) ? new SqlParameter("@Stone_Status", order_Stone_Processing.Stone_Status) : new SqlParameter("@Stone_Status", DBNull.Value);
+            var order_Status = new SqlParameter("@Order_Status", "REQUESTED");
+            var stone_Status = !string.IsNullOrEmpty(request_For) ? new SqlParameter("@Stone_Status", request_For) : new SqlParameter("@Stone_Status", DBNull.Value);
             var remarks = !string.IsNullOrEmpty(order_Stone_Processing.Remarks) ? new SqlParameter("@Remarks", order_Stone_Processing.Remarks) : new SqlParameter("@Remarks", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
@@ -2649,6 +2659,17 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
                    .ExecuteSqlRawAsync(@"EXEC Order_Processing_Delete @Order_No, @Sub_Order_Id, @User_Id", _order_No, _sub_Order_Id, _user_Id));
+
+            return result;
+        }
+        public async Task<int> Accept_Request_Order_Process(Order_Process_Detail order_Process_Detail, int user_Id)
+        {
+            var _user_Id = new SqlParameter("@User_Id", user_Id);
+            var order_No = order_Process_Detail.Order_No > 0 ? new SqlParameter("@Order_No", order_Process_Detail.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
+            var sub_Order_Id = order_Process_Detail.Sub_Order_Id > 0 ? new SqlParameter("@Sub_Order_Id", order_Process_Detail.Sub_Order_Id) : new SqlParameter("@Sub_Order_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Order_Processing_Accept_Request @Order_No, @Sub_Order_Id, @User_Id", order_No, sub_Order_Id, _user_Id));
 
             return result;
         }

@@ -9681,6 +9681,39 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPut]
+        [Route("order_process_request_accept")]
+        [Authorize]
+        public async Task<IActionResult> Order_Process_Request_Accept(Order_Process_Detail order_Process_Detail)
+        {
+            try
+            {
+                if(ModelState.IsValid)
+                {
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                    var result = await _supplierService.Accept_Request_Order_Process(order_Process_Detail, user_Id ?? 0);
+                    if(result > 0)
+                    {
+                        return Ok(new 
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = "Order request accepted successfully."
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Order_Detail", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }

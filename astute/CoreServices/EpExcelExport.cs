@@ -3231,17 +3231,17 @@ namespace astute.CoreServices
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["TABLE BLACK"]);
                                 }
-                                else if (Column_Name == "CROWN BLACK")
+                                else if (Column_Name == "SIDE BLACK")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["CROWN BLACK"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["SIDE BLACK"]);
                                 }
                                 else if (Column_Name == "TABLE WHITE")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["TABLE WHITE"]);
                                 }
-                                else if (Column_Name == "CROWN WHITE")
+                                else if (Column_Name == "SIDE WHITE")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["CROWN WHITE"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["SIDE WHITE"]);
                                 }
                                 else if (Column_Name == "CULET")
                                 {
@@ -5843,17 +5843,17 @@ namespace astute.CoreServices
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["TABLE BLACK"]);
                                 }
-                                else if (Column_Name == "CROWN BLACK")
+                                else if (Column_Name == "SIDE BLACK")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["CROWN BLACK"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["SIDE BLACK"]);
                                 }
                                 else if (Column_Name == "TABLE WHITE")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["TABLE WHITE"]);
                                 }
-                                else if (Column_Name == "CROWN WHITE")
+                                else if (Column_Name == "SIDE WHITE")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["CROWN WHITE"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["SIDE WHITE"]);
                                 }
                                 else if (Column_Name == "CULET")
                                 {

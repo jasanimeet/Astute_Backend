@@ -48,7 +48,7 @@ namespace astute.Models
         public string? Order_Id { get; set; }
         public int? Order_No { get; set; }
         public string? Order_Status { get; set;}
-        public string? Stone_Status { get; set;}
+        public string? QC_Request { get; set;}
         public string? Remarks { get; set; }
     }
 
