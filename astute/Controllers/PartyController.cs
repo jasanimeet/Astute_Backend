@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NPOI.HSSF.UserModel;
+using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
 using Org.BouncyCastle.Crypto.Operators;
@@ -5290,6 +5291,10 @@ namespace astute.Controllers
                                 dataTable.Rows.Add(value, !string.IsNullOrEmpty(offer_amt) ? offer_amt.Replace(",", "") : DBNull.Value, worksheet.Cells[row, 2].GetValue<string>());
                             }
                         }
+                        var uniqueRows = dataTable.AsEnumerable()
+                                  .GroupBy(row => row.Field<string>("STOCK_ID"))
+                                  .Select(grp => grp.First())
+                                  .CopyToDataTable();
                     }
                 }
                 else if (stock_Avalibility_Values != null && stock_Avalibility_Values.Count > 0)
@@ -6781,6 +6786,7 @@ namespace astute.Controllers
                             }
                             stock_Avalibility_Values.Add(model);
                         }
+                        stock_Avalibility_Values = stock_Avalibility_Values.GroupBy(x => x.Stock_Id).Select(x => x.First()).ToList();
                     }
                 }
 
@@ -6813,6 +6819,10 @@ namespace astute.Controllers
 
                             }
                         }
+                        var uniqueRows = dataTable.AsEnumerable()
+                                  .GroupBy(row => row.Field<string>("STOCK_ID"))
+                                  .Select(grp => grp.First())
+                                  .CopyToDataTable(); 
                     }
                 }
                 else if (stock_Avalibility_Values != null && stock_Avalibility_Values.Count > 0)
@@ -6823,6 +6833,7 @@ namespace astute.Controllers
                         dataTable.Rows.Add(!string.IsNullOrEmpty(item.Stock_Id) ? item.Stock_Id : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Amount) ? item.Offer_Amount : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Disc) ? item.Offer_Disc : DBNull.Value);
                     }
                 }
+
                 var dt_stock = await _supplierService.Get_Stock_Availability_Report_Excel(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type);
                 if (dt_stock != null && dt_stock.Rows.Count > 0)
                 {
@@ -8874,6 +8885,7 @@ namespace astute.Controllers
                             }
                             stock_Avalibility_Values.Add(model);
                         }
+                        stock_Avalibility_Values = stock_Avalibility_Values.GroupBy(x => x.Stock_Id).Select(x => x.First()).ToList();
                     }
                 }
 
@@ -8904,6 +8916,10 @@ namespace astute.Controllers
                                 dataTable.Rows.Add(value, !string.IsNullOrEmpty(offer_amt) ? offer_amt.Replace(",", "") : DBNull.Value, worksheet.Cells[row, 2].GetValue<string>());
                             }
                         }
+                        var uniqueRows = dataTable.AsEnumerable()
+                                  .GroupBy(row => row.Field<string>("STOCK_ID"))
+                                  .Select(grp => grp.First())
+                                  .CopyToDataTable();
                     }
                 }
                 else if (stock_Avalibility_Values != null && stock_Avalibility_Values.Count > 0)
