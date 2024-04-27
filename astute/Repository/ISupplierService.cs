@@ -115,6 +115,7 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Order_Detail(int user_Id, Order_Process_Detail order_Process_Detail);
         Task<int> Delete_Order_Process(int order_No, int sub_Order_Id, int user_Id);
         Task<int> Accept_Request_Order_Process(Order_Process_Detail order_Process_Detail, int user_Id);
+        Task<int> Delete_Order_Stones(string order_Id, int user_Id);
         #endregion
     }
 }

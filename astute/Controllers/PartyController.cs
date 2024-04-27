@@ -6781,6 +6781,7 @@ namespace astute.Controllers
                             }
                             stock_Avalibility_Values.Add(model);
                         }
+                        stock_Avalibility_Values = stock_Avalibility_Values.GroupBy(x => x.Stock_Id).Select(x => x.First()).ToList();
                     }
                 }
 
@@ -9708,6 +9709,40 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Order_Detail", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("order_stones_delete")]
+        [Authorize]
+        public async Task<IActionResult> Order_Stones_Delete(string order_Id)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                var result = await _supplierService.Delete_Order_Stones(order_Id, user_Id ?? 0);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = "Order stones deleted successfully.",
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Order_Stones_Delete", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message

@@ -2673,6 +2673,16 @@ namespace astute.Repository
 
             return result;
         }
+        public async Task<int> Delete_Order_Stones(string order_Id, int user_Id)
+        {
+            var _order_Id = !string.IsNullOrEmpty(order_Id) ? new SqlParameter("@Order_Id", order_Id) : new SqlParameter("@Order_Id", DBNull.Value);
+            var _user_Id = new SqlParameter("@User_Id", user_Id);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Delete_Order_Stones @Order_Id, @User_Id", _order_Id, _user_Id));
+
+            return result;
+        }
         #endregion
     }
 }
