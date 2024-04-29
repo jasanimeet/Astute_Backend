@@ -2130,6 +2130,10 @@ namespace astute.CoreServices
 
                                         worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
                                     }
+                                    else if (Column_Name == "Cert Type")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cert Type"]);
+                                    }
                                 }
                             }
                             catch (Exception ex)
