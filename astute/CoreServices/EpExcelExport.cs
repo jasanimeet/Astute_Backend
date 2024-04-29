@@ -6551,7 +6551,7 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "Current Cost Disc(%)")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(24) + i + "/" + GetExcelColumnLetter(22) + i + ")-100,0)";
+                                    worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(15) + i + "/" + GetExcelColumnLetter(13) + i + ")-100,0)";
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "Current Cost Value($)")
@@ -6562,7 +6562,7 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "Supplier Cost Disc(%)")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(26) + i + "/" + GetExcelColumnLetter(22) + i + ")-100,0)";
+                                    worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(17) + i + "/" + GetExcelColumnLetter(13) + i + ")-100,0)";
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "Supplier Cost Value($)")
@@ -6573,7 +6573,7 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "Final Disc(%)")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(28) + i + "/" + GetExcelColumnLetter(22) + i + ")-100,0)";
+                                    worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(19) + i + "/" + GetExcelColumnLetter(13) + i + ")-100,0)";
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "Final Amt US($)")
@@ -6584,7 +6584,7 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "Supplier Base Offer(%)")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(31) + i + "/" + GetExcelColumnLetter(22) + i + ")-100,0)";
+                                    worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(21) + i + "/" + GetExcelColumnLetter(13) + i + ")-100,0)";
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "Supplier Base Offer Value($)")
@@ -6711,7 +6711,7 @@ namespace astute.CoreServices
                             }
                             else if (Column_Name == "Current Cost Disc(%)")
                             {
-                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(24) + "" + inStartIndex + ":" + GetExcelColumnLetter(24) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(22) + "" + inStartIndex + ":" + GetExcelColumnLetter(22) + "" + (inwrkrow - 1) + "))-100),2),0)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(15) + "" + inStartIndex + ":" + GetExcelColumnLetter(15) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(13) + "" + inStartIndex + ":" + GetExcelColumnLetter(13) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "Current Cost Value($)")
@@ -6728,7 +6728,7 @@ namespace astute.CoreServices
                             }
                             else if (Column_Name == "Supplier Cost Disc(%)")
                             {
-                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(26) + "" + inStartIndex + ":" + GetExcelColumnLetter(26) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(22) + "" + inStartIndex + ":" + GetExcelColumnLetter(22) + "" + (inwrkrow - 1) + "))-100),2),0)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(17) + "" + inStartIndex + ":" + GetExcelColumnLetter(17) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(13) + "" + inStartIndex + ":" + GetExcelColumnLetter(13) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "Supplier Cost Value($)")
@@ -6745,7 +6745,7 @@ namespace astute.CoreServices
                             }
                             else if (Column_Name == "Final Disc(%)")
                             {
-                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(28) + "" + inStartIndex + ":" + GetExcelColumnLetter(28) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(22) + "" + inStartIndex + ":" + GetExcelColumnLetter(22) + "" + (inwrkrow - 1) + "))-100),2),0)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(19) + "" + inStartIndex + ":" + GetExcelColumnLetter(19) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(13) + "" + inStartIndex + ":" + GetExcelColumnLetter(13) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "Final Amt US($)")
@@ -6763,7 +6763,7 @@ namespace astute.CoreServices
 
                             else if (Column_Name == "Supplier Base Offer(%)")
                             {
-                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(31) + "" + inStartIndex + ":" + GetExcelColumnLetter(31) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(22) + "" + inStartIndex + ":" + GetExcelColumnLetter(22) + "" + (inwrkrow - 1) + "))-100),2),0)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(21) + "" + inStartIndex + ":" + GetExcelColumnLetter(21) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(13) + "" + inStartIndex + ":" + GetExcelColumnLetter(13) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "Supplier Base Offer Value($)")
@@ -6971,7 +6971,7 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "Supplier Cost Disc(%)")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(26) + i + "/" + GetExcelColumnLetter(22) + i + ")-100,0)";
+                                    worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(18) + i + "/" + GetExcelColumnLetter(16) + i + ")-100,0)";
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "Supplier Cost Value($)")
@@ -6982,7 +6982,7 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "Final Disc(%)")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(28) + i + "/" + GetExcelColumnLetter(22) + i + ")-100,0)";
+                                    worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(20) + i + "/" + GetExcelColumnLetter(16) + i + ")-100,0)";
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "Final Amt US($)")
@@ -7115,7 +7115,7 @@ namespace astute.CoreServices
                             }
                             else if (Column_Name == "Supplier Cost Disc(%)")
                             {
-                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(26) + "" + inStartIndex + ":" + GetExcelColumnLetter(26) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(22) + "" + inStartIndex + ":" + GetExcelColumnLetter(22) + "" + (inwrkrow - 1) + "))-100),2),0)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(18) + "" + inStartIndex + ":" + GetExcelColumnLetter(18) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(16) + "" + inStartIndex + ":" + GetExcelColumnLetter(16) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "Supplier Cost Value($)")
@@ -7132,7 +7132,7 @@ namespace astute.CoreServices
                             }
                             else if (Column_Name == "Final Disc(%)")
                             {
-                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(28) + "" + inStartIndex + ":" + GetExcelColumnLetter(28) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(22) + "" + inStartIndex + ":" + GetExcelColumnLetter(22) + "" + (inwrkrow - 1) + "))-100),2),0)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(20) + "" + inStartIndex + ":" + GetExcelColumnLetter(20) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(16) + "" + inStartIndex + ":" + GetExcelColumnLetter(16) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "Final Amt US($)")

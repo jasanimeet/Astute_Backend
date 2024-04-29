@@ -9861,6 +9861,70 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("order_excel_export")]
+        [Authorize]
+        public async Task<IActionResult> Order_Excel_Export(Order_Excel_Model order_Excel_Model)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                var (dt_Order, is_Admin) = await _supplierService.Get_Order_Excel_Data(order_Excel_Model, user_Id ?? 0);
+                if(dt_Order != null && dt_Order.Rows.Count > 0)
+                {
+                    List<string> columnNames = new List<string>();
+                    foreach (DataColumn column in dt_Order.Columns)
+                    {
+                        columnNames.Add(column.ColumnName);
+                    }
+
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in columnNames)
+                    {
+                        columnNamesTable.Rows.Add(columnName);
+                    }
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string filename = string.Empty;
+
+                    filename = "Order_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    if (is_Admin)
+                    {
+                        EpExcelExport.Create_Order_Processing_Excel_Admin(dt_Order, columnNamesTable, filePath, filePath + filename);
+                    }
+                    else
+                    {
+                        EpExcelExport.Create_Order_Processing_Excel_User(dt_Order, columnNamesTable, filePath, filePath + filename);
+                    }
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Order_Excel_Export", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }

@@ -2715,14 +2715,24 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<DataTable> Get_Order_Excel_Data()
+        public async Task<(DataTable,bool)> Get_Order_Excel_Data(Order_Excel_Model order_Excel_Model, int user_Id)
         {
             DataTable dataTable = new DataTable();
+            bool _is_Admin = false;
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
                 using (var command = new SqlCommand("Order_Processing_Select_Excel", connection))
                 {
-                    command.CommandType = CommandType.StoredProcedure;                    
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Excel_Model.Stock_Id) ? new SqlParameter("@STOCK_ID", order_Excel_Model.Stock_Id) : new SqlParameter("@STOCK_ID", DBNull.Value));
+
+                    var is_Admin = new SqlParameter("@Is_Admin", SqlDbType.Bit)
+                    {   
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(is_Admin);
+
                     command.CommandTimeout = 1800;
                     await connection.OpenAsync();
 
@@ -2733,9 +2743,10 @@ namespace astute.Repository
                     da.Fill(ds);
 
                     dataTable = ds.Tables[ds.Tables.Count - 1];
+                    _is_Admin = (bool)is_Admin.Value;
                 }
             }
-            return dataTable;
+            return (dataTable, _is_Admin);
         }
         #endregion
     }

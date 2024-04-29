@@ -10,8 +10,7 @@ namespace astute.Models
         public string? Remarks { get; set; }
         public string? Status { get; set; }
         public object Order_Detail { get; set; }
-    }
-   
+    }   
     public class Order_Processing_Detail
     {
         public int Id { get; set; }
@@ -51,7 +50,6 @@ namespace astute.Models
         public string? To_Date { get; set; }
         public string? Stock_Id { get; set; }
     }
-
     public class Order_Stone_Process
     {
         public string? Order_Id { get; set; }
@@ -60,20 +58,17 @@ namespace astute.Models
         public string? QC_Request { get; set;}
         public string? Remarks { get; set; }
     }
-
     public class Order_Process_Detail
     {
         public int? Order_No { get; set; }
         public int? Sub_Order_Id { get; set; }
-    }
-    
+    }    
     public class Order_Processing_Reply_To_Assist
     {
         public int? Order_No { get; set; }
         public int? Sub_Order_Id { get; set; }
         public object Order_Detail { get; set; }
     }
-
     public class Order_Processing_Reply_To_Assist_Detail
     {
         public int Id { get; set; }
@@ -86,6 +81,10 @@ namespace astute.Models
         public object? Status { get; set; }
         [JsonProperty("REMARKS")]
         public object? Remarks { get; set; }
+    }
+    public class Order_Excel_Model
+    {
+        public string Stock_Id { get; set; }
     }
     #endregion
 }
