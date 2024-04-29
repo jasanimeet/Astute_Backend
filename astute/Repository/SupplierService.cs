@@ -1030,7 +1030,7 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<int> Supplier_Stock_Manual_File_Insert_Update(int supplier_Id, int stock_Data_Id,bool is_Overwrite)
+        public async Task<int> Supplier_Stock_Manual_File_Insert_Update(int supplier_Id, int stock_Data_Id, bool is_Overwrite)
         {
             var _supplier_Id = new SqlParameter("@Supplier_Id", supplier_Id);
             var _stock_Data_Id = new SqlParameter("@Stock_Data_Id", stock_Data_Id);
@@ -2405,7 +2405,6 @@ namespace astute.Repository
             }
             return dataTable1;
         }
-
         public async Task<IList<Report_Image_Video_Certificate>> Download_Image_Video_Certificate_Stock(string? Ids, string? document_Type)
         {
             var ids = !string.IsNullOrEmpty(Ids) ? new SqlParameter("@Ids", Ids) : new SqlParameter("@Ids", DBNull.Value);
@@ -2568,6 +2567,7 @@ namespace astute.Repository
                     command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.To_Date) ? new SqlParameter("@To_Date", order_Processing_Summary.To_Date) : new SqlParameter("@To_Date", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.Order_Status) ? new SqlParameter("@Order_Status", order_Processing_Summary.Order_Status) : new SqlParameter("@Order_Status", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.Stone_Status) ? new SqlParameter("@Stone_Status", order_Processing_Summary.Stone_Status) : new SqlParameter("@Stone_Status", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.Stock_Id) ? new SqlParameter("@Stock_Id", order_Processing_Summary.Stock_Id) : new SqlParameter("@Stock_Id", DBNull.Value));
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -2594,7 +2594,7 @@ namespace astute.Repository
         public async Task<int> Create_Stone_Order_Process(Order_Stone_Process order_Stone_Processing, int user_Id)
         {
             string request_For = string.Empty;
-            if(!string.IsNullOrEmpty(order_Stone_Processing.QC_Request))
+            if (!string.IsNullOrEmpty(order_Stone_Processing.QC_Request))
             {
                 request_For = order_Stone_Processing.Order_Status + "," + order_Stone_Processing.QC_Request;
             }
@@ -2682,6 +2682,60 @@ namespace astute.Repository
                    .ExecuteSqlRawAsync(@"EXEC Delete_Order_Stones @Order_Id, @User_Id", _order_Id, _user_Id));
 
             return result;
+        }
+        public async Task<int> Order_Processing_Reply_To_Assist(DataTable dataTable, int order_No, int sub_Order_Id)
+        {
+            var parameter = new SqlParameter("@tbl_Order", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Order_Processing_Reply_To_Assist_Table_Type]",
+                Value = dataTable
+            };
+
+            var _order_No = new SqlParameter("@Order_No", order_No);
+            var _sub_Order_Id = new SqlParameter("@Sub_Order_Id", sub_Order_Id);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Order_Processing_Reply_To_Assist @tbl_Order, @Order_No, @Sub_Order_Id", parameter, _order_No, _sub_Order_Id));
+
+            return result;
+        }
+        public async Task<int> Order_Processing_Completed(DataTable dataTable, int order_No, int sub_Order_Id)
+        {
+            var parameter = new SqlParameter("@tbl_Order", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Order_Processing_Reply_To_Assist_Table_Type]",
+                Value = dataTable
+            };
+
+            var _order_No = new SqlParameter("@Order_No", order_No);
+            var _sub_Order_Id = new SqlParameter("@Sub_Order_Id", sub_Order_Id);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Order_Processing_Completed @tbl_Order, @Order_No, @Sub_Order_Id", parameter, _order_No, _sub_Order_Id));
+
+            return result;
+        }
+        public async Task<DataTable> Get_Order_Excel_Data()
+        {
+            DataTable dataTable = new DataTable();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Order_Processing_Select_Excel", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;                    
+                    command.CommandTimeout = 1800;
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    dataTable = ds.Tables[ds.Tables.Count - 1];
+                }
+            }
+            return dataTable;
         }
         #endregion
     }

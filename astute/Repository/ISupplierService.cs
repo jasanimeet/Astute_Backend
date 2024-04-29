@@ -116,6 +116,8 @@ namespace astute.Repository
         Task<int> Delete_Order_Process(int order_No, int sub_Order_Id, int user_Id);
         Task<int> Accept_Request_Order_Process(Order_Process_Detail order_Process_Detail, int user_Id);
         Task<int> Delete_Order_Stones(string order_Id, int user_Id);
+        Task<int> Order_Processing_Reply_To_Assist(DataTable dataTable, int order_No, int sub_Order_Id);
+        Task<int> Order_Processing_Completed(DataTable dataTable, int order_No, int sub_Order_Id);
         #endregion
     }
 }

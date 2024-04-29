@@ -9773,6 +9773,94 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("order_processing_reply_to_assist")]
+        [Authorize]
+        public async Task<IActionResult> Order_Processing_Reply_To_Assist(Order_Processing_Reply_To_Assist order_Processing_Reply_To_Assist)
+        {
+            try
+            {
+                IList<Order_Processing_Reply_To_Assist_Detail> OrderResult = JsonConvert.DeserializeObject<IList<Order_Processing_Reply_To_Assist_Detail>>(order_Processing_Reply_To_Assist.Order_Detail.ToString());
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("Id", typeof(int));
+                dataTable.Columns.Add("Status", typeof(string));
+                dataTable.Columns.Add("Remarks", typeof(string));
+                dataTable.Columns.Add("Cost_Disc", typeof(double));
+                dataTable.Columns.Add("Cost_Amt", typeof(double));
+
+                foreach (var item in OrderResult)
+                {
+                    dataTable.Rows.Add(item.Id, Convert.ToString(item.Status), Convert.ToString(item.Remarks),
+                        (item.Cost_Disc != null ? !string.IsNullOrEmpty(item.Cost_Disc.ToString()) ? Convert.ToDouble(item.Cost_Disc.ToString()) : null : null),
+                        (item.Cost_Amt != null ? !string.IsNullOrEmpty(item.Cost_Amt.ToString()) ? Convert.ToDouble(item.Cost_Amt.ToString()) : null : null));
+                }
+
+                var result = await _supplierService.Order_Processing_Reply_To_Assist(dataTable, order_Processing_Reply_To_Assist.Order_No ?? 0, order_Processing_Reply_To_Assist.Sub_Order_Id ?? 0);
+                if (result > 0)
+                {   
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = "Order partially completed successfully."
+                    });
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Order_Processing_Reply_To_Assist", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("order_processing_completed")]
+        [Authorize]
+        public async Task<IActionResult> Order_Processing_Completed(Order_Processing_Reply_To_Assist order_Processing_Reply_To_Assist)
+        {
+            try
+            {
+                IList<Order_Processing_Reply_To_Assist_Detail> OrderResult = JsonConvert.DeserializeObject<IList<Order_Processing_Reply_To_Assist_Detail>>(order_Processing_Reply_To_Assist.Order_Detail.ToString());
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("Id", typeof(int));
+                dataTable.Columns.Add("Status", typeof(string));
+                dataTable.Columns.Add("Remarks", typeof(string));
+                dataTable.Columns.Add("Cost_Disc", typeof(double));
+                dataTable.Columns.Add("Cost_Amt", typeof(double));
+
+                foreach (var item in OrderResult)
+                {
+                    dataTable.Rows.Add(item.Id, Convert.ToString(item.Status), Convert.ToString(item.Remarks),
+                        (item.Cost_Disc != null ? !string.IsNullOrEmpty(item.Cost_Disc.ToString()) ? Convert.ToDouble(item.Cost_Disc.ToString()) : null : null),
+                        (item.Cost_Amt != null ? !string.IsNullOrEmpty(item.Cost_Amt.ToString()) ? Convert.ToDouble(item.Cost_Amt.ToString()) : null : null));
+                }
+
+                var result = await _supplierService.Order_Processing_Reply_To_Assist(dataTable, order_Processing_Reply_To_Assist.Order_No ?? 0, order_Processing_Reply_To_Assist.Sub_Order_Id ?? 0);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = "Order completed successfully."
+                    });
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "order_processing_completed", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }
