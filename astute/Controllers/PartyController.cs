@@ -5309,7 +5309,7 @@ namespace astute.Controllers
                 {
                     if (!string.IsNullOrEmpty(stock_Avalibility.stock_Id) && !stock_Avalibility.stock_Id.Contains(";"))
                     {
-                        lst_Stock_Id = stock_Avalibility.stock_Id.Split('/').Distinct().ToList();
+                        lst_Stock_Id = stock_Avalibility.stock_Id.Replace("//","/").Split('/').Distinct().ToList();
                         foreach (var item in lst_Stock_Id)
                         {
                             dataTable.Rows.Add(!string.IsNullOrEmpty(item) ? item : DBNull.Value, DBNull.Value, DBNull.Value);
