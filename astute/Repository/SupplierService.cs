@@ -2680,7 +2680,7 @@ namespace astute.Repository
             var _user_Id = new SqlParameter("@User_Id", user_Id);
 
             var result = await Task.Run(() => _dbContext.Database
-                   .ExecuteSqlRawAsync(@"EXEC Delete_Order_Stones @Order_Id, @User_Id", _order_Id, _user_Id));
+                   .ExecuteSqlRawAsync(@"EXEC Order_Processing_Stones_Delete @Order_Id, @User_Id", _order_Id, _user_Id));
 
             return result;
         }
@@ -2716,7 +2716,7 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<(DataTable,bool)> Get_Order_Excel_Data(Order_Excel_Model order_Excel_Model, int user_Id)
+        public async Task<(DataTable,bool)> Get_Order_Excel_Data(IList<Report_Filter_Parameter> report_Filter_Parameters, int user_Id, string order_Id)
         {
             DataTable dataTable = new DataTable();
             bool _is_Admin = false;
@@ -2725,8 +2725,19 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Order_Processing_Select_Excel", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(order_Excel_Model.Stock_Id) ? new SqlParameter("@STOCK_ID", order_Excel_Model.Stock_Id) : new SqlParameter("@STOCK_ID", DBNull.Value));
+                    if (report_Filter_Parameters != null && report_Filter_Parameters.Count > 0)
+                    {
+                        foreach (var item in report_Filter_Parameters.Where(x => !string.IsNullOrEmpty(x.Category_Value)).ToList())
+                        {
+                            command.Parameters.Add(!string.IsNullOrEmpty(item.Category_Value) ? new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), item.Category_Value) : new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), DBNull.Value));
+                        }
+                    }
+                    else
+                    {
+                        command.Parameters.Add(new SqlParameter("@STOCK_ID", DBNull.Value));
+                    }
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));                    
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Id) ? new SqlParameter("@Order_Id", order_Id) : new SqlParameter("@Order_Id", DBNull.Value));
 
                     var is_Admin = new SqlParameter("@Is_Admin", SqlDbType.Bit)
                     {   
@@ -2748,6 +2759,38 @@ namespace astute.Repository
                 }
             }
             return (dataTable, _is_Admin);
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Company_Name()
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Order_Processing_Company_Name_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
         }
         #endregion
     }
