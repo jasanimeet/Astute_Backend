@@ -2628,6 +2628,7 @@ namespace astute.Repository
                     command.Parameters.Add(order_Process_Detail.Order_No > 0 ? new SqlParameter("@Order_No", order_Process_Detail.Order_No) : new SqlParameter("@Order_No", DBNull.Value));
                     command.Parameters.Add(order_Process_Detail.Sub_Order_Id > 0 ? new SqlParameter("@Sub_Order_Id", order_Process_Detail.Sub_Order_Id) : new SqlParameter("@Sub_Order_Id", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(order_Process_Detail.Company_Name) ? new SqlParameter("@Company_Name", order_Process_Detail.Company_Name) : new SqlParameter("@Company_Name", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Process_Detail.Is_Selected_Supp_Stock_Id) ? new SqlParameter("@Is_Selected_Supp_Stock_Id", order_Process_Detail.Is_Selected_Supp_Stock_Id) : new SqlParameter("@Is_Selected_Supp_Stock_Id", DBNull.Value));
 
                     await connection.OpenAsync();
 

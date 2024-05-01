@@ -63,6 +63,7 @@ namespace astute.Models
         public int? Order_No { get; set; }
         public int? Sub_Order_Id { get; set; }
         public string? Company_Name { get; set; }
+        public string? Is_Selected_Supp_Stock_Id { get; set; }
     }    
     public class Order_Processing_Reply_To_Assist
     {
