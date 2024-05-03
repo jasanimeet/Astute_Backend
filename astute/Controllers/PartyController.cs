@@ -9723,7 +9723,7 @@ namespace astute.Controllers
 
         [HttpDelete]
         [Route("order_processing_delete")]
-        public async Task<IActionResult> Order_Processing_Delete(int Order_No, int Sub_Order_Id)
+        public async Task<IActionResult> Order_Processing_Delete(string Order_No, int Sub_Order_Id)
         {
             try
             {
@@ -9844,7 +9844,7 @@ namespace astute.Controllers
                         (item.Cost_Amt != null ? !string.IsNullOrEmpty(item.Cost_Amt.ToString()) ? Convert.ToDouble(item.Cost_Amt.ToString()) : null : null));
                 }
 
-                var result = await _supplierService.Order_Processing_Reply_To_Assist(dataTable, order_Processing_Reply_To_Assist.Order_No ?? 0, order_Processing_Reply_To_Assist.Sub_Order_Id ?? 0);
+                var result = await _supplierService.Order_Processing_Reply_To_Assist(dataTable, order_Processing_Reply_To_Assist.Order_No, order_Processing_Reply_To_Assist.Sub_Order_Id ?? 0);
                 if (result > 0)
                 {
                     return Ok(new
@@ -9888,7 +9888,7 @@ namespace astute.Controllers
                         (item.Cost_Amt != null ? !string.IsNullOrEmpty(item.Cost_Amt.ToString()) ? Convert.ToDouble(item.Cost_Amt.ToString()) : null : null));
                 }
 
-                var result = await _supplierService.Order_Processing_Completed(dataTable, order_Processing_Reply_To_Assist.Order_No ?? 0, order_Processing_Reply_To_Assist.Sub_Order_Id ?? 0);
+                var result = await _supplierService.Order_Processing_Completed(dataTable, order_Processing_Reply_To_Assist.Order_No, order_Processing_Reply_To_Assist.Sub_Order_Id ?? 0);
                 if (result > 0)
                 {
                     return Ok(new

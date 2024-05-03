@@ -113,11 +113,11 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Order_Summary(int user_Id, Order_Processing_Summary order_Processing_Summary);
         Task<int> Create_Stone_Order_Process(Order_Stone_Process order_Stone_Processing, int user_Id);
         Task<List<Dictionary<string, object>>> Get_Order_Detail(int user_Id, Order_Process_Detail order_Process_Detail);
-        Task<int> Delete_Order_Process(int order_No, int sub_Order_Id, int user_Id);
+        Task<int> Delete_Order_Process(string order_No, int sub_Order_Id, int user_Id);
         Task<int> Accept_Request_Order_Process(Order_Process_Detail order_Process_Detail, int user_Id);
         Task<int> Delete_Order_Stones(string order_Id, int user_Id);
-        Task<int> Order_Processing_Reply_To_Assist(DataTable dataTable, int order_No, int sub_Order_Id);
-        Task<int> Order_Processing_Completed(DataTable dataTable, int order_No, int sub_Order_Id);
+        Task<int> Order_Processing_Reply_To_Assist(DataTable dataTable, string order_No, int sub_Order_Id);
+        Task<int> Order_Processing_Completed(DataTable dataTable, string order_No, int sub_Order_Id);
         Task<(DataTable, bool)> Get_Order_Excel_Data(IList<Report_Filter_Parameter> report_Filter_Parameters, int user_Id, string order_Id);
         Task<List<Dictionary<string, object>>> Get_Company_Name();
         #endregion
