@@ -9663,11 +9663,6 @@ namespace astute.Controllers
                                     IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
                                     _emailSender.Send_Stock_Email(toEmail: employee.Personal_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, user_Id: user_Id ?? 0, employee_Mail: emp_email);
                                 }
-                                return Ok(new
-                                {
-                                    statusCode = HttpStatusCode.OK,
-                                    message = CoreCommonMessage.EmailSendSuccessMessage
-                                });
                             }
                         }
 
