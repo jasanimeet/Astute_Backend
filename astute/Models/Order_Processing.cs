@@ -53,20 +53,21 @@ namespace astute.Models
     public class Order_Stone_Process
     {
         public string? Order_Id { get; set; }
-        public int? Order_No { get; set; }
+        public string? Order_No { get; set; }
         public string? Order_Status { get; set;}
         public string? QC_Request { get; set;}
         public string? Remarks { get; set; }
     }
     public class Order_Process_Detail
     {
-        public int? Order_No { get; set; }
+        public string? Order_No { get; set; }
         public int? Sub_Order_Id { get; set; }
         public string? Company_Name { get; set; }
+        public string? Is_Selected_Supp_Stock_Id { get; set; }
     }    
     public class Order_Processing_Reply_To_Assist
     {
-        public int? Order_No { get; set; }
+        public string? Order_No { get; set; }
         public int? Sub_Order_Id { get; set; }
         public object Order_Detail { get; set; }
     }

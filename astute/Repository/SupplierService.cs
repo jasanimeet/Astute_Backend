@@ -2605,7 +2605,7 @@ namespace astute.Repository
 
             var _user_Id = new SqlParameter("@User_Id", user_Id);
             var order_Id = !string.IsNullOrEmpty(order_Stone_Processing.Order_Id) ? new SqlParameter("@Order_Id", order_Stone_Processing.Order_Id) : new SqlParameter("@Order_Id", DBNull.Value);
-            var order_No = order_Stone_Processing.Order_No > 0 ? new SqlParameter("@Order_No", order_Stone_Processing.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
+            var order_No = !string.IsNullOrEmpty(order_Stone_Processing.Order_No) ? new SqlParameter("@Order_No", order_Stone_Processing.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
             var order_Status = new SqlParameter("@Order_Status", "REQUESTED");
             var stone_Status = !string.IsNullOrEmpty(request_For) ? new SqlParameter("@Stone_Status", request_For) : new SqlParameter("@Stone_Status", DBNull.Value);
             var remarks = !string.IsNullOrEmpty(order_Stone_Processing.Remarks) ? new SqlParameter("@Remarks", order_Stone_Processing.Remarks) : new SqlParameter("@Remarks", DBNull.Value);
@@ -2625,9 +2625,10 @@ namespace astute.Repository
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
-                    command.Parameters.Add(order_Process_Detail.Order_No > 0 ? new SqlParameter("@Order_No", order_Process_Detail.Order_No) : new SqlParameter("@Order_No", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Process_Detail.Order_No) ? new SqlParameter("@Order_No", order_Process_Detail.Order_No) : new SqlParameter("@Order_No", DBNull.Value));
                     command.Parameters.Add(order_Process_Detail.Sub_Order_Id > 0 ? new SqlParameter("@Sub_Order_Id", order_Process_Detail.Sub_Order_Id) : new SqlParameter("@Sub_Order_Id", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(order_Process_Detail.Company_Name) ? new SqlParameter("@Company_Name", order_Process_Detail.Company_Name) : new SqlParameter("@Company_Name", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Process_Detail.Is_Selected_Supp_Stock_Id) ? new SqlParameter("@Is_Selected_Supp_Stock_Id", order_Process_Detail.Is_Selected_Supp_Stock_Id) : new SqlParameter("@Is_Selected_Supp_Stock_Id", DBNull.Value));
 
                     await connection.OpenAsync();
 
@@ -2652,9 +2653,9 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<int> Delete_Order_Process(int order_No, int sub_Order_Id, int user_Id)
+        public async Task<int> Delete_Order_Process(string order_No, int sub_Order_Id, int user_Id)
         {
-            var _order_No = order_No > 0 ? new SqlParameter("@Order_No", order_No) : new SqlParameter("@Order_No", DBNull.Value);
+            var _order_No = !string.IsNullOrEmpty(order_No) ? new SqlParameter("@Order_No", order_No) : new SqlParameter("@Order_No", DBNull.Value);
             var _sub_Order_Id = sub_Order_Id > 0 ? new SqlParameter("@Sub_Order_Id", sub_Order_Id) : new SqlParameter("@Sub_Order_Id", DBNull.Value);
             var _user_Id = new SqlParameter("@User_Id", user_Id);
 
@@ -2666,7 +2667,7 @@ namespace astute.Repository
         public async Task<int> Accept_Request_Order_Process(Order_Process_Detail order_Process_Detail, int user_Id)
         {
             var _user_Id = new SqlParameter("@User_Id", user_Id);
-            var order_No = order_Process_Detail.Order_No > 0 ? new SqlParameter("@Order_No", order_Process_Detail.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
+            var order_No = !string.IsNullOrEmpty(order_Process_Detail.Order_No) ? new SqlParameter("@Order_No", order_Process_Detail.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
             var sub_Order_Id = order_Process_Detail.Sub_Order_Id > 0 ? new SqlParameter("@Sub_Order_Id", order_Process_Detail.Sub_Order_Id) : new SqlParameter("@Sub_Order_Id", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
@@ -2684,7 +2685,7 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<int> Order_Processing_Reply_To_Assist(DataTable dataTable, int order_No, int sub_Order_Id)
+        public async Task<int> Order_Processing_Reply_To_Assist(DataTable dataTable, string order_No, int sub_Order_Id)
         {
             var parameter = new SqlParameter("@tbl_Order", SqlDbType.Structured)
             {
@@ -2700,7 +2701,7 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<int> Order_Processing_Completed(DataTable dataTable, int order_No, int sub_Order_Id)
+        public async Task<int> Order_Processing_Completed(DataTable dataTable, string order_No, int sub_Order_Id)
         {
             var parameter = new SqlParameter("@tbl_Order", SqlDbType.Structured)
             {
