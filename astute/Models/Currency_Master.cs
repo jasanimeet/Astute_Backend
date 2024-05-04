@@ -14,6 +14,7 @@ namespace astute.Models
         public Int16 Order_No { get; set; }
         public Int16 Sort_No { get; set; }
         public bool status { get; set; }
+        public bool Is_Defualt{ get; set; }
         [NotMapped]
         public bool IsForceInsert { get; set; }
     }
