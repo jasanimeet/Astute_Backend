@@ -91,6 +91,7 @@ namespace astute
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<ILabUserService, LabUserService>();
+            services.AddScoped<IAccount_Group_Service, Account_Group_Service>();
             services.AddControllers();
             services.AddCors(p => p.AddPolicy("corsapp", builder =>
             {

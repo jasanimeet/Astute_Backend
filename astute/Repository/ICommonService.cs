@@ -46,7 +46,8 @@ namespace astute.Repository
 
         #region Years
         Task<IList<Year_Master>> GetYear(int yearId);
-        Task<IList<DropdownModel>> Get_Active_Year();
+        //Task<IList<DropdownModel>> Get_Active_Year();
+        Task<List<Dictionary<string, object>>> Get_Active_Year();
         Task<int> Insert_Update_Years(Year_Master year_Mas);
         Task<int> DeleteYears(int yearId);
         Task<int> YearChangeStatus(int year_Id, bool status);

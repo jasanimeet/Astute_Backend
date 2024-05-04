@@ -9996,73 +9996,10 @@ namespace astute.Controllers
                 });
             }
         }
+        #endregion
 
-        //[HttpPost]
-        //[Route("send_order_request_email")]
-        //[Authorize]
-        //public async Task<IActionResult> Send_Order_Request_Email(Order_Excel_Model order_Excel_Model)
-        //{
-        //    try
-        //    {
-        //        var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-        //        int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-        //        var employees = await _employeeService.GetEmployees(user_Id ?? 0, null, null);
-        //        var employee = employees.FirstOrDefault();
-        //        var (dt_Order, is_Admin) = await _supplierService.Get_Order_Excel_Data(order_Excel_Model, user_Id ?? 0, null);
-        //        if (dt_Order != null && dt_Order.Rows.Count > 0)
-        //        {
-        //            List<string> columnNames = new List<string>();
-        //            foreach (DataColumn column in dt_Order.Columns)
-        //            {
-        //                columnNames.Add(column.ColumnName);
-        //            }
+        #region Account Group Master
 
-        //            DataTable columnNamesTable = new DataTable();
-        //            columnNamesTable.Columns.Add("Column_Name", typeof(string));
-
-        //            foreach (string columnName in columnNames)
-        //            {
-        //                columnNamesTable.Rows.Add(columnName);
-        //            }
-        //            var excelPath = string.Empty;
-        //            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
-        //            if (!(Directory.Exists(filePath)))
-        //            {
-        //                Directory.CreateDirectory(filePath);
-        //            }
-        //            string filename = string.Empty;
-
-        //            filename = "Order_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-        //            EpExcelExport.Create_Order_Processing_Excel_User(dt_Order, columnNamesTable, filePath, filePath + filename);
-
-        //            excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
-        //            byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
-        //            using (MemoryStream memoryStream = new MemoryStream(fileBytes))
-        //            {   
-        //                var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(0);
-        //                if (emp_email != null)
-        //                {
-        //                    IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
-        //                    _emailSender.Send_Stock_Email(toEmail: employee.Personal_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, user_Id: user_Id ?? 0, employee_Mail: emp_email);
-        //                }
-        //                return Ok(new
-        //                {
-        //                    statusCode = HttpStatusCode.OK,
-        //                    message = CoreCommonMessage.EmailSendSuccessMessage
-        //                });
-        //            }
-        //        }
-        //        return NoContent();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await _commonService.InsertErrorLog(ex.Message, "Send_Cart_Approval_Order_Email", ex.StackTrace);
-        //        return StatusCode((int)HttpStatusCode.InternalServerError, new
-        //        {
-        //            message = ex.Message
-        //        });
-        //    }
-        //}
         #endregion
     }
 }

@@ -101,5 +101,6 @@ namespace astute.Models
         public DbSet<Customer_Party_FTP> Customer_Party_FTP { get; set; }
         public DbSet<Customer_Party_File> Customer_Party_File { get; set; }
         public DbSet<Customer_Column_Caption> Customer_Column_Caption { get; set; }
+        public DbSet<Account_Group_Master> Account_Group_Master { get; set; }
     }
 }
