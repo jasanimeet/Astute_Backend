@@ -47,6 +47,7 @@ namespace astute.Controllers
         private readonly IJWTAuthentication _jWTAuthentication;
         private readonly IEmployeeService _employeeService;
         private readonly ILabUserService _labUserService;
+        private readonly IAccount_Group_Service _account_Group_Service;
         #endregion
 
         #region Ctor
@@ -59,7 +60,8 @@ namespace astute.Controllers
             IEmailSender emailSender,
             IJWTAuthentication jWTAuthentication,
             IEmployeeService employeeService,
-            ILabUserService labUserService)
+            ILabUserService labUserService,
+            IAccount_Group_Service account_Group_Service)
         {
             _partyService = partyService;
             _configuration = configuration;
@@ -71,6 +73,7 @@ namespace astute.Controllers
             _jWTAuthentication = jWTAuthentication;
             _employeeService = employeeService;
             _labUserService = labUserService;
+            _account_Group_Service = account_Group_Service;
         }
         #endregion
 
@@ -9999,7 +10002,128 @@ namespace astute.Controllers
         #endregion
 
         #region Account Group Master
+        [HttpGet]
+        [Route("get_account_group")]
+        [Authorize]
+        public async Task<IActionResult> Get_Account_Group(int ac_Group_Code)
+        {
+            try
+            {
+                var result = await _account_Group_Service.Get_Account_Group(ac_Group_Code);
+                if(result != null && result.Count > 0)
+                {
+                    return Ok(new 
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Account_Group", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
 
+        [HttpPost]
+        [Route("create_account_group")]
+        [Authorize]
+        public async Task<IActionResult> Create_Account_Group(Account_Group_Master account_Group_Master)
+        {
+            try
+            {
+                if(ModelState.IsValid)
+                {
+                    var result = await _account_Group_Service.Create_Update_Account_Group(account_Group_Master);
+                    if(result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.AccountGroupCreated
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Account_Group", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPut]
+        [Route("update_account_group")]
+        [Authorize]
+        public async Task<IActionResult> Update_Account_Group(Account_Group_Master account_Group_Master)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _account_Group_Service.Create_Update_Account_Group(account_Group_Master);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.AccountGroupUpdated
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Account_Group", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_account_group")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Account_Group(int ac_Group_Code)
+        {
+            try
+            {
+                var result = await _account_Group_Service.Delete_Account_Group(ac_Group_Code);
+                if(result > 0)
+                {
+                    return Ok(new 
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.AccountGroupDeleted
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Account_Group", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }

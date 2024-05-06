@@ -363,5 +363,12 @@ namespace astute.CoreModel
         public static string StokeStatusManagement = "Stone Status has been change successfully.";
         public static string OrderInactive = "Order has been inactive successfully.";
         #endregion
+
+        #region Account Group
+        public static string AccountGroup = "Account group";
+        public static string AccountGroupCreated = AccountGroup + AddedSuccessfully;
+        public static string AccountGroupUpdated = AccountGroup + UpdatedSuccessfully;
+        public static string AccountGroupDeleted = AccountGroup + DeletedSuccessfully;
+        #endregion
     }
 }
