@@ -1,6 +1,13 @@
-﻿namespace astute.Repository
+﻿using astute.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace astute.Repository
 {
     public partial interface IAccount_Group_Service
     {
+        Task<int> Create_Update_Account_Group(Account_Group_Master account_Group_Master);
+        Task<List<Dictionary<string, object>>> Get_Account_Group(int ac_Group_Code);
+        Task<int> Delete_Account_Group(int ac_Group_Code);
     }
 }

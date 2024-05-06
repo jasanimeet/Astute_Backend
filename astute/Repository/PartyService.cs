@@ -4,6 +4,7 @@ using astute.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -22,18 +23,22 @@ namespace astute.Repository
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ISupplierService _supplierService;
+        private readonly IMemoryCache _cache;
         #endregion
 
         #region Ctor
         public PartyService(AstuteDbContext dbContext,
             IConfiguration configuration,
             IHttpContextAccessor httpContextAccessor,
-            ISupplierService supplierService)
+            ISupplierService supplierService,
+            IMemoryCache cache
+            )
         {
             _dbContext = dbContext;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
             _supplierService = supplierService;
+            _cache = cache;
         }
         #endregion
 
@@ -159,6 +164,22 @@ namespace astute.Repository
                 return ("success", result);
             else
                 return ("success", result);
+        }
+
+        public async Task<IList<Party_Master_Replica>> GetPartyReplicateFromCache(int partyId, string partyType)
+        {
+            string cacheKey = $"PartyReplicate_{partyId}_{partyType}";
+
+            if (_cache.TryGetValue(cacheKey, out IList<Party_Master_Replica> partyReplicate))
+            {
+                return partyReplicate;
+            }
+
+            partyReplicate = await GetParty_Raplicate(partyId, partyType);
+
+            _cache.Set(cacheKey, partyReplicate, TimeSpan.FromMinutes(10)); // for 10 min
+
+            return partyReplicate;
         }
         public async Task<IList<Party_Master_Replica>> GetParty_Raplicate(int party_Id, string party_Type)
         {

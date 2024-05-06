@@ -66,6 +66,7 @@ namespace astute
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] { "application/json" });
             });
+            services.AddMemoryCache();
 
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISupplierService, SupplierService>();
