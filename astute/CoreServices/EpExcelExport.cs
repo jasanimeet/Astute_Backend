@@ -3460,7 +3460,7 @@ namespace astute.CoreServices
                             }
                             else if (Column_Name == "BASE DISC")
                             {
-                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(33) + "" + inStartIndex + ":" + GetExcelColumnLetter(33) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(19) + "" + inStartIndex + ":" + GetExcelColumnLetter(19) + "" + (inwrkrow - 1) + "))-100),2),0)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(31) + "" + inStartIndex + ":" + GetExcelColumnLetter(31) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(19) + "" + inStartIndex + ":" + GetExcelColumnLetter(19) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "BASE AMOUNT")
@@ -3477,7 +3477,7 @@ namespace astute.CoreServices
                             }
                             else if (Column_Name == "COST DISC")
                             {
-                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(35) + "" + inStartIndex + ":" + GetExcelColumnLetter(35) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(19) + "" + inStartIndex + ":" + GetExcelColumnLetter(19) + "" + (inwrkrow - 1) + "))-100),2),0)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(33) + "" + inStartIndex + ":" + GetExcelColumnLetter(33) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(19) + "" + inStartIndex + ":" + GetExcelColumnLetter(19) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "COST AMOUNT")
@@ -3494,7 +3494,7 @@ namespace astute.CoreServices
                             }
                             else if (Column_Name == "MAX SLAB BASE DISC")
                             {
-                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(37) + "" + inStartIndex + ":" + GetExcelColumnLetter(37) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(19) + "" + inStartIndex + ":" + GetExcelColumnLetter(19) + "" + (inwrkrow - 1) + "))-100),2),0)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(35) + "" + inStartIndex + ":" + GetExcelColumnLetter(35) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(19) + "" + inStartIndex + ":" + GetExcelColumnLetter(19) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "MAX SLAB BASE AMOUNT")
@@ -3511,7 +3511,7 @@ namespace astute.CoreServices
                             }
                             else if (Column_Name == "OFFER DISC")
                             {
-                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(39) + "" + inStartIndex + ":" + GetExcelColumnLetter(39) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(19) + "" + inStartIndex + ":" + GetExcelColumnLetter(19) + "" + (inwrkrow - 1) + "))-100),2),0)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(37) + "" + inStartIndex + ":" + GetExcelColumnLetter(37) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(19) + "" + inStartIndex + ":" + GetExcelColumnLetter(19) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "OFFER AMOUNT")
@@ -3528,7 +3528,7 @@ namespace astute.CoreServices
                             }
                             else if (Column_Name == "BUYER DISC")
                             {
-                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(41) + "" + inStartIndex + ":" + GetExcelColumnLetter(41) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(19) + "" + inStartIndex + ":" + GetExcelColumnLetter(19) + "" + (inwrkrow - 1) + "))-100),2),0)";
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(39) + "" + inStartIndex + ":" + GetExcelColumnLetter(39) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(19) + "" + inStartIndex + ":" + GetExcelColumnLetter(19) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "BUYER AMOUNT")
