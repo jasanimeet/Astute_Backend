@@ -10320,7 +10320,7 @@ namespace astute.Controllers
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
-                            message = account_Master.Account_Id > 0 ? CoreCommonMessage.AccountMasterCreated : CoreCommonMessage.AccountMasterUpdated
+                            message = account_Master.Account_Id == 0 ? CoreCommonMessage.AccountMasterCreated : CoreCommonMessage.AccountMasterUpdated
                         });
                     }
                 }
@@ -10335,6 +10335,7 @@ namespace astute.Controllers
                 });
             }
         }
+
         [HttpDelete]
         [Route("delete_account_master")]
         [Authorize]
