@@ -33,8 +33,8 @@ namespace astute.Repository
             var group = !string.IsNullOrEmpty(account_Master.Group) ? new SqlParameter("@Group", account_Master.Group) : new SqlParameter("@Group", DBNull.Value);
             var sub_Group = !string.IsNullOrEmpty(account_Master.Sub_Group) ? new SqlParameter("@Sub_Group", account_Master.Sub_Group) : new SqlParameter("@Sub_Group", DBNull.Value);
             var main_Company = !string.IsNullOrEmpty(account_Master.Main_Company) ? new SqlParameter("@Main_Company", account_Master.Main_Company) : new SqlParameter("@Main_Company", DBNull.Value);
-            var purchase_Expence = new SqlParameter("@Purchase_Expence", account_Master.Purchase_Expence ?? false);
-            var sales_Expence = new SqlParameter("@Sales_Expence", account_Master.Sales_Expence ?? false);
+            var purchase_Expence = !string.IsNullOrEmpty(account_Master.Purchase_Expence) ? new SqlParameter("@Purchase_Expence", account_Master.Purchase_Expence) : new SqlParameter("@Purchase_Expence", DBNull.Value);
+            var sales_Expence = !string.IsNullOrEmpty(account_Master.Sales_Expence) ? new SqlParameter("@Sales_Expence", account_Master.Sales_Expence) : new SqlParameter("@Sales_Expence", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
                             .ExecuteSqlRawAsync(@"EXEC Account_Master_Insert_Update @Account_Id, @Account_Name, @Group, @Sub_Group, @Main_Company, @Purchase_Expence, @Sales_Expence",

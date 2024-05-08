@@ -10,8 +10,8 @@ namespace astute.Models
         public string Group { get; set; }
         public string? Sub_Group { get; set; }
         public string? Main_Company { get; set; }
-        public bool? Purchase_Expence { get; set; }
-        public bool? Sales_Expence { get; set; }
+        public string? Purchase_Expence { get; set; }
+        public string? Sales_Expence { get; set; }
         public bool? Is_Party { get; set; }
     }
 }
