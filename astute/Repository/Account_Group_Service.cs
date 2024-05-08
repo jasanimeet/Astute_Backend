@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace astute.Repository
 {
@@ -103,6 +104,22 @@ namespace astute.Repository
                 }
             }
             return dataTable;
+        }
+        public async Task<IList<DropdownModel>> Get_Perent_Account_Group()
+        {
+            var result = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"exec Account_Perent_Group_Select")
+                            .ToListAsync());
+            return result;
+        }
+        public async Task<IList<DropdownModel>> Get_Sub_Account_Group(int Id)
+        {
+            var _Id = Id > 0 ? new SqlParameter("@Id", Id) : new SqlParameter("@Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"exec Account_Sub_Group_Select @Id", _Id)
+                            .ToListAsync());
+            return result;
         }
         #endregion
     }
