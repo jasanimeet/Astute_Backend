@@ -7241,6 +7241,101 @@ namespace astute.CoreServices
                 throw;
             }
         }
+        public static void Create_Account_Group_Excel(DataTable dtStock, DataTable column_dt, string _strFolderPath, string _strFilePath)
+        {
+            try
+            {
+                using (ExcelPackage ep = new ExcelPackage())
+                {
+                    int Row_Count = column_dt.Rows.Count;
+                    int inStartIndex = 2;
+                    int inwrkrow = 2;
+                    int inEndCounter = dtStock.Rows.Count + inStartIndex;
+                    int TotalRow = dtStock.Rows.Count;
+                    int i;
+
+                    #region Company Detail on Header
+                    ep.Workbook.Worksheets.Add("Account Group");
+
+                    ExcelWorksheet worksheet = ep.Workbook.Worksheets[0];
+
+                    worksheet.Name = DateTime.Now.ToString("dd-MM-yyyy");
+                    worksheet.Cells.Style.Font.Size = 11;
+                    worksheet.Cells.Style.Font.Name = "Calibri";
+
+                    worksheet.Row(1).Height = 40; // Set row height
+                    #endregion
+
+                    #region Header Name Declaration
+                    int k = 0;
+                    for (int j = 0; j < column_dt.Rows.Count; j++)
+                    {
+                        string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
+
+                        k += 1;
+                        worksheet.Cells[1, k].Value = Column_Name;
+                        worksheet.Cells[1, k].AutoFitColumns(10);
+                    }
+
+                    worksheet.Cells[1, 1, 1, Row_Count].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[1, 1, 1, Row_Count].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    worksheet.Cells[1, 1, 1, Row_Count].Style.Font.Size = 10;
+                    worksheet.Cells[1, 1, 1, Row_Count].Style.Font.Bold = true;
+
+                    worksheet.Cells[1, 1, 1, Row_Count].AutoFilter = true; // Set Filter to header
+
+                    var cellBackgroundColor1 = worksheet.Cells[1, 1, 1, Row_Count].Style.Fill;
+                    cellBackgroundColor1.PatternType = ExcelFillStyle.Solid;
+                    Color colFromHex = ColorTranslator.FromHtml("#d3d3d3");
+                    cellBackgroundColor1.BackgroundColor.SetColor(colFromHex);
+
+                    ExcelStyle cellStyleHeader1 = worksheet.Cells[1, 1, 1, Row_Count].Style;
+                    cellStyleHeader1.Border.Left.Style = cellStyleHeader1.Border.Right.Style
+                            = cellStyleHeader1.Border.Top.Style = cellStyleHeader1.Border.Bottom.Style
+                            = ExcelBorderStyle.Medium;
+                    #endregion
+
+                    #region Set AutoFit and Decimal Number Format
+                    worksheet.Cells[inStartIndex, 1, inEndCounter, Row_Count].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    #endregion
+
+                    var asTitleCase = Thread.CurrentThread.CurrentCulture.TextInfo;
+
+                    for (i = inStartIndex; i < inEndCounter; i++)
+                    {
+                        #region Assigns Value to Cell
+                        int kk = 0;
+                        for (int j = 0; j < column_dt.Rows.Count; j++)
+                        {
+                            string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
+
+                            kk += 1;
+                            worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
+                        }
+
+                        inwrkrow++;
+                        #endregion
+                    }
+                    worksheet.Cells[inStartIndex, 1, inwrkrow, Row_Count].Style.Font.Size = 9;
+
+                    int rowEnd = worksheet.Dimension.End.Row;
+                    removingGreenTagWarning(worksheet, worksheet.Cells[1, 1, rowEnd, 100].Address);
+
+                    Byte[] bin = ep.GetAsByteArray();
+
+                    if (!Directory.Exists(_strFolderPath))
+                    {
+                        Directory.CreateDirectory(_strFolderPath);
+                    }
+
+                    File.WriteAllBytes(_strFilePath, bin);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                throw;
+            }
+        }
         static string GetExcelColumnLetter(int columnNumber)
         {
             string columnLetter = "";

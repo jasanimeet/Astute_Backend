@@ -2,9 +2,11 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace astute.Repository
@@ -78,6 +80,29 @@ namespace astute.Repository
         public async Task<int> Delete_Account_Group(int ac_Group_Code)
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Account_Group_Delete {ac_Group_Code}"));
+        }
+        public async Task<DataTable> Get_Account_Group_Excel()
+        {
+            DataTable dataTable = new DataTable();
+
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Account_Group_Excel_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandTimeout = 1800;
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    dataTable = ds.Tables[ds.Tables.Count - 1];
+                }
+            }
+            return dataTable;
         }
         #endregion
     }

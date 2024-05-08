@@ -165,17 +165,16 @@ namespace astute.Repository
             else
                 return ("success", result);
         }
-
-        public async Task<IList<Party_Master_Replica>> GetPartyReplicateFromCache(int partyId, string partyType)
+        public async Task<IList<Party_Master_Replica>> GetPartyReplicateFromCache(int partyId, string partyType, int page_Size, int Page_No)
         {
-            string cacheKey = $"PartyReplicate_{partyId}_{partyType}";
+            string cacheKey = $"PartyReplicate_{partyId}_{partyType}_{page_Size}_{Page_No}";
 
             if (_cache.TryGetValue(cacheKey, out IList<Party_Master_Replica> partyReplicate))
             {
                 return partyReplicate;
             }
 
-            partyReplicate = await GetParty_Raplicate(partyId, partyType);
+            partyReplicate = await GetParty_Raplicate_08052024(partyId, partyType, page_Size, Page_No);
 
             _cache.Set(cacheKey, partyReplicate, TimeSpan.FromMinutes(10)); // for 10 min
 
@@ -189,6 +188,26 @@ namespace astute.Repository
 
             return await _dbContext.Party_Master_Replica.FromSqlRaw("exec Party_Master_Select_Raplicate @PartyId, @Party_Type", partyId, partyType).AsNoTracking()
                 .ToListAsync();
+
+            //return await _dbContext.Party_Master_Replica.FromSqlRaw("exec Party_Master_Select_Raplicate @PartyId, @Party_Type", partyId, partyType).ToListAsync();
+        }
+        public async Task<IList<Party_Master_Replica>> GetParty_Raplicate_08052024(int party_Id, string party_Type, int page_Size, int Page_No)
+        {
+            var partyId = new SqlParameter("@PartyId", party_Id > 0 ? (object)party_Id : DBNull.Value);
+            var partyType = new SqlParameter("@Party_Type", !string.IsNullOrEmpty(party_Type) ? (object)party_Type : DBNull.Value);
+            var _page_Size = new SqlParameter("@PageSize", page_Size > 0 ? (object)page_Size : DBNull.Value);
+            var _page_num = new SqlParameter("@PageNumber", Page_No > 0 ? (object)Page_No : DBNull.Value);
+            var total_Rec_Count = new SqlParameter("@Total_Rec_Count", System.Data.SqlDbType.Int)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
+
+            var result = await _dbContext.Party_Master_Replica.FromSqlRaw("exec Party_Master_Select_Raplicate_06052024 @PartyId, @Party_Type, @PageSize, @PageNumber, @Total_Rec_Count OUT", partyId, partyType, _page_Size, _page_num, total_Rec_Count).AsNoTracking()
+                .ToListAsync();
+
+            var _total_Rec_Count = (int)total_Rec_Count.Value;
+
+            return result;
 
             //return await _dbContext.Party_Master_Replica.FromSqlRaw("exec Party_Master_Select_Raplicate @PartyId, @Party_Type", partyId, partyType).ToListAsync();
         }
@@ -269,7 +288,6 @@ namespace astute.Repository
             }
             return result;
         }
-
         public async Task<List<Dictionary<string, object>>> GetParty(int party_Id, string party_Type)
         {
             var result = new List<Dictionary<string, object>>();

@@ -759,6 +759,35 @@ namespace astute.Controllers
         }
 
         [HttpGet]
+        [Route("get_party_raplicate_08052024")]
+        [Authorize]
+        public async Task<IActionResult> Get_Party_Raplicate_08052024(int party_Id, string party_Type, int page_Size, int Page_No)
+        {
+            try
+            {
+                var result = await _partyService.GetPartyReplicateFromCache(party_Id, party_Type, page_Size, Page_No);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "GetParty_Raplicate", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
         [Route("getpartycustomer")]
         [Authorize]
         public async Task<IActionResult> GetPartyCustomer(int party_Id, string party_Type)
@@ -10121,6 +10150,61 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Delete_Account_Group", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("account_group_excel_download")]
+        [Authorize]
+        public async Task<IActionResult> Account_Group_Excel_Download()
+        {
+            try
+            {
+                var dt_acc_group = await _account_Group_Service.Get_Account_Group_Excel();
+                if(dt_acc_group != null && dt_acc_group.Rows.Count > 0)
+                {
+                    List<string> columnNames = new List<string>();
+                    foreach (DataColumn column in dt_acc_group.Columns)
+                    {
+                        columnNames.Add(column.ColumnName);
+                    }
+
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in columnNames)
+                    {
+                        columnNamesTable.Rows.Add(columnName);
+                    }
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string filename = string.Empty;
+
+                    filename = "Account_Group_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    EpExcelExport.Create_Account_Group_Excel(dt_acc_group, columnNamesTable, filePath, filePath + filename);
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Account_Group_Excel_Download", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
