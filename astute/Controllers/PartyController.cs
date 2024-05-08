@@ -10314,6 +10314,9 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    account_Master.User_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
                     var result = await _account_Master_Service.Create_Update_Account_Master(account_Master);
                     if (result > 0)
                     {
