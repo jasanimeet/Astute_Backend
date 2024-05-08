@@ -2765,51 +2765,54 @@ namespace astute.Controllers
                         dataTable.Columns.Add("Supplier_Id", typeof(int));
                         dataTable.Columns.Add("Query_Flag", typeof(string));
                         dataTable.Columns.Add("User_Id", typeof(int));
-
-                        foreach (var item in stock_Number_Generation_List.stock_Number_Generations)
-                        {
-                            dataTable.Rows.Add(item.Id, item.Exc_Party_Id, item.Pointer_Id, item.Shape, item.Stock_Type, item.Front_Prefix, item.Back_Prefix, item.Front_Prefix_Alloted, item.Start_Format, item.Start_Number, item.End_Number, item.Supplier_Id, item.Id > 0 ? 'U' : 'I', stock_Number_Generation_List.User_Id);
-                        }
-
-                        DataTable dataTableSinglePointer = new DataTable();
-                        dataTableSinglePointer.Columns.Add("Id", typeof(int));
-                        dataTableSinglePointer.Columns.Add("Exc_Party_Id", typeof(string));
-                        dataTableSinglePointer.Columns.Add("Pointer_Id", typeof(string));
-                        dataTableSinglePointer.Columns.Add("Shape", typeof(string));
-                        dataTableSinglePointer.Columns.Add("Stock_Type", typeof(string));
-                        dataTableSinglePointer.Columns.Add("Front_Prefix", typeof(string));
-                        dataTableSinglePointer.Columns.Add("Back_Prefix", typeof(string));
-                        dataTableSinglePointer.Columns.Add("Front_Prefix_Alloted", typeof(string));
-                        dataTableSinglePointer.Columns.Add("Start_Format", typeof(string));
-                        dataTableSinglePointer.Columns.Add("Start_Number", typeof(string));
-                        dataTableSinglePointer.Columns.Add("End_Number", typeof(string));
-                        dataTableSinglePointer.Columns.Add("Supplier_Id", typeof(int));
-                        dataTableSinglePointer.Columns.Add("Query_Flag", typeof(string));
-                        dataTableSinglePointer.Columns.Add("User_Id", typeof(int));
                         string ids = string.Empty;
                         foreach (var item in stock_Number_Generation_List.stock_Number_Generations)
                         {
+                            dataTable.Rows.Add(item.Id, item.Exc_Party_Id, item.Pointer_Id, item.Shape, item.Stock_Type, item.Front_Prefix, item.Back_Prefix, item.Front_Prefix_Alloted, item.Start_Format, item.Start_Number, item.End_Number, item.Supplier_Id, item.Id > 0 ? 'U' : 'I', stock_Number_Generation_List.User_Id);
+
                             if (item.Id > 0)
                                 ids += (ids.Length > 0 ? "," : "") + item.Id;
-
-                            string[] arrPointer = item.Pointer_Id.Split(",");
-                            string[] arrFrontPrifixAlloted = item.Front_Prefix_Alloted.Split(",");
-
-                            foreach (string pointer in arrPointer)
-                            {
-                                foreach (string fromPrifixAlloted in arrFrontPrifixAlloted)
-                                {
-                                    dataTableSinglePointer.Rows.Add(item.Id, item.Exc_Party_Id, pointer, item.Shape, item.Stock_Type, item.Front_Prefix, item.Back_Prefix, fromPrifixAlloted, item.Start_Format, item.Start_Number, item.End_Number, item.Supplier_Id, item.Id > 0 ? 'U' : 'I', stock_Number_Generation_List.User_Id);
-                                }
-                                if (item.Front_Prefix.Length > 0)
-                                {
-                                    dataTableSinglePointer.Rows.Add(item.Id, item.Exc_Party_Id, pointer, item.Shape, item.Stock_Type, item.Front_Prefix, item.Back_Prefix, item.Front_Prefix, item.Start_Format, item.Start_Number, item.End_Number, item.Supplier_Id, item.Id > 0 ? 'U' : 'I', stock_Number_Generation_List.User_Id);
-                                }
-                            }
                         }
 
+                        //DataTable dataTableSinglePointer = new DataTable();
+                        //dataTableSinglePointer.Columns.Add("Id", typeof(int));
+                        //dataTableSinglePointer.Columns.Add("Exc_Party_Id", typeof(string));
+                        //dataTableSinglePointer.Columns.Add("Pointer_Id", typeof(string));
+                        //dataTableSinglePointer.Columns.Add("Shape", typeof(string));
+                        //dataTableSinglePointer.Columns.Add("Stock_Type", typeof(string));
+                        //dataTableSinglePointer.Columns.Add("Front_Prefix", typeof(string));
+                        //dataTableSinglePointer.Columns.Add("Back_Prefix", typeof(string));
+                        //dataTableSinglePointer.Columns.Add("Front_Prefix_Alloted", typeof(string));
+                        //dataTableSinglePointer.Columns.Add("Start_Format", typeof(string));
+                        //dataTableSinglePointer.Columns.Add("Start_Number", typeof(string));
+                        //dataTableSinglePointer.Columns.Add("End_Number", typeof(string));
+                        //dataTableSinglePointer.Columns.Add("Supplier_Id", typeof(int));
+                        //dataTableSinglePointer.Columns.Add("Query_Flag", typeof(string));
+                        //dataTableSinglePointer.Columns.Add("User_Id", typeof(int));
+                        //string ids = string.Empty;
+                        //foreach (var item in stock_Number_Generation_List.stock_Number_Generations)
+                        //{
+                        //    if (item.Id > 0)
+                        //        ids += (ids.Length > 0 ? "," : "") + item.Id;
+
+                        //    string[] arrPointer = item.Pointer_Id.Split(",");
+                        //    string[] arrFrontPrifixAlloted = item.Front_Prefix_Alloted.Split(",");
+
+                        //    foreach (string pointer in arrPointer)
+                        //    {
+                        //        foreach (string fromPrifixAlloted in arrFrontPrifixAlloted)
+                        //        {
+                        //            dataTableSinglePointer.Rows.Add(item.Id, item.Exc_Party_Id, pointer, item.Shape, item.Stock_Type, item.Front_Prefix, item.Back_Prefix, fromPrifixAlloted, item.Start_Format, item.Start_Number, item.End_Number, item.Supplier_Id, item.Id > 0 ? 'U' : 'I', stock_Number_Generation_List.User_Id);
+                        //        }
+                        //        if (item.Front_Prefix.Length > 0)
+                        //        {
+                        //            dataTableSinglePointer.Rows.Add(item.Id, item.Exc_Party_Id, pointer, item.Shape, item.Stock_Type, item.Front_Prefix, item.Back_Prefix, item.Front_Prefix, item.Start_Format, item.Start_Number, item.End_Number, item.Supplier_Id, item.Id > 0 ? 'U' : 'I', stock_Number_Generation_List.User_Id);
+                        //        }
+                        //    }
+                        //}
+
                         var result = await _supplierService.Add_Update_Stock_Number_Generation(dataTable);
-                        await _supplierService.Add_Update_Stock_Number_Generation_Raplicate(dataTableSinglePointer, ids);
+                        await _supplierService.Add_Update_Stock_Number_Generation_Raplicate(ids);
                         if (result == 5 || result == 6 || result == 7)
                         {
                             return Conflict(new

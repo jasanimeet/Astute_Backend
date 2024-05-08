@@ -11,5 +11,6 @@ namespace astute.Models
         public int? PARENT_GROUP { get; set; }
         public string? TRANS_TYPE { get; set; }
         public string? MAIN_GROUP { get; set; }
+        public int? OPPOSITE_GROUP { get; set; }
     }
 }

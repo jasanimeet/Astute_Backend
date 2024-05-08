@@ -1200,17 +1200,27 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<int> Add_Update_Stock_Number_Generation_Raplicate(DataTable dataTable, string ids)
+        //public async Task<int> Add_Update_Stock_Number_Generation_Raplicate(DataTable dataTable, string ids)
+        //{
+        //    var parameter = new SqlParameter("@Stock_Number_Generation_Table_Type", SqlDbType.Structured)
+        //    {
+        //        TypeName = "dbo.Stock_Number_Generation_Table_Type",
+        //        Value = dataTable
+        //    };
+        //    var _ids = new SqlParameter("@Ids", ids);
+
+        //    var result = await Task.Run(() => _dbContext.Database
+        //           .ExecuteSqlRawAsync(@"exec Stock_Number_Generation_Replicate_Insert_Update @Stock_Number_Generation_Table_Type, @Ids", parameter, _ids));
+
+
+        //    return result;
+        //}
+        public async Task<int> Add_Update_Stock_Number_Generation_Raplicate(string ids)
         {
-            var parameter = new SqlParameter("@Stock_Number_Generation_Table_Type", SqlDbType.Structured)
-            {
-                TypeName = "dbo.Stock_Number_Generation_Table_Type",
-                Value = dataTable
-            };
             var _ids = new SqlParameter("@Ids", ids);
 
             var result = await Task.Run(() => _dbContext.Database
-                   .ExecuteSqlRawAsync(@"exec Stock_Number_Generation_Replicate_Insert_Update @Stock_Number_Generation_Table_Type, @Ids", parameter, _ids));
+                   .ExecuteSqlRawAsync(@"exec Stock_Number_Generation_Replicate_Insert_Update @Ids", _ids));
 
 
             return result;

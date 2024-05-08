@@ -2,8 +2,6 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Protocols;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -37,10 +35,11 @@ namespace astute.Repository
             var parent_Group = account_Group_Master.PARENT_GROUP > 0 ? new SqlParameter("@PARENT_GROUP", account_Group_Master.PARENT_GROUP) : new SqlParameter("@PARENT_GROUP", DBNull.Value);
             var trans_Type = !string.IsNullOrEmpty(account_Group_Master.TRANS_TYPE) ? new SqlParameter("@TRANS_TYPE", account_Group_Master.TRANS_TYPE) : new SqlParameter("@TRANS_TYPE", DBNull.Value);
             var main_Group = !string.IsNullOrEmpty(account_Group_Master.MAIN_GROUP) ? new SqlParameter("@MAIN_GROUP", account_Group_Master.MAIN_GROUP) : new SqlParameter("@MAIN_GROUP", DBNull.Value);
+            var opposite_Group = account_Group_Master.OPPOSITE_GROUP > 0 ? new SqlParameter("@OPPOSITE_GROUP", account_Group_Master.OPPOSITE_GROUP) : new SqlParameter("@OPPOSITE_GROUP", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
                             .ExecuteSqlRawAsync(@"EXEC Account_Group_Insert_Update @AC_GRP_CODE, @AC_GRP_NAME, @COMP_CODE, @PARENT_GROUP,
-                            @TRANS_TYPE, @MAIN_GROUP", ac_Group_Code, ac_Group_Name, comp_Code, parent_Group, trans_Type, main_Group));
+                            @TRANS_TYPE, @MAIN_GROUP, @OPPOSITE_GROUP", ac_Group_Code, ac_Group_Name, comp_Code, parent_Group, trans_Type, main_Group, opposite_Group));
 
             return result;
         }
