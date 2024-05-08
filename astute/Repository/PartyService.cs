@@ -180,6 +180,21 @@ namespace astute.Repository
 
             return partyReplicate;
         }
+        public async Task<IList<Party_Master_Replica>> GetPartyFromCache(int partyId, string partyType)
+        {
+            string cacheKey = $"PartyReplicate_{partyId}_{partyType}";
+
+            if (_cache.TryGetValue(cacheKey, out IList<Party_Master_Replica> partyReplicate))
+            {
+                return partyReplicate;
+            }
+
+            partyReplicate = await GetParty_Raplicate(partyId, partyType);
+
+            _cache.Set(cacheKey, partyReplicate, TimeSpan.FromMinutes(10)); // for 10 min
+
+            return partyReplicate;
+        }
         public async Task<IList<Party_Master_Replica>> GetParty_Raplicate(int party_Id, string party_Type)
         {
 
