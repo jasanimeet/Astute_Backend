@@ -3,6 +3,7 @@ using astute.CoreServices;
 using astute.Models;
 using astute.Repository;
 using ExcelDataReader;
+using MathNet.Numerics.Distributions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NPOI.HSSF.UserModel;
+using NPOI.POIFS.Crypt.Dsig;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
@@ -22,9 +24,11 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -740,6 +744,21 @@ namespace astute.Controllers
             try
             {
                 var result = await _partyService.GetParty_Raplicate(party_Id, party_Type);
+                //var jsonData = JsonConvert.SerializeObject(result);
+
+                //byte[] compressedData;
+                //using (var outputStream = new MemoryStream())
+                //{
+                //    using (var deflateStream = new GZipStream(outputStream, System.IO.Compression.CompressionLevel.Optimal))
+                //    {
+                //        var bytes = Encoding.UTF8.GetBytes(jsonData);
+                //        deflateStream.Write(bytes, 0, bytes.Length);
+                //    }
+                //    compressedData = outputStream.ToArray();
+                //}
+
+                //// Decompress and deserialize the data
+                //var decompressedJson = CoreService.DecompressAndDeserializeJson(compressedData);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new

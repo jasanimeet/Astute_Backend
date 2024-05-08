@@ -180,16 +180,16 @@ namespace astute.Repository
 
             return partyReplicate;
         }
-        public async Task<IList<Dictionary<string, object>>> GetPartyFromCache(int partyId, string partyType)
+        public async Task<IList<Party_Master_Replica>> GetPartyFromCache(int partyId, string partyType)
         {
             string cacheKey = $"PartyReplicate_{partyId}_{partyType}";
 
-            if (_cache.TryGetValue(cacheKey, out IList<Dictionary<string, object>> partyReplicate))
+            if (_cache.TryGetValue(cacheKey, out IList<Party_Master_Replica> partyReplicate))
             {
                 return partyReplicate;
             }
 
-            partyReplicate = await Get_Demo_Party(partyId, partyType);
+            partyReplicate = await GetParty_Raplicate(partyId, partyType);
 
             _cache.Set(cacheKey, partyReplicate, TimeSpan.FromMinutes(10)); // for 10 min
 
@@ -225,40 +225,6 @@ namespace astute.Repository
             return result;
 
             //return await _dbContext.Party_Master_Replica.FromSqlRaw("exec Party_Master_Select_Raplicate @PartyId, @Party_Type", partyId, partyType).ToListAsync();
-        }
-        public async Task<IList<Dictionary<string, object>>> Get_Demo_Party(int party_Id, string party_Type)
-        {
-            var result = new List<Dictionary<string, object>>();
-            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
-            {
-                using (var command = new SqlCommand("Party_Master_Select_Raplicate", connection))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(party_Type) ? new SqlParameter("@Party_Type", party_Type) : new SqlParameter("@Party_Type", DBNull.Value));
-
-                    await connection.OpenAsync();
-
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            var dict = new Dictionary<string, object>();
-
-                            for (int i = 0; i < reader.FieldCount; i++)
-                            {
-                                var columnName = reader.GetName(i);
-                                var columnValue = reader.GetValue(i);
-
-                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
-                            }
-
-                            result.Add(dict);
-                        }
-                    }
-                }
-            }
-            return result;
         }
 
         //public async Task<List<Dictionary<string, object>>> GetParty(int party_Id, string party_Type)
