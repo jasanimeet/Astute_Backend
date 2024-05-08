@@ -48,6 +48,7 @@ namespace astute.Controllers
         private readonly IEmployeeService _employeeService;
         private readonly ILabUserService _labUserService;
         private readonly IAccount_Group_Service _account_Group_Service;
+        private readonly IAccount_Master_Service _account_Master_Service;
         #endregion
 
         #region Ctor
@@ -61,7 +62,8 @@ namespace astute.Controllers
             IJWTAuthentication jWTAuthentication,
             IEmployeeService employeeService,
             ILabUserService labUserService,
-            IAccount_Group_Service account_Group_Service)
+            IAccount_Group_Service account_Group_Service,
+            IAccount_Master_Service account_Master_Service)
         {
             _partyService = partyService;
             _configuration = configuration;
@@ -74,6 +76,7 @@ namespace astute.Controllers
             _employeeService = employeeService;
             _labUserService = labUserService;
             _account_Group_Service = account_Group_Service;
+            _account_Master_Service = account_Master_Service;
         }
         #endregion
 
@@ -10124,6 +10127,160 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_perent_account_group")]
+        [Authorize]
+        public async Task<IActionResult> Get_Perent_Account_Group()
+        {
+            try
+            {
+                var result = await _account_Group_Service.Get_Perent_Account_Group();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "get_perent_account_group", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_sub_account_group")]
+        [Authorize]
+        public async Task<IActionResult> Get_Sub_Account_Group(int Id)
+        {
+            try
+            {
+                var result = await _account_Group_Service.Get_Sub_Account_Group(Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "get_sub_account_group", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
+        #region Account Master
+
+        [HttpGet]
+        [Route("get_account_master")]
+        [Authorize]
+        public async Task<IActionResult> Get_Account_Master(int account_Id)
+        {
+            try
+            {
+                var result = await _account_Master_Service.Get_Account_Master(account_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Account_Master", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("create_update_account_master")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Account_Master(Account_Master account_Master)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _account_Master_Service.Create_Update_Account_Master(account_Master);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = account_Master.Account_Id >0 ?CoreCommonMessage.AccountMasterCreated : CoreCommonMessage.AccountMasterUpdated
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Account_Master", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpDelete]
+        [Route("delete_account_master")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Account_Master(int account_Id)
+        {
+            try
+            {
+                var result = await _account_Master_Service.Delete_Account_Master(account_Id);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.AccountMasterDeleted
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Account_Master", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
     }
 }

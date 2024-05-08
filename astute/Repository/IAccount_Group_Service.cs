@@ -9,5 +9,7 @@ namespace astute.Repository
         Task<int> Create_Update_Account_Group(Account_Group_Master account_Group_Master);
         Task<List<Dictionary<string, object>>> Get_Account_Group(int ac_Group_Code);
         Task<int> Delete_Account_Group(int ac_Group_Code);
+        Task<IList<DropdownModel>> Get_Perent_Account_Group();
+        Task<IList<DropdownModel>> Get_Sub_Account_Group(int Id);
     }
 }
