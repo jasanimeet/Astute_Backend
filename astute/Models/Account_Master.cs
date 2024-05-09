@@ -9,7 +9,7 @@ namespace astute.Models
         public string? Account_Name { get; set; }
         public string Group { get; set; }
         public string? Sub_Group { get; set; }
-        public string? Main_Company { get; set; }
+        public int? Main_Company { get; set; }
         public string? Purchase_Expence { get; set; }
         public string? Sales_Expence { get; set; }
         public bool? Is_Party { get; set; }
