@@ -19,6 +19,7 @@ using NPOI.POIFS.Crypt.Dsig;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
+using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Crypto.Operators;
 using System;
 using System.Collections.Generic;
@@ -53,6 +54,9 @@ namespace astute.Controllers
         private readonly ILabUserService _labUserService;
         private readonly IAccount_Group_Service _account_Group_Service;
         private readonly IAccount_Master_Service _account_Master_Service;
+        private readonly ITrans_Service _trans_Service;
+
+
         #endregion
 
         #region Ctor
@@ -67,7 +71,8 @@ namespace astute.Controllers
             IEmployeeService employeeService,
             ILabUserService labUserService,
             IAccount_Group_Service account_Group_Service,
-            IAccount_Master_Service account_Master_Service)
+            IAccount_Master_Service account_Master_Service,
+            ITrans_Service trans_Service)
         {
             _partyService = partyService;
             _configuration = configuration;
@@ -81,6 +86,7 @@ namespace astute.Controllers
             _labUserService = labUserService;
             _account_Group_Service = account_Group_Service;
             _account_Master_Service = account_Master_Service;
+            _trans_Service = trans_Service;
         }
         #endregion
 
@@ -9953,7 +9959,7 @@ namespace astute.Controllers
         public async Task<IActionResult> Order_Excel_Export(Report_Filter report_Filter)
         {
             try
-            {   
+            {
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                 var (dt_Order, is_Admin) = await _supplierService.Get_Order_Excel_Data(report_Filter.Report_Filter_Parameter, user_Id ?? 0, null);
@@ -10050,9 +10056,9 @@ namespace astute.Controllers
             try
             {
                 var result = await _account_Group_Service.Get_Account_Group(ac_Group_Code);
-                if(result != null && result.Count > 0)
+                if (result != null && result.Count > 0)
                 {
-                    return Ok(new 
+                    return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.DataSuccessfullyFound,
@@ -10078,10 +10084,10 @@ namespace astute.Controllers
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     var result = await _account_Group_Service.Create_Update_Account_Group(account_Group_Master);
-                    if(result > 0)
+                    if (result > 0)
                     {
                         return Ok(new
                         {
@@ -10141,9 +10147,9 @@ namespace astute.Controllers
             try
             {
                 var result = await _account_Group_Service.Delete_Account_Group(ac_Group_Code);
-                if(result > 0)
+                if (result > 0)
                 {
-                    return Ok(new 
+                    return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.AccountGroupDeleted
@@ -10432,6 +10438,173 @@ namespace astute.Controllers
             }
         }
 
+        #endregion
+
+        #region Trans Master
+
+        [HttpGet]
+        [Route("get_trans_master")]
+        [Authorize]
+        public async Task<IActionResult> Get_Trans_Master(int Id)
+        {
+            try
+            {
+                var result = await _trans_Service.Get_Trans_Master(Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Trans_Master", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("create_update_trans_master")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Trans_Master(IList<Trans_Model> trans_Model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    if (trans_Model != null && trans_Model.Count > 0)
+                    {
+                        DataTable dataTable = new DataTable();
+                        dataTable.Columns.Add("Id", typeof(int));
+                        dataTable.Columns.Add("Trans_Type", typeof(int));
+                        dataTable.Columns.Add("Prefix", typeof(string));
+                        dataTable.Columns.Add("Voucher_No", typeof(string));
+                        dataTable.Columns.Add("Post_Prefix", typeof(bool));
+                        dataTable.Columns.Add("Year_Reset", typeof(bool));
+
+                        foreach (var item in trans_Model)
+                        {
+                            dataTable.Rows.Add(item.Id, item.Trans_Type, item.Prefix, item.Voucher_No, item.Post_Prefix, item.Year_Reset);
+                        }
+
+                        var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                        int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                        var (message, is_exists, is_Prefix_exists, result) = await _trans_Service.Create_Update_Trans_Master(dataTable, user_Id);
+
+                        if ((message == "exist" && (is_exists == true || is_Prefix_exists == true)))
+                        {
+                            if (is_exists == true && is_Prefix_exists == true && result > 0)
+                            {
+                                return Ok(new
+                                {
+                                    statusCode = HttpStatusCode.OK,
+                                    message = trans_Model.Any(X => X.Id == 0) == true ? CoreCommonMessage.TransExistsTransPrefixOMasterCreated : CoreCommonMessage.TransExistsTransPrefixOMasterUpdated
+                                });
+                            }
+                            else if (is_exists == true && is_Prefix_exists == true && result == 0)
+                            {
+                                return Ok(new
+                                {
+                                    statusCode = HttpStatusCode.OK,
+                                    message = trans_Model.Any(X => X.Id == 0) == true ? CoreCommonMessage.TransExistsTransPrefixMasterCreated : CoreCommonMessage.TransExistsTransPrefixMasterUpdated
+                                });
+                            }
+                            else if (is_exists == true && is_Prefix_exists == false && result > 0)
+                            {
+                                return Ok(new
+                                {
+                                    statusCode = HttpStatusCode.OK,
+                                    message = trans_Model.Any(X => X.Id == 0) == true ? CoreCommonMessage.TransExistsMasterOCreated : CoreCommonMessage.TransExistsMasterOUpdated
+                                });
+                            }
+                            else if (is_exists == true && is_Prefix_exists == false && result == 0)
+                            {
+                                return Ok(new
+                                {
+                                    statusCode = HttpStatusCode.OK,
+                                    message = CoreCommonMessage.TransExistsMaster
+                                });
+                            }
+                            else if (is_exists == false && is_Prefix_exists == true && result > 0)
+                            {
+                                return Ok(new
+                                {
+                                    statusCode = HttpStatusCode.OK,
+                                    message = trans_Model.Any(X => X.Id == 0) == true ? CoreCommonMessage.TransExistsPrefixOMasterCreated : CoreCommonMessage.TransExistsPrefixOMasterUpdated
+                                });
+                            }
+                            else if (is_exists == false && is_Prefix_exists == true && result == 0)
+                            {
+                                return Ok(new
+                                {
+                                    statusCode = HttpStatusCode.OK,
+                                    message = CoreCommonMessage.TransExistsMaster
+                                });
+                            }
+                        }
+                        else if ((message == "success") && result > 0)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = trans_Model.Any(x => x.Id == 0) == true ? CoreCommonMessage.TransMasterCreated : CoreCommonMessage.TransMasterUpdated
+
+                            });
+                        }
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Trans_Master", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_trans_master")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Trans_Master(string Id)
+        {
+            try
+            {
+                var result = await _trans_Service.Delete_Trans_Master(Id);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.TransMasterDeleted
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Trans_Master", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }

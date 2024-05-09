@@ -135,7 +135,7 @@ namespace astute.CoreModel
         public static string MenuMasterCreated = MenuMaster + AddedSuccessfully;
         public static string MenuMasterUpdated = MenuMaster + UpdatedSuccessfully;
         public static string MenuMasterDeleted = MenuMaster + DeletedSuccessfully;
-        public static string MenuMasterExists  = MenuMaster + AlreadyExists;
+        public static string MenuMasterExists = MenuMaster + AlreadyExists;
         #endregion
 
         #region Bank Master
@@ -345,7 +345,7 @@ namespace astute.CoreModel
         public static string LayoutReportCreated = "Report layout has been added successfully.";
         public static string LayoutReportUpdated = "Report layout has been updated successfully.";
         public static string LayoutReportDeleted = "Report layout has been deleted successfully.";
-        public static string LayoutReportNameExist = "Report layout name"+ AlreadyExists;
+        public static string LayoutReportNameExist = "Report layout name" + AlreadyExists;
         public static string ReportRolesSaveLayout = "Report roles layout saved successfully.";
 
         #endregion
@@ -355,7 +355,7 @@ namespace astute.CoreModel
         public static string CartExists = "Stone alredy exists in to cart.";
         public static string ReviewAdded = "Stone has been added to review successfully.";
         public static string StockApproved = "Stone has been send to management successfully for the approval.";
-        public static string StockOrderProcessing= "Stone has been send to order processing successfully.";
+        public static string StockOrderProcessing = "Stone has been send to order processing successfully.";
         public static string CartStockDeleted = "Stone hase been deleted from the cart successfully.";
         public static string ApprovalStockDeleted = "Stone hase been deleted from the approval list successfully.";
         public static string StokeApprovedByManagement = "Stone has been approved successfully.";
@@ -376,6 +376,26 @@ namespace astute.CoreModel
         public static string AccountMasterCreated = AccountMaster + AddedSuccessfully;
         public static string AccountMasterUpdated = AccountMaster + UpdatedSuccessfully;
         public static string AccountMasterDeleted = AccountMaster + DeletedSuccessfully;
+        #endregion
+
+        #region Trans Master
+        public static string TransMaster = "Transaction auto no master";
+        public static string TransMasterCreated = TransMaster + AddedSuccessfully;
+        public static string TransMasterUpdated = TransMaster + UpdatedSuccessfully;
+        public static string TransMasterDeleted = TransMaster + DeletedSuccessfully;
+        public static string TransExistsMaster = "Trans type already exists.";
+        public static string TransExistsOMaster = " Other records have been";
+        public static string TransExistsMasterOCreated = TransExistsMaster + TransExistsOMaster + AddedSuccessfully;
+        public static string TransExistsMasterOUpdated = TransExistsMaster + TransExistsOMaster + UpdatedSuccessfully;
+        public static string TransExistsPrefixMaster = "Prefix already exists.";
+        public static string TransExistsTransPrefixMaster = "Trans type & Prefix already exists.";
+        public static string TransExistsPrefixOMasterCreated = TransExistsPrefixMaster + TransExistsOMaster + AddedSuccessfully;
+        public static string TransExistsPrefixOMasterUpdated = TransExistsPrefixMaster + TransExistsOMaster + UpdatedSuccessfully;
+        public static string TransExistsTransPrefixMasterCreated = TransExistsTransPrefixMaster;
+        public static string TransExistsTransPrefixMasterUpdated = TransExistsTransPrefixMaster;
+        public static string TransExistsTransPrefixOMasterCreated = TransExistsTransPrefixMaster + TransExistsOMaster+ AddedSuccessfully;
+        public static string TransExistsTransPrefixOMasterUpdated = TransExistsTransPrefixMaster + TransExistsOMaster + UpdatedSuccessfully;
+
         #endregion
     }
 }
