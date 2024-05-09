@@ -1,5 +1,6 @@
 using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using astute.Authorization;
@@ -94,6 +95,7 @@ namespace astute
             services.AddScoped<ILabUserService, LabUserService>();
             services.AddScoped<IAccount_Group_Service, Account_Group_Service>();
             services.AddScoped<IAccount_Master_Service, Account_Master_Service>();
+            services.AddScoped<ITrans_Service, Trans_Service>();
             services.AddControllers();
             services.AddCors(p => p.AddPolicy("corsapp", builder =>
             {
