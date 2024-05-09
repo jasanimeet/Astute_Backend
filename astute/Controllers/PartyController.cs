@@ -743,21 +743,8 @@ namespace astute.Controllers
         {
             try
             {
-                var result = await _partyService.GetParty_Raplicate(party_Id, party_Type);
-                //var jsonData = JsonConvert.SerializeObject(result);
+                var result = await _partyService.GetPartyFromCache(party_Id, party_Type);
 
-                //byte[] compressedData;
-                //using (var outputStream = new MemoryStream())
-                //{
-                //    using (var deflateStream = new GZipStream(outputStream, System.IO.Compression.CompressionLevel.Optimal))
-                //    {
-                //        var bytes = Encoding.UTF8.GetBytes(jsonData);
-                //        deflateStream.Write(bytes, 0, bytes.Length);
-                //    }
-                //    compressedData = outputStream.ToArray();
-                //}
-                //// Decompress and deserialize the data
-                //var decompressedJson = CoreService.DecompressAndDeserializeJson(compressedData).Replace("\\","");
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new

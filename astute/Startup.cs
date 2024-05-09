@@ -2,6 +2,7 @@ using System;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using astute.Authorization;
 using astute.Models;
 using astute.Repository;
@@ -35,6 +36,7 @@ namespace astute
             services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                options.JsonSerializerOptions.WriteIndented = true;
             });
 
             services.Configure<IISServerOptions>(options =>

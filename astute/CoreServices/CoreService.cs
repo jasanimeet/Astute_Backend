@@ -737,22 +737,5 @@ namespace astute.CoreServices
 
             return result ?? "";
         }
-
-        public static string DecompressAndDeserializeJson(byte[] compressedData)
-        {
-            using (var inputStream = new MemoryStream(compressedData))
-            using (var outputStream = new MemoryStream())
-            using (var gzipStream = new GZipStream(inputStream, CompressionMode.Decompress))
-            {
-                gzipStream.CopyTo(outputStream);
-                outputStream.Seek(0, SeekOrigin.Begin);
-
-                using (var reader = new StreamReader(outputStream))
-                {
-                    string decompressedJson = reader.ReadToEnd();
-                    return decompressedJson;
-                }
-            }
-        }
     }
 }
