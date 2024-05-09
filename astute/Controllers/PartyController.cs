@@ -756,9 +756,8 @@ namespace astute.Controllers
                 //    }
                 //    compressedData = outputStream.ToArray();
                 //}
-
                 //// Decompress and deserialize the data
-                //var decompressedJson = CoreService.DecompressAndDeserializeJson(compressedData);
+                //var decompressedJson = CoreService.DecompressAndDeserializeJson(compressedData).Replace("\\","");
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
