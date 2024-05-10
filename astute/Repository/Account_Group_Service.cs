@@ -29,7 +29,7 @@ namespace astute.Repository
         #endregion
 
         #region Methods
-        public async Task<(string, int)> Create_Update_Account_Group(Account_Group_Master account_Group_Master)
+        public async Task<(string, int)> Create_Update_Account_Group(Account_Group_Master account_Group_Master, int user_Id)
         {
             var ac_Group_Code = new SqlParameter("@AC_GRP_CODE", account_Group_Master.AC_GRP_CODE);
             var ac_Group_Name = !string.IsNullOrEmpty(account_Group_Master.AC_GRP_NAME) ? new SqlParameter("@AC_GRP_NAME", account_Group_Master.AC_GRP_NAME) : new SqlParameter("@AC_GRP_NAME", DBNull.Value);
@@ -38,6 +38,7 @@ namespace astute.Repository
             var trans_Type = !string.IsNullOrEmpty(account_Group_Master.TRANS_TYPE) ? new SqlParameter("@TRANS_TYPE", account_Group_Master.TRANS_TYPE) : new SqlParameter("@TRANS_TYPE", DBNull.Value);
             var main_Group = !string.IsNullOrEmpty(account_Group_Master.MAIN_GROUP) ? new SqlParameter("@MAIN_GROUP", account_Group_Master.MAIN_GROUP) : new SqlParameter("@MAIN_GROUP", DBNull.Value);
             var opposite_Group = account_Group_Master.OPPOSITE_GROUP > 0 ? new SqlParameter("@OPPOSITE_GROUP", account_Group_Master.OPPOSITE_GROUP) : new SqlParameter("@OPPOSITE_GROUP", DBNull.Value);
+            var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
             var is_Exist = new SqlParameter("@Is_Exist", SqlDbType.Bit)
             {
                 Direction = ParameterDirection.Output
@@ -46,7 +47,7 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
                             .ExecuteSqlRawAsync(@"EXEC Account_Group_Insert_Update @AC_GRP_CODE, @AC_GRP_NAME, @COMP_CODE, @PARENT_GROUP,
-                            @TRANS_TYPE, @MAIN_GROUP, @OPPOSITE_GROUP, @Is_Exist OUT", ac_Group_Code, ac_Group_Name, comp_Code, parent_Group, trans_Type, main_Group, opposite_Group, is_Exist));
+                            @TRANS_TYPE, @MAIN_GROUP, @OPPOSITE_GROUP, User_Id, @Is_Exist OUT", ac_Group_Code, ac_Group_Name, comp_Code, parent_Group, trans_Type, main_Group, opposite_Group, _user_Id, is_Exist));
             bool _is_Exist = (bool)is_Exist.Value;
             if (_is_Exist)
                 return ("exist", 409);

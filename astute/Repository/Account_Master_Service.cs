@@ -26,7 +26,7 @@ namespace astute.Repository
         }
         #endregion
 
-        public async Task<int> Create_Update_Account_Master(Account_Master account_Master)
+        public async Task<(string, int)> Create_Update_Account_Master(Account_Master account_Master)
         {
             var account_Id = account_Master.Account_Id > 0 ? new SqlParameter("@Account_Id", account_Master.Account_Id) : new SqlParameter("@Account_Id", DBNull.Value);
             var account_Name = !string.IsNullOrEmpty(account_Master.Account_Name) ? new SqlParameter("@Account_Name", account_Master.Account_Name) : new SqlParameter("@Account_Name", DBNull.Value);
@@ -36,12 +36,20 @@ namespace astute.Repository
             var purchase_Expence = !string.IsNullOrEmpty(account_Master.Purchase_Expence) ? new SqlParameter("@Purchase_Expence", account_Master.Purchase_Expence) : new SqlParameter("@Purchase_Expence", DBNull.Value);
             var sales_Expence = !string.IsNullOrEmpty(account_Master.Sales_Expence) ? new SqlParameter("@Sales_Expence", account_Master.Sales_Expence) : new SqlParameter("@Sales_Expence", DBNull.Value);
             var user_Id = account_Master.User_Id > 0 ? new SqlParameter("@User_Id", account_Master.User_Id) : new SqlParameter("@User_Id", DBNull.Value);
+            var is_Exist = new SqlParameter("@Is_Exist", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
 
             var result = await Task.Run(() => _dbContext.Database
-                            .ExecuteSqlRawAsync(@"EXEC Account_Master_Insert_Update @Account_Id, @Account_Name, @Group, @Sub_Group, @Main_Company, @Purchase_Expence, @Sales_Expence, @User_Id",
-                            account_Id, account_Name, group, sub_Group, main_Company, purchase_Expence, sales_Expence, user_Id));
+                            .ExecuteSqlRawAsync(@"EXEC Account_Master_Insert_Update @Account_Id, @Account_Name, @Group, @Sub_Group, @Main_Company, @Purchase_Expence, @Sales_Expence, @User_Id, @Is_Exist OUT",
+                            account_Id, account_Name, group, sub_Group, main_Company, purchase_Expence, sales_Expence, user_Id, is_Exist));
+            bool _is_Exist = (bool)is_Exist.Value;
+            if (_is_Exist)
+                return ("exist", 409);
 
-            return result;
+
+            return ("success", result);
         }
 
         public async Task<List<Dictionary<string, object>>> Get_Account_Master(int account_Id)

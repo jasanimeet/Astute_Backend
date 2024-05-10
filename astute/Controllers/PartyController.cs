@@ -10086,7 +10086,9 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var (msg, result) = await _account_Group_Service.Create_Update_Account_Group(account_Group_Master);
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                    var (msg, result) = await _account_Group_Service.Create_Update_Account_Group(account_Group_Master, user_Id ?? 0);
                     if (msg == "success" && result > 0)
                     {
                         return Ok(new
@@ -10344,13 +10346,21 @@ namespace astute.Controllers
                     var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                     account_Master.User_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                    var result = await _account_Master_Service.Create_Update_Account_Master(account_Master);
-                    if (result > 0)
+                    var (msg, result) = await _account_Master_Service.Create_Update_Account_Master(account_Master);
+                    if (msg == "success" && result > 0)
                     {
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
                             message = account_Master.Account_Id == 0 ? CoreCommonMessage.AccountMasterCreated : CoreCommonMessage.AccountMasterUpdated
+                        });
+                    }
+                    else if (msg == "exist" && result == 409)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.AccountGroupAlreadyExist
                         });
                     }
                 }
