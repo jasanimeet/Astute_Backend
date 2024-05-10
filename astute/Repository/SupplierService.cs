@@ -2334,13 +2334,14 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<int> Update_Report_Layout_Save_Status(int id, int user_Id)
+        public async Task<int> Update_Report_Layout_Save_Status(int id, int user_Id, int rm_Id)
         {
             var _id = id > 0 ? new SqlParameter("@Id", id) : new SqlParameter("@Id", DBNull.Value);
             var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
+            var _rm_Id = rm_Id > 0 ? new SqlParameter("@Rm_Id", rm_Id) : new SqlParameter("@Rm_Id", DBNull.Value);
 
-            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Layout_Save_Status_Update @Id, @User_Id",
-                _id, _user_Id));
+            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Layout_Save_Status_Update @Id, @User_Id, @Rm_Id",
+                _id, _user_Id, _rm_Id));
 
             return result;
         }

@@ -749,7 +749,7 @@ namespace astute.Controllers
         {
             try
             {
-                var result = await _partyService.GetPartyFromCache(party_Id, party_Type);
+                var result = await _partyService.GetParty_Raplicate(party_Id, party_Type);
 
                 if (result != null && result.Count > 0)
                 {
@@ -5784,11 +5784,11 @@ namespace astute.Controllers
         [HttpPut]
         [Route("update_report_layout_save_status")]
         [Authorize]
-        public async Task<IActionResult> Update_Report_Layout_Save_Status(int id, int user_Id)
+        public async Task<IActionResult> Update_Report_Layout_Save_Status(int id, int user_Id, int rm_Id)
         {
             try
             {
-                var result = await _supplierService.Update_Report_Layout_Save_Status(id, user_Id);
+                var result = await _supplierService.Update_Report_Layout_Save_Status(id, user_Id, rm_Id);
                 return Ok(new
                 {
                     statusCode = HttpStatusCode.OK,
@@ -10086,13 +10086,21 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _account_Group_Service.Create_Update_Account_Group(account_Group_Master);
-                    if (result > 0)
+                    var (msg, result) = await _account_Group_Service.Create_Update_Account_Group(account_Group_Master);
+                    if (msg == "success" && result > 0)
                     {
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
                             message = CoreCommonMessage.AccountGroupCreated
+                        });
+                    }
+                    else if(msg == "exist" && result == 409)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.AccountGroupAlreadyExist
                         });
                     }
                 }
@@ -10117,13 +10125,21 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _account_Group_Service.Create_Update_Account_Group(account_Group_Master);
-                    if (result > 0)
+                    var (msg, result) = await _account_Group_Service.Create_Update_Account_Group(account_Group_Master);
+                    if (msg == "success" && result > 0)
                     {
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
                             message = CoreCommonMessage.AccountGroupUpdated
+                        });
+                    }
+                    else if (msg == "exist" && result == 409)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.AccountGroupAlreadyExist
                         });
                     }
                 }

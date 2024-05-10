@@ -91,7 +91,7 @@ namespace astute.Repository
         Task<(string, int)> Create_Update_Report_Layout_Save(Report_Layout_Save report_Layout_Save);
         Task<int> Insert_Update_Report_Layout_Save_Detail(DataTable dataTable);
         Task<IList<Report_Layout_Save>> Get_Report_Layout_Save(int User_Id, int Rm_Id);
-        Task<int> Update_Report_Layout_Save_Status(int id, int user_Id);
+        Task<int> Update_Report_Layout_Save_Status(int id, int user_Id, int rm_Id);
         Task<int> Delete_Report_Layout_Save(int id);
         Task<DataTable> Get_Report_Search_Excel(int id, IList<Report_Filter_Parameter> report_Filter_Parameters);
         Task<DataTable> Get_Stock_Availability_Report_Excel(DataTable dataTable, string stock_Id, string stock_Type);

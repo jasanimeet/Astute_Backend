@@ -7336,7 +7336,6 @@ namespace astute.CoreServices
                 throw;
             }
         }
-
         public static void Create_Account_Master_Excel(DataTable dtStock, DataTable column_dt, string _strFolderPath, string _strFilePath)
         {
             try
@@ -7432,7 +7431,6 @@ namespace astute.CoreServices
                 throw;
             }
         }
-
         static string GetExcelColumnLetter(int columnNumber)
         {
             string columnLetter = "";

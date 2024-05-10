@@ -369,6 +369,7 @@ namespace astute.CoreModel
         public static string AccountGroupCreated = AccountGroup + AddedSuccessfully;
         public static string AccountGroupUpdated = AccountGroup + UpdatedSuccessfully;
         public static string AccountGroupDeleted = AccountGroup + DeletedSuccessfully;
+        public static string AccountGroupAlreadyExist = "Account group name" + AlreadyExists;
         #endregion
 
         #region Account Master
