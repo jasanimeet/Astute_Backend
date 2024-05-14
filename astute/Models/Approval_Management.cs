@@ -53,5 +53,18 @@ namespace astute.Models
 
         [JsonProperty("EXPECTED FINAL AMT")]
         public object? Expected_Final_Amt { get; set; }
+
+        [JsonProperty("CART OFFER DISC")]
+        public object? Offer_Disc { get; set; }
+
+        [JsonProperty("CART OFFER AMT")]
+        public object? Offer_Amt { get; set; }
+
+        [JsonProperty("OFFER DISC")]
+        public object? Offer_Disc_1 { get; set; }
+
+        [JsonProperty("OFFER AMT")]
+        public object? Offer_Amt_1 { get; set; }
+
     }
 }

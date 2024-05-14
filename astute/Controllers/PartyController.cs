@@ -6491,6 +6491,8 @@ namespace astute.Controllers
                     dataTable.Columns.Add("Buyer_Amt", typeof(double));
                     dataTable.Columns.Add("Expected_Final_Disc", typeof(double));
                     dataTable.Columns.Add("Expected_Final_Amt", typeof(double));
+                    dataTable.Columns.Add("Offer_Disc", typeof(double));
+                    dataTable.Columns.Add("Offer_Amt", typeof(double));
 
                     if (app_mang_Result != null && app_mang_Result.Count > 0)
                     {
@@ -6500,7 +6502,9 @@ namespace astute.Controllers
                             (item.Buyer_Disc != null ? !string.IsNullOrEmpty(item.Buyer_Disc.ToString()) ? Convert.ToDouble(item.Buyer_Disc.ToString()) : null : null),
                             (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null),
                             (item.Expected_Final_Disc != null ? !string.IsNullOrEmpty(item.Expected_Final_Disc.ToString()) ? Convert.ToDouble(item.Expected_Final_Disc.ToString()) : null : null),
-                            (item.Expected_Final_Amt != null ? !string.IsNullOrEmpty(item.Expected_Final_Amt.ToString()) ? Convert.ToDouble(item.Expected_Final_Amt.ToString()) : null : null));
+                            (item.Expected_Final_Amt != null ? !string.IsNullOrEmpty(item.Expected_Final_Amt.ToString()) ? Convert.ToDouble(item.Expected_Final_Amt.ToString()) : null : null),
+                            (item.Offer_Disc != null ? !string.IsNullOrEmpty(item.Offer_Disc.ToString()) ? (approval_Management.Id==1 ? Convert.ToDouble(item.Offer_Disc_1.ToString()) : Convert.ToDouble(item.Offer_Disc.ToString())) : null : null),
+                            (item.Offer_Amt != null ? !string.IsNullOrEmpty(item.Offer_Amt.ToString()) ? (approval_Management.Id==1 ? Convert.ToDouble(item.Offer_Amt_1.ToString()) : Convert.ToDouble(item.Offer_Amt.ToString())) : null : null));
                         }
                     }
 
