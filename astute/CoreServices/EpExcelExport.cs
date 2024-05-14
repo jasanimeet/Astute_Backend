@@ -5347,6 +5347,18 @@ namespace astute.CoreServices
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
                                 }
+                                else if (Column_Name == "CART OFFER DISC")
+                                {
+                                    string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex]["CART OFFER DISC"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex]["CART OFFER DISC"]) : 0;
+                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                }
+                                else if (Column_Name == "CART OFFER AMT")
+                                {
+                                    string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex]["CART OFFER AMT"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex]["CART OFFER AMT"]) : 0;
+                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                }
                             }
                         }
 
