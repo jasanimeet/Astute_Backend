@@ -2804,6 +2804,42 @@ namespace astute.Repository
             }
             return result;
         }
+        public async Task<List<Dictionary<string, object>>> Get_Final_Order(Final_Order_Model final_Order_Model)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Order_Processing_Final_Order_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(final_Order_Model.From_Date) ? new SqlParameter("@From_Date", final_Order_Model.From_Date) : new SqlParameter("@From_Date", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(final_Order_Model.To_Date) ? new SqlParameter("@To_Date", final_Order_Model.To_Date) : new SqlParameter("@To_Date", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(final_Order_Model.Stock_Type) ? new SqlParameter("@STOCK_TYPE", final_Order_Model.Stock_Type) : new SqlParameter("@STOCK_TYPE", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(final_Order_Model.Stock_Id) ? new SqlParameter("@STOCK_ID", final_Order_Model.Stock_Id) : new SqlParameter("@STOCK_ID", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(final_Order_Model.Is_Selected_Supp_Stock_Id) ? new SqlParameter("@Is_Selected_Supp_Stock_Id", final_Order_Model.Is_Selected_Supp_Stock_Id) : new SqlParameter("@Is_Selected_Supp_Stock_Id", DBNull.Value));
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
         #endregion
     }
 }

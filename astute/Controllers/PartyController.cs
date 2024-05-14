@@ -10045,6 +10045,35 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("get_final_order")]
+        [Authorize]
+        public async Task<IActionResult> Get_Final_Order(Final_Order_Model final_Order_Model)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Final_Order(final_Order_Model);
+                if(result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Final_Order", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Account Group Master
@@ -10127,7 +10156,9 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var (msg, result) = await _account_Group_Service.Create_Update_Account_Group(account_Group_Master);
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                    var (msg, result) = await _account_Group_Service.Create_Update_Account_Group(account_Group_Master, user_Id ?? 0);
                     if (msg == "success" && result > 0)
                     {
                         return Ok(new

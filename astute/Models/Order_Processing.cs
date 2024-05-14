@@ -88,5 +88,14 @@ namespace astute.Models
     {
         public string Stock_Id { get; set; }
     }
+
+    public class Final_Order_Model
+    {
+        public string? From_Date { get; set; }
+        public string? To_Date { get; set; }
+        public string? Stock_Type { get; set; }
+        public string? Stock_Id { get; set; }
+        public string? Is_Selected_Supp_Stock_Id { get; set; }
+    }
     #endregion
 }

@@ -120,6 +120,7 @@ namespace astute.Repository
         Task<int> Order_Processing_Completed(DataTable dataTable, string order_No, int sub_Order_Id);
         Task<(DataTable, bool)> Get_Order_Excel_Data(IList<Report_Filter_Parameter> report_Filter_Parameters, int user_Id, string order_Id);
         Task<List<Dictionary<string, object>>> Get_Company_Name();
+        Task<List<Dictionary<string, object>>> Get_Final_Order(Final_Order_Model final_Order_Model);
         #endregion
     }
 }
