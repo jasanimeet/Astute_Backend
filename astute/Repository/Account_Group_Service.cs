@@ -47,7 +47,7 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
                             .ExecuteSqlRawAsync(@"EXEC Account_Group_Insert_Update @AC_GRP_CODE, @AC_GRP_NAME, @COMP_CODE, @PARENT_GROUP,
-                            @TRANS_TYPE, @MAIN_GROUP, @OPPOSITE_GROUP, User_Id, @Is_Exist OUT", ac_Group_Code, ac_Group_Name, comp_Code, parent_Group, trans_Type, main_Group, opposite_Group, _user_Id, is_Exist));
+                            @TRANS_TYPE, @MAIN_GROUP, @OPPOSITE_GROUP, @User_Id, @Is_Exist OUT", ac_Group_Code, ac_Group_Name, comp_Code, parent_Group, trans_Type, main_Group, opposite_Group, _user_Id, is_Exist));
             bool _is_Exist = (bool)is_Exist.Value;
             if (_is_Exist)
                 return ("exist", 409);
