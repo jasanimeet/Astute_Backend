@@ -10670,7 +10670,7 @@ namespace astute.Controllers
         }
         #endregion
 
-        #region Lab User Login Activity
+        #region Lab User Activity
 
         [HttpGet]
         [Route("get_lab_user_login_activity")]
@@ -10710,6 +10710,51 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Lab_User_Login_Activity", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_supplier_stock_user_activity")]
+        [Authorize]
+        public async Task<IActionResult> Get_Supplier_Stock_User_Activity(string? From_Date, string? To_Date, string? Common_Search)
+        {
+            try
+            {
+
+                if (!string.IsNullOrEmpty(From_Date) && !string.IsNullOrEmpty(To_Date))
+                {
+                    if (DateTime.TryParse(From_Date, out DateTime fromDate) && DateTime.TryParse(To_Date, out DateTime toDate))
+                    {
+                        if (fromDate > toDate)
+                        {
+                            return BadRequest(new
+                            {
+                                statusCode = HttpStatusCode.BadRequest,
+                                message = CoreCommonMessage.InvalidDate
+                            });
+                        }
+                    }
+                }
+
+                var result = await _lab_User_Login_Activity_Services.Get_Supplier_Stock_User_Activity(From_Date, To_Date, Common_Search);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_Stock_User_Activity", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
