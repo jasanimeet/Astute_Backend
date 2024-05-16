@@ -36,6 +36,7 @@ namespace astute.CoreModel
         public static string FileDownloadSuccessfully = "File downloaded successfully";
         public static string CustomerDetailSavedSuccessfully = "Customer detail saved successfully.";
         public static string CustomerDetailRequired = "Must require API/FTP/URL Data.";
+        public static string InvalidDate = "From Date should not be greater than To Date";
 
         #region Email Subjects
         public static string ForgetPasswordSubject = "Forget Password Email";
