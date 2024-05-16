@@ -8779,13 +8779,19 @@ namespace astute.Controllers
                 }
                 var dt_stock = await _supplierService.Get_Report_Search_Excel(cart_Approval_Order_Email_Model.id, cart_Approval_Order_Email_Model.Report_Filter_Parameter);
                 if (dt_stock != null && dt_stock.Rows.Count > 0)
-                {
+                {   
+                    var result = await _supplierService.Get_Report_Users_Role(cart_Approval_Order_Email_Model.id, (int)user_Id, null);
                     List<string> columnNames = new List<string>();
-                    foreach (DataColumn column in dt_stock.Columns)
+                    if (result != null && result.Count > 0)
                     {
-                        columnNames.Add(column.ColumnName);
+                        foreach (var item in result)
+                        {
+                            if (item.ContainsKey("Display_Name") && item.ContainsKey("Display_Type") && item["Display_Type"].ToString() == "D")
+                            {
+                                columnNames.Add(item["Display_Name"].ToString().Trim());
+                            }
+                        }
                     }
-
                     DataTable columnNamesTable = new DataTable();
                     columnNamesTable.Columns.Add("Column_Name", typeof(string));
 
@@ -8793,6 +8799,20 @@ namespace astute.Controllers
                     {
                         columnNamesTable.Rows.Add(columnName);
                     }
+
+                    //List<string> columnNames = new List<string>();
+                    //foreach (DataColumn column in dt_stock.Columns)
+                    //{
+                    //    columnNames.Add(column.ColumnName);
+                    //}
+
+                    //DataTable columnNamesTable = new DataTable();
+                    //columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    //foreach (string columnName in columnNames)
+                    //{
+                    //    columnNamesTable.Rows.Add(columnName);
+                    //}
                     var excelPath = string.Empty;
                     var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
                     if (!(Directory.Exists(filePath)))
