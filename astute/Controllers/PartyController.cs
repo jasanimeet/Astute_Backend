@@ -55,7 +55,7 @@ namespace astute.Controllers
         private readonly IAccount_Group_Service _account_Group_Service;
         private readonly IAccount_Master_Service _account_Master_Service;
         private readonly ITrans_Service _trans_Service;
-
+        private readonly ILab_User_Login_Activity_Services _lab_User_Login_Activity_Services;
 
         #endregion
 
@@ -72,7 +72,8 @@ namespace astute.Controllers
             ILabUserService labUserService,
             IAccount_Group_Service account_Group_Service,
             IAccount_Master_Service account_Master_Service,
-            ITrans_Service trans_Service)
+            ITrans_Service trans_Service,
+            ILab_User_Login_Activity_Services lab_User_Login_Activity_Services)
         {
             _partyService = partyService;
             _configuration = configuration;
@@ -87,6 +88,7 @@ namespace astute.Controllers
             _account_Group_Service = account_Group_Service;
             _account_Master_Service = account_Master_Service;
             _trans_Service = trans_Service;
+            _lab_User_Login_Activity_Services = lab_User_Login_Activity_Services;
         }
         #endregion
 
@@ -6503,8 +6505,8 @@ namespace astute.Controllers
                             (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null),
                             (item.Expected_Final_Disc != null ? !string.IsNullOrEmpty(item.Expected_Final_Disc.ToString()) ? Convert.ToDouble(item.Expected_Final_Disc.ToString()) : null : null),
                             (item.Expected_Final_Amt != null ? !string.IsNullOrEmpty(item.Expected_Final_Amt.ToString()) ? Convert.ToDouble(item.Expected_Final_Amt.ToString()) : null : null),
-                            (item.Offer_Disc != null ? !string.IsNullOrEmpty(item.Offer_Disc.ToString()) ? (approval_Management.Id==1 ? Convert.ToDouble(item.Offer_Disc_1.ToString()) : Convert.ToDouble(item.Offer_Disc.ToString())) : null : null),
-                            (item.Offer_Amt != null ? !string.IsNullOrEmpty(item.Offer_Amt.ToString()) ? (approval_Management.Id==1 ? Convert.ToDouble(item.Offer_Amt_1.ToString()) : Convert.ToDouble(item.Offer_Amt.ToString())) : null : null));
+                            (item.Offer_Disc != null ? !string.IsNullOrEmpty(item.Offer_Disc.ToString()) ? (approval_Management.Id == 1 ? Convert.ToDouble(item.Offer_Disc_1.ToString()) : Convert.ToDouble(item.Offer_Disc.ToString())) : null : null),
+                            (item.Offer_Amt != null ? !string.IsNullOrEmpty(item.Offer_Amt.ToString()) ? (approval_Management.Id == 1 ? Convert.ToDouble(item.Offer_Amt_1.ToString()) : Convert.ToDouble(item.Offer_Amt.ToString())) : null : null));
                         }
                     }
 
@@ -10058,7 +10060,7 @@ namespace astute.Controllers
             try
             {
                 var result = await _supplierService.Get_Final_Order(final_Order_Model);
-                if(result != null && result.Count > 0)
+                if (result != null && result.Count > 0)
                 {
                     return Ok(new
                     {
@@ -10130,7 +10132,7 @@ namespace astute.Controllers
                             message = CoreCommonMessage.AccountGroupCreated
                         });
                     }
-                    else if(msg == "exist" && result == 409)
+                    else if (msg == "exist" && result == 409)
                     {
                         return Conflict(new
                         {
@@ -10666,6 +10668,55 @@ namespace astute.Controllers
                 });
             }
         }
+        #endregion
+
+        #region Lab User Login Activity
+
+        [HttpGet]
+        [Route("get_lab_user_login_activity")]
+        [Authorize]
+        public async Task<IActionResult> Get_Lab_User_Login_Activity(string? From_Date, string? To_Date, string? Common_Search)
+        {
+            try
+            {
+
+                if (!string.IsNullOrEmpty(From_Date) && !string.IsNullOrEmpty(To_Date))
+                {
+                    if (DateTime.TryParse(From_Date, out DateTime fromDate) && DateTime.TryParse(To_Date, out DateTime toDate))
+                    {
+                        if (fromDate > toDate)
+                        {
+                            return BadRequest(new
+                            {
+                                statusCode = HttpStatusCode.BadRequest,
+                                message = CoreCommonMessage.InvalidDate
+                            });
+                        }
+                    }
+                }
+
+                var result = await _lab_User_Login_Activity_Services.Get_Lab_User_Login_Activity(From_Date, To_Date, Common_Search);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Lab_User_Login_Activity", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
     }
 }
