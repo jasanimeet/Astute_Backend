@@ -2206,6 +2206,7 @@ namespace astute.Repository
         }
         public async Task<string> Create_Update_Report_Search(Report_Search_Save report_Search_Save, int user_Id)
         {
+            var id = report_Search_Save.Id > 0 ? new SqlParameter("@Id", report_Search_Save.Id) : new SqlParameter("@Id", DBNull.Value);
             var name = new SqlParameter("@Name", report_Search_Save.Name);
             var userId = new SqlParameter("@User_Id", user_Id);
             var search_Value = new SqlParameter("@Search_Value", report_Search_Save.Search_Value.ToString());
@@ -2214,7 +2215,7 @@ namespace astute.Repository
             {
                 Direction = ParameterDirection.Output
             };
-            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Search_Save_Insert_Update  @Name, @Search_Value, @Search_Display,@User_Id, @IsExist OUT", name, search_Value, search_Display, userId, is_Exist));
+            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Search_Save_Insert_Update @Id, @Name, @Search_Value, @Search_Display,@User_Id, @IsExist OUT", id, name, search_Value, search_Display, userId, is_Exist));
             if ((int)is_Exist.Value == 1)
             {
                 return "exist";
