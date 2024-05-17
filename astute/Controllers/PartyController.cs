@@ -747,11 +747,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_party_raplicate")]
         [Authorize]
-        public async Task<IActionResult> Get_Party_Raplicate(int party_Id, string party_Type)
+        public async Task<IActionResult> Get_Party_Raplicate(int party_Id, string party_Type, int company_Code)
         {
             try
             {
-                var result = await _partyService.GetParty_Raplicate(party_Id, party_Type);
+                var result = await _partyService.GetParty_Raplicate(party_Id, party_Type, company_Code);
 
                 if (result != null && result.Count > 0)
                 {
