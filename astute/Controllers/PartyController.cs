@@ -8974,7 +8974,7 @@ namespace astute.Controllers
                 }
                 var dt_stock = await _supplierService.Get_Report_Search_Excel(cart_Approval_Order_Email_Model.id, cart_Approval_Order_Email_Model.Report_Filter_Parameter);
                 if (dt_stock != null && dt_stock.Rows.Count > 0)
-                {   
+                {
                     var result = await _supplierService.Get_Report_Users_Role(cart_Approval_Order_Email_Model.id, (int)user_Id, null);
                     List<string> columnNames = new List<string>();
                     if (result != null && result.Count > 0)
@@ -10829,11 +10829,12 @@ namespace astute.Controllers
                         }
                         else if ((message == "success") && result > 0)
                         {
+                            var result_data = await _trans_Service.Get_Trans_Master(0);
                             return Ok(new
                             {
                                 statusCode = HttpStatusCode.OK,
-                                message = trans_Model.Any(x => x.Id == 0) == true ? CoreCommonMessage.TransMasterCreated : CoreCommonMessage.TransMasterUpdated
-
+                                message = trans_Model.Any(x => x.Id == 0) == true ? CoreCommonMessage.TransMasterCreated : CoreCommonMessage.TransMasterUpdated,
+                                data = result_data
                             });
                         }
                     }

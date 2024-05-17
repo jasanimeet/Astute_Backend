@@ -381,7 +381,7 @@ namespace astute.CoreModel
         #endregion
 
         #region Trans Master
-        public static string TransMaster = "Transaction auto no master";
+        public static string TransMaster = "First voucher no";
         public static string TransMasterCreated = TransMaster + AddedSuccessfully;
         public static string TransMasterUpdated = TransMaster + UpdatedSuccessfully;
         public static string TransMasterDeleted = TransMaster + DeletedSuccessfully;
