@@ -10293,6 +10293,39 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("order_processing_status_update")]
+        [Authorize]
+        public async Task<IActionResult> Order_Processing_Status_Update(Order_Processing_Status_Model order_Processing_Status_Model)
+        {
+            try
+            {
+                if(ModelState.IsValid)
+                {
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                    var result = await _supplierService.Order_Processing_Status_Update(order_Processing_Status_Model, user_Id ?? 0);
+                    if(result > 0)
+                    {
+                        return Ok(new 
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.StatusChangedSuccessMessage
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Order_Processing_Status_Update", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Account Group Master

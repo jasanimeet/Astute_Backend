@@ -97,5 +97,10 @@ namespace astute.Models
         public string? Stock_Id { get; set; }
         public string? Is_Selected_Supp_Stock_Id { get; set; }
     }
+    public class Order_Processing_Status_Model
+    {
+        public int? id { get; set; }
+        public string? status { get; set; }
+    }
     #endregion
 }
