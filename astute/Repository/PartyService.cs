@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO.Pipelines;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -201,8 +202,62 @@ namespace astute.Repository
             var partyId = new SqlParameter("@PartyId", party_Id > 0 ? (object)party_Id : DBNull.Value);
             var partyType = new SqlParameter("@Party_Type", !string.IsNullOrEmpty(party_Type) ? (object)party_Type : DBNull.Value);
 
-            return await _dbContext.Party_Master_Replica.FromSqlRaw("exec Party_Master_Select_Raplicate @PartyId, @Party_Type", partyId, partyType).AsNoTracking()
-                .ToListAsync();
+            var rawResult = await _dbContext.Party_Master_Replica.FromSqlRaw("exec Party_Master_Select_Raplicate @PartyId, @Party_Type", partyId, partyType)
+                            .AsNoTracking()
+                            .ToListAsync();
+
+            var result = rawResult
+            .Select(x => new Party_Master_Replica
+            {
+                Party_Id = x.Party_Id,
+                Party_Type_Value = x.Party_Type_Value,
+                Party_Code = x.Party_Code,
+                Adress = x.Adress,
+                City = x.City,
+                State = x.State,
+                Country = x.Country,
+                Contact_Person = x.Contact_Person,
+                PinCode = x.PinCode,
+                Mobile_1 = x.Mobile_1,
+                Mobile_2 = x.Mobile_2,
+                Phone_1 = x.Phone_1,
+                Phone_2 = x.Phone_2,
+                Fax = x.Fax,
+                Email_1 = x.Email_1,
+                Email_2 = x.Email_2,
+                Party_Name = x.Party_Name,
+                Website = x.Website,
+                Cust_Freight_Account_No = x.Cust_Freight_Account_No,
+                Wechat_ID = x.Wechat_ID,
+                Skype_ID = x.Skype_ID,
+                Business_Reg_No = x.Business_Reg_No,
+                TIN_No = x.TIN_No,
+                Invoice_Grp = x.Invoice_Grp,
+                Created_Date = x.Created_Date,
+                Created_Time = x.Created_Time,
+                Created_By = x.Created_By,
+                Updated_Date = x.Updated_Date,
+                Updated_Time = x.Updated_Time,
+                Updated_By = x.Updated_By,
+                Status = x.Status,
+                LOOSE_Diamond_Type_Value = x.LOOSE_Diamond_Type_Value,
+                LOOSE_Assist_Value_1 = x.LOOSE_Assist_Value_1,
+                LOOSE_Per_1 = x.LOOSE_Per_1,
+                LOOSE_Assist_Value_2 = x.LOOSE_Assist_Value_2,
+                LOOSE_Per_2 = x.LOOSE_Per_2,
+                LOOSE_Viewing_Rights_To_Values = x.LOOSE_Viewing_Rights_To_Values,
+                LOOSE_Date = x.LOOSE_Date,
+                CERTIFIED_Diamond_Type_Value = x.CERTIFIED_Diamond_Type_Value,
+                CERTIFIED_Assist_Value_1 = x.CERTIFIED_Assist_Value_1,
+                CERTIFIED_Per_1 = x.CERTIFIED_Per_1,
+                CERTIFIED_Assist_Value_2 = x.CERTIFIED_Assist_Value_2,
+                CERTIFIED_Per_2 = x.CERTIFIED_Per_2,
+                CERTIFIED_Viewing_Rights_To_Values = x.CERTIFIED_Viewing_Rights_To_Values,
+                CERTIFIED_Date = x.CERTIFIED_Date
+            })
+            .ToList();
+
+            return result;
 
             //return await _dbContext.Party_Master_Replica.FromSqlRaw("exec Party_Master_Select_Raplicate @PartyId, @Party_Type", partyId, partyType).ToListAsync();
         }
@@ -217,7 +272,7 @@ namespace astute.Repository
                 Direction = System.Data.ParameterDirection.Output
             };
 
-            var result = await _dbContext.Party_Master_Replica.FromSqlRaw("exec Party_Master_Select_Raplicate_06052024 @PartyId, @Party_Type, @PageSize, @PageNumber, @Total_Rec_Count OUT", partyId, partyType, _page_Size, _page_num, total_Rec_Count).AsNoTracking()
+            var result = await _dbContext.Party_Master_Replica.FromSqlRaw(@"EXEC Party_Master_Select_Raplicate_06052024 @PartyId, @Party_Type, @PageSize, @PageNumber, @Total_Rec_Count OUT", partyId, partyType, _page_Size, _page_num, total_Rec_Count).AsNoTracking()
                 .ToListAsync();
 
             var _total_Rec_Count = (int)total_Rec_Count.Value;
@@ -1000,14 +1055,14 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<List<Customer_Column_Caption>> Get_Customer_Pricing_Column_Caption(int? party_Id, string? map_Flag,string? upload_Method)
+        public async Task<List<Customer_Column_Caption>> Get_Customer_Pricing_Column_Caption(int? party_Id, string? map_Flag, string? upload_Method)
         {
             var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
             var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
             var _upload_Method = !string.IsNullOrEmpty(upload_Method) ? new SqlParameter("@Upload_Method", upload_Method) : new SqlParameter("@Upload_Method", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Customer_Column_Caption
-                            .FromSqlRaw(@"exec Customer_Pricing_Column_Caption_Select @Party_Id, @Map_Flag, @Upload_Method",  _party_Id, _map_Flag, _upload_Method)
+                            .FromSqlRaw(@"exec Customer_Pricing_Column_Caption_Select @Party_Id, @Map_Flag, @Upload_Method", _party_Id, _map_Flag, _upload_Method)
                             .AsEnumerable()
                             .ToList());
 
