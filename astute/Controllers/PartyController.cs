@@ -478,7 +478,7 @@ namespace astute.Controllers
                         item.MAX_SLAB_BASE_DISC != null ? Convert.ToString(item.MAX_SLAB_BASE_DISC) : DBNull.Value,
                         item.MAX_SLAB_BASE_VALUE != null ? Convert.ToString(item.MAX_SLAB_BASE_VALUE) : DBNull.Value,
                         item.EYE_CLEAN != null ? Convert.ToString(item.EYE_CLEAN) : DBNull.Value,
-                        item.GOOD_TYPE != null ? Convert.ToString(item.EYE_CLEAN) : DBNull.Value,
+                        item.GOOD_TYPE != null ? Convert.ToString(item.GOOD_TYPE) : DBNull.Value,
                         item.Short_Code != null ? Convert.ToString(item.Short_Code) : DBNull.Value);
                 }
             }
