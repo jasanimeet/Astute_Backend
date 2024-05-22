@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NPOI.HPSF;
 using NPOI.HSSF.UserModel;
 using NPOI.POIFS.Crypt.Dsig;
 using NPOI.SS.Formula.Functions;
@@ -29,6 +30,8 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -10301,14 +10304,14 @@ namespace astute.Controllers
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                     int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                     var result = await _supplierService.Order_Processing_Status_Update(order_Processing_Status_Model, user_Id ?? 0);
-                    if(result > 0)
+                    if (result > 0)
                     {
-                        return Ok(new 
+                        return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
                             message = CoreCommonMessage.StatusChangedSuccessMessage
@@ -11005,6 +11008,77 @@ namespace astute.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
+        #region Sunrise Api
+
+        [HttpGet]
+        [Route("get_sunrise_stock")]
+        public async Task<IActionResult> Get_Sunrise_Stock()
+        {
+            try
+            {
+                var url = "https://sunrisediamonds.com.hk:8122/api/ApiSettings/BasicAuthLog?TransId=126";
+
+                using (HttpClient client = new HttpClient())
+                {
+                    var request = new HttpRequestMessage(HttpMethod.Post, url);
+
+                    var credentials = "solar:astute";
+                    var base64Credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(credentials));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64Credentials);
+
+                    HttpResponseMessage response = await client.SendAsync(request);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = await response.Content.ReadAsStringAsync();
+
+                        var cleanedJson = json.Replace("\\\"", "\"");
+
+                        var diamondInfos = JsonConvert.DeserializeObject<dynamic>(cleanedJson);
+
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = diamondInfos
+                        });
+                    }
+                    else
+                    {
+                        var errorDetails = await response.Content.ReadAsStringAsync();
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.ApiFailed,
+                            error = errorDetails
+                        });
+                    }
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                await _commonService.InsertErrorLog(httpEx.Message, "Get_Sunrise_Stock", httpEx.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = CoreCommonMessage.ApiError,
+                    error = httpEx.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Sunrise_Stock", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = ex.Message,
+                    error = ex.StackTrace
                 });
             }
         }
