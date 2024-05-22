@@ -11024,40 +11024,41 @@ namespace astute.Controllers
             {
                 var url = "https://sunrisediamonds.com.hk:8122/api/ApiSettings/BasicAuthLog?TransId=126";
 
-                using (HttpClient client = new HttpClient())
+                using (var handler = new HttpClientHandler())
                 {
-                    var request = new HttpRequestMessage(HttpMethod.Post, url);
-
-                    var credentials = "solar:astute";
-                    var base64Credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(credentials));
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64Credentials);
-
-                    HttpResponseMessage response = await client.SendAsync(request);
-
-                    if (response.IsSuccessStatusCode)
+                    using (HttpClient client = new HttpClient(handler))
                     {
-                        var json = await response.Content.ReadAsStringAsync();
+                        var credentials = "solar:astute";
+                        var base64Credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(credentials));
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64Credentials);
 
-                        var cleanedJson = json.Replace("\\\"", "\"");
+                        HttpResponseMessage response = await client.PostAsync(url, null);
 
-                        var diamondInfos = JsonConvert.DeserializeObject<dynamic>(cleanedJson);
-
-                        return Ok(new
+                        if (response.IsSuccessStatusCode)
                         {
-                            statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.DataSuccessfullyFound,
-                            data = diamondInfos
-                        });
-                    }
-                    else
-                    {
-                        var errorDetails = await response.Content.ReadAsStringAsync();
-                        return Conflict(new
+                            var json = await response.Content.ReadAsStringAsync();
+
+                            string cleanedJson = json.Replace("\\\"", "\"").Trim('"');
+
+                            List<Sunrise_Model> diamondInfos = JsonConvert.DeserializeObject<List<Sunrise_Model>>(cleanedJson);
+
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.DataSuccessfullyFound,
+                                data = diamondInfos
+                            });
+                        }
+                        else
                         {
-                            statusCode = HttpStatusCode.Conflict,
-                            message = CoreCommonMessage.ApiFailed,
-                            error = errorDetails
-                        });
+                            var errorDetails = await response.Content.ReadAsStringAsync();
+                            return Conflict(new
+                            {
+                                statusCode = HttpStatusCode.Conflict,
+                                message = CoreCommonMessage.ApiFailed,
+                                error = errorDetails
+                            });
+                        }
                     }
                 }
             }
@@ -11082,6 +11083,8 @@ namespace astute.Controllers
                 });
             }
         }
+
+    
 
         #endregion
     }
