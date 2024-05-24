@@ -40,7 +40,6 @@ namespace astute.CoreModel
         public static string ApiFailed = "Failed to retrieve data from the API";
         public static string ApiError = "Error connecting to the API";
 
-
         #region Email Subjects
         public static string ForgetPasswordSubject = "Forget Password Email";
         public static string StoneSelectionSubject = "Stone Selection";
