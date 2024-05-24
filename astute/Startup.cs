@@ -97,10 +97,11 @@ namespace astute
             services.AddScoped<ILabUserService, LabUserService>();
             services.AddScoped<IAccount_Group_Service, Account_Group_Service>();
             services.AddScoped<IAccount_Master_Service, Account_Master_Service>();
-            services.AddScoped<ITrans_Service, Trans_Service>();
+            services.AddScoped<IFirst_Voucher_No, First_Voucher_No>();
             services.AddScoped<ILab_User_Login_Activity_Services, Lab_User_Login_Activity_Services>();
+            services.AddScoped<IAccount_Trans_Master_Service, Account_Trans_Master_Service>();
 
-            
+
             services.AddControllers();
             services.AddCors(p => p.AddPolicy("corsapp", builder =>
             {
