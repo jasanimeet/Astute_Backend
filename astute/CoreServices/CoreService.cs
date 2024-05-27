@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -736,6 +737,15 @@ namespace astute.CoreServices
             }
 
             return result ?? "";
+        }
+        public static string ConvertDateFormat(string date)
+        {
+            DateTime parsedDate;
+            if (DateTime.TryParseExact(date, "M/d/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate))
+            {
+                return parsedDate.ToString("d/M/yyyy", CultureInfo.InvariantCulture);
+            }
+            return "";
         }
     }
 }

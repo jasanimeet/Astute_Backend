@@ -2,6 +2,8 @@
 using astute.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
@@ -19,15 +21,24 @@ namespace astute.Authorization
             _requestDelegate = requestDelegate;
             _httpContextAccessor = httpContextAccessor;
         }
-
+        
         public async Task Invoke(HttpContext context, IJWTAuthentication userService, IJWTAuthentication jWTAuthentication)
         {
             // Extract the JWT token from the Authorization header
-            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();            
+            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             // Validate the JWT token
             var loginUserId = jWTAuthentication.Validate_Jwt_Token(token);
-
-            if (loginUserId != null)
+            if (loginUserId != null && loginUserId == -1)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                var responseData = new { message = "Unauthorized Access", statusCode = (int)HttpStatusCode.Unauthorized };
+                var responseBody = JsonSerializer.Serialize(responseData);
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync(responseBody);
+                return;
+            }
+            else if (loginUserId != null && loginUserId > 0)
+            //if (loginUserId != null)
             {
                 // Get the client's IP address
                 var ipAddress = await CoreService.GetIP_Address(_httpContextAccessor);

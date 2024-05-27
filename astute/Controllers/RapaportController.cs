@@ -395,6 +395,7 @@ namespace astute.Controllers
             try
             {
                 var dataList = new List<RapaportPriceModel>();
+                var dataList1 = new List<RapaportPriceModel>();
                 using (HttpClient client = new HttpClient())
                 {
                     #region ROUND
@@ -429,7 +430,21 @@ namespace astute.Controllers
                                     Rate = csvReader.GetField<decimal>(5),
                                     Date = csvReader.GetField<string>(6).Trim() //DateTime.ParseExact(csvReader.GetField<string>(6).Trim(), "M/d/yyyy", CultureInfo.InvariantCulture)
                                 };
+                                string date = CoreService.ConvertDateFormat(dataItem.Date);
+                                dataItem.Date = date;
                                 dataList.Add(dataItem);
+
+                                RapaportPriceModel dataItem1 = new RapaportPriceModel
+                                {
+                                    Shape = csvReader.GetField<string>(0),
+                                    Clarity = csvReader.GetField<string>(1),
+                                    Color = csvReader.GetField<string>(2),
+                                    From_Cts = csvReader.GetField<decimal>(3),
+                                    To_Cts = csvReader.GetField<decimal>(4),
+                                    Rate = csvReader.GetField<decimal>(5),
+                                    Date = csvReader.GetField<string>(6).Trim() //DateTime.ParseExact(csvReader.GetField<string>(6).Trim(), "M/d/yyyy", CultureInfo.InvariantCulture)
+                                };
+                                dataList1.Add(dataItem1);
                             }
                         }
                     }
@@ -465,7 +480,21 @@ namespace astute.Controllers
                                     Rate = csvReader.GetField<decimal>(5),
                                     Date = csvReader.GetField<string>(6).Trim() //ateTime.ParseExact(csvReader.GetField<string>(6).Trim(), "M/d/yyyy", CultureInfo.InvariantCulture)
                                 };
+                                string date = CoreService.ConvertDateFormat(dataItem.Date);
+                                dataItem.Date = date;
                                 dataList.Add(dataItem);
+
+                                RapaportPriceModel dataItem1 = new RapaportPriceModel
+                                {
+                                    Shape = csvReader.GetField<string>(0),
+                                    Clarity = csvReader.GetField<string>(1),
+                                    Color = csvReader.GetField<string>(2),
+                                    From_Cts = csvReader.GetField<decimal>(3),
+                                    To_Cts = csvReader.GetField<decimal>(4),
+                                    Rate = csvReader.GetField<decimal>(5),
+                                    Date = csvReader.GetField<string>(6).Trim() //ateTime.ParseExact(csvReader.GetField<string>(6).Trim(), "M/d/yyyy", CultureInfo.InvariantCulture)
+                                };
+                                dataList1.Add(dataItem1);
                             }
                         }
                     }
@@ -478,7 +507,7 @@ namespace astute.Controllers
                         });
                     }
 
-                    await CreateRapaportDetail(dataList);
+                    await CreateRapaportDetail(dataList1);
                     string jsonData = CoreService.ConvertModelListToJson(dataList);
                     return Ok(jsonData);
                 }
