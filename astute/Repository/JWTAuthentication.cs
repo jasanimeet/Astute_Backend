@@ -76,9 +76,13 @@ namespace astute.Repository
                 // return user id from JWT token if validation successful
                 return userId;
             }
-            catch
+            catch (Exception ex)
             {
                 // return null if validation fails
+                if (ex.Message.Contains("The token is expired."))
+                {
+                    return -1;
+                }
                 return null;
             }
         }

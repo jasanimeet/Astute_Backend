@@ -99,8 +99,11 @@ namespace astute.Repository
         #endregion
 
         #region GIA Lap Parameter
-        Task<int> Insert_GIA_Lab_Parameter(DataTable dataTable);
-        Task<List<Dictionary<string, object>>> GIA_Lab_Parameter(string report_Date);
+        Task<int> Insert_GIA_Certificate_Data(DataTable dataTable, int supplier_Id, string customer_Name);
+        Task<List<Dictionary<string, object>>> Get_GIA_Certificate_Data(string report_Date);
+        Task<List<Dictionary<string, object>>> Get_GIA_Certificate_Update_Data(DataTable dataTable, string supplier_Name, string customer_Name);
+        Task<int> GIA_Certificate_Placed_Order(DataTable dataTable, int supplier_Id, string customer_Name);
+        //Task<List<Dictionary<string, object>>> GIA_Lab_Parameter(string report_Date);
         #endregion
 
         #region Get Excel Formet Stock Result

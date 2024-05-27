@@ -3,35 +3,24 @@ using astute.CoreServices;
 using astute.Models;
 using astute.Repository;
 using ExcelDataReader;
-using MathNet.Numerics.Distributions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NPOI.HPSF;
 using NPOI.HSSF.UserModel;
-using NPOI.POIFS.Crypt.Dsig;
-using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
-using Org.BouncyCastle.Asn1.Cmp;
-using Org.BouncyCastle.Crypto.Operators;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -55,9 +44,6 @@ namespace astute.Controllers
         private readonly IJWTAuthentication _jWTAuthentication;
         private readonly IEmployeeService _employeeService;
         private readonly ILabUserService _labUserService;
-        private readonly IAccount_Group_Service _account_Group_Service;
-        private readonly IAccount_Master_Service _account_Master_Service;
-        private readonly ITrans_Service _trans_Service;
         private readonly ILab_User_Login_Activity_Services _lab_User_Login_Activity_Services;
 
         #endregion
@@ -73,9 +59,6 @@ namespace astute.Controllers
             IJWTAuthentication jWTAuthentication,
             IEmployeeService employeeService,
             ILabUserService labUserService,
-            IAccount_Group_Service account_Group_Service,
-            IAccount_Master_Service account_Master_Service,
-            ITrans_Service trans_Service,
             ILab_User_Login_Activity_Services lab_User_Login_Activity_Services)
         {
             _partyService = partyService;
@@ -88,9 +71,6 @@ namespace astute.Controllers
             _jWTAuthentication = jWTAuthentication;
             _employeeService = employeeService;
             _labUserService = labUserService;
-            _account_Group_Service = account_Group_Service;
-            _account_Master_Service = account_Master_Service;
-            _trans_Service = trans_Service;
             _lab_User_Login_Activity_Services = lab_User_Login_Activity_Services;
         }
         #endregion
@@ -1894,6 +1874,35 @@ namespace astute.Controllers
             {
                 await _commonService.InsertErrorLog(ex.Message, "Send_Stock_On_Email", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_party_type_supplier")]
+        [Authorize]
+        public async Task<IActionResult> Get_Party_Type_Supplier()
+        {
+            try
+            {
+                var result = await _partyService.Get_Party_Type_Suplier();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Party_Type_Supplier", ex.StackTrace);
+                return Ok(new
                 {
                     message = ex.Message
                 });
@@ -7173,31 +7182,17 @@ namespace astute.Controllers
         #endregion
 
         #region Get GIA Certificate Data
-        [HttpGet]
+        [HttpPost]
         [Route("get_gia_cert_data")]
         [Authorize]
-        public async Task<IActionResult> Get_GIA_Cert_Data(string cert_no, string report_Date)
+        public async Task<IActionResult> Get_GIA_Cert_Data([FromForm] GIA_Certificate_Parameter_Model gIA_Certificate_Parameter_Model, IFormFile gIA_Cert_Excel_File)
         {
             var key = _configuration["Sunrise_Key"];
             try
             {
-                if (!string.IsNullOrEmpty(report_Date))
-                {
-                    var result = await _supplierService.GIA_Lab_Parameter(report_Date);
-                    if (result != null && result.Count > 0)
-                    {
-                        return Ok(new
-                        {
-                            statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.DataSuccessfullyFound,
-                            data = result
-                        });
-                    }
-                    return NoContent();
-                }
-                else
-                {
-                    var query = @"
+                bool success = false;
+
+                var query = @"
                              query ReportQuery($ReportNumber: String!) {
                                 getReport(report_number: $ReportNumber){
                                     report_number
@@ -7283,61 +7278,92 @@ namespace astute.Controllers
                             }
                             ";
 
-                    var lst_Cert_No = cert_no.Split(",").ToList();
-                    DataTable dataTable = new DataTable();
-                    #region Set Column In Datatable
-                    dataTable.Columns.Add("Report_No", typeof(string));
-                    dataTable.Columns.Add("Report_Date", typeof(string));
-                    dataTable.Columns.Add("Length", typeof(float));
-                    dataTable.Columns.Add("Width", typeof(float));
-                    dataTable.Columns.Add("Depth", typeof(float));
-                    dataTable.Columns.Add("Color_Grade", typeof(string));
-                    dataTable.Columns.Add("Clarity_Grade", typeof(string));
-                    dataTable.Columns.Add("Cut_Grade", typeof(string));
-                    dataTable.Columns.Add("Polish_Grade", typeof(string));
-                    dataTable.Columns.Add("Symmetry_Grade", typeof(string));
-                    dataTable.Columns.Add("Fluorescence", typeof(string));
-                    dataTable.Columns.Add("Inscriptions", typeof(string));
-                    dataTable.Columns.Add("Key_To_Symbols", typeof(string));
-                    dataTable.Columns.Add("Report_Comments", typeof(string));
-                    dataTable.Columns.Add("Table_Pct", typeof(float));
-                    dataTable.Columns.Add("Depth_Pct", typeof(float));
-                    dataTable.Columns.Add("Crown_Angle", typeof(float));
-                    dataTable.Columns.Add("Crown_Height", typeof(float));
-                    dataTable.Columns.Add("Pavilion_Angle", typeof(float));
-                    dataTable.Columns.Add("Pavilion_Depth", typeof(float));
-                    dataTable.Columns.Add("Star_Length", typeof(float));
-                    dataTable.Columns.Add("Lower_Half", typeof(float));
-                    dataTable.Columns.Add("Shape_Code", typeof(string));
-                    dataTable.Columns.Add("Shape_Group", typeof(string));
-                    dataTable.Columns.Add("Carats", typeof(float));
-                    dataTable.Columns.Add("Clarity", typeof(string));
-                    dataTable.Columns.Add("Cut", typeof(string));
-                    dataTable.Columns.Add("Polish", typeof(string));
-                    dataTable.Columns.Add("Symmetry", typeof(string));
-                    dataTable.Columns.Add("Fluorescence_Intensity", typeof(string));
-                    dataTable.Columns.Add("Fluorescence_Color");
-                    dataTable.Columns.Add("Girdle_Condition", typeof(string));
-                    dataTable.Columns.Add("Girdle_Condition_Code", typeof(string));
-                    dataTable.Columns.Add("Girdle_Pct", typeof(float));
-                    dataTable.Columns.Add("Girdle_Size", typeof(string));
-                    dataTable.Columns.Add("Girdle_Size_Code", typeof(string));
-                    dataTable.Columns.Add("Culet_Code", typeof(string));
-                    dataTable.Columns.Add("Certificate_PDF", typeof(string));
-                    dataTable.Columns.Add("Plotting_Diagram", typeof(string));
-                    dataTable.Columns.Add("Proportions_Diagram", typeof(string));
-                    dataTable.Columns.Add("Digital_Card", typeof(string));
-                    #endregion
-                    bool success = false;
-                    string certificate_no = "";
-                    if (lst_Cert_No != null && lst_Cert_No.Count > 0)
+                DataTable dataTable = new DataTable();
+                #region Set Column In Datatable
+                dataTable.Columns.Add("Certificate_No", typeof(string));
+                dataTable.Columns.Add("Certificate_Date", typeof(string));
+                dataTable.Columns.Add("Shape", typeof(string));
+                dataTable.Columns.Add("Cts", typeof(float));
+                dataTable.Columns.Add("Color", typeof(string));
+                dataTable.Columns.Add("Clarity", typeof(string));
+                dataTable.Columns.Add("Cut", typeof(string));
+                dataTable.Columns.Add("Polish", typeof(string));
+                dataTable.Columns.Add("Symm", typeof(string));
+                dataTable.Columns.Add("Fls_Intensity", typeof(string));
+                dataTable.Columns.Add("Fls_Color", typeof(string));
+                dataTable.Columns.Add("Length", typeof(float));
+                dataTable.Columns.Add("Width", typeof(float));
+                dataTable.Columns.Add("Depth", typeof(float));
+                dataTable.Columns.Add("Depth_Per", typeof(float));
+                dataTable.Columns.Add("Table_Per", typeof(float));
+                dataTable.Columns.Add("Culet", typeof(string));
+                dataTable.Columns.Add("Laser_Inscription", typeof(string));
+                dataTable.Columns.Add("Crown_Angle", typeof(float));
+                dataTable.Columns.Add("Crown_Height", typeof(float));
+                dataTable.Columns.Add("Pavillion_Angle", typeof(float));
+                dataTable.Columns.Add("Pavillion_Height", typeof(float));
+                dataTable.Columns.Add("Girdle_Per", typeof(float));
+                dataTable.Columns.Add("Girdle_Condition", typeof(string));
+                dataTable.Columns.Add("LR_Half", typeof(float));
+                dataTable.Columns.Add("Str_Ln", typeof(float));
+                dataTable.Columns.Add("Certificate_Link", typeof(string));
+                dataTable.Columns.Add("Key_to_Symbol", typeof(string));
+                dataTable.Columns.Add("Lab_Comment", typeof(string));
+                dataTable.Columns.Add("Rap_Rate", typeof(float));
+                dataTable.Columns.Add("Rap_Amount", typeof(float));
+                dataTable.Columns.Add("Supplier_Cost_Disc", typeof(float));
+                dataTable.Columns.Add("Supplier_Cost_Amt", typeof(float));
+                dataTable.Columns.Add("Offer_Disc", typeof(float));
+                dataTable.Columns.Add("Offer_Amt", typeof(float));
+                dataTable.Columns.Add("Pointer", typeof(string));
+                dataTable.Columns.Add("Cut_Grade", typeof(string));
+                dataTable.Columns.Add("Polish_Grade", typeof(string));
+                dataTable.Columns.Add("Symm_Grade", typeof(string));
+                dataTable.Columns.Add("Fluorescence", typeof(string));
+                dataTable.Columns.Add("Shape_Code", typeof(string));
+                dataTable.Columns.Add("Girdle_Condition_Code", typeof(string));
+                dataTable.Columns.Add("Plotting_Diagram", typeof(string));
+                dataTable.Columns.Add("Proportions_Diagram", typeof(string));
+                dataTable.Columns.Add("Digital_Card", typeof(string));
+                #endregion
+
+                if (gIA_Cert_Excel_File != null)
+                {
+                    IList<GIA_Certificate_Excel_Model> excel_data_list = new List<GIA_Certificate_Excel_Model>();
+                    var filePath = Path.GetTempFileName();
+                    using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        foreach (var item in lst_Cert_No)
+                        await gIA_Cert_Excel_File.CopyToAsync(stream);
+                    }
+                    using (var package = new ExcelPackage(new FileInfo(filePath)))
+                    {
+                        var worksheet = package.Workbook.Worksheets[0];
+                        int startRow = 2;
+
+                        for (int row = startRow; row <= worksheet.Dimension.End.Row; row++)
                         {
-                            certificate_no = item;
+                            string cert_No = worksheet.Cells[row, 1].GetValue<string>();
+                            string supp_cost_disc = worksheet.Cells[row, 2].GetValue<string>();
+                            string supp_cost_amt = worksheet.Cells[row, 3].GetValue<string>();
+                            string offer_disc = worksheet.Cells[row, 4].GetValue<string>();
+                            string offer_amt = worksheet.Cells[row, 5].GetValue<string>();
+                            excel_data_list.Add(new GIA_Certificate_Excel_Model()
+                            {
+                                Certificate_No = cert_No,
+                                Supplier_Cost_Disc = supp_cost_disc,
+                                Supplier_Cost_Amt = supp_cost_amt,
+                                Offer_Disc = offer_disc,
+                                Offer_Amt = offer_amt
+                            });
+                        }
+                    }
+                    if(excel_data_list != null && excel_data_list.Count > 0)
+                    {
+                        foreach (var item in excel_data_list)
+                        {   
                             var query_variables = new Dictionary<string, string>
                             {
-                                { "ReportNumber", item}
+                                { "ReportNumber", item.Certificate_No}
                             };
 
                             var body = new Dictionary<string, object>
@@ -7363,8 +7389,16 @@ namespace astute.Controllers
                                 string[] arrMeasurements = null;
                                 arrMeasurements = measurements.Split('-', 'x');
 
-                                dataRow["Report_No"] = gIA_Report.Data.GetReport.ReportNumber;
-                                dataRow["Report_Date"] = Convert.ToDateTime(gIA_Report.Data.GetReport.ReportDate).ToString("dd-MM-yyyy");
+                                dataRow["Pointer"] = DBNull.Value;
+                                dataRow["Rap_Rate"] = DBNull.Value;
+                                dataRow["Rap_Amount"] = DBNull.Value;
+                                dataRow["Supplier_Cost_Disc"] = !string.IsNullOrEmpty(item.Supplier_Cost_Disc) ? float.Parse(item.Supplier_Cost_Disc) : DBNull.Value;
+                                dataRow["Supplier_Cost_Amt"] = !string.IsNullOrEmpty(item.Supplier_Cost_Amt) ? float.Parse(item.Supplier_Cost_Amt) : DBNull.Value;
+                                dataRow["Offer_Disc"] = !string.IsNullOrEmpty(item.Offer_Disc) ? float.Parse(item.Offer_Disc) : DBNull.Value;
+                                dataRow["Offer_Amt"] = !string.IsNullOrEmpty(item.Offer_Amt) ? float.Parse(item.Offer_Amt) : DBNull.Value;
+
+                                dataRow["Certificate_No"] = gIA_Report.Data.GetReport.ReportNumber;
+                                dataRow["Certificate_Date"] = Convert.ToDateTime(gIA_Report.Data.GetReport.ReportDate).ToString("dd-MM-yyyy");
                                 if (arrMeasurements != null && arrMeasurements.Length == 3)
                                 {
                                     var length = arrMeasurements[1].ToString().Replace("mm", "").Trim();
@@ -7380,13 +7414,12 @@ namespace astute.Controllers
                                     dataRow["Width"] = DBNull.Value;
                                     dataRow["Depth"] = DBNull.Value;
                                 }
-                                dataRow["Color_Grade"] = gIA_Report.Data.GetReport.Results.ColorGrade;
-                                dataRow["Clarity_Grade"] = gIA_Report.Data.GetReport.Results.ClarityGrade;
+                                dataRow["Color"] = gIA_Report.Data.GetReport.Results.ColorGrade;
                                 dataRow["Cut_Grade"] = gIA_Report.Data.GetReport.Results.CutGrade;
                                 dataRow["Polish_Grade"] = gIA_Report.Data.GetReport.Results.Polish;
-                                dataRow["Symmetry_Grade"] = gIA_Report.Data.GetReport.Results.Symmetry;
+                                dataRow["Symm_Grade"] = gIA_Report.Data.GetReport.Results.Symmetry;
                                 dataRow["Fluorescence"] = gIA_Report.Data.GetReport.Results.Fluorescence;
-                                dataRow["Inscriptions"] = gIA_Report.Data.GetReport.Results.Inscriptions;
+                                dataRow["Laser_Inscription"] = gIA_Report.Data.GetReport.Results.Inscriptions;
                                 if (gIA_Report.Data.GetReport.Results.KeyToSymbols != null)
                                 {
                                     string keyToSymbols = "";
@@ -7394,97 +7427,89 @@ namespace astute.Controllers
                                     {
                                         keyToSymbols += (keyToSymbols.Length == 0 ? "" : ", ") + obj.characteristic;
                                     }
-                                    dataRow["Key_To_Symbols"] = keyToSymbols;
+                                    dataRow["Key_to_Symbol"] = keyToSymbols;
                                 }
                                 else
                                 {
-                                    dataRow["Key_To_Symbols"] = DBNull.Value;
+                                    dataRow["Key_to_Symbol"] = DBNull.Value;
                                 }
-                                dataRow["Report_Comments"] = gIA_Report.Data.GetReport.Results.ReportComments;
+                                dataRow["Lab_Comment"] = gIA_Report.Data.GetReport.Results.ReportComments;
                                 if (gIA_Report.Data.GetReport.Results.Proportions != null)
                                 {
-                                    dataRow["Table_Pct"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.TablePct) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.TablePct) : DBNull.Value;
-                                    dataRow["Depth_Pct"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.DepthPct) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.DepthPct) : DBNull.Value;
+                                    dataRow["Table_Per"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.TablePct) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.TablePct) : DBNull.Value;
+                                    dataRow["Depth_Per"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.DepthPct) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.DepthPct) : DBNull.Value;
                                     dataRow["Crown_Angle"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.CrownAngle) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.CrownAngle) : DBNull.Value;
                                     dataRow["Crown_Height"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.CrownHeight) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.CrownHeight) : DBNull.Value;
-                                    dataRow["Pavilion_Angle"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.PavilionAngle) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.PavilionAngle) : DBNull.Value;
-                                    dataRow["Pavilion_Depth"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.PavilionDepth) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.PavilionDepth) : DBNull.Value;
-                                    dataRow["Star_Length"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.StarLength) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.StarLength) : DBNull.Value;
-                                    dataRow["Lower_Half"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.LowerHalf) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.LowerHalf) : DBNull.Value;
+                                    dataRow["Pavillion_Angle"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.PavilionAngle) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.PavilionAngle) : DBNull.Value;
+                                    dataRow["Pavillion_Height"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.PavilionDepth) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.PavilionDepth) : DBNull.Value;
+                                    dataRow["Str_Ln"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.StarLength) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.StarLength) : DBNull.Value;
+                                    dataRow["LR_Half"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.LowerHalf) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.LowerHalf) : DBNull.Value;
                                 }
                                 else
                                 {
-                                    dataRow["Table_Pct"] = DBNull.Value;
-                                    dataRow["Depth_Pct"] = DBNull.Value;
+                                    dataRow["Table_Per"] = DBNull.Value;
+                                    dataRow["Depth_Per"] = DBNull.Value;
                                     dataRow["Crown_Angle"] = DBNull.Value;
                                     dataRow["Crown_Height"] = DBNull.Value;
-                                    dataRow["Pavilion_Angle"] = DBNull.Value;
-                                    dataRow["Pavilion_Depth"] = DBNull.Value;
-                                    dataRow["Star_Length"] = DBNull.Value;
-                                    dataRow["Lower_Half"] = DBNull.Value;
+                                    dataRow["Pavillion_Angle"] = DBNull.Value;
+                                    dataRow["Pavillion_Height"] = DBNull.Value;
+                                    dataRow["Str_Ln"] = DBNull.Value;
+                                    dataRow["LR_Half"] = DBNull.Value;
                                 }
                                 if (gIA_Report.Data.GetReport.Results.Data.Shape != null)
                                 {
                                     dataRow["Shape_Code"] = gIA_Report.Data.GetReport.Results.Data.Shape.ShapeCode;
-                                    dataRow["Shape_Group"] = gIA_Report.Data.GetReport.Results.Data.Shape.ShapeGroup;
+                                    dataRow["Shape"] = gIA_Report.Data.GetReport.Results.Data.Shape.ShapeGroup;
                                 }
                                 else
                                 {
                                     dataRow["Shape_Code"] = DBNull.Value;
-                                    dataRow["Shape_Group"] = DBNull.Value;
+                                    dataRow["Shape"] = DBNull.Value;
                                 }
-                                dataRow["Carats"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Data.Weight.WeightWeight) ? float.Parse(gIA_Report.Data.GetReport.Results.Data.Weight.WeightWeight) : DBNull.Value;
+                                dataRow["Cts"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Data.Weight.WeightWeight) ? float.Parse(gIA_Report.Data.GetReport.Results.Data.Weight.WeightWeight) : DBNull.Value;
                                 dataRow["Clarity"] = gIA_Report.Data.GetReport.Results.Data.Clarity;
                                 dataRow["Cut"] = gIA_Report.Data.GetReport.Results.Data.Cut;
                                 dataRow["Polish"] = gIA_Report.Data.GetReport.Results.Data.Polish;
-                                dataRow["Symmetry"] = gIA_Report.Data.GetReport.Results.Data.Symmetry;
+                                dataRow["Symm"] = gIA_Report.Data.GetReport.Results.Data.Symmetry;
                                 if (gIA_Report.Data.GetReport.Results.Data.Fluorescence != null)
                                 {
-                                    dataRow["Fluorescence_Intensity"] = gIA_Report.Data.GetReport.Results.Data.Fluorescence.FluorescenceIntensity;
-                                    dataRow["Fluorescence_Color"] = gIA_Report.Data.GetReport.Results.Data.Fluorescence.FluorescenceColor;
+                                    dataRow["Fls_Intensity"] = gIA_Report.Data.GetReport.Results.Data.Fluorescence.FluorescenceIntensity;
+                                    dataRow["Fls_Color"] = gIA_Report.Data.GetReport.Results.Data.Fluorescence.FluorescenceColor;
                                 }
                                 else
                                 {
-                                    dataRow["Fluorescence_Intensity"] = DBNull.Value;
-                                    dataRow["Fluorescence_Color"] = DBNull.Value;
+                                    dataRow["Fls_Intensity"] = DBNull.Value;
+                                    dataRow["Fls_Color"] = DBNull.Value;
                                 }
                                 if (gIA_Report.Data.GetReport.Results.Data.Girdle != null)
                                 {
                                     dataRow["Girdle_Condition"] = gIA_Report.Data.GetReport.Results.Data.Girdle.GirdleCondition;
                                     dataRow["Girdle_Condition_Code"] = gIA_Report.Data.GetReport.Results.Data.Girdle.GirdleConditionCode;
-                                    dataRow["Girdle_Pct"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Data.Girdle.GirdlePct) ? float.Parse(gIA_Report.Data.GetReport.Results.Data.Girdle.GirdlePct) : DBNull.Value;
-                                    dataRow["Girdle_Size"] = gIA_Report.Data.GetReport.Results.Data.Girdle.GirdleSize;
-                                    dataRow["Girdle_Size_Code"] = gIA_Report.Data.GetReport.Results.Data.Girdle.GirdleSizeCode;
+                                    dataRow["Girdle_Per"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Data.Girdle.GirdlePct) ? float.Parse(gIA_Report.Data.GetReport.Results.Data.Girdle.GirdlePct) : DBNull.Value;
                                 }
                                 else
                                 {
                                     dataRow["Girdle_Condition"] = DBNull.Value;
                                     dataRow["Girdle_Condition_Code"] = DBNull.Value;
-                                    dataRow["Girdle_Pct"] = DBNull.Value;
-                                    dataRow["Girdle_Size"] = DBNull.Value;
-                                    dataRow["Girdle_Size_Code"] = DBNull.Value;
+                                    dataRow["Girdle_Per"] = DBNull.Value;
                                 }
-                                dataRow["Culet_Code"] = gIA_Report.Data.GetReport.Results.Data.Culet.CuletCode;
+                                dataRow["Culet"] = gIA_Report.Data.GetReport.Results.Data.Culet.CuletCode;
                                 if (gIA_Report.Data.GetReport.Links != null)
                                 {
-                                    dataRow["Certificate_PDF"] = gIA_Report.Data.GetReport.Links.Pdf;
+                                    dataRow["Certificate_Link"] = gIA_Report.Data.GetReport.Links.Pdf;
                                     dataRow["Plotting_Diagram"] = gIA_Report.Data.GetReport.Links.PlottingDiagram;
                                     dataRow["Proportions_Diagram"] = gIA_Report.Data.GetReport.Links.ProportionsDiagram;
                                     dataRow["Digital_Card"] = gIA_Report.Data.GetReport.Links.DigitalCard;
                                 }
                                 else
                                 {
-                                    dataRow["Certificate_PDF"] = DBNull.Value;
+                                    dataRow["Certificate_Link"] = DBNull.Value;
                                     dataRow["Plotting_Diagram"] = DBNull.Value;
                                     dataRow["Proportions_Diagram"] = DBNull.Value;
                                     dataRow["Digital_Card"] = DBNull.Value;
                                 }
                                 dataTable.Rows.Add(dataRow);
                                 success = true;
-                                if (lst_Cert_No.Count > 1)
-                                {
-                                    certificate_no += ", " + certificate_no;
-                                }
                             }
                             else
                             {
@@ -7492,23 +7517,8 @@ namespace astute.Controllers
                             }
                         }
 
-                        var result = new List<Dictionary<string, object>>();
-                        foreach (DataRow row in dataTable.Rows)
-                        {
-                            var dict = new Dictionary<string, object>();
-                            foreach (DataColumn col in dataTable.Columns)
-                            {
-                                if (row[col] == DBNull.Value)
-                                {
-                                    dict[col.ColumnName] = null;
-                                }
-                                else
-                                {
-                                    dict[col.ColumnName] = row[col];
-                                }
-                            }
-                            result.Add(dict);
-                        }
+                        var result = await _supplierService.Get_GIA_Certificate_Update_Data(dataTable, gIA_Certificate_Parameter_Model.supplier_Name, gIA_Certificate_Parameter_Model.customer_Name);
+
                         if (success)
                         {
                             return Ok(new
@@ -7523,8 +7533,214 @@ namespace astute.Controllers
                             return NoContent();
                         }
                     }
-                    return NoContent();
                 }
+                else
+                {
+                    if (!string.IsNullOrEmpty(gIA_Certificate_Parameter_Model.report_Date))
+                    {
+                        var result = await _supplierService.Get_GIA_Certificate_Data(gIA_Certificate_Parameter_Model.report_Date);
+                        if (result != null && result.Count > 0)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.DataSuccessfullyFound,
+                                data = result
+                            });
+                        }
+                        return NoContent();
+                    }
+                    else
+                    {
+                        var lst_Cert_No = gIA_Certificate_Parameter_Model.cert_no.Split(",").ToList();
+
+                        string certificate_no = "";
+                        if (lst_Cert_No != null && lst_Cert_No.Count > 0)
+                        {
+                            foreach (var item in lst_Cert_No)
+                            {
+                                certificate_no = item;
+                                var query_variables = new Dictionary<string, string>
+                                {
+                                    { "ReportNumber", item}
+                                };
+
+                                var body = new Dictionary<string, object>
+                                {
+                                    { "query", query },
+                                    { "variables", query_variables }
+                                };
+
+                                string json = System.Text.Json.JsonSerializer.Serialize(body);
+                                var client = new WebClient();
+                                string url = "https://api.reportresults.gia.edu";
+
+                                client.Headers.Add(HttpRequestHeader.Authorization, key);
+                                client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+
+                                var responseData = client.UploadString(url, json);
+
+                                GIA_Report gIA_Report = JsonConvert.DeserializeObject<GIA_Report>(responseData);
+                                if (gIA_Report != null && gIA_Report.Data.GetReport != null && !string.IsNullOrEmpty(gIA_Report.Data.GetReport.ReportNumber))
+                                {
+                                    DataRow dataRow = dataTable.NewRow();
+                                    var measurements = gIA_Report.Data.GetReport.Results.Measurements;
+                                    string[] arrMeasurements = null;
+                                    arrMeasurements = measurements.Split('-', 'x');
+
+                                    dataRow["Pointer"] = DBNull.Value;
+                                    dataRow["Rap_Rate"] = DBNull.Value;
+                                    dataRow["Rap_Amount"] = DBNull.Value;
+                                    dataRow["Supplier_Cost_Disc"] = DBNull.Value;
+                                    dataRow["Supplier_Cost_Amt"] = DBNull.Value;
+                                    dataRow["Offer_Disc"] = DBNull.Value;
+                                    dataRow["Offer_Amt"] = DBNull.Value;
+
+                                    dataRow["Certificate_No"] = gIA_Report.Data.GetReport.ReportNumber;
+                                    dataRow["Certificate_Date"] = Convert.ToDateTime(gIA_Report.Data.GetReport.ReportDate).ToString("dd-MM-yyyy");
+                                    if (arrMeasurements != null && arrMeasurements.Length == 3)
+                                    {
+                                        var length = arrMeasurements[1].ToString().Replace("mm", "").Trim();
+                                        var width = arrMeasurements[0].ToString().Replace("mm", "").Trim();
+                                        var depth = arrMeasurements[2].ToString().Replace("mm", "").Trim();
+                                        dataRow["Length"] = float.Parse(length);
+                                        dataRow["Width"] = float.Parse(width);
+                                        dataRow["Depth"] = float.Parse(depth);
+                                    }
+                                    else
+                                    {
+                                        dataRow["Length"] = DBNull.Value;
+                                        dataRow["Width"] = DBNull.Value;
+                                        dataRow["Depth"] = DBNull.Value;
+                                    }
+                                    dataRow["Color"] = gIA_Report.Data.GetReport.Results.ColorGrade;
+                                    dataRow["Cut_Grade"] = gIA_Report.Data.GetReport.Results.CutGrade;
+                                    dataRow["Polish_Grade"] = gIA_Report.Data.GetReport.Results.Polish;
+                                    dataRow["Symm_Grade"] = gIA_Report.Data.GetReport.Results.Symmetry;
+                                    dataRow["Fluorescence"] = gIA_Report.Data.GetReport.Results.Fluorescence;
+                                    dataRow["Laser_Inscription"] = gIA_Report.Data.GetReport.Results.Inscriptions;
+                                    if (gIA_Report.Data.GetReport.Results.KeyToSymbols != null)
+                                    {
+                                        string keyToSymbols = "";
+                                        foreach (var obj in gIA_Report.Data.GetReport.Results.KeyToSymbols)
+                                        {
+                                            keyToSymbols += (keyToSymbols.Length == 0 ? "" : ", ") + obj.characteristic;
+                                        }
+                                        dataRow["Key_to_Symbol"] = keyToSymbols;
+                                    }
+                                    else
+                                    {
+                                        dataRow["Key_to_Symbol"] = DBNull.Value;
+                                    }
+                                    dataRow["Lab_Comment"] = gIA_Report.Data.GetReport.Results.ReportComments;
+                                    if (gIA_Report.Data.GetReport.Results.Proportions != null)
+                                    {
+                                        dataRow["Table_Per"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.TablePct) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.TablePct) : DBNull.Value;
+                                        dataRow["Depth_Per"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.DepthPct) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.DepthPct) : DBNull.Value;
+                                        dataRow["Crown_Angle"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.CrownAngle) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.CrownAngle) : DBNull.Value;
+                                        dataRow["Crown_Height"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.CrownHeight) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.CrownHeight) : DBNull.Value;
+                                        dataRow["Pavillion_Angle"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.PavilionAngle) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.PavilionAngle) : DBNull.Value;
+                                        dataRow["Pavillion_Height"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.PavilionDepth) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.PavilionDepth) : DBNull.Value;
+                                        dataRow["Str_Ln"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.StarLength) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.StarLength) : DBNull.Value;
+                                        dataRow["LR_Half"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Proportions.LowerHalf) ? float.Parse(gIA_Report.Data.GetReport.Results.Proportions.LowerHalf) : DBNull.Value;
+                                    }
+                                    else
+                                    {
+                                        dataRow["Table_Per"] = DBNull.Value;
+                                        dataRow["Depth_Per"] = DBNull.Value;
+                                        dataRow["Crown_Angle"] = DBNull.Value;
+                                        dataRow["Crown_Height"] = DBNull.Value;
+                                        dataRow["Pavillion_Angle"] = DBNull.Value;
+                                        dataRow["Pavillion_Height"] = DBNull.Value;
+                                        dataRow["Str_Ln"] = DBNull.Value;
+                                        dataRow["LR_Half"] = DBNull.Value;
+                                    }
+                                    if (gIA_Report.Data.GetReport.Results.Data.Shape != null)
+                                    {
+                                        dataRow["Shape_Code"] = gIA_Report.Data.GetReport.Results.Data.Shape.ShapeCode;
+                                        dataRow["Shape"] = gIA_Report.Data.GetReport.Results.Data.Shape.ShapeGroup;
+                                    }
+                                    else
+                                    {
+                                        dataRow["Shape_Code"] = DBNull.Value;
+                                        dataRow["Shape"] = DBNull.Value;
+                                    }
+                                    dataRow["Cts"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Data.Weight.WeightWeight) ? float.Parse(gIA_Report.Data.GetReport.Results.Data.Weight.WeightWeight) : DBNull.Value;
+                                    dataRow["Clarity"] = gIA_Report.Data.GetReport.Results.Data.Clarity;
+                                    dataRow["Cut"] = gIA_Report.Data.GetReport.Results.Data.Cut;
+                                    dataRow["Polish"] = gIA_Report.Data.GetReport.Results.Data.Polish;
+                                    dataRow["Symm"] = gIA_Report.Data.GetReport.Results.Data.Symmetry;
+                                    if (gIA_Report.Data.GetReport.Results.Data.Fluorescence != null)
+                                    {
+                                        dataRow["Fls_Intensity"] = gIA_Report.Data.GetReport.Results.Data.Fluorescence.FluorescenceIntensity;
+                                        dataRow["Fls_Color"] = gIA_Report.Data.GetReport.Results.Data.Fluorescence.FluorescenceColor;
+                                    }
+                                    else
+                                    {
+                                        dataRow["Fls_Intensity"] = DBNull.Value;
+                                        dataRow["Fls_Color"] = DBNull.Value;
+                                    }
+                                    if (gIA_Report.Data.GetReport.Results.Data.Girdle != null)
+                                    {
+                                        dataRow["Girdle_Condition"] = gIA_Report.Data.GetReport.Results.Data.Girdle.GirdleCondition;
+                                        dataRow["Girdle_Condition_Code"] = gIA_Report.Data.GetReport.Results.Data.Girdle.GirdleConditionCode;
+                                        dataRow["Girdle_Per"] = !string.IsNullOrEmpty(gIA_Report.Data.GetReport.Results.Data.Girdle.GirdlePct) ? float.Parse(gIA_Report.Data.GetReport.Results.Data.Girdle.GirdlePct) : DBNull.Value;                                       
+                                    }
+                                    else
+                                    {
+                                        dataRow["Girdle_Condition"] = DBNull.Value;
+                                        dataRow["Girdle_Condition_Code"] = DBNull.Value;
+                                        dataRow["Girdle_Per"] = DBNull.Value;
+                                    }
+                                    dataRow["Culet"] = gIA_Report.Data.GetReport.Results.Data.Culet.CuletCode;
+                                    if (gIA_Report.Data.GetReport.Links != null)
+                                    {
+                                        dataRow["Certificate_Link"] = gIA_Report.Data.GetReport.Links.Pdf;
+                                        dataRow["Plotting_Diagram"] = gIA_Report.Data.GetReport.Links.PlottingDiagram;
+                                        dataRow["Proportions_Diagram"] = gIA_Report.Data.GetReport.Links.ProportionsDiagram;
+                                        dataRow["Digital_Card"] = gIA_Report.Data.GetReport.Links.DigitalCard;
+                                    }
+                                    else
+                                    {
+                                        dataRow["Certificate_Link"] = DBNull.Value;
+                                        dataRow["Plotting_Diagram"] = DBNull.Value;
+                                        dataRow["Proportions_Diagram"] = DBNull.Value;
+                                        dataRow["Digital_Card"] = DBNull.Value;
+                                    }
+                                    dataTable.Rows.Add(dataRow);
+                                    success = true;
+                                    if (lst_Cert_No.Count > 1)
+                                    {
+                                        certificate_no += ", " + certificate_no;
+                                    }
+                                }
+                                else
+                                {
+                                    success = false;
+                                }
+                            }
+
+                            var result = await _supplierService.Get_GIA_Certificate_Update_Data(dataTable, gIA_Certificate_Parameter_Model.supplier_Name, gIA_Certificate_Parameter_Model.customer_Name);
+                            
+                            if (success)
+                            {
+                                return Ok(new
+                                {
+                                    statusCode = HttpStatusCode.OK,
+                                    message = CoreCommonMessage.DataSuccessfullyFound,
+                                    data = result
+                                });
+                            }
+                            else if (!success)
+                            {
+                                return NoContent();
+                            }
+                        }
+                        return NoContent();
+                    }
+                }
+
+                return BadRequest();
             }
             catch (Exception ex)
             {
@@ -7536,37 +7752,190 @@ namespace astute.Controllers
             }
         }
 
+        //[HttpPost]
+        //[Route("save_gia_lab_cert_data")]
+        //[Authorize]
+        //public async Task<IActionResult> Save_GIA_Lab_Cert_Data(IList<GIA_Lab_Parameter> gIA_Lab_Parameters)
+        //{
+        //    try
+        //    {
+        //        if (gIA_Lab_Parameters != null && gIA_Lab_Parameters.Count > 0)
+        //        {
+        //            DataTable dataTable = new DataTable();
+        //            dataTable = Set_GIA_Lab_Parameter_Column_In_Datatable(new DataTable(), gIA_Lab_Parameters);
+        //            var result = await _supplierService.Insert_GIA_Certificate_Data(dataTable);
+        //            if (result > 0)
+        //            {
+        //                return Ok(new
+        //                {
+        //                    statusCode = HttpStatusCode.OK,
+        //                    message = "GIA lab parameter saved successfully."
+        //                });
+        //            }
+        //            return BadRequest();
+        //        }
+        //        return BadRequest();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await _commonService.InsertErrorLog(ex.Message, "Save_GIA_Lab_Cert_Data", ex.StackTrace);
+        //        return Ok(new
+        //        {
+        //            message = ex.Message
+        //        });
+        //    }
+        //}
+
         [HttpPost]
-        [Route("save_gia_lab_cert_data")]
+        [Route("create_gia_certificate_data")]
         [Authorize]
-        public async Task<IActionResult> Save_GIA_Lab_Cert_Data(IList<GIA_Lab_Parameter> gIA_Lab_Parameters)
+        public async Task<IActionResult> Create_GIA_Certificate_Data(GIA_Certificate_Data gIA_Certificate_Data)
         {
             try
             {
-                if (gIA_Lab_Parameters != null && gIA_Lab_Parameters.Count > 0)
+                if (ModelState.IsValid)
                 {
-                    DataTable dataTable = new DataTable();
-                    dataTable = Set_GIA_Lab_Parameter_Column_In_Datatable(new DataTable(), gIA_Lab_Parameters);
-                    var result = await _supplierService.Insert_GIA_Lab_Parameter(dataTable);
-                    if (result > 0)
+                    if (gIA_Certificate_Data.GIA_Certificate_Data_Details != null && gIA_Certificate_Data.GIA_Certificate_Data_Details.Count > 0)
                     {
-                        return Ok(new
+                        DataTable dataTable = new DataTable();
+                        dataTable.Columns.Add("Certificate_No", typeof(string));
+                        dataTable.Columns.Add("Certificate_Date", typeof(string));
+                        dataTable.Columns.Add("Shape", typeof(string));
+                        dataTable.Columns.Add("Cts", typeof(float));
+                        dataTable.Columns.Add("Color", typeof(string));
+                        dataTable.Columns.Add("Clarity", typeof(string));
+                        dataTable.Columns.Add("Cut", typeof(string));
+                        dataTable.Columns.Add("Polish", typeof(string));
+                        dataTable.Columns.Add("Symm", typeof(string));
+                        dataTable.Columns.Add("Fls_Intensity", typeof(string));
+                        dataTable.Columns.Add("Fls_Color", typeof(string));
+                        dataTable.Columns.Add("Length", typeof(float));
+                        dataTable.Columns.Add("Width", typeof(float));
+                        dataTable.Columns.Add("Depth", typeof(float));
+                        dataTable.Columns.Add("Depth_Per", typeof(float));
+                        dataTable.Columns.Add("Table_Per", typeof(float));
+                        dataTable.Columns.Add("Culet", typeof(string));
+                        dataTable.Columns.Add("Laser_Inscription", typeof(string));
+                        dataTable.Columns.Add("Crown_Angle", typeof(float));
+                        dataTable.Columns.Add("Crown_Height", typeof(float));
+                        dataTable.Columns.Add("Pavillion_Angle", typeof(float));
+                        dataTable.Columns.Add("Pavillion_Height", typeof(float));
+                        dataTable.Columns.Add("Girdle_Per", typeof(float));
+                        dataTable.Columns.Add("Girdle_Condition", typeof(string));
+                        dataTable.Columns.Add("LR_Half", typeof(float));
+                        dataTable.Columns.Add("Str_Ln", typeof(float));
+                        dataTable.Columns.Add("Certificate_Link", typeof(string));
+                        dataTable.Columns.Add("Key_to_Symbol", typeof(string));
+                        dataTable.Columns.Add("Lab_Comment", typeof(string));
+                        dataTable.Columns.Add("Rap_Rate", typeof(float));
+                        dataTable.Columns.Add("Rap_Amount", typeof(float));
+                        dataTable.Columns.Add("Supplier_Cost_Disc", typeof(float));
+                        dataTable.Columns.Add("Supplier_Cost_Amt", typeof(float));
+                        dataTable.Columns.Add("Offer_Disc", typeof(float));
+                        dataTable.Columns.Add("Offer_Amt", typeof(float));
+                        dataTable.Columns.Add("Pointer", typeof(string));
+                        dataTable.Columns.Add("Cut_Grade", typeof(string));
+                        dataTable.Columns.Add("Polish_Grade", typeof(string));
+                        dataTable.Columns.Add("Symm_Grade", typeof(string));
+                        dataTable.Columns.Add("Fluorescence", typeof(string));
+                        dataTable.Columns.Add("Shape_Code", typeof(string));
+                        dataTable.Columns.Add("Girdle_Condition_Code", typeof(string));
+                        dataTable.Columns.Add("Plotting_Diagram", typeof(string));
+                        dataTable.Columns.Add("Proportions_Diagram", typeof(string));
+                        dataTable.Columns.Add("Digital_Card", typeof(string));
+
+                        foreach (var item in gIA_Certificate_Data.GIA_Certificate_Data_Details)
                         {
-                            statusCode = HttpStatusCode.OK,
-                            message = "GIA lab parameter saved successfully."
-                        });
+                            dataTable.Rows.Add(item.Certificate_No,
+                                item.Certificate_Date,
+                                item.Shape,
+                                item.Cts,
+                                item.Color,
+                                item.Clarity,
+                                item.Cut,
+                                item.Polish,
+                                item.Symm,
+                                item.Fls_Intensity,
+                                item.Fls_Color,
+                                item.Length,
+                                item.Width,
+                                item.Depth,
+                                item.Depth_Per,
+                                item.Table_Per,
+                                item.Culet,
+                                item.Laser_Inscription,
+                                item.Crown_Angle,
+                                item.Crown_Height,
+                                item.Pavillion_Angle,
+                                item.Pavillion_Height,
+                                item.Girdle_Per,
+                                item.Girdle_Condition,
+                                item.LR_Half,
+                                item.Str_Ln,
+                                item.Certificate_Link,
+                                item.Key_to_Symbol,
+                                item.Lab_Comment,
+                                item.Rap_Rate,
+                                item.Rap_Amount,
+                                item.Supplier_Cost_Disc,
+                                item.Supplier_Cost_Amt,
+                                item.Offer_Disc,
+                                item.Offer_Amt,
+                                item.Pointer,
+                                item.Cut_Grade,
+                                item.Polish_Grade,
+                                item.Symm_Grade,
+                                item.Fluorescence,
+                                item.Shape_Code,
+                                item.Girdle_Condition_Code,
+                                item.Plotting_Diagram,
+                                item.Proportions_Diagram,
+                                item.Digital_Card);
+                        }
+                        var result = await _supplierService.Insert_GIA_Certificate_Data(dataTable, gIA_Certificate_Data.Supplier_Id ?? 0, gIA_Certificate_Data.Customer_Name);
+                        if (result > 0)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = "GIA Ceriticate data saved successfully."
+                            });
+                        }
                     }
-                    return BadRequest();
+                    return BadRequest(new
+                    {
+                        statusCode = HttpStatusCode.BadRequest,
+                        message = CoreCommonMessage.ParameterMismatched
+                    });
                 }
-                return BadRequest();
+                return BadRequest(ModelState);
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Save_GIA_Lab_Cert_Data", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Create_GIA_Certificate_Data", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
                 });
+            }
+        }
+
+        [HttpPost]
+        [Route("gia_certificate_placed_order")]
+        [Authorize]
+        public async Task<IActionResult> GIA_Certificate_Placed_Order(GIA_Certificate_Place_Order gIA_Certificate_Place_Order)
+        {
+            try
+            {
+                IList<GIA_Certificate_Place_Order_Detail> app_mang_Result = JsonConvert.DeserializeObject<IList<GIA_Certificate_Place_Order_Detail>>(gIA_Certificate_Place_Order.Order_Detail.ToString());
+                DataTable dataTable = new DataTable();
+                //dataTable.Columns.Add("");
+                return Ok();
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
         #endregion
@@ -10331,595 +10700,6 @@ namespace astute.Controllers
         }
         #endregion
 
-        #region Account Group Master
-        [HttpGet]
-        [Route("get_account_group")]
-        [Authorize]
-        public async Task<IActionResult> Get_Account_Group(int ac_Group_Code)
-        {
-            try
-            {
-                var result = await _account_Group_Service.Get_Account_Group(ac_Group_Code);
-                if (result != null && result.Count > 0)
-                {
-                    return Ok(new
-                    {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.DataSuccessfullyFound,
-                        data = result
-                    });
-                }
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Account_Group", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-
-        [HttpPost]
-        [Route("create_account_group")]
-        [Authorize]
-        public async Task<IActionResult> Create_Account_Group(Account_Group_Master account_Group_Master)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-                    var (msg, result) = await _account_Group_Service.Create_Update_Account_Group(account_Group_Master, user_Id ?? 0);
-                    if (msg == "success" && result > 0)
-                    {
-                        return Ok(new
-                        {
-                            statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.AccountGroupCreated
-                        });
-                    }
-                    else if (msg == "exist" && result == 409)
-                    {
-                        return Conflict(new
-                        {
-                            statusCode = HttpStatusCode.Conflict,
-                            message = CoreCommonMessage.AccountGroupAlreadyExist
-                        });
-                    }
-                }
-                return BadRequest(ModelState);
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Create_Account_Group", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-
-        [HttpPut]
-        [Route("update_account_group")]
-        [Authorize]
-        public async Task<IActionResult> Update_Account_Group(Account_Group_Master account_Group_Master)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-                    var (msg, result) = await _account_Group_Service.Create_Update_Account_Group(account_Group_Master, user_Id ?? 0);
-                    if (msg == "success" && result > 0)
-                    {
-                        return Ok(new
-                        {
-                            statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.AccountGroupUpdated
-                        });
-                    }
-                    else if (msg == "exist" && result == 409)
-                    {
-                        return Conflict(new
-                        {
-                            statusCode = HttpStatusCode.Conflict,
-                            message = CoreCommonMessage.AccountGroupAlreadyExist
-                        });
-                    }
-                }
-                return BadRequest(ModelState);
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Update_Account_Group", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-
-        [HttpDelete]
-        [Route("delete_account_group")]
-        [Authorize]
-        public async Task<IActionResult> Delete_Account_Group(int ac_Group_Code)
-        {
-            try
-            {
-                var result = await _account_Group_Service.Delete_Account_Group(ac_Group_Code);
-                if (result > 0)
-                {
-                    return Ok(new
-                    {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.AccountGroupDeleted
-                    });
-                }
-                return BadRequest(new
-                {
-                    statusCode = HttpStatusCode.BadRequest,
-                    message = CoreCommonMessage.ParameterMismatched
-                });
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Delete_Account_Group", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-
-        [HttpPost]
-        [Route("account_group_excel_download")]
-        [Authorize]
-        public async Task<IActionResult> Account_Group_Excel_Download()
-        {
-            try
-            {
-                var dt_acc_group = await _account_Group_Service.Get_Account_Group_Excel();
-                if (dt_acc_group != null && dt_acc_group.Rows.Count > 0)
-                {
-                    List<string> columnNames = new List<string>();
-                    foreach (DataColumn column in dt_acc_group.Columns)
-                    {
-                        columnNames.Add(column.ColumnName);
-                    }
-
-                    DataTable columnNamesTable = new DataTable();
-                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
-
-                    foreach (string columnName in columnNames)
-                    {
-                        columnNamesTable.Rows.Add(columnName);
-                    }
-                    var excelPath = string.Empty;
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
-                    if (!(Directory.Exists(filePath)))
-                    {
-                        Directory.CreateDirectory(filePath);
-                    }
-                    string filename = string.Empty;
-
-                    filename = "Account_Group_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                    EpExcelExport.Create_Account_Group_Excel(dt_acc_group, columnNamesTable, filePath, filePath + filename);
-                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
-
-                    return Ok(new
-                    {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.DataSuccessfullyFound,
-                        result = excelPath,
-                        file_name = filename
-                    });
-                }
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Account_Group_Excel_Download", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-
-        [HttpGet]
-        [Route("get_perent_account_group")]
-        [Authorize]
-        public async Task<IActionResult> Get_Perent_Account_Group()
-        {
-            try
-            {
-                var result = await _account_Group_Service.Get_Perent_Account_Group();
-                if (result != null && result.Count > 0)
-                {
-                    return Ok(new
-                    {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.DataSuccessfullyFound,
-                        data = result
-                    });
-                }
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "get_perent_account_group", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-
-        [HttpGet]
-        [Route("get_sub_account_group")]
-        [Authorize]
-        public async Task<IActionResult> Get_Sub_Account_Group(int Id)
-        {
-            try
-            {
-                var result = await _account_Group_Service.Get_Sub_Account_Group(Id);
-                if (result != null && result.Count > 0)
-                {
-                    return Ok(new
-                    {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.DataSuccessfullyFound,
-                        data = result
-                    });
-                }
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "get_sub_account_group", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-        #endregion
-
-        #region Account Master
-
-        [HttpGet]
-        [Route("get_account_master")]
-        [Authorize]
-        public async Task<IActionResult> Get_Account_Master(int account_Id)
-        {
-            try
-            {
-                var result = await _account_Master_Service.Get_Account_Master(account_Id);
-                if (result != null && result.Count > 0)
-                {
-                    return Ok(new
-                    {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.DataSuccessfullyFound,
-                        data = result
-                    });
-                }
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Account_Master", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-
-        [HttpPost]
-        [Route("create_update_account_master")]
-        [Authorize]
-        public async Task<IActionResult> Create_Update_Account_Master(Account_Master account_Master)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                    account_Master.User_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-
-                    var (msg, result) = await _account_Master_Service.Create_Update_Account_Master(account_Master);
-                    if (msg == "success" && result > 0)
-                    {
-                        return Ok(new
-                        {
-                            statusCode = HttpStatusCode.OK,
-                            message = account_Master.Account_Id == 0 ? CoreCommonMessage.AccountMasterCreated : CoreCommonMessage.AccountMasterUpdated
-                        });
-                    }
-                    else if (msg == "exist" && result == 409)
-                    {
-                        return Conflict(new
-                        {
-                            statusCode = HttpStatusCode.Conflict,
-                            message = CoreCommonMessage.AccountGroupAlreadyExist
-                        });
-                    }
-                }
-                return BadRequest(ModelState);
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Account_Master", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-
-        [HttpDelete]
-        [Route("delete_account_master")]
-        [Authorize]
-        public async Task<IActionResult> Delete_Account_Master(int account_Id)
-        {
-            try
-            {
-                var result = await _account_Master_Service.Delete_Account_Master(account_Id);
-                if (result > 0)
-                {
-                    return Ok(new
-                    {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.AccountMasterDeleted
-                    });
-                }
-                return BadRequest(new
-                {
-                    statusCode = HttpStatusCode.BadRequest,
-                    message = CoreCommonMessage.ParameterMismatched
-                });
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Delete_Account_Master", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-
-
-        [HttpPost]
-        [Route("account_master_excel_download")]
-        [Authorize]
-        public async Task<IActionResult> Account_Master_Excel_Download()
-        {
-            try
-            {
-                var dt_acc_group = await _account_Master_Service.Get_Account_Master_Excel();
-                if (dt_acc_group != null && dt_acc_group.Rows.Count > 0)
-                {
-                    List<string> columnNames = new List<string>();
-                    foreach (DataColumn column in dt_acc_group.Columns)
-                    {
-                        columnNames.Add(column.ColumnName);
-                    }
-
-                    DataTable columnNamesTable = new DataTable();
-                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
-
-                    foreach (string columnName in columnNames)
-                    {
-                        columnNamesTable.Rows.Add(columnName);
-                    }
-                    var excelPath = string.Empty;
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
-                    if (!(Directory.Exists(filePath)))
-                    {
-                        Directory.CreateDirectory(filePath);
-                    }
-                    string filename = string.Empty;
-
-                    filename = "Account_Master_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                    EpExcelExport.Create_Account_Group_Excel(dt_acc_group, columnNamesTable, filePath, filePath + filename);
-                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
-
-                    return Ok(new
-                    {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.DataSuccessfullyFound,
-                        result = excelPath,
-                        file_name = filename
-                    });
-                }
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Account_Master_Excel_Download", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-
-        #endregion
-
-        #region Trans Master
-
-        [HttpGet]
-        [Route("get_trans_master")]
-        [Authorize]
-        public async Task<IActionResult> Get_Trans_Master(int Id)
-        {
-            try
-            {
-                var result = await _trans_Service.Get_Trans_Master(Id);
-                if (result != null && result.Count > 0)
-                {
-                    return Ok(new
-                    {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.DataSuccessfullyFound,
-                        data = result
-                    });
-                }
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Trans_Master", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-
-        [HttpPost]
-        [Route("create_update_trans_master")]
-        [Authorize]
-        public async Task<IActionResult> Create_Update_Trans_Master(IList<Trans_Model> trans_Model)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    if (trans_Model != null && trans_Model.Count > 0)
-                    {
-                        DataTable dataTable = new DataTable();
-                        dataTable.Columns.Add("Id", typeof(int));
-                        dataTable.Columns.Add("Trans_Type", typeof(int));
-                        dataTable.Columns.Add("Prefix", typeof(string));
-                        dataTable.Columns.Add("Voucher_No", typeof(string));
-                        dataTable.Columns.Add("Post_Prefix", typeof(bool));
-                        dataTable.Columns.Add("Year_Reset", typeof(bool));
-
-                        foreach (var item in trans_Model)
-                        {
-                            dataTable.Rows.Add(item.Id, item.Trans_Type, item.Prefix, item.Voucher_No, item.Post_Prefix, item.Year_Reset);
-                        }
-
-                        var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                        int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-
-                        var (message, is_exists, is_Prefix_exists, result) = await _trans_Service.Create_Update_Trans_Master(dataTable, user_Id);
-
-                        if ((message == "exist" && (is_exists == true || is_Prefix_exists == true)))
-                        {
-                            if (is_exists == true && is_Prefix_exists == true && result > 0)
-                            {
-                                return Ok(new
-                                {
-                                    statusCode = HttpStatusCode.OK,
-                                    message = trans_Model.Any(X => X.Id == 0) == true ? CoreCommonMessage.TransExistsTransPrefixOMasterCreated : CoreCommonMessage.TransExistsTransPrefixOMasterUpdated
-                                });
-                            }
-                            else if (is_exists == true && is_Prefix_exists == true && result == 0)
-                            {
-                                return Ok(new
-                                {
-                                    statusCode = HttpStatusCode.OK,
-                                    message = trans_Model.Any(X => X.Id == 0) == true ? CoreCommonMessage.TransExistsTransPrefixMasterCreated : CoreCommonMessage.TransExistsTransPrefixMasterUpdated
-                                });
-                            }
-                            else if (is_exists == true && is_Prefix_exists == false && result > 0)
-                            {
-                                return Ok(new
-                                {
-                                    statusCode = HttpStatusCode.OK,
-                                    message = trans_Model.Any(X => X.Id == 0) == true ? CoreCommonMessage.TransExistsMasterOCreated : CoreCommonMessage.TransExistsMasterOUpdated
-                                });
-                            }
-                            else if (is_exists == true && is_Prefix_exists == false && result == 0)
-                            {
-                                return Ok(new
-                                {
-                                    statusCode = HttpStatusCode.OK,
-                                    message = CoreCommonMessage.TransExistsMaster
-                                });
-                            }
-                            else if (is_exists == false && is_Prefix_exists == true && result > 0)
-                            {
-                                return Ok(new
-                                {
-                                    statusCode = HttpStatusCode.OK,
-                                    message = trans_Model.Any(X => X.Id == 0) == true ? CoreCommonMessage.TransExistsPrefixOMasterCreated : CoreCommonMessage.TransExistsPrefixOMasterUpdated
-                                });
-                            }
-                            else if (is_exists == false && is_Prefix_exists == true && result == 0)
-                            {
-                                return Ok(new
-                                {
-                                    statusCode = HttpStatusCode.OK,
-                                    message = CoreCommonMessage.TransExistsMaster
-                                });
-                            }
-                        }
-                        else if ((message == "success") && result > 0)
-                        {
-                            var result_data = await _trans_Service.Get_Trans_Master(0);
-                            return Ok(new
-                            {
-                                statusCode = HttpStatusCode.OK,
-                                message = trans_Model.Any(x => x.Id == 0) == true ? CoreCommonMessage.TransMasterCreated : CoreCommonMessage.TransMasterUpdated,
-                                data = result_data
-                            });
-                        }
-                    }
-                }
-                return BadRequest(ModelState);
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Trans_Master", ex.StackTrace);
-                return Ok(new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-
-        [HttpDelete]
-        [Route("delete_trans_master")]
-        [Authorize]
-        public async Task<IActionResult> Delete_Trans_Master(string Id)
-        {
-            try
-            {
-                var result = await _trans_Service.Delete_Trans_Master(Id);
-                if (result > 0)
-                {
-                    return Ok(new
-                    {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.TransMasterDeleted
-                    });
-                }
-                return BadRequest(new
-                {
-                    statusCode = HttpStatusCode.BadRequest,
-                    message = CoreCommonMessage.ParameterMismatched
-                });
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Delete_Trans_Master", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-        #endregion
-
         #region Lab User Activity
 
         [HttpGet]
@@ -11085,5 +10865,6 @@ namespace astute.Controllers
         }
 
         #endregion
+        
     }
 }

@@ -2430,28 +2430,46 @@ namespace astute.Repository
         #endregion
 
         #region GIA Lap Parameter
-        public async Task<int> Insert_GIA_Lab_Parameter(DataTable dataTable)
+        //public async Task<int> Insert_GIA_Lab_Parameter(DataTable dataTable)
+        //{
+        //    var parameter = new SqlParameter("@tblGIA_Lab_Parameter", SqlDbType.Structured)
+        //    {
+        //        TypeName = "dbo.[GIA_Lab_Parameter_Table_Type]",
+        //        Value = dataTable
+        //    };
+
+        //    var result = await Task.Run(() => _dbContext.Database
+        //    .ExecuteSqlRawAsync(@"EXEC GIA_Lab_Parameter_Insert_Update @tblGIA_Lab_Parameter", parameter));
+
+        //    return result;
+        //}
+
+        public async Task<int> Insert_GIA_Certificate_Data(DataTable dataTable, int supplier_Id, string customer_Name)
         {
-            var parameter = new SqlParameter("@tblGIA_Lab_Parameter", SqlDbType.Structured)
+            var parameter = new SqlParameter("@tblGIACertificate", SqlDbType.Structured)
             {
-                TypeName = "dbo.[GIA_Lab_Parameter_Table_Type]",
+                TypeName = "dbo.[GIA_Certificate_Data_Table_Type]",
                 Value = dataTable
             };
 
+            var _supplier_Id = supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
+            var _customer_Name = !string.IsNullOrEmpty(customer_Name) ? new SqlParameter("@Customer_Name", customer_Name) : new SqlParameter("@Customer_Name", customer_Name);
+
             var result = await Task.Run(() => _dbContext.Database
-            .ExecuteSqlRawAsync(@"EXEC GIA_Lab_Parameter_Insert_Update @tblGIA_Lab_Parameter", parameter));
+            .ExecuteSqlRawAsync(@"EXEC GIA_Certificate_Data_Insert_Update @tblGIACertificate, @Supplier_Id, @Customer_Name", parameter, _supplier_Id, _customer_Name));
 
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> GIA_Lab_Parameter(string report_Date)
+
+        public async Task<List<Dictionary<string, object>>> Get_GIA_Certificate_Data(string report_Date)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
-                using (var command = new SqlCommand("GIA_Lab_Parameter_Select", connection))
+                using (var command = new SqlCommand("GIA_Certificate_Data_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(!string.IsNullOrEmpty(report_Date) ? new SqlParameter("@Report_Date", report_Date) : new SqlParameter("@Report_Date", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(report_Date) ? new SqlParameter("@Certificate_Date", report_Date) : new SqlParameter("@Certificate_Date", DBNull.Value));
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -2475,6 +2493,97 @@ namespace astute.Repository
             }
             return result;
         }
+
+        public async Task<List<Dictionary<string, object>>> Get_GIA_Certificate_Update_Data(DataTable dataTable, string supplier_Name, string customer_Name)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("GIA_Certificate_Data_Table_Values_Update", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    var parameter = new SqlParameter("@tblGIACertificate", SqlDbType.Structured)
+                    {
+                        TypeName = "dbo.GIA_Certificate_Data_Table_Type",
+                        Value = dataTable
+                    };
+                    command.Parameters.Add(parameter);
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            dict["Customer_Name"] = supplier_Name;
+                            dict["Supplier_Name"] = customer_Name;
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public async Task<int> GIA_Certificate_Placed_Order(DataTable dataTable, int supplier_Id, string customer_Name)
+        {
+            var parameter = new SqlParameter("@tblGIA_Certi_Placed_Order", SqlDbType.Structured)
+            {
+                TypeName = "dbo.[GIA_Certificate_Placed_Order_Table_Type]",
+                Value = dataTable
+            };
+
+            var _supplier_Id = supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
+            var _customer_Name = !string.IsNullOrEmpty(customer_Name) ? new SqlParameter("@Customer_Name", customer_Name) : new SqlParameter("@Customer_Name", customer_Name);
+
+            var result = await Task.Run(() => _dbContext.Database
+            .ExecuteSqlRawAsync(@"EXEC GIA_Certificate_Placed_Order @tblGIA_Certi_Placed_Order, @Supplier_Id, @Customer_Name", parameter, _supplier_Id, _customer_Name));
+
+            return result;
+        }
+
+        //public async Task<List<Dictionary<string, object>>> GIA_Lab_Parameter(string report_Date)
+        //{
+        //    var result = new List<Dictionary<string, object>>();
+        //    using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+        //    {
+        //        using (var command = new SqlCommand("GIA_Lab_Parameter_Select", connection))
+        //        {
+        //            command.CommandType = CommandType.StoredProcedure;
+        //            command.Parameters.Add(!string.IsNullOrEmpty(report_Date) ? new SqlParameter("@Report_Date", report_Date) : new SqlParameter("@Report_Date", DBNull.Value));
+        //            await connection.OpenAsync();
+
+        //            using (var reader = await command.ExecuteReaderAsync())
+        //            {
+        //                while (await reader.ReadAsync())
+        //                {
+        //                    var dict = new Dictionary<string, object>();
+
+        //                    for (int i = 0; i < reader.FieldCount; i++)
+        //                    {
+        //                        var columnName = reader.GetName(i);
+        //                        var columnValue = reader.GetValue(i);
+
+        //                        dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+        //                    }
+
+        //                    result.Add(dict);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return result;
+        //}
         #endregion
 
         #region Get Excel Formet Stock Result

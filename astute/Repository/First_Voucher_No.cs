@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace astute.Repository
 {
-    public class Trans_Service : ITrans_Service
+    public class First_Voucher_No : IFirst_Voucher_No
     {
         #region Fields
         private readonly AstuteDbContext _dbContext;
@@ -17,7 +17,7 @@ namespace astute.Repository
         #endregion
 
         #region Ctor
-        public Trans_Service(AstuteDbContext dbContext,
+        public First_Voucher_No(AstuteDbContext dbContext,
             IConfiguration configuration)
         {
             _dbContext = dbContext;
@@ -26,12 +26,12 @@ namespace astute.Repository
         #endregion
 
         #region Methods
-        public async Task<List<Dictionary<string, object>>> Get_Trans_Master(int Id)
+        public async Task<List<Dictionary<string, object>>> Get_First_Voucher_No_Master(int Id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
-                using (var command = new SqlCommand("Trans_Master_Select", connection))
+                using (var command = new SqlCommand("First_Voucher_No_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(Id > 0 ? new SqlParameter("@Trans_Id", Id) : new SqlParameter("@Trans_Id", DBNull.Value));
@@ -59,14 +59,13 @@ namespace astute.Repository
             }
             return result;
         }
-
-        public async Task<(string,bool,bool,int)> Create_Update_Trans_Master(DataTable dataTable, int? user_Id)
+        public async Task<(string,bool,bool,int)> Create_Update_First_Voucher_No_Master(DataTable dataTable, int? user_Id)
         {
             var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
 
-            var parameter = new SqlParameter("@Trans_Master_Table_Type", SqlDbType.Structured)
+            var parameter = new SqlParameter("@First_Voucher_No_Table_Type", SqlDbType.Structured)
             {
-                TypeName = "dbo.Trans_Master_Table_Type",
+                TypeName = "dbo.First_Voucher_No_Table_Type",
                 Value = dataTable
             };
 
@@ -81,7 +80,7 @@ namespace astute.Repository
             };
 
             var result = await Task.Run(() => _dbContext.Database
-          .ExecuteSqlRawAsync(@"exec Trans_Master_Insert_Update @Trans_Master_Table_Type, @User_Id, @Is_Exists OUT,@Is_Prefix_Exists OUT", parameter, _user_Id, is_Exists, is_Prefix_Exists));
+          .ExecuteSqlRawAsync(@"EXEC First_Voucher_No_Insert_Update @First_Voucher_No_Table_Type, @User_Id, @Is_Exists OUT,@Is_Prefix_Exists OUT", parameter, _user_Id, is_Exists, is_Prefix_Exists));
             
             var _is_Exists = (bool)is_Exists.Value;
             var _is_Prefix_Exists = (bool)is_Prefix_Exists.Value;
@@ -90,9 +89,9 @@ namespace astute.Repository
 
             return ("success", _is_Exists, _is_Prefix_Exists, result);
         }
-        public async Task<int> Delete_Trans_Master(string Id)
+        public async Task<int> Delete_First_Voucher_No_Master(string Id)
         {
-            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Trans_Master_Delete {Id}"));
+            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"First_Voucher_No_Delete {Id}"));
         }
 
         #endregion

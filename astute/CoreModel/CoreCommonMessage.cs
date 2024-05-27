@@ -6,7 +6,7 @@ namespace astute.CoreModel
     public static class CoreCommonMessage
     {
         public static string DataSuccessfullyFound = "Data successfully found.";
-        public static string DataNotFound = "Data not found.";
+        public static string DataNotFound = " Data not found.";
         public static string AddedSuccessfully = " added successfully.";
         public static string CopySuccessfully = " copied successfully.";
         public static string UpdatedSuccessfully = " updated successfully.";
@@ -39,7 +39,6 @@ namespace astute.CoreModel
         public static string InvalidDate = "From Date should not be greater than To Date";
         public static string ApiFailed = "Failed to retrieve data from the API";
         public static string ApiError = "Error connecting to the API";
-
 
         #region Email Subjects
         public static string ForgetPasswordSubject = "Forget Password Email";
@@ -383,7 +382,7 @@ namespace astute.CoreModel
         public static string AccountMasterDeleted = AccountMaster + DeletedSuccessfully;
         #endregion
 
-        #region Trans Master
+        #region First Voucher No
         public static string TransMaster = "First voucher no";
         public static string TransMasterCreated = TransMaster + AddedSuccessfully;
         public static string TransMasterUpdated = TransMaster + UpdatedSuccessfully;
@@ -406,6 +405,33 @@ namespace astute.CoreModel
         #region Oracle 
         public static string Fortune_Discount = "Fortune Discount Oracle";
         public static string Fortune_Discount_Added = "Fortune Discount Oracle" + AddedSuccessfully;
+        #endregion
+          
+        #region Account Trans Master
+
+        public static string AccountCashbookMaster = "Cash book";
+        public static string AccountCashbookMasterCreated = AccountCashbookMaster + AddedSuccessfully;
+        public static string AccountCashbookMasterUpdated = AccountCashbookMaster + UpdatedSuccessfully;
+        public static string AccountCashbookMasterDeleted = AccountCashbookMaster + DeletedSuccessfully;
+        public static string AccountCashbookMasterDataNotFound = AccountCashbookMaster + DataNotFound;
+
+        public static string AccountBankbookMaster = "Bank book";
+        public static string AccountBankbookMasterCreated = AccountBankbookMaster + AddedSuccessfully;
+        public static string AccountBankbookMasterUpdated = AccountBankbookMaster + UpdatedSuccessfully;
+        public static string AccountBankbookMasterDeleted = AccountBankbookMaster + DeletedSuccessfully;
+        public static string AccountBankbookMasterDataNotFound = AccountBankbookMaster + DataNotFound;
+
+        public static string AccountJvMaster = "Jounral Voucher";
+        public static string AccountJvMasterCreated = AccountJvMaster + AddedSuccessfully;
+        public static string AccountJvMasterUpdated = AccountJvMaster + UpdatedSuccessfully;
+        public static string AccountJvMasterDeleted = AccountJvMaster + DeletedSuccessfully;
+        public static string AccountJvMasterDataNotFound = AccountJvMaster + DataNotFound;
+
+        public static string AccountContraMaster = "Contra";
+        public static string AccountContraMasterCreated = AccountContraMaster + AddedSuccessfully;
+        public static string AccountContraMasterUpdated = AccountContraMaster + UpdatedSuccessfully;
+        public static string AccountContraMasterDeleted = AccountContraMaster + DeletedSuccessfully;
+        public static string AccountContraMasterDataNotFound = AccountContraMaster + DataNotFound;
         #endregion
     }
 }
