@@ -52,13 +52,22 @@ namespace astute
 
             //services.AddDbContext<AstuteDbContext>();
             services.AddDbContext<AstuteDbContext>(config =>
-            config.UseSqlServer(
-             "AstuteConnection",
-             providerOptions =>
-             {
-                 providerOptions.CommandTimeout(7200);
-             })
+                config.UseSqlServer(
+                 "AstuteConnection",
+                 providerOptions =>
+                 {
+                     providerOptions.CommandTimeout(7200);
+                 })
             );
+
+            services.AddDbContext<Oracle_DBAccess>(config =>
+               config.UseSqlServer(
+                "Oraweb",
+                providerOptions =>
+                {
+                    providerOptions.CommandTimeout(7200);
+                })
+           );
 
             services.AddResponseCompression(options =>
             {
@@ -99,6 +108,7 @@ namespace astute
             services.AddScoped<IAccount_Master_Service, Account_Master_Service>();
             services.AddScoped<ITrans_Service, Trans_Service>();
             services.AddScoped<ILab_User_Login_Activity_Services, Lab_User_Login_Activity_Services>();
+            services.AddScoped<IOracleService, OracleService>();
 
             
             services.AddControllers();

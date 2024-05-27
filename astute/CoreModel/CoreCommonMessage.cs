@@ -402,5 +402,10 @@ namespace astute.CoreModel
         public static string TransExistsTransPrefixOMasterUpdated = TransExistsTransPrefixMaster + TransExistsOMaster + UpdatedSuccessfully;
 
         #endregion
+
+        #region Oracle 
+        public static string Fortune_Discount = "Fortune Discount Oracle";
+        public static string Fortune_Discount_Added = "Fortune Discount Oracle" + AddedSuccessfully;
+        #endregion
     }
 }
