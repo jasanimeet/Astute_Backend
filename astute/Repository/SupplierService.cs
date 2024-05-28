@@ -2453,7 +2453,7 @@ namespace astute.Repository
             };
 
             var _supplier_Id = supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
-            var _customer_Name = !string.IsNullOrEmpty(customer_Name) ? new SqlParameter("@Customer_Name", customer_Name) : new SqlParameter("@Customer_Name", customer_Name);
+            var _customer_Name = !string.IsNullOrEmpty(customer_Name) ? new SqlParameter("@Customer_Name", customer_Name) : new SqlParameter("@Customer_Name", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
             .ExecuteSqlRawAsync(@"EXEC GIA_Certificate_Data_Insert_Update @tblGIACertificate, @Supplier_Id, @Customer_Name", parameter, _supplier_Id, _customer_Name));
@@ -2524,8 +2524,8 @@ namespace astute.Repository
                                 dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
                             }
 
-                            dict["Customer_Name"] = supplier_Name;
-                            dict["Supplier_Name"] = customer_Name;
+                            dict["Supplier_Name"] = supplier_Name;
+                            dict["Customer_Name"] = customer_Name;
 
                             result.Add(dict);
                         }
@@ -2544,7 +2544,7 @@ namespace astute.Repository
             };
 
             var _supplier_Id = supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
-            var _customer_Name = !string.IsNullOrEmpty(customer_Name) ? new SqlParameter("@Customer_Name", customer_Name) : new SqlParameter("@Customer_Name", customer_Name);
+            var _customer_Name = !string.IsNullOrEmpty(customer_Name) ? new SqlParameter("@Customer_Name", customer_Name) : new SqlParameter("@Customer_Name", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
             .ExecuteSqlRawAsync(@"EXEC GIA_Certificate_Placed_Order @tblGIA_Certi_Placed_Order, @Supplier_Id, @Customer_Name", parameter, _supplier_Id, _customer_Name));
@@ -2838,7 +2838,7 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<(DataTable,bool)> Get_Order_Excel_Data(IList<Report_Filter_Parameter> report_Filter_Parameters, int user_Id, string order_Id)
+        public async Task<(DataTable, bool)> Get_Order_Excel_Data(IList<Report_Filter_Parameter> report_Filter_Parameters, int user_Id, string order_Id)
         {
             DataTable dataTable = new DataTable();
             bool _is_Admin = false;
@@ -2858,11 +2858,11 @@ namespace astute.Repository
                     {
                         command.Parameters.Add(new SqlParameter("@STOCK_ID", DBNull.Value));
                     }
-                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));                    
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(order_Id) ? new SqlParameter("@Order_Id", order_Id) : new SqlParameter("@Order_Id", DBNull.Value));
 
                     var is_Admin = new SqlParameter("@Is_Admin", SqlDbType.Bit)
-                    {   
+                    {
                         Direction = ParameterDirection.Output
                     };
                     command.Parameters.Add(is_Admin);
