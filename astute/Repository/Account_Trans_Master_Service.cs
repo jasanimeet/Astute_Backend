@@ -104,7 +104,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<int> Create_Update_Account_Trans_Master(DataTable dataTable, int account_Trans_Id, string trans_Type, string? invoice_No, int currency_Id, int company_Id, int year_Id, int account_Id, decimal rate, int user_Id)
+        public async Task<(string,int)> Create_Update_Account_Trans_Master(DataTable dataTable, int account_Trans_Id, string trans_Type, string? invoice_No, int currency_Id, int company_Id, int year_Id, int account_Id, decimal rate, int user_Id)
         {
             var parameter = new SqlParameter("@Account_Trans_Detail_Table_Type", SqlDbType.Structured)
             {
@@ -122,31 +122,27 @@ namespace astute.Repository
             var _rate = new SqlParameter("@Rate", rate);
             var _user_Id = new SqlParameter("@User_Id", user_Id);
 
-            var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [dbo].[Account_Trans_Master_Insert_Update] @Account_Trans_Detail_Table_Type, @Account_Trans_Id, @Trans_Type, @Invoice_No, @Currency_Id, @Company_Id, @Year_Id, @Account_Id, @Rate, @User_Id",
-                        parameter, _account_Trans_Id, _trans_Type, _invoice_No,_currency_Id,_company_Id,_year_Id,_account_Id,_rate,_user_Id));
-
-            return result;
-        }
-        public async Task<(string,int)> Delete_Account_Trans_Master(int account_Trans_Id, string trans_Type,int user_Id)
-        {
-            var _account_Trans_Id = new SqlParameter("@Account_Trans_Id", account_Trans_Id);
-            var _trans_Type = new SqlParameter("@Trans_Type", !string.IsNullOrEmpty(trans_Type) ? trans_Type : DBNull.Value);
-            var _user_Id = new SqlParameter("@User_Id", user_Id);
-            var is_Exists = new SqlParameter("@Is_Exists", SqlDbType.Bit)
+            var is_First_Voucher_Add = new SqlParameter("@Is_First_Voucher_Add", SqlDbType.Bit)
             {
                 Direction = ParameterDirection.Output
             };
 
-            var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [dbo].[Account_Trans_Master_Delete] @Account_Trans_Id, @Trans_Type, @User_Id, @Is_Exists OUT",
-                         _account_Trans_Id, _trans_Type, _user_Id, is_Exists));
 
-            var _is_Exists = (bool)is_Exists.Value;
-            if (_is_Exists == false )
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC [dbo].[Account_Trans_Master_Insert_Update] @Account_Trans_Detail_Table_Type, @Account_Trans_Id, @Trans_Type, @Invoice_No, @Currency_Id, @Company_Id, @Year_Id, @Account_Id, @Rate, @User_Id, @Is_First_Voucher_Add OUT",
+                        parameter, _account_Trans_Id, _trans_Type, _invoice_No,_currency_Id,_company_Id,_year_Id,_account_Id,_rate,_user_Id, is_First_Voucher_Add));
+
+
+            var _is_Exists = (bool)is_First_Voucher_Add.Value;
+            if (_is_Exists == false)
                 return ("not_exists", 409);
 
-            return ("success",result);
+            return ("success", result);
+
+        }
+        public async Task<int> Delete_Account_Trans_Master(int Id)
+        {
+            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Account_Trans_Master_Delete {Id}"));
         }
         #endregion
     }

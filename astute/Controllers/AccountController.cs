@@ -751,71 +751,53 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    DataTable dataTable = new DataTable();
-                    dataTable.Columns.Add("Account_Trans_Detail_Id", typeof(int));
-                    dataTable.Columns.Add("By_Account", typeof(int));
-                    dataTable.Columns.Add("By_Type", typeof(string));
-                    dataTable.Columns.Add("To_Account", typeof(int));
-                    dataTable.Columns.Add("To_Type", typeof(string));
-                    dataTable.Columns.Add("Amount", typeof(decimal));
-                    dataTable.Columns.Add("Narration", typeof(string));
-
-                    foreach (var item in account_Trans_Master.account_Trans_Detail)
+                    if (account_Trans_Master.account_Trans_Detail != null && account_Trans_Master.account_Trans_Detail.Count > 0)
                     {
-                        dataTable.Rows.Add(item.account_Trans_Detail_Id, item.by_Account, item.by_Type, item.to_Account, item.to_Type, item.amount, !string.IsNullOrEmpty(item.narration) ? item.narration : DBNull.Value);
-                    }
 
-                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                    var result = await _account_Trans_Master_Service.Create_Update_Account_Trans_Master(dataTable, account_Trans_Master.account_Trans_Id, account_Trans_Master.trans_Type, account_Trans_Master.invoice_No, account_Trans_Master.currency_Id, account_Trans_Master.company_Id, account_Trans_Master.year_Id, account_Trans_Master.account_Id, account_Trans_Master.rate, user_Id ?? 0);
+                        DataTable dataTable = new DataTable();
+                        dataTable.Columns.Add("Voucher_No", typeof(string));
+                        dataTable.Columns.Add("By_Account", typeof(int));
+                        dataTable.Columns.Add("By_Type", typeof(string));
+                        dataTable.Columns.Add("To_Account", typeof(int));
+                        dataTable.Columns.Add("To_Type", typeof(string));
+                        dataTable.Columns.Add("Amount", typeof(decimal));
+                        dataTable.Columns.Add("Narration", typeof(string));
 
-                    if (result > 0)
-                    {
-                        return Ok(new
+
+                        foreach (var item in account_Trans_Master.account_Trans_Detail)
                         {
-                            statusCode = HttpStatusCode.OK,
-                            message = (account_Trans_Master.trans_Type == "B" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountBankbookMasterUpdated : CoreCommonMessage.AccountBankbookMasterCreated) :
-                                       account_Trans_Master.trans_Type == "C" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountCashbookMasterUpdated : CoreCommonMessage.AccountCashbookMasterCreated) :
-                                       account_Trans_Master.trans_Type == "JV" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountJvMasterUpdated : CoreCommonMessage.AccountJvMasterCreated) :
-                                       account_Trans_Master.trans_Type == "CO" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountContraMasterUpdated : CoreCommonMessage.AccountContraMasterCreated) : "")
-                        });
+                            dataTable.Rows.Add(!string.IsNullOrEmpty(item.voucherNo) ? item.voucherNo : DBNull.Value, account_Trans_Master.account, account_Trans_Master.type, item.account, item.type, item.amount, !string.IsNullOrEmpty(item.narration) ? item.narration : DBNull.Value);
+                        }
+
+                        var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                        int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                        var (message, result) = await _account_Trans_Master_Service.Create_Update_Account_Trans_Master(dataTable, account_Trans_Master.account_Trans_Id, account_Trans_Master.mod_Type, account_Trans_Master.invoice_No, account_Trans_Master.currency, account_Trans_Master.company, account_Trans_Master.year, account_Trans_Master.account, account_Trans_Master.rate, user_Id ?? 0);
+
+                        if (message == "not_exists" && result == 409)
+                        {
+                            return Conflict(new
+                            {
+                                statusCode = HttpStatusCode.Conflict,
+                                message = CoreCommonMessage.FirstAddFirstVoucherNo
+                            });
+                        }
+                        else if (message == "success" && result > 0)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = (account_Trans_Master.mod_Type == "B" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountBankbookMasterUpdated : CoreCommonMessage.AccountBankbookMasterCreated) :
+                                             account_Trans_Master.mod_Type == "C" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountCashbookMasterUpdated : CoreCommonMessage.AccountCashbookMasterCreated) :
+                                             account_Trans_Master.mod_Type == "JV" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountJvMasterUpdated : CoreCommonMessage.AccountJvMasterCreated) :
+                                             account_Trans_Master.mod_Type == "CO" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountContraMasterUpdated : CoreCommonMessage.AccountContraMasterCreated) : "")
+                            });
+                        }
                     }
 
                 }
                 return BadRequest(ModelState);
-            }
-            catch (SqlException ex)
-            {
-                string message = ex.Message;
-                if (ex.Number == 515)
-                {
-                    if (message.Contains("trans_Type"))
-                    {
-                        message = "Trans Type is required.";
-                    }
-                    else if (message.Contains("User_Name"))
-                    {
-                        message = "User name is required.";
-                    }
-                    else if (message.Contains("Password"))
-                    {
-                        message = "Password is required.";
-                    }
-                    else if (message.Contains("User_Type"))
-                    {
-                        message = "User type is required.";
-                    }
-                }
-                else if (ex.Number == 547)
-                {
-                    message = "Company name is required.";
-                }
-                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Account_Trans_Master", ex.StackTrace);
-                return Ok(new
-                {
-                    message = ex.Message
-                });
             }
             catch (Exception ex)
             {
@@ -831,37 +813,22 @@ namespace astute.Controllers
         [HttpDelete]
         [Route("delete_account_trans_master")]
         [Authorize]
-        public async Task<IActionResult> Delete_Account_Trans_Master(int id, string trans_Type)
+        public async Task<IActionResult> Delete_Account_Trans_Master(int id,string trans_Type)
         {
             try
             {
-                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-
-                var (message, result) = await _account_Trans_Master_Service.Delete_Account_Trans_Master(id, trans_Type, user_Id ?? 0);
-                if (message == "not_exists" && result == 409)
+                var result = await _account_Trans_Master_Service.Delete_Account_Trans_Master(id);
+                if (result > 0)
                 {
-                    return Conflict(new
-                    {
-                        statusCode = HttpStatusCode.Conflict,
-                        message = (trans_Type == "B" ? CoreCommonMessage.AccountCashbookMasterDataNotFound :
-                                       trans_Type == "C" ? CoreCommonMessage.AccountBankbookMasterDataNotFound :
-                                       trans_Type == "JV" ? CoreCommonMessage.AccountJvMasterDataNotFound :
-                                       trans_Type == "CO" ? CoreCommonMessage.AccountContraMasterDataNotFound : "")
-
-                    });
-                }
-                else if(message == "success" && result >0) {
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
                         message = (trans_Type == "B" ? CoreCommonMessage.AccountBankbookMasterDeleted :
-                                           trans_Type == "C" ? CoreCommonMessage.AccountCashbookMasterDeleted :
-                                           trans_Type == "JV" ? CoreCommonMessage.AccountJvMasterDeleted :
-                                           trans_Type == "CO" ? CoreCommonMessage.AccountContraMasterDeleted : "")
+                                          trans_Type == "C" ? CoreCommonMessage.AccountCashbookMasterDeleted :
+                                          trans_Type == "JV" ? CoreCommonMessage.AccountJvMasterDeleted :
+                                          trans_Type == "CO" ? CoreCommonMessage.AccountContraMasterDeleted : "")
 
                     });
-
                 }
                 return BadRequest(new
                 {

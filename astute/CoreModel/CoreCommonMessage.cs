@@ -409,6 +409,7 @@ namespace astute.CoreModel
           
         #region Account Trans Master
 
+        public static string FirstAddFirstVoucherNo = "First voucher no not found.";
         public static string AccountCashbookMaster = "Cash book";
         public static string AccountCashbookMasterCreated = AccountCashbookMaster + AddedSuccessfully;
         public static string AccountCashbookMasterUpdated = AccountCashbookMaster + UpdatedSuccessfully;
