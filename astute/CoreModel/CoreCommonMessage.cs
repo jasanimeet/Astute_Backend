@@ -402,6 +402,11 @@ namespace astute.CoreModel
 
         #endregion
 
+        #region Oracle 
+        public static string Fortune_Discount = "Fortune Discount Oracle";
+        public static string Fortune_Discount_Added = "Fortune Discount Oracle" + AddedSuccessfully;
+        #endregion
+          
         #region Account Trans Master
 
         public static string AccountCashbookMaster = "Cash book";
@@ -427,7 +432,6 @@ namespace astute.CoreModel
         public static string AccountContraMasterUpdated = AccountContraMaster + UpdatedSuccessfully;
         public static string AccountContraMasterDeleted = AccountContraMaster + DeletedSuccessfully;
         public static string AccountContraMasterDataNotFound = AccountContraMaster + DataNotFound;
-
         #endregion
     }
 }
