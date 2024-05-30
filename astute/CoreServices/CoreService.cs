@@ -747,5 +747,13 @@ namespace astute.CoreServices
             }
             return "";
         }
+        public static string ConvertToDateString(object cellValue)
+        {
+            if (cellValue != null && DateTime.TryParse(cellValue.ToString(), out DateTime dateValue))
+            {
+                return dateValue.ToString("dd/MM/yyyy");
+            }
+            return "";
+        }
     }
 }

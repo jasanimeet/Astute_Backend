@@ -181,28 +181,29 @@ namespace astute.Repository
 
             return partyReplicate;
         }
-        public async Task<IList<Party_Master_Replica>> GetPartyFromCache(int partyId, string partyType)
+        public async Task<IList<Party_Master_Replica>> GetPartyFromCache(int partyId, string partyType, int company_Code)
         {
-            string cacheKey = $"PartyReplicate_{partyId}_{partyType}";
+            string cacheKey = $"PartyReplicate_{partyId}_{partyType}_{company_Code}";
 
             if (_cache.TryGetValue(cacheKey, out IList<Party_Master_Replica> partyReplicate))
             {
                 return partyReplicate;
             }
 
-            partyReplicate = await GetParty_Raplicate(partyId, partyType);
+            partyReplicate = await GetParty_Raplicate(partyId, partyType, company_Code);
 
             _cache.Set(cacheKey, partyReplicate, TimeSpan.FromMinutes(10)); // for 10 min
 
             return partyReplicate;
         }
-        public async Task<IList<Party_Master_Replica>> GetParty_Raplicate(int party_Id, string party_Type)
+        public async Task<IList<Party_Master_Replica>> GetParty_Raplicate(int party_Id, string party_Type, int company_Code)
         {
 
             var partyId = new SqlParameter("@PartyId", party_Id > 0 ? (object)party_Id : DBNull.Value);
             var partyType = new SqlParameter("@Party_Type", !string.IsNullOrEmpty(party_Type) ? (object)party_Type : DBNull.Value);
+            var _company_Code = new SqlParameter("@Company_Code", company_Code > 0 ? (object)company_Code : DBNull.Value);
 
-            var rawResult = await _dbContext.Party_Master_Replica.FromSqlRaw("exec Party_Master_Select_Raplicate @PartyId, @Party_Type", partyId, partyType)
+            var rawResult = await _dbContext.Party_Master_Replica.FromSqlRaw("exec Party_Master_Select_Raplicate @PartyId, @Party_Type, @Company_Code", partyId, partyType, _company_Code)
                             .AsNoTracking()
                             .ToListAsync();
 
@@ -591,6 +592,7 @@ namespace astute.Repository
             var tIN_No = !string.IsNullOrEmpty(party_Master.TIN_No) ? new SqlParameter("@TIN_No", party_Master.TIN_No) : new SqlParameter("@TIN_No", DBNull.Value);
             var invoice_Grp = !string.IsNullOrEmpty(party_Master.Invoice_Grp) ? new SqlParameter("@Invoice_Grp", party_Master.Invoice_Grp) : new SqlParameter("@Invoice_Grp", DBNull.Value);
             var modified_By = party_Master.Modified_By > 0 ? new SqlParameter("@Modified_By", party_Master.Modified_By) : new SqlParameter("@Modified_By", DBNull.Value);
+            var company_Code = party_Master.Company_Code > 0 ? new SqlParameter("@Company_Code", party_Master.Company_Code) : new SqlParameter("@Company_Code", DBNull.Value);
             //var status = new SqlParameter("@Status", true);
             var insertedId = new SqlParameter("@InsertedId", System.Data.SqlDbType.Int)
             {
@@ -604,11 +606,11 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_Master_Insert_Update @Party_Id, @Party_Type, @Party_Code, @Adress_1, @Adress_2, @Adress_3, @City_Id, @PinCode, @Mobile_1,
                         @Mobile_1_Country_Code, @Mobile_2, @Mobile_2_Country_Code, @Phone_1, @Phone_1_Country_Code, @Phone_2, @Phone_2_Country_Code, @Fax, @Fax_Country_Code, @Email_1, @Email_2, @Party_Name, @Ship_PartyId, @Final_Customer_Id, @Website,
-                        @Cust_Freight_Account_No, @Alias_Name, @Wechat_ID, @Skype_ID, @Business_Reg_No, @Default_Remarks, @Notification, @Reference_By, @TIN_No,@Invoice_Grp, @Modified_By, @InsertedId OUT, @Party_Exists OUT", party_Id,
+                        @Cust_Freight_Account_No, @Alias_Name, @Wechat_ID, @Skype_ID, @Business_Reg_No, @Default_Remarks, @Notification, @Reference_By, @TIN_No,@Invoice_Grp, @Modified_By, @Company_Code, @InsertedId OUT, @Party_Exists OUT", party_Id,
                         party_Type, party_Code, party_Address1, party_Address2, party_Address3, city_Id, pin_Code, mobile_No1, mobile_1_Country_Code, mobile_No2, mobile_2_Country_Code,
                         phone_No1, phone_1_Country_Code, phone_No2, phone_2_Country_Code, fax, fax_Country_Code, email_1, email_2,
                         party_Name, ship_PartyId, final_Customer_Id, website, cust_Freight_Account_No, alias_Name, wechat_ID, skype_ID, business_Reg_No,
-                        default_Remarks, notification, reference_By, tIN_No, invoice_Grp, modified_By, insertedId, party_Exists));
+                        default_Remarks, notification, reference_By, tIN_No, invoice_Grp, modified_By, company_Code, insertedId, party_Exists));
 
             var _party_exists = (bool)party_Exists.Value;
             if (_party_exists)

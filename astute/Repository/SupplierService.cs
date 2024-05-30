@@ -2715,6 +2715,7 @@ namespace astute.Repository
         public async Task<int> Create_Stone_Order_Process(Order_Stone_Process order_Stone_Processing, int user_Id)
         {
             string request_For = string.Empty;
+            string _order_Status = string.Empty;
             if (!string.IsNullOrEmpty(order_Stone_Processing.QC_Request))
             {
                 request_For = order_Stone_Processing.Order_Status + "," + order_Stone_Processing.QC_Request;
@@ -2724,10 +2725,19 @@ namespace astute.Repository
                 request_For = order_Stone_Processing.Order_Status;
             }
 
+            if(order_Stone_Processing.Order_Status == "CANCEL")
+            {
+                _order_Status = "COMPLETED";
+            }
+            else
+            {
+                _order_Status = "REQUESTED";
+            }
+
             var _user_Id = new SqlParameter("@User_Id", user_Id);
             var order_Id = !string.IsNullOrEmpty(order_Stone_Processing.Order_Id) ? new SqlParameter("@Order_Id", order_Stone_Processing.Order_Id) : new SqlParameter("@Order_Id", DBNull.Value);
             var order_No = !string.IsNullOrEmpty(order_Stone_Processing.Order_No) ? new SqlParameter("@Order_No", order_Stone_Processing.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
-            var order_Status = new SqlParameter("@Order_Status", "REQUESTED");
+            var order_Status = new SqlParameter("@Order_Status", _order_Status);
             var stone_Status = !string.IsNullOrEmpty(request_For) ? new SqlParameter("@Stone_Status", request_For) : new SqlParameter("@Stone_Status", DBNull.Value);
             var remarks = !string.IsNullOrEmpty(order_Stone_Processing.Remarks) ? new SqlParameter("@Remarks", order_Stone_Processing.Remarks) : new SqlParameter("@Remarks", DBNull.Value);
 
