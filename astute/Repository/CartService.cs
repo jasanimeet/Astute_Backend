@@ -87,10 +87,11 @@ namespace astute.Repository
         {
             var _ids = !string.IsNullOrEmpty(approval_Management.Ids) ? new SqlParameter("@Ids", approval_Management.Ids) : new SqlParameter("@Ids", DBNull.Value);
             var _status = !string.IsNullOrEmpty(approval_Management.Status) ? new SqlParameter("@Status", approval_Management.Status) : new SqlParameter("@Status", DBNull.Value);
+            var _remarks = !string.IsNullOrEmpty(approval_Management.Remarks) ? new SqlParameter("@Remarks", approval_Management.Remarks) : new SqlParameter("@Remarks", DBNull.Value);
             var _user_Id = approval_Management.User_Id > 0 ? new SqlParameter("@User_Id", approval_Management.User_Id) : new SqlParameter("@User_Id", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Approved_Management_Update_Status @Ids, @Status, @User_Id", _ids, _status, _user_Id));
+                        .ExecuteSqlRawAsync(@"EXEC Approved_Management_Update_Status @Ids, @Status,@Remarks, @User_Id", _ids, _status, _remarks, _user_Id));
 
             return result;
         }
