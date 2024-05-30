@@ -731,11 +731,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_party_raplicate")]
         [Authorize]
-        public async Task<IActionResult> Get_Party_Raplicate(int party_Id, string party_Type)
+        public async Task<IActionResult> Get_Party_Raplicate(int party_Id, string party_Type, int company_Code)
         {
             try
             {
-                var result = await _partyService.GetParty_Raplicate(party_Id, party_Type);
+                var result = await _partyService.GetParty_Raplicate(party_Id, party_Type, company_Code);
 
                 if (result != null && result.Count > 0)
                 {
@@ -2687,7 +2687,7 @@ namespace astute.Controllers
         [Route("create_update_supplier_stock_by_scheduler")]
         public async Task<IActionResult> Create_Update_Supplier_Stock_By_Scheduler(Stock_Data_Master_Schedular stock_Data_Master)
         {
-            var party_List = await _partyService.GetParty_Raplicate(stock_Data_Master.Supplier_Id ?? 0, null);
+            var party_List = await _partyService.GetParty_Raplicate(stock_Data_Master.Supplier_Id ?? 0, null, 0);
             var party = party_List.FirstOrDefault();
             try
             {
@@ -3114,7 +3114,7 @@ namespace astute.Controllers
                     {
                         #region Update Party File
                         var party_file_obj = await _partyService.Get_Party_File(0, party_File.Party_Id ?? 0);
-                        var parties = await _partyService.GetParty_Raplicate(party_File.Party_Id ?? 0, null);
+                        var parties = await _partyService.GetParty_Raplicate(party_File.Party_Id ?? 0, null, 0);
                         party_name = parties.Select(x => x.Party_Name).FirstOrDefault();
                         if (party_file_obj != null)
                         {
@@ -7417,7 +7417,15 @@ namespace astute.Controllers
                                         }
                                         else
                                         {
-                                            rowData.Add(columnName, cellValue != null ? cellValue : null);
+                                            if (columnName == "Certificate_Date")
+                                            {
+                                                string certi_Date = CoreService.ConvertToDateString(cellValue);
+                                                rowData.Add(columnName, !string.IsNullOrEmpty(certi_Date) ? certi_Date : null);
+                                            }
+                                            else
+                                            {
+                                                rowData.Add(columnName, cellValue != null ? cellValue : null);
+                                            }
                                         }
                                     }
                                 }
@@ -10428,7 +10436,7 @@ namespace astute.Controllers
                                 if (emp_email != null)
                                 {
                                     IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
-                                    _emailSender.Send_Stock_Email(toEmail: employee.Personal_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, user_Id: user_Id ?? 0, employee_Mail: emp_email);
+                                    _emailSender.Send_Stock_Email(toEmail: employee.Company_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, user_Id: user_Id ?? 0, employee_Mail: emp_email);
                                 }
                             }
                         }
