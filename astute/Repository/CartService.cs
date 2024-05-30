@@ -70,6 +70,7 @@ namespace astute.Repository
 
             return result;
         }
+
         public async Task<int> Approved_Or_Rejected_by_Management(Approval_Management approval_Management)
         {
             var _ids = !string.IsNullOrEmpty(approval_Management.Ids) ? new SqlParameter("@Ids", approval_Management.Ids) : new SqlParameter("@Ids", DBNull.Value);
