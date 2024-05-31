@@ -3892,11 +3892,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("supplier_stock_error_log")]
         [Authorize]
-        public async Task<IActionResult> Supplier_Stock_Error_Log(string supplier_Ids, string upload_Type, string from_Date, string from_Time, string to_Date, string to_Time, bool is_Last_Entry)
+        public async Task<IActionResult> Supplier_Stock_Error_Log(string supplier_Ids, string upload_Type, string from_Date, string from_Time, string to_Date, string to_Time, bool is_Last_Entry,string stock_Type)
         {
             try
             {
-                var result = await _supplierService.Get_Supplier_Stock_Error_Log(supplier_Ids, upload_Type, from_Date, from_Time, to_Date, to_Time, is_Last_Entry);
+                var result = await _supplierService.Get_Supplier_Stock_Error_Log(supplier_Ids, upload_Type, from_Date, from_Time, to_Date, to_Time, is_Last_Entry, stock_Type);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
