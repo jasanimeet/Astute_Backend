@@ -33,7 +33,7 @@ namespace astute.Repository
         Task<int> Delete_Supplier_Pricing_By_Supplier(int supplier_Id);
         Task<Common_Model> Get_Max_Sunrice_Pricing_Id();
         Task<int> Delete_Sunrise_Pricing(int sunrise_Pricing_Id);
-        Task<int> Delete_Customer_Pricing(int customer_Pricing_Id);
+        Task<int> Delete_Customer_Pricing(int user_Pricing_Id);
         #endregion
 
         #region Supplier Pricing Key To Symbol

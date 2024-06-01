@@ -8,7 +8,7 @@ namespace astute.Models
     {
         [Key]
         public int? FTP_Id { get; set; }
-        public int? Party_Id { get; set; }
+        public int? User_Pricing_Id { get; set; }
         public string? Host { get; set; }
         public int? Ftp_Port { get; set; }
         public string? Ftp_User { get; set; }

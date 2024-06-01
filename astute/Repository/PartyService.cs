@@ -924,7 +924,7 @@ namespace astute.Repository
         public async Task<int> Add_Update_Customer_Party_File(Customer_Party_File party_File, int modified_By, string map_Flag)
         {
             var file_Id = new SqlParameter("@File_Id", party_File.File_Id);
-            var _party_Id = party_File.Party_Id > 0 ? new SqlParameter("@Party_Id", party_File.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+            var _user_Pricing_Id = party_File.User_Pricing_Id > 0 ? new SqlParameter("@User_Pricing_Id", party_File.User_Pricing_Id) : new SqlParameter("@User_Pricing_Id", DBNull.Value);
             var file_Name = !string.IsNullOrEmpty(party_File.File_Name) ? new SqlParameter("@File_Name", party_File.File_Name) : new SqlParameter("@File_Name", DBNull.Value);
             var file_Type = !string.IsNullOrEmpty(party_File.File_Type) ? new SqlParameter("@File_Type", party_File.File_Type) : new SqlParameter("@File_Type", DBNull.Value);
             var iP = !string.IsNullOrEmpty(party_File.IP) ? new SqlParameter("@IP", party_File.IP) : new SqlParameter("@IP", DBNull.Value);
@@ -934,8 +934,8 @@ namespace astute.Repository
             var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Customer_Party_File_Insert_Update @File_Id, @Party_Id, @File_Name,@File_Type,@IP,@Country, @File_Status, @Modified_By, @Map_Flag",
-                        file_Id, _party_Id, file_Name, file_Type, iP, country, file_Status, _modified_By, _map_Flag));
+                        .ExecuteSqlRawAsync(@"EXEC Customer_Party_File_Insert_Update @File_Id, @User_Pricing_Id, @File_Name,@File_Type,@IP,@Country, @File_Status, @Modified_By, @Map_Flag",
+                        file_Id, _user_Pricing_Id, file_Name, file_Type, iP, country, file_Status, _modified_By, _map_Flag));
 
             return result;
         }
@@ -962,7 +962,7 @@ namespace astute.Repository
         public async Task<int> Add_Update_Customer_Party_FTP(Customer_Party_FTP party_FTP, int modified_By, string map_Flag)
         {
             var ftp_Id = new SqlParameter("@FTP_Id", party_FTP.FTP_Id);
-            var _party_Id = party_FTP.Party_Id > 0 ? new SqlParameter("@Party_Id", party_FTP.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+            var _user_pricing_id = party_FTP.User_Pricing_Id > 0 ? new SqlParameter("@User_Pricing_Id", party_FTP.User_Pricing_Id) : new SqlParameter("@User_Pricing_Id", DBNull.Value);
             var host = !string.IsNullOrEmpty(party_FTP.Host) ? new SqlParameter("@Host", party_FTP.Host) : new SqlParameter("@Host", DBNull.Value);
             var ftp_Port = party_FTP.Ftp_Port > 0 ? new SqlParameter("@Ftp_Port", party_FTP.Ftp_Port) : new SqlParameter("@Ftp_Port", DBNull.Value);
             var ftp_User = !string.IsNullOrEmpty(party_FTP.Ftp_User) ? new SqlParameter("@Ftp_User", party_FTP.Ftp_User) : new SqlParameter("@Ftp_User", DBNull.Value);
@@ -977,9 +977,9 @@ namespace astute.Repository
             var _modified_By = new SqlParameter("@Modified_By", modified_By);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Customer_Party_FTP_Insert_Update @FTP_Id, @Party_Id, @Host, @Ftp_Port, @Ftp_User, @Ftp_Password, @Ftp_File_Name, @Ftp_File_Format,
+                        .ExecuteSqlRawAsync(@"EXEC Customer_Party_FTP_Insert_Update @FTP_Id, @User_Pricing_Id, @Host, @Ftp_Port, @Ftp_User, @Ftp_Password, @Ftp_File_Name, @Ftp_File_Format,
                         @RepeateveryType, @Repeatevery, @Secure_Ftp, @Ftp_Status, @Modified_By, @Map_Flag",
-                        ftp_Id, _party_Id, host, ftp_Port, ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Format, repeateveryType, repeatevery, secure_Ftp, ftp_Status, _modified_By, _map_Flag));
+                        ftp_Id, _user_pricing_id, host, ftp_Port, ftp_User, ftp_Pasword, ftp_File_Name, ftp_File_Format, repeateveryType, repeatevery, secure_Ftp, ftp_Status, _modified_By, _map_Flag));
 
             return result;
         }
@@ -987,14 +987,14 @@ namespace astute.Repository
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Customer_Party_FTP_Delete {ftp_Id}"));
         }
-        public async Task<Customer_Party_FTP> Get_Customer_Party_FTP(int? ftp_Id, int party_Id, string map_Flag)
+        public async Task<Customer_Party_FTP> Get_Customer_Party_FTP(int? ftp_Id, int user_Pricing_Id, string map_Flag)
         {
             var _ftp_Id = ftp_Id > 0 ? new SqlParameter("@FTP_Id", ftp_Id) : new SqlParameter("@FTP_Id", DBNull.Value);
-            var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+            var _user_Pricing_Id = user_Pricing_Id > 0 ? new SqlParameter("@User_Pricing_Id", user_Pricing_Id) : new SqlParameter("@User_Pricing_Id", DBNull.Value);
             var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Customer_Party_FTP
-                            .FromSqlRaw(@"exec Customer_Party_FTP_Select @FTP_Id, @Party_Id, @Map_Flag", _ftp_Id, _party_Id, _map_Flag)
+                            .FromSqlRaw(@"exec Customer_Party_FTP_Select @FTP_Id, @User_Pricing_Id, @Map_Flag", _ftp_Id, _user_Pricing_Id, _map_Flag)
                             .AsEnumerable()
                             .FirstOrDefault());
 
@@ -1006,7 +1006,7 @@ namespace astute.Repository
         public async Task<int> Add_Update_Customer_Party_API(Customer_Party_Api party_API, int modified_By, string map_Flag)
         {
             var api_Id = new SqlParameter("@API_Id", party_API.API_Id);
-            var _party_Id = party_API.Party_Id > 0 ? new SqlParameter("@Party_Id", party_API.Party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+            var _user_Pricing_Id = party_API.User_Pricing_Id > 0 ? new SqlParameter("@User_Pricing_Id", party_API.User_Pricing_Id) : new SqlParameter("@User_Pricing_Id", DBNull.Value);
             var format_Type = !string.IsNullOrEmpty(party_API.Format_Type) ? new SqlParameter("@Format_Type", party_API.Format_Type) : new SqlParameter("@Format_Type", DBNull.Value);
             var iP = !string.IsNullOrEmpty(party_API.IP) ? new SqlParameter("@IP", party_API.IP) : new SqlParameter("@IP", DBNull.Value);
             var country = !string.IsNullOrEmpty(party_API.Country) ? new SqlParameter("@Country", party_API.Country) : new SqlParameter("@Country", DBNull.Value);
@@ -1015,8 +1015,8 @@ namespace astute.Repository
             var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Customer_Party_API_Insert_Update @API_Id, @Party_Id, @Format_Type,@IP,@Country, @API_Status, @Modified_By, @Map_Flag",
-                        api_Id, _party_Id, format_Type, iP, country, api_Status, _modified_By, _map_Flag));
+                        .ExecuteSqlRawAsync(@"EXEC Customer_Party_API_Insert_Update @API_Id, @User_Pricing_Id, @Format_Type,@IP,@Country, @API_Status, @Modified_By, @Map_Flag",
+                        api_Id, _user_Pricing_Id, format_Type, iP, country, api_Status, _modified_By, _map_Flag));
 
             return result;
         }
@@ -1024,14 +1024,14 @@ namespace astute.Repository
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Customer_Party_API_Delete {api_Id}"));
         }
-        public async Task<Customer_Party_Api> Get_Customer_Party_API(int? api_Id, int party_Id, string map_Flag)
+        public async Task<Customer_Party_Api> Get_Customer_Party_API(int? api_Id, int user_pricing_id, string map_Flag)
         {
             var _api_Id = api_Id > 0 ? new SqlParameter("@API_Id", api_Id) : new SqlParameter("@API_Id", DBNull.Value);
-            var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+            var _user_pricing_id = user_pricing_id > 0 ? new SqlParameter("@User_Pricing_Id", user_pricing_id) : new SqlParameter("@User_Pricing_Id", DBNull.Value);
             var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Customer_Party_Api
-                            .FromSqlRaw(@"exec [Customer_Party_API_Select] @API_Id, @Party_Id, @Map_Flag", _api_Id, _party_Id, _map_Flag)
+                            .FromSqlRaw(@"exec [Customer_Party_API_Select] @API_Id, @User_Pricing_Id, @Map_Flag", _api_Id, _user_pricing_id, _map_Flag)
                             .AsEnumerable()
                             .FirstOrDefault());
 
@@ -1055,14 +1055,14 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<List<Customer_Column_Caption>> Get_Customer_Pricing_Column_Caption(int? party_Id, string? map_Flag, string? upload_Method)
+        public async Task<List<Customer_Column_Caption>> Get_Customer_Pricing_Column_Caption(int? user_Pricing_Id, string? map_Flag, string? upload_Method)
         {
-            var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+            var _user_Pricing_Id = user_Pricing_Id > 0 ? new SqlParameter("@User_Pricing_Id", user_Pricing_Id) : new SqlParameter("@Party_Id", DBNull.Value);
             var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
             var _upload_Method = !string.IsNullOrEmpty(upload_Method) ? new SqlParameter("@Upload_Method", upload_Method) : new SqlParameter("@Upload_Method", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Customer_Column_Caption
-                            .FromSqlRaw(@"exec Customer_Pricing_Column_Caption_Select @Party_Id, @Map_Flag, @Upload_Method", _party_Id, _map_Flag, _upload_Method)
+                            .FromSqlRaw(@"exec Customer_Pricing_Column_Caption_Select @User_Pricing_Id, @Map_Flag, @Upload_Method", _user_Pricing_Id, _map_Flag, _upload_Method)
                             .AsEnumerable()
                             .ToList());
 
