@@ -16,16 +16,24 @@ namespace astute.TaskScheduler
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {   
+        {
+            var now = DateTime.UtcNow;
+            var nextRun = now.Date.AddDays(1);
+            var delay = nextRun - now;
+
+            await Task.Delay(delay, stoppingToken);
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 using (var scope = _serviceProvider.CreateScope())
                 {
-                    var commonService = scope.ServiceProvider.GetRequiredService<ICommonService>();
-                    await commonService.InsertErrorLog("Job started at: " + DateTime.UtcNow, "Job Schedule", "");
+                    var oracleService = scope.ServiceProvider.GetRequiredService<IOracleService>();
+                    await oracleService.Get_Fortune_Discount();
                 }
 
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                nextRun = nextRun.AddDays(1);
+                delay = nextRun - DateTime.UtcNow;
+                await Task.Delay(delay, stoppingToken);
             }
         }
     }

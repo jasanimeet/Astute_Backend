@@ -63,19 +63,19 @@ namespace astute.Repository
             {
                 DataRow newRow = newDataTable.NewRow();
 
-                newRow["SHAPE"] = row["SHAPE"];
+                newRow["SHAPE"] = (!string.IsNullOrEmpty(row["SHAPE"].ToString())) ? row["SHAPE"] : DBNull.Value;
                 newRow["POINTER"] = DBNull.Value;
-                newRow["SUBPOINTER"] = row["SUB_POINTER"];
-                newRow["COLOR"] = row["PUR_COLOR"];
-                newRow["PURITY"] = row["PUR_PURITY"];
-                newRow["CUT"] = row["PUR_CUT"];
-                newRow["FLS"] = row["PUR_FLS"];
-                newRow["PCS"] = Convert.ToInt32(row["ANALIS_PUR_PCS"]);
-                newRow["DISC"] = Convert.ToSingle(row["CUR_PUR_DISC"]);
-                newRow["KTS_GRD"] = row["PUR_KTS_GRD"];
+                newRow["SUBPOINTER"] = (!string.IsNullOrEmpty(row["SUB_POINTER"].ToString())) ? row["SUB_POINTER"] : DBNull.Value;
+                newRow["COLOR"] = (!string.IsNullOrEmpty(row["PUR_COLOR"].ToString())) ? row["PUR_COLOR"] : DBNull.Value;
+                newRow["PURITY"] = (!string.IsNullOrEmpty(row["PUR_PURITY"].ToString())) ? row["PUR_PURITY"] : DBNull.Value;
+                newRow["CUT"] = (!string.IsNullOrEmpty(row["PUR_CUT"].ToString())) ? row["PUR_CUT"] : DBNull.Value;
+                newRow["FLS"] = (!string.IsNullOrEmpty(row["PUR_FLS"].ToString())) ? row["PUR_FLS"] : DBNull.Value;
+                newRow["PCS"] = (!string.IsNullOrEmpty(row["ANALIS_PUR_PCS"].ToString())) ? Convert.ToInt32(row["ANALIS_PUR_PCS"]) : DBNull.Value;
+                newRow["DISC"] = (!string.IsNullOrEmpty(row["CUR_PUR_DISC"].ToString())) ? Convert.ToSingle(row["CUR_PUR_DISC"]) : DBNull.Value;
+                newRow["KTS_GRD"] = (!string.IsNullOrEmpty(row["PUR_KTS_GRD"].ToString())) ? row["PUR_KTS_GRD"] : DBNull.Value;
                 newRow["STONE_CLARITY"] = DBNull.Value;
-                newRow["VSHADE"] = row["PUR_VSHADE"];
-                newRow["LUSTER"] = row["PUR_LUSTER"];
+                newRow["VSHADE"] = (!string.IsNullOrEmpty(row["PUR_VSHADE"].ToString())) ? row["PUR_VSHADE"] : DBNull.Value;
+                newRow["LUSTER"] = (!string.IsNullOrEmpty(row["PUR_LUSTER"].ToString())) ? row["PUR_LUSTER"] : DBNull.Value;
                 newRow["ANALIS_SALES_DAYS"] = DBNull.Value;
                 newRow["TYPE"] = "P";
 
@@ -240,20 +240,20 @@ namespace astute.Repository
             {
                 DataRow newRow = newDataTable.NewRow();
 
-                newRow["SHAPE"] = row["SHAPE"];
-                newRow["POINTER"] = row["SALE_POINTER"];
-                newRow["SUBPOINTER"] = row["SALE_SUBPOINTER"];
-                newRow["COLOR"] = row["SALE_COLOR"];
-                newRow["PURITY"] = row["SALE_PURITY"];
-                newRow["CUT"] = row["SALE_CUT"];
-                newRow["FLS"] = row["SALE_FLS"];
-                newRow["PCS"] = Convert.ToInt32(row["ANALIS_SALES_PCS"]);
-                newRow["DISC"] = Convert.ToSingle(row["SALE_DISC"]);
-                newRow["KTS_GRD"] = row["SALE_KTS_GRD"];
-                newRow["STONE_CLARITY"] = row["SALE_STONE_CLARITY"];
-                newRow["VSHADE"] = row["SALE_VSHADE"];
-                newRow["LUSTER"] = row["SALE_LUSTER"];
-                newRow["ANALIS_SALES_DAYS"] = row["ANALIS_SALES_DAYS"];
+                newRow["SHAPE"] = (!string.IsNullOrEmpty(row["SHAPE"].ToString())) ? row["SHAPE"] : DBNull.Value;
+                newRow["POINTER"] = (!string.IsNullOrEmpty(row["SALE_POINTER"].ToString())) ? row["SALE_POINTER"] : DBNull.Value;
+                newRow["SUBPOINTER"] = (!string.IsNullOrEmpty(row["SALE_SUBPOINTER"].ToString())) ? row["SALE_SUBPOINTER"] : DBNull.Value;
+                newRow["COLOR"] = (!string.IsNullOrEmpty(row["SALE_COLOR"].ToString())) ? row["SALE_COLOR"] : DBNull.Value;
+                newRow["PURITY"] = (!string.IsNullOrEmpty(row["SALE_PURITY"].ToString())) ? row["SALE_PURITY"] : DBNull.Value;
+                newRow["CUT"] = (!string.IsNullOrEmpty(row["SALE_CUT"].ToString())) ? row["SALE_CUT"] : DBNull.Value;
+                newRow["FLS"] = (!string.IsNullOrEmpty(row["SALE_FLS"].ToString())) ? row["SALE_FLS"] : DBNull.Value;
+                newRow["PCS"] = (!string.IsNullOrEmpty(row["ANALIS_SALES_PCS"].ToString())) ? Convert.ToInt32(row["ANALIS_SALES_PCS"]) : DBNull.Value;
+                newRow["DISC"] = (!string.IsNullOrEmpty(row["SALE_DISC"].ToString())) ? Convert.ToSingle(row["SALE_DISC"]) : DBNull.Value;
+                newRow["KTS_GRD"] = (!string.IsNullOrEmpty(row["SALE_KTS_GRD"].ToString())) ? row["SALE_KTS_GRD"] : DBNull.Value;
+                newRow["STONE_CLARITY"] = (!string.IsNullOrEmpty(row["SALE_STONE_CLARITY"].ToString())) ? row["SALE_STONE_CLARITY"] : DBNull.Value;
+                newRow["VSHADE"] = (!string.IsNullOrEmpty(row["SALE_VSHADE"].ToString())) ? row["SALE_VSHADE"] : DBNull.Value;
+                newRow["LUSTER"] = (!string.IsNullOrEmpty(row["SALE_LUSTER"].ToString())) ? row["SALE_LUSTER"] : DBNull.Value;
+                newRow["ANALIS_SALES_DAYS"] = (!string.IsNullOrEmpty(row["ANALIS_SALES_DAYS"].ToString())) ? row["ANALIS_SALES_DAYS"] : DBNull.Value;
                 newRow["TYPE"] = "SD";
 
                 newDataTable.Rows.Add(newRow);
@@ -416,19 +416,19 @@ namespace astute.Repository
             {
                 DataRow newRow = newDataTable.NewRow();
 
-                newRow["SHAPE"] = row["SHAPE"];
-                newRow["POINTER"] = row["STOCK_POINTER"];
-                newRow["SUBPOINTER"] = row["STOCK_SUBPOINTER"];
-                newRow["COLOR"] = row["STOCK_COLOR"];
-                newRow["PURITY"] = row["STOCK_PURITY"];
-                newRow["CUT"] = row["STOCK_CUT"];
-                newRow["FLS"] = row["STOCK_FLS"];
-                newRow["PCS"] = Convert.ToInt32(row["ANALIS_STOCK_PCS"]);
-                newRow["DISC"] = Convert.ToSingle(row["OFFER_DISC_PER"]);
-                newRow["KTS_GRD"] = row["STOCK_KTS_GRD"];
-                newRow["STONE_CLARITY"] = row["STOCK_STONE_CLARITY"];
-                newRow["VSHADE"] = row["STOCK_VSHADE"];
-                newRow["LUSTER"] = row["STOCK_LUSTER"];
+                newRow["SHAPE"] = (!string.IsNullOrEmpty(row["SHAPE"].ToString())) ? row["SHAPE"] : DBNull.Value;
+                newRow["POINTER"] = (!string.IsNullOrEmpty(row["STOCK_POINTER"].ToString())) ? row["STOCK_POINTER"] : DBNull.Value;
+                newRow["SUBPOINTER"] = (!string.IsNullOrEmpty(row["STOCK_SUBPOINTER"].ToString())) ? row["STOCK_SUBPOINTER"] : DBNull.Value;
+                newRow["COLOR"] = (!string.IsNullOrEmpty(row["STOCK_COLOR"].ToString())) ? row["STOCK_COLOR"] : DBNull.Value;
+                newRow["PURITY"] = (!string.IsNullOrEmpty(row["STOCK_PURITY"].ToString())) ? row["STOCK_PURITY"] : DBNull.Value;
+                newRow["CUT"] = (!string.IsNullOrEmpty(row["STOCK_CUT"].ToString())) ? row["STOCK_CUT"] : DBNull.Value;
+                newRow["FLS"] = (!string.IsNullOrEmpty(row["STOCK_FLS"].ToString())) ? row["STOCK_FLS"] : DBNull.Value;
+                newRow["PCS"] = (!string.IsNullOrEmpty(row["ANALIS_STOCK_PCS"].ToString())) ? Convert.ToInt32(row["ANALIS_STOCK_PCS"]) : DBNull.Value;
+                newRow["DISC"] = (!string.IsNullOrEmpty(row["OFFER_DISC_PER"].ToString())) ? Convert.ToSingle(row["OFFER_DISC_PER"]) : DBNull.Value;
+                newRow["KTS_GRD"] = (!string.IsNullOrEmpty(row["STOCK_KTS_GRD"].ToString())) ? row["STOCK_KTS_GRD"] : DBNull.Value;
+                newRow["STONE_CLARITY"] = (!string.IsNullOrEmpty(row["STOCK_STONE_CLARITY"].ToString())) ? row["STOCK_STONE_CLARITY"] : DBNull.Value;
+                newRow["VSHADE"] = (!string.IsNullOrEmpty(row["STOCK_VSHADE"].ToString())) ? row["STOCK_VSHADE"] : DBNull.Value;
+                newRow["LUSTER"] = (!string.IsNullOrEmpty(row["STOCK_LUSTER"].ToString())) ? row["STOCK_LUSTER"] : DBNull.Value;
                 newRow["ANALIS_SALES_DAYS"] = DBNull.Value;
                 newRow["TYPE"] = "S";
 
