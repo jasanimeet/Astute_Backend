@@ -2355,11 +2355,11 @@ namespace astute.Controllers
         [HttpDelete]
         [Route("delete_customer_pricing")]
         [Authorize]
-        public async Task<IActionResult> Delete_Customer_Pricing(int supplier_Pricing_Id)
+        public async Task<IActionResult> Delete_Customer_Pricing(int user_Pricing_Id)
         {
             try
             {
-                var result = await _supplierService.Delete_Customer_Pricing(supplier_Pricing_Id);
+                var result = await _supplierService.Delete_Customer_Pricing(user_Pricing_Id);
                 if (result > 0)
                 {
                     return Ok(new
@@ -10154,7 +10154,7 @@ namespace astute.Controllers
                     {
                         if (customer_Details.Customer_Party_Api != null && customer_Details.Customer_Party_Api.Customer_Column_Caption != null && customer_Details.Customer_Party_Api.Customer_Column_Caption.Count > 0)
                         {
-                            customer_Details.Customer_Party_Api.Party_Id = customer_Details.Party_Id;
+                            customer_Details.Customer_Party_Api.User_Pricing_Id = customer_Details.User_Pricing_Id;
                             var party_ftp = await _partyService.Add_Update_Customer_Party_API(customer_Details.Customer_Party_Api, user_Id ?? 0, customer_Details.Map_Flag);
                             if (party_ftp > 0)
                             {
@@ -10163,7 +10163,7 @@ namespace astute.Controllers
                                 {
 
                                     DataTable dataTable = new DataTable();
-                                    dataTable.Columns.Add("Party_Id", typeof(int));
+                                    dataTable.Columns.Add("User_Pricing_Id", typeof(int));
                                     dataTable.Columns.Add("Col_Id", typeof(int));
                                     dataTable.Columns.Add("Caption_Name", typeof(string));
                                     dataTable.Columns.Add("Upload_Method", typeof(string));
@@ -10172,7 +10172,7 @@ namespace astute.Controllers
 
                                     foreach (var item in customer_Details.Customer_Party_Api.Customer_Column_Caption)
                                     {
-                                        dataTable.Rows.Add(customer_Details.Party_Id, item.Col_Id, item.Caption_Name, "API", item.Status, customer_Details.Map_Flag);
+                                        dataTable.Rows.Add(customer_Details.User_Pricing_Id, item.Col_Id, item.Caption_Name, "API", item.Status, customer_Details.Map_Flag);
                                     }
                                     var column_Caption = await _partyService.Add_Update_Customer_Column_Caption(dataTable, user_Id ?? 0);
                                     if (column_Caption > 0)
@@ -10185,7 +10185,7 @@ namespace astute.Controllers
                         }
                         if (customer_Details.Customer_Party_FTP != null && customer_Details.Customer_Party_FTP.Customer_Column_Caption != null && customer_Details.Customer_Party_FTP.Customer_Column_Caption.Count > 0)
                         {
-                            customer_Details.Customer_Party_FTP.Party_Id = customer_Details.Party_Id;
+                            customer_Details.Customer_Party_FTP.User_Pricing_Id = customer_Details.User_Pricing_Id;
                             var party_ftp = await _partyService.Add_Update_Customer_Party_FTP(customer_Details.Customer_Party_FTP, user_Id ?? 0, customer_Details.Map_Flag);
                             if (party_ftp > 0)
                             {
@@ -10193,7 +10193,7 @@ namespace astute.Controllers
                                 if (customer_Details.Customer_Party_FTP.Customer_Column_Caption != null && customer_Details.Customer_Party_FTP.Customer_Column_Caption.Count > 0)
                                 {
                                     DataTable dataTable = new DataTable();
-                                    dataTable.Columns.Add("Party_Id", typeof(int));
+                                    dataTable.Columns.Add("User_Pricing_Id", typeof(int));
                                     dataTable.Columns.Add("Col_Id", typeof(int));
                                     dataTable.Columns.Add("Caption_Name", typeof(string));
                                     dataTable.Columns.Add("Upload_Method", typeof(string));
@@ -10202,7 +10202,7 @@ namespace astute.Controllers
 
                                     foreach (var item in customer_Details.Customer_Party_FTP.Customer_Column_Caption)
                                     {
-                                        dataTable.Rows.Add(customer_Details.Party_Id, item.Col_Id, item.Caption_Name, "FTP", item.Status, customer_Details.Map_Flag);
+                                        dataTable.Rows.Add(customer_Details.User_Pricing_Id, item.Col_Id, item.Caption_Name, "FTP", item.Status, customer_Details.Map_Flag);
                                     }
                                     var column_Caption = await _partyService.Add_Update_Customer_Column_Caption(dataTable, user_Id ?? 0);
                                     if (column_Caption > 0)
@@ -10215,7 +10215,7 @@ namespace astute.Controllers
                         }
                         if (customer_Details.Customer_Party_File != null && customer_Details.Customer_Party_File.Customer_Column_Caption != null && customer_Details.Customer_Party_File.Customer_Column_Caption.Count > 0)
                         {
-                            customer_Details.Customer_Party_File.Party_Id = customer_Details.Party_Id;
+                            customer_Details.Customer_Party_File.User_Pricing_Id = customer_Details.User_Pricing_Id;
                             var party_file = await _partyService.Add_Update_Customer_Party_File(customer_Details.Customer_Party_File, user_Id ?? 0, customer_Details.Map_Flag);
                             if (party_file > 0)
                             {
@@ -10223,7 +10223,7 @@ namespace astute.Controllers
                                 if (customer_Details.Customer_Party_File.Customer_Column_Caption != null && customer_Details.Customer_Party_File.Customer_Column_Caption.Count > 0)
                                 {
                                     DataTable dataTable = new DataTable();
-                                    dataTable.Columns.Add("Party_Id", typeof(int));
+                                    dataTable.Columns.Add("User_Pricing_Id", typeof(int));
                                     dataTable.Columns.Add("Col_Id", typeof(int));
                                     dataTable.Columns.Add("Caption_Name", typeof(string));
                                     dataTable.Columns.Add("Upload_Method", typeof(string));
@@ -10232,7 +10232,7 @@ namespace astute.Controllers
 
                                     foreach (var item in customer_Details.Customer_Party_File.Customer_Column_Caption)
                                     {
-                                        dataTable.Rows.Add(customer_Details.Party_Id, item.Col_Id, item.Caption_Name, "URL", item.Status, customer_Details.Map_Flag);
+                                        dataTable.Rows.Add(customer_Details.User_Pricing_Id, item.Col_Id, item.Caption_Name, "URL", item.Status, customer_Details.Map_Flag);
                                     }
                                     var column_Caption = await _partyService.Add_Update_Customer_Column_Caption(dataTable, user_Id ?? 0);
                                     if (column_Caption > 0)
@@ -10305,32 +10305,32 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_customer_pricing_detail")]
         [Authorize]
-        public async Task<IActionResult> Get_Customer_Pricing_Detail(int party_Id, string map_flag)
+        public async Task<IActionResult> Get_Customer_Pricing_Detail(int user_pricing_id, string map_flag)
         {
             try
             {
                 Customer_Detail customer_Detail = new Customer_Detail();
-                customer_Detail.Customer_Party_Api = await _partyService.Get_Customer_Party_API(null, party_Id, map_flag);
-                var Customer_Party_Api = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag, "API");
+                customer_Detail.Customer_Party_Api = await _partyService.Get_Customer_Party_API(null, user_pricing_id, map_flag);
+                var Customer_Party_Api = await _partyService.Get_Customer_Pricing_Column_Caption(user_pricing_id, map_flag, "API");
                 if (customer_Detail.Customer_Party_Api != null && Customer_Party_Api != null && Customer_Party_Api.Count > 0)
                 {
                     customer_Detail.Customer_Party_Api.Customer_Column_Caption = Customer_Party_Api;
                 }
-                customer_Detail.Customer_Party_File = await _partyService.Get_Customer_Party_File(null, party_Id, map_flag);
-                var Customer_Party_File = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag, "URL");
+                customer_Detail.Customer_Party_File = await _partyService.Get_Customer_Party_File(null, user_pricing_id, map_flag);
+                var Customer_Party_File = await _partyService.Get_Customer_Pricing_Column_Caption(user_pricing_id, map_flag, "URL");
                 if (customer_Detail.Customer_Party_File != null && Customer_Party_File != null && Customer_Party_File.Count > 0)
                 {
                     customer_Detail.Customer_Party_File.Customer_Column_Caption = Customer_Party_File;
                 }
-                customer_Detail.Customer_Party_FTP = await _partyService.Get_Customer_Party_FTP(null, party_Id, map_flag);
-                var Customer_Party_FTP = await _partyService.Get_Customer_Pricing_Column_Caption(party_Id, map_flag, "FTP");
+                customer_Detail.Customer_Party_FTP = await _partyService.Get_Customer_Party_FTP(null, user_pricing_id, map_flag);
+                var Customer_Party_FTP = await _partyService.Get_Customer_Pricing_Column_Caption(user_pricing_id, map_flag, "FTP");
                 if (customer_Detail.Customer_Party_FTP != null && Customer_Party_FTP != null && Customer_Party_FTP.Count > 0)
                 {
                     customer_Detail.Customer_Party_FTP.Customer_Column_Caption = Customer_Party_FTP;
                 }
                 if (customer_Detail != null && (customer_Detail.Customer_Party_FTP != null || customer_Detail.Customer_Party_Api != null || customer_Detail.Customer_Party_File != null))
                 {
-                    customer_Detail.Party_Id = party_Id;
+                    customer_Detail.User_Pricing_Id = user_pricing_id;
                     customer_Detail.Map_Flag = customer_Detail.Customer_Party_FTP != null ? customer_Detail.Customer_Party_FTP.Map_Flag :
                         (customer_Detail.Customer_Party_Api != null ? customer_Detail.Customer_Party_Api.Map_Flag : (customer_Detail.Customer_Party_File != null ? customer_Detail.Customer_Party_File.Map_Flag : map_flag));
                     return Ok(new

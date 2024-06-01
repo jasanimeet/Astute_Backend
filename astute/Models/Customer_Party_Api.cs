@@ -8,7 +8,7 @@ namespace astute.Models
     {
         [Key]
         public int? API_Id { get; set; }
-        public int? Party_Id { get; set; }
+        public int? User_Pricing_Id { get; set; }
         public string? Format_Type { get; set; }
         public string? IP { get; set; }
         public string? Country { get; set; }
