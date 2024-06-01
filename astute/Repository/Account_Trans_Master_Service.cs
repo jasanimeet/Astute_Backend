@@ -70,7 +70,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Account_Trans_Master(int account_Trans_Id,int account_Trans_Detail_Id)
+        public async Task<List<Dictionary<string, object>>> Get_Account_Trans_Master(int account_Trans_Id,int account_Trans_Detail_Id,string trans_Type)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -80,6 +80,7 @@ namespace astute.Repository
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(account_Trans_Id > 0 ? new SqlParameter("@Account_Trans_Id", account_Trans_Id) : new SqlParameter("@Account_Trans_Id", DBNull.Value));
                     command.Parameters.Add(account_Trans_Detail_Id > 0 ? new SqlParameter("@Account_Trans_Detail_Id", account_Trans_Detail_Id) : new SqlParameter("@Account_Trans_Detail_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(trans_Type) ? new SqlParameter("@Trans_Type", trans_Type) : new SqlParameter("@Trans_Type", DBNull.Value));
 
                     await connection.OpenAsync();
 

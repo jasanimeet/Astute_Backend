@@ -715,11 +715,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_account_trans_master")]
         [Authorize]
-        public async Task<IActionResult> Get_Account_Trans_Master(int? account_Trans_Id, int? account_Trans_Detail_Id)
+        public async Task<IActionResult> Get_Account_Trans_Master(int? account_Trans_Id, int? account_Trans_Detail_Id,string trans_Type)
         {
             try
             {
-                var result = await _account_Trans_Master_Service.Get_Account_Trans_Master(account_Trans_Id ?? 0, account_Trans_Detail_Id ?? 0);
+                var result = await _account_Trans_Master_Service.Get_Account_Trans_Master(account_Trans_Id ?? 0, account_Trans_Detail_Id ?? 0, trans_Type);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
