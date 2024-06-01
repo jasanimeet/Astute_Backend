@@ -1059,7 +1059,7 @@ namespace astute.Repository
         }
         public async Task<List<Customer_Column_Caption>> Get_Customer_Pricing_Column_Caption(int? user_Pricing_Id, string? map_Flag, string? upload_Method)
         {
-            var _user_Pricing_Id = user_Pricing_Id > 0 ? new SqlParameter("@User_Pricing_Id", user_Pricing_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+            var _user_Pricing_Id = user_Pricing_Id > 0 ? new SqlParameter("@User_Pricing_Id", user_Pricing_Id) : new SqlParameter("@User_Pricing_Id", DBNull.Value);
             var _map_Flag = !string.IsNullOrEmpty(map_Flag) ? new SqlParameter("@Map_Flag", map_Flag) : new SqlParameter("@Map_Flag", DBNull.Value);
             var _upload_Method = !string.IsNullOrEmpty(upload_Method) ? new SqlParameter("@Upload_Method", upload_Method) : new SqlParameter("@Upload_Method", DBNull.Value);
 
