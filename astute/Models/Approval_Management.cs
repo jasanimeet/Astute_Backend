@@ -65,8 +65,25 @@ namespace astute.Models
         [JsonProperty("OFFER DISC")]
         public object? Offer_Disc_1 { get; set; }
 
-        [JsonProperty("OFFER AMT")]
+        [JsonProperty("OFFER AMOUNT")]
         public object? Offer_Amt_1 { get; set; }
 
+        [JsonProperty("BASE DISC")]
+        public object? Cart_Base_Disc { get; set; }
+
+        [JsonProperty("BASE AMOUNT")]
+        public object? Cart_Base_Amt { get; set; }
+
+        [JsonProperty("COST DISC")]
+        public object? Cart_Final_Disc { get; set; }
+
+        [JsonProperty("COST AMOUNT")]
+        public object? Cart_Final_Amt { get; set; }
+
+        [JsonProperty("MAX SLAB BASE DISC")]
+        public object? Cart_Final_Disc_Max_Slab { get; set; }
+
+        [JsonProperty("MAX SLAB BASE AMOUNT")]
+        public object? Cart_Final_Amt_Max_Slab { get; set; }
     }
 }
