@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace astute.Models
@@ -86,4 +87,5 @@ namespace astute.Models
         [JsonProperty("MAX SLAB BASE AMOUNT")]
         public object? Cart_Final_Amt_Max_Slab { get; set; }
     }
+
 }
