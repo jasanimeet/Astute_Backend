@@ -3921,11 +3921,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("supplier_stock_error_log_detail")]
         [Authorize]
-        public async Task<IActionResult> Supplier_Stock_Error_Log_Detail(string supplier_Ids, string stock_Data_Ids, string upload_Type)
+        public async Task<IActionResult> Supplier_Stock_Error_Log_Detail(string supplier_Ids, string stock_Data_Ids, string upload_Type, string? supplierNo_CertNo)
         {
             try
             {
-                var result = await _supplierService.Get_Supplier_Stock_Error_Log_Detail(supplier_Ids, stock_Data_Ids, upload_Type);
+                var result = await _supplierService.Get_Supplier_Stock_Error_Log_Detail(supplier_Ids, stock_Data_Ids, upload_Type, supplierNo_CertNo);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
