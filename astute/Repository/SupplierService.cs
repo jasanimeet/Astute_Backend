@@ -1244,7 +1244,7 @@ namespace astute.Repository
         #endregion
 
         #region Supplier Stock Error Log
-        public async Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Error_Log(string supplier_Ids, string upload_Type, string from_Date, string from_Time, string to_Date, string to_Time, bool is_Last_Entry, string stock_Type)
+        public async Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Error_Log(string supplier_Ids, string upload_Type, string from_Date, string from_Time, string to_Date, string to_Time, bool is_Last_Entry, string stock_Type, string supplierNo_CertNo)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -1260,6 +1260,7 @@ namespace astute.Repository
                     command.Parameters.Add(!string.IsNullOrEmpty(to_Time) ? new SqlParameter("@To_Time", to_Time) : new SqlParameter("@To_Time", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(stock_Type) ? new SqlParameter("@Stock_Type", stock_Type) : new SqlParameter("@Stock_Type", DBNull.Value));
                     command.Parameters.Add(new SqlParameter("@Is_Last_Entry", is_Last_Entry));
+                    command.Parameters.Add(!string.IsNullOrEmpty(supplierNo_CertNo) ? new SqlParameter("@SupplierNo_CertNo", supplierNo_CertNo) : new SqlParameter("@SupplierNo_CertNo", DBNull.Value));
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
