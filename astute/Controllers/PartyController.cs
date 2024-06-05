@@ -11,7 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NPOI.HSSF.UserModel;
-using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
 using System;
@@ -9874,6 +9873,11 @@ namespace astute.Controllers
                     dataTable.Columns.Add("Enable_Status", typeof(bool));
                     dataTable.Columns.Add("Last_Login_Date", typeof(string));
                     dataTable.Columns.Add("Query_Flag", typeof(string));
+                    dataTable.Columns.Add("User_For", typeof(string));
+                    dataTable.Columns.Add("Email", typeof(string));
+                    dataTable.Columns.Add("Show_Amount", typeof(bool));
+                    dataTable.Columns.Add("Order_History", typeof(bool));
+                    dataTable.Columns.Add("Display_Own_Records", typeof(bool));
 
                     if (lab_User_Detail.Lab_User_Masters != null && lab_User_Detail.Lab_User_Masters.Count > 0)
                     {
@@ -9889,7 +9893,12 @@ namespace astute.Controllers
                                 item.Order_Placed,
                                 item.Enable_Status,
                                 DBNull.Value,
-                                item.Query_Flag);
+                                !string.IsNullOrEmpty(item.Query_Flag) ? item.Query_Flag : DBNull.Value,
+                                !string.IsNullOrEmpty(item.User_For) ? item.User_For : DBNull.Value,
+                                !string.IsNullOrEmpty(item.Email) ? item.Email : DBNull.Value,
+                                item.Show_Amount,
+                                item.Order_History,
+                                item.Display_Own_Records);
                         }
                         var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                         int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
