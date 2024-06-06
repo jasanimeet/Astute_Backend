@@ -17,6 +17,11 @@ namespace astute.Models
         public bool Enable_Status { get; set; }
         public string? Last_Login_Date { get; set; }
         public string Query_Flag { get; set; }
+        public string? User_For { get; set; }
+        public string? Email { get; set; }
+        public bool? Show_Amount { get; set; }
+        public bool? Order_History { get; set; }
+        public bool? Display_Own_Records { get; set; }
     }
 
     public class Lab_User_Detail
