@@ -405,8 +405,10 @@ namespace astute.CoreModel
         #region Oracle 
         public static string Fortune_Discount = "Fortune Discount Oracle";
         public static string Fortune_Discount_Added = "Fortune Discount Oracle" + AddedSuccessfully;
+        public static string Fortune_Party = "Fortune Party Oracle";
+        public static string Fortune_Party_Added = "Fortune Party Oracle" + AddedSuccessfully;
         #endregion
-          
+
         #region Account Trans Master
 
         public static string FirstAddFirstVoucherNo = "First voucher no not found.";
