@@ -60,15 +60,29 @@ namespace astute.Repository
 
             return ("success", result, _msg);
         }
-        public async Task<int> Delete_Cart(string ids, int user_Id)
+        public async Task<(string, int, string)> Delete_Cart(string ids, int user_Id)
         {
             var supp_Stock_Ids = !string.IsNullOrEmpty(ids) ? new SqlParameter("@Ids", ids) : new SqlParameter("@Ids", DBNull.Value);
             var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
+            var is_Exists = new SqlParameter("@IsExist", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            var msg = new SqlParameter("@Msg", SqlDbType.NVarChar)
+            {
+                Size = -1,
+                Direction = ParameterDirection.Output
+            };
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Cart_Delete @Ids, @User_Id", supp_Stock_Ids, _user_Id));
+                        .ExecuteSqlRawAsync(@"EXEC Cart_Delete @Ids, @User_Id, @IsExist OUT, @Msg OUT", supp_Stock_Ids, _user_Id, is_Exists, msg));
 
-            return result;
+            var _is_Exists = (bool)is_Exists.Value;
+            var _msg = (string)msg.Value;
+            if (_is_Exists)
+                return ("exist", 0, _msg);
+
+            return ("success", result, _msg);
         }
 
         public async Task<int> Approved_Or_Rejected_by_Management(Approval_Management approval_Management)

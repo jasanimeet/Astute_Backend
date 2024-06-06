@@ -6596,13 +6596,15 @@ namespace astute.Controllers
                     {
                         var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                         int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-                        var result = await _cartService.Delete_Cart(ids, user_Id ?? 0);
-                        if (result > 0)
+                        var (message, result, msg) = await _cartService.Delete_Cart(ids, user_Id ?? 0);
+                        if ((message == "exist" && msg.Length > 0) || (message == "success" && msg.Length > 0))
                         {
+                            // if alredy exists stone add again then message should show succsessfully deleted.
                             return Ok(new
                             {
                                 statusCode = HttpStatusCode.OK,
-                                message = CoreCommonMessage.CartStockDeleted
+                                message = msg
+
                             });
                         }
                     }
