@@ -3978,9 +3978,8 @@ namespace astute.CoreServices
                             else if (Column_Name == "EXPECTED FINAL DISC")
                             {
                                 int columnIndex = GetColumnIndexByName(dtStock, Column_Name) + 1;
-                                int rapIndex = GetColumnIndexByName(dtStock, "EXPECTED FINAL AMT");
-                                string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["EXPECTED FINAL AMT"]);
-                                worksheet.Cells[1, kkk].Formula = !string.IsNullOrEmpty(pav_Height) && pav_Height != "0.00"? "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(columnIndex) + "" + inStartIndex + ":" + GetExcelColumnLetter(columnIndex) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(rapIndex) + "" + inStartIndex + ":" + GetExcelColumnLetter(rapIndex) + "" + (inwrkrow - 1) + "))-100),2),0)" :"0";
+                                int rapIndex = GetColumnIndexByName(dtStock, "RAP AMOUNT");
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(columnIndex) + "" + inStartIndex + ":" + GetExcelColumnLetter(columnIndex) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(rapIndex) + "" + inStartIndex + ":" + GetExcelColumnLetter(rapIndex) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "EXPECTED FINAL AMT")
@@ -3998,9 +3997,10 @@ namespace astute.CoreServices
                             else if (Column_Name == "BASE DISC")
                             {
                                 int columnIndex = GetColumnIndexByName(dtStock, Column_Name) + 1;
-                                int rapIndex = GetColumnIndexByName(dtStock, "BASE AMOUNT");
-                                string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["EXPECTED FINAL AMT"]);
-                                worksheet.Cells[1, kkk].Formula = !string.IsNullOrEmpty(pav_Height) && pav_Height != "0.00" ? "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(columnIndex) + "" + inStartIndex + ":" + GetExcelColumnLetter(columnIndex) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(rapIndex) + "" + inStartIndex + ":" + GetExcelColumnLetter(rapIndex) + "" + (inwrkrow - 1) + "))-100),2),0)" : "0";
+                                int rapIndex = GetColumnIndexByName(dtStock, "RAP AMOUNT");
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(columnIndex) + "" + inStartIndex + ":" + GetExcelColumnLetter(columnIndex) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(rapIndex) + "" + inStartIndex + ":" + GetExcelColumnLetter(rapIndex) + "" + (inwrkrow - 1) + "))-100),2),0)";
+
+                                //worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(25) + "" + inStartIndex + ":" + GetExcelColumnLetter(26) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(21) + "" + inStartIndex + ":" + GetExcelColumnLetter(21) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "BASE AMOUNT")
@@ -4018,9 +4018,10 @@ namespace astute.CoreServices
                             else if (Column_Name == "COST DISC")
                             {
                                 int columnIndex = GetColumnIndexByName(dtStock, Column_Name) + 1;
-                                int rapIndex = GetColumnIndexByName(dtStock, "COST AMOUNT");
-                                string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["EXPECTED FINAL AMT"]);
-                                worksheet.Cells[1, kkk].Formula = !string.IsNullOrEmpty(pav_Height) && pav_Height != "0.00" ? "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(columnIndex) + "" + inStartIndex + ":" + GetExcelColumnLetter(columnIndex) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(rapIndex) + "" + inStartIndex + ":" + GetExcelColumnLetter(rapIndex) + "" + (inwrkrow - 1) + "))-100),2),0)" : "0";
+                                int rapIndex = GetColumnIndexByName(dtStock, "RAP AMOUNT");
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(columnIndex) + "" + inStartIndex + ":" + GetExcelColumnLetter(columnIndex) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(rapIndex) + "" + inStartIndex + ":" + GetExcelColumnLetter(rapIndex) + "" + (inwrkrow - 1) + "))-100),2),0)";
+
+                                //worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(27) + "" + inStartIndex + ":" + GetExcelColumnLetter(28) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(21) + "" + inStartIndex + ":" + GetExcelColumnLetter(21) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "COST AMOUNT")
@@ -4055,9 +4056,10 @@ namespace astute.CoreServices
                             else if (Column_Name == "BUYER DISC")
                             {
                                 int columnIndex = GetColumnIndexByName(dtStock, Column_Name) + 1;
-                                int rapIndex = GetColumnIndexByName(dtStock, "BUYER AMOUNT");
-                                string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["EXPECTED FINAL AMT"]);
-                                worksheet.Cells[1, kkk].Formula = !string.IsNullOrEmpty(pav_Height) && pav_Height != "0.00" ? "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(columnIndex) + "" + inStartIndex + ":" + GetExcelColumnLetter(columnIndex) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(rapIndex) + "" + inStartIndex + ":" + GetExcelColumnLetter(rapIndex) + "" + (inwrkrow - 1) + "))-100),2),0)" : "0";
+                                int rapIndex = GetColumnIndexByName(dtStock, "RAP AMOUNT");
+                                worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(columnIndex) + "" + inStartIndex + ":" + GetExcelColumnLetter(columnIndex) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(rapIndex) + "" + inStartIndex + ":" + GetExcelColumnLetter(rapIndex) + "" + (inwrkrow - 1) + "))-100),2),0)";
+
+                                //worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(29) + "" + inStartIndex + ":" + GetExcelColumnLetter(29) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(21) + "" + inStartIndex + ":" + GetExcelColumnLetter(21) + "" + (inwrkrow - 1) + "))-100),2),0)";
                                 worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                             }
                             else if (Column_Name == "BUYER AMOUNT")
