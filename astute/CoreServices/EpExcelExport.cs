@@ -3785,7 +3785,7 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["BASE AMOUNT"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
-                                else if (Column_Name == " DISC")
+                                else if (Column_Name == "COST DISC")
                                 {
                                     int columnIndex = GetColumnIndexByName(dtStock, Column_Name) + 1;
                                     int rapIndex = GetColumnIndexByName(dtStock, "RAP AMOUNT");
@@ -3799,17 +3799,6 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["COST AMOUNT"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
-                                //else if (Column_Name == "MAX SLAB BASE DISC")
-                                //{
-                                //    worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(29) + i + "/" + GetExcelColumnLetter(21) + i + ")-100,0)";
-                                //    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
-                                //}
-                                //else if (Column_Name == "MAX SLAB BASE AMOUNT")
-                                //{
-                                //    string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["MAX SLAB BASE AMOUNT"]);
-                                //    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["MAX SLAB BASE AMOUNT"]) : 0;
-                                //    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
-                                //}
                                 else if (Column_Name == "BUYER DISC")
                                 {
                                     int columnIndex = GetColumnIndexByName(dtStock, Column_Name) + 1;

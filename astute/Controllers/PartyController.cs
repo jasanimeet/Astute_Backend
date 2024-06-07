@@ -6931,6 +6931,11 @@ namespace astute.Controllers
                     DataTable columnNamesTable = new DataTable();
                     columnNamesTable.Columns.Add("Column_Name", typeof(string));
 
+                    if (report_Filter.id == 3)
+                    {
+                        columnNamesTable.Rows.Add("DNA");
+                    }
+
                     foreach (string columnName in report_Filter.column_Name)
                     {
                         if (columnName != "CERTIFICATE LINK")
