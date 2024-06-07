@@ -52,6 +52,33 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_fortune_party")]
+        public async Task<IActionResult> Get_Fortune_Party()
+        {
+            try
+            {
+                var result = await _oracleService.Get_Fortune_Party();
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.Fortune_Party_Added
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Fortune_Party", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }
