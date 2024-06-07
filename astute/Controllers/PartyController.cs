@@ -6713,15 +6713,17 @@ namespace astute.Controllers
                     {
                         foreach (var item in app_mang_Result)
                         {
+
+                          
                             dataTable.Rows.Add(item.Id, item.Supp_Stock_Id, item.Cart_Id,
                             (item.Buyer_Disc != null ? !string.IsNullOrEmpty(item.Buyer_Disc.ToString()) ? Convert.ToDouble(item.Buyer_Disc.ToString()) : null : null),
                             (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null),
                             (item.Expected_Final_Disc != null ? !string.IsNullOrEmpty(item.Expected_Final_Disc.ToString()) ? Convert.ToDouble(item.Expected_Final_Disc.ToString()) : null : null),
                             (item.Expected_Final_Amt != null ? !string.IsNullOrEmpty(item.Expected_Final_Amt.ToString()) ? Convert.ToDouble(item.Expected_Final_Amt.ToString()) : null : null),
-                            (item.Offer_Disc != null ?
+                            ((item.Offer_Disc != null || item.Offer_Disc_1 != null) ?
                              (approval_Management.Id == 1 ? (!string.IsNullOrEmpty(item.Offer_Disc_1.ToString()) ? Convert.ToDouble(item.Offer_Disc_1.ToString()) :null) 
                              : (!string.IsNullOrEmpty(item.Offer_Disc.ToString()) ? Convert.ToDouble(item.Offer_Disc.ToString()) : null)) : null),
-                               (item.Offer_Amt != null ?
+                            ((item.Offer_Amt != null || item.Offer_Amt_1 != null) ?
                              (approval_Management.Id == 1 ? (!string.IsNullOrEmpty(item.Offer_Amt_1.ToString()) ? Convert.ToDouble(item.Offer_Amt_1.ToString()) : null)
                              : (!string.IsNullOrEmpty(item.Offer_Amt.ToString()) ? Convert.ToDouble(item.Offer_Amt.ToString()) : null)) : null),
                             (item.Cart_Base_Disc != null ? !string.IsNullOrEmpty(item.Cart_Base_Disc.ToString()) ? Convert.ToDouble(item.Cart_Base_Disc.ToString()) : null : null),
