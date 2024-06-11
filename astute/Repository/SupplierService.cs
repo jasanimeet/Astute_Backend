@@ -2974,6 +2974,36 @@ namespace astute.Repository
 
             return result;
         }
+
+        public async Task<int> Final_Order_Processing_Create_Update(DataTable dataTable, int? user_Id)
+        {
+            int totalUpdatedRecords = 0;
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"]))
+            {
+                using (var command = new SqlCommand("Final_Order_Processing_Create_Update", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Final_Order_Processing_Type", dataTable);
+                    command.Parameters.AddWithValue("@User_Id", user_Id);
+
+                    var totalUpdatedRecordsParameter = new SqlParameter("@TotalUpdatedRecords", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalUpdatedRecordsParameter);
+
+                    command.CommandTimeout = 1800;
+                    await connection.OpenAsync();
+
+                    await command.ExecuteNonQueryAsync();
+
+                    totalUpdatedRecords = (int)totalUpdatedRecordsParameter.Value;
+                }
+            }
+
+            return totalUpdatedRecords;
+        }
+
         #endregion
     }
 }
