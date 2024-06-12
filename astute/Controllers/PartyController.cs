@@ -47,7 +47,7 @@ namespace astute.Controllers
         private readonly ILab_User_Login_Activity_Services _lab_User_Login_Activity_Services;
 
         #endregion
-
+         
         #region Ctor
         public PartyController(IPartyService partyService,
             IConfiguration configuration,
@@ -1524,10 +1524,12 @@ namespace astute.Controllers
                         dataTable.Columns.Add("Column_Synonym", typeof(string));
                         dataTable.Columns.Add("Is_Split", typeof(bool));
                         dataTable.Columns.Add("Separator", typeof(string));
+                        dataTable.Columns.Add("Is_Sequence", typeof(bool));
+                        dataTable.Columns.Add("Sequence", typeof(int));
 
                         foreach (var item in supplier_Details.Supplier_Column_Mapping_List)
                         {
-                            dataTable.Rows.Add(item.Supp_Col_Id, supplier_Details.Party_Id, item.Col_Id, item.Supp_Col_Name, item.Column_Type, item.Column_Synonym, item.Is_Split, item.Separator);
+                            dataTable.Rows.Add(item.Supp_Col_Id, supplier_Details.Party_Id, item.Col_Id, item.Supp_Col_Name, item.Column_Type, item.Column_Synonym, item.Is_Split, item.Separator,item.Is_Sequence,item.Sequence);
                         }
                         var result = await _supplierService.Add_Update_Supplier_Column_Mapping(dataTable);
                         if (result > 0)

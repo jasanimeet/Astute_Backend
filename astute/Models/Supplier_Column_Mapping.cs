@@ -16,5 +16,7 @@ namespace astute.Models
         public string? Display_Type { get; set; }
         public bool? Is_Split { get; set; }
         public string? Separator { get; set; }
+        public bool? Is_Sequence { get; set; }
+        public int? Sequence { get; set; }
     }
 }
