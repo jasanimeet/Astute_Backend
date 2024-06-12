@@ -10935,6 +10935,55 @@ namespace astute.Controllers
                 });
             }
         }
+        
+        [HttpPost]
+        [Route("final_order_processing_create_update")]
+        [Authorize]
+        public async Task<IActionResult> Final_Order_Processing_Create_Update([FromBody] object order_Processing_Final)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                IList<Order_Processing_Final> OrderResult = JsonConvert.DeserializeObject<IList<Order_Processing_Final>>(order_Processing_Final.ToString());
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("STOCK_ID", typeof(string));
+                dataTable.Columns.Add("ORDER_COST_DISC", typeof(string));
+                dataTable.Columns.Add("ORDER_COST_AMT", typeof(string));
+                dataTable.Columns.Add("OFFER_DISC", typeof(string));
+                dataTable.Columns.Add("OFFER_AMT", typeof(string));
+
+                foreach (var item in OrderResult)
+                {
+                    dataTable.Rows.Add(item.SuppStockId, 
+                        (item.Cost_Disc != null ? !string.IsNullOrEmpty(item.Cost_Disc.ToString()) ? Convert.ToDouble(item.Cost_Disc.ToString()) : null : null),
+                        (item.Cost_Amount != null ? !string.IsNullOrEmpty(item.Cost_Amount.ToString()) ? Convert.ToDouble(item.Cost_Amount.ToString()) : null : null),
+                        (item.Offer_Disc != null ? !string.IsNullOrEmpty(item.Offer_Disc.ToString()) ? Convert.ToDouble(item.Offer_Disc.ToString()) : null : null),
+                        (item.Offer_Amount != null ? !string.IsNullOrEmpty(item.Offer_Amount.ToString()) ? Convert.ToDouble(item.Offer_Amount.ToString()) : null : null));
+                }
+
+                var result = await _supplierService.Final_Order_Processing_Create_Update_Save(dataTable, user_Id ?? 0);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.OrderProcessingFinalUpdate
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Final_Order_Processing_Create_Update", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
 
         #endregion
 
