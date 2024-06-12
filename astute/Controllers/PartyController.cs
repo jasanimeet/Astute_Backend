@@ -6716,14 +6716,14 @@ namespace astute.Controllers
                         foreach (var item in app_mang_Result)
                         {
 
-                          
+
                             dataTable.Rows.Add(item.Id, item.Supp_Stock_Id, item.Cart_Id,
                             (item.Buyer_Disc != null ? !string.IsNullOrEmpty(item.Buyer_Disc.ToString()) ? Convert.ToDouble(item.Buyer_Disc.ToString()) : null : null),
                             (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null),
                             (item.Expected_Final_Disc != null ? !string.IsNullOrEmpty(item.Expected_Final_Disc.ToString()) ? Convert.ToDouble(item.Expected_Final_Disc.ToString()) : null : null),
                             (item.Expected_Final_Amt != null ? !string.IsNullOrEmpty(item.Expected_Final_Amt.ToString()) ? Convert.ToDouble(item.Expected_Final_Amt.ToString()) : null : null),
                             ((item.Offer_Disc != null || item.Offer_Disc_1 != null) ?
-                             (approval_Management.Id == 1 ? (!string.IsNullOrEmpty(item.Offer_Disc_1.ToString()) ? Convert.ToDouble(item.Offer_Disc_1.ToString()) :null) 
+                             (approval_Management.Id == 1 ? (!string.IsNullOrEmpty(item.Offer_Disc_1.ToString()) ? Convert.ToDouble(item.Offer_Disc_1.ToString()) :null)
                              : (!string.IsNullOrEmpty(item.Offer_Disc.ToString()) ? Convert.ToDouble(item.Offer_Disc.ToString()) : null)) : null),
                             ((item.Offer_Amt != null || item.Offer_Amt_1 != null) ?
                              (approval_Management.Id == 1 ? (!string.IsNullOrEmpty(item.Offer_Amt_1.ToString()) ? Convert.ToDouble(item.Offer_Amt_1.ToString()) : null)
@@ -7359,7 +7359,7 @@ namespace astute.Controllers
                 if (gIA_Cert_Excel_File != null)
                 {
                     int col_cnt = 0;
-                    
+
                     IList<GIA_Certificate_All_Data_Excel_Column> excel_all_data_list = new List<GIA_Certificate_All_Data_Excel_Column>();
                     var filePath = Path.GetTempFileName();
                     using (var stream = new FileStream(filePath, FileMode.Create))
@@ -10869,6 +10869,124 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("final_order_processing_create_update")]
+        [Authorize]
+        public async Task<IActionResult> Final_Order_Processing_Create_Update(IFormFile? File_Location)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("STOCK_ID", typeof(string));
+                dataTable.Columns.Add("ORDER_COST_DISC", typeof(string));
+                dataTable.Columns.Add("ORDER_COST_AMT", typeof(string));
+                dataTable.Columns.Add("OFFER_DISC", typeof(string));
+                dataTable.Columns.Add("OFFER_AMT", typeof(string));
+                if (File_Location != null)
+                {
+                    var filePath = Path.GetTempFileName();
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await File_Location.CopyToAsync(stream);
+                    }
+                    using (var package = new ExcelPackage(new FileInfo(filePath)))
+                    {
+                        var worksheet = package.Workbook.Worksheets[0];
+                        int startRow = 2;
+
+                        HashSet<string> uniqueValues = new HashSet<string>();
+                        for (int row = startRow; row <= worksheet.Dimension.End.Row; row++)
+                        {
+                            string value = worksheet.Cells[row, 1].GetValue<string>();
+                            string order_cost_amt = worksheet.Cells[row, 3].GetValue<string>();
+                            string offer_amt = worksheet.Cells[row, 5].GetValue<string>();
+                            if (!uniqueValues.Contains(value))
+                            {
+                                uniqueValues.Add(value);
+                                dataTable.Rows.Add(value, worksheet.Cells[row, 2].GetValue<string>(), !string.IsNullOrEmpty(order_cost_amt) ? order_cost_amt.Replace(",", "") : DBNull.Value, worksheet.Cells[row, 4].GetValue<string>(), !string.IsNullOrEmpty(offer_amt) ? offer_amt.Replace(",", "") : DBNull.Value);
+                            }
+                        }
+                        var uniqueRows = dataTable.AsEnumerable()
+                                  .GroupBy(row => row.Field<string>("STOCK_ID"))
+                                  .Select(grp => grp.First())
+                                  .CopyToDataTable();
+                    }
+                }
+                
+                var result = await _supplierService.Final_Order_Processing_Create_Update(dataTable, user_Id ?? 0);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.OrderProcessingFinalUpdate
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Final_Order_Processing_Create_Update", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        
+        [HttpPost]
+        [Route("final_order_processing_create_update")]
+        [Authorize]
+        public async Task<IActionResult> Final_Order_Processing_Create_Update([FromBody] object order_Processing_Final)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                IList<Order_Processing_Final> OrderResult = JsonConvert.DeserializeObject<IList<Order_Processing_Final>>(order_Processing_Final.ToString());
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("STOCK_ID", typeof(string));
+                dataTable.Columns.Add("ORDER_COST_DISC", typeof(string));
+                dataTable.Columns.Add("ORDER_COST_AMT", typeof(string));
+                dataTable.Columns.Add("OFFER_DISC", typeof(string));
+                dataTable.Columns.Add("OFFER_AMT", typeof(string));
+
+                foreach (var item in OrderResult)
+                {
+                    dataTable.Rows.Add(item.SuppStockId, 
+                        (item.Cost_Disc != null ? !string.IsNullOrEmpty(item.Cost_Disc.ToString()) ? Convert.ToDouble(item.Cost_Disc.ToString()) : null : null),
+                        (item.Cost_Amount != null ? !string.IsNullOrEmpty(item.Cost_Amount.ToString()) ? Convert.ToDouble(item.Cost_Amount.ToString()) : null : null),
+                        (item.Offer_Disc != null ? !string.IsNullOrEmpty(item.Offer_Disc.ToString()) ? Convert.ToDouble(item.Offer_Disc.ToString()) : null : null),
+                        (item.Offer_Amount != null ? !string.IsNullOrEmpty(item.Offer_Amount.ToString()) ? Convert.ToDouble(item.Offer_Amount.ToString()) : null : null));
+                }
+
+                var result = await _supplierService.Final_Order_Processing_Create_Update_Save(dataTable, user_Id ?? 0);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.OrderProcessingFinalUpdate
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Final_Order_Processing_Create_Update", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Lab User Activity

@@ -365,6 +365,7 @@ namespace astute.CoreModel
         public static string StokeRejectedByManagement = "Stone has been rejected successfully.";
         public static string StokeStatusManagement = "Stone Status has been change successfully.";
         public static string OrderInactive = "Order has been inactive successfully.";
+        public static string OrderProcessingFinalUpdate = "Order Processing Final" + UpdatedSuccessfully;
         #endregion
 
         #region Account Group
