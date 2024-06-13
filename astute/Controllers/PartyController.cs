@@ -47,7 +47,7 @@ namespace astute.Controllers
         private readonly ILab_User_Login_Activity_Services _lab_User_Login_Activity_Services;
 
         #endregion
-         
+
         #region Ctor
         public PartyController(IPartyService partyService,
             IConfiguration configuration,
@@ -1529,7 +1529,7 @@ namespace astute.Controllers
 
                         foreach (var item in supplier_Details.Supplier_Column_Mapping_List)
                         {
-                            dataTable.Rows.Add(item.Supp_Col_Id, supplier_Details.Party_Id, item.Col_Id, item.Supp_Col_Name, item.Column_Type, item.Column_Synonym, item.Is_Split, item.Separator,item.Is_Sequence,item.Sequence);
+                            dataTable.Rows.Add(item.Supp_Col_Id, supplier_Details.Party_Id, item.Col_Id, item.Supp_Col_Name, item.Column_Type, item.Column_Synonym, item.Is_Split, item.Separator, item.Is_Sequence, item.Sequence);
                         }
                         var result = await _supplierService.Add_Update_Supplier_Column_Mapping(dataTable);
                         if (result > 0)
@@ -3602,6 +3602,12 @@ namespace astute.Controllers
                                          {
                                              string displayColName = Convert.ToString(suppColRow["Display_Name"]);
                                              string suppColName = Convert.ToString(suppColRow["Supp_Col_Name"]);
+                                             bool Is_Split = suppColRow["Is_Split"] != null ? Convert.ToBoolean(suppColRow["Is_Split"]) : false;
+                                             bool Is_Sequence = suppColRow["Is_Sequence"] != null ? Convert.ToBoolean(suppColRow["Is_Sequence"]) : false;
+                                             string Separator = Convert.ToString(suppColRow["Separator"]);
+                                             string Sequence1 = Convert.ToString(suppColRow["Sequence"]);
+
+                                             int Sequence = !string.IsNullOrEmpty(Convert.ToString(suppColRow["Sequence"])) ? Convert.ToInt32(Convert.ToString(suppColRow["Sequence"])) : 0;
 
                                              if (displayColName != "" && suppColName != "")
                                              {
@@ -3699,25 +3705,18 @@ namespace astute.Controllers
                                                      finalRow[displayColName] = CoreService.GetCertificateNoOrUrl(
                                                         Convert.ToString(finalRow[displayColName]), false);
                                                  }
-                                                 //else if (displayColName == "TABLE_OPEN" || displayColName == "CROWN_OPEN" || displayColName == "PAVILION_OPEN" || displayColName == "GIRDLE_OPEN")
-                                                 //{
-                                                 //    string foundColumnName = excel_dataTable.Columns.Cast<DataColumn>().FirstOrDefault(column => column.ColumnName == Convert.ToString(suppColRow["Supp_Col_Name"]))?.ColumnName;
-                                                 //    if (!string.IsNullOrEmpty(foundColumnName))
-                                                 //    {
-                                                 //        finalRow[displayColName] = string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName]))
-                                                 //        ? null : Convert.ToString(finalRow[displayColName]);
-                                                 //    }
-                                                 //    else
-                                                 //    {
-                                                 //        finalRow[displayColName] = "";
-                                                 //    }
-                                                 //}
                                                  else
                                                  {
 
                                                      finalRow[displayColName] = string.IsNullOrEmpty(Convert.ToString(finalRow[displayColName]))
                                                          ? null : Convert.ToString(finalRow[displayColName]);
 
+                                                 }
+
+                                                 if (Is_Split == true && Is_Sequence == true)
+                                                 {
+                                                     string col_Val = finalRow[displayColName] != null ? finalRow[displayColName].ToString() : "";
+                                                     finalRow[displayColName] = CoreService.GetSupplierSplitSequenceVal(col_Val, Separator, Sequence);
                                                  }
                                              }
                                          });
@@ -3893,7 +3892,7 @@ namespace astute.Controllers
         [HttpGet]
         [Route("supplier_stock_error_log")]
         [Authorize]
-        public async Task<IActionResult> Supplier_Stock_Error_Log(string supplier_Ids, string upload_Type, string from_Date, string from_Time, string to_Date, string to_Time, bool is_Last_Entry,string stock_Type, string? supplierNo_CertNo)
+        public async Task<IActionResult> Supplier_Stock_Error_Log(string supplier_Ids, string upload_Type, string from_Date, string from_Time, string to_Date, string to_Time, bool is_Last_Entry, string stock_Type, string? supplierNo_CertNo)
         {
             try
             {
@@ -6723,7 +6722,7 @@ namespace astute.Controllers
                             (item.Expected_Final_Disc != null ? !string.IsNullOrEmpty(item.Expected_Final_Disc.ToString()) ? Convert.ToDouble(item.Expected_Final_Disc.ToString()) : null : null),
                             (item.Expected_Final_Amt != null ? !string.IsNullOrEmpty(item.Expected_Final_Amt.ToString()) ? Convert.ToDouble(item.Expected_Final_Amt.ToString()) : null : null),
                             ((item.Offer_Disc != null || item.Offer_Disc_1 != null) ?
-                             (approval_Management.Id == 1 ? (!string.IsNullOrEmpty(item.Offer_Disc_1.ToString()) ? Convert.ToDouble(item.Offer_Disc_1.ToString()) :null)
+                             (approval_Management.Id == 1 ? (!string.IsNullOrEmpty(item.Offer_Disc_1.ToString()) ? Convert.ToDouble(item.Offer_Disc_1.ToString()) : null)
                              : (!string.IsNullOrEmpty(item.Offer_Disc.ToString()) ? Convert.ToDouble(item.Offer_Disc.ToString()) : null)) : null),
                             ((item.Offer_Amt != null || item.Offer_Amt_1 != null) ?
                              (approval_Management.Id == 1 ? (!string.IsNullOrEmpty(item.Offer_Amt_1.ToString()) ? Convert.ToDouble(item.Offer_Amt_1.ToString()) : null)
@@ -10916,7 +10915,7 @@ namespace astute.Controllers
                                   .CopyToDataTable();
                     }
                 }
-                
+
                 var result = await _supplierService.Final_Order_Processing_Create_Update(dataTable, user_Id ?? 0);
                 if (result > 0)
                 {
@@ -10937,7 +10936,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpPost]
         [Route("final_order_processing_create_update")]
         [Authorize]
@@ -10959,7 +10958,7 @@ namespace astute.Controllers
 
                 foreach (var item in OrderResult)
                 {
-                    dataTable.Rows.Add(item.SuppStockId, 
+                    dataTable.Rows.Add(item.SuppStockId,
                         (item.Cost_Disc != null ? !string.IsNullOrEmpty(item.Cost_Disc.ToString()) ? Convert.ToDouble(item.Cost_Disc.ToString()) : null : null),
                         (item.Cost_Amount != null ? !string.IsNullOrEmpty(item.Cost_Amount.ToString()) ? Convert.ToDouble(item.Cost_Amount.ToString()) : null : null),
                         (item.Offer_Disc != null ? !string.IsNullOrEmpty(item.Offer_Disc.ToString()) ? Convert.ToDouble(item.Offer_Disc.ToString()) : null : null),

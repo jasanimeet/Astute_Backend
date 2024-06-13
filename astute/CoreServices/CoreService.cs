@@ -755,5 +755,22 @@ namespace astute.CoreServices
             }
             return "";
         }
+        public static string GetSupplierSplitSequenceVal(string col_Val, string Split, int Sequence)
+        {
+            string r = string.Empty;
+            if (!string.IsNullOrEmpty(col_Val) && !string.IsNullOrEmpty(Split))
+            {
+                var result = col_Val.Split(Split);
+
+                if (result != null && result.Length > 0)
+                {
+                    r = result[Sequence-1];
+                    return r;
+                }
+
+            }
+            return col_Val;
+        }
+
     }
 }
