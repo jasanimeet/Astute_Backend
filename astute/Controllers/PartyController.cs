@@ -4422,7 +4422,7 @@ namespace astute.Controllers
         {
             try
             {
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr, dt_stock) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo ?? 0, report_Filter.iPgSize ?? 0, report_Filter.iSort, report_Filter.Is_Selected_Supp_Stock_Id);
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr, dt_stock) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo ?? 0, report_Filter.iPgSize ?? 0, report_Filter.iSort, report_Filter.Is_Selected_Supp_Stock_Id, report_Filter.Act_Mod_Id);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -11154,5 +11154,68 @@ namespace astute.Controllers
 
         #endregion
 
+        #region Notification
+        [HttpGet]
+        [Route("get_notification")]
+        [Authorize]
+        public async Task<IActionResult> Get_Notification()
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                var (result, totalRecordr) = await _partyService.Get_Notification(user_Id ?? 0);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        total_Records = totalRecordr,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Notification", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("update_notification_read_by")]
+        [Authorize]
+        public async Task<IActionResult> Update_Notification_Read_By(int? Notification_Id, bool? Is_Read)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                var result = await _partyService.Notification_Master_Update_Read_By(Notification_Id, Is_Read, user_Id ?? 0);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.Notification_Updated_Read_By
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Notification", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
     }
 }

@@ -9,11 +9,9 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.IO.Pipelines;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace astute.Repository
 {
@@ -1149,6 +1147,60 @@ namespace astute.Repository
                             .FromSqlRaw(@"exec Get_Party_Type_Supplier")
                             .ToListAsync());
             return result;
+        }
+
+        public async Task<(List<Dictionary<string, object>>, string)> Get_Notification(int? User_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            var totalRecordr = string.Empty;
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Notification_Master_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    
+                    var totalRecordParameter = new SqlParameter("@iTotalRec", SqlDbType.Int);
+                    totalRecordParameter.Direction = ParameterDirection.Output;
+                    command.Parameters.Add(totalRecordParameter);
+
+                    command.Parameters.Add(User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value));
+                    command.CommandTimeout = 1800;
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+
+                    totalRecordr = Convert.ToString(totalRecordParameter.Value);
+                }
+            }
+
+            return (result, totalRecordr);
+
+        }
+        public async Task<int> Notification_Master_Update_Read_By(int? Notification_Id, bool? Is_Read, int? User_Id)
+        {
+            var notification_Id = Notification_Id > 0 ? new SqlParameter("@Notification_Id", Notification_Id) : new SqlParameter("@Notification_Id", DBNull.Value);
+            var user_Id = User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value);
+            var is_Read = new SqlParameter("@Is_Read", Is_Read);
+            var result = await Task.Run(() => _dbContext.Database
+                            .ExecuteSqlRawAsync(@"exec Notification_Master_Update_Read_By @Notification_Id, @Is_Read , @User_Id", notification_Id, is_Read, user_Id));
+            return result;
+
         }
     }
 }

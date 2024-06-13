@@ -43,6 +43,7 @@ namespace astute.Models
         public IList<Report_Sorting> iSort { get; set; } = new List<Report_Sorting>();
         public List<string>? column_Name { get; set; }
         public string? Is_Selected_Supp_Stock_Id { get; set; }
+        public string? Act_Mod_Id { get; set; }
     }
     public class Report_Lab_Filter
     {

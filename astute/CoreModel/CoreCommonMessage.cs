@@ -437,5 +437,9 @@ namespace astute.CoreModel
         public static string AccountContraMasterDeleted = AccountContraMaster + DeletedSuccessfully;
         public static string AccountContraMasterDataNotFound = AccountContraMaster + DataNotFound;
         #endregion
+
+        #region Notification
+        public static string Notification_Updated_Read_By = "Notification has been read by user" + UpdatedSuccessfully;
+        #endregion
     }
 }

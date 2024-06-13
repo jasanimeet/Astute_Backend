@@ -1566,7 +1566,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<(List<Dictionary<string, object>>, string, string, string, string, string, string, string, string, DataTable)> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters, int iPgNo, int iPgSize, IList<Report_Sorting> iSort, string is_Selected_Supp_Stock_Id)
+        public async Task<(List<Dictionary<string, object>>, string, string, string, string, string, string, string, string, DataTable)> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters, int iPgNo, int iPgSize, IList<Report_Sorting> iSort, string is_Selected_Supp_Stock_Id, string act_Mod_Id)
         {
             DataTable dataTable = new DataTable();
             var result = new List<Dictionary<string, object>>();
@@ -1668,6 +1668,10 @@ namespace astute.Repository
                         command.Parameters.Add(iPgNo > 0 ? new SqlParameter("@iPgNo", iPgNo) : new SqlParameter("@iPgNo", DBNull.Value));
                         command.Parameters.Add(iPgSize > 0 ? new SqlParameter("@iPgSize", iPgSize) : new SqlParameter("@iPgSize", DBNull.Value));
                         command.Parameters.Add(!string.IsNullOrEmpty(is_Selected_Supp_Stock_Id) ? new SqlParameter("@Is_Selected_Supp_Stock_Id", is_Selected_Supp_Stock_Id) : new SqlParameter("@Is_Selected_Supp_Stock_Id", DBNull.Value));
+                        if (!string.IsNullOrEmpty(act_Mod_Id))
+                        {
+                            command.Parameters.Add(!string.IsNullOrEmpty(act_Mod_Id) ? new SqlParameter("@Act_Mod_Id", act_Mod_Id) : new SqlParameter("@Act_Mod_Id", DBNull.Value));
+                        }
                         command.CommandTimeout = 1800;
                         await connection.OpenAsync();
 
@@ -2692,6 +2696,10 @@ namespace astute.Repository
                     command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.Order_Status) ? new SqlParameter("@Order_Status", order_Processing_Summary.Order_Status) : new SqlParameter("@Order_Status", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.Stone_Status) ? new SqlParameter("@Stone_Status", order_Processing_Summary.Stone_Status) : new SqlParameter("@Stone_Status", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.Stock_Id) ? new SqlParameter("@Stock_Id", order_Processing_Summary.Stock_Id) : new SqlParameter("@Stock_Id", DBNull.Value));
+                    if (!string.IsNullOrEmpty(order_Processing_Summary.Act_Mod_Id))
+                    {
+                        command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.Act_Mod_Id) ? new SqlParameter("@Act_Mod_Id", order_Processing_Summary.Act_Mod_Id) : new SqlParameter("@Act_Mod_Id", DBNull.Value));
+                    }
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())

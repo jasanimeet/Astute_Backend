@@ -114,5 +114,7 @@ namespace astute.Repository
         Task<IList<DropdownModel>> Get_Party_Type_Customer();
         Task<List<Dictionary<string, object>>> Get_Party_Search_Select(string common_Search, int user_Id);
         Task<IList<DropdownModel>> Get_Party_Type_Suplier();
+        Task<(List<Dictionary<string, object>>, string)> Get_Notification(int? User_Id);
+        Task<int> Notification_Master_Update_Read_By(int? Notification_Id, bool? Is_Read,int? User_Id);
     }
 }
