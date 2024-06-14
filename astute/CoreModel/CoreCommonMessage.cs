@@ -305,6 +305,7 @@ namespace astute.CoreModel
         public static string SupplierStockCreated = "Supplier stock saved successfully.";
         public static string SunrisePricingCreated = "Sunrise pricing saved successfully.";
         public static string CustomerPricingCreated = "Customer pricing saved successfully.";
+        public static string EmployeeStockCreated = "Employee stock saved successfully.";
         public static string SupplierPricingUpdated = SupplierPricing + UpdatedSuccessfully;
         public static string SupplierPricingDeleted = SupplierPricing + DeletedSuccessfully;
         public static string SunrisePricingDeleted = "Sunrise pricing" + DeletedSuccessfully;

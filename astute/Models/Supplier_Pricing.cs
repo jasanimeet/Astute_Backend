@@ -18,6 +18,8 @@ namespace astute.Models
         public bool? Stock_Lab { get; set; }
         public bool? Stock_Overseas { get; set; }
         public bool? Stock_Buyer { get; set; }
+        public bool? Stock_Saler { get; set; }
+        public bool? Stock_Defualt { get; set; }
         public string? Shape { get; set; }
         public string? Cts { get; set; }
         public string? Color { get; set; }

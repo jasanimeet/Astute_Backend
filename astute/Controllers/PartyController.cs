@@ -2265,6 +2265,10 @@ namespace astute.Controllers
                             {
                                 resurn_message = CoreCommonMessage.CustomerPricingCreated;
                             }
+                            else if (map_flag == "ES")
+                            {
+                                resurn_message = CoreCommonMessage.EmployeeStockCreated;
+                            }
                             return Ok(new
                             {
                                 statusCode = HttpStatusCode.OK,

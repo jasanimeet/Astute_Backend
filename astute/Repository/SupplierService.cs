@@ -637,6 +637,8 @@ namespace astute.Repository
             var stock_Lab = supplier_Pricing.Stock_Lab != null ? new SqlParameter("@Stock_Lab", supplier_Pricing.Stock_Lab) : new SqlParameter("@Stock_Lab", DBNull.Value);
             var stock_Overseas = supplier_Pricing.Stock_Overseas != null ? new SqlParameter("@Stock_Overseas", supplier_Pricing.Stock_Overseas) : new SqlParameter("@Stock_Overseas", DBNull.Value);
             var stock_Buyer = supplier_Pricing.Stock_Buyer != null ? new SqlParameter("@Stock_Buyer", supplier_Pricing.Stock_Buyer) : new SqlParameter("@Stock_Buyer", DBNull.Value);
+            var stock_Saler = supplier_Pricing.Stock_Saler != null ? new SqlParameter("@Stock_Saler", supplier_Pricing.Stock_Saler) : new SqlParameter("@Stock_Saler", DBNull.Value);
+            var stock_Defualt = supplier_Pricing.Stock_Defualt != null ? new SqlParameter("@Stock_Defualt", supplier_Pricing.Stock_Defualt) : new SqlParameter("@Stock_Defualt", DBNull.Value);
             var shape = !string.IsNullOrEmpty(supplier_Pricing.Shape) ? new SqlParameter("@Shape", supplier_Pricing.Shape) : new SqlParameter("@Shape", DBNull.Value);
             var cts = !string.IsNullOrEmpty(supplier_Pricing.Cts) ? new SqlParameter("@Cts", supplier_Pricing.Cts) : new SqlParameter("@Cts", DBNull.Value);
             var color = !string.IsNullOrEmpty(supplier_Pricing.Color) ? new SqlParameter("@Color", supplier_Pricing.Color) : new SqlParameter("@Color", DBNull.Value);
@@ -769,7 +771,7 @@ namespace astute.Repository
             };
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Supplier_Pricing_Insert_Update @Supplier_Pricing_Id, @Supplier_Id, @Sunrise_Pricing_Id, @Customer_Pricing_Id, @User_Pricing_Id, @Map_Flag,@Stock_Lab,@Stock_Overseas,@Stock_Buyer, @Shape, @Cts, @Color, @Fancy_Color, @Clarity, @Cut, @Polish, @Symm,
+                        .ExecuteSqlRawAsync(@"EXEC Supplier_Pricing_Insert_Update @Supplier_Pricing_Id, @Supplier_Id, @Sunrise_Pricing_Id, @Customer_Pricing_Id, @User_Pricing_Id, @Map_Flag,@Stock_Lab,@Stock_Overseas,@Stock_Buyer,@Stock_Saler,@Stock_Defualt, @Shape, @Cts, @Color, @Fancy_Color, @Clarity, @Cut, @Polish, @Symm,
                         @Fls_Intensity, @Lab, @Shade, @Luster, @Bgm, @Culet, @Location, @Status, @Good_Type, @Length_From, @Length_To, @Width_From, @Width_To, @Depth_From, @Depth_To, @Depth_Per_From,
                         @Depth_Per_To, @Table_Per_From, @Table_Per_To, @Crown_Angle_From, @Crown_Angle_To, @Crown_Height_From, @Crown_Height_To, @Pavilion_Angle_From, @Pavilion_Angle_To, @Pavilion_Height_From,
                         @Pavilion_Height_To, @Girdle_Per_From, @Girdle_Per_To, @Table_Black, @Side_Black, @Table_White, @Side_white, @Cert_Type, @Table_Open, @Crown_Open, @Pavilion_Open,
@@ -780,7 +782,7 @@ namespace astute.Repository
                         @Cost_Price_Flag, @Final_Price_Flag, @Is_All_Bgm,@Is_All_Clarity,@Is_All_Color,@Is_All_Culet,@Is_All_Cut,@Is_All_Fls_Intensity,@Is_All_Good_Type,@Is_All_Location,@Is_All_Lab,
                         @Is_All_Luster,@Is_All_Polish,@Is_All_Shade,@Is_All_Shape,@Is_All_Symm,@Is_All_Status,@Is_All_Cert_Type,@Is_All_Fancy_Color,@Is_All_Girdle_Open,@Is_All_Table_Open,@Is_All_Table_Black,
                         @Is_All_Table_White,@Is_All_Side_Black,@Is_All_Side_white,@Is_All_Pavilion_Open,@Is_All_Crown_Open,@Is_All_Company,@Is_API_FTP_URL, @Query_Flag, @Inserted_Id OUT",
-                        supplier_Pricing_Id, supplier_Id, sunrise_Pricing_Id, customer_Pricing_Id, user_Pricing_Id, map_Flag, stock_Lab, stock_Overseas, stock_Buyer, shape, cts, color, fancy_Color, clarity, cut, polish, symm, fls_Intensity, lab, shade, luster, bgm, culet, location, status, good_Type, length_From, length_To, width_From,
+                        supplier_Pricing_Id, supplier_Id, sunrise_Pricing_Id, customer_Pricing_Id, user_Pricing_Id, map_Flag, stock_Lab, stock_Overseas, stock_Buyer, stock_Saler,stock_Defualt, shape, cts, color, fancy_Color, clarity, cut, polish, symm, fls_Intensity, lab, shade, luster, bgm, culet, location, status, good_Type, length_From, length_To, width_From,
                         width_To, depth_From, depth_To, depth_Per_From, depth_Per_To, table_Per_From, table_Per_To, crown_Angle_From, crown_Angle_To, crown_Height_From, crown_Height_To, pavilion_Angle_From,
                         pavilion_Angle_To, pavilion_Height_From, pavilion_Height_To, girdle_Per_From, girdle_Per_To, table_Black, side_Black, table_White, side_white, cert_Type, table_Open, crown_Open, pavilion_Open, girdle_Open,
                         base_Disc_From, base_Disc_To, base_Amount_From, base_Amount_To, final_Disc_From, final_Disc_To, final_Amount_From, final_Amount_To, company, supplier_Filter_Type, calculation_Type, sign, value_1, value_2, value_3, value_4, sp_calculation_Type, sp_sign, sp_start_date,
