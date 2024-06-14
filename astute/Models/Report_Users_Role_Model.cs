@@ -5,6 +5,7 @@ namespace astute.Models
     public class Report_Users_Role_Model
     {
         public string User_Ids { get; set; }
+        public string? User_Type { get; set; }
 
         public IList<Report_Roles> Report_Roles { get; set; }
 

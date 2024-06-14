@@ -1520,7 +1520,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<int> Create_Update_Report_User_Role(DataTable dataTable)
+        public async Task<int> Create_Update_Report_User_Role(DataTable dataTable,string? user_Type)
         {
             var parameter = new SqlParameter("@Report_Users_Role_Table_Type", SqlDbType.Structured)
             {
@@ -1528,7 +1528,9 @@ namespace astute.Repository
                 Value = dataTable
             };
 
-            var result = await _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Users_Role_Insert_Update @Report_Users_Role_Table_Type", parameter);
+            var _user_Type = !string.IsNullOrEmpty(user_Type) ? new SqlParameter("@User_Type", user_Type) : new SqlParameter("@Rpt_Sp_Name", DBNull.Value);
+
+            var result = await _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Users_Role_Insert_Update @Report_Users_Role_Table_Type,@User_Type", parameter, _user_Type);
 
             return result;
         }

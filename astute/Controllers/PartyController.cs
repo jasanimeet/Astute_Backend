@@ -4361,7 +4361,7 @@ namespace astute.Controllers
                                 dataTable.Rows.Add(item1.Rd_Id, item, item1.Display_Type, item1.Order_By, item1.Short_No, item1.Width, item1.Column_Format, item1.Alignment, item1.Fore_Colour, item1.Back_Colour, item1.IsBold);
                             }
                         }
-                        var result = await _supplierService.Create_Update_Report_User_Role(dataTable);
+                        var result = await _supplierService.Create_Update_Report_User_Role(dataTable, report_User_Roles.User_Type);
                         if (result > 0)
                         {
                             return Ok(new
