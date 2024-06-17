@@ -1530,7 +1530,7 @@ namespace astute.Repository
                 Value = dataTable
             };
 
-            var _user_Type = !string.IsNullOrEmpty(user_Type) ? new SqlParameter("@User_Type", user_Type) : new SqlParameter("@Rpt_Sp_Name", DBNull.Value);
+            var _user_Type = !string.IsNullOrEmpty(user_Type) ? new SqlParameter("@User_Type", user_Type) : new SqlParameter("@User_Type", DBNull.Value);
 
             var result = await _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Report_Users_Role_Insert_Update @Report_Users_Role_Table_Type,@User_Type", parameter, _user_Type);
 
