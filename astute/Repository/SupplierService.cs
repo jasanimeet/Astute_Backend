@@ -782,7 +782,7 @@ namespace astute.Repository
                         @Cost_Price_Flag, @Final_Price_Flag, @Is_All_Bgm,@Is_All_Clarity,@Is_All_Color,@Is_All_Culet,@Is_All_Cut,@Is_All_Fls_Intensity,@Is_All_Good_Type,@Is_All_Location,@Is_All_Lab,
                         @Is_All_Luster,@Is_All_Polish,@Is_All_Shade,@Is_All_Shape,@Is_All_Symm,@Is_All_Status,@Is_All_Cert_Type,@Is_All_Fancy_Color,@Is_All_Girdle_Open,@Is_All_Table_Open,@Is_All_Table_Black,
                         @Is_All_Table_White,@Is_All_Side_Black,@Is_All_Side_white,@Is_All_Pavilion_Open,@Is_All_Crown_Open,@Is_All_Company,@Is_API_FTP_URL, @Query_Flag, @Inserted_Id OUT",
-                        supplier_Pricing_Id, supplier_Id, sunrise_Pricing_Id, customer_Pricing_Id, user_Pricing_Id, map_Flag, stock_Lab, stock_Overseas, stock_Buyer, stock_Saler,stock_Defualt, shape, cts, color, fancy_Color, clarity, cut, polish, symm, fls_Intensity, lab, shade, luster, bgm, culet, location, status, good_Type, length_From, length_To, width_From,
+                        supplier_Pricing_Id, supplier_Id, sunrise_Pricing_Id, customer_Pricing_Id, user_Pricing_Id, map_Flag, stock_Lab, stock_Overseas, stock_Buyer, stock_Saler, stock_Defualt, shape, cts, color, fancy_Color, clarity, cut, polish, symm, fls_Intensity, lab, shade, luster, bgm, culet, location, status, good_Type, length_From, length_To, width_From,
                         width_To, depth_From, depth_To, depth_Per_From, depth_Per_To, table_Per_From, table_Per_To, crown_Angle_From, crown_Angle_To, crown_Height_From, crown_Height_To, pavilion_Angle_From,
                         pavilion_Angle_To, pavilion_Height_From, pavilion_Height_To, girdle_Per_From, girdle_Per_To, table_Black, side_Black, table_White, side_white, cert_Type, table_Open, crown_Open, pavilion_Open, girdle_Open,
                         base_Disc_From, base_Disc_To, base_Amount_From, base_Amount_To, final_Disc_From, final_Disc_To, final_Amount_From, final_Amount_To, company, supplier_Filter_Type, calculation_Type, sign, value_1, value_2, value_3, value_4, sp_calculation_Type, sp_sign, sp_start_date,
@@ -1522,7 +1522,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<int> Create_Update_Report_User_Role(DataTable dataTable,string? user_Type)
+        public async Task<int> Create_Update_Report_User_Role(DataTable dataTable, string? user_Type)
         {
             var parameter = new SqlParameter("@Report_Users_Role_Table_Type", SqlDbType.Structured)
             {
@@ -2598,7 +2598,7 @@ namespace astute.Repository
         #endregion
 
         #region Get Excel Formet Stock Result
-        public async Task<DataTable> Get_Stock_In_Datatable(string supp_ref_no, string excel_Format)
+        public async Task<DataTable> Get_Stock_In_Datatable(string supp_ref_no, string excel_Format, int user_Id)
         {
             DataTable dataTable = new DataTable();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -2608,6 +2608,7 @@ namespace astute.Repository
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(!string.IsNullOrEmpty(supp_ref_no) ? new SqlParameter("@Supplier_Ref_No", supp_ref_no) : new SqlParameter("@Supplier_Ref_No", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(excel_Format) ? new SqlParameter("@Excel_Format", excel_Format) : new SqlParameter("@Excel_Format", DBNull.Value));
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
 
                     await connection.OpenAsync();
 
@@ -2623,7 +2624,7 @@ namespace astute.Repository
 
             return dataTable;
         }
-        public async Task<DataTable> Get_Excel_Report_Search_New(IList<Report_Filter_Parameter> report_Filter_Parameters, string excel_Format, string supplier_Ref_No)
+        public async Task<DataTable> Get_Excel_Report_Search_New(IList<Report_Filter_Parameter> report_Filter_Parameters, string excel_Format, string supplier_Ref_No, int user_Id)
         {
             DataTable dataTable = new DataTable();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -2637,6 +2638,7 @@ namespace astute.Repository
                     }
                     command.Parameters.Add(!string.IsNullOrEmpty(excel_Format) ? new SqlParameter("@Excel_Format", excel_Format) : new SqlParameter("@Excel_Format", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(supplier_Ref_No) ? new SqlParameter("@Supplier_Ref_No", supplier_Ref_No) : new SqlParameter("@Supplier_Ref_No", DBNull.Value));
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
 
                     command.CommandTimeout = 1800;
                     await connection.OpenAsync();
@@ -2652,7 +2654,7 @@ namespace astute.Repository
             }
             return dataTable;
         }
-        public async Task<DataTable> Get_Excel_Report_Search(DataTable dt_Search, string excel_Format, string supplier_Ref_No)
+        public async Task<DataTable> Get_Excel_Report_Search(DataTable dt_Search, string excel_Format, string supplier_Ref_No, int user_Id)
         {
             DataTable dataTable = new DataTable();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -2668,6 +2670,7 @@ namespace astute.Repository
                     command.Parameters.Add(parameter);
                     command.Parameters.Add(!string.IsNullOrEmpty(excel_Format) ? new SqlParameter("@Excel_Format", excel_Format) : new SqlParameter("@Excel_Format", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(supplier_Ref_No) ? new SqlParameter("@Supplier_Ref_No", supplier_Ref_No) : new SqlParameter("@Supplier_Ref_No", DBNull.Value));
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
 
                     command.CommandTimeout = 1800;
                     await connection.OpenAsync();
@@ -2740,7 +2743,7 @@ namespace astute.Repository
                 request_For = order_Stone_Processing.Order_Status;
             }
 
-            if(order_Stone_Processing.Order_Status == "CANCEL")
+            if (order_Stone_Processing.Order_Status == "CANCEL")
             {
                 _order_Status = "COMPLETED";
             }

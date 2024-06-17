@@ -8110,8 +8110,11 @@ namespace astute.Controllers
         [Authorize]
         public async Task<IActionResult> Export_Stock_Excel_New(Excel_Model excel_Model)
         {
+            var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+            int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
             //DataTable supp_stock_dt = await _supplierService.Get_Stock_In_Datatable(excel_Model.supplier_Ref_No, excel_Model.excel_Format);
-            DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search_New(excel_Model.Report_Filter_Parameter, excel_Model.excel_Format, excel_Model.supplier_Ref_No);
+            DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search_New(excel_Model.Report_Filter_Parameter, excel_Model.excel_Format, excel_Model.supplier_Ref_No, user_Id ?? 0);
             if (supp_stock_dt != null && supp_stock_dt.Rows.Count > 0)
             {
                 List<string> columnNames = new List<string>();
@@ -8625,7 +8628,10 @@ namespace astute.Controllers
                 }
             }
 
-            DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, excel_Model.excel_Format, excel_Model.supplier_Ref_No);
+            var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+            int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+            DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, excel_Model.excel_Format, excel_Model.supplier_Ref_No, user_Id ?? 0);
             if (supp_stock_dt != null && supp_stock_dt.Rows.Count > 0)
             {
                 List<string> columnNames = new List<string>();
@@ -8684,6 +8690,7 @@ namespace astute.Controllers
         {
             try
             {
+
                 #region ALL STOCK
                 DataTable dataTable = new DataTable();
                 dataTable.Columns.Add("STOCK_ID", typeof(string));
@@ -8791,7 +8798,7 @@ namespace astute.Controllers
                 }
 
                 //Supplier all stock
-                DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Supplier", null);
+                DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Supplier", null, 0);
                 if (supp_stock_dt != null && supp_stock_dt.Rows.Count > 0)
                 {
                     List<string> columnNames = new List<string>();
@@ -8810,7 +8817,7 @@ namespace astute.Controllers
                     EpExcelExport.Create_Supplier_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + "Supplier.xlsx");
                 }
                 //Customer all stock
-                DataTable cust_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Customer", null);
+                DataTable cust_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Customer", null, 0);
                 if (cust_stock_dt != null && cust_stock_dt.Rows.Count > 0)
                 {
                     List<string> columnNames = new List<string>();
@@ -8828,8 +8835,9 @@ namespace astute.Controllers
                     }
                     EpExcelExport.Create_Customer_Excel(cust_stock_dt, columnNamesTable, filePath, filePath + "Customer.xlsx");
                 }
+
                 //Buyer all stock
-                DataTable buyer_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Buyer", null);
+                DataTable buyer_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Buyer", null, 0);
                 if (buyer_stock_dt != null && buyer_stock_dt.Rows.Count > 0)
                 {
                     List<string> columnNames = new List<string>();
@@ -8951,8 +8959,9 @@ namespace astute.Controllers
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
                             DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value);
 
+
                 //Supplier round stock
-                DataTable supp_round_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable1, "Supplier", null);
+                DataTable supp_round_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable1, "Supplier", null, 0);
                 if (supp_round_stock_dt != null && supp_round_stock_dt.Rows.Count > 0)
                 {
                     List<string> columnNames = new List<string>();
@@ -8971,7 +8980,7 @@ namespace astute.Controllers
                     EpExcelExport.Create_Supplier_Excel(supp_round_stock_dt, columnNamesTable, filePath, filePath + "Supplier_Round.xlsx");
                 }
                 //Customer round stock
-                DataTable cust_round_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable1, "Customer", null);
+                DataTable cust_round_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable1, "Customer", null, 0);
                 if (cust_round_stock_dt != null && cust_round_stock_dt.Rows.Count > 0)
                 {
                     List<string> columnNames = new List<string>();
@@ -8990,7 +8999,7 @@ namespace astute.Controllers
                     EpExcelExport.Create_Customer_Excel(cust_round_stock_dt, columnNamesTable, filePath, filePath + "Customer_Round.xlsx");
                 }
                 //Buyer round stock
-                DataTable buyer_round_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable1, "Buyer", null);
+                DataTable buyer_round_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable1, "Buyer", null, 0);
                 if (buyer_round_stock_dt != null && buyer_round_stock_dt.Rows.Count > 0)
                 {
                     List<string> columnNames = new List<string>();
@@ -9429,7 +9438,10 @@ namespace astute.Controllers
                         dataTable.Rows.Add(newRow);
                     }
 
-                    DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Customer", stock_Email_Model.Supplier_Ref_No);
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                    DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Customer", stock_Email_Model.Supplier_Ref_No, user_Id ?? 0);
                     List<string> columnNames = new List<string>();
                     foreach (DataColumn column in supp_stock_dt.Columns)
                     {
@@ -9455,8 +9467,7 @@ namespace astute.Controllers
                     byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
                     using (MemoryStream memoryStream = new MemoryStream(fileBytes))
                     {
-                        var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                        int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
                         //var employeeEmails = await _employeeService.GetEmployeeMail(user_Id ?? 0);
                         var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(user_Id ?? 0);
                         if (emp_email != null)
