@@ -409,6 +409,8 @@ namespace astute.CoreModel
         public static string Fortune_Discount_Added = "Fortune Discount Oracle" + AddedSuccessfully;
         public static string Fortune_Party = "Fortune Party Oracle";
         public static string Fortune_Party_Added = "Fortune Party Oracle" + AddedSuccessfully;
+        public static string Fortune_Party_Master = "Fortune Party Master Oracle";
+        public static string Fortune_Party_Master_Added = "Fortune Party Master Oracle" + AddedSuccessfully;
         #endregion
 
         #region Account Trans Master

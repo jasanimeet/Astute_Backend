@@ -6,6 +6,8 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace astute.Repository
@@ -543,6 +545,92 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
                                 .ExecuteSqlRawAsync(@"EXEC [Fortune_Party_Ora_Insert_Update] @tableInq", parameter));
+            return result;
+        }
+
+        public async Task<int> Get_Fortune_Party_Master()
+        {
+            List<OracleParameter> paramList = new List<OracleParameter>();
+
+            OracleParameter param1 = new OracleParameter("vrec", OracleDbType.RefCursor);
+            param1.Direction = ParameterDirection.Output;
+            paramList.Add(param1);
+
+            DataTable dataTable = await _dbOracleAccess.CallSP("party_info_transfer", paramList);
+
+            DataTable newDataTable = new DataTable();
+
+            newDataTable.Columns.Add("CUSTOMER", typeof(string));
+            newDataTable.Columns.Add("SUPPLIER", typeof(string));
+            newDataTable.Columns.Add("LAB", typeof(string));
+            newDataTable.Columns.Add("PARTY_CODE", typeof(string));
+            newDataTable.Columns.Add("PARTY_NAME", typeof(string));
+            newDataTable.Columns.Add("ADDRESS_1", typeof(string));
+            newDataTable.Columns.Add("ADDRESS_2", typeof(string));
+            newDataTable.Columns.Add("ADDRESS_3", typeof(string));
+            newDataTable.Columns.Add("CITY", typeof(string));
+            newDataTable.Columns.Add("PIN_CODE", typeof(string));
+            newDataTable.Columns.Add("MOBILE_NO", typeof(string));
+            newDataTable.Columns.Add("MOBILE_NO_1", typeof(string));
+            newDataTable.Columns.Add("PHONE_NO", typeof(string));
+            newDataTable.Columns.Add("PHONE_NO_1", typeof(string));
+            newDataTable.Columns.Add("FAX_NO", typeof(string));
+            newDataTable.Columns.Add("EMAIL", typeof(string));
+            newDataTable.Columns.Add("EMAIL_1", typeof(string));
+            newDataTable.Columns.Add("WEBSITE", typeof(string));
+            newDataTable.Columns.Add("INVOICE_GROUP", typeof(string));
+            newDataTable.Columns.Add("LEAVE_DATE", typeof(DateTime));
+            newDataTable.Columns.Add("ASS1_CODE", typeof(int));
+            newDataTable.Columns.Add("ASS1_PER", typeof(float));
+            newDataTable.Columns.Add("ASS2_CODE", typeof(int));
+            newDataTable.Columns.Add("ASS2_PER", typeof(float));
+            newDataTable.Columns.Add("ASS3_CODE", typeof(int));
+            newDataTable.Columns.Add("TRANS_DATE", typeof(DateTime));
+
+            foreach (DataRow row in dataTable.Rows)
+            {
+                DataRow newRow = newDataTable.NewRow();
+
+                newRow["CUSTOMER"] = DBNull.Value.Equals(row["CUSTOMER"]) ? DBNull.Value : row["CUSTOMER"].ToString();
+                newRow["SUPPLIER"] = DBNull.Value.Equals(row["SUPPLIER"]) ? DBNull.Value : row["SUPPLIER"].ToString();
+                newRow["LAB"] = DBNull.Value.Equals(row["LAB"]) ? DBNull.Value : row["LAB"].ToString();
+                newRow["PARTY_CODE"] = DBNull.Value.Equals(row["PARTY_CODE"]) ? DBNull.Value : row["PARTY_CODE"].ToString();
+                newRow["PARTY_NAME"] = DBNull.Value.Equals(row["PARTY_NAME"]) ? DBNull.Value : row["PARTY_NAME"].ToString();
+                newRow["ADDRESS_1"] = DBNull.Value.Equals(row["ADDRESS_1"]) ? DBNull.Value : row["ADDRESS_1"].ToString();
+                newRow["ADDRESS_2"] = DBNull.Value.Equals(row["ADDRESS_2"]) ? DBNull.Value : row["ADDRESS_2"].ToString();
+                newRow["ADDRESS_3"] = DBNull.Value.Equals(row["ADDRESS_3"]) ? DBNull.Value : row["ADDRESS_3"].ToString();
+                newRow["CITY"] = DBNull.Value.Equals(row["CITY"]) ? DBNull.Value : row["CITY"].ToString();
+                newRow["PIN_CODE"] = DBNull.Value.Equals(row["PIN_CODE"]) ? DBNull.Value : row["PIN_CODE"].ToString();
+                newRow["MOBILE_NO"] = DBNull.Value.Equals(row["MOBILE_NO"]) ? DBNull.Value : row["MOBILE_NO"].ToString();
+                newRow["MOBILE_NO_1"] = DBNull.Value.Equals(row["MOBILE_NO_1"]) ? DBNull.Value : row["MOBILE_NO_1"].ToString();
+                newRow["PHONE_NO"] = DBNull.Value.Equals(row["PHONE_NO"]) ? DBNull.Value : row["PHONE_NO"].ToString();
+                newRow["PHONE_NO_1"] = DBNull.Value.Equals(row["PHONE_NO_1"]) ? DBNull.Value : row["PHONE_NO_1"].ToString();
+                newRow["FAX_NO"] = DBNull.Value.Equals(row["FAX_NO"]) ? DBNull.Value : row["FAX_NO"].ToString();
+                newRow["EMAIL"] = DBNull.Value.Equals(row["EMAIL"]) ? DBNull.Value : row["EMAIL"].ToString();
+                newRow["EMAIL_1"] = DBNull.Value.Equals(row["EMAIL_1"]) ? DBNull.Value : row["EMAIL_1"].ToString();
+                newRow["WEBSITE"] = DBNull.Value.Equals(row["WEBSITE"]) ? DBNull.Value : row["WEBSITE"].ToString();
+                newRow["INVOICE_GROUP"] = DBNull.Value.Equals(row["INVOICE_GROUP"]) ? DBNull.Value : row["INVOICE_GROUP"].ToString();
+                newRow["LEAVE_DATE"] = DBNull.Value.Equals(row["LEAVE_DATE"]) || string.IsNullOrEmpty(row["LEAVE_DATE"].ToString()) ? DBNull.Value : (object)Convert.ToDateTime(row["LEAVE_DATE"]);
+                newRow["TRANS_DATE"] = DBNull.Value.Equals(row["TRANS_DATE"]) || string.IsNullOrEmpty(row["TRANS_DATE"].ToString()) ? DBNull.Value : (object)Convert.ToDateTime(row["TRANS_DATE"]);
+                newRow["ASS1_CODE"] = DBNull.Value.Equals(row["ASS1_CODE"]) || string.IsNullOrEmpty(row["ASS1_CODE"].ToString()) ? DBNull.Value : (object)Convert.ToInt32(row["ASS1_CODE"]);
+                newRow["ASS1_PER"] = DBNull.Value.Equals(row["ASS1_PER"]) || string.IsNullOrEmpty(row["ASS1_PER"].ToString()) ? DBNull.Value : (object)Convert.ToSingle(row["ASS1_PER"]);
+                newRow["ASS2_CODE"] = DBNull.Value.Equals(row["ASS2_CODE"]) || string.IsNullOrEmpty(row["ASS2_CODE"].ToString()) ? DBNull.Value : (object)Convert.ToInt32(row["ASS2_CODE"]);
+                newRow["ASS2_PER"] = DBNull.Value.Equals(row["ASS2_PER"]) || string.IsNullOrEmpty(row["ASS2_PER"].ToString()) ? DBNull.Value : (object)Convert.ToSingle(row["ASS2_PER"]);
+                newRow["ASS3_CODE"] = DBNull.Value.Equals(row["ASS3_CODE"]) ? DBNull.Value : row["ASS3_CODE"].ToString();
+
+                newDataTable.Rows.Add(newRow);
+            }
+
+            var parameter = new SqlParameter("@tableInq", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Fortune_Party_Master_Table_Type]",
+                Value = newDataTable
+            };
+
+            _dbContext.Database.SetCommandTimeout(1800);
+            var result = await _dbContext.Database.ExecuteSqlRawAsync(
+                @"EXEC [Fortune_Party_Master_Ora_Insert_Update] @tableInq", parameter);
+
             return result;
         }
         #endregion

@@ -9,5 +9,6 @@ namespace astute.Repository
         Task<int> Get_Stock_Kts();
         Task<(int, int, int)> Get_Fortune_Discount();
         Task<int> Get_Fortune_Party();
+        Task<int> Get_Fortune_Party_Master();
     }
 }
