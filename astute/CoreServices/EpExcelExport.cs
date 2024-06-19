@@ -3110,10 +3110,16 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["EXPECTED FINAL AMT"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
-                                else if (Column_Name == "DIFFERENCE")
+                                else if (Column_Name == "EXP PROFIT AMT")
                                 {
-                                    string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["DIFFERENCE"]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["DIFFERENCE"]) : 0;
+                                    string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["EXP PROFIT AMT"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["EXP PROFIT AMT"]) : 0;
+                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                }
+                                else if (Column_Name == "EXP PROFIT PER")
+                                {
+                                    string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["EXP PROFIT PER"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["EXP PROFIT PER"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "AVG STOCK DISC")
