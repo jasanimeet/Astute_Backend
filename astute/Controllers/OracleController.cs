@@ -2,6 +2,8 @@
 using astute.Repository;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -33,7 +35,43 @@ namespace astute.Controllers
             try
             {
                 var result = await _oracleService.Get_Fortune_Discount();
-                if (result.Item1 > 0 && result.Item2 > 0 && result.Item3 > 0)
+
+                List<string> errorMessages = new List<string>();
+
+                if (result.Item1 <= 0)
+                {
+                    errorMessages.Add(CoreCommonMessage.Fortune_Purchase_Disc);
+                }
+
+                if (result.Item2 <= 0)
+                {
+                    errorMessages.Add(CoreCommonMessage.Fortune_Sale_Disc);
+                }
+
+                if (result.Item3 <= 0)
+                {
+                    errorMessages.Add(CoreCommonMessage.Fortune_Stock_Disc);
+                }
+
+                if (result.Item4 <= 0)
+                {
+                    errorMessages.Add(CoreCommonMessage.Fortune_Sale_Disc_Kts);
+                }
+
+                if (result.Item5 <= 0)
+                {
+                    errorMessages.Add(CoreCommonMessage.Fortune_Stock_Disc_Kts);
+                }
+
+                if (errorMessages.Any())
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.BadRequest,
+                        message = string.Join("\n", errorMessages)
+                    });
+                }
+                else
                 {
                     return Ok(new
                     {
@@ -41,7 +79,6 @@ namespace astute.Controllers
                         message = CoreCommonMessage.Fortune_Discount_Added
                     });
                 }
-                return NoContent();
             }
             catch (Exception ex)
             {

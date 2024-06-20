@@ -411,6 +411,12 @@ namespace astute.CoreModel
         public static string Fortune_Party_Added = "Fortune Party Oracle" + AddedSuccessfully;
         public static string Fortune_Party_Master = "Fortune Party Master Oracle";
         public static string Fortune_Party_Master_Added = "Fortune Party Master Oracle" + AddedSuccessfully;
+        public static string Fortune_Purchase_Disc = "Purchase Disc " + ApiFailed;
+        public static string Fortune_Sale_Disc = "Sale Disc " + ApiFailed;
+        public static string Fortune_Stock_Disc = "Stock Disc " + ApiFailed;
+        public static string Fortune_Sale_Disc_Kts = "Sale Disc KTS " + ApiFailed;
+        public static string Fortune_Stock_Disc_Kts = "Stock Disc KTS " + ApiFailed;
+        
         #endregion
 
         #region Account Trans Master
