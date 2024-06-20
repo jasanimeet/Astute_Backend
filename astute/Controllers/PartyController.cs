@@ -2711,6 +2711,7 @@ namespace astute.Controllers
                                 if (stock_Data_Master.Upload_Type == "O")
                                 {
                                     await _supplierService.Supplier_Stock_Insert_Update((int)stock_Data_Master.Supplier_Id, stock_Data_Id);
+                                    await _supplierService.Supplier_Stock_Overseas_Insert_Update((int)stock_Data_Master.Supplier_Id, stock_Data_Id);
                                 }
                             }
                         }
@@ -3796,6 +3797,7 @@ namespace astute.Controllers
                                             if (stock_Data_Master_Schedular.Upload_Type == "O")
                                             {
                                                 await _supplierService.Supplier_Stock_Manual_File_Insert_Update((int)stock_Data_Master_Schedular.Supplier_Id, stock_Data_Id, party_File.Is_Overwrite ?? false);
+                                                await _supplierService.Supplier_Stock_Overseas_Manual_File_Insert_Update((int)stock_Data_Master_Schedular.Supplier_Id, stock_Data_Id, party_File.Is_Overwrite ?? false);
                                             }
                                         }
                                         return Ok(new
