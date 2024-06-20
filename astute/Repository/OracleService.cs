@@ -197,7 +197,7 @@ namespace astute.Repository
             paramList.Add(param1);
 
             param1 = new OracleParameter("p_kts_grd_flag", OracleDbType.NVarchar2);
-            param1.Value = "Y";
+            param1.Value = DBNull.Value;
             paramList.Add(param1);
 
             param1 = new OracleParameter("p_stone_clarity_flag", OracleDbType.NVarchar2);
@@ -551,7 +551,7 @@ namespace astute.Repository
             paramList.Add(param1);
 
             param1 = new OracleParameter("p_kts_grd_flag", OracleDbType.NVarchar2);
-            param1.Value = DBNull.Value;
+            param1.Value = "Y";
             paramList.Add(param1);
 
             param1 = new OracleParameter("p_stone_clarity_flag", OracleDbType.NVarchar2);
