@@ -16,6 +16,7 @@ namespace astute.Models
         public string? Country_Id { get; set; }
         public bool? File_Status { get; set; }
         public string? Map_Flag { get; set; }
+        public string? API_URL { get; set; }
         [NotMapped]
         public IList<Customer_Column_Caption> Customer_Column_Caption { get; set; } = new List<Customer_Column_Caption>();
     }

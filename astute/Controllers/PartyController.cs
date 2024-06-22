@@ -10266,6 +10266,25 @@ namespace astute.Controllers
                         if (customer_Details.Customer_Party_File != null && customer_Details.Customer_Party_File.Customer_Column_Caption != null && customer_Details.Customer_Party_File.Customer_Column_Caption.Count > 0)
                         {
                             customer_Details.Customer_Party_File.User_Pricing_Id = customer_Details.User_Pricing_Id;
+
+                            var userDetails = await _labUserService.Get_Lab_User(customer_Details.User_Pricing_Id ?? 0, 0, 0);
+
+                            if (userDetails != null && userDetails.Count > 0)
+                            {
+                                var userDetail = userDetails[0];
+
+                                if (userDetail.ContainsKey("User_Name") && userDetail.ContainsKey("Password"))
+                                {
+                                    var username = Convert.ToString(userDetail["User_Name"]);
+                                    var password = Convert.ToString(userDetail["Password"]);
+
+                                    var encryptedUsername = CoreService.Encrypt(username);
+                                    var encryptedPassword = CoreService.Encrypt(password);
+
+                                    customer_Details.Customer_Party_File.API_URL = $"api/apisettings/url?UN={encryptedUsername}&PW={encryptedPassword}";
+                                }
+                            }
+
                             var party_file = await _partyService.Add_Update_Customer_Party_File(customer_Details.Customer_Party_File, user_Id ?? 0, customer_Details.Map_Flag);
                             if (party_file > 0)
                             {
