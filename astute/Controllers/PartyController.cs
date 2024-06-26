@@ -11257,7 +11257,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("job_transfer_user_pricing")]
         [Authorize]
-        public async Task<IActionResult> Job_Transfer_User_Pricing(int id, int days)
+        public async Task<IActionResult> Job_Transfer_User_Pricing()
         {
             try
             {
