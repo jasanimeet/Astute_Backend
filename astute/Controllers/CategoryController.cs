@@ -25,16 +25,22 @@ namespace astute.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IConfiguration _configuration;
         private readonly ICommonService _commonService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IJWTAuthentication _jWTAuthentication;
         #endregion
 
         #region Ctor
         public CategoryController(ICategoryService categoryService,
             IConfiguration configuration,
-            ICommonService commonService)
+            ICommonService commonService,
+            IHttpContextAccessor httpContextAccessor,
+            IJWTAuthentication jWTAuthentication)
         {
             _categoryService = categoryService;
             _configuration = configuration;
             _commonService = commonService;
+            _httpContextAccessor = httpContextAccessor;
+            _jWTAuthentication = jWTAuthentication;
         }
         #endregion
 
@@ -581,6 +587,443 @@ namespace astute.Controllers
             }
         }
         #endregion
+        
+        #region Import Master
+        [HttpGet]
+        [Route("get_import_master")]
+        [Authorize]
+        public async Task<IActionResult> Get_Import_Master()
+        {
+            try
+            {
+                var result = await _categoryService.Get_Import_Master();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Import_Master", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPost]
+        [Route("create_import_master")]
+        [Authorize]
+        public async Task<IActionResult> Create_Import_Master(Import_Master import_Master)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                    if (user_Id > 0)
+                    {
+                        var result = await _categoryService.Insert_Import_Master(import_Master, user_Id ?? 0);
+                        if (result == 1)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.ImportMasterCreated
+                            });
+                        }
+                        else if (result == 2)
+                        {
+                            return Conflict(new
+                            {
+                                statusCode = HttpStatusCode.Conflict,
+                                message = CoreCommonMessage.ImportMasterExists,
+                            });
+                        }
+                    }
+                    return Unauthorized();
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Import_Master", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPut]
+        [Route("update_import_master")]
+        [Authorize]
+        public async Task<IActionResult> Update_Import_Master(Import_Master import_Master)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _categoryService.Update_Import_Master(import_Master);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.ImportMasterUpdated
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Import_Master", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_import_master")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Import_Master(int id)
+        {
+            try
+            {
+                var result = await _categoryService.Delete_Import_Master(id);
+                if (result == 1)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.ImportMasterDeleted
+                    });
+                }
+                else if (result == 2)
+                {
+                    return BadRequest(new
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        message = CoreCommonMessage.DeleteImportDetail
+                    });
+
+                }
+
+                return BadRequest(new
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Import_Master", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region Import Detail
+        [HttpGet]
+        [Route("get_import_detail")]
+        [Authorize]
+        public async Task<IActionResult> Get_Import_Detail()
+        {
+            try
+            {
+                var result = await _categoryService.Get_Import_Detail();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Import_Detail", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("create_import_detail")]
+        [Authorize]
+        public async Task<IActionResult> Create_Import_Detail(Import_Detail import_Detail)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _categoryService.Insert_Import_Detail(import_Detail);
+                    if (result == 1)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.ImportDetailCreated
+                        });
+                    }
+                    else if (result == 2)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.ImportDetailExists,
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Import_Detail", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPut]
+        [Route("update_import_detail")]
+        [Authorize]
+        public async Task<IActionResult> Update_Import_Detail(Import_Detail import_Detail)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _categoryService.Update_Import_Detail(import_Detail);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.ImportDetailUpdated
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Import_Detail", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_import_detail")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Import_Detail(int id)
+        {
+            try
+            {
+                var result = await _categoryService.Delete_Import_Detail(id);
+                if (result == 1)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.ImportDetailDeleted
+                    });
+                }
+
+                return BadRequest(new
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Import_Detail", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+        
+        #region Import Excel
+        [HttpGet]
+        [Route("get_import_excel")]
+        [Authorize]
+        public async Task<IActionResult> Get_Import_Excel()
+        {
+            try
+            {
+                var result = await _categoryService.Get_Import_Excel();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Import_Excel", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        
+        [HttpGet]
+        [Route("get_import_master_detail")]
+        [Authorize]
+        public async Task<IActionResult> Get_Import_Master_Detail(int import_Id)
+        {
+            try
+            {
+                var result = await _categoryService.Get_Import_Master_Detail(import_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Import_Master_Detail", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPost]
+        [Route("create_update_import_excel")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Import_Excel(Import_Excel import_Excel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                    if (user_Id > 0)
+                    {
+                        var Import_Master_Result = await _categoryService.Insert_Import_Master(import_Excel.Import_Master, user_Id ?? 0);
+                        if (Import_Master_Result > 0)
+                        {
+
+                            DataTable dataTable = new DataTable();
+                            dataTable.Columns.Add("Import_Id", typeof(int));
+                            dataTable.Columns.Add("Import_Det_Id", typeof(int));
+                            dataTable.Columns.Add("Column_Name", typeof(int));
+                            dataTable.Columns.Add("Excel_Column_No", typeof(int));
+                            dataTable.Columns.Add("Required", typeof(bool));
+
+                            foreach (var item in import_Excel.Import_Details)
+                            {
+                                DataRow dr = dataTable.NewRow();
+                                dr["Import_Id"] = Import_Master_Result;
+                                dr["Import_Det_Id"] = item.Import_Det_Id;
+                                dr["Column_Name"] = item.Column_Name;
+                                dr["Excel_Column_No"] = item.Excel_Column_No;
+                                dr["Required"] = item.Required;
+
+                                dataTable.Rows.Add(dr);
+                            }
+                            var result = await _categoryService.Insert_Update_Import_Excel(dataTable);
+
+                            if (result > 0)
+                            {
+                                return Ok(new
+                                {
+                                    statusCode = HttpStatusCode.OK,
+                                    message = CoreCommonMessage.ImportExcelCreated
+                                });
+                            }
+                        }
+                    }
+                    return Unauthorized();
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Import_Excel", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_import_excel")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Import_Excel(int id)
+        {
+            try
+            {
+                var result = await _categoryService.Delete_Import_Excel(id);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.ImportExcelDeleted
+                    });
+                }
+
+                return BadRequest(new
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Import_Excel", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
         #endregion
     }
 }

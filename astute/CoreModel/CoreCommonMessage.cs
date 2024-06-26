@@ -416,7 +416,7 @@ namespace astute.CoreModel
         public static string Fortune_Stock_Disc = "Stock Disc " + ApiFailed;
         public static string Fortune_Sale_Disc_Kts = "Sale Disc KTS " + ApiFailed;
         public static string Fortune_Stock_Disc_Kts = "Stock Disc KTS " + ApiFailed;
-        
+
         #endregion
 
         #region Account Trans Master
@@ -450,5 +450,34 @@ namespace astute.CoreModel
         #region Notification
         public static string Notification_Updated_Read_By = "Notification has been read by user" + UpdatedSuccessfully;
         #endregion
+
+        #region Import Master
+        public static string ImportMaster = "Import Master";
+        public static string ImportMasterCreated = ImportMaster + AddedSuccessfully;
+        public static string ImportMasterUpdated = ImportMaster + UpdatedSuccessfully;
+        public static string ImportMasterDeleted = ImportMaster + DeletedSuccessfully;
+        public static string ImportMasterDataNotFound = ImportMaster + DataNotFound;
+        public static string ImportMasterExists = ImportMaster + AlreadyExists;
+        public static string DeleteImportDetail = "Delete Import Detail records first.";
+        #endregion
+
+        #region Import Detail
+        public static string ImportDetail = "Import Detail";
+        public static string ImportDetailCreated = ImportDetail + AddedSuccessfully;
+        public static string ImportDetailUpdated = ImportDetail + UpdatedSuccessfully;
+        public static string ImportDetailDeleted = ImportDetail + DeletedSuccessfully;
+        public static string ImportDetailDataNotFound = ImportDetail + DataNotFound;
+        public static string ImportDetailExists = ImportDetail + AlreadyExists;
+        #endregion
+
+        #region Import Excel
+        public static string ImportExcel = "Import Excel";
+        public static string ImportExcelCreated = ImportExcel + AddedSuccessfully;
+        public static string ImportExcelUpdated = ImportExcel + UpdatedSuccessfully;
+        public static string ImportExcelDeleted = ImportExcel + DeletedSuccessfully;
+        public static string ImportExcelDataNotFound = ImportExcel + DataNotFound;
+        public static string ImportExcelExists = ImportExcel + AlreadyExists;
+        #endregion
+
     }
 }
