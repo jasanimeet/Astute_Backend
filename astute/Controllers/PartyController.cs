@@ -11251,5 +11251,37 @@ namespace astute.Controllers
             }
         }
         #endregion
+
+        #region Job transfer user pricing
+
+        [HttpPost]
+        [Route("job_transfer_user_pricing")]
+        [Authorize]
+        public async Task<IActionResult> Job_Transfer_User_Pricing(int id, int days)
+        {
+            try
+            {
+                var result = await _labUserService.Job_Transfer_User_Pricing();
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.JobExc
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Job_Transfer_User_Pricing", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
     }
 }

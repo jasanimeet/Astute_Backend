@@ -39,6 +39,7 @@ namespace astute.CoreModel
         public static string InvalidDate = "From Date should not be greater than To Date";
         public static string ApiFailed = "Failed to retrieve data from the API";
         public static string ApiError = "Error connecting to the API";
+        public static string JobExc = "Job executed successfully.";
 
         #region Email Subjects
         public static string ForgetPasswordSubject = "Forget Password Email";

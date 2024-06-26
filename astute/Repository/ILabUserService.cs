@@ -13,5 +13,6 @@ namespace astute.Repository
         Task<(int, string)> Delete_Lab_User(int id, bool check_Primary_User);
         Task<int> Create_Update_Suspend_Days(int id, int days);
         Task<List<Dictionary<string, object>>> Get_Customer_Lab_User(int party_Id);
+        Task<int> Job_Transfer_User_Pricing();
     }
 }

@@ -211,6 +211,15 @@ namespace astute.Repository
 
             return result;
         }
+
+        public async Task<int> Job_Transfer_User_Pricing()
+        {
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC [Job_Transfer_User_Pricing]"));
+
+            return result;
+        }
+
         #endregion
     }
 }
