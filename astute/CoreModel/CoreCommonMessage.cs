@@ -480,5 +480,12 @@ namespace astute.CoreModel
         public static string ImportExcelExists = ImportExcel + AlreadyExists;
         #endregion
 
+        #region Parcel Master
+        public static string ParcelMaster = "Parcel Master";
+        public static string ParcelMasterCreated = ParcelMaster + AddedSuccessfully;
+        public static string ParcelMasterUpdated = ParcelMaster + UpdatedSuccessfully;
+        public static string ParcelMasterDeleted = ParcelMaster + DeletedSuccessfully;
+        public static string IsExistParcelMaster = ParcelMaster + AlreadyExists;
+        #endregion
     }
 }

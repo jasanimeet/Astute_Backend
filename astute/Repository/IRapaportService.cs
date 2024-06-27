@@ -24,6 +24,8 @@ namespace astute.Repository
         Task<IList<Rapaport_Clarity_Value>> Get_Rapaport_Clarity_Filter_Value();
         Task<IList<Rapaport_Date_Value>> Get_Rapaport_Date_Filter_Value();
         Task<IList<Bank_Dropdown_Model>> Get_Rapaport_Color();
+        Task<IList<Shape_Value>> Get_Shape_Filter_Value();
+        Task<IList<Diamond_Type_Value>> Get_Diamond_Type_Filter_Value();
         #endregion
 
         #region Rapaport User

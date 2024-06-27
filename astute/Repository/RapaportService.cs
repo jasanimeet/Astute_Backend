@@ -136,6 +136,16 @@ namespace astute.Repository
             var result = await _dbContext.Bank_Dropdown_Model.FromSqlRaw(@"EXEC Rapaport_Color_Select").ToListAsync();
             return result;
         }
+        public async Task<IList<Shape_Value>> Get_Shape_Filter_Value()
+        {
+            var result = await _dbContext.Shape_Value.FromSqlRaw(@"EXEC Category_Shape_Value").ToListAsync();
+            return result;
+        }
+        public async Task<IList<Diamond_Type_Value>> Get_Diamond_Type_Filter_Value()
+        {
+            var result = await _dbContext.Diamond_Type_Value.FromSqlRaw(@"EXEC Category_Diamond_Type_Value").ToListAsync();
+            return result;
+        }
         #endregion
 
         #region Rapaport User

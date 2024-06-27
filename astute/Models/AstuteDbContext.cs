@@ -104,5 +104,8 @@ namespace astute.Models
         public DbSet<Account_Group_Master> Account_Group_Master { get; set; }
         public DbSet<Import_Master> Import_Master { get; set; }
         public DbSet<Import_Detail> Import_Detail { get; set; }
+        public DbSet<Parcel_Master> Parcel_Master { get; set; }
+        public DbSet<Shape_Value> Shape_Value { get; set; }
+        public DbSet<Diamond_Type_Value> Diamond_Type_Value { get; set; }
     }
 }

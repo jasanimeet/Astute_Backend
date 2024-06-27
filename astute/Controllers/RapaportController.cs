@@ -619,6 +619,56 @@ namespace astute.Controllers
                 throw;
             }
         }
+
+        [HttpGet]
+        [Route("get_shape_filter_value")]
+        [Authorize]
+        public async Task<IActionResult> Get_Shape_Filter_Value()
+        {
+            try
+            {
+                var result = await _rapaportService.Get_Shape_Filter_Value();
+                if (result != null)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("get_diamond_type_filter_value")]
+        [Authorize]
+        public async Task<IActionResult> Get_Diamond_Type_Filter_Value()
+        {
+            try
+            {
+                var result = await _rapaportService.Get_Diamond_Type_Filter_Value();
+                if (result != null)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch
+            {
+                throw;
+            }
+        }
         #endregion
     }
 }
