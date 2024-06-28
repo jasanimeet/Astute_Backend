@@ -31,36 +31,7 @@ namespace astute.Repository
         #endregion
 
         #region Parcel Master
-
-        public async Task<int> Insert_Parcel_Master(Parcel_Master parcel_Master)
-        {
-            var Parcel_Id = new SqlParameter("@Parcel_Id", parcel_Master.Parcel_Id);
-            var Parcel_Name = new SqlParameter("@Parcel_Name", parcel_Master.Parcel_Name);            
-            var Cat_Val_Id = parcel_Master.Cat_Val_Id > 0 ? new SqlParameter("@Cat_Val_Id", parcel_Master.Cat_Val_Id) : new SqlParameter("@Cat_Val_Id", DBNull.Value);
-            var Unit = new SqlParameter("@Unit", parcel_Master.Unit);
-            var Pointer = parcel_Master.Pointer > 0 ? new SqlParameter("@Pointer", parcel_Master.Pointer) : new SqlParameter("@Pointer", DBNull.Value);
-            var Shape = new SqlParameter("@Shape", parcel_Master.Shape);
-            var Color = new SqlParameter("@Color", parcel_Master.Color);
-            var Clarity = new SqlParameter("@Clarity", parcel_Master.Clarity);
-            var Status = new SqlParameter("@Status", parcel_Master.Status);
-            var recordType = new SqlParameter("@recordType", "Insert");
-            var isExistTerms = new SqlParameter("@IsExistTerms", System.Data.SqlDbType.Bit)
-            {
-                Direction = System.Data.ParameterDirection.Output
-            };
-
-            var result = await Task.Run(() => _dbContext.Database
-            .ExecuteSqlRawAsync(@"exec Parcel_Master_Insert_Update @Parcel_Id, @Parcel_Name, @Cat_Val_Id, @Unit, @Pointer, @Shape, @Color, @Clarity, @Status, @recordType, @IsExistTerms OUT",
-            Parcel_Id, Parcel_Name, Cat_Val_Id, Unit, Pointer, Shape, Color, Clarity, Status, recordType, isExistTerms));
-
-            bool termsIsExist = (bool)isExistTerms.Value;
-            if (termsIsExist)
-                return 5;
-
-            return result;
-        }
-
-        public async Task<int> Update_Parcel_Master(Parcel_Master parcel_Master)
+        public async Task<int> Insert_Update_Parcel_Master(Parcel_Master parcel_Master)
         {
             var Parcel_Id = new SqlParameter("@Parcel_Id", parcel_Master.Parcel_Id);
             var Parcel_Name = new SqlParameter("@Parcel_Name", parcel_Master.Parcel_Name);
@@ -71,15 +42,14 @@ namespace astute.Repository
             var Color = new SqlParameter("@Color", parcel_Master.Color);
             var Clarity = new SqlParameter("@Clarity", parcel_Master.Clarity);
             var Status = new SqlParameter("@Status", parcel_Master.Status);
-            var recordType = new SqlParameter("@recordType", "Update");
             var isExistTerms = new SqlParameter("@IsExistTerms", System.Data.SqlDbType.Bit)
             {
                 Direction = System.Data.ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
-            .ExecuteSqlRawAsync(@"exec Parcel_Master_Insert_Update @Parcel_Id, @Parcel_Name, @Cat_Val_Id, @Unit, @Pointer, @Shape, @Color, @Clarity, @Status, @recordType, @IsExistTerms OUT",
-            Parcel_Id, Parcel_Name, Cat_Val_Id, Unit, Pointer, Shape, Color, Clarity, Status, recordType, isExistTerms));
+            .ExecuteSqlRawAsync(@"exec Parcel_Master_Insert_Update @Parcel_Id, @Parcel_Name, @Cat_Val_Id, @Unit, @Pointer, @Shape, @Color, @Clarity, @Status, @IsExistTerms OUT",
+            Parcel_Id, Parcel_Name, Cat_Val_Id, Unit, Pointer, Shape, Color, Clarity, Status, isExistTerms));
 
             bool termsIsExist = (bool)isExistTerms.Value;
             if (termsIsExist)

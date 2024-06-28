@@ -72,22 +72,33 @@ namespace astute.Controllers
         }
 
         [HttpPost]
-        [Route("create_parcel_master")]
+        [Route("create_update_parcel_master")]
         [Authorize]
-        public async Task<IActionResult> Create_Parcel_Master(Parcel_Master parcel_Master)
+        public async Task<IActionResult> Create_Update_Parcel_Master(Parcel_Master parcel_Master)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _parcel_Master_Service.Insert_Parcel_Master(parcel_Master);
+                    var result = await _parcel_Master_Service.Insert_Update_Parcel_Master(parcel_Master);
                     if (result == 1)
                     {
-                        return Ok(new
+                        if (parcel_Master.Parcel_Id > 0)
                         {
-                            statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.ParcelMasterCreated
-                        });
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.ParcelMasterUpdated
+                            });
+                        }
+                        else
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.ParcelMasterCreated
+                            });
+                        }
                     }
                     else if (result == 5)
                     {
@@ -102,46 +113,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Create_Parcel_Master", ex.StackTrace);
-                return Ok(new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-
-        [HttpPut]
-        [Route("update_parcel_master")]
-        [Authorize]
-        public async Task<IActionResult> Update_Parcel_Master(Parcel_Master parcel_Master)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var result = await _parcel_Master_Service.Update_Parcel_Master(parcel_Master);
-                    if (result == 1)
-                    {
-                        return Ok(new
-                        {
-                            statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.ParcelMasterUpdated
-                        });
-                    }
-                    else if (result == 5)
-                    {
-                        return Conflict(new
-                        {
-                            statusCode = HttpStatusCode.Conflict,
-                            message = CoreCommonMessage.IsExistParcelMaster
-                        });
-                    }
-                }
-                return BadRequest(ModelState);
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Update_Parcel_Master", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Parcel_Master", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
