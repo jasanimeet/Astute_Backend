@@ -4083,6 +4083,119 @@ namespace astute.Controllers
             }
         }
         #endregion
+
+        #region Terms Trans Det
+
+        [HttpPost]
+        [Route("create_terms_trans_det")]
+        [Authorize]
+        public async Task<IActionResult> Create_Terms_Trans_Det(Terms_Trans_Det terms_Trans_Det)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _termsService.Insert_Terms_Trans_Det(terms_Trans_Det);
+                    if (result == 1)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.TermsTransDetCreated
+                        });
+                    }
+                    else if (result == 5)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.IsExistTermsTransDet
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Terms_Trans_Det", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPut]
+        [Route("update_terms_trans_det")]
+        [Authorize]
+        public async Task<IActionResult> Update_Terms_Trans_Det(Terms_Trans_Det terms_Trans_Det)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _termsService.Update_Terms_Trans_Det(terms_Trans_Det);
+                    if (result == 1)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.TermsTransDetUpdated
+                        });
+                    }
+                    else if (result == 5)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.IsExistTermsTransDet
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Terms_Trans_Det", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_terms_trans_det")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Terms_Trans_Det(int terms_Id)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _termsService.Delete_Terms_Trans_Det(terms_Id);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.TermsTransDetDeleted
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Terms_Trans_Det", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
         #endregion
     }
 }
