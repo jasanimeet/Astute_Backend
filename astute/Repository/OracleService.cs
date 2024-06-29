@@ -2,11 +2,15 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Oracle.ManagedDataAccess.Client;
+using Org.BouncyCastle.Asn1.Ocsp;
+using Org.BouncyCastle.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using static astute.Models.Employee_Master;
 
 namespace astute.Repository
 {
@@ -269,7 +273,7 @@ namespace astute.Repository
                                 .ExecuteSqlRawAsync(@"EXEC [Fortune_Discount_Ora_Insert_Update] @tableInq", parameter));
             return result;
         }
-        
+
         public async Task<int> Get_Fortune_Stock_Disc()
         {
             DateTime date = DateTime.Now;
@@ -808,7 +812,7 @@ namespace astute.Repository
             var Fortune_Stock_Disc = await Get_Fortune_Stock_Disc();
             var Fortune_Sale_Disc_Kts = await Get_Fortune_Sale_Disc_Kts();
             var Fortune_Stock_Disc_Kts = await Get_Fortune_Stock_Disc_Kts();
-            
+
             return (Fortune_Purchase_Disc, Fortune_Sale_Disc, Fortune_Stock_Disc, Fortune_Sale_Disc_Kts, Fortune_Stock_Disc_Kts);
         }
 
@@ -988,6 +992,308 @@ namespace astute.Repository
                 @"EXEC [Fortune_Party_Master_Ora_Insert_Update] @tableInq", parameter);
 
             return result;
+        }
+
+        public async Task<int> Order_Data_Transfer_Oracle(IList<Order_Processing_Complete_Detail> order_Processing_Complete_Details, Employee_Fortune_Master employee_Fortune_Master)
+        {
+
+            int LabId = 0, UserId = 0, Assist_UserId = 0, vuser_code = 0, vparty_code = 0;
+            string vEntry_type = "W", vparty_name = "", lab_trans_status = "";
+
+            if (employee_Fortune_Master != null)
+            {
+                List<OracleParameter> paramList = new List<OracleParameter>();
+
+                OracleParameter param1 = new OracleParameter("vuser_code", OracleDbType.Int32);
+                param1.Value = employee_Fortune_Master.Fortune_Id;
+                paramList.Add(param1);
+
+                param1 = new OracleParameter("vrec", OracleDbType.RefCursor);
+                param1.Direction = ParameterDirection.Output;
+                paramList.Add(param1);
+
+                param1 = new OracleParameter("vEntry_type", OracleDbType.NVarchar2);
+                param1.Value = vEntry_type;
+                paramList.Add(param1);
+
+                param1 = new OracleParameter("vparty_name", OracleDbType.NVarchar2);
+                param1.Value = order_Processing_Complete_Details[0].Company;
+                paramList.Add(param1);
+
+                param1 = new OracleParameter("vparty_code", OracleDbType.Int32);
+                param1.Value = order_Processing_Complete_Details[0].Party_code;
+                paramList.Add(param1);
+
+                DataTable mas_dt = await _dbOracleAccess.CallSP("web_trans.lab_trans", paramList);
+
+                if (mas_dt != null && mas_dt.Rows.Count > 0)
+                {
+                    lab_trans_status = Convert.ToString(mas_dt.Rows[0]["STATUS"]);
+                }
+
+                if (!string.IsNullOrEmpty(lab_trans_status) && order_Processing_Complete_Details != null && order_Processing_Complete_Details.Count > 0)
+                {
+                    foreach (var item in order_Processing_Complete_Details)
+                    {
+                        paramList = new List<OracleParameter>();
+
+                        param1 = new OracleParameter("vtrans_id", OracleDbType.Int32);
+                        param1.Value = lab_trans_status;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vREF_NO", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.StockId) ? Convert.ToString(item.StockId) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vLAB", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Lab) ? Convert.ToString(item.Lab) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vSHAPE", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Shape) ? Convert.ToString(item.Shape) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vCTS", OracleDbType.Double);
+                        param1.Value = (!string.IsNullOrEmpty(item.Cts) ? Convert.ToDouble(item.Cts) : 0);
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vCOLOR", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Color) ? Convert.ToString(item.Color) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vPURITY", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Clarity) ? Convert.ToString(item.Clarity) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vCUT", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Cut) ? Convert.ToString(item.Cut) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vPOLISH", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Polish) ? Convert.ToString(item.Polish) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vSYMM", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Symm) ? Convert.ToString(item.Symm) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vFLS", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.FlsIntensity) ? Convert.ToString(item.FlsIntensity) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vSUPP_OFFER_PER", OracleDbType.Double);
+                        param1.Value = (!string.IsNullOrEmpty(item.BaseDisc) ? Convert.ToDouble(item.BaseDisc) : 0);
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vOFFER", OracleDbType.Double);
+                        param1.Value = (!string.IsNullOrEmpty(item.CostDisc) ? Convert.ToDouble(item.CostDisc) : 0);
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vSOURCE_PARTY", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Company) ? Convert.ToString(item.Company) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vcerti_no", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.CertificateNo) ? Convert.ToString(item.CertificateNo) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vSUPP_BASE_VALUE", OracleDbType.Double);
+                        param1.Value = (!string.IsNullOrEmpty(item.BaseAmount) ? Convert.ToDouble(item.BaseAmount) : 0);
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vRAP_PRICE", OracleDbType.Double);
+                        param1.Value = (!string.IsNullOrEmpty(item.RapRate) ? Convert.ToDouble(item.RapRate) : 0);
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vRAP_VALUE", OracleDbType.Double);
+                        param1.Value = (!string.IsNullOrEmpty(item.RapAmount) ? Convert.ToDouble(item.RapAmount) : 0);
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vLENGTH", OracleDbType.Double);
+                        param1.Value = (!string.IsNullOrEmpty(item.Length) ? Convert.ToDouble(item.Length) : 0);
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vWIDTH", OracleDbType.Double);
+                        param1.Value = (!string.IsNullOrEmpty(item.Width) ? Convert.ToDouble(item.Width) : 0);
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vDEPTH", OracleDbType.Double);
+                        param1.Value = (!string.IsNullOrEmpty(item.Depth) ? Convert.ToDouble(item.Depth) : 0);
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vDEPTH_PER", OracleDbType.Double);
+                        param1.Value = (!string.IsNullOrEmpty(item.DepthPer) ? Convert.ToDouble(item.DepthPer) : 0);
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vCROWN_ANGEL", OracleDbType.Double);
+                        param1.Value = (!string.IsNullOrEmpty(item.CrownAngle) ? Convert.ToDouble(item.CrownAngle) : 0);
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vCROWN_HEIGHT", OracleDbType.Double);
+                        param1.Value = (!string.IsNullOrEmpty(item.CrownHeight) ? Convert.ToDouble(item.CrownHeight) : 0);
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vPAV_ANGEL", OracleDbType.Double);
+                        param1.Value = (!string.IsNullOrEmpty(item.PavilionAngle) ? Convert.ToDouble(item.PavilionAngle) : 0);
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vPAV_HEIGHT", OracleDbType.Double);
+                        param1.Value = (!string.IsNullOrEmpty(item.PavilionHeight) ? Convert.ToDouble(item.PavilionHeight) : 0);
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vculet", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Culet) ? Convert.ToString(item.Culet) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vSYMBOL", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.KeyToSymbol) ? Convert.ToString(item.KeyToSymbol) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vTABLE_PER", OracleDbType.Double);
+                        param1.Value = (!string.IsNullOrEmpty(item.TablePer) ? Convert.ToDouble(item.TablePer) : 0);
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vCROWN_NATTS", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.SideBlack) ? Convert.ToString(item.SideBlack) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vCROWN_INCLUSION", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.SideWhite) ? Convert.ToString(item.SideWhite) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vTABLE_NATTS", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.TableBlack) ? Convert.ToString(item.TableBlack) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vTABLE_INCLUSION", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.TableWhite) ? Convert.ToString(item.TableWhite) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vFINAL_VALUE", OracleDbType.Double);
+                        param1.Value = (!string.IsNullOrEmpty(item.OfferAmount) ? Convert.ToDouble(item.OfferAmount) : 0);
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vFINAL_DISC_PER", OracleDbType.Double);
+                        param1.Value = (!string.IsNullOrEmpty(item.OfferDisc) ? Convert.ToDouble(item.OfferDisc) : 0);
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vIMG_PATH", OracleDbType.NVarchar2);
+                        //param1.Value = !string.IsNullOrEmpty(item.ImageLink) ? Convert.ToString(item.ImageLink) : DBNull.Value;
+                        param1.Value = DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vVDO_PATH", OracleDbType.NVarchar2);
+                        //param1.Value = !string.IsNullOrEmpty(item.VideoLink) ? Convert.ToString(item.VideoLink) : DBNull.Value;
+                        param1.Value = DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vDNA_PATH", OracleDbType.NVarchar2);
+                        param1.Value = Convert.ToString(item.Dna);
+                        //param1.Value = !string.IsNullOrEmpty(item.Dna) ? Convert.ToString(item.Dna) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vPARTY_STONE_NO", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.SupplierNo) ? Convert.ToString(item.SupplierNo) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vSUPPLIER_NAME", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Company) ? Convert.ToString(item.Company) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vSUPP_FINAL_VALUE", OracleDbType.Double);
+                        param1.Value = (Convert.ToString(item.CostAmount) != "" ? Convert.ToString(item.CostAmount) : "0");
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vSUPP_FINAL_DISC", OracleDbType.Double);
+                        param1.Value = (Convert.ToString(item.CostDisc) != "" ? Convert.ToString(item.CostDisc) : "0");
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vGIRDLE_PER", OracleDbType.Double);
+                        param1.Value = (Convert.ToString(item.GirdlePer) != "" ? Convert.ToString(item.GirdlePer) : "0");
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vGIRDLE_TYPE", OracleDbType.NVarchar2);
+                        param1.Value = DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vCOMMENTS", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.SupplierComments) ? Convert.ToString(item.SupplierComments) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vSTR_LN", OracleDbType.NVarchar2);
+                        param1.Value = DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vLR_HALF", OracleDbType.NVarchar2);
+                        param1.Value = DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vGIRDLE", OracleDbType.NVarchar2);
+                        param1.Value = DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vSHADE", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Shade) ? Convert.ToString(item.Shade) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vluster", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Luster) ? Convert.ToString(item.Luster) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vLASER_INCLUSION", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.LaserInscription) ? Convert.ToString(item.LaserInscription) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vcer_path", OracleDbType.NVarchar2);
+                        //param1.Value = !string.IsNullOrEmpty(item.CertificateLink) ? Convert.ToString(item.CertificateLink) : DBNull.Value;
+                        param1.Value = DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vTABLE_OPEN", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.TableOpen) ? Convert.ToString(item.TableOpen) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vGIRDLE_OPEN", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.GirdleOpen) ? Convert.ToString(item.GirdleOpen) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vCROWN_OPEN", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.CrownOpen) ? Convert.ToString(item.CrownOpen) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vPAV_OPEN", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.PavilionOpen) ? Convert.ToString(item.PavilionOpen) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vBGM", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Bgm) ? Convert.ToString(item.Bgm) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vSTATUS", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Status) ? Convert.ToString(item.Status) : DBNull.Value;
+
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vQC_REQUIRE", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Remarks) ? Convert.ToString(item.Remarks) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vorigin", OracleDbType.NVarchar2);
+                        param1.Value = DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vrec", OracleDbType.RefCursor);
+                        param1.Direction = ParameterDirection.Output;
+                        paramList.Add(param1);
+
+                        var det_dt = await _dbOracleAccess.CallSP("web_trans.lab_trans_det", paramList);
+
+                    }
+                }
+
+            }
+
+            return 1;
         }
         #endregion
 

@@ -45,6 +45,7 @@ namespace astute.Controllers
         private readonly IEmployeeService _employeeService;
         private readonly ILabUserService _labUserService;
         private readonly ILab_User_Login_Activity_Services _lab_User_Login_Activity_Services;
+        private readonly IOracleService _oracleService;
 
         #endregion
 
@@ -59,7 +60,8 @@ namespace astute.Controllers
             IJWTAuthentication jWTAuthentication,
             IEmployeeService employeeService,
             ILabUserService labUserService,
-            ILab_User_Login_Activity_Services lab_User_Login_Activity_Services)
+            ILab_User_Login_Activity_Services lab_User_Login_Activity_Services,
+            IOracleService oracleService)
         {
             _partyService = partyService;
             _configuration = configuration;
@@ -72,6 +74,7 @@ namespace astute.Controllers
             _employeeService = employeeService;
             _labUserService = labUserService;
             _lab_User_Login_Activity_Services = lab_User_Login_Activity_Services;
+            _oracleService = oracleService;
         }
         #endregion
 
@@ -10711,7 +10714,7 @@ namespace astute.Controllers
         {
             try
             {
-                IList<Order_Processing_Reply_To_Assist_Detail> OrderResult = JsonConvert.DeserializeObject<IList<Order_Processing_Reply_To_Assist_Detail>>(order_Processing_Reply_To_Assist.Order_Detail.ToString());
+                IList<Order_Processing_Complete_Detail> OrderResult = JsonConvert.DeserializeObject<IList<Order_Processing_Complete_Detail>>(order_Processing_Reply_To_Assist.Order_Detail.ToString());
 
                 DataTable dataTable = new DataTable();
                 dataTable.Columns.Add("Id", typeof(int));
@@ -10723,18 +10726,27 @@ namespace astute.Controllers
                 foreach (var item in OrderResult)
                 {
                     dataTable.Rows.Add(item.Id, Convert.ToString(item.Status), Convert.ToString(item.Remarks),
-                        (item.Cost_Disc != null ? !string.IsNullOrEmpty(item.Cost_Disc.ToString()) ? Convert.ToDouble(item.Cost_Disc.ToString()) : null : null),
-                        (item.Cost_Amt != null ? !string.IsNullOrEmpty(item.Cost_Amt.ToString()) ? Convert.ToDouble(item.Cost_Amt.ToString()) : null : null));
+                        (item.CostDisc != null ? !string.IsNullOrEmpty(item.CostDisc.ToString()) ? Convert.ToDouble(item.CostDisc.ToString()) : null : null),
+                        (item.CostAmount != null ? !string.IsNullOrEmpty(item.CostAmount.ToString()) ? Convert.ToDouble(item.CostAmount.ToString()) : null : null));
                 }
 
                 var result = await _supplierService.Order_Processing_Completed(dataTable, order_Processing_Reply_To_Assist.Order_No, order_Processing_Reply_To_Assist.Sub_Order_Id ?? 0);
                 if (result > 0)
                 {
-                    return Ok(new
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                    var result_e = await _employeeService.GetEmployeeFortuneId(user_Id ?? 0);
+                    var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e);
+
+                    if (result_ > 0)
                     {
-                        statusCode = HttpStatusCode.OK,
-                        message = "Order completed successfully."
-                    });
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = "Order completed successfully."
+                        });
+                    }
                 }
                 return BadRequest();
             }
@@ -11281,6 +11293,7 @@ namespace astute.Controllers
                 });
             }
         }
+
 
         #endregion
     }

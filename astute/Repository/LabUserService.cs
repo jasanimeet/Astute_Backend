@@ -220,6 +220,15 @@ namespace astute.Repository
             return result;
         }
 
+
+        public async Task<int> Order_Data_Transfer_Oracle()
+        {
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC [Job_Transfer_User_Pricing]"));
+
+            return result;
+        }
+
         #endregion
     }
 }

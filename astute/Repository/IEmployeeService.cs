@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using static astute.Models.Employee_Master;
 
 namespace astute.Repository
 {
@@ -13,6 +14,7 @@ namespace astute.Repository
         Task<int> UpdateEmployee(Employee_Master employee_Master);
         Task<(string, int)> DeleteEmployee(int employeeId);
         Task<IList<Employee_Master>> GetEmployees(int employeeId, string userName, string personalEmail);
+        Task<Employee_Fortune_Master> GetEmployeeFortuneId(int employeeId);
         Task<Employee_Master> EmployeeLogin(UserModel userModel);
         Task<AuthenticateResponse> AuthenticateEmployee(UserModel userModel);
         Task<int> Get_Employee_Code();

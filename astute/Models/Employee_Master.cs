@@ -11,8 +11,8 @@ namespace astute.Models
         public int Employee_Id { get; set; }
         public string? Initial { get; set; }
         public string? First_Name { get; set; }
-        public string? Middle_Name {get; set; }
-        public string? Last_Name { get; set;}
+        public string? Middle_Name { get; set; }
+        public string? Last_Name { get; set; }
         public string? Chinese_Name { get; set; }
         public string? Address_1 { get; set; }
         public string? Address_2 { get; set; }
@@ -33,10 +33,10 @@ namespace astute.Models
         public string? PSN_ID { get; set; }
         public string? Blood_Group { get; set; }
         public string? Contract_Start_Date { get; set; }
-        public string? Contract_End_Date { get;set; }
+        public string? Contract_End_Date { get; set; }
         public Int16? Approve_Holidays { get; set; }
         public Int16? Order_No { get; set; }
-        public Int16? Sort_No { get;set; }
+        public Int16? Sort_No { get; set; }
         public string? User_Name { get; set; }
         public string? Password { get; set; }
         public bool? IsDelete { get; set; }
@@ -58,5 +58,13 @@ namespace astute.Models
 
         [NotMapped]
         public IList<Emergency_Contact_Detail> Emergency_Contact_Detail_List { get; set; } = new List<Emergency_Contact_Detail>();
+
+        public partial class Employee_Fortune_Master
+        {
+            [Key]
+            public int Employee_Id { get; set; }
+            public string User_Type { get; set; }
+            public int Fortune_Id { get; set; }
+        }
     }
 }

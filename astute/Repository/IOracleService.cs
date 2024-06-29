@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using astute.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using static astute.Models.Employee_Master;
 
 namespace astute.Repository
 {
@@ -12,5 +15,6 @@ namespace astute.Repository
         Task<(int, int, int, int, int)> Get_Fortune_Discount();
         Task<int> Get_Fortune_Party();
         Task<int> Get_Fortune_Party_Master();
+        Task<int> Order_Data_Transfer_Oracle(IList<Order_Processing_Complete_Detail> order_Processing_Complete_Details, Employee_Fortune_Master employee_Fortune_Master);
     }
 }

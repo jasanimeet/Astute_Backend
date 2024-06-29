@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using static astute.Models.Employee_Master;
 
 namespace astute.Repository
 {
@@ -372,6 +373,19 @@ namespace astute.Repository
 
             return employees;
         }
+
+        public async Task<Employee_Fortune_Master> GetEmployeeFortuneId(int employeeId)
+        {
+            var empId = employeeId > 0 ? new SqlParameter("@employeeId", employeeId) : new SqlParameter("@employeeId", DBNull.Value);
+
+            var employees = await Task.Run(() => _dbContext.Employee_Fortune_Master
+                            .FromSqlRaw(@"exec Employee_Master_Fortune_Id_Select @employeeId", empId)
+                            .AsEnumerable()  
+                            .FirstOrDefault());
+
+            return employees;
+        }
+
         public async Task<Employee_Master> EmployeeLogin(UserModel userModel)
         {
             var password = CoreService.Encrypt(userModel.Password);
