@@ -1091,7 +1091,7 @@ namespace astute.Repository
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vSOURCE_PARTY", OracleDbType.NVarchar2);
-                        param1.Value = !string.IsNullOrEmpty(item.Company) ? Convert.ToString(item.Company) : DBNull.Value;
+                        param1.Value = !string.IsNullOrEmpty(item.Customer) ? Convert.ToString(item.Customer) : DBNull.Value;
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vcerti_no", OracleDbType.NVarchar2);
