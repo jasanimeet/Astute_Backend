@@ -10733,20 +10733,28 @@ namespace astute.Controllers
                 var result = await _supplierService.Order_Processing_Completed(dataTable, order_Processing_Reply_To_Assist.Order_No, order_Processing_Reply_To_Assist.Sub_Order_Id ?? 0);
                 if (result > 0)
                 {
-                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-
-                    var result_e = await _employeeService.GetEmployeeFortuneId(user_Id ?? 0);
-                    var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e);
-
-                    if (result_ > 0)
+                    if (order_Processing_Reply_To_Assist.Order_No.Contains("S"))
                     {
-                        return Ok(new
+                        var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                        int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                        var result_e = await _employeeService.GetEmployeeFortuneId(user_Id ?? 0);
+                        var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e);
+                        if (result_ > 0)
                         {
-                            statusCode = HttpStatusCode.OK,
-                            message = "Order completed successfully."
-                        });
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = "Order completed successfully."
+                            });
+                        }
                     }
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = "Order completed successfully."
+                    });
+
                 }
                 return BadRequest();
             }
