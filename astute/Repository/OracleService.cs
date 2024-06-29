@@ -1178,18 +1178,15 @@ namespace astute.Repository
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vIMG_PATH", OracleDbType.NVarchar2);
-                        //param1.Value = !string.IsNullOrEmpty(item.ImageLink) ? Convert.ToString(item.ImageLink) : DBNull.Value;
-                        param1.Value = DBNull.Value;
+                        param1.Value = !string.IsNullOrEmpty(item.ImageLink) ? Convert.ToString(item.ImageLink) : DBNull.Value;
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vVDO_PATH", OracleDbType.NVarchar2);
-                        //param1.Value = !string.IsNullOrEmpty(item.VideoLink) ? Convert.ToString(item.VideoLink) : DBNull.Value;
-                        param1.Value = DBNull.Value;
+                        param1.Value = !string.IsNullOrEmpty(item.VideoLink) ? Convert.ToString(item.VideoLink) : DBNull.Value;
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vDNA_PATH", OracleDbType.NVarchar2);
-                        param1.Value = Convert.ToString(item.Dna);
-                        //param1.Value = !string.IsNullOrEmpty(item.Dna) ? Convert.ToString(item.Dna) : DBNull.Value;
+                        param1.Value = !string.IsNullOrEmpty(item.Dna) ? Convert.ToString(item.Dna) : DBNull.Value;
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vPARTY_STONE_NO", OracleDbType.NVarchar2);
