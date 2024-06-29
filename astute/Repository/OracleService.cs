@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Oracle.ManagedDataAccess.Client;
 using Org.BouncyCastle.Asn1.Ocsp;
@@ -1017,7 +1018,7 @@ namespace astute.Repository
                 paramList.Add(param1);
 
                 param1 = new OracleParameter("vparty_name", OracleDbType.NVarchar2);
-                param1.Value = order_Processing_Complete_Details[0].Company;
+                param1.Value = order_Processing_Complete_Details[0].Customer;
                 paramList.Add(param1);
 
                 param1 = new OracleParameter("vparty_code", OracleDbType.Int32);
@@ -1198,15 +1199,15 @@ namespace astute.Repository
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vSUPP_FINAL_VALUE", OracleDbType.Double);
-                        param1.Value = (Convert.ToString(item.CostAmount) != "" ? Convert.ToString(item.CostAmount) : "0");
+                        param1.Value = (!string.IsNullOrEmpty(item.CostAmount) ? Convert.ToDouble(item.CostAmount) : 0);
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vSUPP_FINAL_DISC", OracleDbType.Double);
-                        param1.Value = (Convert.ToString(item.CostDisc) != "" ? Convert.ToString(item.CostDisc) : "0");
+                        param1.Value = (!string.IsNullOrEmpty(item.CostDisc) ? Convert.ToDouble(item.CostDisc) : 0);
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vGIRDLE_PER", OracleDbType.Double);
-                        param1.Value = (Convert.ToString(item.GirdlePer) != "" ? Convert.ToString(item.GirdlePer) : "0");
+                        param1.Value = (item.GirdlePer > 0 ? Convert.ToDouble(item.GirdlePer) : 0);
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vGIRDLE_TYPE", OracleDbType.NVarchar2);
