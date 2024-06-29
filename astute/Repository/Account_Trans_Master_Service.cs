@@ -70,7 +70,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Account_Trans_Master(int account_Trans_Id,int account_Trans_Detail_Id,string trans_Type)
+        public async Task<List<Dictionary<string, object>>> Get_Account_Trans_Master(int account_Trans_Id,int account_Trans_Detail_Id,string trans_Type, int? Year_Id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -81,6 +81,7 @@ namespace astute.Repository
                     command.Parameters.Add(account_Trans_Id > 0 ? new SqlParameter("@Account_Trans_Id", account_Trans_Id) : new SqlParameter("@Account_Trans_Id", DBNull.Value));
                     command.Parameters.Add(account_Trans_Detail_Id > 0 ? new SqlParameter("@Account_Trans_Detail_Id", account_Trans_Detail_Id) : new SqlParameter("@Account_Trans_Detail_Id", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(trans_Type) ? new SqlParameter("@Trans_Type", trans_Type) : new SqlParameter("@Trans_Type", DBNull.Value));
+                    command.Parameters.Add(Year_Id > 0 ? new SqlParameter("@Year_Id", Year_Id) : new SqlParameter("@Year_Id", DBNull.Value));
 
                     await connection.OpenAsync();
 
@@ -105,7 +106,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<(string,int)> Create_Update_Account_Trans_Master(DataTable dataTable, int account_Trans_Id, string trans_Type, string? invoice_No, int currency_Id, int company_Id, int year_Id, int account_Id, decimal rate, int user_Id)
+        public async Task<(string,int)> Create_Update_Account_Trans_Master(DataTable dataTable, int account_Trans_Id, string trans_Type, string? invoice_No, int currency_Id, int company_Id, int year_Id, int account_Id, decimal rate, int user_Id, string remarks)
         {
             var parameter = new SqlParameter("@Account_Trans_Detail_Table_Type", SqlDbType.Structured)
             {
@@ -122,6 +123,7 @@ namespace astute.Repository
             var _account_Id = new SqlParameter("@Account_Id", account_Id);
             var _rate = new SqlParameter("@Rate", rate);
             var _user_Id = new SqlParameter("@User_Id", user_Id);
+            var _remarks = new SqlParameter("@Remarks", !string.IsNullOrEmpty(remarks) ? remarks : DBNull.Value);
 
             var is_First_Voucher_Add = new SqlParameter("@Is_First_Voucher_Add", SqlDbType.Bit)
             {
@@ -130,8 +132,8 @@ namespace astute.Repository
 
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [dbo].[Account_Trans_Master_Insert_Update] @Account_Trans_Detail_Table_Type, @Account_Trans_Id, @Trans_Type, @Invoice_No, @Currency_Id, @Company_Id, @Year_Id, @Account_Id, @Rate, @User_Id, @Is_First_Voucher_Add OUT",
-                        parameter, _account_Trans_Id, _trans_Type, _invoice_No,_currency_Id,_company_Id,_year_Id,_account_Id,_rate,_user_Id, is_First_Voucher_Add));
+                        .ExecuteSqlRawAsync(@"EXEC [dbo].[Account_Trans_Master_Insert_Update] @Account_Trans_Detail_Table_Type, @Account_Trans_Id, @Trans_Type, @Invoice_No, @Currency_Id, @Company_Id, @Year_Id, @Account_Id, @Rate, @User_Id, @Remarks, @Is_First_Voucher_Add OUT",
+                        parameter, _account_Trans_Id, _trans_Type, _invoice_No,_currency_Id,_company_Id,_year_Id,_account_Id,_rate,_user_Id, _remarks, is_First_Voucher_Add));
 
 
             var _is_Exists = (bool)is_First_Voucher_Add.Value;

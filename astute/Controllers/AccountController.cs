@@ -715,12 +715,12 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_account_trans_master")]
         [Authorize]
-        public async Task<IActionResult> Get_Account_Trans_Master(int? account_Trans_Id, int? account_Trans_Detail_Id,string trans_Type)
+        public async Task<IActionResult> Get_Account_Trans_Master(int? account_Trans_Id, int? account_Trans_Detail_Id,string trans_Type,int? Year_Id)
         {
             try
             {
-                var result = await _account_Trans_Master_Service.Get_Account_Trans_Master(account_Trans_Id ?? 0, account_Trans_Detail_Id ?? 0, trans_Type);
-                if (result != null && result.Count > 0)
+                var result = await _account_Trans_Master_Service.Get_Account_Trans_Master(account_Trans_Id ?? 0, account_Trans_Detail_Id ?? 0, trans_Type, Year_Id ?? 0);
+                if (result != null && result.Count > 0) 
                 {
                     return Ok(new
                     {
@@ -756,24 +756,45 @@ namespace astute.Controllers
 
 
                         DataTable dataTable = new DataTable();
-                        dataTable.Columns.Add("Voucher_No", typeof(string));
-                        dataTable.Columns.Add("By_Account", typeof(int));
-                        dataTable.Columns.Add("By_Type", typeof(string));
-                        dataTable.Columns.Add("To_Account", typeof(int));
-                        dataTable.Columns.Add("To_Type", typeof(string));
+                        dataTable.Columns.Add("VoucherNo", typeof(string));
+                        dataTable.Columns.Add("ByAccount", typeof(int));
+                        dataTable.Columns.Add("ByType", typeof(string));
+                        dataTable.Columns.Add("ToAccount", typeof(int));
+                        dataTable.Columns.Add("ToType", typeof(string));
                         dataTable.Columns.Add("Amount", typeof(decimal));
                         dataTable.Columns.Add("Narration", typeof(string));
-
+                        dataTable.Columns.Add("Cat_Val_Id", typeof(int));
+                        dataTable.Columns.Add("Parcel_Id", typeof(int));
+                        dataTable.Columns.Add("Pcs", typeof(int));
+                        dataTable.Columns.Add("Cts", typeof(decimal));
+                        dataTable.Columns.Add("Remarks", typeof(string));
+                        dataTable.Columns.Add("Rate", typeof(decimal));
 
                         foreach (var item in account_Trans_Master.account_Trans_Detail)
                         {
-                            dataTable.Rows.Add(!string.IsNullOrEmpty(item.voucherNo) ? item.voucherNo : DBNull.Value, account_Trans_Master.account, account_Trans_Master.type, item.account, item.type, item.amount, !string.IsNullOrEmpty(item.narration) ? item.narration : DBNull.Value);
+                            DataRow row = dataTable.NewRow();
+
+                            row["VoucherNo"] = !string.IsNullOrEmpty(item.voucherNo) ? item.voucherNo : (object)DBNull.Value;
+                            row["ByAccount"] = account_Trans_Master.account;
+                            row["ByType"] = account_Trans_Master.type;
+                            row["ToAccount"] = item.account;
+                            row["ToType"] = item.type;
+                            row["Amount"] = item.amount;
+                            row["Narration"] = !string.IsNullOrEmpty(item.narration) ? item.narration : (object)DBNull.Value;
+                            row["Cat_Val_Id"] = item.Cat_Val_Id;
+                            row["Parcel_Id"] = item.Parcel_Id > 0 ? (object)item.Parcel_Id : (object)DBNull.Value;
+                            row["Pcs"] = item.Pcs > 0 ? (object)item.Pcs : (object)DBNull.Value;
+                            row["Cts"] = item.Cts;
+                            row["Remarks"] = item.Remarks;
+                            row["Rate"] = item.Rate;
+
+                            dataTable.Rows.Add(row);
                         }
 
                         var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                         int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                        var (message, result) = await _account_Trans_Master_Service.Create_Update_Account_Trans_Master(dataTable, account_Trans_Master.account_Trans_Id, account_Trans_Master.mod_Type, account_Trans_Master.invoice_No, account_Trans_Master.currency, account_Trans_Master.company, account_Trans_Master.year, account_Trans_Master.account, account_Trans_Master.rate, user_Id ?? 0);
+                        var (message, result) = await _account_Trans_Master_Service.Create_Update_Account_Trans_Master(dataTable, account_Trans_Master.account_Trans_Id, account_Trans_Master.mod_Type, account_Trans_Master.invoice_No, account_Trans_Master.currency, account_Trans_Master.company, account_Trans_Master.year, account_Trans_Master.account, account_Trans_Master.rate, user_Id ?? 0, account_Trans_Master.remarks);
 
                         if (message == "not_exists" && result == 409)
                         {
@@ -791,7 +812,8 @@ namespace astute.Controllers
                                 message = (account_Trans_Master.mod_Type == "B" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountBankbookMasterUpdated : CoreCommonMessage.AccountBankbookMasterCreated) :
                                              account_Trans_Master.mod_Type == "C" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountCashbookMasterUpdated : CoreCommonMessage.AccountCashbookMasterCreated) :
                                              account_Trans_Master.mod_Type == "JV" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountJvMasterUpdated : CoreCommonMessage.AccountJvMasterCreated) :
-                                             account_Trans_Master.mod_Type == "CO" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountContraMasterUpdated : CoreCommonMessage.AccountContraMasterCreated) : "")
+                                             account_Trans_Master.mod_Type == "CO" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountContraMasterUpdated : CoreCommonMessage.AccountContraMasterCreated) :
+                                             account_Trans_Master.mod_Type == "P" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountPurchaseMasterUpdated : CoreCommonMessage.AccountPurchaseMasterCreated) : "")
                             });
                         }
                     }
@@ -826,7 +848,8 @@ namespace astute.Controllers
                         message = (trans_Type == "B" ? CoreCommonMessage.AccountBankbookMasterDeleted :
                                           trans_Type == "C" ? CoreCommonMessage.AccountCashbookMasterDeleted :
                                           trans_Type == "JV" ? CoreCommonMessage.AccountJvMasterDeleted :
-                                          trans_Type == "CO" ? CoreCommonMessage.AccountContraMasterDeleted : "")
+                                          trans_Type == "CO" ? CoreCommonMessage.AccountContraMasterDeleted : 
+                                          trans_Type == "P" ? CoreCommonMessage.AccountPurchaseMasterDeleted : "")
 
                     });
                 }

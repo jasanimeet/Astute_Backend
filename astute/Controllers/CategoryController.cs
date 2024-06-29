@@ -967,11 +967,22 @@ namespace astute.Controllers
 
                             if (result > 0)
                             {
-                                return Ok(new
+                                if (import_Excel.Import_Master.Import_Id > 0)
                                 {
-                                    statusCode = HttpStatusCode.OK,
-                                    message = CoreCommonMessage.ImportExcelCreated
-                                });
+                                    return Ok(new
+                                    {
+                                        statusCode = HttpStatusCode.OK,
+                                        message = CoreCommonMessage.ImportExcelUpdated
+                                    });
+                                }
+                                else
+                                {
+                                    return Ok(new
+                                    {
+                                        statusCode = HttpStatusCode.OK,
+                                        message = CoreCommonMessage.ImportExcelCreated
+                                    });
+                                }
                             }
                         }
                     }
@@ -981,7 +992,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Create_Import_Excel", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Import_Excel", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message

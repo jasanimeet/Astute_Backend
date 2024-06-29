@@ -49,6 +49,7 @@ namespace astute.Repository
         #endregion
 
         #region Methods
+        #region Terms
         public async Task<int> InsertTerms(Terms_Master terms_Mas)
         {
             var terms_Id = new SqlParameter("@terms_Id", terms_Mas.Terms_Id);
@@ -149,6 +150,64 @@ namespace astute.Repository
                                 .ExecuteSqlRawAsync(@"EXEC Terms_Master_Update_Status @terms_Id, @Status", _terms_Id, Status));
             return result;
         }
+        #endregion
+        
+        #region Terms Trans Det
+        
+        public async Task<int> Insert_Terms_Trans_Det(Terms_Trans_Det terms_Trans_Det)
+        {
+            var terms_Id = new SqlParameter("@Terms_Id", terms_Trans_Det.Terms_Id);
+            var amount = new SqlParameter("@Amount", terms_Trans_Det.Amount);
+            var seq_No = terms_Trans_Det.Seq_No > 0 ? new SqlParameter("@Seq_No", terms_Trans_Det.Seq_No) : new SqlParameter("@Seq_No", DBNull.Value);
+            var trans_Id = terms_Trans_Det.Trans_Id > 0 ? new SqlParameter("@Trans_Id", terms_Trans_Det.Trans_Id) : new SqlParameter("@Trans_Id", DBNull.Value);
+            var trans_Type = new SqlParameter("@Trans_Type", terms_Trans_Det.Trans_Type);
+            var recordType = new SqlParameter("@recordType", "Insert");
+            var isExistTerms = new SqlParameter("@IsExistTerms", System.Data.SqlDbType.Bit)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+            .ExecuteSqlRawAsync(@"exec Terms_Trans_Det_Insert_Update @Terms_Id, @Amount, @Seq_No, @Trans_Id, @Trans_Type, @recordType, @IsExistTerms OUT",
+            terms_Id, amount, seq_No, trans_Id, trans_Type, recordType, isExistTerms));
+
+            bool termsIsExist = (bool)isExistTerms.Value;
+            if (termsIsExist)
+                return 5;
+
+            return result;
+        }
+
+        public async Task<int> Update_Terms_Trans_Det(Terms_Trans_Det terms_Trans_Det)
+        {
+            var terms_Id = new SqlParameter("@Terms_Id", terms_Trans_Det.Terms_Id);
+            var amount = new SqlParameter("@Amount", terms_Trans_Det.Amount);
+            var seq_No = terms_Trans_Det.Seq_No > 0 ? new SqlParameter("@Seq_No", terms_Trans_Det.Seq_No) : new SqlParameter("@Seq_No", DBNull.Value);
+            var trans_Id = terms_Trans_Det.Trans_Id > 0 ? new SqlParameter("@Trans_Id", terms_Trans_Det.Trans_Id) : new SqlParameter("@Trans_Id", DBNull.Value);
+            var trans_Type = new SqlParameter("@Trans_Type", terms_Trans_Det.Trans_Type);
+            var recordType = new SqlParameter("@recordType", "Update");
+            var isExistTerms = new SqlParameter("@IsExistTerms", System.Data.SqlDbType.Bit)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+            .ExecuteSqlRawAsync(@"exec Terms_Trans_Det_Insert_Update @Terms_Id, @Amount, @Seq_No, @Trans_Id, @Trans_Type, @recordType, @IsExistTerms OUT",
+            terms_Id, amount, seq_No, trans_Id, trans_Type, recordType, isExistTerms));
+
+            bool termsIsExist = (bool)isExistTerms.Value;
+            if (termsIsExist)
+                return 5;
+
+            return result;
+        }
+
+        public async Task<int> Delete_Terms_Trans_Det(int terms_Id)
+        {
+            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Terms_Trans_Det_Delete {terms_Id}"));
+        }
+        #endregion
+
         #endregion
     }
 }

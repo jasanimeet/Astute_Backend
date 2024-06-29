@@ -446,6 +446,12 @@ namespace astute.CoreModel
         public static string AccountContraMasterUpdated = AccountContraMaster + UpdatedSuccessfully;
         public static string AccountContraMasterDeleted = AccountContraMaster + DeletedSuccessfully;
         public static string AccountContraMasterDataNotFound = AccountContraMaster + DataNotFound;
+
+        public static string AccountPurchaseMaster = "Purchase";
+        public static string AccountPurchaseMasterCreated = AccountPurchaseMaster + AddedSuccessfully;
+        public static string AccountPurchaseMasterUpdated = AccountPurchaseMaster + UpdatedSuccessfully;
+        public static string AccountPurchaseMasterDeleted = AccountPurchaseMaster + DeletedSuccessfully;
+        public static string AccountPurchaseMasterDataNotFound = AccountPurchaseMaster + DataNotFound;
         #endregion
 
         #region Notification
@@ -480,5 +486,20 @@ namespace astute.CoreModel
         public static string ImportExcelExists = ImportExcel + AlreadyExists;
         #endregion
 
+        #region Terms Trans Det
+        public static string TermsTransDet = "Terms Trans Det";
+        public static string TermsTransDetCreated = TermsTransDet + AddedSuccessfully;
+        public static string TermsTransDetUpdated = TermsTransDet + UpdatedSuccessfully;
+        public static string TermsTransDetDeleted = TermsTransDet + DeletedSuccessfully;
+        public static string IsExistTermsTransDet = TermsTransDet + AlreadyExists;
+        #endregion
+
+        #region Parcel Master
+        public static string ParcelMaster = "Parcel Master";
+        public static string ParcelMasterCreated = ParcelMaster + AddedSuccessfully;
+        public static string ParcelMasterUpdated = ParcelMaster + UpdatedSuccessfully;
+        public static string ParcelMasterDeleted = ParcelMaster + DeletedSuccessfully;
+        public static string IsExistParcelMaster = ParcelMaster + AlreadyExists;
+        #endregion
     }
 }
