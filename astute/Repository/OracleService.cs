@@ -1021,7 +1021,7 @@ namespace astute.Repository
                 paramList.Add(param1);
 
                 param1 = new OracleParameter("vparty_code", OracleDbType.Int32);
-                param1.Value = order_Processing_Complete_Details[0].Party_code;
+                param1.Value = !string.IsNullOrEmpty(order_Processing_Complete_Details[0].Party_code) ? Convert.ToInt32(order_Processing_Complete_Details[0].Party_code) : 0;
                 paramList.Add(param1);
 
                 DataTable mas_dt = await _dbOracleAccess.CallSP("web_trans.lab_trans", paramList);
