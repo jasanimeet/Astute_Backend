@@ -40,9 +40,10 @@ namespace astute.Models
         public string remarks { get; set; }
         public string invoice_Date { get; set; }
         public string invoice_Time { get; set; }
+        public int supplier_Id { get; set; }
         public List<Account_Trans_Purchase_Detail_Master> account_Trans_Detail { get; set; }
         public List<Terms_Trans_Det> terms_Trans_Dets { get; set; }
-        public List<Expense_Trans_Det> expense_Trans_Dets { get; set; }
+        public object expense_Trans_Dets { get; set; }
 
     }
 

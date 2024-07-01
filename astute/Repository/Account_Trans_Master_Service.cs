@@ -149,7 +149,7 @@ namespace astute.Repository
         }
 
 
-        public async Task<(string, int)> Create_Update_Account_Trans_Master_Purchase(DataTable dataTable, DataTable dataTable_Terms, DataTable dataTable_Expense, int account_Trans_Id, string trans_Type, string invoice_No, int currency_Id, int company_Id, int year_Id, int account_Id, decimal rate, int user_Id, string remarks, DateTime? invoice_Date, TimeSpan? invoice_Time)
+        public async Task<(string, int)> Create_Update_Account_Trans_Master_Purchase(DataTable dataTable, DataTable dataTable_Terms, DataTable dataTable_Expense, int account_Trans_Id, string trans_Type, string invoice_No, int currency_Id, int company_Id, int year_Id, int account_Id, decimal rate, int user_Id, string remarks, DateTime? invoice_Date, TimeSpan? invoice_Time, int supplier_Id)
         {
             var parameter = new SqlParameter("@Account_Trans_Detail_Table_Type_Purchase", SqlDbType.Structured)
             {
@@ -179,6 +179,7 @@ namespace astute.Repository
             var _rate = new SqlParameter("@Rate", rate);
             var _user_Id = new SqlParameter("@User_Id", user_Id);
             var _remarks = new SqlParameter("@Remarks", string.IsNullOrEmpty(remarks) ? (object)DBNull.Value : remarks);
+            var _supplier_Id = new SqlParameter("@Supplier_Id", supplier_Id > 0 ? supplier_Id: (object)DBNull.Value);
 
             var _invoice_Date = new SqlParameter("@Invoice_Date", SqlDbType.Date)
             {
@@ -202,10 +203,10 @@ namespace astute.Repository
                     @"EXEC [dbo].[Account_Trans_Master_Purchase_Insert_Update] 
                 @Account_Trans_Detail_Table_Type_Purchase, @Terms_Trans_Det_Table_Type, @Expense_Trans_Det_Table_Type,
                 @Account_Trans_Id, @Trans_Type, @Invoice_No, @Currency_Id, @Company_Id, 
-                @Year_Id, @Account_Id, @Rate, @User_Id, @Remarks, @Invoice_Date, @Invoice_Time, @Is_First_Voucher_Add OUT",
+                @Year_Id, @Account_Id, @Rate, @User_Id, @Remarks, @Invoice_Date, @Invoice_Time, @Supplier_Id, @Is_First_Voucher_Add OUT",
                     parameter, parameter_Terms, parameter_Expense,  _account_Trans_Id, _trans_Type, _invoice_No,
                     _currency_Id, _company_Id, _year_Id, _account_Id, _rate, _user_Id, _remarks,
-                    _invoice_Date, _invoice_Time, is_First_Voucher_Add);
+                    _invoice_Date, _invoice_Time, _supplier_Id, is_First_Voucher_Add);
 
                 var _is_Exists = (bool)is_First_Voucher_Add.Value;
                 if (!_is_Exists)
@@ -254,6 +255,11 @@ namespace astute.Repository
                 }
             }
             return result;
+        }
+
+        public async Task<int> Delete_Account_Trans_Master_Purchase(int Id)
+        {
+            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Account_Trans_Master_Purchase_Delete {Id}"));
         }
 
         #endregion
