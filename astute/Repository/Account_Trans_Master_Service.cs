@@ -200,10 +200,10 @@ namespace astute.Repository
             {
                 var result = await _dbContext.Database.ExecuteSqlRawAsync(
                     @"EXEC [dbo].[Account_Trans_Master_Purchase_Insert_Update] 
-                @Account_Trans_Detail_Table_Type_Purchase, @Terms_Trans_Det_Table_Type, 
+                @Account_Trans_Detail_Table_Type_Purchase, @Terms_Trans_Det_Table_Type, @Expense_Trans_Det_Table_Type
                 @Account_Trans_Id, @Trans_Type, @Invoice_No, @Currency_Id, @Company_Id, 
                 @Year_Id, @Account_Id, @Rate, @User_Id, @Remarks, @Invoice_Date, @Invoice_Time, @Is_First_Voucher_Add OUT",
-                    parameter, parameter_Terms, _account_Trans_Id, _trans_Type, _invoice_No,
+                    parameter, parameter_Terms, parameter_Expense,  _account_Trans_Id, _trans_Type, _invoice_No,
                     _currency_Id, _company_Id, _year_Id, _account_Id, _rate, _user_Id, _remarks,
                     _invoice_Date, _invoice_Time, is_First_Voucher_Add);
 
