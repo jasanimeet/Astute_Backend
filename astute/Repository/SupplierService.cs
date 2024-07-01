@@ -2866,6 +2866,17 @@ namespace astute.Repository
 
             return result;
         }
+        public async Task<int> Order_Procesing_Stone_Location_Solar(string order_No, string stock_ids)
+        {
+            var _order_No = new SqlParameter("@Order_No", order_No);
+            var _stock_ids = new SqlParameter("@Stock_Ids", stock_ids);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Order_Procesing_Stone_Location_Solar @Order_No, @Stock_Ids",order_No, _stock_ids));
+
+            return result;
+        }
+
         public async Task<(DataTable, bool)> Get_Order_Excel_Data(IList<Report_Filter_Parameter> report_Filter_Parameters, int user_Id, string order_Id)
         {
             DataTable dataTable = new DataTable();
