@@ -2872,7 +2872,7 @@ namespace astute.Repository
             var _stock_ids = new SqlParameter("@Stock_Ids", stock_ids);
 
             var result = await Task.Run(() => _dbContext.Database
-                   .ExecuteSqlRawAsync(@"EXEC Order_Procesing_Stone_Location_Solar @Order_No, @Stock_Ids",order_No, _stock_ids));
+                   .ExecuteSqlRawAsync(@"EXEC Order_Procesing_Stone_Location_Solar @Order_No, @Stock_Ids", _order_No, _stock_ids));
 
             return result;
         }

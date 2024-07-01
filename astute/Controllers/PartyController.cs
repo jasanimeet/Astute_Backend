@@ -10753,7 +10753,6 @@ namespace astute.Controllers
                             {
                                 string concatenatedStockIds = string.Join(", ", Stock_Id);
                                 var result_lo = await _supplierService.Order_Procesing_Stone_Location_Solar(order_Processing_Reply_To_Assist.Order_No, concatenatedStockIds);
-
                             }
                             return Ok(new
                             {
