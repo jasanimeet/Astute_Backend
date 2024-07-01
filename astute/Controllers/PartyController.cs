@@ -10716,6 +10716,8 @@ namespace astute.Controllers
             {
                 IList<Order_Processing_Complete_Detail> OrderResult = JsonConvert.DeserializeObject<IList<Order_Processing_Complete_Detail>>(order_Processing_Reply_To_Assist.Order_Detail.ToString());
 
+                List<string> Stock_Id = new List<string>();
+
                 DataTable dataTable = new DataTable();
                 dataTable.Columns.Add("Id", typeof(int));
                 dataTable.Columns.Add("Status", typeof(string));
@@ -10728,6 +10730,11 @@ namespace astute.Controllers
                     dataTable.Rows.Add(item.Id, Convert.ToString(item.Status), Convert.ToString(item.Remarks),
                         (item.CostDisc != null ? !string.IsNullOrEmpty(item.CostDisc.ToString()) ? Convert.ToDouble(item.CostDisc.ToString()) : null : null),
                         (item.CostAmount != null ? !string.IsNullOrEmpty(item.CostAmount.ToString()) ? Convert.ToDouble(item.CostAmount.ToString()) : null : null));
+                    if (item.Status == "CONFIRM")
+                    {
+                        Stock_Id.Add(item.StockId);
+                    }
+
                 }
 
                 var result = await _supplierService.Order_Processing_Completed(dataTable, order_Processing_Reply_To_Assist.Order_No, order_Processing_Reply_To_Assist.Sub_Order_Id ?? 0);
@@ -10742,6 +10749,11 @@ namespace astute.Controllers
                         var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e);
                         if (result_ > 0)
                         {
+                            if (Stock_Id.Count > 0)
+                            {
+                                string concatenatedStockIds = string.Join(", ", Stock_Id);
+                                var result_lo = await _supplierService.Order_Procesing_Stone_Location_Solar(order_Processing_Reply_To_Assist.Order_No, concatenatedStockIds);
+                            }
                             return Ok(new
                             {
                                 statusCode = HttpStatusCode.OK,
