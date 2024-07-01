@@ -916,7 +916,6 @@ namespace astute.Controllers
                         dataTable_ExpenseTransDet.Columns.Add("Sign", typeof(string));
                         dataTable_ExpenseTransDet.Columns.Add("Percentage", typeof(float));
                         dataTable_ExpenseTransDet.Columns.Add("Amount", typeof(float));
-                        dataTable_ExpenseTransDet.Columns.Add("Amount_$", typeof(float));
                         dataTable_ExpenseTransDet.Columns.Add("Trans_Id", typeof(int));
                         dataTable_ExpenseTransDet.Columns.Add("Trans_Type", typeof(string));
 
