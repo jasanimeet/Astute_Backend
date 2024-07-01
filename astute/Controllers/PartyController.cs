@@ -10730,8 +10730,10 @@ namespace astute.Controllers
                     dataTable.Rows.Add(item.Id, Convert.ToString(item.Status), Convert.ToString(item.Remarks),
                         (item.CostDisc != null ? !string.IsNullOrEmpty(item.CostDisc.ToString()) ? Convert.ToDouble(item.CostDisc.ToString()) : null : null),
                         (item.CostAmount != null ? !string.IsNullOrEmpty(item.CostAmount.ToString()) ? Convert.ToDouble(item.CostAmount.ToString()) : null : null));
-
-                    Stock_Id.Add(item.StockId);
+                    if (item.Status == "CONFIRM")
+                    {
+                        Stock_Id.Add(item.StockId);
+                    }
 
                 }
 
@@ -10747,9 +10749,12 @@ namespace astute.Controllers
                         var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e);
                         if (result_ > 0)
                         {
-                            string concatenatedStockIds = string.Join(", ", Stock_Id);
-                            var result_lo = await _supplierService.Order_Procesing_Stone_Location_Solar(order_Processing_Reply_To_Assist.Order_No, concatenatedStockIds);
-                           
+                            if (Stock_Id.Count > 0)
+                            {
+                                string concatenatedStockIds = string.Join(", ", Stock_Id);
+                                var result_lo = await _supplierService.Order_Procesing_Stone_Location_Solar(order_Processing_Reply_To_Assist.Order_No, concatenatedStockIds);
+
+                            }
                             return Ok(new
                             {
                                 statusCode = HttpStatusCode.OK,
