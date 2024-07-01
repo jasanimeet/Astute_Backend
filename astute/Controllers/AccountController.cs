@@ -2,19 +2,18 @@
 using astute.CoreServices;
 using astute.Models;
 using astute.Repository;
-using ExcelDataReader;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using System;
-using System.Linq;
-using Microsoft.Data.SqlClient;
 
 namespace astute.Controllers
 {
@@ -715,11 +714,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_account_trans_master")]
         [Authorize]
-        public async Task<IActionResult> Get_Account_Trans_Master(int? account_Trans_Id, int? account_Trans_Detail_Id,string trans_Type,int? Year_Id)
+        public async Task<IActionResult> Get_Account_Trans_Master(int? account_Trans_Id, int? account_Trans_Detail_Id,string trans_Type)
         {
             try
             {
-                var result = await _account_Trans_Master_Service.Get_Account_Trans_Master(account_Trans_Id ?? 0, account_Trans_Detail_Id ?? 0, trans_Type, Year_Id ?? 0);
+                var result = await _account_Trans_Master_Service.Get_Account_Trans_Master(account_Trans_Id ?? 0, account_Trans_Detail_Id ?? 0, trans_Type);
                 if (result != null && result.Count > 0) 
                 {
                     return Ok(new
@@ -753,48 +752,24 @@ namespace astute.Controllers
                 {
                     if (account_Trans_Master.account_Trans_Detail != null && account_Trans_Master.account_Trans_Detail.Count > 0)
                     {
-
-
                         DataTable dataTable = new DataTable();
-                        dataTable.Columns.Add("VoucherNo", typeof(string));
-                        dataTable.Columns.Add("ByAccount", typeof(int));
-                        dataTable.Columns.Add("ByType", typeof(string));
-                        dataTable.Columns.Add("ToAccount", typeof(int));
-                        dataTable.Columns.Add("ToType", typeof(string));
+                        dataTable.Columns.Add("Voucher_No", typeof(string));
+                        dataTable.Columns.Add("By_Account", typeof(int));
+                        dataTable.Columns.Add("By_Type", typeof(string));
+                        dataTable.Columns.Add("To_Account", typeof(int));
+                        dataTable.Columns.Add("To_Type", typeof(string));
                         dataTable.Columns.Add("Amount", typeof(decimal));
                         dataTable.Columns.Add("Narration", typeof(string));
-                        dataTable.Columns.Add("Cat_Val_Id", typeof(int));
-                        dataTable.Columns.Add("Parcel_Id", typeof(int));
-                        dataTable.Columns.Add("Pcs", typeof(int));
-                        dataTable.Columns.Add("Cts", typeof(decimal));
-                        dataTable.Columns.Add("Remarks", typeof(string));
-                        dataTable.Columns.Add("Rate", typeof(decimal));
 
                         foreach (var item in account_Trans_Master.account_Trans_Detail)
                         {
-                            DataRow row = dataTable.NewRow();
-
-                            row["VoucherNo"] = !string.IsNullOrEmpty(item.voucherNo) ? item.voucherNo : (object)DBNull.Value;
-                            row["ByAccount"] = account_Trans_Master.account;
-                            row["ByType"] = account_Trans_Master.type;
-                            row["ToAccount"] = item.account;
-                            row["ToType"] = item.type;
-                            row["Amount"] = item.amount;
-                            row["Narration"] = !string.IsNullOrEmpty(item.narration) ? item.narration : (object)DBNull.Value;
-                            row["Cat_Val_Id"] = item.Cat_Val_Id;
-                            row["Parcel_Id"] = item.Parcel_Id > 0 ? (object)item.Parcel_Id : (object)DBNull.Value;
-                            row["Pcs"] = item.Pcs > 0 ? (object)item.Pcs : (object)DBNull.Value;
-                            row["Cts"] = item.Cts;
-                            row["Remarks"] = item.Remarks;
-                            row["Rate"] = item.Rate;
-
-                            dataTable.Rows.Add(row);
+                            dataTable.Rows.Add(!string.IsNullOrEmpty(item.voucherNo) ? item.voucherNo : DBNull.Value, account_Trans_Master.account, account_Trans_Master.type, item.account, item.type, item.amount, !string.IsNullOrEmpty(item.narration) ? item.narration : DBNull.Value);
                         }
 
                         var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                         int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                        var (message, result) = await _account_Trans_Master_Service.Create_Update_Account_Trans_Master(dataTable, account_Trans_Master.account_Trans_Id, account_Trans_Master.mod_Type, account_Trans_Master.invoice_No, account_Trans_Master.currency, account_Trans_Master.company, account_Trans_Master.year, account_Trans_Master.account, account_Trans_Master.rate, user_Id ?? 0, account_Trans_Master.remarks);
+                        var (message, result) = await _account_Trans_Master_Service.Create_Update_Account_Trans_Master(dataTable, account_Trans_Master.account_Trans_Id, account_Trans_Master.mod_Type, account_Trans_Master.invoice_No, account_Trans_Master.currency, account_Trans_Master.company, account_Trans_Master.year, account_Trans_Master.account, account_Trans_Master.rate, user_Id ?? 0);
 
                         if (message == "not_exists" && result == 409)
                         {
@@ -812,8 +787,7 @@ namespace astute.Controllers
                                 message = (account_Trans_Master.mod_Type == "B" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountBankbookMasterUpdated : CoreCommonMessage.AccountBankbookMasterCreated) :
                                              account_Trans_Master.mod_Type == "C" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountCashbookMasterUpdated : CoreCommonMessage.AccountCashbookMasterCreated) :
                                              account_Trans_Master.mod_Type == "JV" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountJvMasterUpdated : CoreCommonMessage.AccountJvMasterCreated) :
-                                             account_Trans_Master.mod_Type == "CO" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountContraMasterUpdated : CoreCommonMessage.AccountContraMasterCreated) :
-                                             account_Trans_Master.mod_Type == "P" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountPurchaseMasterUpdated : CoreCommonMessage.AccountPurchaseMasterCreated) : "")
+                                             account_Trans_Master.mod_Type == "CO" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountContraMasterUpdated : CoreCommonMessage.AccountContraMasterCreated) : "")
                             });
                         }
                     }
@@ -862,6 +836,163 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Delete_Account_Trans_Master", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("create_update_account_trans_master_purchase")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Account_Trans_Master_Purchase(Account_Trans_Purchase_Master account_Trans_Master)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    if (account_Trans_Master.account_Trans_Detail != null && account_Trans_Master.account_Trans_Detail.Count > 0)
+                    {
+                        DataTable dataTable = new DataTable();
+                        dataTable.Columns.Add("Voucher_No", typeof(string));
+                        dataTable.Columns.Add("By_Account", typeof(int));
+                        dataTable.Columns.Add("By_Type", typeof(string));
+                        dataTable.Columns.Add("To_Account", typeof(int));
+                        dataTable.Columns.Add("To_Type", typeof(string));
+                        dataTable.Columns.Add("Amount", typeof(decimal));
+                        dataTable.Columns.Add("Narration", typeof(string));
+                        dataTable.Columns.Add("Cat_Val_Id", typeof(int));
+                        dataTable.Columns.Add("Parcel_Id", typeof(int));
+                        dataTable.Columns.Add("Pcs", typeof(int));
+                        dataTable.Columns.Add("Cts", typeof(decimal));
+                        dataTable.Columns.Add("Remarks", typeof(string));
+                        dataTable.Columns.Add("Rate", typeof(decimal));
+
+                        foreach (var item in account_Trans_Master.account_Trans_Detail)
+                        {
+                            DataRow row = dataTable.NewRow();
+
+                            row["Voucher_No"] = !string.IsNullOrEmpty(item.voucherNo) ? item.voucherNo : (object)DBNull.Value;
+                            row["By_Account"] = account_Trans_Master.account;
+                            row["By_Type"] = account_Trans_Master.type;
+                            row["To_Account"] = item.account;
+                            row["To_Type"] = item.type;
+                            row["Amount"] = item.amount;
+                            row["Narration"] = !string.IsNullOrEmpty(item.narration) ? item.narration : (object)DBNull.Value;
+                            row["Cat_Val_Id"] = item.Cat_Val_Id;
+                            row["Parcel_Id"] = item.Parcel_Id > 0 ? (object)item.Parcel_Id : (object)DBNull.Value;
+                            row["Pcs"] = item.Pcs > 0 ? (object)item.Pcs : (object)DBNull.Value;
+                            row["Cts"] = item.Cts;
+                            row["Remarks"] = item.Remarks;
+                            row["Rate"] = item.Rate;
+
+                            dataTable.Rows.Add(row);
+                        }
+
+                        DataTable dataTable_Terms = new DataTable();
+                        dataTable_Terms.Columns.Add("Terms_Id", typeof(int));
+                        dataTable_Terms.Columns.Add("Amount", typeof(decimal));
+                        dataTable_Terms.Columns.Add("Trans_Id", typeof(int));
+                        dataTable_Terms.Columns.Add("Trans_Type", typeof(string));
+
+                        foreach (var item in account_Trans_Master.terms_Trans_Dets)
+                        {
+                            DataRow row = dataTable_Terms.NewRow();
+
+                            row["Terms_Id"] = item.Terms_Id > 0 ? (object)item.Terms_Id : (object)DBNull.Value;
+                            row["Amount"] = item.Amount;
+                            row["Trans_Id"] = item.Trans_Id > 0 ? (object)item.Trans_Id : (object)DBNull.Value;
+                            row["Trans_Type"] = account_Trans_Master.mod_Type;
+
+                            dataTable_Terms.Rows.Add(row);
+                        }
+
+                        var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                        int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                        DateTime invoiceDate;
+                        if (!DateTime.TryParseExact(account_Trans_Master.invoice_Date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out invoiceDate))
+                        {
+                            invoiceDate = DateTime.Now.Date; 
+                        }
+
+                        TimeSpan invoiceTime;
+                        if (!TimeSpan.TryParseExact(account_Trans_Master.invoice_Time, "HH:mm", CultureInfo.InvariantCulture, out invoiceTime))
+                        {
+                            invoiceTime = DateTime.Now.TimeOfDay;
+                        }
+
+                        var (message, result) = await _account_Trans_Master_Service.Create_Update_Account_Trans_Master_Purchase(
+                            dataTable,
+                            dataTable_Terms,
+                            account_Trans_Master.account_Trans_Id,
+                            account_Trans_Master.mod_Type,
+                            account_Trans_Master.invoice_No,
+                            account_Trans_Master.currency,
+                            account_Trans_Master.company,
+                            account_Trans_Master.year,
+                            account_Trans_Master.account,
+                            account_Trans_Master.rate,
+                            user_Id ?? 0,
+                            account_Trans_Master.remarks,
+                            invoiceDate,
+                            invoiceTime);
+
+                        if (message == "not_exists" && result == 409)
+                        {
+                            return Conflict(new
+                            {
+                                statusCode = HttpStatusCode.Conflict,
+                                message = CoreCommonMessage.FirstAddFirstVoucherNo
+                            });
+                        }
+                        else if (message == "success" && result > 0)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = (account_Trans_Master.mod_Type == "P" ? (account_Trans_Master.account_Trans_Id > 0 ? CoreCommonMessage.AccountPurchaseMasterUpdated : CoreCommonMessage.AccountPurchaseMasterCreated) : "")
+                            });
+                        }
+                    }
+                }
+
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Account_Trans_Master_Purchase", ex.StackTrace);
+                return StatusCode(500, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+
+        [HttpGet]
+        [Route("get_account_trans_master_purchase")]
+        [Authorize]
+        public async Task<IActionResult> Get_Account_Trans_Master_Purchase(int? account_Trans_Id, int? account_Trans_Detail_Id, string trans_Type, int? Year_Id)
+        {
+            try
+            {
+                var result = await _account_Trans_Master_Service.Get_Account_Trans_Master_Purchase(account_Trans_Id ?? 0, account_Trans_Detail_Id ?? 0, trans_Type, Year_Id ?? 0);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Account_Trans_Master_Purchase", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
