@@ -14,7 +14,7 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Account_Trans_Master(int account_Trans_Id, int account_Trans_Detail_Id,string trans_Type);
         Task<List<Dictionary<string, object>>> Get_Account_Trans_Master_Purchase(int account_Trans_Id, int account_Trans_Detail_Id,string trans_Type, int? Year_Id);
         Task<(string, int)> Create_Update_Account_Trans_Master(DataTable dataTable, int account_Trans_Id, string trans_Type, string? invoice_No, int currency_Id, int company_Id, int year_Id, int account_Id, decimal rate, int user_Id);
-        Task<(string, int)> Create_Update_Account_Trans_Master_Purchase(DataTable dataTable, DataTable dataTable_Terms, int account_Trans_Id, string trans_Type, string invoice_No, int currency_Id, int company_Id, int year_Id, int account_Id, decimal rate, int user_Id, string remarks, DateTime? invoice_Date, TimeSpan? invoice_Time);
+        Task<(string, int)> Create_Update_Account_Trans_Master_Purchase(DataTable dataTable, DataTable dataTable_Terms, DataTable dataTable_Expense, int account_Trans_Id, string trans_Type, string invoice_No, int currency_Id, int company_Id, int year_Id, int account_Id, decimal rate, int user_Id, string remarks, DateTime? invoice_Date, TimeSpan? invoice_Time);
         Task<int> Delete_Account_Trans_Master(int id);
     }
 }

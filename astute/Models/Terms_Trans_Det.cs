@@ -7,6 +7,7 @@ namespace astute.Models
     public partial class Terms_Trans_Det
     {
         [Key]
+        public int Terms_Trans_Det_Id { get; set; }
         public int Terms_Id { get; set; }
         public decimal? Amount { get; set; }
         public int? Seq_No { get; set; }

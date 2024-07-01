@@ -891,6 +891,7 @@ namespace astute.Controllers
                         }
 
                         DataTable dataTable_Terms = new DataTable();
+                        dataTable_Terms.Columns.Add("Terms_Trans_Det_Id", typeof(int));
                         dataTable_Terms.Columns.Add("Terms_Id", typeof(int));
                         dataTable_Terms.Columns.Add("Amount", typeof(decimal));
                         dataTable_Terms.Columns.Add("Trans_Id", typeof(int));
@@ -900,12 +901,38 @@ namespace astute.Controllers
                         {
                             DataRow row = dataTable_Terms.NewRow();
 
+                            row["Terms_Trans_Det_Id"] = item.Terms_Trans_Det_Id > 0 ? (object)item.Terms_Trans_Det_Id : (object)DBNull.Value;
                             row["Terms_Id"] = item.Terms_Id > 0 ? (object)item.Terms_Id : (object)DBNull.Value;
                             row["Amount"] = item.Amount;
-                            row["Trans_Id"] = item.Trans_Id > 0 ? (object)item.Trans_Id : (object)DBNull.Value;
+                            row["Trans_Id"] = item.Trans_Id > 0 ? (object)item.Trans_Id : account_Trans_Master.account_Trans_Id;
                             row["Trans_Type"] = account_Trans_Master.mod_Type;
 
                             dataTable_Terms.Rows.Add(row);
+                        }
+
+                        DataTable dataTable_ExpenseTransDet = new DataTable();
+                        dataTable_ExpenseTransDet.Columns.Add("Expense_Trans_Det_Id", typeof(int));
+                        dataTable_ExpenseTransDet.Columns.Add("Account_Master_Id", typeof(int));
+                        dataTable_ExpenseTransDet.Columns.Add("Sign", typeof(string));
+                        dataTable_ExpenseTransDet.Columns.Add("Percentage", typeof(float));
+                        dataTable_ExpenseTransDet.Columns.Add("Amount", typeof(float));
+                        dataTable_ExpenseTransDet.Columns.Add("Amount_$", typeof(float));
+                        dataTable_ExpenseTransDet.Columns.Add("Trans_Id", typeof(int));
+                        dataTable_ExpenseTransDet.Columns.Add("Trans_Type", typeof(string));
+
+                        foreach (var item in account_Trans_Master.expense_Trans_Dets)
+                        {
+                            DataRow row = dataTable_ExpenseTransDet.NewRow();
+
+                            row["Expense_Trans_Det_Id"] = item.Expense_Trans_Det_Id > 0 ? (object)item.Expense_Trans_Det_Id : (object)DBNull.Value;
+                            row["Account_Master_Id"] = item.Account_Master_Id;
+                            row["Sign"] = item.Sign ?? (object)DBNull.Value; 
+                            row["Percentage"] = item.Percentage > 0 ? (object)item.Percentage : (object)DBNull.Value;
+                            row["Amount"] = item.Amount;
+                            row["Trans_Id"] = item.Trans_Id > 0 ? (object)item.Trans_Id : account_Trans_Master.account_Trans_Id;
+                            row["Trans_Type"] = account_Trans_Master.mod_Type;
+
+                            dataTable_ExpenseTransDet.Rows.Add(row);
                         }
 
                         var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
@@ -926,6 +953,7 @@ namespace astute.Controllers
                         var (message, result) = await _account_Trans_Master_Service.Create_Update_Account_Trans_Master_Purchase(
                             dataTable,
                             dataTable_Terms,
+                            dataTable_ExpenseTransDet,
                             account_Trans_Master.account_Trans_Id,
                             account_Trans_Master.mod_Type,
                             account_Trans_Master.invoice_No,
@@ -1000,6 +1028,34 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_account_master_purchase")]
+        [Authorize]
+        public async Task<IActionResult> Get_Account_Master_Purchase(int account_Id)
+        {
+            try
+            {
+                var result = await _account_Master_Service.Get_Account_Master_Purchase(account_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Account_Master_Purchase", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
 
         #endregion
     }

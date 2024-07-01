@@ -149,7 +149,7 @@ namespace astute.Repository
         }
 
 
-        public async Task<(string, int)> Create_Update_Account_Trans_Master_Purchase(DataTable dataTable, DataTable dataTable_Terms, int account_Trans_Id, string trans_Type, string invoice_No, int currency_Id, int company_Id, int year_Id, int account_Id, decimal rate, int user_Id, string remarks, DateTime? invoice_Date, TimeSpan? invoice_Time)
+        public async Task<(string, int)> Create_Update_Account_Trans_Master_Purchase(DataTable dataTable, DataTable dataTable_Terms, DataTable dataTable_Expense, int account_Trans_Id, string trans_Type, string invoice_No, int currency_Id, int company_Id, int year_Id, int account_Id, decimal rate, int user_Id, string remarks, DateTime? invoice_Date, TimeSpan? invoice_Time)
         {
             var parameter = new SqlParameter("@Account_Trans_Detail_Table_Type_Purchase", SqlDbType.Structured)
             {
@@ -161,6 +161,12 @@ namespace astute.Repository
             {
                 TypeName = "dbo.Terms_Trans_Det_Table_Type",
                 Value = dataTable_Terms
+            };
+
+            var parameter_Expense = new SqlParameter("@Expense_Trans_Det_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Expense_Trans_Det_Table_Type",
+                Value = dataTable_Expense
             };
 
             var _account_Trans_Id = new SqlParameter("@Account_Trans_Id", account_Trans_Id);
