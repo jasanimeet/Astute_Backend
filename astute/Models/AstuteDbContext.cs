@@ -110,6 +110,5 @@ namespace astute.Models
         public DbSet<Parcel_Master> Parcel_Master { get; set; }
         public DbSet<Shape_Value> Shape_Value { get; set; }
         public DbSet<Diamond_Type_Value> Diamond_Type_Value { get; set; }
-        public DbSet<Expense_Trans_Det> Expense_Trans_Dets { get; set; }
     }
 }
