@@ -7,8 +7,8 @@ namespace astute.Models
         public int Account_Master_Id { get; set; }
         public string Sign { get; set; }
         public decimal Percentage { get; set; }
-        public decimal Amount { get; set; }
-        [JsonProperty("Amount $")]
-        public decimal Amount_Dollar { get; set; }
+        public decimal amount { get; set; }
+        [JsonProperty("amount $")]
+        public decimal amount_Dollar { get; set; }
     }
 }

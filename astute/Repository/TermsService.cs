@@ -157,7 +157,7 @@ namespace astute.Repository
         public async Task<int> Insert_Terms_Trans_Det(Terms_Trans_Det terms_Trans_Det)
         {
             var terms_Id = new SqlParameter("@Terms_Id", terms_Trans_Det.Terms_Id);
-            var amount = new SqlParameter("@Amount", terms_Trans_Det.Amount);
+            var amount = new SqlParameter("@Amount", terms_Trans_Det.amount);
             var seq_No = terms_Trans_Det.Seq_No > 0 ? new SqlParameter("@Seq_No", terms_Trans_Det.Seq_No) : new SqlParameter("@Seq_No", DBNull.Value);
             var trans_Id = terms_Trans_Det.Trans_Id > 0 ? new SqlParameter("@Trans_Id", terms_Trans_Det.Trans_Id) : new SqlParameter("@Trans_Id", DBNull.Value);
             var trans_Type = new SqlParameter("@Trans_Type", terms_Trans_Det.Trans_Type);
@@ -181,7 +181,7 @@ namespace astute.Repository
         public async Task<int> Update_Terms_Trans_Det(Terms_Trans_Det terms_Trans_Det)
         {
             var terms_Id = new SqlParameter("@Terms_Id", terms_Trans_Det.Terms_Id);
-            var amount = new SqlParameter("@Amount", terms_Trans_Det.Amount);
+            var amount = new SqlParameter("@Amount", terms_Trans_Det.amount);
             var seq_No = terms_Trans_Det.Seq_No > 0 ? new SqlParameter("@Seq_No", terms_Trans_Det.Seq_No) : new SqlParameter("@Seq_No", DBNull.Value);
             var trans_Id = terms_Trans_Det.Trans_Id > 0 ? new SqlParameter("@Trans_Id", terms_Trans_Det.Trans_Id) : new SqlParameter("@Trans_Id", DBNull.Value);
             var trans_Type = new SqlParameter("@Trans_Type", terms_Trans_Det.Trans_Type);
