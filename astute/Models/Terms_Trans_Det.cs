@@ -9,7 +9,7 @@ namespace astute.Models
         [Key]
         public int Terms_Trans_Det_Id { get; set; }
         public int Terms_Id { get; set; }
-        public decimal? Amount { get; set; }
+        public decimal? amount { get; set; }
         public int? Seq_No { get; set; }
         public int? Trans_Id { get; set; }
         public string? Trans_Type { get; set; }

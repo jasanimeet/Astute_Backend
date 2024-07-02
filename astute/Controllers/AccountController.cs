@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -902,7 +904,7 @@ namespace astute.Controllers
 
                             row["Terms_Trans_Det_Id"] = item.Terms_Trans_Det_Id > 0 ? (object)item.Terms_Trans_Det_Id : (object)DBNull.Value;
                             row["Terms_Id"] = item.Terms_Id > 0 ? (object)item.Terms_Id : (object)DBNull.Value;
-                            row["Amount"] = item.Amount;
+                            row["Amount"] = item.amount;
 
                             dataTable_Terms.Rows.Add(row);
                         }
@@ -925,9 +927,9 @@ namespace astute.Controllers
                             row["Account_Master_Id"] = item.Account_Master_Id;
                             row["Sign"] = item.Sign ?? (object)DBNull.Value; 
                             row["Percentage"] = item.Percentage > 0 ? (object)item.Percentage : (object)DBNull.Value;
-                            row["Amount"] = !string.IsNullOrEmpty(item.Amount.ToString()) ? Convert.ToDecimal(item.Amount.ToString()) : (object)DBNull.Value;
-                            if (item.Amount_Dollar != null)
-                                row["Amount_$"] = Convert.ToDecimal(item.Amount_Dollar);
+                            row["Amount"] = !string.IsNullOrEmpty(item.amount.ToString()) ? Convert.ToDecimal(item.amount.ToString()) : (object)DBNull.Value;
+                            if (item.amount_Dollar != null)
+                                row["Amount_$"] = Convert.ToDecimal(item.amount_Dollar);
                             else
                                 row["Amount_$"] = 0;
                             
@@ -1118,7 +1120,6 @@ namespace astute.Controllers
                 });
             }
         }
-
         #endregion
     }
 }
