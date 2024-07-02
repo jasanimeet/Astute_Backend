@@ -142,6 +142,34 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("lab_entry_notification")]
+        public async Task<IActionResult> Lab_Entry_Notification()
+        {
+            try
+            {
+                var result = await _oracleService.Lab_Entry_Notification();
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.Oracle_Notification
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Lab_Entry_Notification", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
     }
 }

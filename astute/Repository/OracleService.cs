@@ -10,6 +10,7 @@ using Org.BouncyCastle.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using static astute.Models.Employee_Master;
 
@@ -1032,10 +1033,13 @@ namespace astute.Repository
                     lab_trans_status = Convert.ToString(mas_dt.Rows[0]["STATUS"]);
                 }
 
+                List<int> Order_Ids_List = new List<int>();
+
                 if (!string.IsNullOrEmpty(lab_trans_status) && order_Processing_Complete_Details != null && order_Processing_Complete_Details.Count > 0)
                 {
                     foreach (var item in order_Processing_Complete_Details)
                     {
+                        Order_Ids_List.Add(item.Id);
                         paramList = new List<OracleParameter>();
 
                         param1 = new OracleParameter("vtrans_id", OracleDbType.Int32);
@@ -1289,12 +1293,64 @@ namespace astute.Repository
                     }
                 }
 
+                string Order_Ids = string.Join(",",Order_Ids_List);
+
+                var _order_Ids = new SqlParameter("@Order_Ids", !string.IsNullOrEmpty(Order_Ids) ? Order_Ids : DBNull.Value);
+                var _trans_Id = new SqlParameter("@Trans_Id", !string.IsNullOrEmpty(lab_trans_status) ? Convert.ToInt32(lab_trans_status) : DBNull.Value);
+
+
+                var result = await Task.Run(() => _dbContext.Database
+                       .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Update_Tras_Id] @Order_Ids,@Trans_Id", _order_Ids,_trans_Id));
+
             }
 
             return 1;
         }
 
-        #endregion
+        public async Task<int> Lab_Entry_Notification()
+        {
+            int r = 0;
 
+            List<OracleParameter> paramList = new List<OracleParameter>();
+
+            OracleParameter param1 = new OracleParameter("vtrans_ID", OracleDbType.Int32);
+            param1.Value = DBNull.Value;
+            paramList.Add(param1);
+
+            param1 = new OracleParameter("vrec", OracleDbType.RefCursor);
+            param1.Direction = ParameterDirection.Output;
+            paramList.Add(param1);
+
+            System.Data.DataTable dt = await _dbOracleAccess.CallSP("web_trans.lab_entry_notification", paramList);
+
+            if (dt != null)
+            {
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("Trans_Id", typeof(string));
+                dataTable.Columns.Add("Stock_Id", typeof(string));
+                dataTable.Columns.Add("Status", typeof(string));
+
+                foreach (DataRow item in dt.Rows)
+                {
+                    dataTable.Rows.Add(item["TRANS_ID"], item["REF_NO"], item["STATUS"]);
+                }
+
+                var parameter = new SqlParameter("@Order_Procesing_Table_Type", SqlDbType.Structured)
+                {
+                    TypeName = "[dbo].[Order_Procesing_Status_Update_Oracle_Table_Type]",
+                    Value = dataTable
+                };
+
+                var result = await Task.Run(() => _dbContext.Database
+                       .ExecuteSqlRawAsync(@"EXEC [Order_Procesing_Status_Update_Oracle] @Order_Procesing_Table_Type", parameter));
+
+                r = result;
+            }
+
+            return r;
+        }
+        
+        #endregion
     }
 }
