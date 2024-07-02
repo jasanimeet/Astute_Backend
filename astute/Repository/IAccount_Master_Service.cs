@@ -12,5 +12,6 @@ namespace astute.Repository
         Task<int> Delete_Account_Master(int account_Id);
         Task<DataTable> Get_Account_Master_Excel();
         Task<List<Dictionary<string, object>>> Get_Account_Master_Purchase(int account_Id);
+        Task<List<Dictionary<string, object>>> Get_Purchase_Detail();
     }
 }

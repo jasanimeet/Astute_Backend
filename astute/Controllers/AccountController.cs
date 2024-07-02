@@ -1090,6 +1090,35 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_purchase_detail")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Detail()
+        {
+            try
+            {
+                var result = await _account_Master_Service.Get_Purchase_Detail();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
     }
 }
