@@ -958,7 +958,7 @@ namespace astute.Controllers
                                 dr["Import_Id"] = Import_Master_Result;
                                 dr["Import_Det_Id"] = item.Import_Det_Id;
                                 dr["Column_Name"] = item.Column_Name;
-                                dr["Excel_Column_No"] = item.Excel_Column_No;
+                                dr["Excel_Column_No"] = item.Excel_Column_No > 0 ? item.Excel_Column_No : DBNull.Value;                                    
                                 dr["Required"] = item.Required;
 
                                 dataTable.Rows.Add(dr);
