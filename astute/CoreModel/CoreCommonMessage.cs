@@ -417,6 +417,8 @@ namespace astute.CoreModel
         public static string Fortune_Stock_Disc = "Stock Disc " + ApiFailed;
         public static string Fortune_Sale_Disc_Kts = "Sale Disc KTS " + ApiFailed;
         public static string Fortune_Stock_Disc_Kts = "Stock Disc KTS " + ApiFailed;
+        public static string Oracle_Notification = "Notification get from oracle successfully";
+
 
         #endregion
 
