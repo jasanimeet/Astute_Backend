@@ -262,6 +262,79 @@ namespace astute.Repository
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Account_Trans_Master_Purchase_Delete {Id}"));
         }
 
+        public async Task<Dictionary<string, object>> Get_Account_Trans_Purchase(int account_Trans_Id, string trans_Type, int? Year_Id)
+        {
+            var output = new Dictionary<string, object>();
+
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                await connection.OpenAsync();
+
+                // Fetch account_Trans_Master
+                var account_Trans_Master_Result = await ExecuteStoredProcedure(connection, "Account_Trans_Master_Select_Purchase", account_Trans_Id, trans_Type, Year_Id);
+                if (account_Trans_Master_Result != null)
+                {
+                    output["account_Trans_Master"] = account_Trans_Master_Result;
+                }
+
+                // Fetch account_Trans_Detail
+                var account_Trans_Detail_Result = await ExecuteStoredProcedure(connection, "Account_Trans_Detail_Select_Purchase", account_Trans_Id, trans_Type, Year_Id);
+                if (account_Trans_Detail_Result != null)
+                {
+                    output["account_Trans_Detail"] = account_Trans_Detail_Result;
+                }
+
+                // Fetch terms_Trans_Dets
+                var terms_Trans_Dets_Result = await ExecuteStoredProcedure(connection, "Terms_Trans_Dets_Select_Purchase", account_Trans_Id, trans_Type, Year_Id);
+                if (terms_Trans_Dets_Result != null)
+                {
+                    output["terms_Trans_Dets"] = terms_Trans_Dets_Result;
+                }
+
+                // Fetch expense_Trans_Dets
+                var expense_Trans_Dets_Result = await ExecuteStoredProcedure(connection, "Expense_Trans_Dets_Select_Purchase", account_Trans_Id, trans_Type, Year_Id);
+                if (expense_Trans_Dets_Result != null)
+                {
+                    output["expense_Trans_Dets"] = expense_Trans_Dets_Result;
+                }
+            }
+
+            return output;
+        }
+
+        private async Task<List<Dictionary<string, object>>> ExecuteStoredProcedure(SqlConnection connection, string storedProcedureName, int account_Trans_Id, string trans_Type, int? Year_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+
+            using (var command = new SqlCommand(storedProcedureName, connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.Add(new SqlParameter("@Account_Trans_Id", account_Trans_Id));
+                command.Parameters.Add(!string.IsNullOrEmpty(trans_Type) ? new SqlParameter("@Trans_Type", trans_Type) : new SqlParameter("@Trans_Type", DBNull.Value));
+                command.Parameters.Add(Year_Id > 0 ? new SqlParameter("@Year_Id", Year_Id) : new SqlParameter("@Year_Id", DBNull.Value));
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        var dict = new Dictionary<string, object>();
+
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            var columnName = reader.GetName(i);
+                            var columnValue = reader.GetValue(i);
+
+                            dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                        }
+
+                        result.Add(dict);
+                    }
+                }
+            }
+
+            return result.Count > 0 ? result : null;
+        }
+
         #endregion
     }
 }

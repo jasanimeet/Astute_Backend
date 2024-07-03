@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -33,7 +34,7 @@ namespace astute.Controllers
         private readonly IAccount_Master_Service _account_Master_Service;
         private readonly IFirst_Voucher_No _trans_Service;
         private readonly IAccount_Trans_Master_Service _account_Trans_Master_Service;
-
+        private readonly ICategoryService _categoryService;
         #endregion
 
         #region Ctor
@@ -47,7 +48,8 @@ namespace astute.Controllers
             IAccount_Group_Service account_Group_Service,
             IAccount_Master_Service account_Master_Service,
             IFirst_Voucher_No trans_Service,
-            IAccount_Trans_Master_Service account_Trans_Master_Service)
+            IAccount_Trans_Master_Service account_Trans_Master_Service,
+            ICategoryService categoryService)
         {
             _configuration = configuration;
             _commonService = commonService;
@@ -59,6 +61,7 @@ namespace astute.Controllers
             _account_Master_Service = account_Master_Service;
             _trans_Service = trans_Service;
             _account_Trans_Master_Service = account_Trans_Master_Service;
+            _categoryService = categoryService;
         }
         #endregion
 
@@ -1027,7 +1030,7 @@ namespace astute.Controllers
                 });
             }
         }
-
+        
         [HttpGet]
         [Route("get_account_master_purchase")]
         [Authorize]
@@ -1116,6 +1119,231 @@ namespace astute.Controllers
                 {
                     message = ex.Message
                 });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_account_trans_purchase")]
+        [Authorize]
+        public async Task<IActionResult> Get_Account_Trans_Purchase(int? account_Trans_Id, string trans_Type, int? Year_Id)
+        {
+            try
+            {
+                var result = await _account_Trans_Master_Service.Get_Account_Trans_Purchase(account_Trans_Id ?? 0, trans_Type, Year_Id ?? 0);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Account_Trans_Purchase", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("inward_details_read_excel")]
+        [Authorize]
+        public async Task<ActionResult> Inward_Details_ReadExcel([FromForm] IFormFile File_Location)
+        {
+            Dictionary<string, List<string>> UploadResults = new Dictionary<string, List<string>>();
+            if (File_Location != null && File_Location.Length > 0)
+            {
+                
+
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/uploads");
+
+                if (!(Directory.Exists(filePath)))
+                {
+                    Directory.CreateDirectory(filePath);
+                }
+                string fileName = Path.GetFileNameWithoutExtension(File_Location.FileName);
+                string fileExt = Path.GetExtension(File_Location.FileName);
+                string strFile = fileName + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + fileExt;
+
+                using (var fileStream = new FileStream(Path.Combine(filePath, strFile), FileMode.Create))
+                {
+                    await File_Location.CopyToAsync(fileStream);
+                }
+                List<Dictionary<string, object>> result = await _account_Master_Service.Get_Purchase_Detail();
+                UploadResults = await ProcessExcelFile(Path.Combine(filePath, strFile), result);
+            }
+            return Ok(new
+            {
+                statusCode = HttpStatusCode.OK,
+                message = CoreCommonMessage.DataSuccessfullyFound,
+                data = UploadResults
+            });
+        }
+        public async Task<Dictionary<string, List<string>>> ProcessExcelFile(string filePath, List<Dictionary<string, object>> result)
+        {
+            Dictionary<string, List<string>> columnData = new Dictionary<string, List<string>>();
+
+            try
+            {
+                using (ExcelPackage package = new ExcelPackage(new FileInfo(filePath)))
+                {
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets.First();
+
+                    var excelColumnHeaders = Enumerable.Range(1, worksheet.Dimension.End.Column)
+                        .Select(col => worksheet.Cells[1, col].Value?.ToString()?.Trim())
+                        .ToList();
+
+                    foreach (var mapping in result)
+                    {
+                        string displayColumnName = mapping["Display_Name"].ToString();
+
+                        int columnIndex = excelColumnHeaders.FindIndex(header =>
+                            string.Equals(header, displayColumnName, StringComparison.OrdinalIgnoreCase));
+
+                        if (columnIndex != -1)
+                        {
+                            string columnKey = displayColumnName.ToUpper();
+
+                            List<CategoryValueModel> result_category = null;
+
+                            switch (columnKey)
+                            {
+                                case "SHAPE":
+                                    InitializeColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(13);
+                                    break;
+                                case "COLOR":
+                                    InitializeColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(14);
+                                    break;
+                                case "CLARITY":
+                                    InitializeColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(15);
+                                    break;
+                                case "CUT":
+                                    InitializeColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(16);
+                                    break;
+                                case "POLISH":
+                                    InitializeColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(17);
+                                    break;
+                                case "SYMM":
+                                    InitializeColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(19);
+                                    break;
+                                case "FLS INTENSITY":
+                                    InitializeColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(21);
+                                    break;
+                                case "TABLE BLACK":
+                                    InitializeColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(26);
+                                    break;
+                                case "TABLE WHITE":
+                                    InitializeColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(27);
+                                    break;
+                                case "SIDE BLACK":
+                                    InitializeColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(28);
+                                    break;
+                                case "SIDE WHITE":
+                                    InitializeColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(29);
+                                    break;
+                                case "SHADE":
+                                    InitializeColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(84);
+                                    break;
+                                case "LUSTER":
+                                    InitializeColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(59);
+                                    break;
+                                case "LASER INSCRIPTION":
+                                    InitializeColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(60);
+                                    break;
+                                default:
+                                    Console.WriteLine($"No matching case found for '{displayColumnName}'");
+                                    continue; // Skip processing for this column
+                            }
+
+                            if (result_category != null)
+                            {
+                                string columnKey_Name = $"{columnKey}_NAME";
+
+                                for (int rowIdx = 2; rowIdx <= worksheet.Dimension.End.Row; rowIdx++)
+                                {
+                                    var cellValue = worksheet.Cells[rowIdx, columnIndex + 1].Value?.ToString();
+                                    var catValId = await FindCatValId(result_category, cellValue);
+                                    worksheet.Cells[rowIdx, columnIndex + 1].Value = catValId.Item1.ToString();
+                                    columnData[columnKey].Add(catValId.Item1.ToString());
+                                    columnData[columnKey_Name].Add(catValId.Item2);
+                                    Console.WriteLine($"Row {rowIdx}, Value: {cellValue}");
+                                }
+                            }
+                            else
+                            {
+                                for (int rowIdx = 2; rowIdx <= worksheet.Dimension.End.Row; rowIdx++)
+                                {
+                                    var cellValue = worksheet.Cells[rowIdx, columnIndex + 1].Value?.ToString();
+                                    columnData[columnKey].Add(cellValue);
+                                    //columnData[columnKey_Name].Add(cellValue);
+                                    Console.WriteLine($"Row {rowIdx}, Value: {cellValue}");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Column '{displayColumnName}' not found in Excel file.");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+
+            return columnData;
+        }
+
+        private void InitializeColumnData(Dictionary<string, List<string>> columnData, string columnKey)
+        {
+            string columnKey_Name = $"{columnKey}_NAME";
+
+            if (!columnData.ContainsKey(columnKey))
+            {
+                columnData[columnKey] = new List<string>();
+            }
+            if (!columnData.ContainsKey(columnKey_Name))
+            {
+                columnData[columnKey_Name] = new List<string>();
+            }
+        }
+
+        public async Task<(int, string)> FindCatValId(IList<CategoryValueModel> data, string Cat_Name)
+        {
+            if (string.IsNullOrWhiteSpace(Cat_Name))
+                return (0, null);
+
+            var shapeInfo = data.FirstOrDefault(d => d.Cat_Name.Equals(Cat_Name, StringComparison.OrdinalIgnoreCase)
+                                                  || (d.Synonyms != null && d.Synonyms.Split(',').Any(s => s.Equals(Cat_Name, StringComparison.OrdinalIgnoreCase))));
+
+            if (shapeInfo != null)
+            {
+                return (shapeInfo.Cat_val_Id, shapeInfo.Cat_Name);
+            }
+            else
+            {
+                return (0, null); // Return default values when no matching category value is found
             }
         }
 
