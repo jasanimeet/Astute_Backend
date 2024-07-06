@@ -204,7 +204,7 @@ namespace astute.Repository
             try
             {
                 var result = await _dbContext.Database.ExecuteSqlRawAsync(
-                    @"EXEC [dbo].[Account_Trans_Master_Purchase_Insert_Update_03072024_1] 
+                    @"EXEC [dbo].[Account_Trans_Master_Purchase_Insert_Update] 
                     @Account_Trans_Detail_Table_Type_Purchase, 
                     @Terms_Trans_Det_Table_Type, 
                     @Expense_Trans_Det_Table_Type, 
