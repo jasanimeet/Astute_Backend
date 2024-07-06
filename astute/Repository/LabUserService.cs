@@ -214,17 +214,32 @@ namespace astute.Repository
 
         public async Task<int> Job_Transfer_User_Pricing()
         {
-            var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Job_Transfer_User_Pricing]"));
 
-            return result;
-        }
+            var sqlCommand = @"exec [Job_Transfer_User_Pricing]";
 
+            var result = await Task.Run(async () =>
+            {
+                using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = sqlCommand;
 
-        public async Task<int> Order_Data_Transfer_Oracle()
-        {
-            var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Job_Transfer_User_Pricing]"));
+                    // Set the command timeout to 30 minutes (in seconds)
+                    command.CommandTimeout = 1800;
+
+                    await _dbContext.Database.OpenConnectionAsync();
+                    try
+                    {
+                        var affectedRows = await command.ExecuteNonQueryAsync();
+                        return affectedRows;
+                    }
+                    finally
+                    {
+                        _dbContext.Database.CloseConnection();
+                    }
+                }
+            });
+
+            //var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC [Job_Transfer_User_Pricing]"));
 
             return result;
         }
