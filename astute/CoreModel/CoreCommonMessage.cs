@@ -503,5 +503,10 @@ namespace astute.CoreModel
         public static string ParcelMasterDeleted = ParcelMaster + DeletedSuccessfully;
         public static string IsExistParcelMaster = ParcelMaster + AlreadyExists;
         #endregion
+
+        #region Inward details
+        public static string InwardDetails = "Inward Details";
+        public static string FileNotFound = "File not found";
+        #endregion
     }
 }

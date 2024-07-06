@@ -44,7 +44,7 @@ namespace astute.Models
         public List<Account_Trans_Purchase_Detail_Master> account_Trans_Detail { get; set; }
         public List<Terms_Trans_Det> terms_Trans_Dets { get; set; }
         public object expense_Trans_Dets { get; set; }
-
+        public List<InwardDetail> inwardDetails { get; set; }
     }
 
     public class Account_Trans_Purchase_Detail_Master

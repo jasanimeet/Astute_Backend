@@ -856,8 +856,23 @@ namespace astute.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (account_Trans_Master.account_Trans_Detail != null && account_Trans_Master.account_Trans_Detail.Count > 0)
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                    if (user_Id > 0)
                     {
+                        DateTime invoiceDate;
+                        if (!DateTime.TryParseExact(account_Trans_Master.invoice_Date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out invoiceDate))
+                        {
+                            invoiceDate = DateTime.Now.Date;
+                        }
+
+                        TimeSpan invoiceTime;
+                        if (!TimeSpan.TryParseExact(account_Trans_Master.invoice_Time, "HH:mm", CultureInfo.InvariantCulture, out invoiceTime))
+                        {
+                            invoiceTime = DateTime.Now.TimeOfDay;
+                        }
+
                         DataTable dataTable = new DataTable();
                         dataTable.Columns.Add("Voucher_No", typeof(string));
                         dataTable.Columns.Add("By_Account", typeof(int));
@@ -873,25 +888,28 @@ namespace astute.Controllers
                         dataTable.Columns.Add("Remarks", typeof(string));
                         dataTable.Columns.Add("Rate", typeof(decimal));
 
-                        foreach (var item in account_Trans_Master.account_Trans_Detail)
+                        if (account_Trans_Master.account_Trans_Detail != null && account_Trans_Master.account_Trans_Detail.Count > 0)
                         {
-                            DataRow row = dataTable.NewRow();
+                            foreach (var item in account_Trans_Master.account_Trans_Detail)
+                            {
+                                DataRow row = dataTable.NewRow();
 
-                            row["Voucher_No"] = !string.IsNullOrEmpty(item.voucherNo) ? item.voucherNo : (object)DBNull.Value;
-                            row["By_Account"] = account_Trans_Master.account;
-                            row["By_Type"] = account_Trans_Master.type;
-                            row["To_Account"] = item.account;
-                            row["To_Type"] = item.type;
-                            row["Amount"] = item.amount;
-                            row["Narration"] = !string.IsNullOrEmpty(item.narration) ? item.narration : (object)DBNull.Value;
-                            row["Cat_Val_Id"] = item.Cat_Val_Id;
-                            row["Parcel_Id"] = item.Parcel_Id > 0 ? (object)item.Parcel_Id : (object)DBNull.Value;
-                            row["Pcs"] = item.Pcs > 0 ? (object)item.Pcs : (object)DBNull.Value;
-                            row["Cts"] = item.Cts;
-                            row["Remarks"] = item.Remarks;
-                            row["Rate"] = item.Rate;
+                                row["Voucher_No"] = !string.IsNullOrEmpty(item.voucherNo) ? item.voucherNo : (object)DBNull.Value;
+                                row["By_Account"] = account_Trans_Master.account;
+                                row["By_Type"] = account_Trans_Master.type;
+                                row["To_Account"] = item.account;
+                                row["To_Type"] = item.type;
+                                row["Amount"] = item.amount;
+                                row["Narration"] = !string.IsNullOrEmpty(item.narration) ? item.narration : (object)DBNull.Value;
+                                row["Cat_Val_Id"] = item.Cat_Val_Id;
+                                row["Parcel_Id"] = item.Parcel_Id > 0 ? (object)item.Parcel_Id : (object)DBNull.Value;
+                                row["Pcs"] = item.Pcs > 0 ? (object)item.Pcs : (object)DBNull.Value;
+                                row["Cts"] = item.Cts;
+                                row["Remarks"] = item.Remarks;
+                                row["Rate"] = item.Rate;
 
-                            dataTable.Rows.Add(row);
+                                dataTable.Rows.Add(row);
+                            }
                         }
 
                         DataTable dataTable_Terms = new DataTable();
@@ -899,18 +917,19 @@ namespace astute.Controllers
                         dataTable_Terms.Columns.Add("Terms_Id", typeof(int));
                         dataTable_Terms.Columns.Add("Amount", typeof(decimal));
 
-                        foreach (var item in account_Trans_Master.terms_Trans_Dets)
+                        if (account_Trans_Master.terms_Trans_Dets != null && account_Trans_Master.terms_Trans_Dets.Count > 0)
                         {
-                            DataRow row = dataTable_Terms.NewRow();
+                            foreach (var item in account_Trans_Master.terms_Trans_Dets)
+                            {
+                                DataRow row = dataTable_Terms.NewRow();
 
-                            row["Terms_Trans_Det_Id"] = item.Terms_Trans_Det_Id > 0 ? (object)item.Terms_Trans_Det_Id : (object)DBNull.Value;
-                            row["Terms_Id"] = item.Terms_Id > 0 ? (object)item.Terms_Id : (object)DBNull.Value;
-                            row["Amount"] = item.amount;
+                                row["Terms_Trans_Det_Id"] = item.Terms_Trans_Det_Id > 0 ? (object)item.Terms_Trans_Det_Id : (object)DBNull.Value;
+                                row["Terms_Id"] = item.Terms_Id > 0 ? (object)item.Terms_Id : (object)DBNull.Value;
+                                row["Amount"] = item.amount;
 
-                            dataTable_Terms.Rows.Add(row);
+                                dataTable_Terms.Rows.Add(row);
+                            }
                         }
-
-                        IList<Expense_Trans_Det> expense_Trans_Det = JsonConvert.DeserializeObject<IList<Expense_Trans_Det>>(account_Trans_Master.expense_Trans_Dets.ToString());
 
                         DataTable dataTable_ExpenseTransDet = new DataTable();
                         dataTable_ExpenseTransDet.Columns.Add("Expense_Trans_Det_Id", typeof(int));
@@ -920,42 +939,175 @@ namespace astute.Controllers
                         dataTable_ExpenseTransDet.Columns.Add("Amount", typeof(decimal));
                         dataTable_ExpenseTransDet.Columns.Add("Amount_$", typeof(decimal));
 
-                        foreach (var item in expense_Trans_Det)
+                        if (account_Trans_Master.expense_Trans_Dets != null)
                         {
-                            DataRow row = dataTable_ExpenseTransDet.NewRow();
+                            IList<Expense_Trans_Det> expense_Trans_Det = JsonConvert.DeserializeObject<IList<Expense_Trans_Det>>(account_Trans_Master.expense_Trans_Dets.ToString());
 
-                            row["Expense_Trans_Det_Id"] = item.Expense_Trans_Det_Id > 0 ? (object)item.Expense_Trans_Det_Id : (object)DBNull.Value;
-                            row["Account_Master_Id"] = item.Account_Master_Id;
-                            row["Sign"] = item.Sign ?? (object)DBNull.Value; 
-                            row["Percentage"] = item.Percentage > 0 ? (object)item.Percentage : (object)DBNull.Value;
-                            row["Amount"] = !string.IsNullOrEmpty(item.amount.ToString()) ? Convert.ToDecimal(item.amount.ToString()) : (object)DBNull.Value;
-                            if (item.amount_Dollar != null)
-                                row["Amount_$"] = Convert.ToDecimal(item.amount_Dollar);
-                            else
-                                row["Amount_$"] = 0;
-                            
-                            dataTable_ExpenseTransDet.Rows.Add(row);
+                            if (expense_Trans_Det != null && expense_Trans_Det.Count > 0)
+                            {
+                                foreach (var item in expense_Trans_Det)
+                                {
+                                    DataRow row = dataTable_ExpenseTransDet.NewRow();
+
+                                    row["Expense_Trans_Det_Id"] = item.Expense_Trans_Det_Id > 0 ? (object)item.Expense_Trans_Det_Id : (object)DBNull.Value;
+                                    row["Account_Master_Id"] = item.Account_Master_Id;
+                                    row["Sign"] = item.Sign ?? (object)DBNull.Value;
+                                    row["Percentage"] = item.Percentage > 0 ? (object)item.Percentage : (object)DBNull.Value;
+                                    row["Amount"] = !string.IsNullOrEmpty(item.amount.ToString()) ? Convert.ToDecimal(item.amount.ToString()) : (object)DBNull.Value;
+                                    if (item.amount_Dollar != null)
+                                        row["Amount_$"] = Convert.ToDecimal(item.amount_Dollar);
+                                    else
+                                        row["Amount_$"] = 0;
+
+                                    dataTable_ExpenseTransDet.Rows.Add(row);
+                                }
+                            }
                         }
 
-                        var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                        int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                        DataTable dataTable_InwardDetail = new DataTable();
+                        dataTable_InwardDetail.Columns.Add("Id", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Stock_Id", typeof(string));
+                        dataTable_InwardDetail.Columns.Add("Cert_No", typeof(string));
+                        dataTable_InwardDetail.Columns.Add("Shape", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Color", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Clarity", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Cts", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Rap_Price", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Rap_Amt", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Cost_Disc", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Cost_Amt", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Offer_Disc", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Offer_Amt", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Cut", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Polish", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Symm", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Flour_Intensity", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Length", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Width", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Depth", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Depth_Per", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Table_Per", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Crown_Angle", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Crown_Height", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Pavillion_Angle", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Pavillion_Height", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Lab", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Supplier_Ref_No", typeof(string));
+                        dataTable_InwardDetail.Columns.Add("Girdle_Type", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Key_to_Symbol", typeof(string));
+                        dataTable_InwardDetail.Columns.Add("Culet", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Lab_Comment", typeof(string));
+                        dataTable_InwardDetail.Columns.Add("Str_Ln", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("LR_Half", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Girdle_Per", typeof(decimal));
+                        dataTable_InwardDetail.Columns.Add("Girdle_Condition", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Table_White", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Crown_White", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Table_Black", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Crown_Black", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Shade", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Luster", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Pre_Sold", typeof(bool));
+                        dataTable_InwardDetail.Columns.Add("Buyer", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Laser_Insc", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Cert_Date", typeof(DateTime));
+                        dataTable_InwardDetail.Columns.Add("Cert_Type", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Company_Id", typeof(string));
+                        //dataTable_InwardDetail.Columns.Add("Trans_Id", typeof(int));
+                        //dataTable_InwardDetail.Columns.Add("Seq_No", typeof(int));
+                        //dataTable_InwardDetail.Columns.Add("Year_Id", typeof(int));
+                        //dataTable_InwardDetail.Columns.Add("Created_Date", typeof(DateTime));
+                        //dataTable_InwardDetail.Columns.Add("Created_Time", typeof(TimeSpan));
+                        //dataTable_InwardDetail.Columns.Add("Created_By", typeof(int));
+                        //dataTable_InwardDetail.Columns.Add("Updated_Date", typeof(DateTime));
+                        //dataTable_InwardDetail.Columns.Add("Updated_Time", typeof(TimeSpan));
+                        //dataTable_InwardDetail.Columns.Add("Updated_By", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("RFID", typeof(string));
+                        dataTable_InwardDetail.Columns.Add("Assign_Date", typeof(DateTime));
+                        dataTable_InwardDetail.Columns.Add("Status", typeof(bool));
+                        dataTable_InwardDetail.Columns.Add("Process", typeof(string));
+                        dataTable_InwardDetail.Columns.Add("Close_Date", typeof(DateTime));
 
-                        DateTime invoiceDate;
-                        if (!DateTime.TryParseExact(account_Trans_Master.invoice_Date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out invoiceDate))
+                        if (account_Trans_Master.inwardDetails != null && account_Trans_Master.inwardDetails.Count > 0)
                         {
-                            invoiceDate = DateTime.Now.Date; 
-                        }
+                            //IList<InwardDetail> inwardDetails = JsonConvert.DeserializeObject<IList<InwardDetail>>(account_Trans_Master.inwardDetails.ToString());
 
-                        TimeSpan invoiceTime;
-                        if (!TimeSpan.TryParseExact(account_Trans_Master.invoice_Time, "HH:mm", CultureInfo.InvariantCulture, out invoiceTime))
-                        {
-                            invoiceTime = DateTime.Now.TimeOfDay;
+                            foreach (var item in account_Trans_Master.inwardDetails)
+                            {
+                                DataRow row = dataTable_InwardDetail.NewRow();
+
+                                row["Id"] = item.Id.HasValue ? (object)item.Id : DBNull.Value;
+                                row["Stock_Id"] = !string.IsNullOrEmpty(item.Stock_Id) ? (object)item.Stock_Id : DBNull.Value;
+                                row["Cert_No"] = !string.IsNullOrEmpty(item.Cert_No) ? (object)item.Cert_No : DBNull.Value;
+                                row["Shape"] = item.Shape > 0 ? (object)item.Shape : DBNull.Value;
+                                row["Color"] = item.Color > 0 ? (object)item.Color : DBNull.Value;
+                                row["Clarity"] = item.Clarity > 0 ? (object)item.Clarity : DBNull.Value;
+                                row["Cts"] = item.Cts.HasValue ? (object)item.Cts : DBNull.Value;
+                                row["Rap_Price"] = item.Rap_Price.HasValue ? (object)item.Rap_Price : DBNull.Value;
+                                row["Rap_Amt"] = item.Rap_Amt.HasValue ? (object)item.Rap_Amt : DBNull.Value;
+                                row["Cost_Disc"] = item.Cost_Disc.HasValue ? (object)item.Cost_Disc : DBNull.Value;
+                                row["Cost_Amt"] = item.Cost_Amt.HasValue ? (object)item.Cost_Amt : DBNull.Value;
+                                row["Offer_Disc"] = item.Offer_Disc.HasValue ? (object)item.Offer_Disc : DBNull.Value;
+                                row["Offer_Amt"] = item.Offer_Amt.HasValue ? (object)item.Offer_Amt : DBNull.Value;
+                                row["Cut"] = item.Cut > 0 ? (object)item.Cut : DBNull.Value;
+                                row["Polish"] = item.Polish > 0 ? (object)item.Polish : DBNull.Value;
+                                row["Symm"] = item.Symm > 0 ? (object)item.Symm : DBNull.Value;
+                                row["Flour_Intensity"] = item.Flour_Intensity.HasValue ? (object)item.Flour_Intensity : DBNull.Value;
+                                row["Length"] = item.Length.HasValue ? (object)item.Length : DBNull.Value;
+                                row["Width"] = item.Width.HasValue ? (object)item.Width : DBNull.Value;
+                                row["Depth"] = item.Depth.HasValue ? (object)item.Depth : DBNull.Value;
+                                row["Depth_Per"] = item.Depth_Per.HasValue ? (object)item.Depth_Per : DBNull.Value;
+                                row["Table_Per"] = item.Table_Per.HasValue ? (object)item.Table_Per : DBNull.Value;
+                                row["Crown_Angle"] = item.Crown_Angle.HasValue ? (object)item.Crown_Angle : DBNull.Value;
+                                row["Crown_Height"] = item.Crown_Height.HasValue ? (object)item.Crown_Height : DBNull.Value;
+                                row["Pavillion_Angle"] = item.Pavillion_Angle.HasValue ? (object)item.Pavillion_Angle : DBNull.Value;
+                                row["Pavillion_Height"] = item.Pavillion_Height.HasValue ? (object)item.Pavillion_Height : DBNull.Value;
+                                row["Lab"] = item.Lab > 0 ? (object)item.Lab : DBNull.Value;
+                                row["Supplier_Ref_No"] = !string.IsNullOrEmpty(item.Supplier_Ref_No) ? item.Supplier_Ref_No : DBNull.Value;
+                                row["Girdle_Type"] = item.Girdle_Type.HasValue ? (object)item.Girdle_Type : DBNull.Value;
+                                row["Key_to_Symbol"] = !string.IsNullOrEmpty(item.Key_to_Symbol) ? (object)item.Rap_Price : DBNull.Value;
+                                row["Culet"] = item.Culet.HasValue ? (object)item.Culet : DBNull.Value;
+                                row["Lab_Comment"] = !string.IsNullOrEmpty(item.Lab_Comment) ? (object)item.Rap_Price : DBNull.Value;
+                                row["Str_Ln"] = item.Str_Ln.HasValue ? (object)item.Str_Ln : DBNull.Value;
+                                row["LR_Half"] = item.LR_Half.HasValue ? (object)item.LR_Half : DBNull.Value;
+                                row["Girdle_Per"] = item.Girdle_Per.HasValue ? (object)item.Girdle_Per : DBNull.Value;
+                                row["Girdle_Condition"] = item.Girdle_Condition.HasValue ? (object)item.Girdle_Condition : DBNull.Value;
+                                row["Table_White"] = item.Table_White.HasValue ? (object)item.Table_White : DBNull.Value;
+                                row["Crown_White"] = item.Crown_White.HasValue ? (object)item.Crown_White : DBNull.Value;
+                                row["Table_Black"] = item.Table_Black.HasValue ? (object)item.Table_Black : DBNull.Value;
+                                row["Crown_Black"] = item.Crown_Black.HasValue ? (object)item.Crown_Black : DBNull.Value;
+                                row["Shade"] = item.Shade.HasValue ? (object)item.Shade : DBNull.Value;
+                                row["Luster"] = item.Luster.HasValue ? (object)item.Luster : DBNull.Value;
+                                row["Pre_Sold"] = item.Pre_Sold.HasValue ? (object)item.Pre_Sold : DBNull.Value;
+                                row["Buyer"] = item.Buyer.HasValue ? (object)item.Buyer : DBNull.Value;
+                                row["Laser_Insc"] = item.Laser_Insc.HasValue ? (object)item.Laser_Insc : DBNull.Value;
+                                row["Cert_Date"] = item.Cert_Date.HasValue ? (object)item.Cert_Date : DBNull.Value;
+                                row["Cert_Type"] = item.Cert_Type.HasValue ? (object)item.Cert_Type : DBNull.Value;
+                                row["Company_Id"] = !string.IsNullOrEmpty(item.Company_Id) ? item.Company_Id : DBNull.Value;
+                                //row["Trans_Id"] = item.Trans_Id.HasValue ? (object)item.Trans_Id : DBNull.Value;
+                                //row["Seq_No"] = item.Seq_No.HasValue ? (object)item.Seq_No : DBNull.Value;
+                                //row["Year_Id"] = item.Year_Id.HasValue ? (object)item.Year_Id : DBNull.Value;
+                                //row["Created_Date"] = item.Created_Date.HasValue ? (object)item.Created_Date : DBNull.Value;
+                                //row["Created_Time"] = item.Created_Time.HasValue ? (object)item.Created_Time : DBNull.Value;
+                                //row["Created_By"] = item.Created_By.HasValue ? (object)item.Created_By : DBNull.Value;
+                                //row["Updated_Date"] = item.Updated_Date.HasValue ? (object)item.Updated_Date : DBNull.Value;
+                                //row["Updated_Time"] = item.Updated_Time.HasValue ? (object)item.Updated_Time : DBNull.Value;
+                                //row["Updated_By"] = item.Updated_By.HasValue ? (object)item.Updated_By : DBNull.Value;
+                                row["RFID"] = !string.IsNullOrEmpty(item.RFID) ? item.RFID : DBNull.Value;
+                                row["Assign_Date"] = item.Assign_Date.HasValue ? (object)item.Assign_Date : DBNull.Value;
+                                row["Status"] = item.Status.HasValue ? (object)item.Status : DBNull.Value;
+                                row["Process"] = !string.IsNullOrEmpty(item.Process) ? item.Process : DBNull.Value;
+                                row["Close_Date"] = item.Close_Date.HasValue ? (object)item.Close_Date : DBNull.Value;
+
+                                dataTable_InwardDetail.Rows.Add(row);
+                            }
                         }
 
                         var (message, result) = await _account_Trans_Master_Service.Create_Update_Account_Trans_Master_Purchase(
                             dataTable,
                             dataTable_Terms,
                             dataTable_ExpenseTransDet,
+                            dataTable_InwardDetail,
                             account_Trans_Master.account_Trans_Id,
                             account_Trans_Master.mod_Type,
                             account_Trans_Master.invoice_No,
@@ -987,8 +1139,11 @@ namespace astute.Controllers
                             });
                         }
                     }
+                    else
+                    {
+                        return Unauthorized();
+                    }
                 }
-
                 return BadRequest(ModelState);
             }
             catch (Exception ex)
@@ -1154,13 +1309,11 @@ namespace astute.Controllers
         [HttpPost]
         [Route("inward_details_read_excel")]
         [Authorize]
-        public async Task<ActionResult> Inward_Details_ReadExcel([FromForm] IFormFile File_Location)
+        public async Task<ActionResult> Inward_Details_Read_Excel([FromForm] IFormFile File_Location, int import_Id)
         {
             Dictionary<string, List<string>> UploadResults = new Dictionary<string, List<string>>();
             if (File_Location != null && File_Location.Length > 0)
             {
-                
-
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/uploads");
 
                 if (!(Directory.Exists(filePath)))
@@ -1175,14 +1328,28 @@ namespace astute.Controllers
                 {
                     await File_Location.CopyToAsync(fileStream);
                 }
-                List<Dictionary<string, object>> result = await _account_Master_Service.Get_Purchase_Detail();
+
+                //List<Dictionary<string, object>> result = await _account_Master_Service.Get_Purchase_Detail();
+                List<Dictionary<string, object>> result = await _categoryService.Get_Import_Master_Detail(import_Id);
                 UploadResults = await ProcessExcelFile(Path.Combine(filePath, strFile), result);
+
+                if (UploadResults.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = UploadResults
+                    });
+                }
+                else {
+                    return NoContent();
+                }
             }
-            return Ok(new
+            return Conflict(new
             {
-                statusCode = HttpStatusCode.OK,
-                message = CoreCommonMessage.DataSuccessfullyFound,
-                data = UploadResults
+                statusCode = HttpStatusCode.Conflict,
+                message = CoreCommonMessage.FileNotFound
             });
         }
         public async Task<Dictionary<string, List<string>>> ProcessExcelFile(string filePath, List<Dictionary<string, object>> result)
@@ -1201,102 +1368,153 @@ namespace astute.Controllers
 
                     foreach (var mapping in result)
                     {
-                        string displayColumnName = mapping["Display_Name"].ToString();
+                        //string displayColumnName = mapping["Display_Name"].ToString();
+                        string displayColumnName = mapping["Column_Name"].ToString();
 
                         int columnIndex = excelColumnHeaders.FindIndex(header =>
-                            string.Equals(header, displayColumnName, StringComparison.OrdinalIgnoreCase));
+                        {
+                            string cleanedDisplayColumnName = displayColumnName.Replace("_", " ");
+                            string cleanedDisplayColumnName1 = displayColumnName.Replace(" ", "_");
+
+                            return string.Equals(header, displayColumnName, StringComparison.OrdinalIgnoreCase)
+                                || string.Equals(header, cleanedDisplayColumnName, StringComparison.OrdinalIgnoreCase)
+                                || string.Equals(header, cleanedDisplayColumnName1, StringComparison.OrdinalIgnoreCase);
+                        });
 
                         if (columnIndex != -1)
                         {
-                            string columnKey = displayColumnName.ToUpper();
+                            string columnKey = displayColumnName.Replace(" ", "_").ToUpper();
 
                             List<CategoryValueModel> result_category = null;
 
                             switch (columnKey)
                             {
                                 case "SHAPE":
-                                    InitializeColumnData(columnData, columnKey);
+                                    Initialize_ColumnData(columnData, columnKey);
                                     result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(13);
                                     break;
                                 case "COLOR":
-                                    InitializeColumnData(columnData, columnKey);
+                                    Initialize_ColumnData(columnData, columnKey);
                                     result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(14);
                                     break;
                                 case "CLARITY":
-                                    InitializeColumnData(columnData, columnKey);
+                                    Initialize_ColumnData(columnData, columnKey);
                                     result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(15);
                                     break;
                                 case "CUT":
-                                    InitializeColumnData(columnData, columnKey);
+                                    Initialize_ColumnData(columnData, columnKey);
                                     result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(16);
                                     break;
                                 case "POLISH":
-                                    InitializeColumnData(columnData, columnKey);
+                                    Initialize_ColumnData(columnData, columnKey);
                                     result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(17);
                                     break;
                                 case "SYMM":
-                                    InitializeColumnData(columnData, columnKey);
+                                    Initialize_ColumnData(columnData, columnKey);
                                     result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(19);
                                     break;
-                                case "FLS INTENSITY":
-                                    InitializeColumnData(columnData, columnKey);
+                                case "FLS_INTENSITY":
+                                    Initialize_ColumnData(columnData, columnKey);
                                     result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(21);
                                     break;
-                                case "TABLE BLACK":
-                                    InitializeColumnData(columnData, columnKey);
+                                case "TABLE_BLACK":
+                                    Initialize_ColumnData(columnData, columnKey);
                                     result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(26);
                                     break;
-                                case "TABLE WHITE":
-                                    InitializeColumnData(columnData, columnKey);
+                                case "TABLE_WHITE":
+                                    Initialize_ColumnData(columnData, columnKey);
                                     result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(27);
                                     break;
-                                case "SIDE BLACK":
-                                    InitializeColumnData(columnData, columnKey);
+                                case "SIDE_BLACK":
+                                    Initialize_ColumnData(columnData, columnKey);
                                     result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(28);
                                     break;
-                                case "SIDE WHITE":
-                                    InitializeColumnData(columnData, columnKey);
+                                case "SIDE_WHITE":
+                                    Initialize_ColumnData(columnData, columnKey);
                                     result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(29);
                                     break;
-                                case "SHADE":
-                                    InitializeColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(84);
+                                case "LAB":
+                                    Initialize_ColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(35);
+                                    break;
+                                case "CERT_TYPE":
+                                    Initialize_ColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(36);
+                                    break;
+                                case "CULET":
+                                    Initialize_ColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(37);
+                                    break;
+                                case "GIRDLE_CONDITION":
+                                    Initialize_ColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(49);
                                     break;
                                 case "LUSTER":
-                                    InitializeColumnData(columnData, columnKey);
+                                    Initialize_ColumnData(columnData, columnKey);
                                     result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(59);
                                     break;
-                                case "LASER INSCRIPTION":
-                                    InitializeColumnData(columnData, columnKey);
+                                case "LASER_INSCRIPTION":
+                                    Initialize_ColumnData(columnData, columnKey);
                                     result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(60);
+                                    break;
+                                case "SHADE":
+                                    Initialize_ColumnData(columnData, columnKey);
+                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(84);
                                     break;
                                 default:
                                     Console.WriteLine($"No matching case found for '{displayColumnName}'");
-                                    continue; // Skip processing for this column
+                                    break;
                             }
 
-                            if (result_category != null)
+                            if (columnKey == "CERTIFICATE_DATE")
                             {
-                                string columnKey_Name = $"{columnKey}_NAME";
-
-                                for (int rowIdx = 2; rowIdx <= worksheet.Dimension.End.Row; rowIdx++)
+                                Initialize_ColumnData(columnData, columnKey);
+                                for (int rowIndex = 2; rowIndex <= worksheet.Dimension.End.Row; rowIndex++)
                                 {
-                                    var cellValue = worksheet.Cells[rowIdx, columnIndex + 1].Value?.ToString();
-                                    var catValId = await FindCatValId(result_category, cellValue);
-                                    worksheet.Cells[rowIdx, columnIndex + 1].Value = catValId.Item1.ToString();
-                                    columnData[columnKey].Add(catValId.Item1.ToString());
-                                    columnData[columnKey_Name].Add(catValId.Item2);
-                                    Console.WriteLine($"Row {rowIdx}, Value: {cellValue}");
+                                    var cellValue = worksheet.Cells[rowIndex, columnIndex + 1].Value?.ToString();
+                                    if (!string.IsNullOrEmpty(cellValue))
+                                    {
+                                        if (DateTime.TryParse(cellValue, out DateTime date))
+                                        {
+                                            worksheet.Cells[rowIndex, columnIndex + 1].Value = date.ToString("dd-MM-yyyy");
+                                            columnData[columnKey].Add(date.ToString("dd-MM-yyyy"));
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine($"Unable to parse date in row {rowIndex}, Value: {cellValue}");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        columnData[columnKey].Add(null);
+                                    }
                                 }
                             }
                             else
                             {
-                                for (int rowIdx = 2; rowIdx <= worksheet.Dimension.End.Row; rowIdx++)
+                                if (result_category != null)
                                 {
-                                    var cellValue = worksheet.Cells[rowIdx, columnIndex + 1].Value?.ToString();
-                                    columnData[columnKey].Add(cellValue);
-                                    //columnData[columnKey_Name].Add(cellValue);
-                                    Console.WriteLine($"Row {rowIdx}, Value: {cellValue}");
+                                    string columnKey_Name = $"{columnKey}_NAME";
+
+                                    for (int rowIndex = 2; rowIndex <= worksheet.Dimension.End.Row; rowIndex++)
+                                    {
+                                        var cellValue = worksheet.Cells[rowIndex, columnIndex + 1].Value?.ToString();
+                                        var catValId = await Find_Cat_Val_Id(result_category, cellValue);
+                                        worksheet.Cells[rowIndex, columnIndex + 1].Value = catValId.Item1.ToString();
+                                        columnData[columnKey].Add(catValId.Item1.ToString());
+                                        columnData[columnKey_Name].Add(catValId.Item2);
+                                        Console.WriteLine($"Row {rowIndex}, Value: {cellValue}");
+                                    }
+                                }
+                                else
+                                {
+                                    columnData[columnKey] = new List<string>();
+                                    for (int rowIndex = 2; rowIndex <= worksheet.Dimension.End.Row; rowIndex++)
+                                    {
+                                        var cellValue = worksheet.Cells[rowIndex, columnIndex + 1].Value?.ToString();
+                                        columnData[columnKey].Add(cellValue);
+                                        Console.WriteLine($"Row {rowIndex}, Value: {cellValue}");
+                                    }
                                 }
                             }
                         }
@@ -1315,7 +1533,7 @@ namespace astute.Controllers
             return columnData;
         }
 
-        private void InitializeColumnData(Dictionary<string, List<string>> columnData, string columnKey)
+        private void Initialize_ColumnData(Dictionary<string, List<string>> columnData, string columnKey)
         {
             string columnKey_Name = $"{columnKey}_NAME";
 
@@ -1329,7 +1547,7 @@ namespace astute.Controllers
             }
         }
 
-        public async Task<(int, string)> FindCatValId(IList<CategoryValueModel> data, string Cat_Name)
+        public async Task<(int, string)> Find_Cat_Val_Id(IList<CategoryValueModel> data, string Cat_Name)
         {
             if (string.IsNullOrWhiteSpace(Cat_Name))
                 return (0, null);
@@ -1343,7 +1561,7 @@ namespace astute.Controllers
             }
             else
             {
-                return (0, null); // Return default values when no matching category value is found
+                return (0, null);
             }
         }
 
