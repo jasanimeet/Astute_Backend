@@ -13,5 +13,7 @@ namespace astute.Repository
         Task<DataTable> Get_Account_Master_Excel();
         Task<List<Dictionary<string, object>>> Get_Account_Master_Purchase(int account_Id);
         Task<List<Dictionary<string, object>>> Get_Purchase_Detail();
+        Task<List<Dictionary<string, object>>> Get_Import_Excel_Purchase(int TypeId);
+        Task<List<Dictionary<string, object>>> Get_Account_Trans_Master_Remarks(string Trans_Type);
     }
 }

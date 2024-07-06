@@ -1565,6 +1565,62 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_import_excel_purchase")]
+        [Authorize]
+        public async Task<IActionResult> Get_Import_Excel_Purchase(int Type_Id)
+        {
+            try
+            {
+                var result = await _account_Master_Service.Get_Import_Excel_Purchase(Type_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Import_Excel_Purchase", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("get_account_trans_master_remarks")]
+        [Authorize]
+        public async Task<IActionResult> Get_Account_Trans_Master_Remarks(string Trans_Type)
+        {
+            try
+            {
+                var result = await _account_Master_Service.Get_Account_Trans_Master_Remarks(Trans_Type);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Account_Trans_Master_Remarks", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }
