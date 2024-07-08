@@ -27,9 +27,7 @@ namespace astute.Controllers
         private readonly IConfiguration _configuration;
         private readonly ICommonService _commonService;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IEmailSender _emailSender;
         private readonly IJWTAuthentication _jWTAuthentication;
-        private readonly IEmployeeService _employeeService;
         private readonly IAccount_Group_Service _account_Group_Service;
         private readonly IAccount_Master_Service _account_Master_Service;
         private readonly IFirst_Voucher_No _trans_Service;
@@ -42,9 +40,7 @@ namespace astute.Controllers
             IConfiguration configuration,
             ICommonService commonService,
             IHttpContextAccessor httpContextAccessor,
-            IEmailSender emailSender,
             IJWTAuthentication jWTAuthentication,
-            IEmployeeService employeeService,
             IAccount_Group_Service account_Group_Service,
             IAccount_Master_Service account_Master_Service,
             IFirst_Voucher_No trans_Service,
@@ -54,9 +50,7 @@ namespace astute.Controllers
             _configuration = configuration;
             _commonService = commonService;
             _httpContextAccessor = httpContextAccessor;
-            _emailSender = emailSender;
             _jWTAuthentication = jWTAuthentication;
-            _employeeService = employeeService;
             _account_Group_Service = account_Group_Service;
             _account_Master_Service = account_Master_Service;
             _trans_Service = trans_Service;
@@ -1311,7 +1305,6 @@ namespace astute.Controllers
         [Authorize]
         public async Task<ActionResult> Inward_Details_Read_Excel([FromForm] IFormFile File_Location, int import_Id)
         {
-            Dictionary<string, List<string>> UploadResults = new Dictionary<string, List<string>>();
             if (File_Location != null && File_Location.Length > 0)
             {
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/uploads");
@@ -1329,9 +1322,8 @@ namespace astute.Controllers
                     await File_Location.CopyToAsync(fileStream);
                 }
 
-                //List<Dictionary<string, object>> result = await _account_Master_Service.Get_Purchase_Detail();
                 List<Dictionary<string, object>> result = await _categoryService.Get_Import_Master_Detail(import_Id);
-                UploadResults = await ProcessExcelFile(Path.Combine(filePath, strFile), result);
+                List<Dictionary<string, string>> UploadResults = await ProcessExcelFile(Path.Combine(filePath, strFile), result);
 
                 if (UploadResults.Count > 0)
                 {
@@ -1352,9 +1344,10 @@ namespace astute.Controllers
                 message = CoreCommonMessage.FileNotFound
             });
         }
-        public async Task<Dictionary<string, List<string>>> ProcessExcelFile(string filePath, List<Dictionary<string, object>> result)
+
+        public async Task<List<Dictionary<string, string>>> ProcessExcelFile(string filePath, List<Dictionary<string, object>> result)
         {
-            Dictionary<string, List<string>> columnData = new Dictionary<string, List<string>>();
+            List<Dictionary<string, string>> rowDataList = new List<Dictionary<string, string>>();
 
             try
             {
@@ -1362,166 +1355,93 @@ namespace astute.Controllers
                 {
                     ExcelWorksheet worksheet = package.Workbook.Worksheets.First();
 
+                    int totalRows = worksheet.Dimension.End.Row;
                     var excelColumnHeaders = Enumerable.Range(1, worksheet.Dimension.End.Column)
                         .Select(col => worksheet.Cells[1, col].Value?.ToString()?.Trim())
                         .ToList();
 
-                    foreach (var mapping in result)
+                    var categoryIds = new Dictionary<string, int>
                     {
-                        //string displayColumnName = mapping["Display_Name"].ToString();
-                        string displayColumnName = mapping["Column_Name"].ToString();
+                        { "SHAPE", 13 },
+                        { "COLOR", 14 },
+                        { "CLARITY", 15 },
+                        { "CUT", 16 },
+                        { "POLISH", 17 },
+                        { "SYMM", 19 },
+                        { "FLS_INTENSITY", 21 },
+                        { "TABLE_BLACK", 26 },
+                        { "TABLE_WHITE", 27 },
+                        { "SIDE_BLACK", 28 },
+                        { "SIDE_WHITE", 29 },
+                        { "LAB", 35 },
+                        { "CERT_TYPE", 36 },
+                        { "CULET", 37 },
+                        { "GIRDLE_CONDITION", 49 },
+                        { "LUSTER", 59 },
+                        { "LASER_INSCRIPTION", 60 },
+                        { "SHADE", 84 }
+                    };
 
-                        int columnIndex = excelColumnHeaders.FindIndex(header =>
+                    for (int rowIndex = 2; rowIndex <= totalRows; rowIndex++)
+                    {
+                        var rowData = new Dictionary<string, string>();
+
+                        foreach (var mapping in result)
                         {
-                            string cleanedDisplayColumnName = displayColumnName.Replace("_", " ");
-                            string cleanedDisplayColumnName1 = displayColumnName.Replace(" ", "_");
+                            string displayColumnName = mapping["Column_Name"].ToString();
 
-                            return string.Equals(header, displayColumnName, StringComparison.OrdinalIgnoreCase)
-                                || string.Equals(header, cleanedDisplayColumnName, StringComparison.OrdinalIgnoreCase)
-                                || string.Equals(header, cleanedDisplayColumnName1, StringComparison.OrdinalIgnoreCase);
-                        });
-
-                        if (columnIndex != -1)
-                        {
-                            string columnKey = displayColumnName.Replace(" ", "_").ToUpper();
-
-                            List<CategoryValueModel> result_category = null;
-
-                            switch (columnKey)
+                            int columnIndex = excelColumnHeaders.FindIndex(header =>
                             {
-                                case "SHAPE":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(13);
-                                    break;
-                                case "COLOR":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(14);
-                                    break;
-                                case "CLARITY":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(15);
-                                    break;
-                                case "CUT":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(16);
-                                    break;
-                                case "POLISH":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(17);
-                                    break;
-                                case "SYMM":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(19);
-                                    break;
-                                case "FLS_INTENSITY":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(21);
-                                    break;
-                                case "TABLE_BLACK":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(26);
-                                    break;
-                                case "TABLE_WHITE":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(27);
-                                    break;
-                                case "SIDE_BLACK":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(28);
-                                    break;
-                                case "SIDE_WHITE":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(29);
-                                    break;
-                                case "LAB":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(35);
-                                    break;
-                                case "CERT_TYPE":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(36);
-                                    break;
-                                case "CULET":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(37);
-                                    break;
-                                case "GIRDLE_CONDITION":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(49);
-                                    break;
-                                case "LUSTER":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(59);
-                                    break;
-                                case "LASER_INSCRIPTION":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(60);
-                                    break;
-                                case "SHADE":
-                                    Initialize_ColumnData(columnData, columnKey);
-                                    result_category = (List<CategoryValueModel>)await _categoryService.Get_Active_Category_Values(84);
-                                    break;
-                                default:
-                                    Console.WriteLine($"No matching case found for '{displayColumnName}'");
-                                    break;
-                            }
+                                string cleanedDisplayColumnName = displayColumnName.Replace("_", " ");
+                                string cleanedDisplayColumnName1 = displayColumnName.Replace(" ", "_");
 
-                            if (columnKey == "CERTIFICATE_DATE")
+                                return string.Equals(header, displayColumnName, StringComparison.OrdinalIgnoreCase)
+                                    || string.Equals(header, cleanedDisplayColumnName, StringComparison.OrdinalIgnoreCase)
+                                    || string.Equals(header, cleanedDisplayColumnName1, StringComparison.OrdinalIgnoreCase);
+                            });
+
+                            if (columnIndex != -1)
                             {
-                                Initialize_ColumnData(columnData, columnKey);
-                                for (int rowIndex = 2; rowIndex <= worksheet.Dimension.End.Row; rowIndex++)
+                                string columnKey = displayColumnName.Replace(" ", "_").ToUpper();
+
+                                if (categoryIds.TryGetValue(columnKey, out int categoryId))
                                 {
+                                    Initialize_ColumnData(rowData, columnKey);
+
+                                    var result_category = await _categoryService.Get_Active_Category_Values(categoryId);
+
                                     var cellValue = worksheet.Cells[rowIndex, columnIndex + 1].Value?.ToString();
-                                    if (!string.IsNullOrEmpty(cellValue))
+                                    var catValId = Find_Cat_Val_Id(result_category, cellValue);
+                                    rowData[columnKey] = catValId.Item1.ToString();
+                                    rowData[$"{columnKey}_NAME"] = catValId.Item2;
+                                }
+                                else if (columnKey == "CERTIFICATE_DATE")
+                                {
+                                    Initialize_ColumnData(rowData, columnKey);
+
+                                    var dateCellValue = worksheet.Cells[rowIndex, columnIndex + 1].Value?.ToString();
+                                    if (!string.IsNullOrEmpty(dateCellValue) && DateTime.TryParse(dateCellValue, out DateTime date))
                                     {
-                                        if (DateTime.TryParse(cellValue, out DateTime date))
-                                        {
-                                            worksheet.Cells[rowIndex, columnIndex + 1].Value = date.ToString("dd-MM-yyyy");
-                                            columnData[columnKey].Add(date.ToString("dd-MM-yyyy"));
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine($"Unable to parse date in row {rowIndex}, Value: {cellValue}");
-                                        }
+                                        rowData[columnKey] = date.ToString("dd-MM-yyyy");
                                     }
                                     else
                                     {
-                                        columnData[columnKey].Add(null);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (result_category != null)
-                                {
-                                    string columnKey_Name = $"{columnKey}_NAME";
-
-                                    for (int rowIndex = 2; rowIndex <= worksheet.Dimension.End.Row; rowIndex++)
-                                    {
-                                        var cellValue = worksheet.Cells[rowIndex, columnIndex + 1].Value?.ToString();
-                                        var catValId = await Find_Cat_Val_Id(result_category, cellValue);
-                                        worksheet.Cells[rowIndex, columnIndex + 1].Value = catValId.Item1.ToString();
-                                        columnData[columnKey].Add(catValId.Item1.ToString());
-                                        columnData[columnKey_Name].Add(catValId.Item2);
-                                        Console.WriteLine($"Row {rowIndex}, Value: {cellValue}");
+                                        rowData[columnKey] = null;
                                     }
                                 }
                                 else
                                 {
-                                    columnData[columnKey] = new List<string>();
-                                    for (int rowIndex = 2; rowIndex <= worksheet.Dimension.End.Row; rowIndex++)
-                                    {
-                                        var cellValue = worksheet.Cells[rowIndex, columnIndex + 1].Value?.ToString();
-                                        columnData[columnKey].Add(cellValue);
-                                        Console.WriteLine($"Row {rowIndex}, Value: {cellValue}");
-                                    }
+                                    var defaultValue = worksheet.Cells[rowIndex, columnIndex + 1].Value?.ToString();
+                                    rowData[columnKey] = defaultValue;
                                 }
                             }
+                            else
+                            {
+                                Console.WriteLine($"Column '{displayColumnName}' not found in Excel file.");
+                            }
                         }
-                        else
-                        {
-                            Console.WriteLine($"Column '{displayColumnName}' not found in Excel file.");
-                        }
+
+                        rowDataList.Add(rowData);
                     }
                 }
             }
@@ -1530,34 +1450,34 @@ namespace astute.Controllers
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
 
-            return columnData;
+            return rowDataList;
         }
 
-        private void Initialize_ColumnData(Dictionary<string, List<string>> columnData, string columnKey)
+        private void Initialize_ColumnData(Dictionary<string, string> rowData, string columnKey)
         {
             string columnKey_Name = $"{columnKey}_NAME";
 
-            if (!columnData.ContainsKey(columnKey))
+            if (!rowData.ContainsKey(columnKey))
             {
-                columnData[columnKey] = new List<string>();
+                rowData[columnKey] = null;
             }
-            if (!columnData.ContainsKey(columnKey_Name))
+            if (!rowData.ContainsKey(columnKey_Name))
             {
-                columnData[columnKey_Name] = new List<string>();
+                rowData[columnKey_Name] = null;
             }
         }
 
-        public async Task<(int, string)> Find_Cat_Val_Id(IList<CategoryValueModel> data, string Cat_Name)
+        public (int, string) Find_Cat_Val_Id(IList<CategoryValueModel> data, string Cat_Name)
         {
             if (string.IsNullOrWhiteSpace(Cat_Name))
                 return (0, null);
 
-            var shapeInfo = data.FirstOrDefault(d => d.Cat_Name.Equals(Cat_Name, StringComparison.OrdinalIgnoreCase)
+            var Info = data.FirstOrDefault(d => d.Cat_Name.Equals(Cat_Name, StringComparison.OrdinalIgnoreCase)
                                                   || (d.Synonyms != null && d.Synonyms.Split(',').Any(s => s.Equals(Cat_Name, StringComparison.OrdinalIgnoreCase))));
 
-            if (shapeInfo != null)
+            if (Info != null)
             {
-                return (shapeInfo.Cat_val_Id, shapeInfo.Cat_Name);
+                return (Info.Cat_val_Id, Info.Cat_Name);
             }
             else
             {
