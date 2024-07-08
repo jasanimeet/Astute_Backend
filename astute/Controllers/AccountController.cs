@@ -1030,7 +1030,7 @@ namespace astute.Controllers
                             {
                                 DataRow row = dataTable_InwardDetail.NewRow();
 
-                                row["Id"] = item.Id.HasValue ? (object)item.Id : DBNull.Value;
+                                row["Id"] = item.Id.HasValue ? (object)item.Id.Value : DBNull.Value;
                                 row["Stock_Id"] = !string.IsNullOrEmpty(item.Stock_Id) ? (object)item.Stock_Id : DBNull.Value;
                                 row["Cert_No"] = !string.IsNullOrEmpty(item.Cert_No) ? (object)item.Cert_No : DBNull.Value;
                                 row["Shape"] = item.Shape > 0 ? (object)item.Shape : DBNull.Value;
@@ -1057,11 +1057,10 @@ namespace astute.Controllers
                                 row["Pavillion_Angle"] = item.Pavillion_Angle.HasValue ? (object)item.Pavillion_Angle : DBNull.Value;
                                 row["Pavillion_Height"] = item.Pavillion_Height.HasValue ? (object)item.Pavillion_Height : DBNull.Value;
                                 row["Lab"] = item.Lab > 0 ? (object)item.Lab : DBNull.Value;
-                                row["Supplier_Ref_No"] = !string.IsNullOrEmpty(item.Supplier_Ref_No) ? item.Supplier_Ref_No : DBNull.Value;
-                                row["Girdle_Type"] = item.Girdle_Type.HasValue ? (object)item.Girdle_Type : DBNull.Value;
-                                row["Key_to_Symbol"] = !string.IsNullOrEmpty(item.Key_to_Symbol) ? (object)item.Rap_Price : DBNull.Value;
+                                row["Supplier_Ref_No"] = !string.IsNullOrEmpty(item.Supplier_Ref_No) ? (object)item.Supplier_Ref_No : DBNull.Value;
+                                row["Key_to_Symbol"] = !string.IsNullOrEmpty(item.Key_to_Symbol) ? (object)item.Key_to_Symbol : DBNull.Value;
                                 row["Culet"] = item.Culet.HasValue ? (object)item.Culet : DBNull.Value;
-                                row["Lab_Comment"] = !string.IsNullOrEmpty(item.Lab_Comment) ? (object)item.Rap_Price : DBNull.Value;
+                                row["Lab_Comment"] = !string.IsNullOrEmpty(item.Lab_Comment) ? (object)item.Lab_Comment : DBNull.Value;
                                 row["Str_Ln"] = item.Str_Ln.HasValue ? (object)item.Str_Ln : DBNull.Value;
                                 row["LR_Half"] = item.LR_Half.HasValue ? (object)item.LR_Half : DBNull.Value;
                                 row["Girdle_Per"] = item.Girdle_Per.HasValue ? (object)item.Girdle_Per : DBNull.Value;
@@ -1077,7 +1076,7 @@ namespace astute.Controllers
                                 row["Laser_Insc"] = item.Laser_Insc.HasValue ? (object)item.Laser_Insc : DBNull.Value;
                                 row["Cert_Date"] = item.Cert_Date.HasValue ? (object)item.Cert_Date : DBNull.Value;
                                 row["Cert_Type"] = item.Cert_Type.HasValue ? (object)item.Cert_Type : DBNull.Value;
-                                row["Company_Id"] = !string.IsNullOrEmpty(item.Company_Id) ? item.Company_Id : DBNull.Value;
+                                row["Company_Id"] = !string.IsNullOrEmpty(item.Company_Id) ? (object)item.Company_Id : DBNull.Value;
                                 //row["Trans_Id"] = item.Trans_Id.HasValue ? (object)item.Trans_Id : DBNull.Value;
                                 //row["Seq_No"] = item.Seq_No.HasValue ? (object)item.Seq_No : DBNull.Value;
                                 //row["Year_Id"] = item.Year_Id.HasValue ? (object)item.Year_Id : DBNull.Value;
@@ -1086,15 +1085,33 @@ namespace astute.Controllers
                                 //row["Created_By"] = item.Created_By.HasValue ? (object)item.Created_By : DBNull.Value;
                                 //row["Updated_Date"] = item.Updated_Date.HasValue ? (object)item.Updated_Date : DBNull.Value;
                                 //row["Updated_Time"] = item.Updated_Time.HasValue ? (object)item.Updated_Time : DBNull.Value;
-                                //row["Updated_By"] = item.Updated_By.HasValue ? (object)item.Updated_By : DBNull.Value;
-                                row["RFID"] = !string.IsNullOrEmpty(item.RFID) ? item.RFID : DBNull.Value;
+                                //row["Updated_By"] = item.Updated_By.HasValue ? (object)item.Updated_By : DBNull.Value;                                
+                                row["RFID"] = !string.IsNullOrEmpty(item.RFID) ? (object)item.RFID : DBNull.Value; 
                                 row["Assign_Date"] = item.Assign_Date.HasValue ? (object)item.Assign_Date : DBNull.Value;
-                                row["Status"] = item.Status.HasValue ? (object)item.Status : DBNull.Value;
-                                row["Process"] = !string.IsNullOrEmpty(item.Process) ? item.Process : DBNull.Value;
+                                row["Status"] = item.Status.HasValue ? (object)item.Status : DBNull.Value; 
+                                row["Process"] = !string.IsNullOrEmpty(item.Process) ? (object)item.Process : DBNull.Value; 
                                 row["Close_Date"] = item.Close_Date.HasValue ? (object)item.Close_Date : DBNull.Value;
+
+                                
+                                if (!string.IsNullOrEmpty(item.Girdle_Type.ToString()))
+                                {
+                                    if (int.TryParse(item.Girdle_Type.ToString(), out int girdleType))
+                                    {
+                                        row["Girdle_Type"] = girdleType;
+                                    }
+                                    else
+                                    {
+                                        row["Girdle_Type"] = DBNull.Value;
+                                    }
+                                }
+                                else
+                                {
+                                    row["Girdle_Type"] = DBNull.Value;
+                                }
 
                                 dataTable_InwardDetail.Rows.Add(row);
                             }
+
                         }
 
                         var (message, result) = await _account_Trans_Master_Service.Create_Update_Account_Trans_Master_Purchase(
@@ -1377,6 +1394,7 @@ namespace astute.Controllers
                         { "CERT_TYPE", 36 },
                         { "CULET", 37 },
                         { "GIRDLE_CONDITION", 49 },
+                        { "GIRDLE_TYPE", 50 },
                         { "LUSTER", 59 },
                         { "LASER_INSCRIPTION", 60 },
                         { "SHADE", 84 }
