@@ -949,6 +949,8 @@ namespace astute.Repository
             newDataTable.Columns.Add("ASS3_CODE", typeof(int));
             newDataTable.Columns.Add("TRANS_DATE", typeof(DateTime));
             newDataTable.Columns.Add("ALIAS_NAME", typeof(string));
+            newDataTable.Columns.Add("SKYPE_ID", typeof(string));
+            newDataTable.Columns.Add("WECHATID", typeof(string));
 
             foreach (DataRow row in dataTable.Rows)
             {
@@ -981,6 +983,8 @@ namespace astute.Repository
                 newRow["ASS2_PER"] = DBNull.Value.Equals(row["ASS2_PER"]) || string.IsNullOrEmpty(row["ASS2_PER"].ToString()) ? DBNull.Value : (object)Convert.ToSingle(row["ASS2_PER"]);
                 newRow["ASS3_CODE"] = DBNull.Value.Equals(row["ASS3_CODE"]) ? DBNull.Value : row["ASS3_CODE"].ToString();
                 newRow["ALIAS_NAME"] = (!string.IsNullOrEmpty(row["SHORT_NAME"].ToString())) ? row["SHORT_NAME"] : DBNull.Value;
+                newRow["SKYPE_ID"] = (!string.IsNullOrEmpty(row["SKYPE_ID"].ToString())) ? row["SKYPE_ID"] : DBNull.Value;
+                newRow["WECHATID"] = (!string.IsNullOrEmpty(row["WECHATID"].ToString())) ? row["WECHATID"] : DBNull.Value;
 
                 newDataTable.Rows.Add(newRow);
             }
