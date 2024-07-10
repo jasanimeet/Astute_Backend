@@ -918,43 +918,43 @@ namespace astute.Repository
             param1.Direction = ParameterDirection.Output;
             paramList.Add(param1);
 
-            DataTable dataTable = await _dbOracleAccess.CallSP("party_info_transfer", paramList);
+            DataTable dataTable_Party_Info = await _dbOracleAccess.CallSP("party_info_transfer", paramList);            
 
-            DataTable newDataTable = new DataTable();
+            DataTable newDataTable_Party_Info = new DataTable();
 
-            newDataTable.Columns.Add("CUSTOMER", typeof(string));
-            newDataTable.Columns.Add("SUPPLIER", typeof(string));
-            newDataTable.Columns.Add("LAB", typeof(string));
-            newDataTable.Columns.Add("PARTY_CODE", typeof(string));
-            newDataTable.Columns.Add("PARTY_NAME", typeof(string));
-            newDataTable.Columns.Add("ADDRESS_1", typeof(string));
-            newDataTable.Columns.Add("ADDRESS_2", typeof(string));
-            newDataTable.Columns.Add("ADDRESS_3", typeof(string));
-            newDataTable.Columns.Add("CITY", typeof(string));
-            newDataTable.Columns.Add("PIN_CODE", typeof(string));
-            newDataTable.Columns.Add("MOBILE_NO", typeof(string));
-            newDataTable.Columns.Add("MOBILE_NO_1", typeof(string));
-            newDataTable.Columns.Add("PHONE_NO", typeof(string));
-            newDataTable.Columns.Add("PHONE_NO_1", typeof(string));
-            newDataTable.Columns.Add("FAX_NO", typeof(string));
-            newDataTable.Columns.Add("EMAIL", typeof(string));
-            newDataTable.Columns.Add("EMAIL_1", typeof(string));
-            newDataTable.Columns.Add("WEBSITE", typeof(string));
-            newDataTable.Columns.Add("INVOICE_GROUP", typeof(string));
-            newDataTable.Columns.Add("LEAVE_DATE", typeof(DateTime));
-            newDataTable.Columns.Add("ASS1_CODE", typeof(int));
-            newDataTable.Columns.Add("ASS1_PER", typeof(float));
-            newDataTable.Columns.Add("ASS2_CODE", typeof(int));
-            newDataTable.Columns.Add("ASS2_PER", typeof(float));
-            newDataTable.Columns.Add("ASS3_CODE", typeof(int));
-            newDataTable.Columns.Add("TRANS_DATE", typeof(DateTime));
-            newDataTable.Columns.Add("ALIAS_NAME", typeof(string));
-            newDataTable.Columns.Add("SKYPE_ID", typeof(string));
-            newDataTable.Columns.Add("WECHATID", typeof(string));
+            newDataTable_Party_Info.Columns.Add("CUSTOMER", typeof(string));
+            newDataTable_Party_Info.Columns.Add("SUPPLIER", typeof(string));
+            newDataTable_Party_Info.Columns.Add("LAB", typeof(string));
+            newDataTable_Party_Info.Columns.Add("PARTY_CODE", typeof(string));
+            newDataTable_Party_Info.Columns.Add("PARTY_NAME", typeof(string));
+            newDataTable_Party_Info.Columns.Add("ADDRESS_1", typeof(string));
+            newDataTable_Party_Info.Columns.Add("ADDRESS_2", typeof(string));
+            newDataTable_Party_Info.Columns.Add("ADDRESS_3", typeof(string));
+            newDataTable_Party_Info.Columns.Add("CITY", typeof(string));
+            newDataTable_Party_Info.Columns.Add("PIN_CODE", typeof(string));
+            newDataTable_Party_Info.Columns.Add("MOBILE_NO", typeof(string));
+            newDataTable_Party_Info.Columns.Add("MOBILE_NO_1", typeof(string));
+            newDataTable_Party_Info.Columns.Add("PHONE_NO", typeof(string));
+            newDataTable_Party_Info.Columns.Add("PHONE_NO_1", typeof(string));
+            newDataTable_Party_Info.Columns.Add("FAX_NO", typeof(string));
+            newDataTable_Party_Info.Columns.Add("EMAIL", typeof(string));
+            newDataTable_Party_Info.Columns.Add("EMAIL_1", typeof(string));
+            newDataTable_Party_Info.Columns.Add("WEBSITE", typeof(string));
+            newDataTable_Party_Info.Columns.Add("INVOICE_GROUP", typeof(string));
+            newDataTable_Party_Info.Columns.Add("LEAVE_DATE", typeof(DateTime));
+            newDataTable_Party_Info.Columns.Add("ASS1_CODE", typeof(int));
+            newDataTable_Party_Info.Columns.Add("ASS1_PER", typeof(float));
+            newDataTable_Party_Info.Columns.Add("ASS2_CODE", typeof(int));
+            newDataTable_Party_Info.Columns.Add("ASS2_PER", typeof(float));
+            newDataTable_Party_Info.Columns.Add("ASS3_CODE", typeof(int));
+            newDataTable_Party_Info.Columns.Add("TRANS_DATE", typeof(DateTime));
+            newDataTable_Party_Info.Columns.Add("ALIAS_NAME", typeof(string));
+            newDataTable_Party_Info.Columns.Add("SKYPE_ID", typeof(string));
+            newDataTable_Party_Info.Columns.Add("WECHATID", typeof(string));
 
-            foreach (DataRow row in dataTable.Rows)
+            foreach (DataRow row in dataTable_Party_Info.Rows)
             {
-                DataRow newRow = newDataTable.NewRow();
+                DataRow newRow = newDataTable_Party_Info.NewRow();
 
                 newRow["CUSTOMER"] = DBNull.Value.Equals(row["CUSTOMER"]) ? DBNull.Value : row["CUSTOMER"].ToString();
                 newRow["SUPPLIER"] = DBNull.Value.Equals(row["SUPPLIER"]) ? DBNull.Value : row["SUPPLIER"].ToString();
@@ -986,18 +986,53 @@ namespace astute.Repository
                 newRow["SKYPE_ID"] = (!string.IsNullOrEmpty(row["SKYPE_ID"].ToString())) ? row["SKYPE_ID"] : DBNull.Value;
                 newRow["WECHATID"] = (!string.IsNullOrEmpty(row["WECHATID"].ToString())) ? row["WECHATID"] : DBNull.Value;
 
-                newDataTable.Rows.Add(newRow);
+                newDataTable_Party_Info.Rows.Add(newRow);
             }
 
-            var parameter = new SqlParameter("@tableInq", SqlDbType.Structured)
+            DataTable dataTable_Party_Contact = await _dbOracleAccess.CallSP("party_contact_transfer", paramList);
+
+            DataTable newDataTable_Party_Contact = new DataTable();
+
+            newDataTable_Party_Contact.Columns.Add("PARTY_CODE", typeof(string));
+            newDataTable_Party_Contact.Columns.Add("FIRST_NAME", typeof(string));
+            newDataTable_Party_Contact.Columns.Add("DESIGNATION_ID", typeof(string));
+            newDataTable_Party_Contact.Columns.Add("MOBILE_NO", typeof(string));
+            newDataTable_Party_Contact.Columns.Add("PHONE_NO", typeof(string));
+            newDataTable_Party_Contact.Columns.Add("EMAIL", typeof(string));
+            newDataTable_Party_Contact.Columns.Add("SRNO", typeof(int));
+
+            foreach (DataRow row in dataTable_Party_Contact.Rows)
+            {
+                DataRow newRow = newDataTable_Party_Contact.NewRow();
+                
+                newRow["PARTY_CODE"] = DBNull.Value.Equals(row["PARTY_CODE"]) ? DBNull.Value : row["PARTY_CODE"].ToString();
+                newRow["FIRST_NAME"] = DBNull.Value.Equals(row["NAME"]) ? DBNull.Value : row["NAME"].ToString();
+                newRow["DESIGNATION_ID"] = DBNull.Value.Equals(row["DESG"]) ? DBNull.Value : row["DESG"].ToString();
+                newRow["MOBILE_NO"] = DBNull.Value.Equals(row["MOBILE_NO"]) ? DBNull.Value : row["MOBILE_NO"].ToString();
+                newRow["PHONE_NO"] = DBNull.Value.Equals(row["PHONE_NO"]) ? DBNull.Value : row["PHONE_NO"].ToString();
+                newRow["EMAIL"] = DBNull.Value.Equals(row["EMAIL"]) ? DBNull.Value : row["EMAIL"].ToString();
+                newRow["SRNO"] = DBNull.Value.Equals(row["SRNO"]) || string.IsNullOrEmpty(row["SRNO"].ToString()) ? DBNull.Value : (object)Convert.ToInt32(row["SRNO"]);
+
+                newDataTable_Party_Contact.Rows.Add(newRow);
+            }
+
+            var parameter_Fortune_Party_Master_Table_Type = new SqlParameter("@Fortune_Party_Master_Table_Type", SqlDbType.Structured)
             {
                 TypeName = "[dbo].[Fortune_Party_Master_Table_Type]",
-                Value = newDataTable
+                Value = newDataTable_Party_Info
+            };
+            
+            var parameter_Fortune_Party_Contact_Table_Type = new SqlParameter("@Fortune_Party_Contact_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Fortune_Party_Contact_Table_Type]",
+                Value = newDataTable_Party_Contact
             };
 
             _dbContext.Database.SetCommandTimeout(1800);
             var result = await _dbContext.Database.ExecuteSqlRawAsync(
-                @"EXEC [Fortune_Party_Master_Ora_Insert_Update] @tableInq", parameter);
+                @"EXEC [Fortune_Party_Master_Ora_Insert_Update] @Fortune_Party_Master_Table_Type, @Fortune_Party_Contact_Table_Type", 
+                parameter_Fortune_Party_Master_Table_Type, 
+                parameter_Fortune_Party_Contact_Table_Type);
 
             return result;
         }

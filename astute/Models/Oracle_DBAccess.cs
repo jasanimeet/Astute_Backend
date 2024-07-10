@@ -33,7 +33,7 @@ namespace astute.Models
             connection.ConnectionString = GetConnectionString();
 
             await connection.OpenAsync();
-            
+
             cmd.Connection = connection;
             cmd.CommandText = SP;
             cmd.CommandType = CommandType.StoredProcedure;
@@ -42,7 +42,11 @@ namespace astute.Models
             {
                 foreach (var parameter in paramList)
                 {
-                    cmd.Parameters.Add(parameter);
+                    OracleParameter param = new OracleParameter(parameter.ParameterName, parameter.Value);
+                    param.Direction = parameter.Direction;
+                    param.OracleDbType = parameter.OracleDbType;
+                    param.Size = parameter.Size;
+                    cmd.Parameters.Add(param);
                 }
             }
 
