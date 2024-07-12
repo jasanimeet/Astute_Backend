@@ -1571,12 +1571,12 @@ namespace astute.Repository
             }
             return result;
         }
+        
         public async Task<int> Delete_Report_User_Role(int id, int user_Id, string format_Type)
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Report_Users_Role_Delete {id},{user_Id}, {format_Type}"));
-            //return await Task.Run(() => _dbContext.Database
-            //            .ExecuteSqlRawAsync(@"EXEC Report_Users_Role_Delete @Id, @User_Id, @Format_Type", id, user_Id, format_Type));
         }
+
         public async Task<(List<Dictionary<string, object>>, string, string, string, string, string, string, string, string, DataTable)> Get_Report_Search(int id, IList<Report_Filter_Parameter> report_Filter_Parameters, int iPgNo, int iPgSize, IList<Report_Sorting> iSort, string is_Selected_Supp_Stock_Id, string act_Mod_Id)
         {
             DataTable dataTable = new DataTable();
