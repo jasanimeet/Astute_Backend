@@ -343,6 +343,7 @@ namespace astute.CoreModel
         public static string ReportDetailUpdated = ReportDetail + UpdatedSuccessfully;
         public static string ReportDetailDeleted = ReportDetail + DeletedSuccessfully;
         public static string ReportRoles = "Report roles apply successfully.";
+        public static string ReportRolesDeleted = "Report roles " + DeletedSuccessfully;
         public static string SearchedReportCreated = "Search save has been added successfully.";
         public static string SearchedReportUpdated = "Search save has been updated successfully.";
         public static string SearchedReportDeleted = "Search save has been deleted successfully.";
