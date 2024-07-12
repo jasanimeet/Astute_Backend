@@ -1536,7 +1536,7 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Report_Users_Role(int id, int user_Id, string user_Type, string format_Type)
+        public async Task<List<Dictionary<string, object>>> Get_Report_Users_Role(int id, int user_Id, string user_Type)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -1547,7 +1547,6 @@ namespace astute.Repository
                     command.Parameters.Add(id > 0 ? new SqlParameter("@Id", id) : new SqlParameter("@Id", DBNull.Value));
                     command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(user_Type) ? new SqlParameter("@User_Type", user_Type) : new SqlParameter("@User_Type", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(format_Type) ? new SqlParameter("@Format_Type", format_Type) : new SqlParameter("@Format_Type", DBNull.Value));
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())

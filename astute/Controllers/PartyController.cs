@@ -4309,11 +4309,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_report_users_role")]
         [Authorize]
-        public async Task<IActionResult> Get_Report_Users_Role(int id, int user_Id, string user_Type, string format_Type)
+        public async Task<IActionResult> Get_Report_Users_Role(int id, int user_Id, string user_Type)
         {
             try
             {
-                var result = await _supplierService.Get_Report_Users_Role(id, user_Id, user_Type, format_Type);
+                var result = await _supplierService.Get_Report_Users_Role(id, user_Id, user_Type);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -6896,7 +6896,7 @@ namespace astute.Controllers
                 {
                     var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                     int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-                    var result = await _supplierService.Get_Report_Users_Role(report_Filter.id, (int)user_Id, null, null);
+                    var result = await _supplierService.Get_Report_Users_Role(report_Filter.id, (int)user_Id, null);
                     List<string> columnNames = new List<string>();
                     if (result != null && result.Count > 0)
                     {
@@ -9559,7 +9559,7 @@ namespace astute.Controllers
                 var dt_stock = await _supplierService.Get_Report_Search_Excel(cart_Approval_Order_Email_Model.id, cart_Approval_Order_Email_Model.Report_Filter_Parameter);
                 if (dt_stock != null && dt_stock.Rows.Count > 0)
                 {
-                    var result = await _supplierService.Get_Report_Users_Role(cart_Approval_Order_Email_Model.id, (int)user_Id, null, null);
+                    var result = await _supplierService.Get_Report_Users_Role(cart_Approval_Order_Email_Model.id, (int)user_Id, null);
                     List<string> columnNames = new List<string>();
                     if (result != null && result.Count > 0)
                     {
