@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -2704,6 +2705,7 @@ namespace astute.Controllers
                     var (message, stock_Data_Id) = await _supplierService.Stock_Data_Custom_Insert_Update(stock_Data_Master);
                     if (message == "success" && stock_Data_Id > 0)
                     {
+
                         if (stock_Data_Master.Stock_Data_List != null && stock_Data_Master.Stock_Data_List.Count > 0)
                         {
                             DataTable dt_our_stock_data = new DataTable();
@@ -2724,7 +2726,12 @@ namespace astute.Controllers
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.StockUploadedSuccessfully
+                            message = CoreCommonMessage.StockUploadedSuccessfully,
+                            data = new
+                            {
+                                Supplier_Id = (int)stock_Data_Master.Supplier_Id,
+                                Stock_Data_Id = stock_Data_Id
+                            }
                         });
                     }
                 }
@@ -2768,6 +2775,51 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("suplier_stock_start_end_time_update")]
+        public async Task<IActionResult> Supplier_Stock_Start_End_Time_Update(Supplier_Stock_Update supplier_Stock_Update)
+        {
+            try
+            {
+                if (!TimeSpan.TryParse(supplier_Stock_Update.Start_Time, out TimeSpan startTime))
+                {
+                    return BadRequest(new { message = "Invalid format for Start_Time." });
+                }
+
+                if (!TimeSpan.TryParse(supplier_Stock_Update.End_Time, out TimeSpan endTime))
+                {
+                    return BadRequest(new { message = "Invalid format for End_Time." });
+                }
+
+                if (startTime > endTime)
+                {
+                    return BadRequest(new { message = "Time not valid: Start_Time cannot be greater than End_Time." });
+                }
+
+                var result = await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.StkUpdate
+
+                    });
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Stock_Data_Distinct_Column_Values", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+
+        }
+
         #endregion
 
         #region Stock Number Generate
@@ -3089,6 +3141,8 @@ namespace astute.Controllers
         [Authorize]
         public async Task<IActionResult> Create_Update_Manual_Upload([FromForm] Party_File party_File, IFormFile File_Location)
         {
+            string startTime = DateTime.Now.TimeOfDay.ToString(@"hh\:mm\:ss");
+
             string party_name = string.Empty;
             try
             {
@@ -3799,6 +3853,16 @@ namespace astute.Controllers
                                             if (stock_Data_Master_Schedular.Upload_Type == "O")
                                             {
                                                 await _supplierService.Supplier_Stock_Manual_File_Insert_Update((int)stock_Data_Master_Schedular.Supplier_Id, stock_Data_Id, party_File.Is_Overwrite ?? false);
+                                                string endTime = DateTime.Now.TimeOfDay.ToString(@"hh\:mm\:ss");
+
+                                                Supplier_Stock_Update supplier_Stock_Update = new Supplier_Stock_Update()
+                                                {
+                                                    Supplier_Id = party_File.Party_Id ?? 0,
+                                                    Stock_Data_Id = stock_Data_Id,
+                                                    Start_Time = startTime,
+                                                    End_Time = endTime
+                                                };
+                                                await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
                                             }
                                         }
                                         return Ok(new
@@ -11350,5 +11414,7 @@ namespace astute.Controllers
 
 
         #endregion
+
+
     }
 }

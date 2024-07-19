@@ -1114,6 +1114,45 @@ namespace astute.Repository
                             .FirstOrDefault());
             return result;
         }
+
+        public async Task<int> Supplier_Stock_Start_End_Time_Update(Supplier_Stock_Update supplier_Stock_Update)
+        {
+            var supplier_Id = new SqlParameter("@Supplier_Id", supplier_Stock_Update.Supplier_Id);
+            var stock_Data_Id = new SqlParameter("@Stock_Data_Id", supplier_Stock_Update.Stock_Data_Id);
+            var start_Time = new SqlParameter("@Start_Time", supplier_Stock_Update.Start_Time);
+            var end_Time = new SqlParameter("@End_Time", supplier_Stock_Update.End_Time);
+
+            var sqlCommand = @"exec [Supplier_Stock_Start_End_Process] @Supplier_Id, @Stock_Data_Id, @Start_Time, @End_Time";
+
+            var result = await Task.Run(async () =>
+            {
+                using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = sqlCommand;
+                    command.Parameters.Add(supplier_Id);
+                    command.Parameters.Add(stock_Data_Id);
+                    command.Parameters.Add(start_Time);
+                    command.Parameters.Add(end_Time);
+
+                    // Set the command timeout to 30 minutes (in seconds)
+                    command.CommandTimeout = 1800;
+
+                    await _dbContext.Database.OpenConnectionAsync();
+                    try
+                    {
+                        var affectedRows = await command.ExecuteNonQueryAsync();
+                        return affectedRows;
+                    }
+                    finally
+                    {
+                        _dbContext.Database.CloseConnection();
+                    }
+                }
+            });
+
+            return result;
+
+        }
         #endregion
 
         #region Stock Number Generation

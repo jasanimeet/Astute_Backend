@@ -51,6 +51,8 @@ namespace astute.Repository
         Task<int> Supplier_Stock_Manual_File_Insert_Update(int supplier_Id, int stock_Data_Id, bool is_Overwrite);
         Task<int> Stock_Data_Shedular_Insert_Update(DataTable dataTable, int Stock_Data_Id);
         Task<DropdownModel> Get_Purchase_Order_Supplier(string supp_Ref_No);
+        Task<int> Supplier_Stock_Start_End_Time_Update(Supplier_Stock_Update supplier_Stock_Update);
+
         #endregion
 
         #region Stock Number Generation
