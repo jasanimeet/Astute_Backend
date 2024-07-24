@@ -11348,6 +11348,35 @@ namespace astute.Controllers
             }
         }
 
+        
+        [HttpPost]
+        [Route("job_transfer_supplier_pricing_cal")]
+        [Authorize]
+        public async Task<IActionResult> Job_Transfer_Supplier_Pricing_Cal(int party_Id)
+        {
+            try
+            {
+                var result = await _labUserService.Job_Transfer_Supplier_Pricing_Cal(party_Id);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.JobExc
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Job_Transfer_Supplier_Pricing_Cal", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
 
         #endregion
     }

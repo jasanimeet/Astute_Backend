@@ -14,5 +14,6 @@ namespace astute.Repository
         Task<int> Create_Update_Suspend_Days(int id, int days);
         Task<List<Dictionary<string, object>>> Get_Customer_Lab_User(int party_Id);
         Task<int> Job_Transfer_User_Pricing();
+        Task<int> Job_Transfer_Supplier_Pricing_Cal(int party_Id);
     }
 }

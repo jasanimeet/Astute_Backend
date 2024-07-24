@@ -3,8 +3,6 @@ using astute.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -240,6 +238,17 @@ namespace astute.Repository
             });
 
             //var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC [Job_Transfer_User_Pricing]"));
+
+            return result;
+        }
+        
+        public async Task<int> Job_Transfer_Supplier_Pricing_Cal(int party_Id)
+        {
+            var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+            
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC [Job_Transfer_Supplier_Pricing_Cal] @Party_Id",
+                        _party_Id));
 
             return result;
         }
