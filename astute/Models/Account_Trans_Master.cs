@@ -56,10 +56,10 @@ namespace astute.Models
         public string? narration { get; set; }
         public int Cat_Val_Id { get; set; }
         public int Parcel_Id { get; set; }
-        public int Pcs { get; set; }
-        public decimal Cts { get; set; }
+        public int? Pcs { get; set; }
+        public decimal? Cts { get; set; }
         public string Remarks { get; set; }
-        public decimal Rate { get; set; }
+        public decimal? Rate { get; set; }
 
 
     }

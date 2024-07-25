@@ -893,14 +893,14 @@ namespace astute.Controllers
                                 row["By_Type"] = account_Trans_Master.type;
                                 row["To_Account"] = item.account;
                                 row["To_Type"] = item.type;
-                                row["Amount"] = item.amount;
+                                row["Amount"] = item.amount > 0 ? (object)item.amount : (object)DBNull.Value;
                                 row["Narration"] = !string.IsNullOrEmpty(item.narration) ? item.narration : (object)DBNull.Value;
-                                row["Cat_Val_Id"] = item.Cat_Val_Id;
+                                row["Cat_Val_Id"] = item.Cat_Val_Id > 0 ? (object)item.Cat_Val_Id : (object)DBNull.Value;
                                 row["Parcel_Id"] = item.Parcel_Id > 0 ? (object)item.Parcel_Id : (object)DBNull.Value;
                                 row["Pcs"] = item.Pcs > 0 ? (object)item.Pcs : (object)DBNull.Value;
-                                row["Cts"] = item.Cts;
-                                row["Remarks"] = item.Remarks;
-                                row["Rate"] = item.Rate;
+                                row["Cts"] = item.Cts > 0 ? (object)item.Cts : (object)DBNull.Value;
+                                row["Remarks"] = !string.IsNullOrEmpty(item.Remarks) ? item.Remarks : (object)DBNull.Value;
+                                row["Rate"] = item.Rate > 0 ? (object)item.Rate : (object)DBNull.Value;
 
                                 dataTable.Rows.Add(row);
                             }
@@ -919,7 +919,7 @@ namespace astute.Controllers
 
                                 row["Terms_Trans_Det_Id"] = item.Terms_Trans_Det_Id > 0 ? (object)item.Terms_Trans_Det_Id : (object)DBNull.Value;
                                 row["Terms_Id"] = item.Terms_Id > 0 ? (object)item.Terms_Id : (object)DBNull.Value;
-                                row["Amount"] = item.amount;
+                                row["Amount"] = item.amount > 0 ? (object)item.amount : (object)DBNull.Value;
 
                                 dataTable_Terms.Rows.Add(row);
                             }
@@ -1007,15 +1007,6 @@ namespace astute.Controllers
                         dataTable_InwardDetail.Columns.Add("Cert_Date", typeof(DateTime));
                         dataTable_InwardDetail.Columns.Add("Cert_Type", typeof(int));
                         dataTable_InwardDetail.Columns.Add("Company_Id", typeof(string));
-                        //dataTable_InwardDetail.Columns.Add("Trans_Id", typeof(int));
-                        //dataTable_InwardDetail.Columns.Add("Seq_No", typeof(int));
-                        //dataTable_InwardDetail.Columns.Add("Year_Id", typeof(int));
-                        //dataTable_InwardDetail.Columns.Add("Created_Date", typeof(DateTime));
-                        //dataTable_InwardDetail.Columns.Add("Created_Time", typeof(TimeSpan));
-                        //dataTable_InwardDetail.Columns.Add("Created_By", typeof(int));
-                        //dataTable_InwardDetail.Columns.Add("Updated_Date", typeof(DateTime));
-                        //dataTable_InwardDetail.Columns.Add("Updated_Time", typeof(TimeSpan));
-                        //dataTable_InwardDetail.Columns.Add("Updated_By", typeof(int));
                         dataTable_InwardDetail.Columns.Add("RFID", typeof(string));
                         dataTable_InwardDetail.Columns.Add("Assign_Date", typeof(DateTime));
                         dataTable_InwardDetail.Columns.Add("Status", typeof(bool));
@@ -1024,8 +1015,6 @@ namespace astute.Controllers
 
                         if (account_Trans_Master.inwardDetails != null && account_Trans_Master.inwardDetails.Count > 0)
                         {
-                            //IList<InwardDetail> inwardDetails = JsonConvert.DeserializeObject<IList<InwardDetail>>(account_Trans_Master.inwardDetails.ToString());
-
                             foreach (var item in account_Trans_Master.inwardDetails)
                             {
                                 DataRow row = dataTable_InwardDetail.NewRow();
@@ -1077,15 +1066,6 @@ namespace astute.Controllers
                                 row["Cert_Date"] = item.Cert_Date.HasValue ? (object)item.Cert_Date : DBNull.Value;
                                 row["Cert_Type"] = item.Cert_Type.HasValue ? (object)item.Cert_Type : DBNull.Value;
                                 row["Company_Id"] = !string.IsNullOrEmpty(item.Company_Id) ? (object)item.Company_Id : DBNull.Value;
-                                //row["Trans_Id"] = item.Trans_Id.HasValue ? (object)item.Trans_Id : DBNull.Value;
-                                //row["Seq_No"] = item.Seq_No.HasValue ? (object)item.Seq_No : DBNull.Value;
-                                //row["Year_Id"] = item.Year_Id.HasValue ? (object)item.Year_Id : DBNull.Value;
-                                //row["Created_Date"] = item.Created_Date.HasValue ? (object)item.Created_Date : DBNull.Value;
-                                //row["Created_Time"] = item.Created_Time.HasValue ? (object)item.Created_Time : DBNull.Value;
-                                //row["Created_By"] = item.Created_By.HasValue ? (object)item.Created_By : DBNull.Value;
-                                //row["Updated_Date"] = item.Updated_Date.HasValue ? (object)item.Updated_Date : DBNull.Value;
-                                //row["Updated_Time"] = item.Updated_Time.HasValue ? (object)item.Updated_Time : DBNull.Value;
-                                //row["Updated_By"] = item.Updated_By.HasValue ? (object)item.Updated_By : DBNull.Value;                                
                                 row["RFID"] = !string.IsNullOrEmpty(item.RFID) ? (object)item.RFID : DBNull.Value; 
                                 row["Assign_Date"] = item.Assign_Date.HasValue ? (object)item.Assign_Date : DBNull.Value;
                                 row["Status"] = item.Status.HasValue ? (object)item.Status : DBNull.Value; 
@@ -1373,9 +1353,13 @@ namespace astute.Controllers
                     ExcelWorksheet worksheet = package.Workbook.Worksheets.First();
 
                     int totalRows = worksheet.Dimension.End.Row;
-                    var excelColumnHeaders = Enumerable.Range(1, worksheet.Dimension.End.Column)
-                        .Select(col => worksheet.Cells[1, col].Value?.ToString()?.Trim())
-                        .ToList();
+
+                    List<string> excelColumnHeaders = new List<string>();
+                    for (int col = 1; col <= worksheet.Dimension.End.Column; col++)
+                    {
+                        string header = worksheet.Cells[1, col].Value?.ToString()?.Trim();
+                        excelColumnHeaders.Add(header);
+                    }
 
                     var categoryIds = new Dictionary<string, int>
                     {
