@@ -2,6 +2,7 @@
 using astute.CoreServices;
 using astute.Models;
 using astute.Repository;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -712,12 +713,12 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_account_trans_master")]
         [Authorize]
-        public async Task<IActionResult> Get_Account_Trans_Master(int? account_Trans_Id, int? account_Trans_Detail_Id,string trans_Type)
+        public async Task<IActionResult> Get_Account_Trans_Master(int? account_Trans_Id, int? account_Trans_Detail_Id, string trans_Type)
         {
             try
             {
                 var result = await _account_Trans_Master_Service.Get_Account_Trans_Master(account_Trans_Id ?? 0, account_Trans_Detail_Id ?? 0, trans_Type);
-                if (result != null && result.Count > 0) 
+                if (result != null && result.Count > 0)
                 {
                     return Ok(new
                     {
@@ -807,7 +808,7 @@ namespace astute.Controllers
         [HttpDelete]
         [Route("delete_account_trans_master")]
         [Authorize]
-        public async Task<IActionResult> Delete_Account_Trans_Master(int id,string trans_Type)
+        public async Task<IActionResult> Delete_Account_Trans_Master(int id, string trans_Type)
         {
             try
             {
@@ -820,7 +821,7 @@ namespace astute.Controllers
                         message = (trans_Type == "B" ? CoreCommonMessage.AccountBankbookMasterDeleted :
                                           trans_Type == "C" ? CoreCommonMessage.AccountCashbookMasterDeleted :
                                           trans_Type == "JV" ? CoreCommonMessage.AccountJvMasterDeleted :
-                                          trans_Type == "CO" ? CoreCommonMessage.AccountContraMasterDeleted : 
+                                          trans_Type == "CO" ? CoreCommonMessage.AccountContraMasterDeleted :
                                           trans_Type == "P" ? CoreCommonMessage.AccountPurchaseMasterDeleted : "")
 
                     });
@@ -840,7 +841,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpPost]
         [Route("create_update_account_trans_master_purchase")]
         [Authorize]
@@ -1066,13 +1067,13 @@ namespace astute.Controllers
                                 row["Cert_Date"] = item.Cert_Date.HasValue ? (object)item.Cert_Date : DBNull.Value;
                                 row["Cert_Type"] = item.Cert_Type.HasValue ? (object)item.Cert_Type : DBNull.Value;
                                 row["Company_Id"] = !string.IsNullOrEmpty(item.Company_Id) ? (object)item.Company_Id : DBNull.Value;
-                                row["RFID"] = !string.IsNullOrEmpty(item.RFID) ? (object)item.RFID : DBNull.Value; 
+                                row["RFID"] = !string.IsNullOrEmpty(item.RFID) ? (object)item.RFID : DBNull.Value;
                                 row["Assign_Date"] = item.Assign_Date.HasValue ? (object)item.Assign_Date : DBNull.Value;
-                                row["Status"] = item.Status.HasValue ? (object)item.Status : DBNull.Value; 
-                                row["Process"] = !string.IsNullOrEmpty(item.Process) ? (object)item.Process : DBNull.Value; 
+                                row["Status"] = item.Status.HasValue ? (object)item.Status : DBNull.Value;
+                                row["Process"] = !string.IsNullOrEmpty(item.Process) ? (object)item.Process : DBNull.Value;
                                 row["Close_Date"] = item.Close_Date.HasValue ? (object)item.Close_Date : DBNull.Value;
 
-                                
+
                                 if (!string.IsNullOrEmpty(item.Girdle_Type.ToString()))
                                 {
                                     if (int.TryParse(item.Girdle_Type.ToString(), out int girdleType))
@@ -1176,7 +1177,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_account_master_purchase")]
         [Authorize]
@@ -1297,10 +1298,56 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_excel_sheet_name")]
+        [Authorize]
+        public async Task<ActionResult> Get_Excel_Sheet_Name([FromForm] IFormFile File_Location)
+        {
+
+            if (File_Location == null)
+            {
+                return Conflict(new
+                {
+                    statusCode = HttpStatusCode.Conflict,
+                    message = CoreCommonMessage.FileNotFound
+                });
+            }
+
+            string extension = Path.GetExtension(File_Location.FileName).ToLower();
+            if (extension != ".xlsx" && extension != ".xls")
+            {
+                return Conflict(new
+                {
+                    statusCode = HttpStatusCode.Conflict,
+                    message = CoreCommonMessage.InvalidFileFormat
+                });
+            }
+
+            try
+            {
+                using (var stream = File_Location.OpenReadStream())
+                {
+                    using (var workbook = new XLWorkbook(stream))
+                    {
+                        List<string> sheetNames = new List<string>();
+                        foreach (IXLWorksheet worksheet in workbook.Worksheets)
+                        {
+                            sheetNames.Add(worksheet.Name);
+                        }
+                        return Ok(sheetNames);
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            }
+        }
+
         [HttpPost]
         [Route("inward_details_read_excel")]
         [Authorize]
-        public async Task<ActionResult> Inward_Details_Read_Excel([FromForm] IFormFile File_Location, int import_Id)
+        public async Task<ActionResult> Inward_Details_Read_Excel([FromForm] IFormFile File_Location, int import_Id, string Sheet_Name)
         {
             if (File_Location != null && File_Location.Length > 0)
             {
@@ -1320,7 +1367,7 @@ namespace astute.Controllers
                 }
 
                 List<Dictionary<string, object>> result = await _categoryService.Get_Import_Master_Detail(import_Id);
-                List<Dictionary<string, string>> UploadResults = await ProcessExcelFile(Path.Combine(filePath, strFile), result);
+                List<Dictionary<string, string>> UploadResults = await ProcessExcelFile(Path.Combine(filePath, strFile), result, Sheet_Name);
 
                 if (UploadResults.Count > 0)
                 {
@@ -1342,7 +1389,7 @@ namespace astute.Controllers
             });
         }
 
-        public async Task<List<Dictionary<string, string>>> ProcessExcelFile(string filePath, List<Dictionary<string, object>> result)
+        public async Task<List<Dictionary<string, string>>> ProcessExcelFile(string filePath, List<Dictionary<string, object>> result, string Sheet_Name)
         {
             List<Dictionary<string, string>> rowDataList = new List<Dictionary<string, string>>();
 
@@ -1350,8 +1397,7 @@ namespace astute.Controllers
             {
                 using (ExcelPackage package = new ExcelPackage(new FileInfo(filePath)))
                 {
-                    ExcelWorksheet worksheet = package.Workbook.Worksheets.First();
-
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[Sheet_Name];
                     int totalRows = worksheet.Dimension.End.Row;
 
                     List<string> excelColumnHeaders = new List<string>();

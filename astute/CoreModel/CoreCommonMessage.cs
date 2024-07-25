@@ -509,6 +509,7 @@ namespace astute.CoreModel
         #region Inward details
         public static string InwardDetails = "Inward Details";
         public static string FileNotFound = "File not found";
+        public static string InvalidFileFormat = "Please upload a valid Excel file.";
         #endregion
     }
 }
