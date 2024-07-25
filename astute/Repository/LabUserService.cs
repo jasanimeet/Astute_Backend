@@ -241,16 +241,30 @@ namespace astute.Repository
 
             return result;
         }
-        
+
         public async Task<int> Job_Transfer_Supplier_Pricing_Cal(int party_Id)
         {
             var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
-            
-            var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Job_Transfer_Supplier_Pricing_Cal] @Party_Id",
-                        _party_Id));
 
-            return result;
+            using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = @"EXEC [Job_Transfer_Supplier_Pricing_Cal] @Party_Id";
+                command.Parameters.Add(_party_Id);
+
+                command.CommandTimeout = 1800;
+
+                await _dbContext.Database.OpenConnectionAsync();
+
+                try
+                {
+                    var result = await command.ExecuteNonQueryAsync();
+                    return result;
+                }
+                finally
+                {
+                    _dbContext.Database.CloseConnection();
+                }
+            }
         }
 
         #endregion
