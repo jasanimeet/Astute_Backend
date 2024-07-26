@@ -1490,7 +1490,21 @@ namespace astute.Controllers
                                     else
                                     {
                                         var defaultValue = worksheet.Cells[rowIndex, columnIndex].Value?.ToString();
-                                        rowData[columnKey] = defaultValue;
+                                        if (string.IsNullOrWhiteSpace(defaultValue))
+                                        {
+                                            if (required)
+                                            {
+                                                rowData[columnKey] = $"Invalid {columnKey.ToLower()}";
+                                            }
+                                            else
+                                            {
+                                                rowData[columnKey] = null;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            rowData[columnKey] = defaultValue;
+                                        }
                                     }
                                 }
                                 else
