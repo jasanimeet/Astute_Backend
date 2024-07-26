@@ -1399,9 +1399,10 @@ namespace astute.Controllers
                 {
                     ExcelWorksheet worksheet = package.Workbook.Worksheets[Sheet_Name];
                     int totalRows = worksheet.Dimension.End.Row;
-                    
+                    int totalColumns = worksheet.Dimension.End.Column;
+
                     List<string> excelColumnHeaders = new List<string>();
-                    for (int col = 1; col <= worksheet.Dimension.End.Column; col++)
+                    for (int col = 1; col <= totalColumns; col++)
                     {
                         string header = worksheet.Cells[1, col].Value?.ToString()?.Trim();
                         excelColumnHeaders.Add(header);
@@ -1434,7 +1435,7 @@ namespace astute.Controllers
                     {
                         bool isRowEmpty = true;
 
-                        for (int colIndex = 1; colIndex <= worksheet.Dimension.End.Column; colIndex++)
+                        for (int colIndex = 1; colIndex <= totalColumns; colIndex++)
                         {
                             if (!string.IsNullOrWhiteSpace(worksheet.Cells[rowIndex, colIndex].Value?.ToString()))
                             {
@@ -1451,55 +1452,54 @@ namespace astute.Controllers
                         {
                             string Excel_Column_No = mapping["Excel_Column_No"].ToString();
                             string displayColumnName = mapping["Column_Name"].ToString();
-
-                            int columnIndex = excelColumnHeaders.FindIndex(header =>
+                            
+                            if (int.TryParse(Excel_Column_No, out int excelColumnNo))
                             {
-                                string cleanedDisplayColumnName = displayColumnName.Replace("_", " ");
-                                string cleanedDisplayColumnName1 = displayColumnName.Replace(" ", "_");
+                                int columnIndex = excelColumnNo;
 
-                                return string.Equals(header, displayColumnName, StringComparison.OrdinalIgnoreCase)
-                                    || string.Equals(header, cleanedDisplayColumnName, StringComparison.OrdinalIgnoreCase)
-                                    || string.Equals(header, cleanedDisplayColumnName1, StringComparison.OrdinalIgnoreCase);
-                            });
-
-                            if (columnIndex != -1)
-                            {
-                                string columnKey = displayColumnName.Replace(" ", "_").ToUpper();
-
-                                if (categoryIds.TryGetValue(columnKey, out int categoryId))
+                                if (columnIndex > 0 && columnIndex <= totalColumns)
                                 {
-                                    Initialize_ColumnData(rowData, columnKey);
+                                    string columnKey = displayColumnName.Replace(" ", "_").ToUpper();
 
-                                    var result_category = await _categoryService.Get_Active_Category_Values(categoryId);
-
-                                    var cellValue = worksheet.Cells[rowIndex, columnIndex + 1].Value?.ToString();
-                                    var catValId = Find_Cat_Val_Id(result_category, cellValue);
-                                    rowData[columnKey] = catValId.Item1.ToString();
-                                    rowData[$"{columnKey}_NAME"] = catValId.Item2;
-                                }
-                                else if (columnKey == "CERTIFICATE_DATE")
-                                {
-                                    Initialize_ColumnData(rowData, columnKey);
-
-                                    var dateCellValue = worksheet.Cells[rowIndex, columnIndex + 1].Value?.ToString();
-                                    if (!string.IsNullOrEmpty(dateCellValue) && DateTime.TryParse(dateCellValue, out DateTime date))
+                                    if (categoryIds.TryGetValue(columnKey, out int categoryId))
                                     {
-                                        rowData[columnKey] = date.ToString("dd-MM-yyyy");
+                                        Initialize_ColumnData(rowData, columnKey);
+
+                                        var result_category = await _categoryService.Get_Active_Category_Values(categoryId);
+
+                                        var cellValue = worksheet.Cells[rowIndex, columnIndex].Value?.ToString();
+                                        var catValId = Find_Cat_Val_Id(result_category, cellValue, columnKey);
+                                        rowData[columnKey] = catValId.Item1.ToString();
+                                        rowData[$"{columnKey}_NAME"] = catValId.Item2;
+                                    }
+                                    else if (columnKey == "CERTIFICATE_DATE")
+                                    {
+                                        Initialize_ColumnData(rowData, columnKey);
+
+                                        var dateCellValue = worksheet.Cells[rowIndex, columnIndex].Value?.ToString();
+                                        if (!string.IsNullOrEmpty(dateCellValue) && DateTime.TryParse(dateCellValue, out DateTime date))
+                                        {
+                                            rowData[columnKey] = date.ToString("dd-MM-yyyy");
+                                        }
+                                        else
+                                        {
+                                            rowData[columnKey] = null;
+                                        }
                                     }
                                     else
                                     {
-                                        rowData[columnKey] = null;
+                                        var defaultValue = worksheet.Cells[rowIndex, columnIndex].Value?.ToString();
+                                        rowData[columnKey] = defaultValue;
                                     }
                                 }
                                 else
                                 {
-                                    var defaultValue = worksheet.Cells[rowIndex, columnIndex + 1].Value?.ToString();
-                                    rowData[columnKey] = defaultValue;
+                                    Console.WriteLine($"Column index '{columnIndex}' is out of range.");
                                 }
                             }
                             else
                             {
-                                Console.WriteLine($"Column '{displayColumnName}' not found in Excel file.");
+                                Console.WriteLine($"Invalid column number '{Excel_Column_No}' for '{displayColumnName}'.");
                             }
                         }
 
@@ -1529,10 +1529,10 @@ namespace astute.Controllers
             }
         }
 
-        public (int, string) Find_Cat_Val_Id(IList<CategoryValueModel> data, string Cat_Name)
+        public (int, string) Find_Cat_Val_Id(IList<CategoryValueModel> data, string Cat_Name, string columnKey)
         {
             if (string.IsNullOrWhiteSpace(Cat_Name))
-                return (0, null);
+                return (0, "Invalid "+ columnKey);
 
             var Info = data.FirstOrDefault(d => d.Cat_Name.Equals(Cat_Name, StringComparison.OrdinalIgnoreCase)
                                                   || (d.Synonyms != null && d.Synonyms.Split(',').Any(s => s.Equals(Cat_Name, StringComparison.OrdinalIgnoreCase))));
@@ -1543,7 +1543,7 @@ namespace astute.Controllers
             }
             else
             {
-                return (0, null);
+                return (0, "Invalid " + columnKey);
             }
         }
 
