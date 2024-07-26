@@ -1367,15 +1367,19 @@ namespace astute.Controllers
                 }
 
                 List<Dictionary<string, object>> result = await _categoryService.Get_Import_Master_Detail_Purchase(import_Id);
-                List<Dictionary<string, string>> UploadResults = await ProcessExcelFile(Path.Combine(filePath, strFile), result, Sheet_Name);
+                var UploadResults = await ProcessExcelFile(Path.Combine(filePath, strFile), result, Sheet_Name);
 
-                if (UploadResults.Count > 0)
+                if (UploadResults.SuccessFields.Count > 0 || UploadResults.ErrorFields.Count > 0)
                 {
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.DataSuccessfullyFound,
-                        data = UploadResults
+                        data = new
+                        {
+                            SuccessFields = UploadResults.SuccessFields,
+                            ErrorFields = UploadResults.ErrorFields
+                        }
                     });
                 }
                 else {
@@ -1388,25 +1392,18 @@ namespace astute.Controllers
                 message = CoreCommonMessage.FileNotFound
             });
         }
-
-        public async Task<List<Dictionary<string, string>>> ProcessExcelFile(string filePath, List<Dictionary<string, object>> result, string Sheet_Name)
+        public async Task<(List<Dictionary<string, string>> SuccessFields, List<Dictionary<string, string>> ErrorFields)> ProcessExcelFile(string filePath, List<Dictionary<string, object>> result, string sheetName)
         {
-            List<Dictionary<string, string>> rowDataList = new List<Dictionary<string, string>>();
+            var successFields = new List<Dictionary<string, string>>();
+            var errorFields = new List<Dictionary<string, string>>();
 
             try
             {
-                using (ExcelPackage package = new ExcelPackage(new FileInfo(filePath)))
+                using (var package = new ExcelPackage(new FileInfo(filePath)))
                 {
-                    ExcelWorksheet worksheet = package.Workbook.Worksheets[Sheet_Name];
+                    var worksheet = package.Workbook.Worksheets[sheetName];
                     int totalRows = worksheet.Dimension.End.Row;
                     int totalColumns = worksheet.Dimension.End.Column;
-
-                    List<string> excelColumnHeaders = new List<string>();
-                    for (int col = 1; col <= totalColumns; col++)
-                    {
-                        string header = worksheet.Cells[1, col].Value?.ToString()?.Trim();
-                        excelColumnHeaders.Add(header);
-                    }
 
                     var categoryIds = new Dictionary<string, int>
                     {
@@ -1434,6 +1431,9 @@ namespace astute.Controllers
                     for (int rowIndex = 2; rowIndex <= totalRows; rowIndex++)
                     {
                         bool isRowEmpty = true;
+                        var rowData = new Dictionary<string, string>();
+                        bool hasError = false;
+                        var errorMessages = new List<string>();
 
                         for (int colIndex = 1; colIndex <= totalColumns; colIndex++)
                         {
@@ -1446,17 +1446,15 @@ namespace astute.Controllers
 
                         if (isRowEmpty) continue;
 
-                        var rowData = new Dictionary<string, string>();
-
                         foreach (var mapping in result)
                         {
-                            string Excel_Column_No = mapping["Excel_Column_No"].ToString();
+                            string excelColumnNo = mapping["Excel_Column_No"].ToString();
                             string displayColumnName = mapping["Column_Name"].ToString();
                             bool required = (bool)mapping["Required"];
-                            
-                            if (int.TryParse(Excel_Column_No, out int excelColumnNo))
+
+                            if (int.TryParse(excelColumnNo, out int excelColumnNoInt))
                             {
-                                int columnIndex = excelColumnNo;
+                                int columnIndex = excelColumnNoInt;
 
                                 if (columnIndex > 0 && columnIndex <= totalColumns)
                                 {
@@ -1466,12 +1464,18 @@ namespace astute.Controllers
                                     {
                                         Initialize_ColumnData(rowData, columnKey);
 
-                                        var result_category = await _categoryService.Get_Active_Category_Values(categoryId);
+                                        var resultCategory = await _categoryService.Get_Active_Category_Values(categoryId);
 
                                         var cellValue = worksheet.Cells[rowIndex, columnIndex].Value?.ToString();
-                                        var catValId = Find_Cat_Val_Id(result_category, cellValue, columnKey, required);
+                                        var catValId = Find_Cat_Val_Id(resultCategory, cellValue, columnKey, required);
                                         rowData[columnKey] = catValId.Item1.ToString();
                                         rowData[$"{columnKey}_NAME"] = catValId.Item2;
+
+                                        if (catValId.Item2.StartsWith("Invalid"))
+                                        {
+                                            hasError = true;
+                                            errorMessages.Add($"Invalid value in column no : {columnIndex} and column header : {columnKey}");
+                                        }
                                     }
                                     else if (columnKey == "CERTIFICATE_DATE")
                                     {
@@ -1485,6 +1489,8 @@ namespace astute.Controllers
                                         else
                                         {
                                             rowData[columnKey] = null;
+                                            hasError = true;
+                                            errorMessages.Add($"Invalid date format in column no : {columnIndex} and column header : {columnKey}");
                                         }
                                     }
                                     else
@@ -1494,7 +1500,9 @@ namespace astute.Controllers
                                         {
                                             if (required)
                                             {
-                                                rowData[columnKey] = $"Field is required";
+                                                rowData[columnKey] = "Field is required";
+                                                hasError = true;
+                                                errorMessages.Add($"Field is required in column no : {columnIndex} and column header : {columnKey}");
                                             }
                                             else
                                             {
@@ -1514,11 +1522,31 @@ namespace astute.Controllers
                             }
                             else
                             {
-                                Console.WriteLine($"Invalid column number '{Excel_Column_No}' for '{displayColumnName}'.");
+                                Console.WriteLine($"Invalid column number '{excelColumnNo}' for '{displayColumnName}'.");
                             }
                         }
 
-                        rowDataList.Add(rowData);
+                        if (hasError)
+                        {
+                            rowData["ErrorMessage"] = $"Errors in row {rowIndex}: ";
+                            if (errorMessages.Count == 1)
+                            {
+                                rowData["ErrorColumn"] = errorMessages[0];
+                            }
+                            else if (errorMessages.Count > 1)
+                            {
+                                rowData["ErrorColumn"] = string.Join(", ", errorMessages);
+                            }
+                            else
+                            {
+                                rowData["ErrorColumn"] = string.Empty;
+                            }
+                            errorFields.Add(rowData);
+                        }
+                        else
+                        {
+                            successFields.Add(rowData);
+                        }
                     }
                 }
             }
@@ -1527,7 +1555,7 @@ namespace astute.Controllers
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
 
-            return rowDataList;
+            return (successFields, errorFields);
         }
 
         private void Initialize_ColumnData(Dictionary<string, string> rowData, string columnKey)
