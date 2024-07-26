@@ -1493,9 +1493,16 @@ namespace astute.Controllers
                                         }
                                         else
                                         {
-                                            rowData[columnKey] = null;
-                                            hasError = true;
-                                            errorMessages.Add($"Invalid date format in column no : {columnIndex} and column header : {columnKey}");
+                                            if (required)
+                                            {
+                                                rowData[columnKey] = null;
+                                                hasError = true;
+                                                errorMessages.Add($"Invalid date format in column no : {columnIndex} and column header : {columnKey}");
+                                            }
+                                            else
+                                            {
+                                                rowData[columnKey] = null;
+                                            }
                                         }
                                     }
                                     else
