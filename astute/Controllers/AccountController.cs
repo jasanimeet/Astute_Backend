@@ -1494,7 +1494,7 @@ namespace astute.Controllers
                                         {
                                             if (required)
                                             {
-                                                rowData[columnKey] = $"Invalid {columnKey.ToLower()}";
+                                                rowData[columnKey] = $"Field is required";
                                             }
                                             else
                                             {
@@ -1548,7 +1548,7 @@ namespace astute.Controllers
         {
             if (required && string.IsNullOrWhiteSpace(catName))
             {
-                return (0, $"Invalid {columnKey.ToLower()}");
+                return (0, $"Field is required");
             }
 
             if (!required && string.IsNullOrWhiteSpace(catName))
@@ -1566,7 +1566,7 @@ namespace astute.Controllers
                 return (info.Cat_val_Id, info.Cat_Name);
             }
 
-            return (0, required ? $"Invalid {columnKey.ToLower()}" : null);
+            return (0, required ? $"Field is required" : null);
         }
 
         [HttpGet]
