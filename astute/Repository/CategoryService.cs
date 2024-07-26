@@ -784,6 +784,44 @@ namespace astute.Repository
 
             return result;
         }
+
+        public async Task<List<Dictionary<string, object>>> Get_Import_Master_Detail_Purchase(int import_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"]))
+            {
+                await connection.OpenAsync();
+
+                using (var command = new SqlCommand("Import_Master_Detail_Select_Purchase", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(new SqlParameter("@Import_Id", import_Id > 0 ? import_Id : (object)DBNull.Value));
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
         #endregion
         #endregion
     }

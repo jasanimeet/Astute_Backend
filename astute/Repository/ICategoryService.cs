@@ -47,6 +47,7 @@ namespace astute.Repository
         Task<int> Insert_Update_Import_Excel(DataTable dataTable);
         Task<int> Delete_Import_Excel(int id);
         Task<List<Dictionary<string, object>>> Get_Import_Master_Detail(int import_Id);
+        Task<List<Dictionary<string, object>>> Get_Import_Master_Detail_Purchase(int import_Id);
         #endregion
     }
 }

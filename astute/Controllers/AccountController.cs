@@ -1366,7 +1366,7 @@ namespace astute.Controllers
                     await File_Location.CopyToAsync(fileStream);
                 }
 
-                List<Dictionary<string, object>> result = await _categoryService.Get_Import_Master_Detail(import_Id);
+                List<Dictionary<string, object>> result = await _categoryService.Get_Import_Master_Detail_Purchase(import_Id);
                 List<Dictionary<string, string>> UploadResults = await ProcessExcelFile(Path.Combine(filePath, strFile), result, Sheet_Name);
 
                 if (UploadResults.Count > 0)
@@ -1399,7 +1399,7 @@ namespace astute.Controllers
                 {
                     ExcelWorksheet worksheet = package.Workbook.Worksheets[Sheet_Name];
                     int totalRows = worksheet.Dimension.End.Row;
-
+                    
                     List<string> excelColumnHeaders = new List<string>();
                     for (int col = 1; col <= worksheet.Dimension.End.Column; col++)
                     {
@@ -1432,10 +1432,24 @@ namespace astute.Controllers
 
                     for (int rowIndex = 2; rowIndex <= totalRows; rowIndex++)
                     {
+                        bool isRowEmpty = true;
+
+                        for (int colIndex = 1; colIndex <= worksheet.Dimension.End.Column; colIndex++)
+                        {
+                            if (!string.IsNullOrWhiteSpace(worksheet.Cells[rowIndex, colIndex].Value?.ToString()))
+                            {
+                                isRowEmpty = false;
+                                break;
+                            }
+                        }
+
+                        if (isRowEmpty) continue;
+
                         var rowData = new Dictionary<string, string>();
 
                         foreach (var mapping in result)
                         {
+                            string Excel_Column_No = mapping["Excel_Column_No"].ToString();
                             string displayColumnName = mapping["Column_Name"].ToString();
 
                             int columnIndex = excelColumnHeaders.FindIndex(header =>
