@@ -1471,10 +1471,15 @@ namespace astute.Controllers
                                         rowData[columnKey] = catValId.Item1.ToString();
                                         rowData[$"{columnKey}_NAME"] = catValId.Item2;
 
-                                        if (catValId.Item2.StartsWith("Invalid"))
+                                        if (catValId.Item2 != null && catValId.Item2.StartsWith("Invalid"))
                                         {
                                             hasError = true;
-                                            errorMessages.Add($"Invalid value in column no : {columnIndex} and column header : {columnKey}");
+                                            errorMessages.Add($"Invalid value in column no: {columnIndex} and column header: {columnKey}");
+                                        }
+                                        else if (catValId.Item2 == null && required)
+                                        {
+                                            hasError = true;
+                                            errorMessages.Add($"Value in column no: {columnIndex} and column header: {columnKey} is null.");
                                         }
                                     }
                                     else if (columnKey == "CERTIFICATE_DATE")
