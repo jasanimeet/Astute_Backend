@@ -1576,7 +1576,7 @@ namespace astute.Controllers
         {
             if (required && string.IsNullOrWhiteSpace(catName))
             {
-                return (0, $"Field is required");
+                return (0, $"Invalid {catName.ToLower()}");
             }
 
             if (!required && string.IsNullOrWhiteSpace(catName))
@@ -1594,7 +1594,7 @@ namespace astute.Controllers
                 return (info.Cat_val_Id, info.Cat_Name);
             }
 
-            return (0, required ? $"Field is required" : null);
+            return (0, required ? $"Invalid {catName.ToLower()}" : null);
         }
 
         [HttpGet]
