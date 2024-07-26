@@ -1452,6 +1452,7 @@ namespace astute.Controllers
                         {
                             string Excel_Column_No = mapping["Excel_Column_No"].ToString();
                             string displayColumnName = mapping["Column_Name"].ToString();
+                            bool required = (bool)mapping["Required"];
                             
                             if (int.TryParse(Excel_Column_No, out int excelColumnNo))
                             {
@@ -1468,7 +1469,7 @@ namespace astute.Controllers
                                         var result_category = await _categoryService.Get_Active_Category_Values(categoryId);
 
                                         var cellValue = worksheet.Cells[rowIndex, columnIndex].Value?.ToString();
-                                        var catValId = Find_Cat_Val_Id(result_category, cellValue, columnKey);
+                                        var catValId = Find_Cat_Val_Id(result_category, cellValue, columnKey, required);
                                         rowData[columnKey] = catValId.Item1.ToString();
                                         rowData[$"{columnKey}_NAME"] = catValId.Item2;
                                     }
@@ -1529,22 +1530,29 @@ namespace astute.Controllers
             }
         }
 
-        public (int, string) Find_Cat_Val_Id(IList<CategoryValueModel> data, string Cat_Name, string columnKey)
+        public (int, string) Find_Cat_Val_Id(IList<CategoryValueModel> data, string catName, string columnKey, bool required)
         {
-            if (string.IsNullOrWhiteSpace(Cat_Name))
-                return (0, "Invalid "+ columnKey);
-
-            var Info = data.FirstOrDefault(d => d.Cat_Name.Equals(Cat_Name, StringComparison.OrdinalIgnoreCase)
-                                                  || (d.Synonyms != null && d.Synonyms.Split(',').Any(s => s.Equals(Cat_Name, StringComparison.OrdinalIgnoreCase))));
-
-            if (Info != null)
+            if (required && string.IsNullOrWhiteSpace(catName))
             {
-                return (Info.Cat_val_Id, Info.Cat_Name);
+                return (0, $"Invalid {columnKey.ToLower()}");
             }
-            else
+
+            if (!required && string.IsNullOrWhiteSpace(catName))
             {
-                return (0, "Invalid " + columnKey);
+                return (0, null);
             }
+
+            var info = data.FirstOrDefault(d =>
+                d.Cat_Name.Equals(catName, StringComparison.OrdinalIgnoreCase) ||
+                (d.Synonyms != null && d.Synonyms.Split(',').Any(s => s.Equals(catName, StringComparison.OrdinalIgnoreCase)))
+            );
+
+            if (info != null)
+            {
+                return (info.Cat_val_Id, info.Cat_Name);
+            }
+
+            return (0, required ? $"Invalid {columnKey.ToLower()}" : null);
         }
 
         [HttpGet]
