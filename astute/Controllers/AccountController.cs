@@ -1528,7 +1528,7 @@ namespace astute.Controllers
 
                         if (hasError)
                         {
-                            rowData["ErrorMessage"] = $"Errors in row {rowIndex}: ";
+                            rowData["ErrorMessage"] = $"Errors in row number {rowIndex}";
                             if (errorMessages.Count == 1)
                             {
                                 rowData["ErrorColumn"] = errorMessages[0];
