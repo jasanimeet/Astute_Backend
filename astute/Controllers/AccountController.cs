@@ -1065,27 +1065,18 @@ namespace astute.Controllers
 
                                 if (!string.IsNullOrEmpty(item.Pre_Sold))
                                 {
-                                    if (item.Pre_Sold == "1")
+                                    if (item.Pre_Sold == "Y")
                                     {
                                         preSoldValue = true;
                                     }
-                                    else if (item.Pre_Sold == "0")
+                                    else if (item.Pre_Sold == "N")
                                     {
                                         preSoldValue = false;
                                     }
                                 }
                                 row["Pre_Sold"] = preSoldValue.HasValue ? (object)preSoldValue.Value : DBNull.Value;
                                 row["Buyer"] = item.Buyer.HasValue ? (object)item.Buyer : DBNull.Value;
-                                var laserInscValue = item.Laser_Insc;
-                                if (laserInscValue == "1")
-                                {
-                                    laserInscValue = "Y";
-                                }
-                                else if (laserInscValue == "0")
-                                {
-                                    laserInscValue = "N";
-                                }
-                                row["Laser_Insc"] = !string.IsNullOrEmpty(laserInscValue) ? (object)laserInscValue : DBNull.Value;
+                                row["Laser_Insc"] = !string.IsNullOrEmpty(item.Laser_Insc) ? (object)item.Laser_Insc : DBNull.Value;
                                 row["Cert_Date"] = item.Cert_Date.HasValue ? (object)item.Cert_Date : DBNull.Value;
                                 row["Cert_Type"] = item.Cert_Type.HasValue ? (object)item.Cert_Type : DBNull.Value;
                                 row["Company_Id"] = !string.IsNullOrEmpty(item.Company_Id) ? (object)item.Company_Id : DBNull.Value;
@@ -1545,14 +1536,6 @@ namespace astute.Controllers
                                         }
                                         else
                                         {
-                                            if (defaultValue?.ToUpper() == "Y")
-                                            {
-                                                defaultValue = "1";
-                                            }
-                                            else if (defaultValue?.ToUpper() == "N")
-                                            {
-                                                defaultValue = "0";
-                                            }
                                             rowData[columnKey] = defaultValue;
                                         }
                                     }
