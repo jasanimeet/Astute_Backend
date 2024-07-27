@@ -1433,7 +1433,7 @@ namespace astute.Controllers
                         { "GIRDLE_CONDITION", 49 },
                         { "GIRDLE_TYPE", 50 },
                         { "LUSTER", 59 },
-                        { "LASER_INSCRIPTION", 60 },
+                        //{ "LASER_INSCRIPTION", 60 },
                         { "SHADE", 84 }
                     };
 
