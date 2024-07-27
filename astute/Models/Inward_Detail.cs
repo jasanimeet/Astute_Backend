@@ -48,7 +48,7 @@ namespace astute.Models
         public int? Luster { get; set; }
         public string? Pre_Sold { get; set; }
         public int? Buyer { get; set; }
-        public string? Laser_Insc { get; set; }
+        public string? Laser_Inscription { get; set; }
         public DateTime? Cert_Date { get; set; }
         public int? Cert_Type { get; set; }
         public string? Company_Id { get; set; }
