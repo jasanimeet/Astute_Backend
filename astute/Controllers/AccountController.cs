@@ -1477,9 +1477,9 @@ namespace astute.Controllers
 
                                         var cellValue = worksheet.Cells[rowIndex, columnIndex].Value?.ToString();
                                         var catValId = Find_Cat_Val_Id(resultCategory, cellValue, required);
-                                        rowData[columnKey] = catValId.Item1.ToString();
+                                        rowData[columnKey] = catValId.Item1;
                                         rowData[$"{columnKey}_NAME"] = catValId.Item2;
-
+                                        
                                         if (catValId.Item2 != null && catValId.Item2.StartsWith("Invalid"))
                                         {
                                             hasError = true;
