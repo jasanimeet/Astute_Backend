@@ -1021,8 +1021,8 @@ namespace astute.Controllers
                                 DataRow row = dataTable_InwardDetail.NewRow();
 
                                 row["Id"] = item.Id.HasValue ? (object)item.Id.Value : DBNull.Value;
-                                row["Stock_Id"] = !string.IsNullOrEmpty(item.Stock_Id) ? (object)item.Stock_Id : DBNull.Value;
-                                row["Cert_No"] = !string.IsNullOrEmpty(item.Cert_No) ? (object)item.Cert_No : DBNull.Value;
+                                row["Stock_Id"] = !string.IsNullOrEmpty(item.Reference_No) ? (object)item.Reference_No : DBNull.Value;
+                                row["Cert_No"] = !string.IsNullOrEmpty(item.Certificate_No) ? (object)item.Certificate_No : DBNull.Value;
                                 row["Shape"] = item.Shape > 0 ? (object)item.Shape : DBNull.Value;
                                 row["Color"] = item.Color > 0 ? (object)item.Color : DBNull.Value;
                                 row["Clarity"] = item.Clarity > 0 ? (object)item.Clarity : DBNull.Value;
@@ -1061,7 +1061,20 @@ namespace astute.Controllers
                                 row["Crown_Black"] = item.Crown_Black.HasValue ? (object)item.Crown_Black : DBNull.Value;
                                 row["Shade"] = item.Shade.HasValue ? (object)item.Shade : DBNull.Value;
                                 row["Luster"] = item.Luster.HasValue ? (object)item.Luster : DBNull.Value;
-                                row["Pre_Sold"] = item.Pre_Sold.HasValue ? (object)item.Pre_Sold : DBNull.Value;
+                                bool? preSoldValue = null;
+
+                                if (!string.IsNullOrEmpty(item.Pre_Sold))
+                                {
+                                    if (item.Pre_Sold == "1")
+                                    {
+                                        preSoldValue = true;
+                                    }
+                                    else if (item.Pre_Sold == "0")
+                                    {
+                                        preSoldValue = false;
+                                    }
+                                }
+                                row["Pre_Sold"] = preSoldValue.HasValue ? (object)preSoldValue.Value : DBNull.Value;
                                 row["Buyer"] = item.Buyer.HasValue ? (object)item.Buyer : DBNull.Value;
                                 var laserInscValue = item.Laser_Insc;
                                 if (laserInscValue == "1")

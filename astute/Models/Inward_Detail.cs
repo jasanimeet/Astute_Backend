@@ -5,8 +5,8 @@ namespace astute.Models
     public class InwardDetail
     {
         public int? Id { get; set; }
-        public string? Stock_Id { get; set; }
-        public string? Cert_No { get; set; }
+        public string? Reference_No { get; set; }
+        public string? Certificate_No { get; set; }
         public int? Shape { get; set; }
         public int? Color { get; set; }
         public int? Clarity { get; set; }
@@ -46,7 +46,7 @@ namespace astute.Models
         public int? Crown_Black { get; set; }
         public int? Shade { get; set; }
         public int? Luster { get; set; }
-        public bool? Pre_Sold { get; set; }
+        public string? Pre_Sold { get; set; }
         public int? Buyer { get; set; }
         public string? Laser_Insc { get; set; }
         public DateTime? Cert_Date { get; set; }
