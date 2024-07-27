@@ -1004,7 +1004,7 @@ namespace astute.Controllers
                         dataTable_InwardDetail.Columns.Add("Luster", typeof(int));
                         dataTable_InwardDetail.Columns.Add("Pre_Sold", typeof(bool));
                         dataTable_InwardDetail.Columns.Add("Buyer", typeof(int));
-                        dataTable_InwardDetail.Columns.Add("Laser_Insc", typeof(int));
+                        dataTable_InwardDetail.Columns.Add("Laser_Insc", typeof(string));
                         dataTable_InwardDetail.Columns.Add("Cert_Date", typeof(DateTime));
                         dataTable_InwardDetail.Columns.Add("Cert_Type", typeof(int));
                         dataTable_InwardDetail.Columns.Add("Company_Id", typeof(string));
@@ -1063,7 +1063,16 @@ namespace astute.Controllers
                                 row["Luster"] = item.Luster.HasValue ? (object)item.Luster : DBNull.Value;
                                 row["Pre_Sold"] = item.Pre_Sold.HasValue ? (object)item.Pre_Sold : DBNull.Value;
                                 row["Buyer"] = item.Buyer.HasValue ? (object)item.Buyer : DBNull.Value;
-                                row["Laser_Insc"] = item.Laser_Insc.HasValue ? (object)item.Laser_Insc : DBNull.Value;
+                                var laserInscValue = item.Laser_Insc;
+                                if (laserInscValue == "1")
+                                {
+                                    laserInscValue = "Y";
+                                }
+                                else if (laserInscValue == "0")
+                                {
+                                    laserInscValue = "N";
+                                }
+                                row["Laser_Insc"] = !string.IsNullOrEmpty(laserInscValue) ? (object)laserInscValue : DBNull.Value;
                                 row["Cert_Date"] = item.Cert_Date.HasValue ? (object)item.Cert_Date : DBNull.Value;
                                 row["Cert_Type"] = item.Cert_Type.HasValue ? (object)item.Cert_Type : DBNull.Value;
                                 row["Company_Id"] = !string.IsNullOrEmpty(item.Company_Id) ? (object)item.Company_Id : DBNull.Value;
@@ -1467,7 +1476,7 @@ namespace astute.Controllers
                                         var resultCategory = await _categoryService.Get_Active_Category_Values(categoryId);
 
                                         var cellValue = worksheet.Cells[rowIndex, columnIndex].Value?.ToString();
-                                        var catValId = Find_Cat_Val_Id(resultCategory, cellValue, columnKey, required);
+                                        var catValId = Find_Cat_Val_Id(resultCategory, cellValue, required);
                                         rowData[columnKey] = catValId.Item1.ToString();
                                         rowData[$"{columnKey}_NAME"] = catValId.Item2;
 
@@ -1507,7 +1516,7 @@ namespace astute.Controllers
                                     }
                                     else
                                     {
-                                        var defaultValue = worksheet.Cells[rowIndex, columnIndex].Value?.ToString();
+                                        var defaultValue = worksheet.Cells[rowIndex, columnIndex].Value?.ToString();                                        
                                         if (string.IsNullOrWhiteSpace(defaultValue))
                                         {
                                             if (required)
@@ -1523,6 +1532,14 @@ namespace astute.Controllers
                                         }
                                         else
                                         {
+                                            if (defaultValue?.ToUpper() == "Y")
+                                            {
+                                                defaultValue = "1";
+                                            }
+                                            else if (defaultValue?.ToUpper() == "N")
+                                            {
+                                                defaultValue = "0";
+                                            }
                                             rowData[columnKey] = defaultValue;
                                         }
                                     }
@@ -1584,16 +1601,16 @@ namespace astute.Controllers
             }
         }
 
-        public (int, string) Find_Cat_Val_Id(IList<CategoryValueModel> data, string catName, string columnKey, bool required)
+        public (string, string) Find_Cat_Val_Id(IList<CategoryValueModel> data, string catName, bool required)
         {
             if (required && string.IsNullOrWhiteSpace(catName))
             {
-                return (0, $"Invalid {catName.ToLower()}");
+                return (null, $"Invalid {catName.ToLower()}");
             }
 
             if (!required && string.IsNullOrWhiteSpace(catName))
             {
-                return (0, null);
+                return (null, null);
             }
 
             var info = data.FirstOrDefault(d =>
@@ -1603,10 +1620,10 @@ namespace astute.Controllers
 
             if (info != null)
             {
-                return (info.Cat_val_Id, info.Cat_Name);
+                return (info.Cat_val_Id.ToString(), info.Cat_Name);
             }
 
-            return (0, required ? $"Invalid {catName.ToLower()}" : null);
+            return (null, required ? $"Invalid {catName.ToLower()}" : null);
         }
 
         [HttpGet]
