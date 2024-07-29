@@ -36,7 +36,7 @@ namespace astute.Models
         public string? Key_to_Symbol { get; set; }
         public int? Culet { get; set; }
         public string? Lab_Comments { get; set; }
-        public decimal? Str_Ln { get; set; }
+        public decimal? Star_Ln { get; set; }
         public decimal? LR_Half { get; set; }
         public decimal? Girdle_Per { get; set; }
         public int? Girdle_Condition { get; set; }
@@ -49,7 +49,7 @@ namespace astute.Models
         public string? Pre_Sold { get; set; }
         public int? Buyer { get; set; }
         public string? Laser_Inscription { get; set; }
-        public DateTime? Cert_Date { get; set; }
+        public DateTime? Certificate_Date { get; set; }
         public int? Cert_Type { get; set; }
         public string? Company_Id { get; set; }
         //public int? Trans_Id { get; set; }

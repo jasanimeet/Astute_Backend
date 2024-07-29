@@ -1051,7 +1051,7 @@ namespace astute.Controllers
                                 row["Key_to_Symbol"] = !string.IsNullOrEmpty(item.Key_to_Symbol) ? (object)item.Key_to_Symbol : DBNull.Value;
                                 row["Culet"] = item.Culet.HasValue ? (object)item.Culet : DBNull.Value;
                                 row["Lab_Comment"] = !string.IsNullOrEmpty(item.Lab_Comments) ? (object)item.Lab_Comments : DBNull.Value;
-                                row["Str_Ln"] = item.Str_Ln.HasValue ? (object)item.Str_Ln : DBNull.Value;
+                                row["Str_Ln"] = item.Star_Ln.HasValue ? (object)item.Star_Ln : DBNull.Value;
                                 row["LR_Half"] = item.LR_Half.HasValue ? (object)item.LR_Half : DBNull.Value;
                                 row["Girdle_Per"] = item.Girdle_Per.HasValue ? (object)item.Girdle_Per : DBNull.Value;
                                 row["Girdle_Condition"] = item.Girdle_Condition.HasValue ? (object)item.Girdle_Condition : DBNull.Value;
@@ -1062,7 +1062,6 @@ namespace astute.Controllers
                                 row["Shade"] = item.Shade.HasValue ? (object)item.Shade : DBNull.Value;
                                 row["Luster"] = item.Luster.HasValue ? (object)item.Luster : DBNull.Value;
                                 bool? preSoldValue = null;
-
                                 if (!string.IsNullOrEmpty(item.Pre_Sold))
                                 {
                                     if (item.Pre_Sold == "Y")
@@ -1077,7 +1076,7 @@ namespace astute.Controllers
                                 row["Pre_Sold"] = preSoldValue.HasValue ? (object)preSoldValue.Value : DBNull.Value;
                                 row["Buyer"] = item.Buyer.HasValue ? (object)item.Buyer : DBNull.Value;
                                 row["Laser_Insc"] = !string.IsNullOrEmpty(item.Laser_Inscription) ? (object)item.Laser_Inscription : DBNull.Value;
-                                row["Cert_Date"] = item.Cert_Date.HasValue ? (object)item.Cert_Date : DBNull.Value;
+                                row["Cert_Date"] = item.Certificate_Date.HasValue ? (object)item.Certificate_Date : DBNull.Value;
                                 row["Cert_Type"] = item.Cert_Type.HasValue ? (object)item.Cert_Type : DBNull.Value;
                                 row["Company_Id"] = !string.IsNullOrEmpty(item.Company_Id) ? (object)item.Company_Id : DBNull.Value;
                                 row["RFID"] = !string.IsNullOrEmpty(item.RFID) ? (object)item.RFID : DBNull.Value;
@@ -1085,8 +1084,6 @@ namespace astute.Controllers
                                 row["Status"] = item.Status.HasValue ? (object)item.Status : DBNull.Value;
                                 row["Process"] = !string.IsNullOrEmpty(item.Process) ? (object)item.Process : DBNull.Value;
                                 row["Close_Date"] = item.Close_Date.HasValue ? (object)item.Close_Date : DBNull.Value;
-
-
                                 if (!string.IsNullOrEmpty(item.Girdle_Type.ToString()))
                                 {
                                     if (int.TryParse(item.Girdle_Type.ToString(), out int girdleType))
