@@ -49,7 +49,7 @@ namespace astute.Models
         public string? Pre_Sold { get; set; }
         public int? Buyer { get; set; }
         public string? Laser_Inscription { get; set; }
-        public DateTime? Certificate_Date { get; set; }
+        public string? Certificate_Date { get; set; }
         public int? Cert_Type { get; set; }
         public string? Company_Id { get; set; }
         //public int? Trans_Id { get; set; }
