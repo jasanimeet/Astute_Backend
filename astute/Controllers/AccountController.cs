@@ -1076,7 +1076,7 @@ namespace astute.Controllers
                                 row["Pre_Sold"] = preSoldValue.HasValue ? (object)preSoldValue.Value : DBNull.Value;
                                 row["Buyer"] = item.Buyer.HasValue ? (object)item.Buyer : DBNull.Value;
                                 row["Laser_Insc"] = !string.IsNullOrEmpty(item.Laser_Inscription) ? (object)item.Laser_Inscription : DBNull.Value;
-                                row["Cert_Date"] = item.Certificate_Date.HasValue ? (object)item.Certificate_Date : DBNull.Value;
+                                row["Cert_Date"] = !string.IsNullOrEmpty(item.Certificate_Date) ? (object)item.Certificate_Date : DBNull.Value;
                                 row["Cert_Type"] = item.Cert_Type.HasValue ? (object)item.Cert_Type : DBNull.Value;
                                 row["Company_Id"] = !string.IsNullOrEmpty(item.Company_Id) ? (object)item.Company_Id : DBNull.Value;
                                 row["RFID"] = !string.IsNullOrEmpty(item.RFID) ? (object)item.RFID : DBNull.Value;
