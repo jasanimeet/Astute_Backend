@@ -11,16 +11,16 @@ namespace astute.Models
         public int? Color { get; set; }
         public int? Clarity { get; set; }
         public decimal? Cts { get; set; }
-        public decimal? Rap_Price { get; set; }
-        public decimal? Rap_Amt { get; set; }
+        public decimal? Rap_Rate { get; set; }
+        public decimal? Rap_Amount { get; set; }
         public decimal? Cost_Disc { get; set; }
-        public decimal? Cost_Amt { get; set; }
+        public decimal? Cost_Amount { get; set; }
         public decimal? Offer_Disc { get; set; }
-        public decimal? Offer_Amt { get; set; }
+        public decimal? Offer_Amount { get; set; }
         public int? Cut { get; set; }
         public int? Polish { get; set; }
         public int? Symm { get; set; }
-        public int? Flour_Intensity { get; set; }
+        public int? Fls_Intensity { get; set; }
         public decimal? Length { get; set; }
         public decimal? Width { get; set; }
         public decimal? Depth { get; set; }
@@ -28,22 +28,22 @@ namespace astute.Models
         public decimal? Table_Per { get; set; }
         public decimal? Crown_Angle { get; set; }
         public decimal? Crown_Height { get; set; }
-        public decimal? Pavillion_Angle { get; set; }
-        public decimal? Pavillion_Height { get; set; }
+        public decimal? Pavilion_Angle { get; set; }
+        public decimal? Pavilion_Height { get; set; }
         public int? Lab { get; set; }
-        public string? Supplier_Ref_No { get; set; }
+        public string? Supplier_No { get; set; }
         public int? Girdle_Type { get; set; }
         public string? Key_to_Symbol { get; set; }
         public int? Culet { get; set; }
-        public string? Lab_Comment { get; set; }
+        public string? Lab_Comments { get; set; }
         public decimal? Str_Ln { get; set; }
         public decimal? LR_Half { get; set; }
         public decimal? Girdle_Per { get; set; }
         public int? Girdle_Condition { get; set; }
         public int? Table_White { get; set; }
-        public int? Crown_White { get; set; }
+        public int? Side_White { get; set; }
         public int? Table_Black { get; set; }
-        public int? Crown_Black { get; set; }
+        public int? Side_Black { get; set; }
         public int? Shade { get; set; }
         public int? Luster { get; set; }
         public string? Pre_Sold { get; set; }

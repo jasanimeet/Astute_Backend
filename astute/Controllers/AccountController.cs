@@ -1027,16 +1027,16 @@ namespace astute.Controllers
                                 row["Color"] = item.Color > 0 ? (object)item.Color : DBNull.Value;
                                 row["Clarity"] = item.Clarity > 0 ? (object)item.Clarity : DBNull.Value;
                                 row["Cts"] = item.Cts.HasValue ? (object)item.Cts : DBNull.Value;
-                                row["Rap_Price"] = item.Rap_Price.HasValue ? (object)item.Rap_Price : DBNull.Value;
-                                row["Rap_Amt"] = item.Rap_Amt.HasValue ? (object)item.Rap_Amt : DBNull.Value;
+                                row["Rap_Price"] = item.Rap_Rate.HasValue ? (object)item.Rap_Rate : DBNull.Value;
+                                row["Rap_Amt"] = item.Rap_Amount.HasValue ? (object)item.Rap_Amount : DBNull.Value;
                                 row["Cost_Disc"] = item.Cost_Disc.HasValue ? (object)item.Cost_Disc : DBNull.Value;
-                                row["Cost_Amt"] = item.Cost_Amt.HasValue ? (object)item.Cost_Amt : DBNull.Value;
+                                row["Cost_Amt"] = item.Cost_Amount.HasValue ? (object)item.Cost_Amount : DBNull.Value;
                                 row["Offer_Disc"] = item.Offer_Disc.HasValue ? (object)item.Offer_Disc : DBNull.Value;
-                                row["Offer_Amt"] = item.Offer_Amt.HasValue ? (object)item.Offer_Amt : DBNull.Value;
+                                row["Offer_Amt"] = item.Offer_Amount.HasValue ? (object)item.Offer_Amount : DBNull.Value;
                                 row["Cut"] = item.Cut > 0 ? (object)item.Cut : DBNull.Value;
                                 row["Polish"] = item.Polish > 0 ? (object)item.Polish : DBNull.Value;
                                 row["Symm"] = item.Symm > 0 ? (object)item.Symm : DBNull.Value;
-                                row["Flour_Intensity"] = item.Flour_Intensity.HasValue ? (object)item.Flour_Intensity : DBNull.Value;
+                                row["Flour_Intensity"] = item.Fls_Intensity.HasValue ? (object)item.Fls_Intensity : DBNull.Value;
                                 row["Length"] = item.Length.HasValue ? (object)item.Length : DBNull.Value;
                                 row["Width"] = item.Width.HasValue ? (object)item.Width : DBNull.Value;
                                 row["Depth"] = item.Depth.HasValue ? (object)item.Depth : DBNull.Value;
@@ -1044,21 +1044,21 @@ namespace astute.Controllers
                                 row["Table_Per"] = item.Table_Per.HasValue ? (object)item.Table_Per : DBNull.Value;
                                 row["Crown_Angle"] = item.Crown_Angle.HasValue ? (object)item.Crown_Angle : DBNull.Value;
                                 row["Crown_Height"] = item.Crown_Height.HasValue ? (object)item.Crown_Height : DBNull.Value;
-                                row["Pavillion_Angle"] = item.Pavillion_Angle.HasValue ? (object)item.Pavillion_Angle : DBNull.Value;
-                                row["Pavillion_Height"] = item.Pavillion_Height.HasValue ? (object)item.Pavillion_Height : DBNull.Value;
+                                row["Pavillion_Angle"] = item.Pavilion_Angle.HasValue ? (object)item.Pavilion_Angle : DBNull.Value;
+                                row["Pavillion_Height"] = item.Pavilion_Height.HasValue ? (object)item.Pavilion_Height : DBNull.Value;
                                 row["Lab"] = item.Lab > 0 ? (object)item.Lab : DBNull.Value;
-                                row["Supplier_Ref_No"] = !string.IsNullOrEmpty(item.Supplier_Ref_No) ? (object)item.Supplier_Ref_No : DBNull.Value;
+                                row["Supplier_Ref_No"] = !string.IsNullOrEmpty(item.Supplier_No) ? (object)item.Supplier_No : DBNull.Value;
                                 row["Key_to_Symbol"] = !string.IsNullOrEmpty(item.Key_to_Symbol) ? (object)item.Key_to_Symbol : DBNull.Value;
                                 row["Culet"] = item.Culet.HasValue ? (object)item.Culet : DBNull.Value;
-                                row["Lab_Comment"] = !string.IsNullOrEmpty(item.Lab_Comment) ? (object)item.Lab_Comment : DBNull.Value;
+                                row["Lab_Comment"] = !string.IsNullOrEmpty(item.Lab_Comments) ? (object)item.Lab_Comments : DBNull.Value;
                                 row["Str_Ln"] = item.Str_Ln.HasValue ? (object)item.Str_Ln : DBNull.Value;
                                 row["LR_Half"] = item.LR_Half.HasValue ? (object)item.LR_Half : DBNull.Value;
                                 row["Girdle_Per"] = item.Girdle_Per.HasValue ? (object)item.Girdle_Per : DBNull.Value;
                                 row["Girdle_Condition"] = item.Girdle_Condition.HasValue ? (object)item.Girdle_Condition : DBNull.Value;
                                 row["Table_White"] = item.Table_White.HasValue ? (object)item.Table_White : DBNull.Value;
-                                row["Crown_White"] = item.Crown_White.HasValue ? (object)item.Crown_White : DBNull.Value;
+                                row["Crown_White"] = item.Side_White.HasValue ? (object)item.Side_White : DBNull.Value;
                                 row["Table_Black"] = item.Table_Black.HasValue ? (object)item.Table_Black : DBNull.Value;
-                                row["Crown_Black"] = item.Crown_Black.HasValue ? (object)item.Crown_Black : DBNull.Value;
+                                row["Crown_Black"] = item.Side_Black.HasValue ? (object)item.Side_Black : DBNull.Value;
                                 row["Shade"] = item.Shade.HasValue ? (object)item.Shade : DBNull.Value;
                                 row["Luster"] = item.Luster.HasValue ? (object)item.Luster : DBNull.Value;
                                 bool? preSoldValue = null;
@@ -1437,7 +1437,6 @@ namespace astute.Controllers
                         { "GIRDLE_CONDITION", 49 },
                         { "GIRDLE_TYPE", 50 },
                         { "LUSTER", 59 },
-                        //{ "LASER_INSCRIPTION", 60 },
                         { "SHADE", 84 }
                     };
 
