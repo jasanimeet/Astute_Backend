@@ -1076,7 +1076,18 @@ namespace astute.Controllers
                                 row["Pre_Sold"] = preSoldValue.HasValue ? (object)preSoldValue.Value : DBNull.Value;
                                 row["Buyer"] = item.Buyer.HasValue ? (object)item.Buyer : DBNull.Value;
                                 row["Laser_Insc"] = !string.IsNullOrEmpty(item.Laser_Inscription) ? (object)item.Laser_Inscription : DBNull.Value;
-                                row["Cert_Date"] = !string.IsNullOrEmpty(item.Certificate_Date) ? (object)item.Certificate_Date : DBNull.Value;
+                                DateTime parsedDate;
+                                string dateFormat = "dd-MM-yyyy";
+
+                                if (DateTime.TryParseExact(item.Certificate_Date, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate))
+                                {
+                                    row["Cert_Date"] = parsedDate;
+                                }
+                                else
+                                {
+                                    row["Cert_Date"] = DBNull.Value;
+                                    Console.WriteLine($"Date format for '{item.Certificate_Date}' is invalid.");
+                                }
                                 row["Cert_Type"] = item.Cert_Type.HasValue ? (object)item.Cert_Type : DBNull.Value;
                                 row["Company_Id"] = !string.IsNullOrEmpty(item.Company_Id) ? (object)item.Company_Id : DBNull.Value;
                                 row["RFID"] = !string.IsNullOrEmpty(item.RFID) ? (object)item.RFID : DBNull.Value;
