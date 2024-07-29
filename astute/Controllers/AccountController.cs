@@ -1089,7 +1089,7 @@ namespace astute.Controllers
                                     Console.WriteLine($"Date format for '{item.Certificate_Date}' is invalid.");
                                 }
                                 row["Cert_Type"] = item.Cert_Type.HasValue ? (object)item.Cert_Type : DBNull.Value;
-                                row["Company_Id"] = !string.IsNullOrEmpty(item.Company_Id) ? (object)item.Company_Id : DBNull.Value;
+                                row["Company_Id"] = account_Trans_Master.company;
                                 row["RFID"] = !string.IsNullOrEmpty(item.RFID) ? (object)item.RFID : DBNull.Value;
                                 row["Assign_Date"] = item.Assign_Date.HasValue ? (object)item.Assign_Date : DBNull.Value;
                                 row["Status"] = item.Status.HasValue ? (object)item.Status : DBNull.Value;
