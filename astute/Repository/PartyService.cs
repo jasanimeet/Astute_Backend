@@ -918,6 +918,17 @@ namespace astute.Repository
 
             return result;
         }
+        public async Task<Party_File_Detail> Get_Party_File_Detail(int party_Id)
+        {
+            var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Party_File_Detail
+                            .FromSqlRaw(@"EXEC Party_File_Select_Detail @Party_Id", _party_Id)
+                            .AsEnumerable().Where(x => x.Party_Id == party_Id)
+                            .FirstOrDefault());
+
+            return result;
+        }
         #endregion
 
         #region Customer Party File

@@ -83,6 +83,7 @@ namespace astute.Repository
         Task<int> Add_Update_Party_File(Party_File party_File, int modified_By);
         Task<int> Delete_Party_File(int file_Id);
         Task<Party_File> Get_Party_File(int file_Id, int party_Id);
+        Task<Party_File_Detail> Get_Party_File_Detail(int party_Id);
         #endregion
 
         #region Customer Party File

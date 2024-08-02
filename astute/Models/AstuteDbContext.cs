@@ -70,6 +70,7 @@ namespace astute.Models
         public DbSet<Party_Api> Party_Api { get; set; }
         public DbSet<Party_FTP> Party_FTP { get; set; }
         public DbSet<Party_File> Party_File { get; set; }
+        public DbSet<Party_File_Detail> Party_File_Detail { get; set; }
         public DbSet<Supplier_Details> Supplier_Details { get; set; }
         public DbSet<Supplier_Details_List> Supplier_Details_List { get; set; }
         public DbSet<DropdownModel> DropdownModel { get; set; }
