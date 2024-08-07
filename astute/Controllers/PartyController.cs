@@ -11516,8 +11516,9 @@ namespace astute.Controllers
                                     string fileName = Path.GetFileNameWithoutExtension(File_Location.FileName);
                                     string fileExt = Path.GetExtension(File_Location.FileName);
                                     string strFile = fileName + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + fileExt;
+                                    string fileLocation = Path.Combine(filePath, strFile);
 
-                                    using (var fileStream = new FileStream(Path.Combine(filePath, strFile), FileMode.Create))
+                                    using (var fileStream = new FileStream(fileLocation, FileMode.Create))
                                     {
                                         await File_Location.CopyToAsync(fileStream);
                                     }
@@ -11527,166 +11528,190 @@ namespace astute.Controllers
                                     DataTable excel_dataTable = new DataTable();
 
                                     var sheet_list = party_File.Sheet_Name.Split(",").ToList();
-                                    var fileLocation = Path.Combine(filePath, strFile);
+                                    
                                     if (fileExt == ".xls")
                                     {
-                                        if (sheet_list != null && sheet_list.Count > 0)
+                                        try
                                         {
-                                            foreach (var sheet_name in sheet_list)
+                                            await Task.Delay(1000);
+
+                                            if (sheet_list != null && sheet_list.Count > 0)
                                             {
-                                                using (FileStream file = new FileStream(fileLocation, FileMode.Open, FileAccess.Read))
+                                                foreach (var sheet_name in sheet_list)
                                                 {
-                                                    HSSFWorkbook workbook = new HSSFWorkbook(file);
-                                                    HSSFSheet sheet = (HSSFSheet)workbook.GetSheet(sheet_name);
-                                                    #region Start Remove above unused rows and columns
-                                                    var (hasDataInFirstTenRowsAndColumns, rowcnt) = CoreService.CheckDataInFirstTenRowsAndColumns(sheet);
-
-                                                    if (hasDataInFirstTenRowsAndColumns && rowcnt > 1)
+                                                    using (FileStream file = new FileStream(fileLocation, FileMode.Open, FileAccess.Read))
                                                     {
-                                                        sheet.ShiftRows(1, rowcnt - 1, 0);
-                                                        string outputFilePath = Path.Combine(filePath, strFile);
-                                                        using (FileStream outputFile = new FileStream(outputFilePath, FileMode.Create))
+                                                        HSSFWorkbook workbook = new HSSFWorkbook(file);
+                                                        HSSFSheet sheet = (HSSFSheet)workbook.GetSheet(sheet_name);
+                                                        #region Start Remove above unused rows and columns
+                                                        var (hasDataInFirstTenRowsAndColumns, rowcnt) = CoreService.CheckDataInFirstTenRowsAndColumns(sheet);
+
+                                                        if (hasDataInFirstTenRowsAndColumns && rowcnt > 1)
                                                         {
-                                                            workbook.Write(outputFile);
-                                                        }
-                                                    }
-                                                    #endregion
-
-                                                    #region Start Remove belowe unused rows and columns
-                                                    int rowCount = sheet.LastRowNum + 1;
-                                                    int colCount = sheet.GetRow(0).LastCellNum;
-
-                                                    int rowsToCheck = Math.Max(rowCount - (rowCount - 1), 1);
-                                                    bool is_Removed = false;
-
-                                                    for (int row = rowCount - 1; row >= rowsToCheck; row--)
-                                                    {
-                                                        bool hasData = false;
-
-                                                        IRow currentRow = sheet.GetRow(row);
-                                                        if (currentRow != null)
-                                                        {
-                                                            for (int col = colCount - 1; col >= colCount - 20; col--)
-                                                            {
-                                                                ICell cell = currentRow.GetCell(col);
-                                                                if (cell != null && !string.IsNullOrEmpty(cell.ToString()))
-                                                                {
-                                                                    hasData = true;
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
-
-                                                        if (!hasData)
-                                                        {
-                                                            sheet.RemoveRow(currentRow);
-                                                            rowCount--;
-                                                            is_Removed = true;
-                                                        }
-                                                    }
-
-                                                    if (is_Removed)
-                                                    {
-                                                        try
-                                                        {
-                                                            string outputFilePath2 = Path.Combine(filePath, strFile);
-                                                            using (FileStream outputFile = new FileStream(outputFilePath2, FileMode.Create))
+                                                            sheet.ShiftRows(1, rowcnt - 1, 0);
+                                                            using (FileStream outputFile = new FileStream(fileLocation, FileMode.Create))
                                                             {
                                                                 workbook.Write(outputFile);
                                                             }
                                                         }
-                                                        catch (Exception ex)
+                                                        #endregion
+
+                                                        #region Start Remove belowe unused rows and columns
+                                                        int rowCount = sheet.LastRowNum + 1;
+                                                        int colCount = sheet.GetRow(0).LastCellNum;
+
+                                                        int rowsToCheck = Math.Max(rowCount - (rowCount - 1), 1);
+                                                        bool is_Removed = false;
+
+                                                        for (int row = rowCount - 1; row >= rowsToCheck; row--)
                                                         {
-                                                            // Handle exception
-                                                        }
-                                                    }
-                                                    #endregion
+                                                            bool hasData = false;
 
-                                                    #region Start Update URL
-                                                    List<string> columnNames = new List<string>();
-                                                    List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
-
-                                                    int totalColumns = sheet.GetRow(0).LastCellNum;
-                                                    IRow headerRow = sheet.GetRow(0);
-
-                                                    for (int col = 0; col < totalColumns; col++)
-                                                    {
-                                                        var cellValue = headerRow.GetCell(col)?.ToString();
-                                                        if (!string.IsNullOrEmpty(cellValue))
-                                                        {
-                                                            columnNames.Add(cellValue);
-                                                        }
-                                                    }
-                                                    int _rowCount = sheet.PhysicalNumberOfRows;
-                                                    for (int row = 1; row < _rowCount; row++)
-                                                    {
-                                                        IRow currentRow = sheet.GetRow(row);
-                                                        Dictionary<string, object> rowData = new Dictionary<string, object>();
-
-                                                        for (int col = 0; col < totalColumns; col++)
-                                                        {
-                                                            string columnName = columnNames[col];
-                                                            var cell = currentRow.GetCell(col);
-                                                            var cellValue = cell?.ToString();
-                                                            string formula = string.Empty;
-                                                            if (cell.CellType == CellType.Formula)
+                                                            IRow currentRow = sheet.GetRow(row);
+                                                            if (currentRow != null)
                                                             {
-                                                                formula = cell?.CellFormula;
-                                                            }
-                                                            if (!string.IsNullOrEmpty(cell.Hyperlink?.Address))
-                                                            {
-                                                                string linkUrl = cell.Hyperlink.Address;
-                                                                rowData.Add(columnName, linkUrl);
-                                                            }
-                                                            else if (cell.CellType == CellType.Formula && !string.IsNullOrEmpty(formula))
-                                                            {
-                                                                var urlMatch = Regex.Match(formula, "\"(.*?)\"");
-                                                                if (urlMatch.Success)
+                                                                for (int col = colCount - 1; col >= colCount - 20; col--)
                                                                 {
-                                                                    string url = urlMatch.Groups[1].Value;
-                                                                    string text = Regex.Match(formula, ",\"(.*?)\"").Groups[1].Value;
-                                                                    bool containsOnlyNumbers = Regex.IsMatch(text, @"^[0-9]+$");
-                                                                    if (containsOnlyNumbers)
+                                                                    ICell cell = currentRow.GetCell(col);
+                                                                    if (cell != null && !string.IsNullOrEmpty(cell.ToString()))
                                                                     {
-                                                                        rowData.Add(columnName, url + "," + text);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        rowData.Add(columnName, url);
+                                                                        hasData = true;
+                                                                        break;
                                                                     }
                                                                 }
                                                             }
-                                                            else
+
+                                                            if (!hasData)
                                                             {
-                                                                rowData.Add(columnName, cellValue);
+                                                                sheet.RemoveRow(currentRow);
+                                                                rowCount--;
+                                                                is_Removed = true;
                                                             }
                                                         }
 
-                                                        rowsData.Add(rowData);
-                                                    }
+                                                        if (is_Removed)
+                                                        {
+                                                            try
+                                                            {
+                                                                using (FileStream outputFile = new FileStream(fileLocation, FileMode.Create))
+                                                                {
+                                                                    workbook.Write(outputFile);
+                                                                }
+                                                            }
+                                                            catch (Exception ex)
+                                                            {
+                                                                string message = ex.Message;
+                                                                await _commonService.InsertErrorLog(message, "Create_Update_Manual_Upload", ex.StackTrace);
 
-                                                    for (int colIndex = 0; colIndex < columnNames.Count; colIndex++)
-                                                    {
-                                                        headerRow.GetCell(colIndex).SetCellValue(columnNames[colIndex]);
-                                                    }
+                                                                return Ok(new
+                                                                {
+                                                                    Supplier_Id = party_File.Party_Id,
+                                                                    Party_Name = party_name,
+                                                                    message = message,
 
-                                                    for (int rowIndex = 0; rowIndex < rowsData.Count; rowIndex++)
-                                                    {
-                                                        IRow currentRow = sheet.GetRow(rowIndex + 1);
+                                                                });
+                                                            }
+                                                        }
+                                                        #endregion
+
+                                                        #region Start Update URL
+                                                        List<string> columnNames = new List<string>();
+                                                        List<Dictionary<string, object>> rowsData = new List<Dictionary<string, object>>();
+
+                                                        int totalColumns = sheet.GetRow(0).LastCellNum;
+                                                        IRow headerRow = sheet.GetRow(0);
+
+                                                        for (int col = 0; col < totalColumns; col++)
+                                                        {
+                                                            var cellValue = headerRow.GetCell(col)?.ToString();
+                                                            if (!string.IsNullOrEmpty(cellValue))
+                                                            {
+                                                                columnNames.Add(cellValue);
+                                                            }
+                                                        }
+                                                        int _rowCount = sheet.PhysicalNumberOfRows;
+                                                        for (int row = 1; row < _rowCount; row++)
+                                                        {
+                                                            IRow currentRow = sheet.GetRow(row);
+                                                            Dictionary<string, object> rowData = new Dictionary<string, object>();
+
+                                                            for (int col = 0; col < totalColumns; col++)
+                                                            {
+                                                                string columnName = columnNames[col];
+                                                                var cell = currentRow.GetCell(col);
+                                                                var cellValue = cell?.ToString();
+                                                                string formula = string.Empty;
+                                                                if (cell.CellType == CellType.Formula)
+                                                                {
+                                                                    formula = cell?.CellFormula;
+                                                                }
+                                                                if (!string.IsNullOrEmpty(cell.Hyperlink?.Address))
+                                                                {
+                                                                    string linkUrl = cell.Hyperlink.Address;
+                                                                    rowData.Add(columnName, linkUrl);
+                                                                }
+                                                                else if (cell.CellType == CellType.Formula && !string.IsNullOrEmpty(formula))
+                                                                {
+                                                                    var urlMatch = Regex.Match(formula, "\"(.*?)\"");
+                                                                    if (urlMatch.Success)
+                                                                    {
+                                                                        string url = urlMatch.Groups[1].Value;
+                                                                        string text = Regex.Match(formula, ",\"(.*?)\"").Groups[1].Value;
+                                                                        bool containsOnlyNumbers = Regex.IsMatch(text, @"^[0-9]+$");
+                                                                        if (containsOnlyNumbers)
+                                                                        {
+                                                                            rowData.Add(columnName, url + "," + text);
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            rowData.Add(columnName, url);
+                                                                        }
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    rowData.Add(columnName, cellValue);
+                                                                }
+                                                            }
+
+                                                            rowsData.Add(rowData);
+                                                        }
+
                                                         for (int colIndex = 0; colIndex < columnNames.Count; colIndex++)
                                                         {
-                                                            currentRow.GetCell(colIndex)?.SetCellValue(rowsData[rowIndex][columnNames[colIndex]].ToString());
+                                                            headerRow.GetCell(colIndex).SetCellValue(columnNames[colIndex]);
                                                         }
-                                                    }
 
-                                                    string outputFilePath1 = Path.Combine(filePath, strFile);
-                                                    using (FileStream outputFile = new FileStream(outputFilePath1, FileMode.Create))
-                                                    {
-                                                        workbook.Write(outputFile);
+                                                        for (int rowIndex = 0; rowIndex < rowsData.Count; rowIndex++)
+                                                        {
+                                                            IRow currentRow = sheet.GetRow(rowIndex + 1);
+                                                            for (int colIndex = 0; colIndex < columnNames.Count; colIndex++)
+                                                            {
+                                                                currentRow.GetCell(colIndex)?.SetCellValue(rowsData[rowIndex][columnNames[colIndex]].ToString());
+                                                            }
+                                                        }
+
+                                                        using (FileStream outputFile = new FileStream(fileLocation, FileMode.Create))
+                                                        {
+                                                            workbook.Write(outputFile);
+                                                        }
+                                                        #endregion
                                                     }
-                                                    #endregion
                                                 }
                                             }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            string message = ex.Message;
+                                            await _commonService.InsertErrorLog(message, "Create_Update_Manual_Upload", ex.StackTrace);
+                                                                                   
+                                            return Ok(new
+                                            {
+                                                Supplier_Id = party_File.Party_Id,
+                                                Party_Name = party_name,
+                                                message = message,
+
+                                            });
                                         }
                                     }
                                     else if (fileExt == ".xlsx")
@@ -11705,8 +11730,7 @@ namespace astute.Controllers
                                                     if (hasDataInFirstTenRowsAndColumns && row_count > 1)
                                                     {
                                                         worksheet.DeleteRow(1, row_count - 1);
-                                                        string outputFilePath = Path.Combine(filePath, strFile);
-                                                        package.SaveAs(new FileInfo(outputFilePath));
+                                                        package.SaveAs(new FileInfo(fileLocation));
                                                     }
                                                     #endregion
 
@@ -11742,8 +11766,7 @@ namespace astute.Controllers
                                                     {
                                                         try
                                                         {
-                                                            string outputFilePath1 = Path.Combine(filePath, strFile);
-                                                            package.SaveAs(new FileInfo(outputFilePath1));
+                                                            package.SaveAs(new FileInfo(fileLocation));
                                                         }
                                                         catch (Exception ex)
                                                         {
@@ -12185,7 +12208,8 @@ namespace astute.Controllers
                 }
                 else
                 {
-                    message = "Either column or value mapping is wrong";
+                    //message = "Either column or value mapping is wrong";
+                    message = ex.Message;
                 }
 
                 return Ok(new
