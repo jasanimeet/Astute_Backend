@@ -11603,8 +11603,9 @@ namespace astute.Controllers
                                                                 string message = ex.Message;
                                                                 await _commonService.InsertErrorLog(message, "Create_Update_Manual_Upload", ex.StackTrace);
 
-                                                                return Ok(new
+                                                                return Conflict(new
                                                                 {
+                                                                    statusCode = HttpStatusCode.Conflict,
                                                                     Supplier_Id = party_File.Party_Id,
                                                                     Party_Name = party_name,
                                                                     message = message,
@@ -11705,8 +11706,9 @@ namespace astute.Controllers
                                             string message = ex.Message;
                                             await _commonService.InsertErrorLog(message, "Create_Update_Manual_Upload", ex.StackTrace);
                                                                                    
-                                            return Ok(new
+                                            return Conflict(new
                                             {
+                                                statusCode = HttpStatusCode.Conflict,
                                                 Supplier_Id = party_File.Party_Id,
                                                 Party_Name = party_name,
                                                 message = message,
@@ -12212,8 +12214,9 @@ namespace astute.Controllers
                     message = ex.Message;
                 }
 
-                return Ok(new
+                return Conflict(new
                 {
+                    statusCode = HttpStatusCode.Conflict,
                     Supplier_Id = party_File.Party_Id,
                     Party_Name = party_name,
                     message = message,
