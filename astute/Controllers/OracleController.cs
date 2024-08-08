@@ -83,7 +83,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Fortune_Discount", ex.StackTrace);
-                return Ok(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
@@ -110,7 +110,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Fortune_Party", ex.StackTrace);
-                return Ok(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
@@ -136,7 +136,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Fortune_Party_Master", ex.StackTrace);
-                return Ok(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
@@ -163,7 +163,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Lab_Entry_Notification", ex.StackTrace);
-                return Ok(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });

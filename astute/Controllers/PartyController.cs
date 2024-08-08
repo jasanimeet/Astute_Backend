@@ -11404,7 +11404,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Job_Transfer_User_Pricing", ex.StackTrace);
-                return Ok(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
@@ -11425,7 +11425,7 @@ namespace astute.Controllers
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.JobExc
+                        message = CoreCommonMessage.DataTransfer
                     });
                 }
                 return NoContent();
@@ -11433,7 +11433,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Job_Transfer_Supplier_Pricing_Cal", ex.StackTrace);
-                return Ok(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
