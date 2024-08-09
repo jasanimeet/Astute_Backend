@@ -537,18 +537,27 @@ namespace astute.Controllers
                 }
                 else
                 {
-                    return BadRequest("No valid input provided.");
+                    return StatusCode((int)HttpStatusCode.BadRequest, new
+                    {
+                        message = "No valid input provided."
+                    });
                 }
             }
             catch (HttpRequestException ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Rapaport_PriceList_Round_Pear", ex.StackTrace);
-                return StatusCode(StatusCodes.Status500InternalServerError, $"HTTP request error: {ex.Message}");
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = $"HTTP request error: {ex.Message}"
+                });
             }
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Rapaport_PriceList_Round_Pear", ex.StackTrace);
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = $"Error: {ex.Message}"
+                }); 
             }
         }
 
