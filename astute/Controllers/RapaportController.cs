@@ -1,18 +1,19 @@
 ﻿using astute.CoreModel;
+using astute.CoreServices;
 using astute.Models;
 using astute.Repository;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.IO;
-using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using astute.CoreServices;
-using System.Data;
-using System.Linq;
-using Microsoft.AspNetCore.Authorization;
 
 namespace astute.Controllers
 {
@@ -22,12 +23,16 @@ namespace astute.Controllers
     {
         #region Fields
         private readonly IRapaportService _rapaportService;
+        private readonly ICommonService _commonService;
+
         #endregion
 
         #region Ctor
-        public RapaportController(IRapaportService rapaportService)
+        public RapaportController(IRapaportService rapaportService,
+            ICommonService commonService)
         {
             _rapaportService = rapaportService;
+            _commonService = commonService;
         }
         #endregion
 
@@ -390,137 +395,161 @@ namespace astute.Controllers
         [HttpPost]
         [Route("rapaport_pricelist_round_pear")]
         [Authorize]
-        public async Task<IActionResult> Rapaport_PriceList_Round_Pear(string userName, string password)
+        public async Task<IActionResult> Rapaport_PriceList_Round_Pear(string userName, string password, [FromForm]IFormFile[] files)
         {
             try
             {
                 var dataList = new List<RapaportPriceModel>();
-                var dataList1 = new List<RapaportPriceModel>();
-                using (HttpClient client = new HttpClient())
+
+                if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
                 {
-                    #region ROUND
-                    var requestround = new HttpRequestMessage(HttpMethod.Post, "https://technet.rapaport.com/HTTP/Prices/CSV2_Round.aspx");
-                    requestround.Headers.Add("Cookie", "ASP.NET_SessionId=zj3ftyrz0up3spcdyldio2fo");
-
-                    var collectionRound = new List<KeyValuePair<string, string>>();
-                    collectionRound.Add(new("Content-Type", "application/json"));
-                    collectionRound.Add(new("Username", userName));
-                    collectionRound.Add(new("Password", password));
-                    var contentRound = new FormUrlEncodedContent(collectionRound);
-                    requestround.Content = contentRound;
-                    var responseRound = await client.SendAsync(requestround);
-                    #endregion
-
-                    if (responseRound.StatusCode == HttpStatusCode.OK)
+                    using (HttpClient client = new HttpClient())
                     {
-                        responseRound.EnsureSuccessStatusCode();
-                        using (var streamReader = new StreamReader(await responseRound.Content.ReadAsStreamAsync()))
-                        using (var csvReader = new CsvHelper.CsvReader(streamReader, new CultureInfo("en-US")))
-                        {
-                            var records = csvReader.GetRecords<dynamic>();
-                            while (csvReader.Read())
-                            {
-                                RapaportPriceModel dataItem = new RapaportPriceModel
-                                {
-                                    Shape = csvReader.GetField<string>(0),
-                                    Clarity = csvReader.GetField<string>(1),
-                                    Color = csvReader.GetField<string>(2),
-                                    From_Cts = csvReader.GetField<decimal>(3),
-                                    To_Cts = csvReader.GetField<decimal>(4),
-                                    Rate = csvReader.GetField<decimal>(5),
-                                    Date = csvReader.GetField<string>(6).Trim() //DateTime.ParseExact(csvReader.GetField<string>(6).Trim(), "M/d/yyyy", CultureInfo.InvariantCulture)
-                                };
-                                string date = CoreService.ConvertDateFormat(dataItem.Date);
-                                dataItem.Date = date;
-                                dataList.Add(dataItem);
+                        #region ROUND
+                        var requestround = new HttpRequestMessage(HttpMethod.Post, "https://technet.rapaport.com/HTTP/Prices/CSV2_Round.aspx");
+                        requestround.Headers.Add("Cookie", "ASP.NET_SessionId=zj3ftyrz0up3spcdyldio2fo");
 
-                                RapaportPriceModel dataItem1 = new RapaportPriceModel
+                        var collectionRound = new List<KeyValuePair<string, string>>
+                        {
+                            new("Content-Type", "application/json"),
+                            new("Username", userName),
+                            new("Password", password)
+                        };
+                        
+                        requestround.Content = new FormUrlEncodedContent(collectionRound);
+
+                        var responseRound = await client.SendAsync(requestround);
+
+                        if (responseRound.StatusCode == HttpStatusCode.OK)
+                        {
+                            responseRound.EnsureSuccessStatusCode();
+
+                            using (var streamReader = new StreamReader(await responseRound.Content.ReadAsStreamAsync()))
+                            using (var csvReader = new CsvHelper.CsvReader(streamReader, new CultureInfo("en-US")))
+                            {
+                                while (csvReader.Read())
                                 {
-                                    Shape = csvReader.GetField<string>(0),
-                                    Clarity = csvReader.GetField<string>(1),
-                                    Color = csvReader.GetField<string>(2),
-                                    From_Cts = csvReader.GetField<decimal>(3),
-                                    To_Cts = csvReader.GetField<decimal>(4),
-                                    Rate = csvReader.GetField<decimal>(5),
-                                    Date = csvReader.GetField<string>(6).Trim() //DateTime.ParseExact(csvReader.GetField<string>(6).Trim(), "M/d/yyyy", CultureInfo.InvariantCulture)
-                                };
-                                dataList1.Add(dataItem1);
+                                    var dataItem = new RapaportPriceModel
+                                    {
+                                        Shape = csvReader.GetField<string>(0),
+                                        Clarity = csvReader.GetField<string>(1),
+                                        Color = csvReader.GetField<string>(2),
+                                        From_Cts = csvReader.GetField<decimal>(3),
+                                        To_Cts = csvReader.GetField<decimal>(4),
+                                        Rate = csvReader.GetField<decimal>(5),
+                                        Date = csvReader.GetField<string>(6).Trim()
+                                    };
+
+                                    dataList.Add(dataItem);
+                                }
                             }
                         }
-                    }
-                    #region PEAR
-                    var request = new HttpRequestMessage(HttpMethod.Post, "https://technet.rapaport.com/HTTP/Prices/CSV2_Pear.aspx");
-                    request.Headers.Add("Cookie", "ASP.NET_SessionId=zj3ftyrz0up3spcdyldio2fo");
 
-                    var collection = new List<KeyValuePair<string, string>>();
-                    collection.Add(new("Content-Type", "application/json"));
-                    collection.Add(new("Username", userName));
-                    collection.Add(new("Password", password));
-                    var content = new FormUrlEncodedContent(collection);
-                    request.Content = content;
-                    var response = await client.SendAsync(request);
-                    #endregion
+                        #endregion
 
-                    if (response.StatusCode == HttpStatusCode.OK)
-                    {
-                        response.EnsureSuccessStatusCode();
-                        using (var streamReader = new StreamReader(await response.Content.ReadAsStreamAsync()))
-                        using (var csvReader = new CsvHelper.CsvReader(streamReader, new CultureInfo("en-US")))
+                        #region PEAR
+
+                        var request = new HttpRequestMessage(HttpMethod.Post, "https://technet.rapaport.com/HTTP/Prices/CSV2_Pear.aspx");
+                        request.Headers.Add("Cookie", "ASP.NET_SessionId=zj3ftyrz0up3spcdyldio2fo");
+
+                        var collection = new List<KeyValuePair<string, string>>
                         {
-                            var records = csvReader.GetRecords<dynamic>();
-                            while (csvReader.Read())
-                            {
-                                RapaportPriceModel dataItem = new RapaportPriceModel
-                                {
-                                    Shape = csvReader.GetField<string>(0),
-                                    Clarity = csvReader.GetField<string>(1),
-                                    Color = csvReader.GetField<string>(2),
-                                    From_Cts = csvReader.GetField<decimal>(3),
-                                    To_Cts = csvReader.GetField<decimal>(4),
-                                    Rate = csvReader.GetField<decimal>(5),
-                                    Date = csvReader.GetField<string>(6).Trim() //ateTime.ParseExact(csvReader.GetField<string>(6).Trim(), "M/d/yyyy", CultureInfo.InvariantCulture)
-                                };
-                                string date = CoreService.ConvertDateFormat(dataItem.Date);
-                                dataItem.Date = date;
-                                dataList.Add(dataItem);
+                            new("Content-Type", "application/json"),
+                            new("Username", userName),
+                            new("Password", password)
+                        };
 
-                                RapaportPriceModel dataItem1 = new RapaportPriceModel
+                        request.Content = new FormUrlEncodedContent(collection);
+
+                        var response = await client.SendAsync(request);
+
+                        if (response.StatusCode == HttpStatusCode.OK)
+                        {
+                            response.EnsureSuccessStatusCode();
+
+                            using (var streamReader = new StreamReader(await response.Content.ReadAsStreamAsync()))
+                            using (var csvReader = new CsvHelper.CsvReader(streamReader, new CultureInfo("en-US")))
+                            {
+                                while (csvReader.Read())
                                 {
-                                    Shape = csvReader.GetField<string>(0),
-                                    Clarity = csvReader.GetField<string>(1),
-                                    Color = csvReader.GetField<string>(2),
-                                    From_Cts = csvReader.GetField<decimal>(3),
-                                    To_Cts = csvReader.GetField<decimal>(4),
-                                    Rate = csvReader.GetField<decimal>(5),
-                                    Date = csvReader.GetField<string>(6).Trim() //ateTime.ParseExact(csvReader.GetField<string>(6).Trim(), "M/d/yyyy", CultureInfo.InvariantCulture)
-                                };
-                                dataList1.Add(dataItem1);
+                                    var dataItem = new RapaportPriceModel
+                                    {
+                                        Shape = csvReader.GetField<string>(0),
+                                        Clarity = csvReader.GetField<string>(1),
+                                        Color = csvReader.GetField<string>(2),
+                                        From_Cts = csvReader.GetField<decimal>(3),
+                                        To_Cts = csvReader.GetField<decimal>(4),
+                                        Rate = csvReader.GetField<decimal>(5),
+                                        Date = csvReader.GetField<string>(6).Trim()
+                                    };
+                                    
+                                    dataList.Add(dataItem);
+                                }
                             }
                         }
-                    }
-                    if (response.StatusCode == HttpStatusCode.Unauthorized)
-                    {
-                        return Unauthorized(new
+                        else if (response.StatusCode == HttpStatusCode.Unauthorized)
                         {
-                            statusCode = HttpStatusCode.Unauthorized,
-                            message = CoreCommonMessage.UnauthorizedUser
-                        });
+                            return Unauthorized(new
+                            {
+                                statusCode = HttpStatusCode.Unauthorized,
+                                message = CoreCommonMessage.UnauthorizedUser
+                            });
+                        }
+
+                        #endregion
                     }
 
-                    await CreateRapaportDetail(dataList1);
+                    await CreateRapaportDetail(dataList);
                     string jsonData = CoreService.ConvertModelListToJson(dataList);
                     return Ok(jsonData);
+                }
+                else if (files != null && files.Length > 0)
+                {
+                    foreach (var file in files)
+                    {
+                        if (file.Length > 0 && Path.GetExtension(file.FileName).Equals(".csv", StringComparison.OrdinalIgnoreCase))
+                        {
+                            using (var streamReader = new StreamReader(file.OpenReadStream()))
+                            using (var csvReader = new CsvHelper.CsvReader(streamReader, new CultureInfo("en-US")))
+                            {
+                                while (csvReader.Read())
+                                {
+                                    var dataItem = new RapaportPriceModel
+                                    {
+                                        Shape = csvReader.GetField<string>(0),
+                                        Clarity = csvReader.GetField<string>(1),
+                                        Color = csvReader.GetField<string>(2),
+                                        From_Cts = csvReader.GetField<decimal>(3),
+                                        To_Cts = csvReader.GetField<decimal>(4),
+                                        Rate = csvReader.GetField<decimal>(5),
+                                        Date = csvReader.GetField<string>(6).Trim()
+                                    };
+
+                                    dataList.Add(dataItem);
+                                }
+                            }
+                        }
+                    }
+
+                    await CreateRapaportDetail(dataList);
+                    string jsonData = CoreService.ConvertModelListToJson(dataList);
+                    return Ok(jsonData);
+                }
+                else
+                {
+                    return BadRequest("No valid input provided.");
                 }
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"HTTP request error: {ex.Message}");
+                await _commonService.InsertErrorLog(ex.Message, "Rapaport_PriceList_Round_Pear", ex.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, $"HTTP request error: {ex.Message}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
+                await _commonService.InsertErrorLog(ex.Message, "Rapaport_PriceList_Round_Pear", ex.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
             }
-            return BadRequest();
         }
 
         [HttpGet]
