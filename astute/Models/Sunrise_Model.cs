@@ -41,6 +41,7 @@
         public string? CrAng { get; set; }
         public string? CrHt { get; set; }
         public string? PavAng { get; set; }
+        public string? PavHt { get; set; }
         public string? Girdle { get; set; }
         public string? GirdleType { get; set; }
     }
