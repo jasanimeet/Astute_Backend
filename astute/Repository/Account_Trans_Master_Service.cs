@@ -375,6 +375,38 @@ namespace astute.Repository
 
             return result.Count > 0 ? result : null;
         }
+        public async Task<List<string>> Check_Inward_Detail_Stock_Id(string Stock_Id)
+        {
+            var result = new List<string>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Check_Inward_Detail_Stock_Id", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(Stock_Id) ? new SqlParameter("@Stock_Id", Stock_Id) : new SqlParameter("@Stock_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            string Stock_Ids = string.Empty;
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnValue = reader.GetValue(i);
+
+                                Stock_Ids = columnValue.ToString();
+                            }
+
+                            result.Add(Stock_Ids);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
 
         #endregion
     }
