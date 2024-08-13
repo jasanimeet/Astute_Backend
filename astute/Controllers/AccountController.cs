@@ -34,6 +34,7 @@ namespace astute.Controllers
         private readonly IFirst_Voucher_No _trans_Service;
         private readonly IAccount_Trans_Master_Service _account_Trans_Master_Service;
         private readonly ICategoryService _categoryService;
+        private readonly IInward_Detail_Service _inward_Detail_Service;
         #endregion
 
         #region Ctor
@@ -46,7 +47,8 @@ namespace astute.Controllers
             IAccount_Master_Service account_Master_Service,
             IFirst_Voucher_No trans_Service,
             IAccount_Trans_Master_Service account_Trans_Master_Service,
-            ICategoryService categoryService)
+            ICategoryService categoryService,
+            IInward_Detail_Service inward_Detail_Service)
         {
             _configuration = configuration;
             _commonService = commonService;
@@ -57,6 +59,7 @@ namespace astute.Controllers
             _trans_Service = trans_Service;
             _account_Trans_Master_Service = account_Trans_Master_Service;
             _categoryService = categoryService;
+            _inward_Detail_Service = inward_Detail_Service;
         }
         #endregion
 
@@ -1387,7 +1390,7 @@ namespace astute.Controllers
                     await File_Location.CopyToAsync(fileStream);
                 }
 
-                List<Dictionary<string, object>> result = await _categoryService.Get_Import_Master_Detail_Purchase(import_Id);
+                List<Dictionary<string, object>> result = await _inward_Detail_Service.Get_Import_Master_Detail_Purchase(import_Id);
                 var UploadResults = await ProcessExcelFile(Path.Combine(filePath, strFile), result, Sheet_Name);
 
                 if (UploadResults.SuccessFields.Count > 0 || UploadResults.ErrorFields.Count > 0)
@@ -1403,7 +1406,8 @@ namespace astute.Controllers
                         }
                     });
                 }
-                else {
+                else
+                {
                     return NoContent();
                 }
             }
@@ -1413,6 +1417,7 @@ namespace astute.Controllers
                 message = CoreCommonMessage.FileNotFound
             });
         }
+
         public async Task<(List<Dictionary<string, string>> SuccessFields, List<Dictionary<string, string>> ErrorFields)> ProcessExcelFile(string filePath, List<Dictionary<string, object>> result, string sheetName)
         {
             var successFields = new List<Dictionary<string, string>>();
@@ -1490,7 +1495,7 @@ namespace astute.Controllers
                                         var catValId = Find_Cat_Val_Id(resultCategory, cellValue, required);
                                         rowData[columnKey] = catValId.Item1;
                                         rowData[$"{columnKey}_NAME"] = catValId.Item2;
-                                        
+
                                         if (catValId.Item2 != null && catValId.Item2.StartsWith("Invalid"))
                                         {
                                             hasError = true;
@@ -1527,7 +1532,7 @@ namespace astute.Controllers
                                     }
                                     else
                                     {
-                                        var defaultValue = worksheet.Cells[rowIndex, columnIndex].Value?.ToString();                                        
+                                        var defaultValue = worksheet.Cells[rowIndex, columnIndex].Value?.ToString();
                                         if (string.IsNullOrWhiteSpace(defaultValue))
                                         {
                                             if (required)
@@ -1685,6 +1690,269 @@ namespace astute.Controllers
                 });
             }
         }
+
+        public async Task<(List<Dictionary<string, string>> SuccessFields, List<Dictionary<string, string>> ErrorFields)> InwardDetailProcessExcelFile(string filePath, List<Dictionary<string, object>> result, string sheetName)
+        {
+            var successFields = new List<Dictionary<string, string>>();
+            var errorFields = new List<Dictionary<string, string>>();
+
+            try
+            {
+                using (var package = new ExcelPackage(new FileInfo(filePath)))
+                {
+                    var worksheet = package.Workbook.Worksheets[sheetName];
+                    int totalRows = worksheet.Dimension.End.Row;
+                    int totalColumns = worksheet.Dimension.End.Column;
+
+                    var categoryIds = new Dictionary<string, int>
+                    {
+                        { "SHAPE", 13 },
+                        { "COLOR", 14 },
+                        { "CLARITY", 15 },
+                        { "CUT", 16 },
+                        { "POLISH", 17 },
+                        { "SYMM", 19 },
+                        { "FLS_INTENSITY", 21 },
+                        { "TABLE_BLACK", 26 },
+                        { "TABLE_WHITE", 27 },
+                        { "SIDE_BLACK", 28 },
+                        { "SIDE_WHITE", 29 },
+                        { "LAB", 35 },
+                        { "CERT_TYPE", 36 },
+                        { "CULET", 37 },
+                        { "GIRDLE_CONDITION", 49 },
+                        { "GIRDLE_TYPE", 50 },
+                        { "LUSTER", 59 },
+                        { "SHADE", 84 }
+                    };
+
+                    for (int rowIndex = 2; rowIndex <= totalRows; rowIndex++)
+                    {
+                        bool isRowEmpty = true;
+                        var rowData = new Dictionary<string, string>();
+                        bool hasError = false;
+                        var errorMessages = new List<string>();
+
+                        for (int colIndex = 1; colIndex <= totalColumns; colIndex++)
+                        {
+                            if (!string.IsNullOrWhiteSpace(worksheet.Cells[rowIndex, colIndex].Value?.ToString()))
+                            {
+                                isRowEmpty = false;
+                                break;
+                            }
+                        }
+
+                        if (isRowEmpty) continue;
+
+                        foreach (var mapping in result)
+                        {
+                            string excelColumnNo = mapping["Excel_Column_No"].ToString();
+                            string displayColumnName = mapping["Column_Name"].ToString();
+                            bool required = (bool)mapping["Required"];
+
+                            if (int.TryParse(excelColumnNo, out int excelColumnNoInt))
+                            {
+                                int columnIndex = excelColumnNoInt;
+
+                                if (columnIndex > 0 && columnIndex <= totalColumns)
+                                {
+                                    string columnKey = displayColumnName.Replace(" ", "_").ToUpper();
+
+                                    if (categoryIds.TryGetValue(columnKey, out int categoryId))
+                                    {
+                                        Initialize_ColumnData(rowData, columnKey);
+
+                                        var resultCategory = await _categoryService.Get_Active_Category_Values(categoryId);
+
+                                        var cellValue = worksheet.Cells[rowIndex, columnIndex].Value?.ToString();
+                                        var catValId = Find_Cat_Val_Id(resultCategory, cellValue, required);
+                                        rowData[columnKey] = catValId.Item1;
+                                        rowData[$"{columnKey}_NAME"] = catValId.Item2;
+
+                                        if (catValId.Item2 != null && catValId.Item2.StartsWith("Invalid"))
+                                        {
+                                            hasError = true;
+                                            errorMessages.Add($"Invalid value in column no: {columnIndex} and column header: {columnKey}");
+                                        }
+                                        else if (catValId.Item2 == null && required)
+                                        {
+                                            hasError = true;
+                                            errorMessages.Add($"Value in column no: {columnIndex} and column header: {columnKey} is null.");
+                                        }
+                                    }
+                                    else if (columnKey == "CERTIFICATE_DATE")
+                                    {
+                                        Initialize_ColumnData(rowData, columnKey);
+
+                                        var dateCellValue = worksheet.Cells[rowIndex, columnIndex].Value?.ToString();
+                                        if (!string.IsNullOrEmpty(dateCellValue) && DateTime.TryParse(dateCellValue, out DateTime date))
+                                        {
+                                            rowData[columnKey] = date.ToString("dd-MM-yyyy");
+                                        }
+                                        else
+                                        {
+                                            if (required)
+                                            {
+                                                rowData[columnKey] = null;
+                                                hasError = true;
+                                                errorMessages.Add($"Invalid date format in column no : {columnIndex} and column header : {columnKey}");
+                                            }
+                                            else
+                                            {
+                                                rowData[columnKey] = null;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var defaultValue = worksheet.Cells[rowIndex, columnIndex].Value?.ToString();
+                                        if (string.IsNullOrWhiteSpace(defaultValue))
+                                        {
+                                            if (required)
+                                            {
+                                                rowData[columnKey] = "Field is required";
+                                                hasError = true;
+                                                errorMessages.Add($"Field is required in column no : {columnIndex} and column header : {columnKey}");
+                                            }
+                                            else
+                                            {
+                                                rowData[columnKey] = null;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            rowData[columnKey] = defaultValue;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Column index '{columnIndex}' is out of range.");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Invalid column number '{excelColumnNo}' for '{displayColumnName}'.");
+                            }
+                        }
+
+                        if (hasError)
+                        {
+                            rowData["ErrorMessage"] = $"Errors in row number {rowIndex}";
+                            if (errorMessages.Count == 1)
+                            {
+                                rowData["ErrorColumn"] = errorMessages[0];
+                            }
+                            else if (errorMessages.Count > 1)
+                            {
+                                rowData["ErrorColumn"] = string.Join(", ", errorMessages);
+                            }
+                            else
+                            {
+                                rowData["ErrorColumn"] = string.Empty;
+                            }
+                            errorFields.Add(rowData);
+                        }
+                        else
+                        {
+                            successFields.Add(rowData);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+
+            return (successFields, errorFields);
+        }
+
+        #endregion
+
+        #region Inward Detail
+        [HttpPost]
+        [Route("get_inward_detail")]
+        [Authorize]
+        public async Task<ActionResult> Get_Inward_Detail([FromForm] IFormFile File_Location, int? import_Id, string? Sheet_Name, string? Stock_ID, string? ID)
+        {
+            try
+            {
+
+
+                if (!string.IsNullOrEmpty(Stock_ID) || !string.IsNullOrEmpty(ID))
+                {
+
+                    List<Dictionary<string, object>> result = await _inward_Detail_Service.Get_Inward_Detail(Stock_ID, ID);
+
+                    if (result != null)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = result
+                        });
+                    }
+                }
+
+                if (File_Location != null && File_Location.Length > 0)
+                {
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/uploads");
+
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string fileName = Path.GetFileNameWithoutExtension(File_Location.FileName);
+
+                    string fileExt = Path.GetExtension(File_Location.FileName);
+
+                    string strFile = fileName + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + fileExt;
+
+                    using (var fileStream = new FileStream(Path.Combine(filePath, strFile), FileMode.Create))
+                    {
+                        await File_Location.CopyToAsync(fileStream);
+                    }
+
+                    List<Dictionary<string, object>> result = await _inward_Detail_Service.Get_Import_Master_Detail_Purchase(import_Id ?? 0);
+
+                    var UploadResults = await InwardDetailProcessExcelFile(Path.Combine(filePath, strFile), result, Sheet_Name);
+
+                    if (UploadResults.SuccessFields.Count > 0 || UploadResults.ErrorFields.Count > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = new
+                            {
+                                SuccessFields = UploadResults.SuccessFields,
+                                ErrorFields = UploadResults.ErrorFields
+                            }
+                        });
+                    }
+                    else
+                    {
+                        return NoContent();
+                    }
+                }
+                return Conflict(new
+                {
+                    statusCode = HttpStatusCode.Conflict,
+                    message = CoreCommonMessage.FileNotFound
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Inward_Detail", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
     }
 }

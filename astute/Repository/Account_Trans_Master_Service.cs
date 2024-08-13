@@ -38,6 +38,7 @@ namespace astute.Repository
 
             return result;
         }
+
         public async Task<List<Dictionary<string, object>>> Get_Currency_Master_Exchange_Rate_Select()
         {
             var result = new List<Dictionary<string, object>>();
@@ -70,6 +71,7 @@ namespace astute.Repository
             }
             return result;
         }
+
         public async Task<List<Dictionary<string, object>>> Get_Account_Trans_Master(int account_Trans_Id,int account_Trans_Detail_Id,string trans_Type)
         {
             var result = new List<Dictionary<string, object>>();
@@ -254,6 +256,7 @@ namespace astute.Repository
                 throw;
             }
         }
+       
         public async Task<List<Dictionary<string, object>>> Get_Account_Trans_Master_Purchase(int account_Trans_Id, int account_Trans_Detail_Id, string trans_Type, int? Year_Id)
         {
             var result = new List<Dictionary<string, object>>();
