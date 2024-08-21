@@ -2750,6 +2750,8 @@ namespace astute.Repository
                     {
                         command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.Act_Mod_Id) ? new SqlParameter("@Act_Mod_Id", order_Processing_Summary.Act_Mod_Id) : new SqlParameter("@Act_Mod_Id", DBNull.Value));
                     }
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.Module_Id) ? new SqlParameter("@Module_Id", order_Processing_Summary.Module_Id) : new SqlParameter("@Module_Id", DBNull.Value));
+
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
