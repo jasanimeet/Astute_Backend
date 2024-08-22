@@ -332,6 +332,7 @@ namespace astute.Models
     {
         public int? id { get; set; }
         public string? status { get; set; }
+        public string? remarks { get; set; }
     }
     #endregion
 }

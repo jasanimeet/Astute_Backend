@@ -3037,11 +3037,12 @@ namespace astute.Repository
         public async Task<int> Order_Processing_Status_Update(Order_Processing_Status_Model order_Processing_Status_Model, int user_Id)
         {
             var id = new SqlParameter("@Id", order_Processing_Status_Model.id);
-            var status = new SqlParameter("@Status", order_Processing_Status_Model.status);
+            var status = !string.IsNullOrEmpty(order_Processing_Status_Model.status) ? new SqlParameter("@Status", order_Processing_Status_Model.status) : new SqlParameter("@Status", DBNull.Value);
+            var remarks = !string.IsNullOrEmpty(order_Processing_Status_Model.remarks) ? new SqlParameter("@Remarks", order_Processing_Status_Model.remarks) : new SqlParameter("@Remarks", DBNull.Value);
             var _user_Id = new SqlParameter("@User_Id", user_Id);
 
             var result = await Task.Run(() => _dbContext.Database
-                   .ExecuteSqlRawAsync(@"EXEC Order_Processing_Status_Update @Id, @Status, @User_Id", id, status, _user_Id));
+                   .ExecuteSqlRawAsync(@"EXEC Order_Processing_Status_Update @Id, @Status, @Remarks, @User_Id", id, status, remarks, _user_Id));
 
             return result;
         }
