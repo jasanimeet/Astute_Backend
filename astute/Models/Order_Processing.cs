@@ -51,6 +51,7 @@ namespace astute.Models
         public string? To_Date { get; set; }
         public string? Stock_Id { get; set; }
         public string? Act_Mod_Id { get; set; }
+        public string? Module_Id { get; set; }
     }
     public class Order_Stone_Process
     {
@@ -331,6 +332,7 @@ namespace astute.Models
     {
         public int? id { get; set; }
         public string? status { get; set; }
+        public string? remarks { get; set; }
     }
     #endregion
 }
