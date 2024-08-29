@@ -52,7 +52,7 @@ namespace astute.Authorization
                     if (employee.Token.Equals(token) && employee.IP_Address.Equals(ipAddress))
                     {
                         // Attach user information to the context on successful validation
-                        context.Items["User"] = employee;
+                        context.Items["User"] = employee;   
                     }
                     else
                     {

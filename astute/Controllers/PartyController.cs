@@ -12225,7 +12225,70 @@ namespace astute.Controllers
             }
         }
 
-        #endregion       
+        #endregion
+
+        #region Hold
+
+        [HttpGet]
+        [Route("get_party")]
+        [Authorize]
+
+        public async Task<IActionResult> Get_Party()
+        {
+            try
+            {
+                var result = await _partyService.Get_Party();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Party", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_party_assist")]
+        [Authorize]
+        public async Task<IActionResult> Get_Party_Assist(int Party_Code)
+        {
+            try
+            {
+                var result = await _partyService.Get_Party_Assist(Party_Code);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Party_Assist", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
 
     }
 }

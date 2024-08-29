@@ -106,6 +106,7 @@ namespace astute
             services.AddScoped<IOracleService, OracleService>();
             services.AddScoped<IAccount_Trans_Master_Service, Account_Trans_Master_Service>();
             services.AddScoped<IParcel_Master_Service, Parcel_Master_Service>();
+            services.AddScoped<ITransactionService, TransactionService>();
 
 
 

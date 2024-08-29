@@ -512,5 +512,15 @@ namespace astute.CoreModel
         public static string FileNotFound = "File not found";
         public static string InvalidFileFormat = "Please upload a valid Excel file.";
         #endregion
+
+        #region hold
+        public static string Transaction = "Transaction details";
+        public static string TransactionCreated = Transaction + AddedSuccessfully;
+        public static string TransactionUpdated = Transaction + UpdatedSuccessfully;
+        public static string TransactionDeleted = Transaction + DeletedSuccessfully;
+        public static string TransactionlMaster = Transaction + AlreadyExists;
+        #endregion
+
+
     }
 }

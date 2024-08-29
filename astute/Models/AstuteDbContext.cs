@@ -74,6 +74,7 @@ namespace astute.Models
         public DbSet<Supplier_Details> Supplier_Details { get; set; }
         public DbSet<Supplier_Details_List> Supplier_Details_List { get; set; }
         public DbSet<DropdownModel> DropdownModel { get; set; }
+        public DbSet<PartyMasterDrop> PartyMasterDrop { get; set; }
         public DbSet<Supplier_Column_Mapping> Supplier_Column_Mapping { get; set; }
         public DbSet<Exchange_Rate_Master> Exchange_Rate_Master { get; set; }
         public DbSet<Bank_Dropdown_Model> Bank_Dropdown_Model { get; set; }

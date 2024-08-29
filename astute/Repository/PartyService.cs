@@ -1214,5 +1214,26 @@ namespace astute.Repository
             return result;
 
         }
+
+        #region Hold
+
+        public async Task<IList<PartyMasterDrop>> Get_Party()
+        {
+            var result = await Task.Run(() => _dbContext.PartyMasterDrop
+                             .FromSqlRaw(@"exec Get_Party")
+                             .ToListAsync());
+            return result;
+        }
+
+        public async Task<IList<DropdownModel>> Get_Party_Assist(int Party_Code)
+        {
+            var party_Code = Party_Code > 0 ? new SqlParameter("@Party_Code", Party_Code) : new SqlParameter("@Party_Code", DBNull.Value);
+            var result = await Task.Run(() => _dbContext.DropdownModel
+                             .FromSqlRaw(@"exec Party_Assist_Party_Code_Select @Party_Code", party_Code)
+                             .ToListAsync());
+            return result;
+        }
+
+        #endregion
     }
 }

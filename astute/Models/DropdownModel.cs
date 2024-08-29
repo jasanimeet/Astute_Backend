@@ -8,4 +8,11 @@ namespace astute.Models
         public int Id { get; set; }
         public string Name { get; set; }
     }
+
+    public partial class PartyMasterDrop
+    {
+        [Key]
+        public string Party_Code { get; set; }
+        public string Party_Name { get; set; }
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using astute.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
@@ -117,5 +118,13 @@ namespace astute.Repository
         Task<IList<DropdownModel>> Get_Party_Type_Suplier();
         Task<(List<Dictionary<string, object>>, string)> Get_Notification(int? User_Id);
         Task<int> Notification_Master_Update_Read_By(int? Notification_Id, bool? Is_Read,int? User_Id);
+
+        #region Hold
+
+        Task<IList<PartyMasterDrop>> Get_Party();
+
+        Task<IList<DropdownModel>> Get_Party_Assist(int Party_Code);
+
+        #endregion
     }
 }
