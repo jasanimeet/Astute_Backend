@@ -241,7 +241,7 @@ namespace astute.Repository
 
             return result;
         }
-
+        
         public async Task<int> Job_Transfer_Supplier_Pricing_Cal(int party_Id)
         {
             var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
@@ -265,6 +265,35 @@ namespace astute.Repository
                     _dbContext.Database.CloseConnection();
                 }
             }
+        }
+
+        public async Task<int> Job_Transfer_Auto_Supplier_Stock()
+        {
+
+            var sqlCommand = @"exec [Job_Transfer_Auto_Supplier_Stock]";
+
+            var result = await Task.Run(async () =>
+            {
+                using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = sqlCommand;
+
+                    command.CommandTimeout = 3600;
+
+                    await _dbContext.Database.OpenConnectionAsync();
+                    try
+                    {
+                        var affectedRows = await command.ExecuteNonQueryAsync();
+                        return affectedRows;
+                    }
+                    finally
+                    {
+                        _dbContext.Database.CloseConnection();
+                    }
+                }
+            });
+
+            return result;
         }
 
         #endregion

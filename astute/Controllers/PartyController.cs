@@ -1913,6 +1913,81 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_supplier_price_list")]
+        [Authorize]
+        public async Task<IActionResult> Get_Supplier_Price_List()
+        {
+            try
+            {
+                var result = await _partyService.Get_Supplier_Price_List();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_Price_List", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        
+        [HttpPost]
+        [Route("update_supplier_price_list")]
+        [Authorize]
+        public async Task<IActionResult> Update_Supplier_Price_List(IList<Supplier_Price_List> supplier_Price_Lists)
+        {
+            if (supplier_Price_Lists == null || supplier_Price_Lists.Count == 0)
+            {
+                return NoContent();
+            }
+
+            try
+            {
+                var dataTable = new DataTable();
+                dataTable.Columns.Add("Party_Id", typeof(int));
+                dataTable.Columns.Add("Disc_0", typeof(bool));
+                dataTable.Columns.Add("No_Stock", typeof(bool));
+
+                foreach (var item in supplier_Price_Lists)
+                {
+                    dataTable.Rows.Add(item.Party_Id, item.Disc_0, item.No_Stock);
+                }
+
+                var result = await _partyService.Update_Supplier_Price_List(dataTable);
+
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.SupplierPriceUpdate,
+                    });
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message,"Update_Supplier_Price_List",ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Value Config
@@ -11439,7 +11514,35 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
+        [HttpPost]
+        [Route("job_transfer_auto_supplier_stock")]
+        [Authorize]
+        public async Task<IActionResult> Job_Transfer_Auto_Supplier_Stock()
+        {
+            try
+            {
+                var result = await _labUserService.Job_Transfer_Auto_Supplier_Stock();
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataTransfer
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Job_Transfer_Auto_Supplier_Stock", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Create Update Manual Upload Falguni

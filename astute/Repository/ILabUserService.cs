@@ -15,5 +15,6 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Customer_Lab_User(int party_Id);
         Task<int> Job_Transfer_User_Pricing();
         Task<int> Job_Transfer_Supplier_Pricing_Cal(int party_Id);
+        Task<int> Job_Transfer_Auto_Supplier_Stock();
     }
 }

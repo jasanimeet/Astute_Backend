@@ -1215,6 +1215,25 @@ namespace astute.Repository
 
         }
 
+        public async Task<IList<Supplier_Price_List>> Get_Supplier_Price_List()
+        {
+            var result = await Task.Run(() => _dbContext.Supplier_Price_List
+                            .FromSqlRaw(@"exec Party_Price_Select")
+                            .ToListAsync());
+            return result;
+        }
+
+        public async Task<int> Update_Supplier_Price_List(DataTable supplier_Price_Lists)
+        {
+            var parameter = new SqlParameter("@Party_Price_Update_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Party_Price_Update_Table_Type",
+                Value = supplier_Price_Lists
+            };
+
+            return await _dbContext.Database.ExecuteSqlRawAsync("EXEC Party_Price_Update @Party_Price_Update_Table_Type", parameter);
+        }
+
         #region Hold
 
         public async Task<IList<PartyMasterDrop>> Get_Party()

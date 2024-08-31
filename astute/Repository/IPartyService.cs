@@ -109,6 +109,8 @@ namespace astute.Repository
         Task<int> Add_Update_Customer_Column_Caption(DataTable dataTable, int UserId);
         Task<List<Customer_Column_Caption>> Get_Customer_Pricing_Column_Caption(int? user_Pricing_Id, string? map_Flag,string? upload_Method);
         #endregion
+        #region Party
+        
         Task<IList<Supplier_Details_List>> Get_Suplier_Detail_List(int party_Id);
         Task<IList<DropdownModel>> Get_Party_Suplier();
         Task<IList<DropdownModel>> Get_Party_Suplier_For_Manual_File();
@@ -118,6 +120,10 @@ namespace astute.Repository
         Task<IList<DropdownModel>> Get_Party_Type_Suplier();
         Task<(List<Dictionary<string, object>>, string)> Get_Notification(int? User_Id);
         Task<int> Notification_Master_Update_Read_By(int? Notification_Id, bool? Is_Read,int? User_Id);
+        Task<IList<Supplier_Price_List>> Get_Supplier_Price_List();
+        Task<int> Update_Supplier_Price_List(DataTable supplier_Price_Lists);
+
+        #endregion
 
         #region Hold
 

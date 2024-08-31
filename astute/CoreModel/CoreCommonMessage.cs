@@ -521,6 +521,9 @@ namespace astute.CoreModel
         public static string TransactionlMaster = Transaction + AlreadyExists;
         #endregion
 
+        #region SupplierPriceUpdate
+        public static string SupplierPriceUpdate = "Supplier Price Update successfully.";
+        #endregion
 
     }
 }
