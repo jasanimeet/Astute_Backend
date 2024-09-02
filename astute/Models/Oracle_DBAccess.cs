@@ -56,6 +56,39 @@ namespace astute.Models
 
             return dt;
         }
+        public async Task<DataTable> CallSP_Timeout(string SP, List<OracleParameter> paramList)
+        {
+            using OracleConnection connection = new OracleConnection();
+            using OracleCommand cmd = new OracleCommand();
+            using OracleDataAdapter da = new OracleDataAdapter();
+
+            connection.ConnectionString = GetConnectionString();
+
+            await connection.OpenAsync();
+
+            cmd.Connection = connection;
+            cmd.CommandText = SP;
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 600;
+
+            if (paramList != null)
+            {
+                foreach (var parameter in paramList)
+                {
+                    OracleParameter param = new OracleParameter(parameter.ParameterName, parameter.Value);
+                    param.Direction = parameter.Direction;
+                    param.OracleDbType = parameter.OracleDbType;
+                    param.Size = parameter.Size;
+                    cmd.Parameters.Add(param);
+                }
+            }
+
+            da.SelectCommand = cmd;
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+
+            return dt;
+        }
 
         #region IDisposable Members
         public void Dispose()

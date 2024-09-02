@@ -1362,7 +1362,7 @@ namespace astute.Repository
             param1.Direction = ParameterDirection.Output;
             paramList.Add(param1);
 
-            System.Data.DataTable dt = await _dbOracleAccess.CallSP("web_trans.lab_entry_notification", paramList);
+            System.Data.DataTable dt = await _dbOracleAccess.CallSP_Timeout("web_trans.lab_entry_notification", paramList);
 
             if (dt != null)
             {
