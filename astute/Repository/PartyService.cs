@@ -205,7 +205,7 @@ namespace astute.Repository
                             .AsNoTracking()
                             .ToListAsync();
 
-            var result = rawResult
+            /*var result = rawResult
             .Select(x => new Party_Master_Replica
             {
                 Party_Id = x.Party_Id,
@@ -254,9 +254,9 @@ namespace astute.Repository
                 CERTIFIED_Viewing_Rights_To_Values = x.CERTIFIED_Viewing_Rights_To_Values,
                 CERTIFIED_Date = x.CERTIFIED_Date
             })
-            .ToList();
+            .ToList();*/
 
-            return result;
+            return rawResult;
 
             //return await _dbContext.Party_Master_Replica.FromSqlRaw("exec Party_Master_Select_Raplicate @PartyId, @Party_Type", partyId, partyType).ToListAsync();
         }
