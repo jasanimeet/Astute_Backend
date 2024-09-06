@@ -2885,7 +2885,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Stock_Data_Distinct_Column_Values", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "suplier_stock_start_end_time_update", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
@@ -4066,11 +4066,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("supplier_stock_error_log_detail")]
         [Authorize]
-        public async Task<IActionResult> Supplier_Stock_Error_Log_Detail(string supplier_Ids, string stock_Data_Ids, string upload_Type, string? supplierNo_CertNo)
+        public async Task<IActionResult> Supplier_Stock_Error_Log_Detail(string supplier_Ids, string stock_Data_Ids, string upload_Type, string? supplierNo_CertNo, string? stock_Type)
         {
             try
             {
-                var result = await _supplierService.Get_Supplier_Stock_Error_Log_Detail(supplier_Ids, stock_Data_Ids, upload_Type, supplierNo_CertNo);
+                var result = await _supplierService.Get_Supplier_Stock_Error_Log_Detail(supplier_Ids, stock_Data_Ids, upload_Type, supplierNo_CertNo, stock_Type);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -12130,7 +12130,7 @@ namespace astute.Controllers
                                                          }
                                                      }
 
-                                                     if (displayColName == "CTS" || displayColName == "BASE_DISC" || displayColName == "BASE_RATE" ||
+                                                 if (displayColName == "CTS" || displayColName == "BASE_DISC" || displayColName == "BASE_RATE" ||
                                                          displayColName == "LENGTH" || displayColName == "WIDTH" || displayColName == "DEPTH" ||
                                                          displayColName == "DEPTH_PER" || displayColName == "TABLE_PER" || displayColName == "CROWN_ANGLE" ||
                                                          displayColName == "CROWN_HEIGHT" || displayColName == "PAVILION_ANGLE" ||
