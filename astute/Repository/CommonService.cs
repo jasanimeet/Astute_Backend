@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 
 namespace astute.Repository
@@ -654,6 +653,41 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
             .ExecuteSqlRawAsync(@" exec Error_Log_Insert @Error_Message, @Module_Name, @Arise_Date, @Error_Trace", parameter.ToArray()));
 
+            return result;
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Error_Log(string from_Date, string to_Date)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Error_Log_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(new SqlParameter("@From_Date", from_Date));
+                    command.Parameters.Add(new SqlParameter("@To_Date", to_Date));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
             return result;
         }
         #endregion

@@ -4196,6 +4196,37 @@ namespace astute.Controllers
         }
 
         #endregion
+
+        #region Error Log
+        [HttpPost]
+        [Route("get_error_log")]
+        [Authorize]
+        public async Task<IActionResult> Get_Error_Log(string from_Date, string to_Date)
+        {
+            try
+            {
+                var result = await _commonService.Get_Error_Log(from_Date, to_Date);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Error_Log", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
         #endregion
     }
 }

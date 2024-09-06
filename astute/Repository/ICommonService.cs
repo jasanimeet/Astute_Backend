@@ -42,6 +42,7 @@ namespace astute.Repository
 
         #region Error Log
         Task<int> InsertErrorLog(string message, string method, string stackTrace);
+        Task<List<Dictionary<string, object>>> Get_Error_Log(string From_Date, string To_Date);
         #endregion
 
         #region Years
