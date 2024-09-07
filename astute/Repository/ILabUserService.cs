@@ -16,5 +16,6 @@ namespace astute.Repository
         Task<int> Job_Transfer_User_Pricing();
         Task<int> Job_Transfer_Supplier_Pricing_Cal(int party_Id);
         Task<int> Job_Transfer_Auto_Supplier_Stock();
+        Task<int> Job_Transfer_Auto_Category_Value();
     }
 }

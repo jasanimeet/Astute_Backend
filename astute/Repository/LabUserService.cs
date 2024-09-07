@@ -295,6 +295,34 @@ namespace astute.Repository
 
             return result;
         }
+        public async Task<int> Job_Transfer_Auto_Category_Value()
+        {
+
+            var sqlCommand = @"exec [Job_Transfer_Column_Master_Category_Master_Category_Value]";
+
+            var result = await Task.Run(async () =>
+            {
+                using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = sqlCommand;
+
+                    command.CommandTimeout = 3600;
+
+                    await _dbContext.Database.OpenConnectionAsync();
+                    try
+                    {
+                        var affectedRows = await command.ExecuteNonQueryAsync();
+                        return affectedRows;
+                    }
+                    finally
+                    {
+                        _dbContext.Database.CloseConnection();
+                    }
+                }
+            });
+
+            return result;
+        }
 
         #endregion
     }

@@ -10737,6 +10737,7 @@ namespace astute.Controllers
 
         [HttpDelete]
         [Route("order_processing_delete")]
+        [Authorize]
         public async Task<IActionResult> Order_Processing_Delete(string Order_No, int Sub_Order_Id)
         {
             try
@@ -11536,6 +11537,34 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Job_Transfer_Auto_Supplier_Stock", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        
+        [HttpPost]
+        [Route("job_transfer_auto_category_value")]
+        [Authorize]
+        public async Task<IActionResult> Job_Transfer_Auto_Category_Value()
+        {
+            try
+            {
+                var result = await _labUserService.Job_Transfer_Auto_Category_Value();
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataTransfer
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Job_Transfer_Auto_Category_Value", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
