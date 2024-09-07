@@ -132,5 +132,11 @@ namespace astute.Repository
         Task<int> Final_Order_Processing_Create_Update(DataTable dataTable, int? user_Id);
         Task<int> Final_Order_Processing_Create_Update_Save(DataTable dataTable, int? user_Id);
         #endregion
+
+        #region Party Url Format
+        Task<IList<Party_Url_Format>> Get_Party_Url_Format(int Id);
+        Task<int> Create_Update_Party_Url_Format(DataTable dataTable);
+        Task<int> Delete_Party_Url_Format(int id);
+        #endregion
     }
 }

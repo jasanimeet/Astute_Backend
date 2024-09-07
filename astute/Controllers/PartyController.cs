@@ -12422,5 +12422,141 @@ namespace astute.Controllers
 
         #endregion
 
+        #region Party Url Format
+
+        [HttpPost]
+        [Route("get_party_url_format")]
+        [Authorize]
+        public async Task<IActionResult> Get_Party_Url_Format(int? Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Party_Url_Format(Id ?? 0);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Party_Url_Format", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("create_update_supplier_detail")]
+        [Authorize]
+        public virtual async Task<IActionResult> Create_Update_Party_Url_Format(Party_Url_Format party_Url_Format)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    if (party_Url_Format != null)
+                    {
+                        DataTable dataTable = new DataTable();
+                        dataTable.Columns.Add("Id", typeof(int));
+                        dataTable.Columns.Add("Supplier_Id", typeof(int));
+                        dataTable.Columns.Add("Sort_Code", typeof(string));
+                        dataTable.Columns.Add("Image_Link", typeof(string));
+                        dataTable.Columns.Add("Video_Link", typeof(string));
+                        dataTable.Columns.Add("Cert_Link", typeof(string));
+                        dataTable.Columns.Add("Is_Ref_Split_W", typeof(bool));
+                        dataTable.Columns.Add("Is_Img_Cert", typeof(int));
+                        dataTable.Columns.Add("Is_Video_Cert", typeof(int));
+                        dataTable.Columns.Add("Is_Cert_Cert", typeof(int));
+                        dataTable.Columns.Add("Is_Video_Iframe", typeof(bool));
+
+                        dataTable.Rows.Add(
+                            party_Url_Format.Id,
+                            party_Url_Format.Supplier_Id,
+                            party_Url_Format.Sort_Code,
+                            party_Url_Format.Image_Link,
+                            party_Url_Format.Video_Link,
+                            party_Url_Format.Cert_Link,
+                            party_Url_Format.Is_Ref_Split_W,
+                            party_Url_Format.Is_Img_Cert,
+                            party_Url_Format.Is_Video_Cert,
+                            party_Url_Format.Is_Cert_Cert,
+                            party_Url_Format.Is_Video_Iframe
+                            );
+
+                        var result = await _supplierService.Create_Update_Party_Url_Format(dataTable);
+                        if (result > 0)
+                        {
+                            if (party_Url_Format.Id > 0)
+                            {
+                                return Ok(new
+                                {
+                                    statusCode = HttpStatusCode.OK,
+                                    message = CoreCommonMessage.Party_Url_Format_Updated
+                                });
+                            }
+                            else
+                            {
+                                return Ok(new
+                                {
+                                    statusCode = HttpStatusCode.OK,
+                                    message = CoreCommonMessage.Party_Url_Format_Created
+                                });
+                            }
+                        }
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Supplier_Detail", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_party_url_format")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Party_Url_Format(int? Id)
+        {
+            try
+            {
+                var result = await _supplierService.Delete_Party_Url_Format(Id ?? 0);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.Party_Url_Format_Deleted,
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Party_Url_Format", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
     }
 }

@@ -513,7 +513,7 @@ namespace astute.CoreModel
         public static string InvalidFileFormat = "Please upload a valid Excel file.";
         #endregion
 
-        #region hold
+        #region Hold
         public static string Transaction = "Transaction details";
         public static string TransactionCreated = Transaction + AddedSuccessfully;
         public static string TransactionUpdated = Transaction + UpdatedSuccessfully;
@@ -525,5 +525,13 @@ namespace astute.CoreModel
         public static string SupplierPriceUpdate = "Supplier Price Update successfully.";
         #endregion
 
+        #region Party Url Format
+
+        public static string Party_Url_Format = "Party Url Format";
+        public static string Party_Url_Format_Created = Party_Url_Format + AddedSuccessfully;
+        public static string Party_Url_Format_Updated = Party_Url_Format + UpdatedSuccessfully;
+        public static string Party_Url_Format_Deleted = Party_Url_Format + DeletedSuccessfully;
+        public static string Party_Url_Format_Master = Party_Url_Format + AlreadyExists;
+        #endregion
     }
 }

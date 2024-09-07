@@ -3106,5 +3106,42 @@ namespace astute.Repository
         }
 
         #endregion
+
+        #region Party Url Format
+
+        public async Task<IList<Party_Url_Format>> Get_Party_Url_Format(int Id)
+        {
+            var _Id = Id > 0 ? new SqlParameter("@Id", Id) : new SqlParameter("@Id", DBNull.Value);
+
+            var party_Url_Formats = await Task.Run(() => _dbContext.Party_Url_Format
+                            .FromSqlRaw(@"exec Party_Url_Format_Select @Id", _Id).ToListAsync());
+
+            return party_Url_Formats;
+        }
+
+        public async Task<int> Create_Update_Party_Url_Format(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@Party_Url_Format_Data_Type", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Party_Url_Format_Data_Type",
+                Value = dataTable
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Party_Url_Format_Insert_Update @Party_Url_Format_Data_Type", parameter));
+            return result;
+        }
+
+        public async Task<int> Delete_Party_Url_Format(int id)
+        {
+            var _id = id > 0 ? new SqlParameter("@Id", id) : new SqlParameter("@Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Party_Url_Format_Delete @Id", _id));
+
+            return result;
+        }
+
+        #endregion
     }
 }
