@@ -526,12 +526,17 @@ namespace astute.CoreModel
         #endregion
 
         #region Party Url Format
-
         public static string Party_Url_Format = "Party Url Format";
         public static string Party_Url_Format_Created = Party_Url_Format + AddedSuccessfully;
         public static string Party_Url_Format_Updated = Party_Url_Format + UpdatedSuccessfully;
         public static string Party_Url_Format_Deleted = Party_Url_Format + DeletedSuccessfully;
         public static string Party_Url_Format_Master = Party_Url_Format + AlreadyExists;
         #endregion
+
+        #region 
+        public static string Supplier_Id_Less_Than_0 = "Supplier Id cannot be less than 0.";
+        public static string No_stock_uploaded_in_last = "No stock uploaded in last 48 hours";
+        #endregion
+
     }
 }

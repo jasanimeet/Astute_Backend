@@ -3764,11 +3764,11 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "EXPECTED FINAL DISC")
                                 {
-                                    
-                                    int columnIndex = GetColumnIndexByName(dtStock, Column_Name) +1;
+
+                                    int columnIndex = GetColumnIndexByName(dtStock, Column_Name) + 1;
                                     int rapIndex = GetColumnIndexByName(dtStock, "RAP AMOUNT");
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["EXPECTED FINAL AMT"]);
-                                    worksheet.Cells[inwrkrow, kk].Formula = !string.IsNullOrEmpty(pav_Height) && pav_Height !="0.00"? "IFERROR((100*" + GetExcelColumnLetter(columnIndex) + i + "/" + GetExcelColumnLetter(rapIndex) + i + ")-100,0)" : "0";
+                                    worksheet.Cells[inwrkrow, kk].Formula = !string.IsNullOrEmpty(pav_Height) && pav_Height != "0.00" ? "IFERROR((100*" + GetExcelColumnLetter(columnIndex) + i + "/" + GetExcelColumnLetter(rapIndex) + i + ")-100,0)" : "0";
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
                                 else if (Column_Name == "EXPECTED FINAL AMT")
@@ -7485,9 +7485,48 @@ namespace astute.CoreServices
             DataColumn column = table.Columns[columnName];
             if (column != null)
             {
-                return column.Ordinal -1;
+                return column.Ordinal - 1;
             }
-            return -1; 
+            return -1;
+        }
+
+        public static void Create_Latest_Supplier_Stock_Excel(DataTable dtStock, string _strFolderPath, string _strFilePath)
+        {
+            try
+            {
+                using (ExcelPackage ep = new ExcelPackage())
+                {
+                    var worksheet = ep.Workbook.Worksheets.Add(DateTime.Now.ToString("dd-MM-yyyy"));
+
+                    worksheet.Cells["A1"].LoadFromDataTable(dtStock, true);
+
+                    worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                    worksheet.Cells[worksheet.Dimension.Address].AutoFilter = true;
+
+                    var headerCells = worksheet.Cells[1, 1, 1, dtStock.Columns.Count];
+                    headerCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    headerCells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    headerCells.Style.Font.Size = 10;
+                    headerCells.Style.Font.Bold = true;
+                    headerCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    headerCells.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+
+                    int rowEnd = worksheet.Dimension.End.Row;
+                    removingGreenTagWarning(worksheet, worksheet.Cells[1, 1, rowEnd, 100].Address);
+
+                    if (!Directory.Exists(_strFolderPath))
+                    {
+                        Directory.CreateDirectory(_strFolderPath);
+                    }
+
+                    File.WriteAllBytes(_strFilePath, ep.GetAsByteArray());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
     }

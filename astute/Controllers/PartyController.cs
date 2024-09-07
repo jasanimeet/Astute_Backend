@@ -12454,7 +12454,7 @@ namespace astute.Controllers
         }
 
         [HttpPost]
-        [Route("create_update_supplier_detail")]
+        [Route("create_update_party_url_format")]
         [Authorize]
         public virtual async Task<IActionResult> Create_Update_Party_Url_Format(Party_Url_Format party_Url_Format)
         {
@@ -12517,7 +12517,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Supplier_Detail", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Party_Url_Format", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
@@ -12557,6 +12557,69 @@ namespace astute.Controllers
             }
         }
 
+        #endregion
+
+        #region Get Lastest Supplier Stock
+
+        [HttpPost]
+        [Route("get_latest_supplier_stock_excel_download")]
+        [Authorize]
+        public async Task<IActionResult> Get_Latest_Supplier_Stock_Excel_Download(int supplier_Id)
+        {
+            try
+            {
+                if (supplier_Id > 0)
+                {
+                    var dt_stock = await _supplierService.Get_Latest_Supplier_Stock_Excel_Download(supplier_Id);
+                    if (dt_stock != null && dt_stock.Rows.Count > 0)
+                    {
+                        var excelPath = string.Empty;
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadLatestSupplierStockExcelFiles/");
+                        if (!(Directory.Exists(filePath)))
+                        {
+                            Directory.CreateDirectory(filePath);
+                        }
+                        string filename = string.Empty;
+
+                        filename = "Supplier_Stock_" + DateTime.UtcNow.ToString("ddMMyyyy_HHmmss") + ".xlsx";
+                        EpExcelExport.Create_Latest_Supplier_Stock_Excel(dt_stock, filePath, filePath + filename);
+                        excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadLatestSupplierStockExcelFiles + filename;
+
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            result = excelPath,
+                            file_name = filename
+                        });
+                    }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.No_stock_uploaded_in_last,
+                        });
+                    }
+                }
+                else {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.Supplier_Id_Less_Than_0,
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Latest_Supplier_Stock_Excel_Download", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }

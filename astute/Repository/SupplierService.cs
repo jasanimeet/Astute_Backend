@@ -2440,7 +2440,7 @@ namespace astute.Repository
                 }
             }
             return dataTable;
-        }
+        }        
         public async Task<DataTable> Get_Stock_Availability_Report_Excel(DataTable dataTable, string stock_Id, string stock_Type)
         {
             DataTable dataTable1 = new DataTable();
@@ -3143,5 +3143,32 @@ namespace astute.Repository
         }
 
         #endregion
+
+        #region Get Lastest Supplier Stock
+
+        public async Task<DataTable> Get_Latest_Supplier_Stock_Excel_Download(int supplier_Id)
+        {
+            var dataTable = new DataTable();
+
+            var connectionString = _configuration["ConnectionStrings:AstuteConnection"];
+            using (var connection = new SqlConnection(connectionString))
+            using (var command = new SqlCommand("Latest_Supplier_Stock_Select", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@Supplier_Id", supplier_Id > 0 ? (object)supplier_Id : DBNull.Value);
+
+                await connection.OpenAsync();
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    dataTable.Load(reader);
+                }
+            }
+
+            return dataTable;
+        }
+
+        #endregion
+
     }
 }

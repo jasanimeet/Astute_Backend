@@ -138,5 +138,9 @@ namespace astute.Repository
         Task<int> Create_Update_Party_Url_Format(DataTable dataTable);
         Task<int> Delete_Party_Url_Format(int id);
         #endregion
+
+        #region Get Lastest Supplier Stock
+        Task<DataTable> Get_Latest_Supplier_Stock_Excel_Download(int supplier_Id);
+        #endregion
     }
 }
