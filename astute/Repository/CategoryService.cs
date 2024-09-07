@@ -195,6 +195,7 @@ namespace astute.Repository
             var catId = category_Value.Cat_Id > 0 ? new SqlParameter("@CatId", category_Value.Cat_Id) : new SqlParameter("@CatId", DBNull.Value);
             var displayName = !string.IsNullOrEmpty(category_Value.Display_Name) ? new SqlParameter("@DisplayName", category_Value.Display_Name) : new SqlParameter("@DisplayName", DBNull.Value);
             var shortName = !string.IsNullOrEmpty(category_Value.Short_Name) ? new SqlParameter("@ShortName", category_Value.Short_Name) : new SqlParameter("@ShortName", DBNull.Value);
+            var webName = !string.IsNullOrEmpty(category_Value.Web_Name) ? new SqlParameter("@WebName", category_Value.Web_Name) : new SqlParameter("@WebName", DBNull.Value);
             var recordType = new SqlParameter("@RecordType", "Insert");
             var isForce_Insert = new SqlParameter("@IsForceInsert", category_Value.IsForceInsert);
             var isExistCatVal = new SqlParameter("@IsExistsCatVal", SqlDbType.Bit)
@@ -219,8 +220,8 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
             .ExecuteSqlRawAsync(@"exec Category_Value_Insert_Update @CatvalId, @CatName, @GroupName, @RapaportName, @Rapnetname,
-            @Synonyms, @OrderNo, @SortNo, @Status, @Icon_Url, @CatId, @DisplayName, @ShortName, @RecordType, @IsExistsCatVal OUT, @IsExistsOrderNo OUT, @IsExistsSortNo OUT, @IsForceInsert,@Inserted_Id OUT",
-            catvalId, catName, groupName, rapaportName, rapnetname, synonyms, orderNo, sortNo, status, icon_Url, catId, displayName, shortName, recordType,
+            @Synonyms, @OrderNo, @SortNo, @Status, @Icon_Url, @CatId, @DisplayName, @ShortName, @WebName, @RecordType, @IsExistsCatVal OUT, @IsExistsOrderNo OUT, @IsExistsSortNo OUT, @IsForceInsert,@Inserted_Id OUT",
+            catvalId, catName, groupName, rapaportName, rapnetname, synonyms, orderNo, sortNo, status, icon_Url, catId, displayName, shortName, webName,recordType,
             isExistCatVal, isExistOrderNo, isExistSortNo, isForce_Insert, inserted_Id));
 
             bool isExist = (bool)isExistCatVal.Value;
@@ -268,6 +269,7 @@ namespace astute.Repository
             var catId = category_Value.Cat_Id > 0 ? new SqlParameter("@CatId", category_Value.Cat_Id) : new SqlParameter("@CatId", DBNull.Value);
             var displayName = !string.IsNullOrEmpty(category_Value.Display_Name) ? new SqlParameter("@DisplayName", category_Value.Display_Name) : new SqlParameter("@DisplayName", DBNull.Value);
             var shortName = !string.IsNullOrEmpty(category_Value.Short_Name) ? new SqlParameter("@ShortName", category_Value.Short_Name) : new SqlParameter("@ShortName", DBNull.Value);
+            var webName = !string.IsNullOrEmpty(category_Value.Web_Name) ? new SqlParameter("@WebName", category_Value.Web_Name) : new SqlParameter("@WebName", DBNull.Value);
             var recordType = new SqlParameter("@RecordType", "Update");
             var isForce_Insert = new SqlParameter("@IsForceInsert", category_Value.IsForceInsert);
             var isExistCatVal = new SqlParameter("@IsExistsCatVal", SqlDbType.Bit)
@@ -291,8 +293,8 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
             .ExecuteSqlRawAsync(@"exec Category_Value_Insert_Update @CatvalId, @CatName, @GroupName, @RapaportName, @Rapnetname,
-            @Synonyms, @OrderNo, @SortNo, @Status, @Icon_Url, @CatId, @DisplayName, @ShortName, @RecordType, @IsExistsCatVal OUT, @IsExistsOrderNo OUT, @IsExistsSortNo OUT, @IsForceInsert,@Inserted_Id OUT",
-            catvalId, catName, groupName, rapaportName, rapnetname, synonyms, orderNo, sortNo, status, icon_Url, catId, displayName, shortName, recordType,
+            @Synonyms, @OrderNo, @SortNo, @Status, @Icon_Url, @CatId, @DisplayName, @ShortName, @WebName, @RecordType, @IsExistsCatVal OUT, @IsExistsOrderNo OUT, @IsExistsSortNo OUT, @IsForceInsert,@Inserted_Id OUT",
+            catvalId, catName, groupName, rapaportName, rapnetname, synonyms, orderNo, sortNo, status, icon_Url, catId, displayName, shortName, webName, recordType,
             isExistCatVal, isExistOrderNo, isExistSortNo, isForce_Insert, inserted_Id));
 
             bool isExist = (bool)isExistCatVal.Value;
@@ -392,7 +394,8 @@ namespace astute.Repository
                         Icon_Url = !string.IsNullOrEmpty(x.Icon_Url) ? _configuration["BaseUrl"] + CoreCommonFilePath.CategoryIcomFilePath + x.Icon_Url : null,
                         Cat_Id = catId,
                         Display_Name = x.Display_Name,
-                        Short_Name = x.Short_Name
+                        Short_Name = x.Short_Name,
+                        Web_Name = x.Web_Name
                     });
                 }
             }

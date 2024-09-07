@@ -17,5 +17,6 @@ namespace astute.Models
         public int? Cat_Id { get; set; }
         public string Display_Name { get; set; }
         public string Short_Name { get; set; }
+        public string Web_Name { get; set; }
     }
 }
