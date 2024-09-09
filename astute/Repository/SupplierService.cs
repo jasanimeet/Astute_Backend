@@ -1300,6 +1300,7 @@ namespace astute.Repository
                     command.Parameters.Add(!string.IsNullOrEmpty(stock_Type) ? new SqlParameter("@Stock_Type", stock_Type) : new SqlParameter("@Stock_Type", DBNull.Value));
                     command.Parameters.Add(new SqlParameter("@Is_Last_Entry", is_Last_Entry));
                     command.Parameters.Add(!string.IsNullOrEmpty(supplierNo_CertNo) ? new SqlParameter("@SupplierNo_CertNo", supplierNo_CertNo) : new SqlParameter("@SupplierNo_CertNo", DBNull.Value));
+                    command.CommandTimeout = 3600;
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
