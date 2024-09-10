@@ -12144,14 +12144,23 @@ namespace astute.Controllers
                                                      {
                                                          if (suppColName.Contains(","))
                                                          {
-                                                             string supp_Col_Name1 = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 3 || Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 2 ? Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",")[0] : "";
-                                                             string supp_Col_Name2 = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 3 || Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 2 ? Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",")[1] : "";
-                                                             string supp_Col_Name3 = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",").Length == 3 ? Convert.ToString(suppColRow["Supp_Col_Name"]).Split(",")[2] : "";
+                                                             string[] colNames = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(',');
+
+                                                             string supp_Col_Name1 = colNames.Length > 0 ? colNames[0] : "";
+                                                             string supp_Col_Name2 = colNames.Length > 1 ? colNames[1] : "";
+                                                             string supp_Col_Name3 = colNames.Length > 2 ? colNames[2] : "";
+
                                                              string shade_Value_1 = !string.IsNullOrEmpty(supp_Col_Name1) ? row[supp_Col_Name1].ToString() : "";
                                                              string shade_Value_2 = !string.IsNullOrEmpty(supp_Col_Name2) ? row[supp_Col_Name2].ToString() : "";
                                                              string shade_Value_3 = !string.IsNullOrEmpty(supp_Col_Name3) ? row[supp_Col_Name3].ToString() : "";
 
-                                                             finalRow[displayColName] = CoreService.ExtractStringWithLargestNumericValue(shade_Value_1, shade_Value_2, shade_Value_3);
+                                                             var nonEmptyValues = new List<string>();
+
+                                                             if (!string.IsNullOrEmpty(shade_Value_1)) nonEmptyValues.Add(shade_Value_1);
+                                                             if (!string.IsNullOrEmpty(shade_Value_2)) nonEmptyValues.Add(shade_Value_2);
+                                                             if (!string.IsNullOrEmpty(shade_Value_3)) nonEmptyValues.Add(shade_Value_3);
+
+                                                             finalRow[displayColName] = string.Join("; ", nonEmptyValues);
                                                          }
                                                          else
                                                          {
