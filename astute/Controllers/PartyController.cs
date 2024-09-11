@@ -12710,9 +12710,8 @@ namespace astute.Controllers
 
                             return Conflict(new
                             {
-                                statusCode = HttpStatusCode.Conflict,
-                                message = CoreCommonMessage.ApiFailed,
-                                error = errordiamondInfos
+                                statusCode = errordiamondInfos.Status,
+                                message = errordiamondInfos.Message
                             });
                         }
                     }
@@ -12724,9 +12723,8 @@ namespace astute.Controllers
 
                         return Conflict(new
                         {
-                            statusCode = HttpStatusCode.Conflict,
-                            message = CoreCommonMessage.ApiFailed,
-                            error = errordiamondInfos
+                            statusCode = errordiamondInfos.Status,
+                            message = errordiamondInfos.Message
                         });
                     }
                 }
@@ -12738,9 +12736,8 @@ namespace astute.Controllers
 
                     return Conflict(new
                     {
-                        statusCode = HttpStatusCode.Conflict,
-                        message = CoreCommonMessage.ApiFailed,
-                        error = errordiamondInfos
+                        statusCode = errordiamondInfos.Status,
+                        message = errordiamondInfos.Message
                     });
                 }
             }
