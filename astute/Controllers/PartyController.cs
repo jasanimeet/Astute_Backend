@@ -1942,7 +1942,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpPost]
         [Route("update_supplier_price_list")]
         [Authorize]
@@ -1980,7 +1980,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message,"Update_Supplier_Price_List",ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Update_Supplier_Price_List", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
@@ -11516,7 +11516,7 @@ namespace astute.Controllers
             }
         }
 
-        
+
         [HttpPost]
         [Route("job_transfer_supplier_pricing_cal")]
         [Authorize]
@@ -11572,7 +11572,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpPost]
         [Route("job_transfer_auto_category_value")]
         [Authorize]
@@ -11642,7 +11642,7 @@ namespace astute.Controllers
                             party_file_obj.Overseas_Same_Id = party_File.Overseas_Same_Id;
 
                             DataTable supplier_column_Mapping = await _supplierService.Get_Supplier_Column_Mapping_In_Datatable(party_File.Party_Id ?? 0, "C", "FILE");
-                            
+
                             if (supplier_column_Mapping != null && supplier_column_Mapping.Rows.Count > 0)
                             {
                                 Party_File party_File1 = new Party_File()
@@ -11683,13 +11683,13 @@ namespace astute.Controllers
                                     {
                                         await File_Location.CopyToAsync(fileStream);
                                     }
-                                    
+
                                     party_File.File_Location = strFile;
 
                                     DataTable excel_dataTable = new DataTable();
 
                                     var sheet_list = party_File.Sheet_Name.Split(",").ToList();
-                                    
+
                                     if (fileExt == ".xls")
                                     {
                                         try
@@ -11866,7 +11866,7 @@ namespace astute.Controllers
                                         {
                                             string message = ex.Message;
                                             await _commonService.InsertErrorLog(message, "Create_Update_Manual_Upload", ex.StackTrace);
-                                                                                   
+
                                             return Conflict(new
                                             {
                                                 statusCode = HttpStatusCode.Conflict,
@@ -12197,14 +12197,14 @@ namespace astute.Controllers
                                                          }
                                                      }
 
-                                                 if (displayColName == "CTS" || displayColName == "BASE_DISC" || displayColName == "BASE_RATE" ||
-                                                         displayColName == "LENGTH" || displayColName == "WIDTH" || displayColName == "DEPTH" ||
-                                                         displayColName == "DEPTH_PER" || displayColName == "TABLE_PER" || displayColName == "CROWN_ANGLE" ||
-                                                         displayColName == "CROWN_HEIGHT" || displayColName == "PAVILION_ANGLE" ||
-                                                         displayColName == "PAVILION_HEIGHT" || displayColName == "GIRDLE_PER" ||
-                                                         displayColName == "SUPPLIER_DISC" || displayColName == "SUPPLIER_AMOUNT" ||
-                                                         displayColName == "OFFER_DISC" || displayColName == "OFFER_VALUE" ||
-                                                         displayColName == "MAX_SLAB_BASE_DISC" || displayColName == "MAX_SLAB_BASE_VALUE")
+                                                     if (displayColName == "CTS" || displayColName == "BASE_DISC" || displayColName == "BASE_RATE" ||
+                                                             displayColName == "LENGTH" || displayColName == "WIDTH" || displayColName == "DEPTH" ||
+                                                             displayColName == "DEPTH_PER" || displayColName == "TABLE_PER" || displayColName == "CROWN_ANGLE" ||
+                                                             displayColName == "CROWN_HEIGHT" || displayColName == "PAVILION_ANGLE" ||
+                                                             displayColName == "PAVILION_HEIGHT" || displayColName == "GIRDLE_PER" ||
+                                                             displayColName == "SUPPLIER_DISC" || displayColName == "SUPPLIER_AMOUNT" ||
+                                                             displayColName == "OFFER_DISC" || displayColName == "OFFER_VALUE" ||
+                                                             displayColName == "MAX_SLAB_BASE_DISC" || displayColName == "MAX_SLAB_BASE_VALUE")
                                                      {
                                                          finalRow[displayColName] = CoreService.RemoveNonNumericAndDotAndNegativeCharacters(
                                                              Convert.ToString(finalRow[displayColName]));
@@ -12366,7 +12366,7 @@ namespace astute.Controllers
                         }
                         #endregion
                     }
-                    
+
                 }
                 return BadRequest(ModelState);
             }
@@ -12640,7 +12640,8 @@ namespace astute.Controllers
                         });
                     }
                 }
-                else {
+                else
+                {
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
@@ -12659,5 +12660,113 @@ namespace astute.Controllers
             }
         }
         #endregion
+
+        #region Suzy Api
+
+        [HttpGet]
+        [Route("get_suzy_stock")]
+        public async Task<IActionResult> Get_Suzy_Stock(string login_url, string stock_url, string key, string value)
+        {
+            try
+            {
+                var client = new HttpClient();
+                var request = new HttpRequestMessage(HttpMethod.Get, login_url);
+                request.Headers.Add(key, value);
+                var response = await client.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    string cleanedJson = json.Replace("\\\"", "\"").Trim('"');
+
+                    var jsonObject = JsonConvert.DeserializeObject<JObject>(cleanedJson);
+
+                    var token = jsonObject["Token"]?.ToString();
+                    if (token != null)
+                    {
+                        var client1 = new HttpClient();
+                        var request1 = new HttpRequestMessage(HttpMethod.Get, stock_url);
+                        request1.Headers.Add("token", token.ToString());
+                        var response1 = await client1.SendAsync(request1);
+
+                        if (response1.IsSuccessStatusCode)
+                        {
+                            var json1 = await response1.Content.ReadAsStringAsync();
+                            string cleanedJson1 = json1.Replace("\\\"", "\"").Trim('"');
+                            List<Suzy_Model> diamondInfos = JsonConvert.DeserializeObject<List<Suzy_Model>>(cleanedJson1);
+
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.DataSuccessfullyFound,
+                                data = diamondInfos
+                            });
+                        }
+                        else
+                        {
+                            var errorDetails = await response1.Content.ReadAsStringAsync();
+                            string cleanedJson1 = errorDetails.Replace("\\\"", "\"").Trim('"');
+                            Suzy_Error_Model errordiamondInfos = JsonConvert.DeserializeObject<Suzy_Error_Model>(cleanedJson1);
+
+                            return Conflict(new
+                            {
+                                statusCode = HttpStatusCode.Conflict,
+                                message = CoreCommonMessage.ApiFailed,
+                                error = errordiamondInfos
+                            });
+                        }
+                    }
+                    else
+                    {
+                        var errorDetails = await response.Content.ReadAsStringAsync();
+                        string cleanedJson1 = errorDetails.Replace("\\\"", "\"").Trim('"');
+                        Suzy_Error_Model errordiamondInfos = JsonConvert.DeserializeObject<Suzy_Error_Model>(cleanedJson1);
+
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.ApiFailed,
+                            error = errordiamondInfos
+                        });
+                    }
+                }
+                else
+                {
+                    var errorDetails = await response.Content.ReadAsStringAsync();
+                    string cleanedJson1 = errorDetails.Replace("\\\"", "\"").Trim('"');
+                    Suzy_Error_Model errordiamondInfos = JsonConvert.DeserializeObject<Suzy_Error_Model>(cleanedJson1);
+
+                    return Conflict(new
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        message = CoreCommonMessage.ApiFailed,
+                        error = errordiamondInfos
+                    });
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                await _commonService.InsertErrorLog(httpEx.Message, "Get_Suzy_Stock", httpEx.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = CoreCommonMessage.ApiError,
+                    error = httpEx.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Suzy_Stock", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = ex.Message,
+                    error = ex.StackTrace
+                });
+            }
+        }
+
+        #endregion
+
     }
 }
