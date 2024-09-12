@@ -1117,10 +1117,12 @@ namespace astute.Repository
         {
             var supplier_Id = new SqlParameter("@Supplier_Id", supplier_Stock_Update.Supplier_Id);
             var stock_Data_Id = new SqlParameter("@Stock_Data_Id", supplier_Stock_Update.Stock_Data_Id);
-            var start_Time = new SqlParameter("@Start_Time", supplier_Stock_Update.Start_Time);
-            var end_Time = new SqlParameter("@End_Time", supplier_Stock_Update.End_Time);
+            var start_Time = new SqlParameter("@Start_Time", supplier_Stock_Update.Start_Time ?? (object)DBNull.Value);
+            var supplier_Response_Time = new SqlParameter("@Supplier_Response_Time", supplier_Stock_Update.Supplier_Response_Time ?? (object)DBNull.Value);
+            var end_Time = new SqlParameter("@End_Time", supplier_Stock_Update.End_Time ?? (object)DBNull.Value);
 
-            var sqlCommand = @"exec [Supplier_Stock_Start_End_Process] @Supplier_Id, @Stock_Data_Id, @Start_Time, @End_Time";
+
+            var sqlCommand = @"exec [Supplier_Stock_Start_End_Process] @Supplier_Id, @Stock_Data_Id, @Start_Time, @Supplier_Response_Time, @End_Time";
 
             var result = await Task.Run(async () =>
             {
@@ -1130,6 +1132,7 @@ namespace astute.Repository
                     command.Parameters.Add(supplier_Id);
                     command.Parameters.Add(stock_Data_Id);
                     command.Parameters.Add(start_Time);
+                    command.Parameters.Add(supplier_Response_Time);
                     command.Parameters.Add(end_Time);
 
                     // Set the command timeout to 30 minutes (in seconds)

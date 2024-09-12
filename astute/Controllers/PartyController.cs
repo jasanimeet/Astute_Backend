@@ -2861,6 +2861,11 @@ namespace astute.Controllers
                     return BadRequest(new { message = "Invalid format for Start_Time." });
                 }
 
+                if (!TimeSpan.TryParse(supplier_Stock_Update.Supplier_Response_Time, out TimeSpan supplierEndTime))
+                {
+                    return BadRequest(new { message = "Invalid format for Supplier_Response_Time." });
+                }
+
                 if (!TimeSpan.TryParse(supplier_Stock_Update.End_Time, out TimeSpan endTime))
                 {
                     return BadRequest(new { message = "Invalid format for End_Time." });
@@ -12337,6 +12342,7 @@ namespace astute.Controllers
                                                         Supplier_Id = party_File.Party_Id ?? 0,
                                                         Stock_Data_Id = stock_Data_Id,
                                                         Start_Time = startTime,
+                                                        Supplier_Response_Time = null, 
                                                         End_Time = endTime
                                                     };
                                                     await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
