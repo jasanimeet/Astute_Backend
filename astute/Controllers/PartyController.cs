@@ -2856,24 +2856,44 @@ namespace astute.Controllers
         {
             try
             {
-                if (!TimeSpan.TryParse(supplier_Stock_Update.Start_Time, out TimeSpan startTime))
+                if (supplier_Stock_Update.Stock_Data_Id > 0)
                 {
-                    return BadRequest(new { message = "Invalid format for Start_Time." });
-                }
+                    if (!TimeSpan.TryParse(supplier_Stock_Update.Start_Time, out TimeSpan startTime))
+                    {
+                        return BadRequest(new { message = "Invalid format for Start_Time." });
+                    }
 
-                if (!TimeSpan.TryParse(supplier_Stock_Update.Supplier_Response_Time, out TimeSpan supplierEndTime))
-                {
-                    return BadRequest(new { message = "Invalid format for Supplier_Response_Time." });
-                }
+                    if (!TimeSpan.TryParse(supplier_Stock_Update.Supplier_Response_Time, out TimeSpan supplierEndTime))
+                    {
+                        return BadRequest(new { message = "Invalid format for Supplier_Response_Time." });
+                    }
 
-                if (!TimeSpan.TryParse(supplier_Stock_Update.End_Time, out TimeSpan endTime))
-                {
-                    return BadRequest(new { message = "Invalid format for End_Time." });
-                }
+                    if (!TimeSpan.TryParse(supplier_Stock_Update.End_Time, out TimeSpan endTime))
+                    {
+                        return BadRequest(new { message = "Invalid format for End_Time." });
+                    }
 
-                if (startTime > endTime)
+                    if (startTime > endTime)
+                    {
+                        return BadRequest(new { message = "Time not valid: Start_Time cannot be greater than End_Time." });
+                    }
+                }
+                else 
                 {
-                    return BadRequest(new { message = "Time not valid: Start_Time cannot be greater than End_Time." });
+                    if (!TimeSpan.TryParse(supplier_Stock_Update.Start_Time, out TimeSpan startTime))
+                    {
+                        return BadRequest(new { message = "Invalid format for Start_Time." });
+                    }
+
+                    if (!TimeSpan.TryParse(supplier_Stock_Update.Supplier_Response_Time, out TimeSpan supplierEndTime))
+                    {
+                        return BadRequest(new { message = "Invalid format for Supplier_Response_Time." });
+                    }
+
+                    if (startTime > supplierEndTime)
+                    {
+                        return BadRequest(new { message = "Time not valid: Start_Time cannot be greater than Supplier_Response_Time." });
+                    }
                 }
 
                 var result = await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
