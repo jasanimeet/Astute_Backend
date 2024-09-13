@@ -12488,7 +12488,7 @@ namespace astute.Controllers
 
         #region Party Url Format
 
-        [HttpPost]
+        [HttpGet]
         [Route("get_party_url_format")]
         [Authorize]
         public async Task<IActionResult> Get_Party_Url_Format(int? Id)
