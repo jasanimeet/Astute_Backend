@@ -18,5 +18,6 @@ namespace astute.Repository
         Task<int> Delete_Account_Trans_Master_Purchase(int id);
         Task<Dictionary<string, object>> Get_Account_Trans_Purchase(int account_Trans_Id, string trans_Type, int? Year_Id);
         Task<List<string>> Check_Inward_Detail_Stock_Id(string Stock_Id);
+        Task<string> Create_Stock_Id_Purchase(string CTS, string Shape);
     }
 }

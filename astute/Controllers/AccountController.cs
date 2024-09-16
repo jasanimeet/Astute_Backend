@@ -1483,6 +1483,7 @@ namespace astute.Controllers
                         bool isRowEmpty = true;
                         var rowData = new Dictionary<string, string>();
                         bool hasError = false;
+                        bool hasStockError = false;
                         var errorMessages = new List<string>();
 
                         for (int colIndex = 1; colIndex <= totalColumns; colIndex++)
@@ -1562,11 +1563,12 @@ namespace astute.Controllers
                                             if (required)
                                             {
                                                 rowData[columnKey] = "Field is required";
-                                                hasError = true;
+                                                hasStockError = true;
                                                 errorMessages.Add($"{columnKey} : Field is required");
                                             }
                                             else
                                             {
+                                                hasStockError = true;
                                                 rowData[columnKey] = null;
                                             }
                                         }
@@ -1613,10 +1615,8 @@ namespace astute.Controllers
                                 Console.WriteLine($"Invalid column number '{excelColumnNo}' for '{displayColumnName}'.");
                             }
                         }
-
                         if (hasError)
                         {
-                            //rowData["ErrorMessage"] = $"Errors in row number {rowIndex}";
                             if (errorMessages.Count == 1)
                             {
                                 rowData["ErrorMessage"] = errorMessages[0];
@@ -1630,6 +1630,74 @@ namespace astute.Controllers
                                 rowData["ErrorMessage"] = string.Empty;
                             }
                             errorFields.Add(rowData);
+                        }
+                        else if (hasStockError)
+                        {
+                            string shape = rowData["SHAPE"];
+                            string cts = rowData["CTS"];
+                            if (!string.IsNullOrEmpty(cts) && !string.IsNullOrEmpty(shape))
+                            {
+                                var Stock_Id = await _account_Trans_Master_Service.Create_Stock_Id_Purchase(cts, shape);
+                                if (!string.IsNullOrEmpty(Stock_Id))
+                                {
+                                    bool containsReferenceNo = rowData.ContainsKey("REFERENCE_NO");
+                                    if (containsReferenceNo)
+                                    {
+                                        rowData["REFERENCE_NO"] = Stock_Id;
+                                    }
+                                    else
+                                    {
+                                        rowData["STOCK_ID"] = Stock_Id;
+                                    }
+                                }
+                                else
+                                {
+                                    hasError = true;
+                                    bool containsReferenceNo = rowData.ContainsKey("REFERENCE_NO");
+                                    if (containsReferenceNo)
+                                    {
+                                        errorMessages.Add($"REFERENCE_NO : Field is required");
+                                    }
+                                    else
+                                    {
+                                        errorMessages.Add($"STOCK_ID : Field is required");
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                hasError = true;
+                                bool containsReferenceNo = rowData.ContainsKey("REFERENCE_NO");
+                                if (containsReferenceNo)
+                                {
+                                    errorMessages.Add($"REFERENCE_NO : Field is required");
+                                }
+                                else
+                                {
+                                    errorMessages.Add($"STOCK_ID : Field is required");
+                                }
+                            }
+
+                            if (hasError)
+                            {
+                                if (errorMessages.Count == 1)
+                                {
+                                    rowData["ErrorMessage"] = errorMessages[0];
+                                }
+                                else if (errorMessages.Count > 1)
+                                {
+                                    rowData["ErrorMessage"] = string.Join(", ", errorMessages);
+                                }
+                                else
+                                {
+                                    rowData["ErrorMessage"] = string.Empty;
+                                }
+                                errorFields.Add(rowData);
+                            }
+                            else
+                            {
+                                successFields.Add(rowData);
+                            }
                         }
                         else
                         {

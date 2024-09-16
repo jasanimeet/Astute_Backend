@@ -408,6 +408,38 @@ namespace astute.Repository
             return result;
         }
 
+        public async Task<string> Create_Stock_Id_Purchase(string CTS, string Shape)
+        {
+            try
+            {
+                var _cts = new SqlParameter("@Cts", string.IsNullOrEmpty(CTS) ? (object)DBNull.Value : CTS);
+                var _shape = new SqlParameter("@Shape", string.IsNullOrEmpty(Shape) ? (object)DBNull.Value : Shape);
+
+                var stock_Id = new SqlParameter("@Stock_Id", SqlDbType.NVarChar, 50)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                                
+                await _dbContext.Database.ExecuteSqlRawAsync(
+                    @"EXEC [dbo].[Stock_Number_Generation_Purchase] 
+                    @Cts,
+                    @Shape,
+                    @Stock_Id OUT",
+                    _cts,
+                    _shape,
+                    stock_Id);
+
+                string stockIdValue = stock_Id.Value != DBNull.Value ? stock_Id.Value.ToString() : null;
+
+                return stockIdValue;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error executing stored procedure: {ex.Message}");
+                throw;
+            }
+        }
+
         #endregion
     }
 }
