@@ -1678,6 +1678,35 @@ namespace astute.Controllers
         }
 
         [HttpGet]
+        [Route("get_party_url_format_supplier")]
+        [Authorize]
+        public async Task<IActionResult> Get_Party_Url_Format_Supplier()
+        {
+            try
+            {
+                var result = await _partyService.Get_Party_Url_Format_Supplier();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Party_Url_Format_Supplier", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
         [Route("get_party_type_courier")]
         [Authorize]
         public async Task<IActionResult> Get_Party_Type_Courier()
@@ -12376,11 +12405,20 @@ namespace astute.Controllers
                                                 Stock_Data_Id = stock_Data_Id
                                             });
                                         }
+
+
                                     }
                                 }
                             }
                             else
                             {
+                                Supplier_Stock_Update supplier_Stock_Update = new Supplier_Stock_Update()
+                                {
+                                    Supplier_Id = party_File.Party_Id ?? 0,
+                                    Start_Time = startTime
+                                };
+                                await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
+
                                 return Conflict(new
                                 {
                                     statusCode = HttpStatusCode.Conflict,
@@ -12394,10 +12432,26 @@ namespace astute.Controllers
                     }
 
                 }
+
+                Supplier_Stock_Update supplier_Stock = new Supplier_Stock_Update()
+                {
+                    Supplier_Id = party_File.Party_Id ?? 0,
+                    Start_Time = startTime
+                };
+                await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock);
+
                 return BadRequest(ModelState);
             }
             catch (Exception ex)
             {
+
+                Supplier_Stock_Update supplier_Stock_Update = new Supplier_Stock_Update()
+                {
+                    Supplier_Id = party_File.Party_Id ?? 0,
+                    Start_Time = startTime
+                };
+                await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
+
                 string message = string.Empty;
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_Manual_Upload", ex.StackTrace);
                 if (ex.Message.Contains("An item with the same key has already been added"))

@@ -113,6 +113,7 @@ namespace astute.Repository
         
         Task<IList<Supplier_Details_List>> Get_Suplier_Detail_List(int party_Id);
         Task<IList<DropdownModel>> Get_Party_Suplier();
+        Task<IList<DropdownModel>> Get_Party_Url_Format_Supplier();
         Task<IList<DropdownModel>> Get_Party_Suplier_For_Manual_File();
         Task<IList<DropdownModel>> Get_Party_Type_Courier();
         Task<IList<DropdownModel>> Get_Party_Type_Customer();
