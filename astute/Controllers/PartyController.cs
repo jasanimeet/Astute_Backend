@@ -2837,6 +2837,16 @@ namespace astute.Controllers
                             }
                         });
                     }
+                    else 
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            Supplier_Id = party.Party_Id,
+                            Party_Name = party.Party_Name,
+                            message = CoreCommonMessage.SupplierPriceUpdateCheck
+                        });
+                }
                 }
                 return BadRequest(ModelState);
             }
