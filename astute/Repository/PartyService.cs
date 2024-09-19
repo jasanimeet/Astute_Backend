@@ -1261,5 +1261,33 @@ namespace astute.Repository
         }
 
         #endregion
+ 
+        #region Send Mail for Supplier Upload Stock
+
+        public async Task<DataTable> Get_Supplier_Stock_Upload_Status()
+        {
+            DataTable dataTable = new DataTable();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Supplier_Stock_Upload_Status_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    dataTable = ds.Tables[ds.Tables.Count - 1];
+                }
+            }
+
+            return dataTable;
+        }
+
+        #endregion
     }
 }

@@ -534,9 +534,13 @@ namespace astute.CoreModel
         public static string Party_Url_Format_Master = Party_Url_Format + AlreadyExists;
         #endregion
 
-        #region 
+        #region Latest Stock
         public static string Supplier_Id_Less_Than_0 = "Supplier Id cannot be less than 0.";
         public static string No_stock_uploaded_in_last = "No stock uploaded in last 48 hours";
+        #endregion
+
+        #region Supplier Stock Upload Status Email
+        public static string Supplier_Stock_Upload_Status_Email = "Supplier Stock Upload Status Email";
         #endregion
 
     }

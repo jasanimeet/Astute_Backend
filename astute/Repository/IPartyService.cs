@@ -133,5 +133,11 @@ namespace astute.Repository
         Task<IList<DropdownModel>> Get_Party_Assist(int Party_Code);
 
         #endregion
+
+        #region Send Mail for Supplier Upload Stock
+
+        Task<DataTable> Get_Supplier_Stock_Upload_Status();
+
+        #endregion
     }
 }

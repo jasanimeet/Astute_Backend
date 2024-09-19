@@ -12855,5 +12855,56 @@ namespace astute.Controllers
 
         #endregion
 
+        #region Send Mail for Supplier Upload Stock
+
+        [HttpGet]
+        [Route("get_supplier_stock_upload_status_email")]
+        public async Task<IActionResult> Get_Supplier_Stock_Upload_Status_Email()
+        {
+            try
+            {
+                var dtSupplier = await _partyService.Get_Supplier_Stock_Upload_Status();
+                if (dtSupplier != null && dtSupplier.Rows.Count > 0)
+                {
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/SupplierStockUploadStatusExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string filename = string.Empty;
+
+                    filename = "Supplier_Stock_Upload_Status_" + DateTime.UtcNow.ToString("ddMMyyyy_HHmmss") + ".xlsx";
+                    EpExcelExport.Create_Supplier_Stock_Upload_Status_Excel(dtSupplier, filePath, filePath + filename);
+                    excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.SupplierStockUploadStatusExcelFiles + filename;
+
+                    byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
+                    using (MemoryStream memoryStream = new MemoryStream(fileBytes))
+                    {
+                        IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
+                        _emailSender.SendEmail(toEmail: "tejash@brainwaves.co.in, farhan@sunrisediam.com", externalLink: "", subject: CoreCommonMessage.Supplier_Stock_Upload_Status_Email, formFile: formFile, strBody: CoreCommonMessage.Supplier_Stock_Upload_Status_Email);
+                        
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.EmailSendSuccessMessage
+                        });
+                    }
+                    
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_Stock_Upload_Status_Email", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
     }
 }
