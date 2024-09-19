@@ -781,7 +781,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "GetParty_Raplicate", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Get_Party_Raplicate_08052024", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
@@ -810,7 +810,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "GetParty", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "GetPartyCustomer", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
@@ -1906,7 +1906,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Send_Stock_On_Email", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_API_FTP_File", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
@@ -2846,7 +2846,7 @@ namespace astute.Controllers
                             Party_Name = party.Party_Name,
                             message = CoreCommonMessage.SupplierPriceUpdateCheck
                         });
-                }
+                    }
                 }
                 return BadRequest(ModelState);
             }
@@ -11675,7 +11675,8 @@ namespace astute.Controllers
         public async Task<IActionResult> Create_Update_Manual_Upload([FromForm] Party_File party_File, IFormFile File_Location)
         {
             string startTime = DateTime.Now.TimeOfDay.ToString(@"hh\:mm\:ss");
-
+            var message = string.Empty; 
+            var stock_Data_Id = 0; 
             string party_name = string.Empty;
             try
             {
@@ -11825,7 +11826,7 @@ namespace astute.Controllers
                                                             }
                                                             catch (Exception ex)
                                                             {
-                                                                string message = ex.Message;
+                                                                message = ex.Message;
                                                                 await _commonService.InsertErrorLog(message, "Create_Update_Manual_Upload", ex.StackTrace);
 
                                                                 return Conflict(new
@@ -11928,7 +11929,7 @@ namespace astute.Controllers
                                         }
                                         catch (Exception ex)
                                         {
-                                            string message = ex.Message;
+                                            message = ex.Message;
                                             await _commonService.InsertErrorLog(message, "Create_Update_Manual_Upload", ex.StackTrace);
 
                                             return Conflict(new
@@ -12385,7 +12386,7 @@ namespace astute.Controllers
                                         stock_Data_Master_Schedular.Upload_Method = "FILE";
                                         stock_Data_Master_Schedular.Upload_Type = "O";
 
-                                        var (message, stock_Data_Id) = await _supplierService.Stock_Data_Custom_Insert_Update(stock_Data_Master_Schedular);
+                                        (message, stock_Data_Id) = await _supplierService.Stock_Data_Custom_Insert_Update(stock_Data_Master_Schedular);
                                         if (message == "success" && stock_Data_Id > 0)
                                         {
                                             var response = await _supplierService.Stock_Data_Detail_Insert_Update(dt_stock_data, stock_Data_Id);
@@ -12425,6 +12426,7 @@ namespace astute.Controllers
                                 Supplier_Stock_Update supplier_Stock_Update = new Supplier_Stock_Update()
                                 {
                                     Supplier_Id = party_File.Party_Id ?? 0,
+                                    Stock_Data_Id = stock_Data_Id,
                                     Start_Time = startTime
                                 };
                                 await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
@@ -12446,11 +12448,18 @@ namespace astute.Controllers
                 Supplier_Stock_Update supplier_Stock = new Supplier_Stock_Update()
                 {
                     Supplier_Id = party_File.Party_Id ?? 0,
+                    Stock_Data_Id = stock_Data_Id,
                     Start_Time = startTime
                 };
                 await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock);
 
-                return BadRequest(ModelState);
+                return Conflict(new
+                {
+                    statusCode = HttpStatusCode.Conflict,
+                    Supplier_Id = party_File.Party_Id,
+                    Party_Name = party_name,
+                    message = CoreCommonMessage.SupplierPriceUpdateCheck
+                });
             }
             catch (Exception ex)
             {
@@ -12458,11 +12467,11 @@ namespace astute.Controllers
                 Supplier_Stock_Update supplier_Stock_Update = new Supplier_Stock_Update()
                 {
                     Supplier_Id = party_File.Party_Id ?? 0,
+                    Stock_Data_Id = stock_Data_Id,
                     Start_Time = startTime
                 };
                 await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
 
-                string message = string.Empty;
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_Manual_Upload", ex.StackTrace);
                 if (ex.Message.Contains("An item with the same key has already been added"))
                 {
