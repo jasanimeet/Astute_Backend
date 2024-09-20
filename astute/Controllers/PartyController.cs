@@ -10736,7 +10736,7 @@ namespace astute.Controllers
                     var result = await _supplierService.Create_Stone_Order_Process(order_Stone_Process, user_Id ?? 0);
                     if (result > 0)
                     {
-                        var employees = await _employeeService.GetEmployees(user_Id ?? 0, null, null);
+                        /*var employees = await _employeeService.GetEmployees(user_Id ?? 0, null, null);
                         var employee = employees.FirstOrDefault();
                         var (dt_Order, is_Admin) = await _supplierService.Get_Order_Excel_Data(null, user_Id ?? 0, order_Stone_Process.Order_Id);
                         if (dt_Order != null && dt_Order.Rows.Count > 0)
@@ -10777,7 +10777,7 @@ namespace astute.Controllers
                                 }
                             }
                         }
-
+                        */
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
