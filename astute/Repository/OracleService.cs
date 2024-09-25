@@ -1127,7 +1127,7 @@ namespace astute.Repository
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vOFFER", OracleDbType.Double);
-                        param1.Value = (!string.IsNullOrEmpty(item.CostDisc) ? Convert.ToDouble(item.CostDisc) : 0);
+                        param1.Value = (!string.IsNullOrEmpty(item.CurrentCostDisc) ? Convert.ToDouble(item.CurrentCostDisc) : 0);
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vSOURCE_PARTY", OracleDbType.NVarchar2);
@@ -1239,11 +1239,11 @@ namespace astute.Repository
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vSUPP_FINAL_VALUE", OracleDbType.Double);
-                        param1.Value = (!string.IsNullOrEmpty(item.CostAmount) ? Convert.ToDouble(item.CostAmount) : 0);
+                        param1.Value = (!string.IsNullOrEmpty(item.CurrentCostAmount) ? Convert.ToDouble(item.CurrentCostAmount) : 0);
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vSUPP_FINAL_DISC", OracleDbType.Double);
-                        param1.Value = (!string.IsNullOrEmpty(item.CostDisc) ? Convert.ToDouble(item.CostDisc) : 0);
+                        param1.Value = (!string.IsNullOrEmpty(item.CurrentCostDisc) ? Convert.ToDouble(item.CurrentCostDisc) : 0);
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vGIRDLE_PER", OracleDbType.Double);
