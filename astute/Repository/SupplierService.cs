@@ -2822,7 +2822,7 @@ namespace astute.Repository
             string _order_Status = string.Empty;
             if (!string.IsNullOrEmpty(order_Stone_Processing.QC_Request))
             {
-                request_For = order_Stone_Processing.Order_Status + "," + order_Stone_Processing.QC_Request;
+                request_For = order_Stone_Processing.Order_Status + ", " + order_Stone_Processing.QC_Request;
             }
             else
             {
