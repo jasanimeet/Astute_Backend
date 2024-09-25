@@ -4536,6 +4536,35 @@ namespace astute.Controllers
                 });
             }
         }
+        
+        [HttpGet]
+        [Route("get_report_users_role_format_type")]
+        [Authorize]
+        public async Task<IActionResult> Get_Report_Users_Role_Format_Type(int rm_id, int user_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Report_Users_Role_Format_Type(rm_id, user_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Report_Users_Role_Format_Type", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
 
         [HttpDelete]
         [Route("delete_report_user_role")]
