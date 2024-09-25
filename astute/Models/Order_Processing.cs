@@ -99,221 +99,221 @@ namespace astute.Models
         public int Id { get; set; }
 
         [JsonProperty("Supp_Stock_Id")]
-        public int SuppStockId { get; set; }
+        public int? SuppStockId { get; set; }
 
         [JsonProperty("DNA")]
-        public string Dna { get; set; }
+        public string? Dna { get; set; }
 
         [JsonProperty("IMAGE LINK")]
-        public string ImageLink { get; set; }
+        public string? ImageLink { get; set; }
 
         [JsonProperty("VIDEO LINK")]
-        public string VideoLink { get; set; }
+        public string? VideoLink { get; set; }
 
         [JsonProperty("LAB")]
-        public string Lab { get; set; }
+        public string? Lab { get; set; }
 
         [JsonProperty("CERTIFICATE LINK")]
-        public string CertificateLink { get; set; }
+        public string? CertificateLink { get; set; }
 
         [JsonProperty("COMPANY")]
-        public string Company { get; set; }
+        public string? Company { get; set; }
 
         [JsonProperty("LOCATION")]
-        public string Location { get; set; }
+        public string? Location { get; set; }
 
         [JsonProperty("ORDER NO")]
-        public string OrderNo { get; set; }
+        public string? OrderNo { get; set; }
 
         [JsonProperty("CUSTOMER")]
-        public string Customer { get; set; }
+        public string? Customer { get; set; }
 
         [JsonProperty("BUYER")]
-        public string Buyer { get; set; }
+        public string? Buyer { get; set; }
 
         [JsonProperty("QC REMARKS")]
-        public string QcRemarks { get; set; }
+        public string? QcRemarks { get; set; }
 
         [JsonProperty("STOCK ID")]
-        public string StockId { get; set; }
+        public string? StockId { get; set; }
 
         [JsonProperty("SUPPLIER NO")]
-        public string SupplierNo { get; set; }
+        public string? SupplierNo { get; set; }
 
         [JsonProperty("CERTIFICATE NO")]
-        public string CertificateNo { get; set; }
+        public string? CertificateNo { get; set; }
 
         [JsonProperty("SHAPE")]
-        public string Shape { get; set; }
+        public string? Shape { get; set; }
 
         [JsonProperty("POINTER")]
-        public string Pointer { get; set; }
+        public string? Pointer { get; set; }
 
         [JsonProperty("SUB POINTER")]
-        public string SubPointer { get; set; }
+        public string? SubPointer { get; set; }
 
         [JsonProperty("COLOR")]
-        public string Color { get; set; }
+        public string? Color { get; set; }
 
         [JsonProperty("CLARITY")]
-        public string Clarity { get; set; }
+        public string? Clarity { get; set; }
 
         [JsonProperty("CTS")]
-        public string Cts { get; set; }
+        public string? Cts { get; set; }
 
         [JsonProperty("RAP RATE")]
-        public string RapRate { get; set; }
+        public string? RapRate { get; set; }
 
         [JsonProperty("RAP AMOUNT")]
-        public string RapAmount { get; set; }
+        public string? RapAmount { get; set; }
 
         [JsonProperty("BASE DISC")]
-        public string BaseDisc { get; set; }
+        public string? BaseDisc { get; set; }
 
         [JsonProperty("BASE AMOUNT")]
-        public string BaseAmount { get; set; }
+        public string? BaseAmount { get; set; }
 
         [JsonProperty("CURRENT COST DISC")]
-        public string CurrentCostDisc { get; set; }
+        public string? CurrentCostDisc { get; set; }
 
         [JsonProperty("CURRENT COST AMOUNT")]
-        public string CurrentCostAmount { get; set; }
+        public string? CurrentCostAmount { get; set; }
 
         [JsonProperty("BUYER DISC")]
-        public string BuyerDisc { get; set; }
+        public string? BuyerDisc { get; set; }
 
         [JsonProperty("BUYER AMOUNT")]
-        public string BuyerAmount { get; set; }
+        public string? BuyerAmount { get; set; }
 
         [JsonProperty("COST DISC")]
-        public string CostDisc { get; set; }
+        public string? CostDisc { get; set; }
 
         [JsonProperty("COST AMOUNT")]
-        public string CostAmount { get; set; }
+        public string? CostAmount { get; set; }
 
         [JsonProperty("OFFER DISC")]
-        public string OfferDisc { get; set; }
+        public string? OfferDisc { get; set; }
 
         [JsonProperty("OFFER AMOUNT")]
-        public string OfferAmount { get; set; }
+        public string? OfferAmount { get; set; }
 
         [JsonProperty("PROCESS STATUS")]
-        public string ProcessStatus { get; set; }
+        public string? ProcessStatus { get; set; }
 
         [JsonProperty("STATUS")]
-        public string Status { get; set; }
+        public string? Status { get; set; }
 
         [JsonProperty("REMARKS")]
-        public string Remarks { get; set; }
+        public string? Remarks { get; set; }
 
         [JsonProperty("EXPECTED PROFIT PER")]
-        public string ExpectedProfitPer { get; set; }
+        public string? ExpectedProfitPer { get; set; }
 
         [JsonProperty("EXPECTED PROFIT AMT")]
-        public string ExpectedProfitAmt { get; set; }
+        public string? ExpectedProfitAmt { get; set; }
 
         [JsonProperty("CUT")]
-        public string Cut { get; set; }
+        public string? Cut { get; set; }
 
         [JsonProperty("POLISH")]
-        public string Polish { get; set; }
+        public string? Polish { get; set; }
 
         [JsonProperty("SYMM")]
-        public string Symm { get; set; }
+        public string? Symm { get; set; }
 
         [JsonProperty("FLS INTENSITY")]
-        public string FlsIntensity { get; set; }
+        public string? FlsIntensity { get; set; }
 
         [JsonProperty("KEY TO SYMBOL")]
-        public string KeyToSymbol { get; set; }
+        public string? KeyToSymbol { get; set; }
 
         [JsonProperty("LENGTH")]
-        public string Length { get; set; }
+        public string? Length { get; set; }
 
         [JsonProperty("WIDTH")]
-        public string Width { get; set; }
+        public string? Width { get; set; }
 
         [JsonProperty("DEPTH")]
-        public string Depth { get; set; }
+        public string? Depth { get; set; }
 
         [JsonProperty("DEPTH PER")]
-        public string DepthPer { get; set; }
+        public string? DepthPer { get; set; }
 
         [JsonProperty("TABLE PER")]
-        public string TablePer { get; set; }
+        public string? TablePer { get; set; }
 
         [JsonProperty("CROWN ANGLE")]
-        public string CrownAngle { get; set; }
+        public string? CrownAngle { get; set; }
 
         [JsonProperty("CROWN HEIGHT")]
-        public string CrownHeight { get; set; }
+        public string? CrownHeight { get; set; }
 
         [JsonProperty("PAVILION ANGLE")]
-        public string PavilionAngle { get; set; }
+        public string? PavilionAngle { get; set; }
 
         [JsonProperty("PAVILION HEIGHT")]
-        public string PavilionHeight { get; set; }
+        public string? PavilionHeight { get; set; }
 
         [JsonProperty("LASER INSCRIPTION")]
-        public string LaserInscription { get; set; }
+        public string? LaserInscription { get; set; }
 
         [JsonProperty("GIRDLE PER")]
-        public long GirdlePer { get; set; }
+        public long? GirdlePer { get; set; }
 
         [JsonProperty("LUSTER")]
-        public string Luster { get; set; }
+        public string? Luster { get; set; }
 
         [JsonProperty("TABLE WHITE")]
-        public string TableWhite { get; set; }
+        public string? TableWhite { get; set; }
 
         [JsonProperty("SIDE WHITE")]
-        public string SideWhite { get; set; }
+        public string? SideWhite { get; set; }
 
         [JsonProperty("TABLE BLACK")]
-        public string TableBlack { get; set; }
+        public string? TableBlack { get; set; }
 
         [JsonProperty("SIDE BLACK")]
-        public string SideBlack { get; set; }
+        public string? SideBlack { get; set; }
 
         [JsonProperty("CULET")]
-        public string Culet { get; set; }
+        public string? Culet { get; set; }
 
         [JsonProperty("GIA COMMENTS")]
-        public string GiaComments { get; set; }
+        public string? GiaComments { get; set; }
 
         [JsonProperty("GIA TYPE")]
-        public string GiaType { get; set; }
+        public string? GiaType { get; set; }
 
         [JsonProperty("TABLE OPEN")]
-        public string TableOpen { get; set; }
+        public string? TableOpen { get; set; }
 
         [JsonProperty("CROWN OPEN")]
-        public string CrownOpen { get; set; }
+        public string? CrownOpen { get; set; }
 
         [JsonProperty("PAVILION OPEN")]
-        public string PavilionOpen { get; set; }
+        public string? PavilionOpen { get; set; }
 
         [JsonProperty("GIRDLE OPEN")]
-        public string GirdleOpen { get; set; }
+        public string? GirdleOpen { get; set; }
 
         [JsonProperty("SHADE")]
-        public string Shade { get; set; }
+        public string? Shade { get; set; }
 
         [JsonProperty("MILKY")]
-        public string Milky { get; set; }
+        public string? Milky { get; set; }
 
         [JsonProperty("SUPPLIER COMMENTS")]
-        public string SupplierComments { get; set; }
+        public string? SupplierComments { get; set; }
 
         [JsonProperty("MANAGEMENT STATUS")]
-        public string ManagementStatus { get; set; }
+        public string? ManagementStatus { get; set; }
 
         [JsonProperty("BGM")]
-        public string Bgm { get; set; }
+        public string? Bgm { get; set; }
 
 
         [JsonProperty("Party Code")]
-        public string Party_code { get; set; }
+        public string? Party_code { get; set; }
     }
     public class Order_Excel_Model
     {

@@ -2,15 +2,10 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using Oracle.ManagedDataAccess.Client;
-using Org.BouncyCastle.Asn1.Ocsp;
-using Org.BouncyCastle.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 using static astute.Models.Employee_Master;
 
@@ -1252,7 +1247,7 @@ namespace astute.Repository
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vGIRDLE_PER", OracleDbType.Double);
-                        param1.Value = (item.GirdlePer > 0 ? Convert.ToDouble(item.GirdlePer) : 0);
+                        param1.Value = (!string.IsNullOrEmpty(item.GirdlePer.ToString()) && item.GirdlePer > 0 ? Convert.ToDouble(item.GirdlePer) : 0);
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vGIRDLE_TYPE", OracleDbType.NVarchar2);
