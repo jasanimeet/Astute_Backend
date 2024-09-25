@@ -213,14 +213,15 @@ namespace astute.Repository
             }
             return 1;
         }
-        public async Task<IList<Pointer_Master>> Get_Pointer_For_Stock_Generation(int pointerId, string stock_type, int company_Id)
+        public async Task<IList<Pointer_Master>> Get_Pointer_For_Stock_Generation(int pointerId, string stock_type, int company_Id, string shape_Ids)
         {
             var pointer_Id = new SqlParameter("@Pointer_Id", DBNull.Value);
             var _stock_type = !string.IsNullOrEmpty(stock_type) ? new SqlParameter("@Stock_Type", stock_type) : new SqlParameter("@Stock_Type", DBNull.Value);
             var _company_Id = company_Id > 0 ? new SqlParameter("@Company_Id", company_Id) : new SqlParameter("@Company_Id", DBNull.Value);
+            var _shape_Ids = !string.IsNullOrEmpty(shape_Ids) ? new SqlParameter("@Shape_Ids", shape_Ids) : new SqlParameter("@Shape_Ids", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Pointer_Master
-                            .FromSqlRaw(@"exec Get_Pointer_For_Stock_Generation @Pointer_Id, @Stock_Type, @Company_Id", pointer_Id, _stock_type, _company_Id)
+                            .FromSqlRaw(@"exec Get_Pointer_For_Stock_Generation @Pointer_Id, @Stock_Type, @Company_Id, @Shape_Ids", pointer_Id, _stock_type, _company_Id, shape_Ids)
                             .ToListAsync());
             return result;
         }
