@@ -1,24 +1,18 @@
-﻿using astute.Repository;
-using ExcelDataReader;
+﻿using astute.CoreModel;
+using astute.CoreServices;
+using astute.Models;
+using astute.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using OfficeOpenXml;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 using System;
-using astute.CoreModel;
-using astute.CoreServices;
-using astute.Models;
-using Microsoft.AspNetCore.Authorization;
-using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
+using System.IO;
 using System.Net;
-using System.Linq;
-using DocumentFormat.OpenXml.Spreadsheet;
-using NPOI.SS.Formula.Functions;
+using System.Threading.Tasks;
 
 namespace astute.Controllers
 {
@@ -346,6 +340,34 @@ namespace astute.Controllers
             return (successFields, errorFields, dataTable);
         }
 
+        [HttpGet]
+        [Route("get_transaction_detail")]
+        [Authorize]
+        public async Task<IActionResult> Get_Transaction_Detail()
+        {
+            try
+            {
+                var result = await _transactionService.Get_Transaction_Detail();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Transaction_Detail", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
 
         #endregion
     }
