@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -160,108 +159,60 @@ namespace astute.Repository
         }
         public async Task<IList<MenuMasterModel>> Get_all_menus(int employeeId)
         {
-            var ParentMenuId = new SqlParameter("@ParentId", Convert.ToInt16(0));
-            var model = new List<MenuMasterModel>();
-            var result = await Task.Run(() => _dbContext.Menu_Mas
-                            .FromSqlRaw(@"exec Menu_Mas_Select_By_ParentId @ParentId", ParentMenuId).ToListAsync());
+            var allMenus = await _dbContext.Menu_Mas.ToListAsync();
+            var rights = employeeId > 0 ? await _dbContext.Emp_rights.Where(x => x.Employee_Id == employeeId).ToListAsync() : new List<Emp_rights>();
 
-            if (result != null && result.Count > 0)
-            {
-                foreach (var item in result)
-                {
-                    var right_Model = new Menu_Rights_Model();
-                    if (employeeId > 0)
-                    {
-                        right_Model = await Set_Menu_Rights(employeeId, item.Menu_Id);
-                    }
-                    model.Add(new MenuMasterModel()
-                    {
-                        Menu_Id = item.Menu_Id,
-                        Menu_Name = item.Menu_Name,
-                        Caption = item.Caption,
-                        Parent_Id = item.Parent_Id ?? 0,
-                        Menu_type = item.Menu_type,
-                        Short_Key = item.Short_Key,
-                        Order_No = item.Order_No,
-                        Status = item.Status,
-                        Module_Path = item.Module_Path,
-                        Menu_Rights = right_Model
-                    });
-                }
-            }
-            return await Get_all_sub_menus(model, employeeId);
+            var menus = new List<MenuMasterModel>();
+
+            menus = await Get_all_sub_menus(allMenus, rights, 0, employeeId);
+
+            return menus;
         }
-        public async Task<IList<MenuMasterModel>> Get_all_sub_menus(IList<MenuMasterModel> menus, int employeeId)
+
+        public async Task<List<MenuMasterModel>> Get_all_sub_menus(List<Menu_Mas> allMenus, List<Emp_rights> rights, int parentId, int employeeId)
         {
-            int z = 0;
             var menuList = new List<MenuMasterModel>();
-            if (menus.Count > 0)
+
+            foreach (var item in allMenus.Where(x => x.Parent_Id == parentId))
             {
-                menuList.AddRange(menus);
-            }
-            foreach (var item in menus)
-            {
-                var menuId = new SqlParameter("@ParentId", Convert.ToInt16(item.Menu_Id));
-                var result = await Task.Run(() => _dbContext.Menu_Mas
-                                   .FromSqlRaw(@"exec Menu_Mas_Select_By_ParentId @ParentId", menuId).ToListAsync());
+                var right_Model = await Set_Menu_Rights(item.Menu_Id, rights);
 
-                foreach (var item2 in result)
+                var menuModel = new MenuMasterModel
                 {
-                    var right_Model = new Menu_Rights_Model();
-                    if (employeeId > 0)
-                    {
-                        right_Model = await Set_Menu_Rights(employeeId, item2.Menu_Id);
-                    }
-                    item.SubMenu.Add(new MenuMasterModel()
-                    {
-                        Menu_Id = item2.Menu_Id,
-                        Menu_Name = item2.Menu_Name,
-                        Caption = item2.Caption,
-                        Parent_Id = item2.Parent_Id ?? 0,
-                        Menu_type = item2.Menu_type,
-                        Short_Key = item2.Short_Key,
-                        Order_No = item2.Order_No,
-                        Status = item2.Status,
-                        Module_Path = item2.Module_Path,
-                        Menu_Rights = right_Model
-                    });
-                }
+                    Menu_Id = item.Menu_Id,
+                    Menu_Name = item.Menu_Name,
+                    Caption = item.Caption,
+                    Parent_Id = item.Parent_Id ?? 0,
+                    Menu_type = item.Menu_type,
+                    Short_Key = item.Short_Key,
+                    Order_No = item.Order_No,
+                    Status = item.Status,
+                    Module_Path = item.Module_Path,
+                    Menu_Rights = right_Model,
+                    SubMenu = new List<MenuMasterModel>()
+                };
 
-                if (item.SubMenu == null)
-                {
-                    z++;
-                    continue;
-                }
-
-                List<MenuMasterModel> subMenu = item.SubMenu.ToList();
-                item.SubMenu = await Get_all_sub_menus(subMenu, employeeId);
-                menuList[z] = item;
-                z++;
+                menuModel.SubMenu = await Get_all_sub_menus(allMenus, rights, item.Menu_Id, employeeId);
+                menuList.Add(menuModel);
             }
+
             return menuList;
         }
-        public async Task<Menu_Rights_Model> Set_Menu_Rights(int employeeId, int menuId)
+
+        public async Task<Menu_Rights_Model> Set_Menu_Rights(int menuId, IList<Emp_rights> rights)
         {
-            var model = new Menu_Rights_Model();
-            var empId = employeeId > 0 ? new SqlParameter("@Employee_Id", employeeId) : new SqlParameter("@Employee_Id", DBNull.Value);
-
-            var employees = await Task.Run(() => _dbContext.Emp_rights
-                            .FromSqlRaw(@"exec Emp_Rights_Select @Employee_Id", empId).ToListAsync());
-
-            if (employees != null && employees.Count > 0)
+            var right = rights.FirstOrDefault(x => x.Menu_Id == menuId);
+            return right != null ? new Menu_Rights_Model
             {
-                foreach (var employee in employees.Where(x => x.Menu_Id == menuId))
-                {
-                    model.Insert_Allow = employee.Insert_Allow;
-                    model.Update_Allow = employee.Update_Allow;
-                    model.Delete_Allow = employee.Delete_Allow;
-                    model.Excel_Allow = employee.Excel_Allow;
-                    model.Print_Allow = employee.Print_Allow;
-                    model.Query_Allow = employee.Query_Allow;
-                }
-            }
-            return model;
+                Insert_Allow = right.Insert_Allow,
+                Update_Allow = right.Update_Allow,
+                Delete_Allow = right.Delete_Allow,
+                Excel_Allow = right.Excel_Allow,
+                Print_Allow = right.Print_Allow,
+                Query_Allow = right.Query_Allow
+            } : new Menu_Rights_Model();
         }
+
         public async Task<int> Get_Menu_Max_Order_No()
         {
             var result = await _dbContext.Menu_Mas.Select(x => x.Order_No).MaxAsync();

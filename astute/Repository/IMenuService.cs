@@ -11,8 +11,8 @@ namespace astute.Repository
         Task<int> DeleteMenu(int menuId);
         Task<IList<Menu_Mas>> GetMenu(int menuId);
         Task<IList<MenuMasterModel>> Get_all_menus(int employeeId);
-        Task<IList<MenuMasterModel>> Get_all_sub_menus(IList<MenuMasterModel> menus, int employeeId);
-        Task<Menu_Rights_Model> Set_Menu_Rights(int employeeId, int menuId);
+        Task<List<MenuMasterModel>> Get_all_sub_menus(List<Menu_Mas> allMenus, List<Emp_rights> rights, int parentId, int employeeId);
+        Task<Menu_Rights_Model> Set_Menu_Rights(int menuId, IList<Emp_rights> rights);
         Task<int> Get_Menu_Max_Order_No();
     }
 }
