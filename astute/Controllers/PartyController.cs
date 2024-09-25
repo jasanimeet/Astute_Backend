@@ -11023,8 +11023,8 @@ namespace astute.Controllers
                 foreach (var item in OrderResult)
                 {
                     dataTable.Rows.Add(item.Id, Convert.ToString(item.Status), Convert.ToString(item.Remarks),
-                        (item.CostDisc != null ? !string.IsNullOrEmpty(item.CostDisc.ToString()) ? Convert.ToDouble(item.CostDisc.ToString()) : null : null),
-                        (item.CostAmount != null ? !string.IsNullOrEmpty(item.CostAmount.ToString()) ? Convert.ToDouble(item.CostAmount.ToString()) : null : null));
+                        (item.CurrentCostDisc != null ? !string.IsNullOrEmpty(item.CurrentCostDisc.ToString()) ? Convert.ToDouble(item.CurrentCostDisc.ToString()) : null : null),
+                        (item.CurrentCostAmount != null ? !string.IsNullOrEmpty(item.CurrentCostAmount.ToString()) ? Convert.ToDouble(item.CurrentCostAmount.ToString()) : null : null));
                     if (item.Status == "CONFIRM")
                     {
                         Stock_Id.Add(item.StockId);
