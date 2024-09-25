@@ -1,5 +1,4 @@
-﻿using Microsoft.Net.Http.Headers;
-using OfficeOpenXml;
+﻿using OfficeOpenXml;
 using OfficeOpenXml.Drawing;
 using OfficeOpenXml.Style;
 using System;
@@ -7,7 +6,6 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.Intrinsics.X86;
 using System.Threading;
 
 namespace astute.CoreServices
@@ -1290,12 +1288,14 @@ namespace astute.CoreServices
 
                     for (i = inStartIndex; i < inEndCounter; i++)
                     {
+                        string cutValue = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cut"]);
+
                         #region Assigns Value to Cell
                         int kk = 0;
                         for (int j = 0; j < column_dt.Rows.Count; j++)
                         {
                             string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
-
+                            
                             if (Column_Name == "Image")
                             {
                                 kk += 1;
@@ -1387,18 +1387,30 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "Cut")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cut"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    worksheet.Cells[inwrkrow, kk].Value = cutValue;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "Polish")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Polish"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "Symm")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Symm"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "RATIO")
                                 {
@@ -1770,6 +1782,8 @@ namespace astute.CoreServices
 
                     for (i = inStartIndex; i < inEndCounter; i++)
                     {
+                        string cutValue = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cut"]);
+
                         #region Assigns Value to Cell
                         int kk = 0;
                         for (int j = 0; j < column_dt.Rows.Count; j++)
@@ -2041,18 +2055,30 @@ namespace astute.CoreServices
                                     }
                                     else if (Column_Name == "Cut")
                                     {
-                                        worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cut"]);
-                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                        worksheet.Cells[inwrkrow, kk].Value = cutValue;
+
+                                        if (cutValue == "3EX")
+                                        {
+                                            worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                        }
                                     }
                                     else if (Column_Name == "Polish")
                                     {
                                         worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Polish"]);
-                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                        
+                                        if (cutValue == "3EX")
+                                        {
+                                            worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                        }
                                     }
                                     else if (Column_Name == "Symm")
                                     {
                                         worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Symm"]);
-                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+
+                                        if (cutValue == "3EX")
+                                        {
+                                            worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                        }
                                     }
                                     else if (Column_Name == "RATIO")
                                     {
@@ -2395,6 +2421,8 @@ namespace astute.CoreServices
 
                     for (i = inStartIndex; i < inEndCounter; i++)
                     {
+                        string cutValue = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cut"]);
+
                         #region Assigns Value to Cell
                         int kk = 0;
                         for (int j = 0; j < column_dt.Rows.Count; j++)
@@ -2514,18 +2542,30 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "Cut")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cut"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    worksheet.Cells[inwrkrow, kk].Value = cutValue;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "Polish")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Polish"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "Symm")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Symm"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "RATIO")
                                 {
@@ -2854,6 +2894,9 @@ namespace astute.CoreServices
                     {
                         #region Assigns Value to Cell
                         int kk = 0;
+                        
+                        string cutValue = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cut"]);
+
                         for (int j = 0; j < column_dt.Rows.Count; j++)
                         {
                             string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
@@ -3164,18 +3207,30 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "CUT")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["CUT"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    worksheet.Cells[inwrkrow, kk].Value = cutValue;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "POLISH")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["POLISH"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "SYMM")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["SYMM"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "FLS INTENSITY")
                                 {
@@ -3684,6 +3739,9 @@ namespace astute.CoreServices
                     {
                         #region Assigns Value to Cell
                         int kk = 0;
+
+                        string cutValue = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cut"]);
+
                         for (int j = 0; j < column_dt.Rows.Count; j++)
                         {
                             string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
@@ -3715,8 +3773,6 @@ namespace astute.CoreServices
                             else
                             {
                                 kk += 1;
-
-                                worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
 
                                 if (Column_Name == "DNA")
                                 {
@@ -3821,18 +3877,30 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "CUT")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["CUT"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    worksheet.Cells[inwrkrow, kk].Value = cutValue;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "POLISH")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["POLISH"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "SYMM")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["SYMM"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "RATIO")
                                 {
@@ -3910,6 +3978,10 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(girdle_Per) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["GIRDLE PER"]) : DBNull.Value;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
+                                }
+                                else 
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
                                 }
                             }
                         }
@@ -4203,6 +4275,8 @@ namespace astute.CoreServices
                     {
                         #region Assigns Value to Cell
                         int kk = 0;
+                        string cutValue = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cut"]);
+
                         for (int j = 0; j < column_dt.Rows.Count; j++)
                         {
                             string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
@@ -4234,8 +4308,6 @@ namespace astute.CoreServices
                             else
                             {
                                 kk += 1;
-
-                                worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
 
                                 if (Column_Name == "DNA")
                                 {
@@ -4327,18 +4399,30 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "CUT")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["CUT"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    worksheet.Cells[inwrkrow, kk].Value = cutValue;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "POLISH")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["POLISH"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "SYMM")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["SYMM"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "RATIO")
                                 {
@@ -4419,6 +4503,10 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "MANAGEMENT STATUS")
                                 {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
+                                }
+                                else 
+                                { 
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
                                 }
                             }
@@ -4684,6 +4772,9 @@ namespace astute.CoreServices
                     {
                         #region Assigns Value to Cell
                         int kk = 0;
+
+                        string cutValue = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cut"]);
+
                         for (int j = 0; j < column_dt.Rows.Count; j++)
                         {
                             string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
@@ -4715,8 +4806,6 @@ namespace astute.CoreServices
                             else
                             {
                                 kk += 1;
-
-                                worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
 
                                 if (Column_Name == "LAB")
                                 {
@@ -4791,18 +4880,30 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "CUT")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["CUT"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    worksheet.Cells[inwrkrow, kk].Value = cutValue;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "POLISH")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["POLISH"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "SYMM")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["SYMM"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "RATIO")
                                 {
@@ -4880,6 +4981,10 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(girdle_Per) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["GIRDLE PER"]) : DBNull.Value;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
+                                }
+                                else 
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
                                 }
                             }
                         }
@@ -5140,6 +5245,9 @@ namespace astute.CoreServices
                     {
                         #region Assigns Value to Cell
                         int kk = 0;
+                        
+                        string cutValue = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cut"]);
+
                         for (int j = 0; j < column_dt.Rows.Count; j++)
                         {
                             string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
@@ -5171,8 +5279,6 @@ namespace astute.CoreServices
                             else
                             {
                                 kk += 1;
-
-                                worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
 
                                 if (Column_Name == "DNA")
                                 {
@@ -5280,18 +5386,30 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "CUT")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["CUT"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    worksheet.Cells[inwrkrow, kk].Value = cutValue;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "POLISH")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["POLISH"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "SYMM")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["SYMM"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "RATIO")
                                 {
@@ -5381,6 +5499,10 @@ namespace astute.CoreServices
                                     string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex]["CART OFFER AMT"]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex]["CART OFFER AMT"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                }
+                                else 
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                 }
                             }
                         }
@@ -5566,6 +5688,9 @@ namespace astute.CoreServices
                     {
                         #region Assigns Value to Cell
                         int kk = 0;
+
+                        string cutValue = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cut"]);
+
                         for (int j = 0; j < column_dt.Rows.Count; j++)
                         {
                             string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
@@ -5838,18 +5963,29 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "CUT")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["CUT"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    worksheet.Cells[inwrkrow, kk].Value = cutValue;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "POLISH")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["POLISH"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "SYMM")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["SYMM"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "FLS INTENSITY")
                                 {
@@ -6202,6 +6338,9 @@ namespace astute.CoreServices
                     {
                         #region Assigns Value to Cell
                         int kk = 0;
+                        
+                        string cutValue = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cut"]);
+
                         for (int j = 0; j < column_dt.Rows.Count; j++)
                         {
                             string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
@@ -6233,8 +6372,6 @@ namespace astute.CoreServices
                             else
                             {
                                 kk += 1;
-
-                                worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
 
                                 if (Column_Name == "DNA")
                                 {
@@ -6330,18 +6467,30 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "CUT")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["CUT"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    worksheet.Cells[inwrkrow, kk].Value = cutValue;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "POLISH")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["POLISH"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "SYMM")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["SYMM"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "RATIO")
                                 {
@@ -6423,6 +6572,10 @@ namespace astute.CoreServices
                                 else if (Column_Name == "MANAGEMENT STATUS")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
+                                }
+                                else 
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                 }
                             }
                         }
@@ -6511,6 +6664,10 @@ namespace astute.CoreServices
                     Color colFromHex_H1 = ColorTranslator.FromHtml("#8497b0");
                     Color col_color_Red = ColorTranslator.FromHtml("#ff0000");
 
+                    Color yellow = ColorTranslator.FromHtml("#F2DC13");
+                    Color pink = ColorTranslator.FromHtml("#FF99CC");
+                    Color blue = ColorTranslator.FromHtml("#93C5F7");
+
                     #region Company Detail on Header
                     ep.Workbook.Worksheets.Add("Order");
 
@@ -6587,6 +6744,9 @@ namespace astute.CoreServices
                     {
                         #region Assigns Value to Cell
                         int kk = 0;
+                        
+                        string cutValue = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cut"]);
+
                         for (int j = 0; j < column_dt.Rows.Count; j++)
                         {
                             string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
@@ -6619,7 +6779,6 @@ namespace astute.CoreServices
                             {
                                 kk += 1;
 
-                                worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
                                 if (Column_Name == "Lab")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Lab"]);
@@ -6654,34 +6813,52 @@ namespace astute.CoreServices
                                 {
                                     worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(15) + i + "/" + GetExcelColumnLetter(13) + i + ")-100,0)";
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(yellow);
                                 }
                                 else if (Column_Name == "Current Cost Value($)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Current Cost Value($)"]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Current Cost Value($)"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(yellow);
                                 }
                                 else if (Column_Name == "Supplier Cost Disc(%)")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(17) + i + "/" + GetExcelColumnLetter(13) + i + ")-100,0)";
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(pink);
                                 }
                                 else if (Column_Name == "Supplier Cost Value($)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Supplier Cost Value($)"]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Cost Value($)"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(pink);
                                 }
                                 else if (Column_Name == "Final Disc(%)")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(19) + i + "/" + GetExcelColumnLetter(13) + i + ")-100,0)";
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(blue);
                                 }
                                 else if (Column_Name == "Final Amt US($)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Final Amt US($)"]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Final Amt US($)"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(blue);
                                 }
                                 else if (Column_Name == "Supplier Base Offer(%)")
                                 {
@@ -6696,18 +6873,30 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "Cut")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cut"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    worksheet.Cells[inwrkrow, kk].Value = cutValue;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "Polish")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Polish"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "Symm")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Symm"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "Length")
                                 {
@@ -6751,6 +6940,25 @@ namespace astute.CoreServices
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
                                 }
+                                else if (Column_Name == "Status")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Status"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(yellow);
+                                }
+                                else if (Column_Name == "Remarks")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Remarks"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(yellow);
+                                }
+                                else 
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
+                                }
+
                             }
                         }
 
@@ -6930,7 +7138,9 @@ namespace astute.CoreServices
                     Color common_bg = ColorTranslator.FromHtml("#CCFFFF");
                     Color colFromHex_H1 = ColorTranslator.FromHtml("#8497b0");
                     Color col_color_Red = ColorTranslator.FromHtml("#ff0000");
-
+                    Color yellow = ColorTranslator.FromHtml("#F2DC13");
+                    Color pink = ColorTranslator.FromHtml("#FF99CC");
+                    Color blue = ColorTranslator.FromHtml("#93C5F7");
                     #region Company Detail on Header
                     ep.Workbook.Worksheets.Add("Order");
 
@@ -7007,6 +7217,9 @@ namespace astute.CoreServices
                     {
                         #region Assigns Value to Cell
                         int kk = 0;
+                        
+                        string cutValue = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cut"]);
+
                         for (int j = 0; j < column_dt.Rows.Count; j++)
                         {
                             string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
@@ -7039,7 +7252,7 @@ namespace astute.CoreServices
                             {
                                 kk += 1;
 
-                                worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
+                                //worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
                                 if (Column_Name == "Lab")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Lab"]);
@@ -7074,23 +7287,35 @@ namespace astute.CoreServices
                                 {
                                     worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(18) + i + "/" + GetExcelColumnLetter(16) + i + ")-100,0)";
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(pink);
                                 }
                                 else if (Column_Name == "Supplier Cost Value($)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Supplier Cost Value($)"]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Supplier Cost Value($)"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(pink);
                                 }
                                 else if (Column_Name == "Final Disc(%)")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(20) + i + "/" + GetExcelColumnLetter(16) + i + ")-100,0)";
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(blue);
                                 }
                                 else if (Column_Name == "Final Amt US($)")
                                 {
                                     string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex]["Final Amt US($)"]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Final Amt US($)"]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(blue);
                                 }
                                 else if (Column_Name == "Price / Cts")
                                 {
@@ -7100,18 +7325,30 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "Cut")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Cut"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    worksheet.Cells[inwrkrow, kk].Value = cutValue;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "Polish")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Polish"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "Symm")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Symm"]);
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else if (Column_Name == "Length")
                                 {
@@ -7154,6 +7391,24 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(girdle_Per) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex]["Girdle(%)"]) : DBNull.Value;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
+                                }
+                                else if (Column_Name == "Status")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Status"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(yellow);
+                                }
+                                else if (Column_Name == "Remarks")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["Remarks"]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(yellow);
+                                }
+                                else
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
                                 }
                             }
                         }
