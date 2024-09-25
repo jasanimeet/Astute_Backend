@@ -1,9 +1,6 @@
 ﻿using astute.CoreServices;
 using astute.Repository;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System;
 using System.Linq;
 using System.Net;
 using System.Text.Json;

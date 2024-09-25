@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-
-namespace astute.Models
+﻿namespace astute.Models
 {
     public class Account_Master
     {

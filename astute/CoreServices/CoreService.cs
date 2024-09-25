@@ -1,12 +1,9 @@
-﻿using astute.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic.FileIO;
 using NPOI.HSSF.UserModel;
-using NPOI.SS.UserModel;
 using OfficeOpenXml;
-using OfficeOpenXml.Packaging.Ionic.Zlib;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,10 +15,8 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static NPOI.HSSF.UserModel.HeaderFooter;
 
 namespace astute.CoreServices
 {

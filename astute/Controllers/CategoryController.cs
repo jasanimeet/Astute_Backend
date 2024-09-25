@@ -1,9 +1,4 @@
-﻿using System;
-using System.Data;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
-using astute.CoreModel;
+﻿using astute.CoreModel;
 using astute.CoreServices;
 using astute.Models;
 using astute.Repository;
@@ -13,6 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using OfficeOpenXml;
+using System;
+using System.Data;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace astute.Controllers
 {

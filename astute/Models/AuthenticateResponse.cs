@@ -1,7 +1,4 @@
-﻿using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering.Implementations;
-using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
-
-namespace astute.Models
+﻿namespace astute.Models
 {
     public class AuthenticateResponse
     {

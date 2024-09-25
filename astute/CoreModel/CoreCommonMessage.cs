@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json.Serialization;
-using System;
-
-namespace astute.CoreModel
+﻿namespace astute.CoreModel
 {
     public static class CoreCommonMessage
     {

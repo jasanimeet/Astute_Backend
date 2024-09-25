@@ -1,13 +1,13 @@
 ﻿using astute.CoreModel;
 using astute.Models;
+using astute.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Net;
 using System.Threading.Tasks;
-using System;
-using astute.Repository;
-using Microsoft.Extensions.Configuration;
 
 namespace astute.Controllers
 {

@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Hosting;
-using System.Threading.Tasks;
-using System.Threading;
-using System;
-using astute.Repository;
+﻿using astute.Repository;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace astute.TaskScheduler
 {
