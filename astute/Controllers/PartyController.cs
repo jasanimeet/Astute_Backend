@@ -12240,6 +12240,7 @@ namespace astute.Controllers
                                              {
                                                  string displayColName = Convert.ToString(suppColRow["Display_Name"]);
                                                  string suppColName = Convert.ToString(suppColRow["Supp_Col_Name"]);
+                                                 string suppColNameSyn = Convert.ToString(suppColRow["Column_Synonym"]);
                                                  bool Is_Split = suppColRow["Is_Split"] != null ? Convert.ToBoolean(suppColRow["Is_Split"]) : false;
                                                  bool Is_Sequence = suppColRow["Is_Sequence"] != null ? Convert.ToBoolean(suppColRow["Is_Sequence"]) : false;
                                                  string Separator = Convert.ToString(suppColRow["Separator"]);
@@ -12252,11 +12253,22 @@ namespace astute.Controllers
 
                                                      if (displayColName != "SHADE")
                                                      {
-                                                         finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
+                                                         if (ColumnExists(row, suppColName) && row[suppColName] != DBNull.Value && !string.IsNullOrEmpty(row[suppColName].ToString()))
+                                                         {
+                                                             finalRow[displayColName] = row[suppColName];
+                                                         }
+                                                         else if (ColumnExists(row, suppColNameSyn) && !string.IsNullOrEmpty(suppColNameSyn))
+                                                         {
+                                                             finalRow[displayColName] = row[suppColNameSyn];
+                                                         }
+                                                         else
+                                                         {
+                                                             finalRow[displayColName] = DBNull.Value; // Or handle the case as needed
+                                                         }
                                                      }
                                                      else
                                                      {
-                                                         if (suppColName.Contains(","))
+                                                         if (ColumnExists(row, suppColName) && row[suppColName] != DBNull.Value && !string.IsNullOrEmpty(row[suppColName].ToString()) && suppColName.Contains(",") )
                                                          {
                                                              string[] colNames = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(',');
 
@@ -12276,9 +12288,37 @@ namespace astute.Controllers
 
                                                              finalRow[displayColName] = string.Join("; ", nonEmptyValues);
                                                          }
-                                                         else
+                                                         else if (ColumnExists(row, suppColNameSyn) &&  row[suppColNameSyn] != DBNull.Value && !string.IsNullOrEmpty(row[suppColNameSyn].ToString()) && suppColNameSyn.Contains(",") )
+                                                         {
+                                                             string[] colNames = Convert.ToString(suppColRow["Column_Synonym"]).Split(',');
+
+                                                             string supp_Col_Name1 = colNames.Length > 0 ? colNames[0] : "";
+                                                             string supp_Col_Name2 = colNames.Length > 1 ? colNames[1] : "";
+                                                             string supp_Col_Name3 = colNames.Length > 2 ? colNames[2] : "";
+
+                                                             string shade_Value_1 = !string.IsNullOrEmpty(supp_Col_Name1) ? row[supp_Col_Name1].ToString() : "";
+                                                             string shade_Value_2 = !string.IsNullOrEmpty(supp_Col_Name2) ? row[supp_Col_Name2].ToString() : "";
+                                                             string shade_Value_3 = !string.IsNullOrEmpty(supp_Col_Name3) ? row[supp_Col_Name3].ToString() : "";
+
+                                                             var nonEmptyValues = new List<string>();
+
+                                                             if (!string.IsNullOrEmpty(shade_Value_1)) nonEmptyValues.Add(shade_Value_1);
+                                                             if (!string.IsNullOrEmpty(shade_Value_2)) nonEmptyValues.Add(shade_Value_2);
+                                                             if (!string.IsNullOrEmpty(shade_Value_3)) nonEmptyValues.Add(shade_Value_3);
+
+                                                             finalRow[displayColName] = string.Join("; ", nonEmptyValues);
+                                                         }
+                                                         else if (ColumnExists(row, suppColName) && row[suppColName] != DBNull.Value && !string.IsNullOrEmpty(row[suppColName].ToString()))
                                                          {
                                                              finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
+                                                         }
+                                                         else if (ColumnExists(row, suppColNameSyn) && row[suppColName] != DBNull.Value && !string.IsNullOrEmpty(suppColNameSyn))
+                                                         {
+                                                             finalRow[displayColName] = row[Convert.ToString(suppColRow["Column_Synonym"])];
+                                                         }
+                                                         else
+                                                         {
+                                                             finalRow[displayColName] = DBNull.Value; // Or handle the case as needed
                                                          }
                                                      }
 
@@ -12514,6 +12554,10 @@ namespace astute.Controllers
             }
         }
 
+        private bool ColumnExists(DataRow row, string columnName)
+        {
+            return row.Table.Columns.Contains(columnName);
+        }
         #endregion
 
         #region Hold
