@@ -1,12 +1,11 @@
-﻿using astute.CoreServices;
-using astute.Models;
+﻿using astute.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using System;
 
 namespace astute.Repository
 {
