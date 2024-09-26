@@ -11052,7 +11052,7 @@ namespace astute.Controllers
                     int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
                     var result_e = await _employeeService.GetEmployeeFortuneId(user_Id ?? 0);
-                    var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e);
+                    var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e, order_Processing_Reply_To_Assist.Summary_QC_Remarks);
                     if (result_ > 0)
                     {
                         if (Stock_Id.Count > 0)

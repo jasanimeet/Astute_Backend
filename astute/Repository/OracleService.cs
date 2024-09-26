@@ -1032,7 +1032,7 @@ namespace astute.Repository
             return result;
         }
 
-        public async Task<int> Order_Data_Transfer_Oracle(IList<Order_Processing_Complete_Detail> order_Processing_Complete_Details, Employee_Fortune_Master employee_Fortune_Master)
+        public async Task<int> Order_Data_Transfer_Oracle(IList<Order_Processing_Complete_Detail> order_Processing_Complete_Details, Employee_Fortune_Master employee_Fortune_Master, string Summary_QC_Remarks)
         {
 
             int LabId = 0, UserId = 0, Assist_UserId = 0, vuser_code = 0, vparty_code = 0;
@@ -1313,7 +1313,7 @@ namespace astute.Repository
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vQC_REQUIRE", OracleDbType.NVarchar2);
-                        param1.Value = !string.IsNullOrEmpty(item.Remarks) ? Convert.ToString(item.Remarks) : DBNull.Value;
+                        param1.Value = !string.IsNullOrEmpty(Summary_QC_Remarks) ? Convert.ToString(Summary_QC_Remarks) : DBNull.Value;
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vorigin", OracleDbType.NVarchar2);
