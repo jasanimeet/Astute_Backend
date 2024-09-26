@@ -44,6 +44,8 @@ namespace astute.Models
         public List<string>? column_Name { get; set; }
         public string? Is_Selected_Supp_Stock_Id { get; set; }
         public string? Act_Mod_Id { get; set; }
+        public string? Order_Id { get; set; }
+        public string? Sub_Order_Id { get; set; }
     }
     public class Report_Lab_Filter
     {

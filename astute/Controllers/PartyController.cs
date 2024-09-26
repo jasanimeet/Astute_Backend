@@ -11082,13 +11082,13 @@ namespace astute.Controllers
         [HttpPost]
         [Route("order_excel_export")]
         [Authorize]
-        public async Task<IActionResult> Order_Excel_Export(Report_Filter report_Filter, string Order_Id, string Sub_Order_Id)
+        public async Task<IActionResult> Order_Excel_Export(Report_Filter report_Filter)
         {
             try
             {
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-                var (dt_Order, is_Admin) = await _supplierService.Get_Order_Excel_Data(report_Filter.Report_Filter_Parameter, user_Id ?? 0, Order_Id, Sub_Order_Id);
+                var (dt_Order, is_Admin) = await _supplierService.Get_Order_Excel_Data(report_Filter.Report_Filter_Parameter, user_Id ?? 0, report_Filter.Order_Id, report_Filter.Sub_Order_Id);
                 if (dt_Order != null && dt_Order.Rows.Count > 0)
                 {
                     List<string> columnNames = new List<string>();
