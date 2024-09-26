@@ -9709,7 +9709,7 @@ namespace astute.Controllers
                     var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                     int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                    DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, "Customer", stock_Email_Model.Supplier_Ref_No, user_Id ?? 0);
+                    DataTable supp_stock_dt = await _supplierService.Get_Excel_Report_Search(dataTable, stock_Email_Model.User_Format, stock_Email_Model.Supplier_Ref_No, user_Id ?? 0);
                     List<string> columnNames = new List<string>();
                     foreach (DataColumn column in supp_stock_dt.Columns)
                     {
@@ -9728,10 +9728,23 @@ namespace astute.Controllers
                     {
                         Directory.CreateDirectory(filePath);
                     }
-
                     string filename = "Stock_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                    EpExcelExport.Create_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
+
+                    if (stock_Email_Model.User_Format == "Customer")
+                    {
+                        EpExcelExport.Create_Customer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
+                    }
+                    else if (stock_Email_Model.User_Format == "Buyer")
+                    {
+                        EpExcelExport.Create_Buyer_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
+                    }
+                    else if (stock_Email_Model.User_Format == "Supplier")
+                    {
+                        EpExcelExport.Create_Supplier_Excel(supp_stock_dt, columnNamesTable, filePath, filePath + filename);
+                    }
+
                     excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                    
                     byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
                     using (MemoryStream memoryStream = new MemoryStream(fileBytes))
                     {
