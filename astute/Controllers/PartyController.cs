@@ -9750,7 +9750,7 @@ namespace astute.Controllers
                     {
 
                         //var employeeEmails = await _employeeService.GetEmployeeMail(user_Id ?? 0);
-                        var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(user_Id ?? 0);
+                        var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(0);
                         if (emp_email != null)
                         {
                             if (!(stock_Email_Model.Send_From_Default ?? false) && (emp_email.Is_Default ?? false))
