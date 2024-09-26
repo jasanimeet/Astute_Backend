@@ -2964,7 +2964,7 @@ namespace astute.Repository
             return result;
         }
 
-        public async Task<(DataTable, bool)> Get_Order_Excel_Data(IList<Report_Filter_Parameter> report_Filter_Parameters, int user_Id, string order_Id)
+        public async Task<(DataTable, bool)> Get_Order_Excel_Data(IList<Report_Filter_Parameter> report_Filter_Parameters, int user_Id, string order_Id, string sub_Order_Id)
         {
             DataTable dataTable = new DataTable();
             bool _is_Admin = false;
@@ -2986,6 +2986,7 @@ namespace astute.Repository
                     }
                     command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(order_Id) ? new SqlParameter("@Order_Id", order_Id) : new SqlParameter("@Order_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(sub_Order_Id) ? new SqlParameter("@Sub_Order_Id", sub_Order_Id) : new SqlParameter("@Sub_Order_Id", DBNull.Value));
 
                     var is_Admin = new SqlParameter("@Is_Admin", SqlDbType.Bit)
                     {
