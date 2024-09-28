@@ -7275,7 +7275,7 @@ namespace astute.CoreServices
                                 }
                                 else if (Column_Name == "Final Disc(%)")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(20) + i + "/" + GetExcelColumnLetter(16) + i + ")-100,0)";
+                                    worksheet.Cells[inwrkrow, kk].Formula = "IFERROR((100*" + GetExcelColumnLetter(16) + i + "/" + GetExcelColumnLetter(14) + i + ")-100,0)";
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
 
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -7429,7 +7429,7 @@ namespace astute.CoreServices
                         }
                         else if (Column_Name == "Final Disc(%)")
                         {
-                            worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(20) + "" + inStartIndex + ":" + GetExcelColumnLetter(20) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(16) + "" + inStartIndex + ":" + GetExcelColumnLetter(16) + "" + (inwrkrow - 1) + "))-100),2),0)";
+                            worksheet.Cells[1, kkk].Formula = "IFERROR(ROUND(((SUBTOTAL(109," + GetExcelColumnLetter(16) + "" + inStartIndex + ":" + GetExcelColumnLetter(16) + "" + (inwrkrow - 1) + ")*100/SUBTOTAL(109," + GetExcelColumnLetter(14) + "" + inStartIndex + ":" + GetExcelColumnLetter(14) + "" + (inwrkrow - 1) + "))-100),2),0)";
                             worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
                         }
                         else if (Column_Name == "Final Amt US($)")
