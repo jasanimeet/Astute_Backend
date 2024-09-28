@@ -11111,7 +11111,7 @@ namespace astute.Controllers
                         Directory.CreateDirectory(filePath);
                     }
                     string filename = string.Empty;
-
+                    
                     filename = "Order_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     if (is_Admin)
                     {
@@ -11136,6 +11136,69 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Order_Excel_Export", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("order_excel_export_mazal")]
+        [Authorize]
+        public async Task<IActionResult> Order_Excel_Export_Mazal(Report_Filter report_Filter)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var dt_Order = await _supplierService.Get_Order_Excel_Data_Mazal(report_Filter.Report_Filter_Parameter, report_Filter.Order_Id);
+
+                if (dt_Order != null && dt_Order.Rows.Count > 0)
+                {
+                    var excelPath = string.Empty;
+
+                    string filename = string.Empty;
+
+                    List<string> columnNames = new List<string>();
+                    foreach (DataColumn column in dt_Order.Columns)
+                    {
+                        columnNames.Add(column.ColumnName);
+                    }
+
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in columnNames)
+                    {
+                        columnNamesTable.Rows.Add(columnName);
+                    }
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+
+                    filename = "Mazal_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+
+                    EpExcelExport.Create_Order_Processing_Excel_Mazal(dt_Order, columnNamesTable, filePath, filePath + filename);
+
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Order_Excel_Export_Mazal", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message

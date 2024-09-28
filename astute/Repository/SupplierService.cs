@@ -3009,6 +3009,42 @@ namespace astute.Repository
             }
             return (dataTable, _is_Admin);
         }
+       
+        public async Task<DataTable> Get_Order_Excel_Data_Mazal(IList<Report_Filter_Parameter> report_Filter_Parameters, string order_Id)
+        {
+            DataTable dataTable = new DataTable();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Order_Processing_Select_Excel_Mazal", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    if (report_Filter_Parameters != null && report_Filter_Parameters.Count > 0)
+                    {
+                        foreach (var item in report_Filter_Parameters.Where(x => !string.IsNullOrEmpty(x.Category_Value)).ToList())
+                        {
+                            command.Parameters.Add(!string.IsNullOrEmpty(item.Category_Value) ? new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), item.Category_Value) : new SqlParameter("@" + item.Column_Name.Replace(" ", "_"), DBNull.Value));
+                        }
+                    }
+                    else
+                    {
+                        command.Parameters.Add(new SqlParameter("@STOCK_ID", DBNull.Value));
+                    }
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Id) ? new SqlParameter("@Order_Id", order_Id) : new SqlParameter("@Order_Id", DBNull.Value));
+
+                    command.CommandTimeout = 1800;
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    dataTable = ds.Tables[ds.Tables.Count - 1];
+                }
+            }
+            return dataTable;
+        }
         public async Task<List<Dictionary<string, object>>> Get_Company_Name()
         {
             var result = new List<Dictionary<string, object>>();
