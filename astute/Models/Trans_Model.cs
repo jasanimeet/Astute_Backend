@@ -1,6 +1,4 @@
-﻿using NPOI.SS.Formula.Functions;
-
-namespace astute.Models
+﻿namespace astute.Models
 {
     public class Trans_Model
     {

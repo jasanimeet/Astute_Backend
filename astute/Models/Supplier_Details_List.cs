@@ -1,5 +1,4 @@
-﻿using Org.BouncyCastle.Tls;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace astute.Models
 {

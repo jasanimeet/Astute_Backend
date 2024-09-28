@@ -1,5 +1,4 @@
-﻿using Org.BouncyCastle.Bcpg.OpenPgp;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace astute.Models
 {

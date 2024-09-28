@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace astute.Models
+﻿namespace astute.Models
 {
     public partial class UserModel
     {

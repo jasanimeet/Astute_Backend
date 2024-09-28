@@ -1,7 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2010.ExcelAc;
-using NPOI.SS.Formula.Functions;
-using System.Collections.Generic;
-using static astute.Models.Transaction_Master_Model;
+﻿using System.Collections.Generic;
 
 namespace astute.Models
 {
