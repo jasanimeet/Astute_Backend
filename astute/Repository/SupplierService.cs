@@ -2817,6 +2817,40 @@ namespace astute.Repository
             }
             return result;
         }
+        public async Task<DataTable> Get_Order_Summary_Pre_Post_Excel(int user_Id, Order_Processing_Summary order_Processing_Summary)
+        {
+            DataTable dataTable = new DataTable();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Order_Processing_Summary_Pre_Post_Excel_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.From_Date) ? new SqlParameter("@From_Date", order_Processing_Summary.From_Date) : new SqlParameter("@From_Date", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.To_Date) ? new SqlParameter("@To_Date", order_Processing_Summary.To_Date) : new SqlParameter("@To_Date", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.Order_Status) ? new SqlParameter("@Order_Status", order_Processing_Summary.Order_Status) : new SqlParameter("@Order_Status", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.Stone_Status) ? new SqlParameter("@Stone_Status", order_Processing_Summary.Stone_Status) : new SqlParameter("@Stone_Status", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.Stock_Id) ? new SqlParameter("@Stock_Id", order_Processing_Summary.Stock_Id) : new SqlParameter("@Stock_Id", DBNull.Value));
+                    if (!string.IsNullOrEmpty(order_Processing_Summary.Act_Mod_Id))
+                    {
+                        command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.Act_Mod_Id) ? new SqlParameter("@Act_Mod_Id", order_Processing_Summary.Act_Mod_Id) : new SqlParameter("@Act_Mod_Id", DBNull.Value));
+                    }
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.Module_Id) ? new SqlParameter("@Module_Id", order_Processing_Summary.Module_Id) : new SqlParameter("@Module_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    dataTable = ds.Tables[ds.Tables.Count - 1];
+                }
+            }
+
+            return dataTable;
+        }
         public async Task<int> Create_Stone_Order_Process(Order_Stone_Process order_Stone_Processing, int user_Id)
         {
             string request_For = string.Empty;

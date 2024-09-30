@@ -11205,7 +11205,76 @@ namespace astute.Controllers
                 });
             }
         }
+        
+        [HttpPost]
+        [Route("order_excel_export_pre_post")]
+        [Authorize]
+        public async Task<IActionResult> Order_Excel_Export_Pre_Post(Order_Processing_Summary order_Processing_Summary)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                var dt_Order = await _supplierService.Get_Order_Summary_Pre_Post_Excel(user_Id ?? 0, order_Processing_Summary);
 
+                if (dt_Order != null && dt_Order.Rows.Count > 0)
+                {
+                    var excelPath = string.Empty;
+
+                    string filename = string.Empty;
+
+                    List<string> columnNames = new List<string>();
+                    foreach (DataColumn column in dt_Order.Columns)
+                    {
+                        columnNames.Add(column.ColumnName);
+                    }
+
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in columnNames)
+                    {
+                        columnNamesTable.Rows.Add(columnName);
+                    }
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+
+                    if (order_Processing_Summary.Module_Id == "PR")
+                    {
+                        filename = "Pre_Order_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    }
+                    else
+                    { 
+                        filename = "Post_Order_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx"; 
+                    }
+                    
+                    EpExcelExport.Create_Order_Processing_Excel_Pre_Post(dt_Order, filePath, filePath + filename);
+                    
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Order_Excel_Export_Pre_Post", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        
         [HttpGet]
         [Route("get_company_name")]
         [Authorize]

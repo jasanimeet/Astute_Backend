@@ -8178,5 +8178,44 @@ namespace astute.CoreServices
                 throw;
             }
         }
+
+        public static void Create_Order_Processing_Excel_Pre_Post(DataTable dtSupplier, string _strFolderPath, string _strFilePath)
+        {
+            try
+            {
+                using (var ep = new ExcelPackage())
+                {
+                    var worksheet = ep.Workbook.Worksheets.Add(DateTime.Now.ToString("dd-MM-yyyy"));
+
+                    worksheet.Cells["A1"].LoadFromDataTable(dtSupplier, true);
+
+                    worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                    worksheet.Cells[worksheet.Dimension.Address].AutoFilter = true;
+
+                    var headerCells = worksheet.Cells[1, 1, 1, dtSupplier.Columns.Count];
+                    headerCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    headerCells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    headerCells.Style.Font.Size = 10;
+                    headerCells.Style.Font.Bold = true;
+                    headerCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    headerCells.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+
+                    int rowEnd = worksheet.Dimension.End.Row;
+                    removingGreenTagWarning(worksheet, worksheet.Cells[1, 1, rowEnd, 100].Address);
+
+                    if (!Directory.Exists(_strFolderPath))
+                    {
+                        Directory.CreateDirectory(_strFolderPath);
+                    }
+
+                    File.WriteAllBytes(_strFilePath, ep.GetAsByteArray());
+                }
+            }
+            catch (System.Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }
