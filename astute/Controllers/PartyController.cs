@@ -12564,7 +12564,10 @@ namespace astute.Controllers
                                                  }
                                              });
 
-                                             dt_stock_data.Rows.Add(finalRow);
+                                             if (!string.IsNullOrEmpty(finalRow["SUPPLIER_NO"]?.ToString()))
+                                             {
+                                                 dt_stock_data.Rows.Add(finalRow);
+                                             }
                                              return finalRow;
                                          })
                                          .ToList();
@@ -12625,32 +12628,45 @@ namespace astute.Controllers
                                         (message, stock_Data_Id) = await _supplierService.Stock_Data_Custom_Insert_Update(stock_Data_Master_Schedular);
                                         if (message == "success" && stock_Data_Id > 0)
                                         {
-                                            var response = await _supplierService.Stock_Data_Detail_Insert_Update(dt_stock_data, stock_Data_Id);
-                                            if (response > 0)
+                                            if (dt_stock_data.Rows.Count > 0)
                                             {
-                                                if (stock_Data_Master_Schedular.Upload_Type == "O")
+                                                var response = await _supplierService.Stock_Data_Detail_Insert_Update(dt_stock_data, stock_Data_Id);
+                                                if (response > 0)
                                                 {
-                                                    await _supplierService.Supplier_Stock_Manual_File_Insert_Update((int)stock_Data_Master_Schedular.Supplier_Id, stock_Data_Id, party_File.Is_Overwrite ?? false);
-                                                    string endTime = DateTime.Now.TimeOfDay.ToString(@"hh\:mm\:ss");
-
-                                                    Supplier_Stock_Update supplier_Stock_Update = new Supplier_Stock_Update()
+                                                    if (stock_Data_Master_Schedular.Upload_Type == "O")
                                                     {
-                                                        Supplier_Id = party_File.Party_Id ?? 0,
-                                                        Stock_Data_Id = stock_Data_Id,
-                                                        Start_Time = startTime,
-                                                        Supplier_Response_Time = null, 
-                                                        End_Time = endTime
-                                                    };
-                                                    await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
+                                                        await _supplierService.Supplier_Stock_Manual_File_Insert_Update((int)stock_Data_Master_Schedular.Supplier_Id, stock_Data_Id, party_File.Is_Overwrite ?? false);
+                                                        string endTime = DateTime.Now.TimeOfDay.ToString(@"hh\:mm\:ss");
+
+                                                        Supplier_Stock_Update supplier_Stock_Update = new Supplier_Stock_Update()
+                                                        {
+                                                            Supplier_Id = party_File.Party_Id ?? 0,
+                                                            Stock_Data_Id = stock_Data_Id,
+                                                            Start_Time = startTime,
+                                                            Supplier_Response_Time = null,
+                                                            End_Time = endTime
+                                                        };
+                                                        await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
+                                                    }
                                                 }
+                                                return Ok(new
+                                                {
+                                                    statusCode = HttpStatusCode.OK,
+                                                    message = "File uploaded successfully.",
+                                                    Party_Name = party_name,
+                                                    Stock_Data_Id = stock_Data_Id
+                                                });
                                             }
-                                            return Ok(new
+                                            else 
                                             {
-                                                statusCode = HttpStatusCode.OK,
-                                                message = "File uploaded successfully.",
-                                                Party_Name = party_name,
-                                                Stock_Data_Id = stock_Data_Id
-                                            });
+                                                return Ok(new
+                                                {
+                                                    statusCode = HttpStatusCode.Conflict,
+                                                    Supplier_Id = party_File.Party_Id,
+                                                    Party_Name = party_name,
+                                                    message = "No column mapping found!"
+                                                });
+                                            }
                                         }
 
 
