@@ -5653,7 +5653,7 @@ namespace astute.Controllers
                     }
                 }
 
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr) = await _supplierService.Get_Stock_Avalibility_Report_Search(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.supp_Stock_Id, stock_Avalibility.iPgNo ?? 0, stock_Avalibility.iPgSize ?? 0, stock_Avalibility.iSort);
+                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr) = await _supplierService.Get_Stock_Avalibility_Report_Search(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.supp_Stock_Id, stock_Avalibility.iPgNo ?? 0, stock_Avalibility.iPgSize ?? 0, stock_Avalibility.iSort, stock_Avalibility.party_Id ?? 0);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -7401,7 +7401,7 @@ namespace astute.Controllers
                     }
                 }
 
-                var dt_stock = await _supplierService.Get_Stock_Availability_Report_Excel(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type);
+                var dt_stock = await _supplierService.Get_Stock_Availability_Report_Excel(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.party_Id ?? 0);
                 if (dt_stock != null && dt_stock.Rows.Count > 0)
                 {
                     List<string> columnNames = new List<string>();
@@ -10035,7 +10035,7 @@ namespace astute.Controllers
                         dataTable.Rows.Add(!string.IsNullOrEmpty(item.Stock_Id) ? item.Stock_Id : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Amount) ? item.Offer_Amount : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Disc) ? item.Offer_Disc : DBNull.Value);
                     }
                 }
-                var dt_stock = await _supplierService.Get_Stock_Availability_Report_Excel(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type);
+                var dt_stock = await _supplierService.Get_Stock_Availability_Report_Excel(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.party_Id ?? 0);
                 if (dt_stock != null && dt_stock.Rows.Count > 0)
                 {
                     List<string> columnNames = new List<string>();
@@ -10300,6 +10300,37 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_lab_user_company")]
+        [Authorize]
+        public async Task<IActionResult> Get_Lab_User_Company()
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                var result = await _labUserService.Get_Lab_User_Company(user_Id ?? 0);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Lab_User_Company", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        
         [HttpGet]
         [Route("get_lab_user")]
         [Authorize]

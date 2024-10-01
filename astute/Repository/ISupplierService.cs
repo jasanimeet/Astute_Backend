@@ -87,7 +87,7 @@ namespace astute.Repository
         Task<(List<Dictionary<string, object>>, string, string, string, string, string, string, string, string, string, string)> Get_Lab_Search_Report_Search(DataTable dataTable, int iPgNo, int iPgSize, IList<Report_Sorting> iSort, int? user_Id, string is_Selected_Supp_Stock_Id, string user_Format);
         Task<List<Dictionary<string, object>>> Get_Lab_Search_Distinct_Report_Search(DataTable dataTable);
         Task<(List<Dictionary<string, object>>, string, string, string, string, string, string, string, string, string, string, string)> Get_Lab_Search_Report_Search_Total(DataTable dataTable, int iPgNo, int iPgSize, IList<Report_Sorting> iSort);
-        Task<(List<Dictionary<string, object>>, string, string, string, string, string, string, string, string)> Get_Stock_Avalibility_Report_Search(DataTable dataTable, string stock_Id, string stock_Type, string supp_Stock_Id, int iPgNo, int iPgSize, IList<Report_Sorting> iSort);
+        Task<(List<Dictionary<string, object>>, string, string, string, string, string, string, string, string)> Get_Stock_Avalibility_Report_Search(DataTable dataTable, string stock_Id, string stock_Type, string supp_Stock_Id, int iPgNo, int iPgSize, IList<Report_Sorting> iSort, int party_Id);
         Task<List<Dictionary<string, object>>> Get_Report_Column_Format(int user_Id, int report_Id, string format_Type);
         Task<string> Create_Update_Report_Search(Report_Search_Save report_Search_Save, int user_Id);
         Task<List<Dictionary<string, object>>> Get_Search_Save_Report_Search(int user_Id);
@@ -98,7 +98,7 @@ namespace astute.Repository
         Task<int> Update_Report_Layout_Save_Status(int id, int user_Id, int rm_Id);
         Task<int> Delete_Report_Layout_Save(int id);
         Task<DataTable> Get_Report_Search_Excel(int id, IList<Report_Filter_Parameter> report_Filter_Parameters);
-        Task<DataTable> Get_Stock_Availability_Report_Excel(DataTable dataTable, string stock_Id, string stock_Type);
+        Task<DataTable> Get_Stock_Availability_Report_Excel(DataTable dataTable, string stock_Id, string stock_Type, int party_Id);
         Task<IList<Report_Image_Video_Certificate>> Download_Image_Video_Certificate_Stock(string? Ids, string? document_Type);
         #endregion
 
