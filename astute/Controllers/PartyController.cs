@@ -4329,6 +4329,35 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_data_transfer_log")]
+        [Authorize] 
+        public async Task<IActionResult> Get_Data_Transfer_Log(string from_Date, string to_Date)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Data_Transfer_Log(from_Date, to_Date);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Data_Transfer_Log", ex.StackTrace);
+                return Ok(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Report

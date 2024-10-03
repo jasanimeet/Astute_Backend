@@ -71,6 +71,7 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Error_Log_Detail(string supplier_Ids, string stock_Data_Ids, string upload_Type, string supplierNo_CertNo, string stock_Type);
         Task<List<Dictionary<string, object>>> Get_Supplier_Stock_File_Error_Log(int supplier_Id, int stock_Data_Id);
         Task<DataTable> Get_Supplier_Stock_File_Error_Log_Detail(int supplier_Id, string upload_Type);
+        Task<List<Dictionary<string, object>>> Get_Data_Transfer_Log(string from_Date, string to_Date);
         #endregion
 
         #region Report
