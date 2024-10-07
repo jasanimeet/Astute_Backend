@@ -10865,52 +10865,96 @@ namespace astute.Controllers
                     var result = await _supplierService.Create_Stone_Order_Process(order_Stone_Process, user_Id ?? 0);
                     if (result > 0)
                     {
-                        /*var employees = await _employeeService.GetEmployees(user_Id ?? 0, null, null);
-                        var employee = employees.FirstOrDefault();
-                        var (dt_Order, is_Admin) = await _supplierService.Get_Order_Excel_Data(null, user_Id ?? 0, order_Stone_Process.Order_Id);
-                        if (dt_Order != null && dt_Order.Rows.Count > 0)
+                        if (order_Stone_Process.Order_Status == "CANCEL")
                         {
-                            List<string> columnNames = new List<string>();
-                            foreach (DataColumn column in dt_Order.Columns)
+                            var orderProcessDetail = new Order_Process_Detail { Order_No = order_Stone_Process.Order_No };
+                            var orderResult = await _supplierService.Get_Order_Detail(user_Id ?? 0, orderProcessDetail);
+
+                            var json = JsonConvert.SerializeObject(orderResult);
+                            IList<Order_Processing_Complete_Detail> orderDetails = JsonConvert.DeserializeObject<IList<Order_Processing_Complete_Detail>>(json);
+
+                            List<string> stockIds = new List<string>();
+
+                            DataTable dataTable = new DataTable();
+                            dataTable.Columns.Add("Id", typeof(int));
+                            dataTable.Columns.Add("Status", typeof(string));
+                            dataTable.Columns.Add("Remarks", typeof(string));
+                            dataTable.Columns.Add("Cost_Disc", typeof(double));
+                            dataTable.Columns.Add("Cost_Amt", typeof(double));
+
+                            var orderIds = order_Stone_Process.Order_Id.Split(',').Select(id => id.Trim()).ToList();
+
+                            var canceledOrders = orderDetails
+                                .Where(item => item.Status == "CANCEL" && orderIds.Contains(item.Id.ToString()))
+                                .ToList();
+
+                            foreach (var item in canceledOrders)
                             {
-                                columnNames.Add(column.ColumnName);
+                                dataTable.Rows.Add(item.Id, item.Status, item.Remarks,
+                                    item.CurrentCostDisc,
+                                    item.CurrentCostAmount);
+
+                                stockIds.Add(item.StockId);
                             }
 
-                            DataTable columnNamesTable = new DataTable();
-                            columnNamesTable.Columns.Add("Column_Name", typeof(string));
-
-                            foreach (string columnName in columnNames)
+                            if (canceledOrders.Any())
                             {
-                                columnNamesTable.Rows.Add(columnName);
-                            }
-                            var excelPath = string.Empty;
-                            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
-                            if (!(Directory.Exists(filePath)))
-                            {
-                                Directory.CreateDirectory(filePath);
-                            }
-                            string filename = string.Empty;
+                                var fortuneId = await _employeeService.GetEmployeeFortuneId(user_Id ?? 0);
+                                var transferResult = await _oracleService.Order_Data_Transfer_Oracle(orderDetails, fortuneId, order_Stone_Process.QC_Request);
 
-                            filename = "Order_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                            EpExcelExport.Create_Order_Processing_Excel_User(dt_Order, columnNamesTable, filePath, filePath + filename);
-
-                            excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
-                            byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
-                            using (MemoryStream memoryStream = new MemoryStream(fileBytes))
-                            {
-                                var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(0);
-                                if (emp_email != null)
+                                return Ok(new
                                 {
-                                    IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
-                                    _emailSender.Send_Stock_Email(toEmail: employee.Company_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, user_Id: user_Id ?? 0, employee_Mail: emp_email);
-                                }
+                                    statusCode = HttpStatusCode.OK,
+                                    message = "Order completed successfully."
+                                });
                             }
                         }
-                        */
+                        /*var employees = await _employeeService.GetEmployees(user_Id ?? 0, null, null);
+                            var employee = employees.FirstOrDefault();
+                            var (dt_Order, is_Admin) = await _supplierService.Get_Order_Excel_Data(null, user_Id ?? 0, order_Stone_Process.Order_Id);
+                            if (dt_Order != null && dt_Order.Rows.Count > 0)
+                            {
+                                List<string> columnNames = new List<string>();
+                                foreach (DataColumn column in dt_Order.Columns)
+                                {
+                                    columnNames.Add(column.ColumnName);
+                                }
+
+                                DataTable columnNamesTable = new DataTable();
+                                columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                                foreach (string columnName in columnNames)
+                                {
+                                    columnNamesTable.Rows.Add(columnName);
+                                }
+                                var excelPath = string.Empty;
+                                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                                if (!(Directory.Exists(filePath)))
+                                {
+                                    Directory.CreateDirectory(filePath);
+                                }
+                                string filename = string.Empty;
+
+                                filename = "Order_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                                EpExcelExport.Create_Order_Processing_Excel_User(dt_Order, columnNamesTable, filePath, filePath + filename);
+
+                                excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                                byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
+                                using (MemoryStream memoryStream = new MemoryStream(fileBytes))
+                                {
+                                    var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(0);
+                                    if (emp_email != null)
+                                    {
+                                        IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
+                                        _emailSender.Send_Stock_Email(toEmail: employee.Company_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, user_Id: user_Id ?? 0, employee_Mail: emp_email);
+                                    }
+                                }
+                            }
+                            */
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
-                            message = "Stone has been proceed successfully."
+                            message = "Stone has been processed successfully."
                         });
                     }
                 }
@@ -10925,7 +10969,7 @@ namespace astute.Controllers
                 });
             }
         }
-
+        
         [HttpPost]
         [Route("get_order_detail")]
         [Authorize]
@@ -11150,20 +11194,20 @@ namespace astute.Controllers
 
                     if (tofortune)
                     {
-                    var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e, order_Processing_Reply_To_Assist.Summary_QC_Remarks);
-                    if (result_ > 0)
-                    {
-                        if (Stock_Id.Count > 0)
+                        var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e, order_Processing_Reply_To_Assist.Summary_QC_Remarks);
+                        if (result_ > 0)
                         {
-                            string concatenatedStockIds = string.Join(", ", Stock_Id);
-                            var result_lo = await _supplierService.Order_Procesing_Stone_Location_Solar(order_Processing_Reply_To_Assist.Order_No, concatenatedStockIds);
+                            if (Stock_Id.Count > 0)
+                            {
+                                string concatenatedStockIds = string.Join(", ", Stock_Id);
+                                var result_lo = await _supplierService.Order_Procesing_Stone_Location_Solar(order_Processing_Reply_To_Assist.Order_No, concatenatedStockIds);
+                            }
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = "Order completed successfully."
+                            });
                         }
-                        return Ok(new
-                        {
-                            statusCode = HttpStatusCode.OK,
-                            message = "Order completed successfully."
-                        });
-                    }
                     }
                     return Ok(new
                     {
