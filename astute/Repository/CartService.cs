@@ -225,6 +225,16 @@ namespace astute.Repository
             }
             return result;
         }
+        public async Task<int> Order_Processing_Update_Order_Status(string order_Status, string order_No)
+        {
+            var _status = !string.IsNullOrEmpty(order_Status) ? new SqlParameter("@Status", order_Status) : new SqlParameter("@Status", DBNull.Value);
+            var _order_No = !string.IsNullOrEmpty(order_No) ? new SqlParameter("@Order_No", order_No) : new SqlParameter("@Order_No", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Order_Prossesing_Summary_Update_Order_Status @Status,@Order_No", _status, _order_No));
+
+            return result;
+        }
         #endregion
     }
 }

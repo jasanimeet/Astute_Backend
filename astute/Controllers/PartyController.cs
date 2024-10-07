@@ -6968,7 +6968,7 @@ namespace astute.Controllers
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.StokeStatusManagement
+                        message = CoreCommonMessage.StockStatusManagement
                     });
                 }
                 return BadRequest();
@@ -7478,6 +7478,33 @@ namespace astute.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("order_processing_update_order_status")]
+        [Authorize]
+        public async Task<IActionResult> Order_Processing_Update_Order_Status(string order_Status, string order_No)
+        {
+            try
+            {
+                var result = await _cartService.Order_Processing_Update_Order_Status(order_Status, order_No);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.OrderStatusManagement
+                    });
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Order_Processing_Update_Order_Status", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         //[HttpGet]
         //[Route("get_order_summary")]
         //[Authorize]

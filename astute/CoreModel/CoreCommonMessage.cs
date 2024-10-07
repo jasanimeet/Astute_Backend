@@ -365,7 +365,8 @@
         public static string ApprovalStockDeleted = "Stone hase been deleted from the approval list successfully.";
         public static string StokeApprovedByManagement = "Stone has been approved successfully.";
         public static string StokeRejectedByManagement = "Stone has been rejected successfully.";
-        public static string StokeStatusManagement = "Stone Status has been change successfully.";
+        public static string StockStatusManagement = "Stone Status has been changed successfully.";
+        public static string OrderStatusManagement = "Order Status has been changed successfully.";
         public static string OrderInactive = "Order has been inactive successfully.";
         public static string OrderProcessingFinalUpdate = "Order Processing Final" + UpdatedSuccessfully;
         #endregion

@@ -16,5 +16,6 @@ namespace astute.Repository
         Task<(string, int, string)> Create_Update_Order_Processing(DataTable dataTable, int Id, int? user_Id, string customer_Name, string remarks, string status);
         Task<int> Order_Processing_Inactive(Order_Processing_Inactive order_processing);
         Task<List<Dictionary<string, object>>> Get_Order_Summary(int order_no);
+        Task<int> Order_Processing_Update_Order_Status(string order_Status, string order_No);
     }
 }
