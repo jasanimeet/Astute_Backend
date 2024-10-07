@@ -11087,7 +11087,7 @@ namespace astute.Controllers
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
-                        message = "Order partially completed successfully."
+                        message = "Order completed successfully."
                     });
                 }
                 return BadRequest();
@@ -11110,7 +11110,7 @@ namespace astute.Controllers
             try
             {
                 IList<Order_Processing_Complete_Detail> OrderResult = JsonConvert.DeserializeObject<IList<Order_Processing_Complete_Detail>>(order_Processing_Reply_To_Assist.Order_Detail.ToString());
-
+                bool tofortune = false;
                 List<string> Stock_Id = new List<string>();
 
                 DataTable dataTable = new DataTable();
@@ -11139,6 +11139,17 @@ namespace astute.Controllers
                     int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
                     var result_e = await _employeeService.GetEmployeeFortuneId(user_Id ?? 0);
+
+                    foreach (var order in OrderResult)
+                    {
+                        if (order_Processing_Reply_To_Assist.Request_For.ToUpper().Contains("PLACE ORDER"))
+                        {
+                            tofortune = true;
+                        }
+                    }
+
+                    if (tofortune)
+                    {
                     var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e, order_Processing_Reply_To_Assist.Summary_QC_Remarks);
                     if (result_ > 0)
                     {
@@ -11153,6 +11164,12 @@ namespace astute.Controllers
                             message = "Order completed successfully."
                         });
                     }
+                    }
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = "Order completed successfully."
+                    });
                 }
                 return BadRequest();
             }

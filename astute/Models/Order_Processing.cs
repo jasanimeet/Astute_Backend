@@ -70,6 +70,7 @@ namespace astute.Models
     public class Order_Processing_Reply_To_Assist
     {
         public string? Order_No { get; set; }
+        public string? Request_For { get; set; }
         public int? Sub_Order_Id { get; set; }
         public string? Summary_QC_Remarks { get; set; }
         public object Order_Detail { get; set; }
@@ -333,6 +334,8 @@ namespace astute.Models
         public int? id { get; set; }
         public string? status { get; set; }
         public string? remarks { get; set; }
+        public string? current_cost_amt { get; set; }
+        public string? current_cost_disc { get; set; }
     }
     #endregion
 }
