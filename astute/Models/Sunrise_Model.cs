@@ -44,5 +44,6 @@
         public string? PavHt { get; set; }
         public string? Girdle { get; set; }
         public string? GirdleType { get; set; }
+        public string? LabLink { get; set; }
     }
 }
