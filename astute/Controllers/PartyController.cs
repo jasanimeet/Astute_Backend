@@ -2837,7 +2837,7 @@ namespace astute.Controllers
                             }
                         });
                     }
-                    else 
+                    else
                     {
                         return Conflict(new
                         {
@@ -2917,7 +2917,7 @@ namespace astute.Controllers
                         return BadRequest(new { message = "Time not valid: Start_Time cannot be greater than End_Time." });
                     }
                 }
-                else 
+                else
                 {
                     if (!TimeSpan.TryParse(supplier_Stock_Update.Start_Time, out TimeSpan startTime))
                     {
@@ -4331,7 +4331,7 @@ namespace astute.Controllers
 
         [HttpGet]
         [Route("get_data_transfer_log")]
-        [Authorize] 
+        [Authorize]
         public async Task<IActionResult> Get_Data_Transfer_Log(string from_Date, string to_Date)
         {
             try
@@ -4565,7 +4565,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_report_users_role_format_type")]
         [Authorize]
@@ -9800,7 +9800,7 @@ namespace astute.Controllers
                     }
 
                     excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
-                    
+
                     byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
                     using (MemoryStream memoryStream = new MemoryStream(fileBytes))
                     {
@@ -10386,7 +10386,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_lab_user")]
         [Authorize]
@@ -10969,7 +10969,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpPost]
         [Route("get_order_detail")]
         [Authorize]
@@ -11259,7 +11259,7 @@ namespace astute.Controllers
                         Directory.CreateDirectory(filePath);
                     }
                     string filename = string.Empty;
-                    
+
                     filename = "Order_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     if (is_Admin)
                     {
@@ -11353,7 +11353,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpPost]
         [Route("order_excel_export_pre_post")]
         [Authorize]
@@ -11395,12 +11395,12 @@ namespace astute.Controllers
                         filename = "Pre_Order_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     }
                     else
-                    { 
-                        filename = "Post_Order_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx"; 
+                    {
+                        filename = "Post_Order_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     }
-                    
+
                     EpExcelExport.Create_Order_Processing_Excel_Pre_Post(dt_Order, filePath, filePath + filename);
-                    
+
                     excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
 
                     return Ok(new
@@ -11422,7 +11422,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_company_name")]
         [Authorize]
@@ -11988,8 +11988,8 @@ namespace astute.Controllers
         public async Task<IActionResult> Create_Update_Manual_Upload([FromForm] Party_File party_File, IFormFile File_Location)
         {
             string startTime = DateTime.Now.TimeOfDay.ToString(@"hh\:mm\:ss");
-            var message = string.Empty; 
-            var stock_Data_Id = 0; 
+            var message = string.Empty;
+            var stock_Data_Id = 0;
             string party_name = string.Empty;
             try
             {
@@ -12581,7 +12581,7 @@ namespace astute.Controllers
 
                                                              finalRow[displayColName] = string.Join("; ", nonEmptyValues);
                                                          }
-                                                         else if (ColumnExists(row, suppColNameSyn) &&  row[suppColNameSyn] != DBNull.Value && !string.IsNullOrEmpty(row[suppColNameSyn].ToString()) && suppColNameSyn.Contains(",") )
+                                                         else if (ColumnExists(row, suppColNameSyn) && row[suppColNameSyn] != DBNull.Value && !string.IsNullOrEmpty(row[suppColNameSyn].ToString()) && suppColNameSyn.Contains(","))
                                                          {
                                                              string[] colNames = Convert.ToString(suppColRow["Column_Synonym"]).Split(',');
 
@@ -12774,7 +12774,7 @@ namespace astute.Controllers
                                                     Stock_Data_Id = stock_Data_Id
                                                 });
                                             }
-                                            else 
+                                            else
                                             {
                                                 return Ok(new
                                                 {
@@ -13265,14 +13265,14 @@ namespace astute.Controllers
                     {
                         IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
                         _emailSender.SendEmail(toEmail: "tejash@brainwaves.co.in, farhan@sunrisediam.com", externalLink: "", subject: CoreCommonMessage.Supplier_Stock_Upload_Status_Email, formFile: formFile, strBody: CoreCommonMessage.Supplier_Stock_Upload_Status_Email);
-                        
+
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
                             message = CoreCommonMessage.EmailSendSuccessMessage
                         });
                     }
-                    
+
                 }
                 return NoContent();
             }
@@ -13345,5 +13345,95 @@ namespace astute.Controllers
 
         #endregion
 
+        #region KBS Api
+
+        [HttpPost]
+        [Route("get_kbs_stock")]
+        public async Task<IActionResult> Get_KBS_Stock(KBS_Model kbs_Model)
+        {
+            try
+            {
+                var _client = new HttpClient();
+
+                var _request = new HttpRequestMessage(HttpMethod.Post, kbs_Model.Login_URL);
+
+                var collection = new List<KeyValuePair<string, string>>();
+                collection.Add(new(kbs_Model.Action_Caption, kbs_Model.Action_Value));
+                collection.Add(new(kbs_Model.User_Caption, kbs_Model.User_Name));
+                collection.Add(new(kbs_Model.Password_Caption, kbs_Model.Password));
+
+                var content = new FormUrlEncodedContent(collection);
+
+                _request.Content = content;
+
+                var _response = await _client.SendAsync(_request);
+
+                if (_response.IsSuccessStatusCode)
+                {
+                    var json = await _response.Content.ReadAsStringAsync();
+                    string cleanedJson = json.Replace("\\\"", "\"").Trim('"');
+
+                    var jsonObject = JsonConvert.DeserializeObject<JObject>(cleanedJson);
+
+                    var token = jsonObject["access_token"]?.ToString();
+
+                    using (var client = new HttpClient())
+                    {
+                        var request = new HttpRequestMessage(HttpMethod.Get, kbs_Model.Stock_Url);
+                        request.Headers.Add("Authorization", "Bearer " + token);
+                        var response = await client.SendAsync(request);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var responseString = await response.Content.ReadAsStringAsync();
+
+                            return StatusCode((int)response.StatusCode, responseString);
+                        }
+                        else
+                        {
+                            var errorDetails = await response.Content.ReadAsStringAsync();
+                            return Conflict(new
+                            {
+                                statusCode = HttpStatusCode.Conflict,
+                                message = CoreCommonMessage.ApiFailed,
+                                error = errorDetails
+                            });
+                        }
+                    }
+                }
+                else
+                {
+                    var errorDetails = await _response.Content.ReadAsStringAsync();
+                    return Conflict(new
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        message = CoreCommonMessage.ApiFailed,
+                        error = errorDetails
+                    });
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                await _commonService.InsertErrorLog(httpEx.Message, "Get_KBS_Stock", httpEx.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = CoreCommonMessage.ApiError,
+                    error = httpEx.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_KBS_Stock", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = ex.Message,
+                    error = ex.StackTrace
+                });
+            }
+        }
+
+        #endregion
     }
 }
