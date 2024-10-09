@@ -11765,6 +11765,8 @@ namespace astute.Controllers
                         else
                         {
                             var errorDetails = await response.Content.ReadAsStringAsync();
+
+                            await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_Sunrise_Stock", errorDetails);
                             return Conflict(new
                             {
                                 statusCode = HttpStatusCode.Conflict,
@@ -13180,6 +13182,7 @@ namespace astute.Controllers
                             string cleanedJson1 = errorDetails.Replace("\\\"", "\"").Trim('"');
                             Suzy_Error_Model errordiamondInfos = JsonConvert.DeserializeObject<Suzy_Error_Model>(cleanedJson1);
 
+                            await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_Suzy_Stock", errorDetails);
                             return Conflict(new
                             {
                                 statusCode = errordiamondInfos.Status,
@@ -13193,6 +13196,7 @@ namespace astute.Controllers
                         string cleanedJson1 = errorDetails.Replace("\\\"", "\"").Trim('"');
                         Suzy_Error_Model errordiamondInfos = JsonConvert.DeserializeObject<Suzy_Error_Model>(cleanedJson1);
 
+                        await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_Suzy_Stock", errorDetails);
                         return Conflict(new
                         {
                             statusCode = errordiamondInfos.Status,
@@ -13206,6 +13210,7 @@ namespace astute.Controllers
                     string cleanedJson1 = errorDetails.Replace("\\\"", "\"").Trim('"');
                     Suzy_Error_Model errordiamondInfos = JsonConvert.DeserializeObject<Suzy_Error_Model>(cleanedJson1);
 
+                    await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_Suzy_Stock", errorDetails);
                     return Conflict(new
                     {
                         statusCode = errordiamondInfos.Status,
@@ -13312,6 +13317,8 @@ namespace astute.Controllers
                     else
                     {
                         var errorDetails = await response.Content.ReadAsStringAsync();
+
+                        await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_Jodhani_Stock", errorDetails);
                         return Conflict(new
                         {
                             statusCode = HttpStatusCode.Conflict,
@@ -13392,6 +13399,8 @@ namespace astute.Controllers
                         else
                         {
                             var errorDetails = await response.Content.ReadAsStringAsync();
+
+                            await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_KBS_Stock", errorDetails);
                             return Conflict(new
                             {
                                 statusCode = HttpStatusCode.Conflict,
@@ -13404,6 +13413,8 @@ namespace astute.Controllers
                 else
                 {
                     var errorDetails = await _response.Content.ReadAsStringAsync();
+
+                    await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_KBS_Stock", errorDetails);
                     return Conflict(new
                     {
                         statusCode = HttpStatusCode.Conflict,
