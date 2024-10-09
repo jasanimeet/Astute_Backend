@@ -12561,7 +12561,7 @@ namespace astute.Controllers
                                                      }
                                                      else
                                                      {
-                                                         if (ColumnExists(row, suppColName) && row[suppColName] != DBNull.Value && !string.IsNullOrEmpty(row[suppColName].ToString()) && suppColName.Contains(",") )
+                                                         if (ColumnExists(row, suppColName) && row[suppColName] != DBNull.Value && !string.IsNullOrEmpty(row[suppColName].ToString()) && suppColName.Contains(","))
                                                          {
                                                              string[] colNames = Convert.ToString(suppColRow["Supp_Col_Name"]).Split(',');
 
@@ -13282,6 +13282,63 @@ namespace astute.Controllers
                 return Ok(new
                 {
                     message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
+        #region Jodhani Api
+
+        [HttpPost]
+        [Route("get_jodhani_stock")]
+        public async Task<IActionResult> Get_Jodhani_Stock(string url, [FromForm] string payload)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var content = new StringContent(payload, Encoding.UTF8, "text/xml");
+                    content.Headers.Add("SOAPAction", "http://tempuri.org/Stock_API");
+
+                    HttpResponseMessage response = await client.PostAsync(url, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseString = await response.Content.ReadAsStringAsync();
+
+                        return StatusCode((int)response.StatusCode, responseString);
+                    }
+                    else
+                    {
+                        var errorDetails = await response.Content.ReadAsStringAsync();
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.ApiFailed,
+                            error = errorDetails
+                        });
+                    }
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                await _commonService.InsertErrorLog(httpEx.Message, "Get_Jodhani_Stock", httpEx.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = CoreCommonMessage.ApiError,
+                    error = httpEx.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Jodhani_Stock", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = ex.Message,
+                    error = ex.StackTrace
                 });
             }
         }
