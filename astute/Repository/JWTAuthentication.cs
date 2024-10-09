@@ -45,7 +45,7 @@ namespace astute.Repository
                 issuer: _configuration["JwtToken:Issuer"]!,
                 audience: _configuration["JwtToken:Audience"],
                 claims: clims,
-                expires: DateTime.UtcNow.AddMinutes(120),
+                expires: DateTime.UtcNow.AddHours(4),
                 //signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature)
             );
@@ -67,7 +67,7 @@ namespace astute.Repository
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
+                    ClockSkew = TimeSpan.FromMinutes(5)
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;

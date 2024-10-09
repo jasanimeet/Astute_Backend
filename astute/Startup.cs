@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Linq;
 using System.Text;
 
@@ -127,8 +128,8 @@ namespace astute
                     ValidIssuer = Configuration["JwtToken:Issuer"],
                     ValidAudience = Configuration["JwtToken:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtToken:SecretKey"])),
-                    //ValidateLifetime = true, // Validate the token's lifetime
-                    //ClockSkew = TimeSpan.Zero,
+                    ValidateLifetime = true, // Validate the token's lifetime
+                    ClockSkew = TimeSpan.FromMinutes(5),
 
                 };
             });
