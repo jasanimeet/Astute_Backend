@@ -851,7 +851,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "DeleteEmployee", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "DeleteParty", ex.StackTrace);
                 return Ok(new
                 {
                     message = ex.Message
@@ -13195,7 +13195,7 @@ namespace astute.Controllers
                         var errorDetails = await response.Content.ReadAsStringAsync();
                         string cleanedJson1 = errorDetails.Replace("\\\"", "\"").Trim('"');
                         Suzy_Error_Model errordiamondInfos = JsonConvert.DeserializeObject<Suzy_Error_Model>(cleanedJson1);
-
+                        
                         await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_Suzy_Stock", errorDetails);
                         return Conflict(new
                         {
@@ -13436,6 +13436,105 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_KBS_Stock", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = ex.Message,
+                    error = ex.StackTrace
+                });
+            }
+        }
+
+        #endregion
+
+        #region Jewel Paradise Api
+
+        [HttpPost]
+        [Route("get_jewel_paradise_stock")]
+        public async Task<IActionResult> Get_Jewel_Paradise_Stock(Jewel_Paradise_Model jewel_Paradise_Model)
+        {
+            try
+            {
+                var _client = new HttpClient();
+
+                var _request = new HttpRequestMessage(HttpMethod.Get, jewel_Paradise_Model.Login_URL);
+
+                var _content = new MultipartFormDataContent();
+                _content.Add(new StringContent(jewel_Paradise_Model.User_Name), jewel_Paradise_Model.User_Caption);
+                _content.Add(new StringContent(jewel_Paradise_Model.Password), jewel_Paradise_Model.Password_Caption);
+                _content.Add(new StringContent(jewel_Paradise_Model.Action_Value), jewel_Paradise_Model.Action_Caption);
+
+                _request.Content = _content;
+
+                var _response = await _client.SendAsync(_request);
+
+                if (_response.IsSuccessStatusCode)
+                {
+                    var json = await _response.Content.ReadAsStringAsync();
+                    string cleanedJson = json.Replace("\\\"", "\"").Trim('"');
+
+                    var jsonObject = JsonConvert.DeserializeObject<JObject>(cleanedJson);
+
+                    var token = jsonObject["msgdata"]?["token"]?.ToString();
+
+                    using (var client = new HttpClient())
+                    {
+                        var request = new HttpRequestMessage(HttpMethod.Get, jewel_Paradise_Model.Login_URL);
+                        
+                        var content = new MultipartFormDataContent();
+                        content.Add(new StringContent(token), "token");
+                        content.Add(new StringContent(jewel_Paradise_Model.Action_Value1), jewel_Paradise_Model.Action_Caption1);
+
+                        request.Content = content;
+
+                        var response = await client.SendAsync(request);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var responseString = await response.Content.ReadAsStringAsync();
+
+                            return StatusCode((int)response.StatusCode, responseString);
+                        }
+                        else
+                        {
+                            var errorDetails = await response.Content.ReadAsStringAsync();
+
+                            await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_Jewel_Paradise_Stock", errorDetails);
+                            return Conflict(new
+                            {
+                                statusCode = HttpStatusCode.Conflict,
+                                message = CoreCommonMessage.ApiFailed,
+                                error = errorDetails
+                            });
+                        }
+                    }
+                }
+                else
+                {
+                    var errorDetails = await _response.Content.ReadAsStringAsync();
+
+                    await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_Jewel_Paradise_Stock", errorDetails);
+                    return Conflict(new
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        message = CoreCommonMessage.ApiFailed,
+                        error = errorDetails
+                    });
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                await _commonService.InsertErrorLog(httpEx.Message, "Get_Jewel_Paradise_Stock", httpEx.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = CoreCommonMessage.ApiError,
+                    error = httpEx.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Jewel_Paradise_Stock", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     statusCode = HttpStatusCode.InternalServerError,
