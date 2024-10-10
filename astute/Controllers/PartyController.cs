@@ -12988,6 +12988,9 @@ namespace astute.Controllers
                         dataTable.Columns.Add("Is_Video_Cert", typeof(int));
                         dataTable.Columns.Add("Is_Cert_Cert", typeof(int));
                         dataTable.Columns.Add("Is_Video_Iframe", typeof(bool));
+                        dataTable.Columns.Add("No_Image", typeof(bool));
+                        dataTable.Columns.Add("No_Video", typeof(bool));
+                        dataTable.Columns.Add("No_Cert", typeof(bool));
 
                         dataTable.Rows.Add(
                             party_Url_Format.Id,
@@ -13000,7 +13003,10 @@ namespace astute.Controllers
                             party_Url_Format.Is_Img_Cert,
                             party_Url_Format.Is_Video_Cert,
                             party_Url_Format.Is_Cert_Cert,
-                            party_Url_Format.Is_Video_Iframe
+                            party_Url_Format.Is_Video_Iframe,
+                            party_Url_Format.No_Image,
+                            party_Url_Format.No_Video,
+                            party_Url_Format.No_Cert
                             );
 
                         var result = await _supplierService.Create_Update_Party_Url_Format(dataTable);

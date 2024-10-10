@@ -17,5 +17,8 @@ namespace astute.Models
         public int? Is_Img_Cert { get; set; }
         public int? Is_Video_Cert { get; set; }
         public int? Is_Cert_Cert { get; set; }
+        public bool? No_Image { get; set; }
+        public bool? No_Video { get; set; }
+        public bool? No_Cert { get; set; }
     }
 }
