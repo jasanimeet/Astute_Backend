@@ -1832,7 +1832,7 @@ namespace astute.Controllers
                 if (party_Id > 0)
                 {
                     var result_api = await _partyService.Get_Party_API(0, party_Id ?? 0);
-                    if (result_api != null && !string.IsNullOrEmpty(result_api.API_URL))
+                    if (result_api != null && result_api.API_Status == true)
                     {
                         supplier_API_FTP_File_Details.API_Id = result_api.API_Id;
                         supplier_API_FTP_File_Details.Party_Id = result_api.Party_Id;
@@ -1872,7 +1872,7 @@ namespace astute.Controllers
                     }
 
                     var result_ftp = await _partyService.Get_Party_FTP(0, party_Id ?? 0);
-                    if (result_ftp != null && !string.IsNullOrEmpty(result_ftp.Host))
+                    if (result_ftp != null && result_ftp.Ftp_Status == true)
                     {
                         supplier_API_FTP_File_Details.FTP_Id = result_ftp.FTP_Id;
                         supplier_API_FTP_File_Details.Party_Id = result_ftp.Party_Id;
