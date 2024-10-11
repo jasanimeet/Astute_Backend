@@ -147,6 +147,7 @@ namespace astute.Models
         public bool? Is_API_FTP_URL { get; set; }
         [NotMapped]
         public string? Query_Flag { get; set; }
+        public int? Is_Sequence { get; set; }
         [NotMapped]
         public IList<Supplier_Pricing_Key_To_Symbol> Key_To_Symbol { get; set; } = new List<Supplier_Pricing_Key_To_Symbol>();
         public IList<Supplier_Pricing_Key_To_Symbol> Lab_Comments { get; set; } = new List<Supplier_Pricing_Key_To_Symbol>();
