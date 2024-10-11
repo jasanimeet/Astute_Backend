@@ -895,14 +895,15 @@ namespace astute.Repository
             var supplier_Id = stock_Data_Master.Supplier_Id > 0 ? new SqlParameter("@Supplier_Id", stock_Data_Master.Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
             var upload_Method = !string.IsNullOrEmpty(stock_Data_Master.Upload_Method) ? new SqlParameter("@Upload_Method", stock_Data_Master.Upload_Method) : new SqlParameter("@Upload_Method", DBNull.Value);
             var upload_Type = !string.IsNullOrEmpty(stock_Data_Master.Upload_Type) ? new SqlParameter("@Upload_Type", stock_Data_Master.Upload_Type) : new SqlParameter("@Upload_Type", DBNull.Value);
+            var upload_From = !string.IsNullOrEmpty(stock_Data_Master.Upload_From) ? new SqlParameter("@Upload_From", stock_Data_Master.Upload_From) : new SqlParameter("@Upload_From", DBNull.Value);
             var inserted_Id = new SqlParameter("@Inserted_Id", SqlDbType.Int)
             {
                 Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Stock_Data_Master_Insert_Update @Stock_Data_Id, @Supplier_Id, @Upload_Method, @Upload_Type, @Inserted_Id OUT",
-                        stock_Data_Id, supplier_Id, upload_Method, upload_Type, inserted_Id));
+                        .ExecuteSqlRawAsync(@"EXEC Stock_Data_Master_Insert_Update @Stock_Data_Id, @Supplier_Id, @Upload_Method, @Upload_Type, @Upload_From, @Inserted_Id OUT",
+                        stock_Data_Id, supplier_Id, upload_Method, upload_Type, upload_From, inserted_Id));
 
             int _insertedId = (int)inserted_Id.Value;
             if (_insertedId > 0)
@@ -917,14 +918,15 @@ namespace astute.Repository
             var supplier_Id = stock_Data_Master.Supplier_Id > 0 ? new SqlParameter("@Supplier_Id", stock_Data_Master.Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value);
             var upload_Method = !string.IsNullOrEmpty(stock_Data_Master.Upload_Method) ? new SqlParameter("@Upload_Method", stock_Data_Master.Upload_Method) : new SqlParameter("@Upload_Method", DBNull.Value);
             var upload_Type = !string.IsNullOrEmpty(stock_Data_Master.Upload_Type) ? new SqlParameter("@Upload_Type", stock_Data_Master.Upload_Type) : new SqlParameter("@Upload_Type", DBNull.Value);
+            var upload_From = !string.IsNullOrEmpty(stock_Data_Master.Upload_From) ? new SqlParameter("@Upload_From", stock_Data_Master.Upload_From) : new SqlParameter("@Upload_From", DBNull.Value);
             var inserted_Id = new SqlParameter("@Inserted_Id", SqlDbType.Int)
             {
                 Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Stock_Data_Master_Insert_Update @Stock_Data_Id, @Supplier_Id, @Upload_Method, @Upload_Type, @Inserted_Id OUT",
-                        stock_Data_Id, supplier_Id, upload_Method, upload_Type, inserted_Id));
+                        .ExecuteSqlRawAsync(@"EXEC Stock_Data_Master_Insert_Update @Stock_Data_Id, @Supplier_Id, @Upload_Method, @Upload_Type, @Upload_From, @Inserted_Id OUT",
+                        stock_Data_Id, supplier_Id, upload_Method, upload_Type, upload_From, inserted_Id));
 
             int _insertedId = (int)inserted_Id.Value;
             if (_insertedId > 0)

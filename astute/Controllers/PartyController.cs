@@ -12817,6 +12817,7 @@ namespace astute.Controllers
                                         stock_Data_Master_Schedular.Supplier_Id = party_File.Party_Id;
                                         stock_Data_Master_Schedular.Upload_Method = "FILE";
                                         stock_Data_Master_Schedular.Upload_Type = "O";
+                                        stock_Data_Master_Schedular.Upload_From = "M";
 
                                         (message, stock_Data_Id) = await _supplierService.Stock_Data_Custom_Insert_Update(stock_Data_Master_Schedular);
                                         if (message == "success" && stock_Data_Id > 0)

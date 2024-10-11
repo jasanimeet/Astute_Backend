@@ -11,6 +11,7 @@ namespace astute.Models
         public int? Supplier_Id { get; set; }
         public string? Upload_Method { get; set; }
         public string? Upload_Type { get; set; }
+        public string? Upload_From { get; set; }
         [NotMapped]
         public IList<Stock_Data> Stock_Data_List { get; set; } = new List<Stock_Data>();
     }
@@ -23,6 +24,7 @@ namespace astute.Models
         public string? Upload_Method { get; set; }
         public string? Upload_Type { get; set; }
         public string? Error_Message { get; set; }
+        public string? Upload_From { get; set; }
         [NotMapped]
         public IList<Stock_Data_Schedular> Stock_Data_List { get; set; } = new List<Stock_Data_Schedular>();
     }
