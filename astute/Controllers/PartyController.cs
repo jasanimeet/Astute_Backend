@@ -13276,7 +13276,7 @@ namespace astute.Controllers
                         var errorDetails = await response.Content.ReadAsStringAsync();
                         string cleanedJson1 = errorDetails.Replace("\\\"", "\"").Trim('"');
                         Suzy_Error_Model errordiamondInfos = JsonConvert.DeserializeObject<Suzy_Error_Model>(cleanedJson1);
-                        
+
                         await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_Suzy_Stock", errorDetails);
                         return Conflict(new
                         {
@@ -13561,7 +13561,7 @@ namespace astute.Controllers
                     using (var client = new HttpClient())
                     {
                         var request = new HttpRequestMessage(HttpMethod.Get, jewel_Paradise_Model.Login_URL);
-                        
+
                         var content = new MultipartFormDataContent();
                         content.Add(new StringContent(token), "token");
                         content.Add(new StringContent(jewel_Paradise_Model.Action_Value1), jewel_Paradise_Model.Action_Caption1);
@@ -13616,6 +13616,63 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Jewel_Paradise_Stock", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = ex.Message,
+                    error = ex.StackTrace
+                });
+            }
+        }
+
+        #endregion
+
+        #region EXCEL SUCCESS LIMITED - (S) Api
+
+        [HttpPost]
+        [Route("get_excel_success_limited_stock")]
+        public async Task<IActionResult> Get_Excel_Success_Limited_Stock(string stock_URL)
+        {
+            try
+            {
+                var _client = new HttpClient();
+
+                var _request = new HttpRequestMessage(HttpMethod.Get, stock_URL);
+
+                var _response = await _client.SendAsync(_request);
+
+                if (_response.IsSuccessStatusCode)
+                {
+                    var responseString = await _response.Content.ReadAsStringAsync();
+
+                    return StatusCode((int)_response.StatusCode, responseString);
+                }
+                else
+                {
+                    var errorDetails = await _response.Content.ReadAsStringAsync();
+
+                    await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_Excel_Success_Limited_Stock", errorDetails);
+                    return Conflict(new
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        message = CoreCommonMessage.ApiFailed,
+                        error = errorDetails
+                    });
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                await _commonService.InsertErrorLog(httpEx.Message, "Get_Excel_Success_Limited_Stock", httpEx.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = CoreCommonMessage.ApiError,
+                    error = httpEx.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Excel_Success_Limited_Stock", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     statusCode = HttpStatusCode.InternalServerError,
