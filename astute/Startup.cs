@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,8 +45,14 @@ namespace astute
             services.Configure<FormOptions>(options =>
             {
                 options.MultipartBodyLengthLimit = int.MaxValue; // Adjust as needed
+                options.ValueCountLimit = int.MaxValue; 
             });
 
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.Limits.MaxRequestBodySize = int.MaxValue; // Adjust as needed
+                options.Limits.MaxRequestHeadersTotalSize = int.MaxValue;
+            });
             //services.AddDbContext<AstuteDbContext>();
             services.AddDbContext<AstuteDbContext>(config =>
                 config.UseSqlServer(
@@ -128,8 +135,8 @@ namespace astute
                     ValidIssuer = Configuration["JwtToken:Issuer"],
                     ValidAudience = Configuration["JwtToken:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtToken:SecretKey"])),
-                    //ValidateLifetime = true, // Validate the token's lifetime
-                    //ClockSkew = TimeSpan.Zero,
+                    ValidateLifetime = true, // Validate the token's lifetime
+                    ClockSkew = TimeSpan.FromMinutes(5),
 
                 };
             });
