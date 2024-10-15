@@ -12057,11 +12057,11 @@ namespace astute.Controllers
         [HttpPost]
         [Route("job_transfer_auto_stock_pricing")]
         [Authorize]
-        public async Task<IActionResult> Job_Transfer_Auto_Stock_Pricing()
+        public async Task<IActionResult> Job_Transfer_Auto_Stock_Pricing(string? Upload_From)
         {
             try
             {
-                var result = await _labUserService.Job_Transfer_Auto_Stock_Pricing();
+                var result = await _labUserService.Job_Transfer_Auto_Stock_Pricing(Upload_From);
                 if (result > 0)
                 {
                     return Ok(new

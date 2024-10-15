@@ -359,33 +359,30 @@ namespace astute.Repository
             return result;
         }
         
-        public async Task<int> Job_Transfer_Auto_Stock_Pricing()
+        public async Task<int> Job_Transfer_Auto_Stock_Pricing(string? Upload_From)
         {
 
-            var sqlCommand = @"exec [Job_Transfer_Auto_Stock_Pricing]";
+            var _upload_From = !string.IsNullOrEmpty(Upload_From)? new SqlParameter("@Upload_From", Upload_From) : new SqlParameter("@Upload_From", DBNull.Value);
 
-            var result = await Task.Run(async () =>
+            using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
             {
-                using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
+                command.CommandText = @"EXEC [Job_Transfer_Auto_Stock_Pricing] @Upload_From";
+                command.Parameters.Add(_upload_From);
+
+                command.CommandTimeout = 10800;
+
+                await _dbContext.Database.OpenConnectionAsync();
+
+                try
                 {
-                    command.CommandText = sqlCommand;
-
-                    command.CommandTimeout = 10800;
-
-                    await _dbContext.Database.OpenConnectionAsync();
-                    try
-                    {
-                        var affectedRows = await command.ExecuteNonQueryAsync();
-                        return affectedRows;
-                    }
-                    finally
-                    {
-                        _dbContext.Database.CloseConnection();
-                    }
+                    var result = await command.ExecuteNonQueryAsync();
+                    return result;
                 }
-            });
-
-            return result;
+                finally
+                {
+                    _dbContext.Database.CloseConnection();
+                }
+            }
         }
 
         #endregion
