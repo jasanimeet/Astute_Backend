@@ -358,6 +358,35 @@ namespace astute.Repository
 
             return result;
         }
+        
+        public async Task<int> Job_Transfer_Auto_Stock_Pricing()
+        {
+
+            var sqlCommand = @"exec [Job_Transfer_Auto_Stock_Pricing]";
+
+            var result = await Task.Run(async () =>
+            {
+                using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = sqlCommand;
+
+                    command.CommandTimeout = 10800;
+
+                    await _dbContext.Database.OpenConnectionAsync();
+                    try
+                    {
+                        var affectedRows = await command.ExecuteNonQueryAsync();
+                        return affectedRows;
+                    }
+                    finally
+                    {
+                        _dbContext.Database.CloseConnection();
+                    }
+                }
+            });
+
+            return result;
+        }
 
         #endregion
     }
