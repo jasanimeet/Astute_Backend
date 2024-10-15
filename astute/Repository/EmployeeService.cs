@@ -469,6 +469,28 @@ namespace astute.Repository
                                 .ExecuteSqlRawAsync(@"EXEC Employee_Master_Update_Status @Employee_Id, @Status", _employee_Id, Status));
             return result;
         }
+
+        public async Task<(string, int)> Change_Password(Change_Password_Model change_Password_Model, int? user_Id)
+        {
+            var encrypt_Password = CoreService.Encrypt(change_Password_Model.OldPassword);
+            var new_encrypt_Password = CoreService.Encrypt(change_Password_Model.NewPassword);
+            var _employee_Id = user_Id > 0 ? new SqlParameter("@Employee_Id", user_Id) : new SqlParameter("@Employee_Id", DBNull.Value);
+            var _password = !string.IsNullOrEmpty(encrypt_Password) ? new SqlParameter("@Old_Password", encrypt_Password) : new SqlParameter("@Old_Password", DBNull.Value);
+            var _new_password = !string.IsNullOrEmpty(new_encrypt_Password) ? new SqlParameter("@New_Password", new_encrypt_Password) : new SqlParameter("@New_Password", DBNull.Value);
+            var _isPassNM = new SqlParameter("@IsPassNM", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Employee_Master_Change_Password @Employee_Id, @Old_Password, @New_Password, @IsPassNM OUT ", _employee_Id, _password, _new_password, _isPassNM));
+
+            if ((int)_isPassNM.Value == 1)
+            {
+                return ("exist", 409);
+            }
+            return ("success", result);
+        }
+
         #endregion
 
         #region Employee Document

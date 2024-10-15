@@ -640,36 +640,54 @@ namespace astute.Controllers
         }
 
         [HttpPost]
-        [Route("changepassword")]
+        [Route("change_password")]
         [Authorize]
-        public async Task<IActionResult> ChangePassword(ChangePasswordModel changePasswordModel)
+        public async Task<IActionResult> Change_Password(Change_Password_Model change_Password_Model)
         {
-            var employee = await _employeeService.GetEmployees(changePasswordModel.EmoployeeId, null, null);
-            if (employee != null && employee.Count > 0)
+            try
             {
-                var empMaster = employee.FirstOrDefault();
-                string decryptPasswor = CoreService.Decrypt(empMaster.Password);
-                if (decryptPasswor.Equals(changePasswordModel.OldPassword))
+                if (change_Password_Model != null)
                 {
-                    empMaster.Password = CoreService.Encrypt(changePasswordModel.NewPassword);
-                    var result = await _employeeService.UpdateEmployee(empMaster);
-                    if (result > 0)
+                    if (change_Password_Model.NewPassword != change_Password_Model.ConfirmPassword)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = "New Password and Confirm Password Mismtach."
+                        });
+                    }
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                    var (msg, result) = await _employeeService.Change_Password(change_Password_Model, user_Id);
+                    if (msg == "success" && result > 0)
                     {
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.PasswordChengedSuccessMessage
+                            message = "Password change successfully."
+                        });
+
+                    }
+                    else if (msg == "exist" && result == 409)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = "Password does not match with old password."
                         });
                     }
                 }
-                return Unauthorized(new
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
-                    StatusCode = HttpStatusCode.Unauthorized,
-                    message = CoreCommonMessage.OldPasswordNotMatched
+                    message = ex.Message
                 });
             }
-            return NoContent();
         }
+
         #endregion
 
         #region Forget Password

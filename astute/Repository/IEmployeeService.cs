@@ -24,6 +24,7 @@ namespace astute.Repository
         Task Insert_Emergency_Contact_Detail_Trace(DataTable dataTable);
         Task<IList<DropdownModel>> Get_Employee_For_Report(bool is_Exist, int rm_Id, int user_Id, string user_Type);
         Task<int> Employee_Master_Change_Status(int employee_Id, bool status);
+        Task<(string, int)> Change_Password(Change_Password_Model change_Password_Model, int? user_Id);
         #endregion
 
         #region Employee Document
