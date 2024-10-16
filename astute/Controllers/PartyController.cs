@@ -10974,7 +10974,7 @@ namespace astute.Controllers
                             if (canceledOrders.Any())
                             {
                                 var fortuneId = await _employeeService.GetEmployeeFortuneId(user_Id ?? 0);
-                                var transferResult = await _oracleService.Order_Data_Transfer_Oracle(orderDetails, fortuneId, order_Stone_Process.QC_Request);
+                                var transferResult = await _oracleService.Order_Data_Transfer_Oracle(canceledOrders, fortuneId, order_Stone_Process.QC_Request);
 
                                 return Ok(new
                                 {
