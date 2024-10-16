@@ -1650,95 +1650,44 @@ namespace astute.CoreServices
                     {
                         string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
 
-                        if (Column_Name == "Image")
+                        k += 1;
+                        worksheet.Cells[2, k].Value = Column_Name;
+
+                        if (Column_Name == "DNA" || Column_Name == "Image" || Column_Name == "Video" || Column_Name == "Status")
                         {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Image";
-                            worksheet.Cells[2, k].AutoFitColumns(7);
+                            worksheet.Cells[2, k].AutoFitColumns(7.0);
                         }
-                        else if (Column_Name == "Video")
+                        else if (Column_Name == "Lab" || Column_Name == "Supplier Status" || Column_Name == "Polish" || Column_Name == "Symm" || Column_Name == "Fls")
                         {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Video";
-                            worksheet.Cells[2, k].AutoFitColumns(7);
+                            worksheet.Cells[2, k].AutoFitColumns(5.0);
                         }
-                        else if (Column_Name == "Cert No")
+                        else if (Column_Name == "Supplier Name" || Column_Name == "CTS" || Column_Name == "Shade")
                         {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Cert No";
-                            worksheet.Cells[2, k].AutoFitColumns(0);
+                            worksheet.Cells[2, k].AutoFitColumns(10.0);
                         }
-                        else if (Column_Name == "Pointer")
+                        else if (Column_Name == "Rank" || Column_Name == "Cut")
                         {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Pointer";
-                            worksheet.Cells[2, k].AutoFitColumns(0);
+                            worksheet.Cells[2, k].AutoFitColumns(4.7);
                         }
-                        else if (Column_Name == "Rap Rate($)")
+                        else if (Column_Name == "Buyer Name")
                         {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Rap Rate($)";
-                            worksheet.Cells[2, k].AutoFitColumns(0);
+                            worksheet.Cells[2, k].AutoFitColumns(6.5);
                         }
-                        else if (Column_Name == "Rap Amount($)")
+                        else if (Column_Name == "Supplier No" || Column_Name == "Clarity")
                         {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Rap Amount($)";
-                            worksheet.Cells[2, k].AutoFitColumns(0);
+                            worksheet.Cells[2, k].AutoFitColumns(8.0);
                         }
-                        else if (Column_Name == "Supplier Base Offer(%)")
+                        else if (Column_Name == "Shape" || Column_Name == "Sub Pointer" || Column_Name == "Supplier Final Disc. With Max Slab(%)" || Column_Name == "Certi Date" || Column_Name == "Country of Origin")
                         {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Supplier Base Offer(%)";
-                            worksheet.Cells[2, k].AutoFitColumns(0);
+                            worksheet.Cells[2, k].AutoFitColumns(9.0);
                         }
-                        else if (Column_Name == "Supplier Base Offer Value($)")
+                        else if (Column_Name == "Color")
                         {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Supplier Base Offer Value($)";
-                            worksheet.Cells[2, k].AutoFitColumns(0);
+                            worksheet.Cells[2, k].AutoFitColumns(6.0);
                         }
-                        else if (Column_Name == "Supplier Final Disc(%)")
+                        else if (Column_Name == "Cert No" || Column_Name == "Pointer" || Column_Name == "Rap Rate($)" || Column_Name == "Rap Amount($)" || Column_Name == "Supplier Base Offer(%)" || Column_Name == "Supplier Base Offer Value($)" || Column_Name == "Supplier Final Disc(%)" || Column_Name == "Supplier Final Value($)" || Column_Name == "Bid Disc(%)" || Column_Name == "Bid Amt" || Column_Name == "Bid/Ct" || Column_Name == "Depth")
                         {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Supplier Final Disc(%)";
-                            worksheet.Cells[2, k].AutoFitColumns(0);
-                        }
-                        else if (Column_Name == "Supplier Final Value($)")
-                        {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Supplier Final Value($)";
-                            worksheet.Cells[2, k].AutoFitColumns(0);
-                        }
-                        else if (Column_Name == "Bid Disc(%)")
-                        {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Bid Disc(%)";
-                            worksheet.Cells[2, k].AutoFitColumns(0);
-                        }
-                        else if (Column_Name == "Bid Amt")
-                        {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Bid Amt";
-                            worksheet.Cells[2, k].AutoFitColumns(0);
-                        }
-                        else if (Column_Name == "Bid/Ct")
-                        {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Bid/Ct";
-                            worksheet.Cells[2, k].AutoFitColumns(0);
-                        }
-                        else if (Column_Name == "Depth")
-                        {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Depth";
-                            worksheet.Cells[2, k].AutoFitColumns(0);
-                        }
-                        else
-                        {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = Column_Name;
-                            worksheet.Cells[2, k].AutoFitColumns(10);
+                            worksheet.Cells[2, k].AutoFitColumns(0.0);
 
                             if (Column_Name == "Pointer")
                             {
@@ -1746,8 +1695,44 @@ namespace astute.CoreServices
                                 worksheet.Cells[2, k].Style.Fill.BackgroundColor.SetColor(ppc_bg);
                             }
                         }
+                        else if (Column_Name == "Supplier Final Value With Max Slab($)")
+                        {
+                            worksheet.Cells[2, k].AutoFitColumns(10.5);
+                        }
+                        else if (Column_Name == "Avg. Stock Disc(%)" || Column_Name == "Avg. Stock Pcs" || Column_Name == "Avg. Pur. Disc(%)" || Column_Name == "Avg. Pur. Pcs" || Column_Name == "Avg. Sales Disc(%)" || Column_Name == "Sales Pcs")
+                        {
+                            worksheet.Cells[2, k].AutoFitColumns(5.3);
+                        }
+                        else if (Column_Name == "KTS Grade" || Column_Name == "Comm. Grade" || Column_Name == "Zone" || Column_Name == "Sub Zone" || Column_Name == "Para. Grade")
+                        {
+                            worksheet.Cells[2, k].AutoFitColumns(3.6);
+                        }
+                        else if (Column_Name == "Key To Symbol" || Column_Name == "Girdle")
+                        {
+                            worksheet.Cells[2, k].AutoFitColumns(15.0);
+                        }
+                        else if (Column_Name == "RATIO" || Column_Name == "Length" || Column_Name == "Width" || Column_Name == "Depth(%)" || Column_Name == "Table(%)" || Column_Name == "Crown Angle" || Column_Name == "Crown Height" || Column_Name == "Pav Angle" || Column_Name == "Pav Height" || Column_Name == "Girdle(%)" || Column_Name == "Star Length" || Column_Name == "Lower HF" || Column_Name == "Luster" || Column_Name == "Cert Type" || Column_Name == "Table White" || Column_Name == "Crown White" || Column_Name == "Table Black" || Column_Name == "Crown Black" || Column_Name == "Culet" || Column_Name == "Milky")
+                        {
+                            worksheet.Cells[2, k].AutoFitColumns(4.8);
+                        }
+                        else if (Column_Name == "Comment" || Column_Name == "Supplier Comment")
+                        {
+                            worksheet.Cells[2, k].AutoFitColumns(25.0);
+                        }
+                        else if (Column_Name == "Table Open" || Column_Name == "Crown Open" || Column_Name == "Pavilion Open" || Column_Name == "Girdle Open")
+                        {
+                            worksheet.Cells[2, k].AutoFitColumns(4.9);
+                        }
+                        else if (Column_Name == "Girdle Type")
+                        {
+                            worksheet.Cells[2, k].AutoFitColumns(5.4);
+                        }
+                        else
+                        {
+                            worksheet.Cells[2, k].AutoFitColumns(0.0);
+                        }
                     }
-
+                    
                     worksheet.Cells[1, 1].Value = "Total";
                     worksheet.Cells[1, 1, 1, Row_Count].Style.Font.Bold = true;
                     worksheet.Cells[1, 1, 1, Row_Count].Style.Font.Size = 11;
