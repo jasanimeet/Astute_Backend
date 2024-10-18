@@ -11429,6 +11429,153 @@ namespace astute.Controllers
         }
 
         [HttpPost]
+        [Route("send_mazal_on_email")]
+        [Authorize]
+        public async Task<IActionResult> Send_Mazal_On_Email(Order_Excel_Email_Model order_Excel_Email_Model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {  
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                    if (order_Excel_Email_Model.Majal_Excel_Exist == "M")
+                    {
+                        var dt_Order = await _supplierService.Get_Order_Data_Mazal_Excel(order_Excel_Email_Model.Stock_Id, order_Excel_Email_Model.Order_Id);
+
+                        if (dt_Order != null && dt_Order.Rows.Count > 0)
+                        {
+                            var excelPath = string.Empty;
+
+                            string filename = string.Empty;
+
+                            List<string> columnNames = new List<string>();
+                            foreach (DataColumn column in dt_Order.Columns)
+                            {
+                                columnNames.Add(column.ColumnName);
+                            }
+
+                            DataTable columnNamesTable = new DataTable();
+                            columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                            foreach (string columnName in columnNames)
+                            {
+                                columnNamesTable.Rows.Add(columnName);
+                            }
+                            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                            if (!(Directory.Exists(filePath)))
+                            {
+                                Directory.CreateDirectory(filePath);
+                            }
+
+                            filename = "Mazal_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+
+                            EpExcelExport.Create_Order_Processing_Excel_Mazal(dt_Order, columnNamesTable, filePath, filePath + filename);
+
+                            excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+
+                            byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
+                            using (MemoryStream memoryStream = new MemoryStream(fileBytes))
+                            {
+                                var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(user_Id ?? 0);
+                                if (emp_email != null)
+                                {
+                                    if (!(order_Excel_Email_Model.Send_From_Default ?? false) && (emp_email.Is_Default ?? false))
+                                        return Conflict(new
+                                        {
+                                            statusCode = HttpStatusCode.Conflict,
+                                            message = CoreCommonMessage.EmailSendFromDefaultSuccessMessage
+                                        });
+
+                                    IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
+                                    _emailSender.Send_Stock_Email(toEmail: order_Excel_Email_Model.To_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, strBody: "Mazal order list", user_Id: user_Id ?? 0, employee_Mail: emp_email);
+                                }
+                                return Ok(new
+                                {
+                                    statusCode = HttpStatusCode.OK,
+                                    message = CoreCommonMessage.EmailSendSuccessMessage
+                                });
+                            }
+                        }
+                    }
+                    else if (order_Excel_Email_Model.Majal_Excel_Exist == "E")
+                    {
+                        var (dt_Order, is_Admin) = await _supplierService.Get_Order_Data_Excel(order_Excel_Email_Model.Stock_Id, user_Id ?? 0, order_Excel_Email_Model.Order_Id);
+                        if (dt_Order != null && dt_Order.Rows.Count > 0)
+                        {
+                            List<string> columnNames = new List<string>();
+                            foreach (DataColumn column in dt_Order.Columns)
+                            {
+                                columnNames.Add(column.ColumnName);
+                            }
+
+                            DataTable columnNamesTable = new DataTable();
+                            columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                            foreach (string columnName in columnNames)
+                            {
+                                columnNamesTable.Rows.Add(columnName);
+                            }
+                            var excelPath = string.Empty;
+                            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                            if (!(Directory.Exists(filePath)))
+                            {
+                                Directory.CreateDirectory(filePath);
+                            }
+                            string filename = string.Empty;
+
+                            filename = "Order_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                            if (is_Admin)
+                            {
+                                EpExcelExport.Create_Order_Processing_Excel_Admin(dt_Order, columnNamesTable, filePath, filePath + filename);
+                            }
+                            else
+                            {
+                                EpExcelExport.Create_Order_Processing_Excel_User(dt_Order, columnNamesTable, filePath, filePath + filename);
+                            }
+
+                            excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+
+                            byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
+                            using (MemoryStream memoryStream = new MemoryStream(fileBytes))
+                            {
+                                var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(user_Id ??0);
+                                if (emp_email != null)
+                                {
+                                    if (!(order_Excel_Email_Model.Send_From_Default ?? false) && (emp_email.Is_Default ?? false))
+                                        return Conflict(new
+                                        {
+                                            statusCode = HttpStatusCode.Conflict,
+                                            message = CoreCommonMessage.EmailSendFromDefaultSuccessMessage
+                                        });
+
+                                    IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
+                                    _emailSender.Send_Stock_Email(toEmail: order_Excel_Email_Model.To_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, strBody: "Excel order list", user_Id: user_Id ?? 0, employee_Mail: emp_email);
+                                }
+                                return Ok(new
+                                {
+                                    statusCode = HttpStatusCode.OK,
+                                    message = CoreCommonMessage.EmailSendSuccessMessage
+                                });
+                            }
+                        }
+                    }
+                    return NoContent();
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Send_Stock_On_Email", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
         [Route("order_excel_export_pre_post")]
         [Authorize]
         public async Task<IActionResult> Order_Excel_Export_Pre_Post(Order_Processing_Summary order_Processing_Summary)
