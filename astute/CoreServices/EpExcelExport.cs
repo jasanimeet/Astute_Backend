@@ -1711,7 +1711,7 @@ namespace astute.CoreServices
                         {
                             worksheet.Cells[2, k].AutoFitColumns(15.0);
                         }
-                        else if (Column_Name == "RATIO" || Column_Name == "Length" || Column_Name == "Width" || Column_Name == "Depth(%)" || Column_Name == "Table(%)" || Column_Name == "Crown Angle" || Column_Name == "Crown Height" || Column_Name == "Pav Angle" || Column_Name == "Pav Height" || Column_Name == "Girdle(%)" || Column_Name == "Star Length" || Column_Name == "Lower HF" || Column_Name == "Luster" || Column_Name == "Cert Type" || Column_Name == "Table White" || Column_Name == "Crown White" || Column_Name == "Table Black" || Column_Name == "Crown Black" || Column_Name == "Culet" || Column_Name == "Milky")
+                        else if (Column_Name == "RATIO" || Column_Name == "Length" || Column_Name == "Width" || Column_Name == "Depth(%)" || Column_Name == "Table(%)" || Column_Name == "Crown Angle" || Column_Name == "Crown Height" || Column_Name == "Pav Angle" || Column_Name == "Pav Height" || Column_Name == "Girdle(%)" || Column_Name == "Star Length" || Column_Name == "Lower HF" || Column_Name == "Luster" || Column_Name == "Cert Type" || Column_Name == "Table White" || Column_Name == "Side White" || Column_Name == "Table Black" || Column_Name == "Side Black" || Column_Name == "Culet" || Column_Name == "Milky")
                         {
                             worksheet.Cells[2, k].AutoFitColumns(4.8);
                         }
