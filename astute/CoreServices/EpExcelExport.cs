@@ -1929,10 +1929,19 @@ namespace astute.CoreServices
                                     }
                                     else if (Column_Name == "KTS Grade")
                                     {
-                                        worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex]["KTS Grade"]);
+                                        string kts_grade = Convert.ToString(dtStock.Rows[i - inStartIndex]["KTS Grade"]);
+                                        worksheet.Cells[inwrkrow, kk].Value = kts_grade;
 
                                         worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                         worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(kts_bg);
+
+                                        if(kts_grade == "K3") 
+                                        {
+                                            for (int col = 1; col <= column_dt.Rows.Count; col++)
+                                            {
+                                                worksheet.Cells[inwrkrow, col].Style.Font.Color.SetColor(Color.Red);
+                                            }
+                                        }
                                     }
                                     else if (Column_Name == "Comm. Grade")
                                     {
