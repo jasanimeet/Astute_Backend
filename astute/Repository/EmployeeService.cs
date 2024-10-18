@@ -156,6 +156,7 @@ namespace astute.Repository
             var password = !string.IsNullOrEmpty(employee_Master.Password) ? new SqlParameter("@password", encryptPassword) : new SqlParameter("@password", DBNull.Value);
             var employeeCode = !string.IsNullOrEmpty(employee_Master.Employee_Code) ? new SqlParameter("@employee_Code", employee_Master.Employee_Code) : new SqlParameter("@employee_Code", DBNull.Value);
             var status = new SqlParameter("@status", employee_Master.Status);
+            var is_admin = new SqlParameter("@is_admin", employee_Master.Is_Admin);
             var marital_Status = !string.IsNullOrEmpty(employee_Master.Marital_Status) ? new SqlParameter("@marital_Status", employee_Master.Marital_Status) : new SqlParameter("@marital_Status", DBNull.Value);
             var mobile_Country_Code = !string.IsNullOrEmpty(employee_Master.Mobile_Country_Code) ? new SqlParameter("@mobile_Country_Code", employee_Master.Mobile_Country_Code) : new SqlParameter("@mobile_Country_Code", DBNull.Value);
             var mobile_1_Country_Code = !string.IsNullOrEmpty(employee_Master.Mobile_1_Country_Code) ? new SqlParameter("@mobile_1_Country_Code", employee_Master.Mobile_1_Country_Code) : new SqlParameter("@mobile_1_Country_Code", DBNull.Value);
@@ -184,11 +185,11 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
             .ExecuteSqlRawAsync(@"exec Employee_Master_Insert_Update @employeeId, @initial, @firstName, @middleName, @lastName,
             @chineseName, @address1, @address2, @address3, @cityId, @joindate, @employeeType, @birthDate, @gender, @mobileNo, @personalEmail, @companyEmail,
-            @leaveDate, @pSNID, @bloodGroup, @contractStartDate, @contractEndDate, @approveHolidays, @orderNo, @sortNo, @userName, @password, @employee_Code, @status,
+            @leaveDate, @pSNID, @bloodGroup, @contractStartDate, @contractEndDate, @approveHolidays, @orderNo, @sortNo, @userName, @password, @employee_Code, @status, @is_admin,
             @marital_Status, @mobile_Country_Code, @mobile_1_Country_Code, @probation_End_Date, @personal_Mobile_No, @designation_Id, @User_Type, @IsExistUserName OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT",
             employeeId, initial, firstName, middleName, lastName, chineseName, address1, address2, address3, cityId, joinDate, employeeType, birthDate, gender, mobileNo,
             personalEmail, companyEmail, leaveDate, pSNID, bloodGroup, contractStartDate, contractEndDate, approveHolidays, orderNo, sortNo, userName, password,
-            employeeCode, status, marital_Status, mobile_Country_Code, mobile_1_Country_Code, probation_End_Date, personal_Mobile_No, designation_Id, user_Type, isExistUserName, isExistOrderNo, isExistSortNo, insertedId));
+            employeeCode, status, is_admin, marital_Status, mobile_Country_Code, mobile_1_Country_Code, probation_End_Date, personal_Mobile_No, designation_Id, user_Type, isExistUserName, isExistOrderNo, isExistSortNo, insertedId));
 
             bool _isExistUserName = (bool)isExistUserName.Value;
             if (_isExistUserName)
