@@ -8888,7 +8888,7 @@ namespace astute.Controllers
                 if (string.IsNullOrEmpty(excel_Model.supplier_Ref_No))
                 {
                     var destinationFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
-                    if (excel_Model.excel_Format == "Customer" && Is_Round == false)
+                    /*if (excel_Model.excel_Format == "Customer" && Is_Round == false)
                     {
                         string sourceFilePath = Directory.GetCurrentDirectory() + CoreCommonFilePath.PreGeneratedStockExcelFilesPath + "Customer.xlsx";
                         string newFileName = "Customer_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
@@ -9013,7 +9013,7 @@ namespace astute.Controllers
                                 });
                             }
                         }
-                    }
+                    }*/
                 }
                 else
                 {
