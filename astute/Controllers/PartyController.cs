@@ -11956,6 +11956,144 @@ namespace astute.Controllers
         {
             try
             {
+                string json;
+                string token = string.Empty;
+                try
+                {
+                    var sun_l = new Sunrise_LoginRequest
+                    {
+                        UserName = "samit_gandhi",
+                        Password = "missme@hk",
+                        grant_type = "password"
+                    };
+
+                    string inputLRJson = string.Join("&", sun_l.GetType()
+                        .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                        .Where(p => p.GetValue(sun_l) != null)
+                        .Select(p => $"{p.Name}={Uri.EscapeDataString(p.GetValue(sun_l).ToString())}"));
+
+                    WebRequest request = WebRequest.Create("https://sunrisediamonds.com.hk:8122/api/User/Login");
+                    request.Method = "POST";
+                    request.Timeout = 7200000;
+                    byte[] byteArray = Encoding.UTF8.GetBytes(inputLRJson);
+                    request.ContentType = "application/x-www-form-urlencoded";
+                    request.ContentLength = byteArray.Length;
+
+                    using (var dataStream = request.GetRequestStream())
+                    {
+                        dataStream.Write(byteArray, 0, byteArray.Length);
+                    }
+
+                    using (var response = request.GetResponse())
+                    {
+                        using (var dataStream = response.GetResponseStream())
+                        {
+                            using (var reader = new StreamReader(dataStream))
+                            {
+                                json = reader.ReadToEnd();
+                            }
+                        }
+                    }
+
+                    Sunrise_LoginResponse sglr = JsonConvert.DeserializeObject<Sunrise_LoginResponse>(json);
+                    token = sglr.access_token;
+                }
+                catch (Exception ex)
+                {
+                    await _commonService.InsertErrorLog(ex.Message, "Get_Sunrise_Stock", ex.StackTrace);
+                    return StatusCode((int)HttpStatusCode.InternalServerError, new
+                    {
+                        statusCode = HttpStatusCode.InternalServerError,
+                        message = ex.Message,
+                        error = ex.StackTrace
+                    });
+                }
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return StatusCode((int)HttpStatusCode.InternalServerError, new
+                    {
+                        statusCode = HttpStatusCode.InternalServerError,
+                        message = CoreCommonMessage.ApiError,
+                        error = "Token does not exist"
+                    });
+                }
+
+                try
+                {
+                    WebRequest request = WebRequest.Create("https://sunrisediamonds.com.hk:8122/api/Stock/Stock_GET");
+                    request.Method = "POST";
+                    request.Timeout = 7200000;
+                    request.Headers.Add("Authorization", "Bearer " + token);
+
+                    using (var response = request.GetResponse())
+                    {
+                        using (var dataStream = response.GetResponseStream())
+                        {
+                            using (var reader = new StreamReader(dataStream))
+                            {
+                                var json1 = await reader.ReadToEndAsync();
+                                if (string.IsNullOrEmpty(json1))
+                                {
+                                    await _commonService.InsertErrorLog("Data not Found", "Get_Sunrise_Stock", CoreCommonMessage.ApiError);
+                                    return StatusCode((int)HttpStatusCode.InternalServerError, new
+                                    {
+                                        statusCode = HttpStatusCode.InternalServerError,
+                                        message = CoreCommonMessage.ApiError,
+                                        error = "Data not Found"
+                                    });
+                                }
+                                var stockResponse = JsonConvert.DeserializeObject<StockResponse>(json1);
+
+                                SunriseStockResponse stock = new SunriseStockResponse { 
+                                    data = stockResponse.Data,
+                                };
+                                return Ok(stock);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await _commonService.InsertErrorLog(ex.Message, "Get_Sunrise_Stock", ex.StackTrace);
+                    return StatusCode((int)HttpStatusCode.InternalServerError, new
+                    {
+                        statusCode = HttpStatusCode.InternalServerError,
+                        message = ex.Message,
+                        error = ex.StackTrace
+                    });
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                await _commonService.InsertErrorLog(httpEx.Message, "Get_Sunrise_Stock", httpEx.StackTrace);
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = CoreCommonMessage.ApiError,
+                    error = httpEx.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Sunrise_Stock", ex.StackTrace);
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = ex.Message,
+                    error = ex.StackTrace
+                });
+                }
+        }
+
+        [HttpGet]
+        [Route("get_sunrise_stock_old")]
+        public async Task<IActionResult> Get_Sunrise_Stock_Old()
+        {
+            try
+            {
                 var url = "https://sunrisediamonds.com.hk:8122/api/ApiSettings/BasicAuthLog?TransId=126";
 
                 using (var handler = new HttpClientHandler())
@@ -13525,7 +13663,7 @@ namespace astute.Controllers
                     using (MemoryStream memoryStream = new MemoryStream(fileBytes))
                     {
                         IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
-                        _emailSender.SendEmail(toEmail: "tejash@brainwaves.co.in, farhan@sunrisediam.com", externalLink: "", subject: CoreCommonMessage.Supplier_Stock_Upload_Status_Email, formFile: formFile, strBody: CoreCommonMessage.Supplier_Stock_Upload_Status_Email);
+                        _emailSender.SendEmail(toEmail: "tejash@brainwaves.co.in, farhan@sunrisediam.com, list@sunrisediam.com", externalLink: "", subject: CoreCommonMessage.Supplier_Stock_Upload_Status_Email, formFile: formFile, strBody: CoreCommonMessage.Supplier_Stock_Upload_Status_Email);
 
                         return Ok(new
                         {
