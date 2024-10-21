@@ -609,7 +609,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_First_Voucher_No_Master", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -673,7 +673,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Account_Master_Active_Select", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -702,7 +702,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Currency_Master_Exchange_Rate_Select", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -797,7 +797,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_Account_Trans_Master", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
