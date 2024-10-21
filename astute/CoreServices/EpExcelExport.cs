@@ -1719,7 +1719,7 @@ namespace astute.CoreServices
                         {
                             worksheet.Cells[2, k].AutoFitColumns(25.0);
                         }
-                        else if (Column_Name == "Table Open" || Column_Name == "Crown Open" || Column_Name == "Pavilion Open" || Column_Name == "Girdle Open")
+                        else if (Column_Name == "Table Open" || Column_Name == "Crown Open" || Column_Name == "Pav Open" || Column_Name == "Girdle Open" || Column_Name == "Table EF" || Column_Name == "Crown EF" || Column_Name == "Pav EF")
                         {
                             worksheet.Cells[2, k].AutoFitColumns(4.9);
                         }
