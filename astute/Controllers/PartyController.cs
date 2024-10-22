@@ -11448,10 +11448,10 @@ namespace astute.Controllers
                     string status = Order_det[0]["Status"]?.ToString() ?? "";
                     string name = Order_det[0]["Name"]?.ToString() ?? "";
 
-                    string subject = $"{(!string.IsNullOrEmpty(status) ? $"{status} - " : "")}{(!string.IsNullOrEmpty(name) ? $"{name} - " : "")}{order_Excel_Email_Model.Order_Id}";
+                    string subject = $"{"Order Status - "}{(!string.IsNullOrEmpty(name) ? $"{name} - " : "")}{"Order No (" + order_Excel_Email_Model.Order_Id + ")"}";
 
-                    string filename = $"{(!string.IsNullOrEmpty(status) ? $"{status}_" : "")}{(!string.IsNullOrEmpty(name) ? $"{name}_" : "")}{order_Excel_Email_Model.Order_Id}.xlsx";
-                    string body = $"Please find attached order {status}";
+                    string filename = $"{"Order_Status_"}{(!string.IsNullOrEmpty(name) ? $"{name}_" : "")}{order_Excel_Email_Model.Order_Id}.xlsx";
+                    string body = $"Please find attached order status";
 
                     if (order_Excel_Email_Model.Majal_Excel_Exist == "M")
                     {
