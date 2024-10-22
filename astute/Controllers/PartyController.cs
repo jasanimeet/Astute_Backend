@@ -11444,6 +11444,15 @@ namespace astute.Controllers
                     var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                     int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
+                    var Order_det = await _supplierService.Get_Order_Processing_Name_Status_Select(order_Excel_Email_Model.Sub_Order_Id ?? 0, order_Excel_Email_Model.Order_Id);
+                    string status = Order_det[0]["Status"]?.ToString() ?? "";
+                    string name = Order_det[0]["Name"]?.ToString() ?? "";
+
+                    string subject = $"{(!string.IsNullOrEmpty(status) ? $"{status} - " : "")}{(!string.IsNullOrEmpty(name) ? $"{name} - " : "")}{order_Excel_Email_Model.Order_Id}";
+
+                    string filename = $"{(!string.IsNullOrEmpty(status) ? $"{status}_" : "")}{(!string.IsNullOrEmpty(name) ? $"{name}_" : "")}{order_Excel_Email_Model.Order_Id}.xlsx";
+                    string body = $"Please find attached order {status}";
+
                     if (order_Excel_Email_Model.Majal_Excel_Exist == "M")
                     {
                         var dt_Order = await _supplierService.Get_Order_Data_Mazal_Excel(order_Excel_Email_Model.Stock_Id, order_Excel_Email_Model.Order_Id);
@@ -11452,8 +11461,7 @@ namespace astute.Controllers
                         {
                             var excelPath = string.Empty;
 
-                            string filename = string.Empty;
-
+                            
                             List<string> columnNames = new List<string>();
                             foreach (DataColumn column in dt_Order.Columns)
                             {
@@ -11473,8 +11481,6 @@ namespace astute.Controllers
                                 Directory.CreateDirectory(filePath);
                             }
 
-                            filename = "Mazal_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-
                             EpExcelExport.Create_Order_Processing_Excel_Mazal(dt_Order, columnNamesTable, filePath, filePath + filename);
 
                             excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
@@ -11493,7 +11499,7 @@ namespace astute.Controllers
                                         });
 
                                     IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
-                                    _emailSender.Send_Stock_Email(toEmail: order_Excel_Email_Model.To_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, strBody: "Mazal order list", user_Id: user_Id ?? 0, employee_Mail: emp_email);
+                                    _emailSender.Send_Stock_Email(toEmail: order_Excel_Email_Model.To_Email, externalLink: "", subject: subject, formFile: formFile, strBody: body, user_Id: user_Id ?? 0, employee_Mail: emp_email);
                                 }
                                 return Ok(new
                                 {
@@ -11527,9 +11533,7 @@ namespace astute.Controllers
                             {
                                 Directory.CreateDirectory(filePath);
                             }
-                            string filename = string.Empty;
-
-                            filename = "Order_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                            
                             if (is_Admin)
                             {
                                 EpExcelExport.Create_Order_Processing_Excel_Admin(dt_Order, columnNamesTable, filePath, filePath + filename);
@@ -11555,7 +11559,7 @@ namespace astute.Controllers
                                         });
 
                                     IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
-                                    _emailSender.Send_Stock_Email(toEmail: order_Excel_Email_Model.To_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, strBody: "Excel order list", user_Id: user_Id ?? 0, employee_Mail: emp_email);
+                                    _emailSender.Send_Stock_Email(toEmail: order_Excel_Email_Model.To_Email, externalLink: "", subject: subject, formFile: formFile, strBody: body, user_Id: user_Id ?? 0, employee_Mail: emp_email);
                                 }
                                 return Ok(new
                                 {

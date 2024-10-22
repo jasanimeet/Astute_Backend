@@ -3144,6 +3144,41 @@ namespace astute.Repository
             return dataTable;
         }
 
+        public async Task<List<Dictionary<string, object>>> Get_Order_Processing_Name_Status_Select(int sub_order_Id, string order_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Order_Processing_Name_Status_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(sub_order_Id > 0 ? new SqlParameter("@Sub_Order_Id", sub_order_Id) : new SqlParameter("@Sub_Order_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Id) ? new SqlParameter("@Order_Id", order_Id) : new SqlParameter("@Order_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
         public async Task<DataTable> Get_Order_Excel_Data_Mazal(IList<Report_Filter_Parameter> report_Filter_Parameters, string order_Id)
         {
             DataTable dataTable = new DataTable();

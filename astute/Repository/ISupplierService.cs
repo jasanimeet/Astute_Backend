@@ -132,6 +132,7 @@ namespace astute.Repository
         Task<(DataTable, bool)> Get_Order_Data_Excel(string stock_Id, int user_Id, string order_Id);
         Task<DataTable> Get_Order_Excel_Data_Mazal(IList<Report_Filter_Parameter> report_Filter_Parameters, string order_Id);
         Task<DataTable> Get_Order_Data_Mazal_Excel(string stock_Id, string order_Id);
+        Task<List<Dictionary<string, object>>> Get_Order_Processing_Name_Status_Select(int sub_order_Id, string order_Id);
         Task<List<Dictionary<string, object>>> Get_Company_Name();
         Task<List<Dictionary<string, object>>> Get_Final_Order(Final_Order_Model final_Order_Model);
         Task<int> Order_Processing_Status_Update(Order_Processing_Status_Model order_Processing_Status_Model, int user_Id);

@@ -8,6 +8,7 @@ namespace astute.Models
         public string? Majal_Excel_Exist { get; set; }
         public string? Stock_Id { get; set; }
         public string? Order_Id { get; set; }
+        public int? Sub_Order_Id { get; set; }
         public bool? Send_From_Default { get; set; }
     }
 }
