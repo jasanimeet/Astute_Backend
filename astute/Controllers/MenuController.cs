@@ -46,9 +46,13 @@ namespace astute.Controllers
                 }
                 return NoContent();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "GetRecursiveMenu", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -71,9 +75,13 @@ namespace astute.Controllers
                 }
                 return NoContent();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "GetMenu", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -106,9 +114,13 @@ namespace astute.Controllers
                 }
                 return BadRequest(ModelState);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "CreateMenu", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -141,9 +153,13 @@ namespace astute.Controllers
                 }
                 return BadRequest(ModelState);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "UpdateMenu", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -169,9 +185,13 @@ namespace astute.Controllers
                     message = CoreCommonMessage.ParameterMismatched
                 });
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "DeleteMenu", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
 

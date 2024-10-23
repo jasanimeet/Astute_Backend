@@ -124,7 +124,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "User_Registration", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -214,7 +214,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Update_User", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -242,7 +242,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_User", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -272,7 +272,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Active_Cities", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });

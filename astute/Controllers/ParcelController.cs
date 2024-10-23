@@ -114,7 +114,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_Parcel_Master", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -145,7 +145,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Delete_Parcel_Master", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });

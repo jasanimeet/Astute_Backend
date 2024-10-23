@@ -99,7 +99,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetCountries", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -132,7 +132,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Active_Countries", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -187,7 +187,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "CreateCountry", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -242,7 +242,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "UpdateCountry", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -285,7 +285,7 @@ namespace astute.Controllers
                     });
                 }
                 await _commonService.InsertErrorLog(ex.Message, "UpdateCountry", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -313,7 +313,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "ChangeStatusCountry", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -361,7 +361,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetStates", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -394,7 +394,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Active_States", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -449,7 +449,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "CreateState", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -508,7 +508,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "UpdateState", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -571,7 +571,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "ChangeStatusState", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -616,7 +616,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetCities", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -645,7 +645,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Active_Cities", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -692,7 +692,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "CreateCity", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -743,7 +743,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "UpdateCity", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -806,7 +806,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "ChangeStatusCity", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -895,7 +895,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "get_city_combo", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -926,7 +926,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetTerms", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -955,7 +955,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Active_Terms", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -994,7 +994,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "CreateTerms", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1033,7 +1033,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "UpdateTerms", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1064,7 +1064,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "DeleteTerms", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1092,7 +1092,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "ChangeStatusTerms", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1123,7 +1123,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetYears", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1151,7 +1151,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Active_Years", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1182,7 +1182,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "CreateYear", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1213,7 +1213,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "UpdateYear", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1245,7 +1245,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "DeleteYear", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1273,7 +1273,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "ChangeStatusYear", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1299,7 +1299,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetRandomQuote", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1328,7 +1328,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetQuote", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1359,7 +1359,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "CreateQuote", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1390,7 +1390,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "UpdateQuote", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1422,7 +1422,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "DeleteQuote", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1453,7 +1453,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetProcess", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1500,7 +1500,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "CreateProcessMas", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1547,7 +1547,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "UpdateProcessMas", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1615,7 +1615,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "ChangeStatusProcess", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1671,7 +1671,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetCurrency", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1700,7 +1700,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Active_Currency", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1755,7 +1755,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "CreateCurrency", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1810,7 +1810,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "UpdateCurrency", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1852,7 +1852,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "DeleteCurrency", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1880,7 +1880,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "ChangeStatusCurrency", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -1936,7 +1936,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetPointer", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2036,7 +2036,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Add_Update_Pointer_Detail", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2065,7 +2065,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Poiner_Details", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2112,7 +2112,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "UpdatePointer", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2180,7 +2180,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "ChangeStatusPointer", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2223,7 +2223,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Pointer_For_Stock_Generation", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2254,7 +2254,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetBgm", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2326,7 +2326,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Add_Update_BGM_Detail", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2355,7 +2355,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_BGM_Detail", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2410,7 +2410,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "CreateBgm", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2456,7 +2456,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "UpdateBgm", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2487,7 +2487,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "DeleteBgm", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2515,7 +2515,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "ChangeStatusBgm", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2543,7 +2543,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Change_Status_Bgm_Detail", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2653,7 +2653,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "CreateBank", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2700,7 +2700,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "UpdateBank", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2764,7 +2764,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "ChangeStatusBank", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2892,7 +2892,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "CreateInvoiceRemarks", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2939,7 +2939,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "UpdateInvoiceRemarks", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2971,7 +2971,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "DeleteInvoiceRemarks", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -2999,7 +2999,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "ChangeStatusInvoiceRemarks", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3030,7 +3030,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetHoliday", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3101,7 +3101,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "CreateHoliday", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3132,7 +3132,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "UpdateHoliday", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3164,7 +3164,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "DeleteHoliday", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3195,7 +3195,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetLayout", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3224,7 +3224,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetLayoutDetail", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3255,7 +3255,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "CreateLayout", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3286,7 +3286,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "DeleteLayout", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3317,7 +3317,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "DeleteLayoutDetail", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3345,7 +3345,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "UpdateLayoutDetailStatus", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3390,7 +3390,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "GetTermsAndConditions", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3437,7 +3437,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "CreateTermsAndConditions", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3484,7 +3484,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "UpdateTermsAndConditions", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3516,7 +3516,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "DeleteTermsAndConditions", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3544,7 +3544,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "ChangeStatusTermsAndConditions", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3600,7 +3600,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Loder", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3648,7 +3648,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Loader", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3675,7 +3675,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Set_Default_Loader", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3707,7 +3707,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "DeleteLoader", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3738,7 +3738,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Add_Employee_Loader", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3766,7 +3766,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Employee_Loader", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3797,7 +3797,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Exchange_Rate", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3862,7 +3862,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_Exchange_Rate", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3898,7 +3898,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Temp_Layout", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3950,7 +3950,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "create_update_temp_layout", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -3982,7 +3982,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Delete_Temp_Layout", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -4014,7 +4014,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Update_Temp_Layout_Status", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -4046,7 +4046,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Set_Temp_Layout_Defalt", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -4076,7 +4076,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Designation", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -4118,7 +4118,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Terms_Trans_Det", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -4157,7 +4157,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Update_Terms_Trans_Det", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });
@@ -4188,7 +4188,7 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Delete_Terms_Trans_Det", ex.StackTrace);
-                return Ok(new
+                return Conflict(new
                 {
                     message = ex.Message
                 });

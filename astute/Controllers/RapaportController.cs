@@ -57,9 +57,13 @@ namespace astute.Controllers
                 }
                 return NoContent();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "GetRapaport", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -84,9 +88,13 @@ namespace astute.Controllers
                 }
                 return BadRequest(ModelState);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "CreateRapaport", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -111,9 +119,13 @@ namespace astute.Controllers
                 }
                 return BadRequest(ModelState);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "UpdateRapaport", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -139,9 +151,13 @@ namespace astute.Controllers
                     message = CoreCommonMessage.ParameterMismatched
                 });
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "DeleteRapaport", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
         #endregion
@@ -166,9 +182,13 @@ namespace astute.Controllers
                 }
                 return NoContent();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "GetRapaportDetail", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -217,9 +237,13 @@ namespace astute.Controllers
                 }
                 return BadRequest();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "CreateRapaportDetail", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -252,9 +276,13 @@ namespace astute.Controllers
                 }
                 return BadRequest(ModelState);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "UpdateRapaportDetail", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -280,9 +308,13 @@ namespace astute.Controllers
                     message = CoreCommonMessage.ParameterMismatched
                 });
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "DeleteRapaportDetail", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
         #endregion
@@ -306,9 +338,13 @@ namespace astute.Controllers
                 }
                 return NoContent();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "GetRapaportUser", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -332,9 +368,13 @@ namespace astute.Controllers
                 }
                 return BadRequest(ModelState);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "CreateRapaportUser", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -358,9 +398,13 @@ namespace astute.Controllers
                 }
                 return BadRequest(ModelState);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "UpdateRapaportUser", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -385,9 +429,13 @@ namespace astute.Controllers
                     message = CoreCommonMessage.ParameterMismatched
                 });
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "DeleteRapaportUser", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
         #endregion
@@ -580,9 +628,13 @@ namespace astute.Controllers
                 }
                 return NoContent();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "Get_Rapaport_Clarity_Filter_Value", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
         [HttpGet]
@@ -604,9 +656,13 @@ namespace astute.Controllers
                 }
                 return NoContent();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "Get_Rapaport_Color_Filter_Value", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
         [HttpGet]
@@ -628,9 +684,13 @@ namespace astute.Controllers
                 }
                 return NoContent();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "Get_Rapaport_Date_Filter_Value", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
         [HttpGet]
@@ -652,9 +712,13 @@ namespace astute.Controllers
                 }
                 return NoContent();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "Get_Rapaport_Color", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -677,9 +741,13 @@ namespace astute.Controllers
                 }
                 return NoContent();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "Get_Shape_Filter_Value", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -702,9 +770,13 @@ namespace astute.Controllers
                 }
                 return NoContent();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                await _commonService.InsertErrorLog(ex.Message, "Get_Diamond_Type_Filter_Value", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
             }
         }
         #endregion
