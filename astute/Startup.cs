@@ -161,12 +161,12 @@ namespace astute
             }
             app.UseResponseCompression();
             app.UseHttpsRedirection();
+            app.UseMiddleware<JwtMiddleware>();
             app.UseAuthentication();
             app.UseRouting();   
             app.UseAuthorization();
             app.UseCors("corsapp");
             app.UseStaticFiles();
-            app.UseMiddleware<JwtMiddleware>();
             app.UseEndpoints(endpoints =>
             {   
                 endpoints.MapControllers();

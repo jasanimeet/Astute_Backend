@@ -153,7 +153,7 @@ namespace astute.Repository
 
             return ("success", result, _msg);
         }
-        public async Task<(string, int,string)> Create_Update_Order_Processing(DataTable dataTable, int Id, int? user_Id, string customer_Name, string remarks, string status)
+        public async Task<(string, int,string)> Create_Update_Order_Processing(DataTable dataTable, int Id, int? user_Id, string customer_Name, string remarks, string status, int? assist_By)
         {
             var parameter = new SqlParameter("@Order_Processing_Table_Type", SqlDbType.Structured)
             {
@@ -165,6 +165,7 @@ namespace astute.Repository
             var _customer_Name = !string.IsNullOrEmpty(customer_Name) ? new SqlParameter("@Customer_Name", customer_Name) : new SqlParameter("@Customer_Name", DBNull.Value);
             var _remarks = !string.IsNullOrEmpty(remarks) ? new SqlParameter("@Remarks", remarks) : new SqlParameter("@Remarks", DBNull.Value);
             var _status = !string.IsNullOrEmpty(status) ? new SqlParameter("@Status", status) : new SqlParameter("@Status", DBNull.Value);
+            var _assist_By = assist_By > 0 ? new SqlParameter("@Assist_By", assist_By) : new SqlParameter("@Assist_By", DBNull.Value);
             var is_Exists = new SqlParameter("@IsExist", SqlDbType.Bit)
             {
                 Direction = ParameterDirection.Output
@@ -175,7 +176,7 @@ namespace astute.Repository
                 Direction = ParameterDirection.Output
             };
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Insert_Update] @Order_Processing_Table_Type,@Id, @User_Id, @Customer_Name, @Remarks ,@Status,@IsExist OUT,@Msg OUT", parameter, id, _user_Id, _customer_Name, _remarks, _status, is_Exists,msg));
+                        .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Insert_Update] @Order_Processing_Table_Type,@Id, @User_Id, @Customer_Name, @Remarks ,@Status, @Assist_By,@IsExist OUT,@Msg OUT", parameter, id, _user_Id, _customer_Name, _remarks, _status, _assist_By, is_Exists,msg));
             var _is_Exists = (bool)is_Exists.Value;
             var _msg = (string)msg.Value;
             if (_is_Exists)

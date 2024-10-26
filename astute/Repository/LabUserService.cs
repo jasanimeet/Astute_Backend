@@ -361,8 +361,7 @@ namespace astute.Repository
         
         public async Task<int> Job_Transfer_Auto_Stock_Pricing(string? Upload_From)
         {
-
-            var _upload_From = !string.IsNullOrEmpty(Upload_From)? new SqlParameter("@Upload_From", Upload_From) : new SqlParameter("@Upload_From", DBNull.Value);
+            var _upload_From = !string.IsNullOrEmpty(Upload_From) ? new SqlParameter("@Upload_From", Upload_From) : new SqlParameter("@Upload_From", DBNull.Value);
 
             using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
             {

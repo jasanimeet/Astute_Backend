@@ -6,6 +6,7 @@ namespace astute.Models
     {
         public int Id { get; set; }
         public int? User_Id { get; set; }
+        public int? Assist_By { get; set; }
         public string? Customer_Name { get; set; }
         public string? Remarks { get; set; }
         public string? Status { get; set; }
