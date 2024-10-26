@@ -470,6 +470,15 @@ namespace astute.Repository
                                 .ExecuteSqlRawAsync(@"EXEC Employee_Master_Update_Status @Employee_Id, @Status", _employee_Id, Status));
             return result;
         }
+        public async Task<List<DropdownModel>> Employee_Master_Name_Select(int user_Id)
+        {
+            var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
+
+            var employees = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"exec Employee_Master_Select_By_Id @User_Id", _user_Id).ToList());
+
+            return employees;
+        }
 
         public async Task<(string, int)> Change_Password(Change_Password_Model change_Password_Model, int? user_Id)
         {

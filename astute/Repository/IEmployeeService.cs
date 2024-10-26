@@ -25,6 +25,7 @@ namespace astute.Repository
         Task<IList<DropdownModel>> Get_Employee_For_Report(bool is_Exist, int rm_Id, int user_Id, string user_Type);
         Task<int> Employee_Master_Change_Status(int employee_Id, bool status);
         Task<(string, int)> Change_Password(Change_Password_Model change_Password_Model, int? user_Id);
+        Task<List<DropdownModel>> Employee_Master_Name_Select(int employee_Id);
         #endregion
 
         #region Employee Document

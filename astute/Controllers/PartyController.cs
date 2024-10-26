@@ -7172,9 +7172,29 @@ namespace astute.Controllers
                         Convert.ToString(item.Status), Convert.ToString(item.QC_Remarks));
                 }
 
-                var (message, result, msg) = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.Id, order_Processing.User_Id, order_Processing.Customer_Name, order_Processing.Remarks, order_Processing.Status, order_Processing.Assist_By);
+                var (message, result, msg, order_No) = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.Id, order_Processing.User_Id, order_Processing.Customer_Name, order_Processing.Remarks, order_Processing.Status, order_Processing.Assist_By);                
                 if ((message == "exist" && msg.Length > 0) || (message == "success" && msg.Length > 0))
                 {
+                    int assistBy = order_Processing.Assist_By ?? 0;
+
+                    string to_Email = "list@sunrisediam.com";
+                    
+                    string subject = order_Processing.Status + " request for order no " + order_No + " - " + order_Processing.Customer_Name;
+
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine(@"Company Name :  " + order_Processing.Customer_Name + "<br/>");
+
+                    var userId = assistBy > 0 ? assistBy : (order_Processing.User_Id ?? 0);
+
+                    var user = await _employeeService.Employee_Master_Name_Select(userId);
+
+                    sb.AppendLine(@"Assist By: " + user[0].Name + "<br/>");
+
+                    sb.AppendLine(@"Request for : " + order_Processing.Status + "<br/>");
+
+                    _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
+
                     // if alredy exists stone add again then message should show succsessfully added.
                     return Ok(new
                     {

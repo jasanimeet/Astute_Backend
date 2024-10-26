@@ -153,7 +153,7 @@ namespace astute.Repository
 
             return ("success", result, _msg);
         }
-        public async Task<(string, int,string)> Create_Update_Order_Processing(DataTable dataTable, int Id, int? user_Id, string customer_Name, string remarks, string status, int? assist_By)
+        public async Task<(string, int,string, int)> Create_Update_Order_Processing(DataTable dataTable, int Id, int? user_Id, string customer_Name, string remarks, string status, int? assist_By)
         {
             var parameter = new SqlParameter("@Order_Processing_Table_Type", SqlDbType.Structured)
             {
@@ -175,14 +175,19 @@ namespace astute.Repository
                 Size = -1,
                 Direction = ParameterDirection.Output
             };
+            var Order_No = new SqlParameter("@Order_No", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Insert_Update] @Order_Processing_Table_Type,@Id, @User_Id, @Customer_Name, @Remarks ,@Status, @Assist_By,@IsExist OUT,@Msg OUT", parameter, id, _user_Id, _customer_Name, _remarks, _status, _assist_By, is_Exists,msg));
+                        .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Insert_Update] @Order_Processing_Table_Type,@Id, @User_Id, @Customer_Name, @Remarks ,@Status, @Assist_By,@IsExist OUT,@Msg OUT, @Order_No OUT", parameter, id, _user_Id, _customer_Name, _remarks, _status, _assist_By, is_Exists,msg, Order_No));
             var _is_Exists = (bool)is_Exists.Value;
             var _msg = (string)msg.Value;
+            var order_no = (int)Order_No.Value;
             if (_is_Exists)
-                return ("exist", 0, _msg);
+                return ("exist", 0, _msg, order_no);
 
-            return ("success", result, _msg);
+            return ("success", result, _msg, order_no);
         }
         public async Task<int> Order_Processing_Inactive(Order_Processing_Inactive order_processing)
         {
