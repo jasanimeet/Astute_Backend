@@ -380,6 +380,18 @@ namespace astute.Repository
 
             var employees = await Task.Run(() => _dbContext.Employee_Fortune_Master
                             .FromSqlRaw(@"exec Employee_Master_Fortune_Id_Select @employeeId", empId)
+                            .AsEnumerable()
+                            .FirstOrDefault());
+
+            return employees;
+        }
+
+        public async Task<Employee_Fortune_Order_Master> GetEmployeeFortuneIdByOrderNo(string order_No)
+        {
+            var OrderNo = !string.IsNullOrEmpty(order_No) ? new SqlParameter("@Order_No", order_No) : new SqlParameter("@Order_No", DBNull.Value);
+
+            var employees = await Task.Run(() => _dbContext.Employee_Fortune_Order_Master
+                            .FromSqlRaw(@"exec Employee_Master_Fortune_Id_Order_No_Select @Order_No", OrderNo)
                             .AsEnumerable()  
                             .FirstOrDefault());
 

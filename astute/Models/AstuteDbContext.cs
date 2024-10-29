@@ -23,6 +23,7 @@ namespace astute.Models
         public DbSet<Supplier_Value_Mapping> Supplier_Value_Mapping { get; set; }
         public DbSet<Employee_Master> Employee_Master { get; set; }
         public DbSet<Employee_Fortune_Master> Employee_Fortune_Master { get; set; }
+        public DbSet<Employee_Fortune_Order_Master> Employee_Fortune_Order_Master { get; set; }
         public DbSet<Employee_Document> Employee_Document { get; set; }
         public DbSet<Employee_Salary> Employee_Salary { get; set; }
         public DbSet<Country_Master> Country_Master { get; set; }

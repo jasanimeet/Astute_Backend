@@ -10997,7 +10997,7 @@ namespace astute.Controllers
 
                             if (canceledOrders.Any())
                             {
-                                var fortuneId = await _employeeService.GetEmployeeFortuneId(user_Id ?? 0);
+                                var fortuneId = await _employeeService.GetEmployeeFortuneIdByOrderNo(order_Stone_Process.Order_No);
                                 var transferResult = await _oracleService.Order_Data_Transfer_Oracle(canceledOrders, fortuneId, order_Stone_Process.QC_Request);
 
                                 return Ok(new
@@ -11254,6 +11254,7 @@ namespace astute.Controllers
                 IList<Order_Processing_Complete_Detail> OrderResult = JsonConvert.DeserializeObject<IList<Order_Processing_Complete_Detail>>(order_Processing_Reply_To_Assist.Order_Detail.ToString());
                 bool tofortune = false;
                 List<string> Stock_Id = new List<string>();
+                List<string> Stock_Ids = new List<string>();
 
                 DataTable dataTable = new DataTable();
                 dataTable.Columns.Add("Id", typeof(int));
@@ -11271,14 +11272,13 @@ namespace astute.Controllers
                     {
                         Stock_Id.Add(item.StockId);
                     }
-
+                    Stock_Ids.Add(item.StockId);
                 }
 
                 var result = await _supplierService.Order_Processing_Completed(dataTable, order_Processing_Reply_To_Assist.Order_No, order_Processing_Reply_To_Assist.Sub_Order_Id ?? 0);
                 if (result > 0)
                 {
-                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                    var result_e = await _employeeService.GetEmployeeFortuneIdByOrderNo(order_Processing_Reply_To_Assist.Order_No);
 
                     var result_e = await _employeeService.GetEmployeeFortuneId(user_Id ?? 0);
 
@@ -11290,6 +11290,8 @@ namespace astute.Controllers
                         }
                     }
 
+                    string to_Email = string.IsNullOrEmpty(result_e.Company_Email) ? "list@sunrisediam.com" : result_e.Company_Email + ",list@sunrisediam.com";
+
                     if (tofortune)
                     {
                         var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e, order_Processing_Reply_To_Assist.Summary_QC_Remarks);
@@ -11298,14 +11300,89 @@ namespace astute.Controllers
                             if (Stock_Id.Count > 0)
                             {
                                 string concatenatedStockIds = string.Join(", ", Stock_Id);
+
+                                string concatenatedStockId = string.Join(",", Stock_Ids);
+
                                 var result_lo = await _supplierService.Order_Procesing_Stone_Location_Solar(order_Processing_Reply_To_Assist.Order_No, concatenatedStockIds);
+
+                                if (!string.IsNullOrEmpty(result_e.Company_Email))
+                                {
+                                    var dt_Order = await _supplierService.Get_Order_Data_Mazal_Excel(concatenatedStockId, order_Processing_Reply_To_Assist.Order_No);
+
+                                    if (dt_Order != null && dt_Order.Rows.Count > 0)
+                                    {
+                                        var excelPath = string.Empty;
+
+                                        string filename = $"{"Order_Status_"}{DateTime.UtcNow.ToString("ddMMyyyy-HHmmss")}{order_Processing_Reply_To_Assist.Order_No}.xlsx";
+
+                                        string subject = order_Processing_Reply_To_Assist.Request_For + " request for order no " + order_Processing_Reply_To_Assist.Order_No + " completed";
+
+                                        StringBuilder body = new StringBuilder();
+
+                                        body.AppendLine(@"Company Name :  " + result_e.Company_Name + "<br/>");
+
+                                        body.AppendLine(@"Request for : " + order_Processing_Reply_To_Assist.Request_For + "<br/>");
+
+                                        List<string> columnNames = new List<string>();
+                                        foreach (DataColumn column in dt_Order.Columns)
+                                        {
+                                            columnNames.Add(column.ColumnName);
+                                        }
+
+                                        DataTable columnNamesTable = new DataTable();
+                                        columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                                        foreach (string columnName in columnNames)
+                                        {
+                                            columnNamesTable.Rows.Add(columnName);
+                                        }
+                                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                                        if (!(Directory.Exists(filePath)))
+                                        {
+                                            Directory.CreateDirectory(filePath);
+                                        }
+
+                                        EpExcelExport.Create_Order_Processing_Excel_Mazal(dt_Order, columnNamesTable, filePath, filePath + filename);
+
+                                        excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+
+                                        byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
+                                        using (MemoryStream memoryStream = new MemoryStream(fileBytes))
+                                        {
+                                            Employee_Mail employee_Mail = new Employee_Mail
+                                            {
+                                                Email_id = _configuration["EmailSetting:FromEmail"],
+                                                Email_Password = _configuration["EmailSetting:FromPassword"],
+                                                SMTP_Server_Address = _configuration["EmailSetting:SmtpHost"],
+                                                SMTP_Port = Convert.ToInt32(_configuration["EmailSetting:SmtpPort"])
+                                            };
+
+                                            IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
+                                            _emailSender.Send_Stock_Email(toEmail: to_Email, externalLink: "", subject: subject, formFile: formFile, strBody: body.ToString(), user_Id: 0, employee_Mail: employee_Mail);
+                                        }
+                                    }
+                                }
                             }
+
                             return Ok(new
                             {
                                 statusCode = HttpStatusCode.OK,
                                 message = "Order completed successfully."
                             });
                         }
+                    }
+                    else 
+                    {
+                        string subject = order_Processing_Reply_To_Assist.Request_For + " request for order no " + order_Processing_Reply_To_Assist.Order_No + " completed";
+
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(@"Company Name :  " + result_e.Company_Name + "<br/>");
+
+                        sb.AppendLine(@"Request for : " + order_Processing_Reply_To_Assist.Request_For + "<br/>");
+
+                        _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
+
                     }
                     return Ok(new
                     {

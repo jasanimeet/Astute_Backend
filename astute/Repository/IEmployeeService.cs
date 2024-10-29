@@ -15,6 +15,7 @@ namespace astute.Repository
         Task<(string, int)> DeleteEmployee(int employeeId);
         Task<IList<Employee_Master>> GetEmployees(int employeeId, string userName, string personalEmail);
         Task<Employee_Fortune_Master> GetEmployeeFortuneId(int employeeId);
+        Task<Employee_Fortune_Order_Master> GetEmployeeFortuneIdByOrderNo(string order_No);
         Task<Employee_Master> EmployeeLogin(UserModel userModel);
         Task<AuthenticateResponse> AuthenticateEmployee(UserModel userModel);
         Task<int> Get_Employee_Code();
