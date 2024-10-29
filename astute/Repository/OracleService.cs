@@ -1566,7 +1566,7 @@ namespace astute.Repository
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vCOMMENTS", OracleDbType.NVarchar2);
-                        param1.Value = !string.IsNullOrEmpty(item.SupplierComments) ? Convert.ToString(item.SupplierComments) : DBNull.Value;
+                        param1.Value = !string.IsNullOrEmpty(item.GiaComments) ? Convert.ToString(item.GiaComments) : DBNull.Value;
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vSTR_LN", OracleDbType.NVarchar2);
@@ -1586,7 +1586,7 @@ namespace astute.Repository
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vluster", OracleDbType.NVarchar2);
-                        param1.Value = !string.IsNullOrEmpty(item.Luster) ? Convert.ToString(item.Luster) : DBNull.Value;
+                        param1.Value = !string.IsNullOrEmpty(item.Milky) ? Convert.ToString(item.Milky) : DBNull.Value;
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vLASER_INCLUSION", OracleDbType.NVarchar2);

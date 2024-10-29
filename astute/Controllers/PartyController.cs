@@ -11280,8 +11280,6 @@ namespace astute.Controllers
                 {
                     var result_e = await _employeeService.GetEmployeeFortuneIdByOrderNo(order_Processing_Reply_To_Assist.Order_No);
 
-                    var result_e = await _employeeService.GetEmployeeFortuneId(user_Id ?? 0);
-
                     foreach (var order in OrderResult)
                     {
                         if (order_Processing_Reply_To_Assist.Request_For.ToUpper().Contains("PLACE ORDER"))
