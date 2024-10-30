@@ -8,6 +8,7 @@ namespace astute.Models
     {
         [Key]
         public int Party_Id { get; set; }
+        public string Party_Name { get; set; }
         public Party_Api Party_Api { get; set; }
         public Party_FTP Party_FTP { get; set; }
         public Party_File Party_File { get; set; }
