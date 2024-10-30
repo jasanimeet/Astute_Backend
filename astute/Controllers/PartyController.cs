@@ -1595,6 +1595,8 @@ namespace astute.Controllers
             {
                 var supplier_detail = new Supplier_Details();
                 supplier_detail.Party_Id = party_Id;
+                var Party_Name = await _partyService.GetPartyName(party_Id);
+                supplier_detail.Party_Name = Party_Name[0]["Party_Name"]?.ToString();
                 supplier_detail.Party_Api = await _partyService.Get_Party_API(0, party_Id);
                 supplier_detail.Party_FTP = await _partyService.Get_Party_FTP(0, party_Id);
                 supplier_detail.Party_File = await _partyService.Get_Party_File(0, party_Id);
