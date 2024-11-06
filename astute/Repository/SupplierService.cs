@@ -687,8 +687,29 @@ namespace astute.Repository
             var base_Disc_To = supplier_Pricing.Base_Disc_To > 0 ? new SqlParameter("@Base_Disc_To", supplier_Pricing.Base_Disc_To) : new SqlParameter("@Base_Disc_To", DBNull.Value);
             var base_Amount_From = supplier_Pricing.Base_Amount_From > 0 ? new SqlParameter("@Base_Amount_From", supplier_Pricing.Base_Amount_From) : new SqlParameter("@Base_Amount_From", DBNull.Value);
             var base_Amount_To = supplier_Pricing.Base_Amount_To > 0 ? new SqlParameter("@Base_Amount_To", supplier_Pricing.Base_Amount_To) : new SqlParameter("@Base_Amount_To", DBNull.Value);
-            var final_Disc_From = supplier_Pricing.Final_Disc_From > 0 ? new SqlParameter("@Final_Disc_From", supplier_Pricing.Final_Disc_From) : new SqlParameter("@Final_Disc_From", DBNull.Value);
-            var final_Disc_To = supplier_Pricing.Final_Disc_To > 0 ? new SqlParameter("@Final_Disc_To", supplier_Pricing.Final_Disc_To) : new SqlParameter("@Final_Disc_To", DBNull.Value);
+
+            SqlParameter Final_Disc_From_Param;
+            if (supplier_Pricing.Final_Disc_From == null)
+            {
+                Final_Disc_From_Param = new SqlParameter("@Final_Disc_From", DBNull.Value);
+            }
+            else
+            {
+                Final_Disc_From_Param = new SqlParameter("@Final_Disc_From", supplier_Pricing.Final_Disc_From);
+            }
+            var final_Disc_From = Final_Disc_From_Param;
+
+            SqlParameter Final_Disc_To_Param;
+            if (supplier_Pricing.Final_Disc_To == null)
+            {
+                Final_Disc_To_Param = new SqlParameter("@Final_Disc_To", DBNull.Value);
+            }
+            else
+            {
+                Final_Disc_To_Param = new SqlParameter("@Final_Disc_To", supplier_Pricing.Final_Disc_To);
+            }
+            var final_Disc_To = Final_Disc_To_Param;
+
             var final_Amount_From = supplier_Pricing.Final_Amount_From > 0 ? new SqlParameter("@Final_Amount_From", supplier_Pricing.Final_Amount_From) : new SqlParameter("@Final_Amount_From", DBNull.Value);
             var final_Amount_To = supplier_Pricing.Final_Amount_To > 0 ? new SqlParameter("@Final_Amount_To", supplier_Pricing.Final_Amount_To) : new SqlParameter("@Final_Amount_To", DBNull.Value);
             var company = !string.IsNullOrEmpty(supplier_Pricing.Company) ? new SqlParameter("@Company", supplier_Pricing.Company) : new SqlParameter("@Company", DBNull.Value);
