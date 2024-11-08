@@ -10,6 +10,7 @@
         public string? End_Time { get; set; }
         public string? Upload_Method { get; set; }
         public string? Upload_Type { get; set; }
+        public string? Upload_Status { get; set; }
 
     }
 }

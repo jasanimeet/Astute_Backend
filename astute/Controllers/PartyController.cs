@@ -12507,6 +12507,16 @@ namespace astute.Controllers
                                 });
                             }
 
+                            Stock_Data_Master_Schedular stock_Data_Master_Schedular = new Stock_Data_Master_Schedular();
+                            stock_Data_Master_Schedular.Stock_Data_Id = 0;
+                            stock_Data_Master_Schedular.Supplier_Id = party_File.Party_Id;
+                            stock_Data_Master_Schedular.Upload_Method = "FILE";
+                            stock_Data_Master_Schedular.Upload_Type = "O";
+                            stock_Data_Master_Schedular.Upload_From = "M";
+
+                            (message, stock_Data_Id) = await _supplierService.Stock_Data_Custom_Insert_Update(stock_Data_Master_Schedular);
+                            if (message == "success" && stock_Data_Id > 0)
+                            {
                             party_file_obj.Sheet_Name = party_File.Sheet_Name;
                             party_file_obj.Validity_Days = party_File.Validity_Days;
                             party_file_obj.API_Flag = party_File.API_Flag;
@@ -12883,6 +12893,41 @@ namespace astute.Controllers
                                                                     }
                                                                 }
                                                             }
+
+                                                                foreach (DataRow mappingRow in supplier_column_Mapping.Rows)
+                                                                {
+                                                                    string supplierColumnName = mappingRow.Field<string>("Supp_Col_Name");
+                                                                    string supplierSynonymColumnName = mappingRow.Field<string>("Column_Synonym");
+
+                                                                    if (!string.IsNullOrEmpty(supplierColumnName))
+                                                                    {
+                                                                        if (!rowData.ContainsKey(supplierColumnName))
+                                                                        {
+                                                                            if (!string.IsNullOrEmpty(supplierSynonymColumnName))
+                                                                            {
+                                                                                if (!rowData.ContainsKey(supplierSynonymColumnName))
+                                                                                {
+                                                                                    Supplier_Stock_Update supplier_Stock_Update = new Supplier_Stock_Update()
+                                                                                    {
+                                                                                        Supplier_Id = party_File.Party_Id ?? 0,
+                                                                                        Stock_Data_Id = stock_Data_Id,
+                                                                                        Start_Time = startTime,
+                                                                                        Upload_Status = "Column not mapped"
+                                                                                    };
+                                                                                    await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
+
+                                                                                    return Conflict(new
+                                                                                    {
+                                                                                        statusCode = HttpStatusCode.Conflict,
+                                                                                        Supplier_Id = party_File.Party_Id,
+                                                                                        Party_Name = party_name,
+                                                                                        message = "Column not mapped"
+                                                                                    });
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
                                                             rowsData.Add(rowData);
                                                         }
                                                     }
@@ -13230,16 +13275,6 @@ namespace astute.Controllers
                                             }
                                         });
 
-                                        Stock_Data_Master_Schedular stock_Data_Master_Schedular = new Stock_Data_Master_Schedular();
-                                        stock_Data_Master_Schedular.Stock_Data_Id = 0;
-                                        stock_Data_Master_Schedular.Supplier_Id = party_File.Party_Id;
-                                        stock_Data_Master_Schedular.Upload_Method = "FILE";
-                                        stock_Data_Master_Schedular.Upload_Type = "O";
-                                        stock_Data_Master_Schedular.Upload_From = "M";
-
-                                        (message, stock_Data_Id) = await _supplierService.Stock_Data_Custom_Insert_Update(stock_Data_Master_Schedular);
-                                        if (message == "success" && stock_Data_Id > 0)
-                                        {
                                             if (dt_stock_data.Rows.Count > 0)
                                             {
                                                 var response = await _supplierService.Stock_Data_Detail_Insert_Update(dt_stock_data, stock_Data_Id);
@@ -13256,7 +13291,8 @@ namespace astute.Controllers
                                                             Stock_Data_Id = stock_Data_Id,
                                                             Start_Time = startTime,
                                                             Supplier_Response_Time = null,
-                                                            End_Time = endTime
+                                                            End_Time = endTime,
+                                                            Upload_Status = "Stock uploaded successfully"
                                                         };
                                                         await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
                                                     }
@@ -13291,7 +13327,8 @@ namespace astute.Controllers
                                 {
                                     Supplier_Id = party_File.Party_Id ?? 0,
                                     Stock_Data_Id = stock_Data_Id,
-                                    Start_Time = startTime
+                                        Start_Time = startTime,
+                                        Upload_Status = "No column mapping found!"
                                 };
                                 await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
 
@@ -13304,6 +13341,7 @@ namespace astute.Controllers
                                 });
                             }
                         }
+                        }
                         #endregion
                     }
 
@@ -13313,7 +13351,8 @@ namespace astute.Controllers
                 {
                     Supplier_Id = party_File.Party_Id ?? 0,
                     Stock_Data_Id = stock_Data_Id,
-                    Start_Time = startTime
+                    Start_Time = startTime,
+                    Upload_Status = CoreCommonMessage.SupplierPriceUpdateCheck
                 };
                 await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock);
 
@@ -13327,15 +13366,6 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-
-                Supplier_Stock_Update supplier_Stock_Update = new Supplier_Stock_Update()
-                {
-                    Supplier_Id = party_File.Party_Id ?? 0,
-                    Stock_Data_Id = stock_Data_Id,
-                    Start_Time = startTime
-                };
-                await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
-
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_Manual_Upload", ex.StackTrace);
                 if (ex.Message.Contains("An item with the same key has already been added"))
                 {
@@ -13347,6 +13377,16 @@ namespace astute.Controllers
                     message = ex.Message;
                 }
 
+                Supplier_Stock_Update supplier_Stock_Update = new Supplier_Stock_Update()
+                {
+                    Supplier_Id = party_File.Party_Id ?? 0,
+                    Stock_Data_Id = stock_Data_Id,
+                    Start_Time = startTime,
+                    Upload_Status = message
+                };
+
+                await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
+                
                 return Conflict(new
                 {
                     statusCode = HttpStatusCode.Conflict,
