@@ -123,6 +123,7 @@ namespace astute.Repository
         Task<int> Notification_Master_Update_Read_By(int? Notification_Id, bool? Is_Read,int? User_Id);
         Task<IList<Supplier_Price_List>> Get_Supplier_Price_List();
         Task<int> Update_Supplier_Price_List(DataTable supplier_Price_Lists);
+        Task<List<Dictionary<string, object>>> Get_Supplier_Special_Price_Validity(int party_Id);
 
         #endregion
 

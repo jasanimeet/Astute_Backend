@@ -14208,5 +14208,39 @@ namespace astute.Controllers
 
         #endregion
 
+        #region
+        [HttpPost]
+        [Route("get_supplier_special_price_validity")]
+        public async Task<IActionResult> Get_Supplier_Special_Price_Validity(int Party_Id)
+        {
+            try
+            {
+                var SupplierPrice = await _partyService.Get_Supplier_Special_Price_Validity(Party_Id);
+                if (SupplierPrice != null && SupplierPrice.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = "Special prices are going to expire on "+ SupplierPrice[0].Values.FirstOrDefault()?.ToString() + ". Please change the validity days accordingly."
+                    });
+                }
+                else 
+                {
+                    return NoContent();
+                }
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_Special_Price_Validity", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = ex.Message,
+                    error = ex.StackTrace
+                });
+            }
+        }
+
+        #endregion
     }
 }
