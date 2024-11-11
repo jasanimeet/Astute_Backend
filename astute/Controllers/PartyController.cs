@@ -13316,11 +13316,8 @@ namespace astute.Controllers
                                                 });
                                             }
                                         }
-
-
                                     }
                                 }
-                            }
                             else
                             {
                                 Supplier_Stock_Update supplier_Stock_Update = new Supplier_Stock_Update()
