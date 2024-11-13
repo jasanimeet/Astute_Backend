@@ -11441,7 +11441,7 @@ namespace astute.Controllers
                     }
                     string filename = string.Empty;
 
-                    filename = "Order_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    filename = "AdminStatus_" + DateTime.UtcNow.ToString("ddMMyyyy") + "_"+ report_Filter.Order_Id + ".xlsx";
                     if (is_Admin)
                     {
                         EpExcelExport.Create_Order_Processing_Excel_Admin(dt_Order, columnNamesTable, filePath, filePath + filename);
@@ -11509,7 +11509,7 @@ namespace astute.Controllers
                         Directory.CreateDirectory(filePath);
                     }
 
-                    filename = "Mazal_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    filename = "OrderStatus_" + DateTime.UtcNow.ToString("ddMMyyyy") + "_"+ report_Filter.Order_Id.ToString() + ".xlsx";
 
                     EpExcelExport.Create_Order_Processing_Excel_Mazal(dt_Order, columnNamesTable, filePath, filePath + filename);
 

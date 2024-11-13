@@ -7041,7 +7041,7 @@ namespace astute.CoreServices
                                 worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                                 worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                 worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0";
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
 
                                 ExcelStyle cellStyleHeader_RapAmt = worksheet.Cells[1, kkk].Style;
                                 cellStyleHeader_RapAmt.Border.Left.Style = cellStyleHeader_RapAmt.Border.Right.Style
@@ -7058,7 +7058,7 @@ namespace astute.CoreServices
                                 worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                                 worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                 worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0";
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
 
                                 ExcelStyle cellStyleHeader_TotalAmt = worksheet.Cells[1, kkk].Style;
                                 cellStyleHeader_TotalAmt.Border.Left.Style = cellStyleHeader_TotalAmt.Border.Right.Style
@@ -7075,7 +7075,7 @@ namespace astute.CoreServices
                                 worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                                 worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                 worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0";
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
 
                                 ExcelStyle cellStyleHeader_TotalAmt = worksheet.Cells[1, kkk].Style;
                                 cellStyleHeader_TotalAmt.Border.Left.Style = cellStyleHeader_TotalAmt.Border.Right.Style
@@ -7092,7 +7092,7 @@ namespace astute.CoreServices
                                 worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                                 worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                 worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0";
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
 
                                 ExcelStyle cellStyleHeader_TotalAmt = worksheet.Cells[1, kkk].Style;
                                 cellStyleHeader_TotalAmt.Border.Left.Style = cellStyleHeader_TotalAmt.Border.Right.Style
@@ -7110,7 +7110,7 @@ namespace astute.CoreServices
                                 worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                                 worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                 worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0";
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
 
                                 ExcelStyle cellStyleHeader_TotalAmt = worksheet.Cells[1, kkk].Style;
                                 cellStyleHeader_TotalAmt.Border.Left.Style = cellStyleHeader_TotalAmt.Border.Right.Style
@@ -7450,7 +7450,7 @@ namespace astute.CoreServices
                             worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                             worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                             worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                            worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0";
+                            worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
 
                             ExcelStyle cellStyleHeader_RapAmt = worksheet.Cells[1, kkk].Style;
                             cellStyleHeader_RapAmt.Border.Left.Style = cellStyleHeader_RapAmt.Border.Right.Style
@@ -7467,7 +7467,7 @@ namespace astute.CoreServices
                             worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                             worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                             worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                            worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0";
+                            worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
 
                             ExcelStyle cellStyleHeader_TotalAmt = worksheet.Cells[1, kkk].Style;
                             cellStyleHeader_TotalAmt.Border.Left.Style = cellStyleHeader_TotalAmt.Border.Right.Style
@@ -7848,7 +7848,7 @@ namespace astute.CoreServices
                                 worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                                 worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                 worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0";
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
 
                                 ExcelStyle cellStyleHeader_RapAmt = worksheet.Cells[1, kkk].Style;
                                 cellStyleHeader_RapAmt.Border.Left.Style = cellStyleHeader_RapAmt.Border.Right.Style
@@ -7865,7 +7865,7 @@ namespace astute.CoreServices
                                 worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                                 worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                 worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0";
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
 
                                 ExcelStyle cellStyleHeader_TotalAmt = worksheet.Cells[1, kkk].Style;
                                 cellStyleHeader_TotalAmt.Border.Left.Style = cellStyleHeader_TotalAmt.Border.Right.Style
@@ -7882,7 +7882,7 @@ namespace astute.CoreServices
                                 worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                                 worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                 worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0";
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
 
                                 ExcelStyle cellStyleHeader_TotalAmt = worksheet.Cells[1, kkk].Style;
                                 cellStyleHeader_TotalAmt.Border.Left.Style = cellStyleHeader_TotalAmt.Border.Right.Style
