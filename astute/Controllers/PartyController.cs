@@ -11209,6 +11209,9 @@ namespace astute.Controllers
         {
             try
             {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
                 IList<Order_Processing_Reply_To_Assist_Detail> OrderResult = JsonConvert.DeserializeObject<IList<Order_Processing_Reply_To_Assist_Detail>>(order_Processing_Reply_To_Assist.Order_Detail.ToString());
 
                 DataTable dataTable = new DataTable();
@@ -11225,7 +11228,7 @@ namespace astute.Controllers
                         (item.Cost_Amt != null ? !string.IsNullOrEmpty(item.Cost_Amt.ToString()) ? Convert.ToDouble(item.Cost_Amt.ToString()) : null : null));
                 }
 
-                var result = await _supplierService.Order_Processing_Reply_To_Assist(dataTable, order_Processing_Reply_To_Assist.Order_No, order_Processing_Reply_To_Assist.Sub_Order_Id ?? 0);
+                var result = await _supplierService.Order_Processing_Reply_To_Assist(dataTable, order_Processing_Reply_To_Assist.Order_No, order_Processing_Reply_To_Assist.Sub_Order_Id ?? 0, user_Id ?? 0);
                 if (result > 0)
                 {
                     return Ok(new
@@ -11253,6 +11256,9 @@ namespace astute.Controllers
         {
             try
             {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
                 IList<Order_Processing_Complete_Detail> OrderResult = JsonConvert.DeserializeObject<IList<Order_Processing_Complete_Detail>>(order_Processing_Reply_To_Assist.Order_Detail.ToString());
                 bool tofortune = false;
                 List<string> Stock_Id = new List<string>();
@@ -11277,7 +11283,7 @@ namespace astute.Controllers
                     Stock_Ids.Add(item.StockId);
                 }
 
-                var result = await _supplierService.Order_Processing_Completed(dataTable, order_Processing_Reply_To_Assist.Order_No, order_Processing_Reply_To_Assist.Sub_Order_Id ?? 0);
+                var result = await _supplierService.Order_Processing_Completed(dataTable, order_Processing_Reply_To_Assist.Order_No, order_Processing_Reply_To_Assist.Sub_Order_Id ?? 0, user_Id ?? 0);
                 if (result > 0)
                 {
                     var result_e = await _employeeService.GetEmployeeFortuneIdByOrderNo(order_Processing_Reply_To_Assist.Order_No);
