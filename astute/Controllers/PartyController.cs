@@ -12274,13 +12274,14 @@ namespace astute.Controllers
         #region Notification
         [HttpGet]
         [Route("get_notification")]
-        [Authorize]
         public async Task<IActionResult> Get_Notification()
         {
             try
             {
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                if (user_Id > 0)
+                {
                 var (result, totalRecordr) = await _partyService.Get_Notification(user_Id ?? 0);
                 if (result != null && result.Count > 0)
                 {
@@ -12293,6 +12294,13 @@ namespace astute.Controllers
                     });
                 }
                 return NoContent();
+            }
+
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                { 
+                    message = "Unauthorized Access", 
+                    statusCode = (int)HttpStatusCode.Unauthorized 
+                });
             }
             catch (Exception ex)
             {
