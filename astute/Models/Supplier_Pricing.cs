@@ -148,6 +148,7 @@ namespace astute.Models
         [NotMapped]
         public string? Query_Flag { get; set; }
         public int? Is_Sequence { get; set; }
+        public bool? Company_Status { get; set; }
         [NotMapped]
         public IList<Supplier_Pricing_Key_To_Symbol> Key_To_Symbol { get; set; } = new List<Supplier_Pricing_Key_To_Symbol>();
         public IList<Supplier_Pricing_Key_To_Symbol> Lab_Comments { get; set; } = new List<Supplier_Pricing_Key_To_Symbol>();
