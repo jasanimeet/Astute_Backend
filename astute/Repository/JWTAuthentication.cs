@@ -67,7 +67,7 @@ namespace astute.Repository
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ClockSkew = TimeSpan.FromMinutes(0)
+                    ClockSkew = TimeSpan.FromMinutes(1)
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
@@ -109,7 +109,7 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Employee_JWT_Token
                             .FromSqlRaw(@"exec Employee_JWT_Token_Select @Employee_Id, @IP_Address", _employee_Id, _ip_Address)
                             .AsEnumerable()
-                            .FirstOrDefault());
+            .FirstOrDefault());
 
             return result;
         }

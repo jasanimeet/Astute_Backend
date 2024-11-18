@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace astute.Models
 {
@@ -9,5 +10,6 @@ namespace astute.Models
         public int? Employee_Id { get; set; }
         public string? IP_Address { get; set; }        
         public string? Token { get; set; }
+        public DateTime? ExpireDateTime { get; set; }
     }
 }

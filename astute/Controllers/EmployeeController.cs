@@ -688,6 +688,133 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("check_employee_login")]
+        public async Task<IActionResult> Check_Employee_Login()
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if (user_Id > 0)
+                {
+                    var result = await _jWTAuthentication.Get_Employee_JWT_Token(user_Id ?? 0);
+                    if (result != null)
+                    {
+                        var expireDateTime = result.ExpireDateTime;
+
+                        var currentDateTime = DateTime.Now;
+
+                        if (expireDateTime <= currentDateTime)
+                        {
+                            return StatusCode((int)HttpStatusCode.Unauthorized, new
+                            {
+                                message = "Your session has expired. Please log in again.",
+                                statusCode = (int)HttpStatusCode.Unauthorized
+                            });
+                        }
+
+                        var timeRemaining = expireDateTime - currentDateTime;
+                        if (timeRemaining <= TimeSpan.FromMinutes(15))
+                        {
+                            return Ok(new
+                            {
+                                message = "Your token will expire in less than 10 minutes. Would you like to continue?",
+                                statusCode = (int)HttpStatusCode.OK
+                            });
+                        }
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+                
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Check_Employee_Login", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("regenerate_employee_login")]
+        [Authorize]
+        public async Task<IActionResult> Regenerate_Employee_Login()
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                if (user_Id > 0) 
+                {
+                    var user = await _employeeService.Get_Employee_Details(user_Id ?? 0);
+                    if (user != null)
+                    {
+                        UserModel userModel = new UserModel
+                        {
+                            Password = user.Password,
+                            UserName = user.User_Name
+                        };
+
+                        var response = await _employeeService.AuthenticateEmployee(userModel);
+
+                        if (response == null)
+                            return BadRequest(new { message = "Username or password is incorrect" });
+                        else
+                        {
+                            var auth_user = await _jWTAuthentication.Get_Employee_JWT_Token(response.Id);
+                            if (auth_user != null)
+                            {
+                                auth_user.Token = response.Token;
+                                await _jWTAuthentication.Insert_Update_Employee_JWT_Token(auth_user);
+                            }
+                            else
+                            {
+                                var jwt_auth_tken = new Employee_JWT_Token()
+                                {
+                                    Token_Id = 0,
+                                    Employee_Id = response.Id,
+                                    Token = response.Token
+                                };
+                                await _jWTAuthentication.Insert_Update_Employee_JWT_Token(jwt_auth_tken);
+                            }
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                user_Id = response.Id,
+                                user_Name = response.Username,
+                                is_Admin = response.Is_Admin,
+                                token = response.Token,
+                                user_Type = response.Usert_Type
+                            });
+                        }
+                    }
+                }
+                
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Regenerate_Employee_Login", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Forget Password

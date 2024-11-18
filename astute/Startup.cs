@@ -136,7 +136,7 @@ namespace astute
                     ValidAudience = Configuration["JwtToken:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtToken:SecretKey"])),
                     ValidateLifetime = true, // Validate the token's lifetime
-                    ClockSkew = TimeSpan.FromMinutes(0),
+                    ClockSkew = TimeSpan.FromMinutes(1),
 
                 };
             });
