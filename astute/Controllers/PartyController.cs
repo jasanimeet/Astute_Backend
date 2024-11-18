@@ -5762,21 +5762,13 @@ namespace astute.Controllers
                     }
                 }
 
-                var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr) = await _supplierService.Get_Stock_Avalibility_Report_Search(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.supp_Stock_Id, stock_Avalibility.iPgNo ?? 0, stock_Avalibility.iPgSize ?? 0, stock_Avalibility.iSort, stock_Avalibility.party_Id ?? 0);
+                var result = await _supplierService.Get_Stock_Avalibility_Report_Search(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.supp_Stock_Id, stock_Avalibility.iPgNo ?? 0, stock_Avalibility.iPgSize ?? 0, stock_Avalibility.iSort, stock_Avalibility.party_Id ?? 0);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.DataSuccessfullyFound,
-                        total_Records = totalRecordr,
-                        total_Cts = totalCtsr,
-                        total_Amt = totalAmtr,
-                        total_Disc = totalDiscr,
-                        total_Base_Amt = totalBaseAmtr,
-                        total_Base_Disc = totalBaseDiscr,
-                        total_Offer_Amt = totalOfferAmtr,
-                        total_Offer_Disc = totalOfferDiscr,
                         data = result
                     });
                 }

@@ -2200,17 +2200,10 @@ namespace astute.Repository
             }
             return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseDiscr, totalBaseAmtr, totalOfferDiscr, totalOfferAmtr, totalMaxSlabDiscr, totalMaxSlabAmtr, totalRaP_Amount);
         }
-        public async Task<(List<Dictionary<string, object>>, string, string, string, string, string, string, string, string)> Get_Stock_Avalibility_Report_Search(DataTable dataTable, string stock_Id, string stock_Type, string supp_Stock_Id, int iPgNo, int iPgSize, IList<Report_Sorting> iSort, int party_Id)
+        public async Task<List<Dictionary<string, object>>> Get_Stock_Avalibility_Report_Search(DataTable dataTable, string stock_Id, string stock_Type, string supp_Stock_Id, int iPgNo, int iPgSize, IList<Report_Sorting> iSort, int party_Id)
         {
             var result = new List<Dictionary<string, object>>();
-            var totalRecordr = string.Empty;
-            var totalCtsr = string.Empty;
-            var totalAmtr = string.Empty;
-            var totalDiscr = string.Empty;
-            var totalBaseAmtr = string.Empty;
-            var totalBaseDiscr = string.Empty;
-            var totalOfferAmtr = string.Empty;
-            var totalOfferDiscr = string.Empty;
+            
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
                 using (var command = new SqlCommand("Stock_Availability_Select", connection))
@@ -2232,9 +2225,6 @@ namespace astute.Repository
                         }
                         command.Parameters.Add(!string.IsNullOrEmpty(iSorting) ? new SqlParameter("@iSort", iSorting) : new SqlParameter("@iSort", DBNull.Value));
                     }
-                    var totalRecordParameter = new SqlParameter("@iTotalRec", SqlDbType.Int);
-                    totalRecordParameter.Direction = ParameterDirection.Output;
-                    command.Parameters.Add(totalRecordParameter);
 
                     var parameter = new SqlParameter("@Stock_Availibity_Type", SqlDbType.Structured)
                     {
@@ -2242,55 +2232,7 @@ namespace astute.Repository
                         Value = dataTable
                     };
                     command.Parameters.Add(parameter);
-                    var totalCtsParameter = new SqlParameter("@iTotalCts", SqlDbType.NVarChar)
-                    {
-                        Size = -1, // -1 is used for max size
-                        Direction = ParameterDirection.Output
-                    };
-                    command.Parameters.Add(totalCtsParameter);
 
-                    var totalAmtParameter = new SqlParameter("@iTotalAmt", SqlDbType.NVarChar)
-                    {
-                        Size = -1, // -1 is used for max size
-                        Direction = ParameterDirection.Output
-                    };
-                    command.Parameters.Add(totalAmtParameter);
-
-                    var totalDiscParameter = new SqlParameter("@iTotalDisc", SqlDbType.NVarChar)
-                    {
-                        Size = -1, // -1 is used for max size
-                        Direction = ParameterDirection.Output
-                    };
-                    command.Parameters.Add(totalDiscParameter);
-
-                    var totalBaseAmtParameter = new SqlParameter("@iTotalBaseAmt", SqlDbType.NVarChar)
-                    {
-                        Size = -1, // -1 is used for max size
-                        Direction = ParameterDirection.Output
-                    };
-                    command.Parameters.Add(totalBaseAmtParameter);
-
-                    var totalBaseDiscParameter = new SqlParameter("@iTotalBaseDisc", SqlDbType.NVarChar)
-                    {
-                        Size = -1, // -1 is used for max size
-                        Direction = ParameterDirection.Output
-                    };
-                    command.Parameters.Add(totalBaseDiscParameter);
-
-                    var totalOfferAmtParameter = new SqlParameter("@iTotalOfferAmt", SqlDbType.NVarChar)
-                    {
-                        Size = -1, // -1 is used for max size
-                        Direction = ParameterDirection.Output
-                    };
-                    command.Parameters.Add(totalOfferAmtParameter);
-
-                    var totalOfferDiscParameter = new SqlParameter("@iTotalOfferDisc", SqlDbType.NVarChar)
-                    {
-                        Size = -1, // -1 is used for max size
-                        Direction = ParameterDirection.Output
-                    };
-                    command.Parameters.Add(totalOfferDiscParameter);
-                    command.Parameters.Add(!string.IsNullOrEmpty(stock_Id) ? new SqlParameter("@STOCK_ID", stock_Id) : new SqlParameter("@STOCK_ID", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(stock_Type) ? new SqlParameter("@STOCK_TYPE", stock_Type) : new SqlParameter("@STOCK_TYPE", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(supp_Stock_Id) ? new SqlParameter("@SUPP_STOCK_ID", supp_Stock_Id) : new SqlParameter("@SUPP_STOCK_ID", DBNull.Value));
                     command.Parameters.Add(iPgNo > 0 ? new SqlParameter("@iPgNo", iPgNo) : new SqlParameter("@iPgNo", DBNull.Value));
@@ -2317,18 +2259,10 @@ namespace astute.Repository
                         }
                     }
 
-                    totalRecordr = Convert.ToString(totalRecordParameter.Value);
-                    totalCtsr = Convert.ToString(totalCtsParameter.Value);
-                    totalAmtr = Convert.ToString(totalAmtParameter.Value);
-                    totalDiscr = Convert.ToString(totalDiscParameter.Value);
-                    totalBaseAmtr = Convert.ToString(totalBaseAmtParameter.Value);
-                    totalBaseDiscr = Convert.ToString(totalBaseDiscParameter.Value);
-                    totalOfferAmtr = Convert.ToString(totalOfferAmtParameter.Value);
-                    totalOfferDiscr = Convert.ToString(totalOfferDiscParameter.Value);
                 }
             }
 
-            return (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr);
+            return result;
         }
         public async Task<List<Dictionary<string, object>>> Get_Report_Column_Format(int user_Id, int report_Id, string format_Type)
         {
