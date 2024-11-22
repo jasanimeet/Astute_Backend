@@ -11279,13 +11279,14 @@ namespace astute.Controllers
                 if (result > 0)
                 {
                     var result_e = await _employeeService.GetEmployeeFortuneIdByOrderNo(order_Processing_Reply_To_Assist.Order_No);
+                    tofortune = OrderResult.Any(order => order_Processing_Reply_To_Assist.Request_For.ToUpper().Contains("PLACE ORDER"));
 
-                    foreach (var order in OrderResult)
-                    {
-                        if (order_Processing_Reply_To_Assist.Request_For.ToUpper().Contains("PLACE ORDER"))
+                    string to_Email = "list@sunrisediam.com";
+                    if (result_e != null)
                         {
-                            tofortune = true;
-                        }
+                        to_Email = string.IsNullOrEmpty(result_e.Company_Email)
+                                    ? "list@sunrisediam.com"
+                                    : $"{result_e.Company_Email},list@sunrisediam.com";
                     }
 
                     string to_Email = string.IsNullOrEmpty(result_e.Company_Email) ? "list@sunrisediam.com" : result_e.Company_Email + ",list@sunrisediam.com";
@@ -11303,8 +11304,6 @@ namespace astute.Controllers
 
                                 var result_lo = await _supplierService.Order_Procesing_Stone_Location_Solar(order_Processing_Reply_To_Assist.Order_No, concatenatedStockIds);
 
-                                if (!string.IsNullOrEmpty(result_e.Company_Email))
-                                {
                                     var dt_Order = await _supplierService.Get_Order_Data_Mazal_Excel(concatenatedStockId, order_Processing_Reply_To_Assist.Order_No);
 
                                     if (dt_Order != null && dt_Order.Rows.Count > 0)
@@ -11317,7 +11316,10 @@ namespace astute.Controllers
 
                                         StringBuilder body = new StringBuilder();
 
+                                    if (result_e != null && !string.IsNullOrEmpty(result_e.Company_Name))
+                                    {
                                         body.AppendLine(@"Company Name :  " + result_e.Company_Name + "<br/>");
+                                    }
 
                                         body.AppendLine(@"Request for : " + order_Processing_Reply_To_Assist.Request_For + "<br/>");
 
@@ -11360,7 +11362,6 @@ namespace astute.Controllers
                                         }
                                     }
                                 }
-                            }
 
                             return Ok(new
                             {
@@ -11375,7 +11376,10 @@ namespace astute.Controllers
 
                         StringBuilder sb = new StringBuilder();
 
+                        if (result_e != null)
+                        {
                         sb.AppendLine(@"Company Name :  " + result_e.Company_Name + "<br/>");
+                        }
 
                         sb.AppendLine(@"Request for : " + order_Processing_Reply_To_Assist.Request_For + "<br/>");
 

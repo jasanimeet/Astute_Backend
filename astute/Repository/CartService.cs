@@ -200,7 +200,7 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Order_Summary(int order_no)
+        public async Task<List<Dictionary<string, object>>> Get_Order_Summary(string order_no)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -208,7 +208,7 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Order_Summary", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(order_no > 0 ? new SqlParameter("@Order_No", order_no) : new SqlParameter("@Order_No", DBNull.Value));
+                    command.Parameters.Add(new SqlParameter("@Order_No", order_no));
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
