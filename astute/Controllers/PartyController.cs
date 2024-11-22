@@ -10957,7 +10957,7 @@ namespace astute.Controllers
                     var result = await _supplierService.Create_Stone_Order_Process(order_Stone_Process, user_Id ?? 0);
                     if (result > 0)
                     {
-                        if (order_Stone_Process.Order_Status == "CANCEL")
+                        if (order_Stone_Process.Order_Status == "CANCEL" && order_Stone_Process.Order_No.StartsWith("S"))
                         {
                             var orderProcessDetail = new Order_Process_Detail { Order_No = order_Stone_Process.Order_No };
                             var orderResult = await _supplierService.Get_Order_Detail(user_Id ?? 0, orderProcessDetail);
@@ -10991,14 +10991,65 @@ namespace astute.Controllers
 
                             if (canceledOrders.Any())
                             {
-                                var fortuneId = await _employeeService.GetEmployeeFortuneIdByOrderNo(order_Stone_Process.Order_No);
-                                var transferResult = await _oracleService.Order_Data_Transfer_Oracle(canceledOrders, fortuneId, order_Stone_Process.QC_Request);
 
+                                var order_Processing = await _cartService.Get_Order_Summary(order_Stone_Process.Order_No);
+
+                                if (order_Processing != null && order_Processing.Count > 0)
+                                {
+                                    string to_Email = "list@sunrisediam.com";
+
+                                    string subject = order_Stone_Process.Order_Status + " - " + order_Processing[0]["Customer_Name"] + " - " + order_Stone_Process.Order_No;
+
+                                    StringBuilder sb = new StringBuilder();
+
+                                    sb.AppendLine(@"Company Name :  " + order_Processing[0]["Customer_Name"] + "<br/>");
+
+                                    var userId = Convert.ToInt32(order_Processing[0]["Assist_By"]) > 0 ? Convert.ToInt32(order_Processing[0]["Assist_By"]) : (user_Id ?? 0);
+
+                                    var user = await _employeeService.Employee_Master_Name_Select(userId);
+
+                                    sb.AppendLine(@"Assist By: " + user[0].Name + "<br/>");
+
+                                    sb.AppendLine(@"Request for : " + order_Stone_Process.Order_Status + "<br/>");
+
+                                    _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
+                                }
+
+                                var fortuneId = await _employeeService.GetEmployeeFortuneIdByOrderNo(order_Stone_Process.Order_No);
+                                if (fortuneId != null)
+                                {
+                                var transferResult = await _oracleService.Order_Data_Transfer_Oracle(canceledOrders, fortuneId, order_Stone_Process.QC_Request);
+                                }
                                 return Ok(new
                                 {
                                     statusCode = HttpStatusCode.OK,
                                     message = "Order completed successfully."
                                 });
+                            }
+                        }
+                        else
+                        {
+                            var order_Processing = await _cartService.Get_Order_Summary(order_Stone_Process.Order_No);
+
+                            if (order_Processing != null && order_Processing.Count > 0)
+                            {
+                                string to_Email = "list@sunrisediam.com";
+
+                                string subject = order_Stone_Process.Order_Status + " request for order no " + order_Stone_Process.Order_No + " - " + order_Processing[0]["Customer_Name"];
+
+                                StringBuilder sb = new StringBuilder();
+
+                                sb.AppendLine(@"Company Name :  " + order_Processing[0]["Customer_Name"] + "<br/>");
+
+                                var userId = Convert.ToInt32(order_Processing[0]["Assist_By"]) > 0 ? Convert.ToInt32(order_Processing[0]["Assist_By"]) : (user_Id ?? 0);
+
+                                var user = await _employeeService.Employee_Master_Name_Select(userId);
+
+                                sb.AppendLine(@"Assist By: " + user[0].Name + "<br/>");
+
+                                sb.AppendLine(@"Request for : " + order_Stone_Process.Order_Status + "<br/>");
+
+                                _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
                             }
                         }
                         /*var employees = await _employeeService.GetEmployees(user_Id ?? 0, null, null);
@@ -11119,7 +11170,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Order_Detail", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Order_Processing_Delete", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
@@ -11288,9 +11339,6 @@ namespace astute.Controllers
                                     ? "list@sunrisediam.com"
                                     : $"{result_e.Company_Email},list@sunrisediam.com";
                     }
-
-                    string to_Email = string.IsNullOrEmpty(result_e.Company_Email) ? "list@sunrisediam.com" : result_e.Company_Email + ",list@sunrisediam.com";
-
                     if (tofortune)
                     {
                         var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e, order_Processing_Reply_To_Assist.Summary_QC_Remarks);
