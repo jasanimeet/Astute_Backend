@@ -11178,6 +11178,48 @@ namespace astute.Controllers
             }
         }
 
+        [HttpDelete]
+        [Route("entire_order_processing_delete")]
+        [Authorize]
+        public async Task<IActionResult> Entire_Order_Processing_Delete(string Order_No)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                var (msg, result) = await _supplierService.Delete_Entire_Order_Process(Order_No, user_Id ?? 0);
+                if (msg == "success" && result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = "Order deleted successfully."
+                    });
+                }
+                else if (msg == "exist" && result == 409)
+                {
+                    return Conflict(new
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        message = "Sub Order already exists."
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Order_Processing_Entire_Delete", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         [HttpPut]
         [Route("order_process_request_accept")]
         [Authorize]

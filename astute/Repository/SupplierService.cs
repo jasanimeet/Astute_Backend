@@ -2927,11 +2927,30 @@ namespace astute.Repository
             var _order_No = !string.IsNullOrEmpty(order_No) ? new SqlParameter("@Order_No", order_No) : new SqlParameter("@Order_No", DBNull.Value);
             var _sub_Order_Id = sub_Order_Id > 0 ? new SqlParameter("@Sub_Order_Id", sub_Order_Id) : new SqlParameter("@Sub_Order_Id", DBNull.Value);
             var _user_Id = new SqlParameter("@User_Id", user_Id);
-
+            
             var result = await Task.Run(() => _dbContext.Database
                    .ExecuteSqlRawAsync(@"EXEC Order_Processing_Delete @Order_No, @Sub_Order_Id, @User_Id", _order_No, _sub_Order_Id, _user_Id));
 
             return result;
+        }
+        public async Task<(string, int)> Delete_Entire_Order_Process(string order_No, int user_Id)
+        {
+            var _order_No = !string.IsNullOrEmpty(order_No) ? new SqlParameter("@Order_No", order_No) : new SqlParameter("@Order_No", DBNull.Value);
+            var _user_Id = new SqlParameter("@User_Id", user_Id);
+
+            var is_Exist = new SqlParameter("@Is_Exist", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Order_Processing_Entire_Delete @Order_No, @User_Id, @Is_Exist OUT", _order_No, _user_Id, is_Exist));
+            bool _is_Exist = (bool)is_Exist.Value;
+
+            if (_is_Exist)
+                return ("exist", 409);
+
+            return ("success", result);
         }
         public async Task<int> Accept_Request_Order_Process(Order_Process_Detail order_Process_Detail, int user_Id)
         {
