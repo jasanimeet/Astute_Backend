@@ -11959,6 +11959,32 @@ namespace astute.Controllers
                 {
                     var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                     int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                    if (string.IsNullOrEmpty(order_Processing_Status_Model.current_cost_disc) && string.IsNullOrEmpty(order_Processing_Status_Model.current_cost_amt))
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = "Both current cost discount and amount cannot be null"
+                        });
+                    }
+                    else if (string.IsNullOrEmpty(order_Processing_Status_Model.current_cost_disc))
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = "Current cost discount cannot be null"
+                        });
+                    }
+                    else if (string.IsNullOrEmpty(order_Processing_Status_Model.current_cost_amt))
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = "Current cost amount cannot be null"
+                        });
+                    }
+                    else
+                    {
                     var result = await _supplierService.Order_Processing_Status_Update(order_Processing_Status_Model, user_Id ?? 0);
                     if (result > 0)
                     {
@@ -11968,6 +11994,7 @@ namespace astute.Controllers
                             message = CoreCommonMessage.StatusChangedSuccessMessage
                         });
                     }
+                }
                 }
                 return BadRequest(ModelState);
             }
