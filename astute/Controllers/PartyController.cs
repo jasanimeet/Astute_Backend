@@ -16,6 +16,7 @@ using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -13318,11 +13319,11 @@ namespace astute.Controllers
                                                          }
                                                          else if (ColumnExists(row, suppColName) && row[suppColName] != DBNull.Value && !string.IsNullOrEmpty(row[suppColName].ToString()))
                                                          {
-                                                             finalRow[displayColName] = row[Convert.ToString(suppColRow["Supp_Col_Name"])];
+                                                                 finalRow[displayColName] = row[suppColName];
                                                          }
-                                                         else if (ColumnExists(row, suppColNameSyn) && row[suppColName] != DBNull.Value && !string.IsNullOrEmpty(suppColNameSyn))
+                                                             else if (ColumnExists(row, suppColNameSyn) && row[suppColNameSyn] != DBNull.Value && !string.IsNullOrEmpty(row[suppColNameSyn].ToString()))
                                                          {
-                                                             finalRow[displayColName] = row[Convert.ToString(suppColRow["Column_Synonym"])];
+                                                                 finalRow[displayColName] = row[suppColNameSyn];
                                                          }
                                                          else
                                                          {
@@ -14421,7 +14422,7 @@ namespace astute.Controllers
 
         #endregion
 
-        #region
+        #region Supplier Special Price Validity
         [HttpPost]
         [Route("get_supplier_special_price_validity")]
         public async Task<IActionResult> Get_Supplier_Special_Price_Validity(int Party_Id)
