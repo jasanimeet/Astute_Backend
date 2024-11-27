@@ -10,9 +10,8 @@ namespace astute.Models
         public int? User_Id { get; set; }
         public string? Customer_Name { get; set; }
         public string? Remarks { get; set; }
-        public int? Validity_Days { get; set; }
+        public string? Validity_Date { get; set; }
         public object Cart_Detail { get; set; }
-
     }
 
     public partial class Cart_Detail

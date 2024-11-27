@@ -6931,7 +6931,16 @@ namespace astute.Controllers
                             (!string.IsNullOrEmpty(item.Cart_Status) ? Convert.ToDouble(item.Cart_Status.ToString()) : null));
                     }
 
-                    var (message, result, msg) = await _cartService.Create_Update_Cart(dataTable, cart_Model.Id, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, cart_Model.Validity_Days ?? 0);
+                    DateTime Valid_Date;
+
+                    string dateFormat = "dd-MM-yyyy";
+
+                    if (!DateTime.TryParseExact(cart_Model.Validity_Date, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out Valid_Date))
+                    {
+                        Valid_Date = DateTime.Now;
+                    }
+
+                    var (message, result, msg) = await _cartService.Create_Update_Cart(dataTable, cart_Model.Id, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, Valid_Date);
                     if ((message == "exist" && msg.Length > 0) || (message == "success" && msg.Length > 0))
                     {
                         // if alredy exists stone add again then message should show succsessfully added.
@@ -6991,6 +7000,46 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Delete_Cart", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPut]
+        [Route("update_cart_validity_date")]
+        [Authorize]
+        public async Task<IActionResult> Update_Cart_Validity_Date(int Id, string Validity_Date)
+        {
+            try
+            {
+                DateTime Valid_Date;
+
+                string dateFormat = "dd-MM-yyyy";
+
+                if (!DateTime.TryParseExact(Validity_Date, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out Valid_Date))
+                {
+                    Valid_Date = DateTime.Now;
+                }
+
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _cartService.Cart_Update_Validity_Date(Id, Valid_Date, user_Id ?? 0);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.CartUpdateValidityDate
+                    });
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Cart_Validity_Date", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message

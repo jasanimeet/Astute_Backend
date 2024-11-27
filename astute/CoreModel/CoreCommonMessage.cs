@@ -357,6 +357,7 @@
 
         #region Cart/Review/Approval Management
         public static string CartAdded = "Stone has been added to cart successfully.";
+        public static string CartUpdateValidityDate = "Stone validity date changed successfully.";
         public static string CartExists = "Stone alredy exists in to cart.";
         public static string ReviewAdded = "Stone has been added to review successfully.";
         public static string StockApproved = "Stone has been send to management successfully for the approval.";
