@@ -14457,6 +14457,100 @@ namespace astute.Controllers
 
         #endregion
 
+        #region DIANCO (HK) LTD - S Api
+
+        [HttpPost]
+        [Route("get_dianco_stock")]
+        public async Task<IActionResult> Get_Dianco_Stock(Dianco_Model dianco_Model)
+        {
+            try
+            {
+                var _client = new HttpClient();
+
+                var _request = new HttpRequestMessage(HttpMethod.Post, dianco_Model.Login_URL);
+
+                var collection = new List<KeyValuePair<string, string>>();
+                collection.Add(new(dianco_Model.Action_Caption, dianco_Model.Action_Value));
+                collection.Add(new(dianco_Model.User_Caption, dianco_Model.User_Name));
+                collection.Add(new(dianco_Model.Password_Caption, dianco_Model.Password));
+
+                var content = new FormUrlEncodedContent(collection);
+
+                _request.Content = content;
+
+                var _response = await _client.SendAsync(_request);
+
+                if (_response.IsSuccessStatusCode)
+                {
+                    var json = await _response.Content.ReadAsStringAsync();
+                    string cleanedJson = json.Replace("\\\"", "\"").Trim('"');
+
+                    var jsonObject = JsonConvert.DeserializeObject<JObject>(cleanedJson);
+
+                    var token = jsonObject["access_token"]?.ToString();
+
+                    using (var client = new HttpClient())
+                    {
+                        var request = new HttpRequestMessage(HttpMethod.Get, dianco_Model.Stock_Url);
+                        request.Headers.Add("Authorization", "Bearer " + token);
+                        var response = await client.SendAsync(request);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var responseString = await response.Content.ReadAsStringAsync();
+
+                            return StatusCode((int)response.StatusCode, responseString);
+                        }
+                        else
+                        {
+                            var errorDetails = await response.Content.ReadAsStringAsync();
+
+                            await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_Dianco_Stock", errorDetails);
+                            return Conflict(new
+                            {
+                                statusCode = HttpStatusCode.Conflict,
+                                message = CoreCommonMessage.ApiFailed,
+                                error = errorDetails
+                            });
+                        }
+                    }
+                }
+                else
+                {
+                    var errorDetails = await _response.Content.ReadAsStringAsync();
+
+                    await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_Dianco_Stock", errorDetails);
+                    return Conflict(new
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        message = CoreCommonMessage.ApiFailed,
+                        error = errorDetails
+                    });
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                await _commonService.InsertErrorLog(httpEx.Message, "Get_Dianco_Stock", httpEx.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = CoreCommonMessage.ApiError,
+                    error = httpEx.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Dianco_Stock", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = ex.Message,
+                    error = ex.StackTrace
+                });
+            }
+        }
+
+        #endregion
 
         #region Krisha Api
 
