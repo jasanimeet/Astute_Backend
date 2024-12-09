@@ -252,6 +252,37 @@ namespace astute.Repository
 
             return result;
         }
+
+        public async Task<(string, string, int)> Check_Order_Processing_Order_Status(string order_No)
+        {
+            var _order_No = !string.IsNullOrEmpty(order_No) ? new SqlParameter("@Order_No", order_No) : new SqlParameter("@Order_No", DBNull.Value);
+            
+            var Request_Status = new SqlParameter("@Request_Status", SqlDbType.NVarChar)
+            {
+                Size = -1,
+                Direction = ParameterDirection.Output
+            };
+
+            var Order_Status = new SqlParameter("@Order_Status", SqlDbType.NVarChar)
+            {
+                Size = -1,
+                Direction = ParameterDirection.Output
+            };
+
+            var Sub_Order_Id = new SqlParameter("@Sub_Order_Id", SqlDbType.Int)
+            {
+                Size = -1,
+                Direction = ParameterDirection.Output
+            };
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC [Order_Prossesing_Summary_Status_Select] @Order_No, @Request_Status OUT, @Order_Status OUT, @Sub_Order_Id OUT", _order_No, Request_Status, Order_Status, Sub_Order_Id));
+
+            var _request_Status = Request_Status.Value as string ?? string.Empty;
+            var _order_Status = Order_Status.Value as string ?? string.Empty;
+            int? _sub_Order_Id = Sub_Order_Id.Value as int?;
+
+            return (_request_Status, _order_Status, _sub_Order_Id ?? 0);
+        }
         #endregion
     }
 }

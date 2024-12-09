@@ -19,5 +19,6 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Order_Summary(string order_no);
         Task<int> Order_Processing_Update_Order_Status(string order_Status, string order_No);
         Task<int> Cart_Update_Validity_Date(int Id, DateTime validity_Date, int User_Id);
+        Task<(string, string, int)> Check_Order_Processing_Order_Status(string order_No);
     }
 }

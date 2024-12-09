@@ -7631,6 +7631,11 @@ namespace astute.Controllers
         {
             try
             {
+                var (Request_Status, Order_Status, Sub_Order_Id) = await _cartService.Check_Order_Processing_Order_Status(order_No);
+                if (Request_Status != "COMPLETED" && Order_Status != "CLOSED")
+                {
+                    if (Order_Status != order_Status)
+                    {
                 var result = await _cartService.Order_Processing_Update_Order_Status(order_Status, order_No);
                 if (result > 0)
                 {
@@ -7641,6 +7646,16 @@ namespace astute.Controllers
                     });
                 }
                 return BadRequest();
+            }
+                    else
+                    {
+                        return Conflict(new { message = "Order is already OPEN. Order Status update not allowed." });
+                    }
+                }
+                else 
+                {
+                    return Conflict(new { message = "Order is already COMPLETED or CLOSED. Order Status update not allowed." });
+                }
             }
             catch (Exception ex)
             {
@@ -11008,6 +11023,11 @@ namespace astute.Controllers
                 {
                     var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                     int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                    var (Request_Status, Order_Status, Sub_Order_Id) = await _cartService.Check_Order_Processing_Order_Status(order_Stone_Process.Order_No);
+                    if (Request_Status != "COMPLETED" && Order_Status != "CLOSED")
+                    {
+                        if (Request_Status == "REQUESTED" && Order_Status == "OPEN" && Sub_Order_Id <= 0)
+                        {
                     var result = await _supplierService.Create_Stone_Order_Process(order_Stone_Process, user_Id ?? 0);
                     if (result > 0)
                     {
@@ -11153,6 +11173,16 @@ namespace astute.Controllers
                             statusCode = HttpStatusCode.OK,
                             message = "Stone has been processed successfully."
                         });
+                    }
+                }
+                        else
+                        {
+                            return Conflict(new { message = "Previous order incomplete, so can't place new order." });
+                        }
+                    }
+                    else
+                    {
+                        return Conflict(new { message = "Order is already COMPLETED or CLOSED. Order Status update not allowed." });
                     }
                 }
                 return BadRequest(ModelState);
