@@ -827,7 +827,7 @@ namespace astute.Controllers
             {
                 var emp = employee.FirstOrDefault();
                 string forgetPasswordBodyTemplate = _emailSender.ForgetPasswordBodyTemplate(forgetPasswordModel.UserName, emp.First_Name);
-                _emailSender.SendEmail(toEmail: emp.Personal_Email, externalLink: "", subject: CoreCommonMessage.ForgetPasswordSubject, strBody: forgetPasswordBodyTemplate);
+                _emailSender.SendEmail(toEmail: emp.Company_Email, externalLink: "", subject: CoreCommonMessage.ForgetPasswordSubject, strBody: forgetPasswordBodyTemplate);
                 return Ok(new
                 {
                     statusCode = HttpStatusCode.OK,
