@@ -1840,6 +1840,7 @@ namespace astute.Controllers
                     {
                         supplier_API_FTP_File_Details.API_Id = result_api.API_Id;
                         supplier_API_FTP_File_Details.Party_Id = result_api.Party_Id;
+                        supplier_API_FTP_File_Details.Party_Name = result_api.Party_Name;
                         supplier_API_FTP_File_Details.Upload_Type = "API";
                         supplier_API_FTP_File_Details.API_URL = result_api.API_URL;
                         supplier_API_FTP_File_Details.API_User = result_api.API_User;
@@ -1880,6 +1881,7 @@ namespace astute.Controllers
                     {
                         supplier_API_FTP_File_Details.FTP_Id = result_ftp.FTP_Id;
                         supplier_API_FTP_File_Details.Party_Id = result_ftp.Party_Id;
+                        supplier_API_FTP_File_Details.Party_Name = result_ftp.Party_Name;
                         supplier_API_FTP_File_Details.Upload_Type = "FTP";
                         supplier_API_FTP_File_Details.Disc_Inverse = result_ftp.Disc_Inverse;
                         supplier_API_FTP_File_Details.Auto_Ref_No = result_ftp.Auto_Ref_No;
@@ -1913,6 +1915,7 @@ namespace astute.Controllers
                         {
                             supplier_API_FTP_File_Details.API_Id = result.API_Id;
                             supplier_API_FTP_File_Details.Party_Id = result.Party_Id;
+                            supplier_API_FTP_File_Details.Party_Name = result.Party_Name;
                             supplier_API_FTP_File_Details.Upload_Type = upload_Type;
                             supplier_API_FTP_File_Details.API_URL = result.API_URL;
                             supplier_API_FTP_File_Details.API_User = result.API_User;
@@ -1955,6 +1958,7 @@ namespace astute.Controllers
                         {
                             supplier_API_FTP_File_Details.FTP_Id = result.FTP_Id;
                             supplier_API_FTP_File_Details.Party_Id = result.Party_Id;
+                            supplier_API_FTP_File_Details.Party_Name = result.Party_Name;
                             supplier_API_FTP_File_Details.Upload_Type = upload_Type;
                             supplier_API_FTP_File_Details.Disc_Inverse = result.Disc_Inverse;
                             supplier_API_FTP_File_Details.Auto_Ref_No = result.Auto_Ref_No;

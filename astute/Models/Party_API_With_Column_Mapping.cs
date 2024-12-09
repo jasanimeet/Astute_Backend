@@ -44,6 +44,7 @@ namespace astute.Models
         public string? Ftp_File_Name { get; set; }
         public string? Ftp_File_Type { get; set; }
         public bool? Secure_Ftp { get; set; }
+        public string? Party_Name { get; set; }
         [NotMapped]
         public IList<Dictionary<string, object>> Supplier_Column_Mapping_List { get; set; }
     }

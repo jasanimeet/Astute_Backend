@@ -24,5 +24,6 @@ namespace astute.Models
         public bool? Ftp_Status { get; set; }
         public bool? Is_Same_Id { get; set; }
         public bool? Overseas_Same_Id { get; set; }
+        public string? Party_Name { get; set; }
     }
 }
