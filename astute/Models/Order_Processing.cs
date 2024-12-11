@@ -316,6 +316,9 @@ namespace astute.Models
 
         [JsonProperty("Party Code")]
         public string? Party_code { get; set; }
+
+        [JsonProperty("Supplier Code")]
+        public string? Supplier_code { get; set; }
     }
     public class Order_Excel_Model
     {

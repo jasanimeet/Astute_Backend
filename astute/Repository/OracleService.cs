@@ -6,6 +6,7 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using static astute.Models.Employee_Master;
 
@@ -1697,7 +1698,128 @@ namespace astute.Repository
 
             return r;
         }
-        
+
+        public async Task<int> Order_Data_Detail_Transfer_Oracle(IList<Order_Processing_Complete_Fortune_Detail> order_Processing_Complete_Fortune_Details)
+        {
+            if (order_Processing_Complete_Fortune_Details == null || order_Processing_Complete_Fortune_Details.Count == 0)
+                return 0;
+
+            var groupedBySupplier = order_Processing_Complete_Fortune_Details
+                .GroupBy(item => item.Supplier_code)
+                .ToList();
+
+            List<int> allOrderIds = new List<int>();
+
+            foreach (var group in groupedBySupplier)
+            {
+                string lab_trans_status = string.Empty;
+
+                List<OracleParameter> paramList = new List<OracleParameter>();
+
+                var supplier = group.First();
+                OracleParameter param1 = new OracleParameter("supp_code", OracleDbType.Int32);
+                param1.Value = supplier.Supplier_code;
+                paramList.Add(param1);
+
+                param1 = new OracleParameter("vrec", OracleDbType.RefCursor);
+                param1.Direction = ParameterDirection.Output;
+                paramList.Add(param1);
+
+                DataTable mas_dt = await _dbOracleAccess.CallSP("web_trans.sun_pur_mas", paramList);
+
+                if (mas_dt != null && mas_dt.Rows.Count > 0)
+                {
+                    lab_trans_status = Convert.ToString(mas_dt.Rows[0][":B1"]);
+                }
+
+                if (!string.IsNullOrEmpty(lab_trans_status))
+                {
+                    List<int> Order_Ids_List = new List<int>();
+
+                    foreach (var item in group)
+                    {
+                        Order_Ids_List.Add(item.Id);
+
+                        paramList = new List<OracleParameter>();
+
+                        param1 = new OracleParameter("trans_id", OracleDbType.Int32);
+                        param1.Value = lab_trans_status;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("supplier_stock_id", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.SuppStockId) ? Convert.ToString(item.SuppStockId) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("Certi_No", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.CertificateNo) ? Convert.ToString(item.CertificateNo) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("STATUS", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Status) ? Convert.ToString(item.Status.ToUpper()) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("Buyer_code", OracleDbType.Int32);
+                        param1.Value = item.BuyerCode;
+                        paramList.Add(param1);
+
+                        Decimal base_amt = Convert.ToDecimal(item.BaseAmount);
+
+                        param1 = new OracleParameter("base_amt", OracleDbType.Decimal);
+                        param1.Value = !string.IsNullOrEmpty(item.BaseAmount) ? base_amt : DBNull.Value;
+                        paramList.Add(param1);
+
+                        Decimal cost_amt = Convert.ToDecimal(item.CostAmount);
+
+                        param1 = new OracleParameter("cost_amt", OracleDbType.Decimal);
+                        param1.Value = !string.IsNullOrEmpty(item.CostAmount) ? cost_amt : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vSHADE", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Shade) ? Convert.ToString(item.Shade) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vluster", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.Milky) ? Convert.ToString(item.Milky) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vTABLE_OPEN", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.TableOpen) ? Convert.ToString(item.TableOpen) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vGIRDLE_OPEN", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.GirdleOpen) ? Convert.ToString(item.GirdleOpen) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vCROWN_OPEN", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.CrownOpen) ? Convert.ToString(item.CrownOpen) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vPAV_OPEN", OracleDbType.NVarchar2);
+                        param1.Value = !string.IsNullOrEmpty(item.PavilionOpen) ? Convert.ToString(item.PavilionOpen) : DBNull.Value;
+                        paramList.Add(param1);
+
+                        param1 = new OracleParameter("vrec", OracleDbType.RefCursor);
+                        param1.Direction = ParameterDirection.Output;
+                        paramList.Add(param1);
+
+                        DataTable det_dt = await _dbOracleAccess.CallSP("web_trans.sun_pur_det", paramList);
+                    }
+
+                    allOrderIds.AddRange(Order_Ids_List);
+
+                    string Order_Ids = string.Join(",", Order_Ids_List);
+
+                    var _order_Ids = new SqlParameter("@Order_Ids", !string.IsNullOrEmpty(Order_Ids) ? Order_Ids : DBNull.Value);
+                    var _trans_Id = new SqlParameter("@Trans_Id", !string.IsNullOrEmpty(lab_trans_status) ? Convert.ToInt32(lab_trans_status) : DBNull.Value);
+
+                    await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Update_Tras_Id] @Order_Ids,@Trans_Id", _order_Ids, _trans_Id));
+                }
+            }
+
+            return 1;
+        }
+
         #endregion
     }
 }
