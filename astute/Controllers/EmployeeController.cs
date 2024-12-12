@@ -866,8 +866,18 @@ namespace astute.Controllers
             if (employee != null)
             {
                 var empMaster = employee.FirstOrDefault();
-                empMaster.Password = resetPasswordModel.Password;
-                var result = await _employeeService.UpdateEmployee(empMaster);
+
+                empMaster.Password = CoreService.Decrypt(empMaster.Password);
+                
+                Change_Password_Model change_Password_Model = new Change_Password_Model()
+                {
+                    OldPassword = empMaster.Password,
+                    NewPassword = resetPasswordModel.Password,
+                    ConfirmPassword = resetPasswordModel.Password
+                };
+                
+                var (msg, result) = await _employeeService.Change_Password(change_Password_Model, empMaster.Employee_Id);
+                
                 if (result > 0)
                 {
                     return Ok(new
