@@ -1669,7 +1669,7 @@ namespace astute.Repository
             param1.Direction = ParameterDirection.Output;
             paramList.Add(param1);
 
-            System.Data.DataTable dt = await _dbOracleAccess.CallSP_Timeout("web_trans.lab_entry_notification", paramList);
+            DataTable dt = await _dbOracleAccess.CallSP_Timeout("web_trans.lab_entry_notification", paramList);
 
             if (dt != null)
             {
@@ -1698,7 +1698,7 @@ namespace astute.Repository
 
             return r;
         }
-
+                
         public async Task<int> Order_Data_Detail_Transfer_Oracle(IList<Order_Processing_Complete_Fortune_Detail> order_Processing_Complete_Fortune_Details)
         {
             if (order_Processing_Complete_Fortune_Details == null || order_Processing_Complete_Fortune_Details.Count == 0)
@@ -1818,6 +1818,45 @@ namespace astute.Repository
             }
 
             return 1;
+        }
+        public async Task<int> Sun_Pur_Notification()
+        {
+            int r = 0;
+
+            List<OracleParameter> paramList = new List<OracleParameter>();
+
+            OracleParameter param1 = new OracleParameter("vrec", OracleDbType.RefCursor);
+            param1.Direction = ParameterDirection.Output;
+            paramList.Add(param1);
+
+            DataTable dt = await _dbOracleAccess.CallSP_Timeout("web_trans.sun_pur_notification", paramList);
+
+            if (dt != null)
+            {
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("Trans_Id", typeof(string));
+                dataTable.Columns.Add("Stock_Id", typeof(string));
+                dataTable.Columns.Add("Status", typeof(string));
+
+                foreach (DataRow item in dt.Rows)
+                {
+                    dataTable.Rows.Add(item["TRANS_ID"], item["SUPP_REF_NO"], item["STATUS"]);
+                }
+
+                var parameter = new SqlParameter("@Order_Procesing_Table_Type", SqlDbType.Structured)
+                {
+                    TypeName = "[dbo].[Order_Procesing_Status_Update_Oracle_Table_Type]",
+                    Value = dataTable
+                };
+
+                var result = await Task.Run(() => _dbContext.Database
+                       .ExecuteSqlRawAsync(@"EXEC [Order_Procesing_Status_Update_Sun_Pur_Oracle] @Order_Procesing_Table_Type", parameter));
+
+                r = result;
+            }
+
+            return r;
         }
 
         #endregion

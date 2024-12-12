@@ -170,6 +170,33 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("sun_pur_notification")]
+        public async Task<IActionResult> Sun_Pur_Notification()
+        {
+            try
+            {
+                var result = await _oracleService.Sun_Pur_Notification();
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.Oracle_Notification
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Sun_Pur_Notification", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
     }
 }
