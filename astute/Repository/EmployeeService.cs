@@ -164,6 +164,7 @@ namespace astute.Repository
             var personal_Mobile_No = !string.IsNullOrEmpty(employee_Master.Personal_Mobile_No) ? new SqlParameter("@personal_Mobile_No", employee_Master.Personal_Mobile_No) : new SqlParameter("@personal_Mobile_No", DBNull.Value);
             var designation_Id = employee_Master.Designation_Id > 0 ? new SqlParameter("@designation_Id", employee_Master.Designation_Id) : new SqlParameter("@designation_Id", DBNull.Value);
             var user_Type = !string.IsNullOrEmpty(employee_Master.User_Type) ? new SqlParameter("@User_Type", employee_Master.User_Type) : new SqlParameter("@User_Type", DBNull.Value);
+            var is_Secretary = new SqlParameter("@Is_Secretary", employee_Master.Is_Secretary);
 
             var isExistUserName = new SqlParameter("@IsExistUserName", System.Data.SqlDbType.Bit)
             {
@@ -186,10 +187,10 @@ namespace astute.Repository
             .ExecuteSqlRawAsync(@"exec Employee_Master_Insert_Update @employeeId, @initial, @firstName, @middleName, @lastName,
             @chineseName, @address1, @address2, @address3, @cityId, @joindate, @employeeType, @birthDate, @gender, @mobileNo, @personalEmail, @companyEmail,
             @leaveDate, @pSNID, @bloodGroup, @contractStartDate, @contractEndDate, @approveHolidays, @orderNo, @sortNo, @userName, @password, @employee_Code, @status, @is_admin,
-            @marital_Status, @mobile_Country_Code, @mobile_1_Country_Code, @probation_End_Date, @personal_Mobile_No, @designation_Id, @User_Type, @IsExistUserName OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT",
+            @marital_Status, @mobile_Country_Code, @mobile_1_Country_Code, @probation_End_Date, @personal_Mobile_No, @designation_Id, @User_Type, @Is_Secretary, @IsExistUserName OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT",
             employeeId, initial, firstName, middleName, lastName, chineseName, address1, address2, address3, cityId, joinDate, employeeType, birthDate, gender, mobileNo,
             personalEmail, companyEmail, leaveDate, pSNID, bloodGroup, contractStartDate, contractEndDate, approveHolidays, orderNo, sortNo, userName, password,
-            employeeCode, status, is_admin, marital_Status, mobile_Country_Code, mobile_1_Country_Code, probation_End_Date, personal_Mobile_No, designation_Id, user_Type, isExistUserName, isExistOrderNo, isExistSortNo, insertedId));
+            employeeCode, status, is_admin, marital_Status, mobile_Country_Code, mobile_1_Country_Code, probation_End_Date, personal_Mobile_No, designation_Id, user_Type, is_Secretary, isExistUserName, isExistOrderNo, isExistSortNo, insertedId));
 
             bool _isExistUserName = (bool)isExistUserName.Value;
             if (_isExistUserName)
@@ -257,6 +258,9 @@ namespace astute.Repository
 
                     employee_Master.Emergency_Contact_Detail_List = await Task.Run(() => _dbContext.Emergency_Contact_Detail
                                                                     .FromSqlRaw(@"exec Emergency_Contact_Detail_Select @Emergency_Contact_Detail_Id, @employeeId", new SqlParameter("@Emergency_Contact_Detail_Id", DBNull.Value), _emp_Id).ToListAsync());
+
+                    employee_Master.Employee_Secretary_List = await Task.Run(() => _dbContext.Employee_Secretary
+                                                                    .FromSqlRaw(@"exec Employee_Secretary_Select @employeeId", _emp_Id).ToListAsync());
                 }
             }
 
@@ -654,6 +658,7 @@ namespace astute.Repository
         }
         #endregion
 
+        #region Buyer List
         public async Task<IList<DropdownModel>> Get_Buyer()
         {
             var result = await Task.Run(() => _dbContext.DropdownModel
@@ -661,6 +666,34 @@ namespace astute.Repository
                             .ToListAsync());
             return result;
         }
+
+        #endregion
+
+        #region Secretary List
+        public async Task<IList<DropdownModel>> Get_Secretary()
+        {
+            var employees = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"exec Employee_Master_Secretary_Select").ToList());
+
+            return employees;
+        }
+
+        #endregion
+
+        #region Employee Secretary
+        public async Task<int> Insert_Update_Delete_Employee_Secretary(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@Employee_Secretary", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Employee_Secretary_Table_Type",
+                Value = dataTable
+            };
+
+            var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Employee_Secretary_Insert_Update @Employee_Secretary", parameter);
+            return result;
+        }
+        #endregion
+
         #endregion
     }
 }

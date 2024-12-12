@@ -340,6 +340,25 @@ namespace astute.Controllers
                             //    await _employeeService.Insert_Emergency_Contact_Detail_Trace(dataTable1);
                             //}
                         }
+                        if (employee_Master.Employee_Secretary_List != null && employee_Master.Employee_Secretary_List.Count > 0) 
+                        {
+
+                            var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                            int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                            DataTable dataTable = new DataTable();
+                            dataTable.Columns.Add("Employee_Secretary_Id", typeof(int));
+                            dataTable.Columns.Add("Employee_Id", typeof(int));
+                            dataTable.Columns.Add("Secretary_Id", typeof(int));
+                            dataTable.Columns.Add("User_Id", typeof(int));
+                            dataTable.Columns.Add("QueryFlag", typeof(string));
+
+                            foreach (var item in employee_Master.Employee_Secretary_List)
+                            {
+                                dataTable.Rows.Add(item.Employee_Secretary_Id, employee_Id, item.Secretary_Id, user_Id, item.QueryFlag);
+                            }
+                            await _employeeService.Insert_Update_Delete_Employee_Secretary(dataTable);
+                        }
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
@@ -537,6 +556,36 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_secretary")]
+        [Authorize]
+        public async Task<IActionResult> Get_Secretary()
+        {
+            try
+            {
+                var result = await _employeeService.Get_Secretary();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Secretary", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Employee Login

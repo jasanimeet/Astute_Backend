@@ -51,6 +51,17 @@ namespace astute.Repository
         Task<int> Insert_Emergency_Contact_Detail(DataTable dataTable);
         #endregion
 
+        #region Buyer List
         Task<IList<DropdownModel>> Get_Buyer();
+        #endregion
+        
+        #region Secretary List
+        Task<IList<DropdownModel>> Get_Secretary();
+        #endregion
+
+        #region Employee Secretary
+        Task<int> Insert_Update_Delete_Employee_Secretary(DataTable dataTable);
+        #endregion
+
     }
 }

@@ -51,6 +51,7 @@ namespace astute.Models
         public int? Designation_Id { get; set; }
         public string? Designation { get; set; }
         public string? User_Type { get; set; }
+        public bool? Is_Secretary { get; set; }
         [NotMapped]
         public IList<Employee_Document> Employee_Document_List { get; set; } = new List<Employee_Document>();
         [NotMapped]
@@ -58,6 +59,9 @@ namespace astute.Models
 
         [NotMapped]
         public IList<Emergency_Contact_Detail> Emergency_Contact_Detail_List { get; set; } = new List<Emergency_Contact_Detail>();
+
+        [NotMapped] 
+        public IList<Employee_Secretary> Employee_Secretary_List { get; set; } = new List<Employee_Secretary>();
 
         public partial class Employee_Fortune_Master
         {
