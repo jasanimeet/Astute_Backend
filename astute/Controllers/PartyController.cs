@@ -11471,7 +11471,7 @@ namespace astute.Controllers
                     }
                     if (tofortune)
                     {
-                        if (result_e != null && string.IsNullOrEmpty(result_e.Company_Name) && !order_Processing_Reply_To_Assist.Order_No.StartsWith("S") && result_e.User_Type.Contains("Buyer"))
+                        if (result_e != null && (string.IsNullOrEmpty(result_e.Company_Name) || result_e.Company_Name == "") && !order_Processing_Reply_To_Assist.Order_No.StartsWith("S"))// && result_e.User_Type.Contains("Buyer"))
                         {
                             IList<Order_Processing_Complete_Fortune_Detail> order_Processing_Complete_Fortune_Details = new List<Order_Processing_Complete_Fortune_Detail>();
 
