@@ -17,11 +17,17 @@ namespace astute.Models
         public int Id { get; set; }
         public int Supp_Stock_Id { get; set; }
 
-        [JsonProperty("COST DISC")]
+        [JsonProperty("BUYER DISC")]
         public object? Buyer_Disc { get; set; }
 
-        [JsonProperty("COST AMOUNT")]
+        [JsonProperty("BUYER AMOUNT")]
         public object? Buyer_Amt { get; set; }
+        
+        [JsonProperty("COST DISC")]
+        public object? Cost_Disc { get; set; }
+
+        [JsonProperty("COST AMOUNT")]
+        public object? Cost_Amt { get; set; }
         [JsonProperty("BASE DISC")]
         public object? Base_Disc { get; set; }
         [JsonProperty("BASE AMOUNT")]

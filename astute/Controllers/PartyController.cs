@@ -7201,6 +7201,8 @@ namespace astute.Controllers
                 dataTable.Columns.Add("Supp_Stock_Id", typeof(int));
                 dataTable.Columns.Add("Buyer_Disc", typeof(double));
                 dataTable.Columns.Add("Buyer_Amt", typeof(double));
+                dataTable.Columns.Add("Cost_Disc", typeof(double));
+                dataTable.Columns.Add("Cost_Amt", typeof(double));
                 dataTable.Columns.Add("Base_Disc", typeof(double));
                 dataTable.Columns.Add("Base_Amt", typeof(double));
                 dataTable.Columns.Add("Offer_Disc", typeof(double));
@@ -7211,8 +7213,10 @@ namespace astute.Controllers
                 foreach (var item in OrderResult)
                 {
                     dataTable.Rows.Add(item.Id, item.Supp_Stock_Id,
-                        (item.Buyer_Disc != null ? !string.IsNullOrEmpty(item.Buyer_Disc.ToString()) ? Convert.ToDouble(item.Buyer_Disc.ToString()) : null : null),
-                        (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : null : null),
+                        (item.Buyer_Disc != null ? !string.IsNullOrEmpty(item.Buyer_Disc.ToString()) ? Convert.ToDouble(item.Buyer_Disc.ToString()) : (item.Cost_Disc != null ? !string.IsNullOrEmpty(item.Cost_Disc.ToString()) ? Convert.ToDouble(item.Cost_Disc.ToString()) : null : null) : (item.Cost_Disc != null ? !string.IsNullOrEmpty(item.Cost_Disc.ToString()) ? Convert.ToDouble(item.Cost_Disc.ToString()) : null : null)),
+                        (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : (item.Cost_Amt != null ? !string.IsNullOrEmpty(item.Cost_Amt.ToString()) ? Convert.ToDouble(item.Cost_Amt.ToString()) : null : null) : (item.Cost_Amt != null ? !string.IsNullOrEmpty(item.Cost_Amt.ToString()) ? Convert.ToDouble(item.Cost_Amt.ToString()) : null : null)),
+                        (item.Cost_Disc != null ? !string.IsNullOrEmpty(item.Cost_Disc.ToString()) ? Convert.ToDouble(item.Cost_Disc.ToString()) : null : null),
+                        (item.Cost_Amt != null ? !string.IsNullOrEmpty(item.Cost_Amt.ToString()) ? Convert.ToDouble(item.Cost_Amt.ToString()) : null : null),
                         (item.Base_Disc != null ? !string.IsNullOrEmpty(item.Base_Disc.ToString()) ? Convert.ToDouble(item.Base_Disc.ToString()) : null : null),
                         (item.Base_Amt != null ? !string.IsNullOrEmpty(item.Base_Amt.ToString()) ? Convert.ToDouble(item.Base_Amt.ToString()) : null : null),
                         (item.Offer_Disc != null ? !string.IsNullOrEmpty(item.Offer_Disc.ToString()) ? Convert.ToDouble(item.Offer_Disc.ToString()) : null : null),
