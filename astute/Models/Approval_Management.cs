@@ -84,6 +84,10 @@ namespace astute.Models
 
         [JsonProperty("MAX SLAB BASE AMOUNT")]
         public object? Cart_Final_Amt_Max_Slab { get; set; }
+        
+        [JsonProperty("BUYER ID")]
+        public int? Buyer_Id { get; set; }
+
     }
 
 }

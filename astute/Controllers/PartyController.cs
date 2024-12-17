@@ -7137,6 +7137,7 @@ namespace astute.Controllers
                     dataTable.Columns.Add("Cart_Final_Amt", typeof(double));
                     dataTable.Columns.Add("Cart_Final_Disc_Max_Slab", typeof(double));
                     dataTable.Columns.Add("Cart_Final_Amt_Max_Slab", typeof(double));
+                    dataTable.Columns.Add("Buyer_Id", typeof(int));
 
                     if (app_mang_Result != null && app_mang_Result.Count > 0)
                     {
@@ -7160,7 +7161,9 @@ namespace astute.Controllers
                             (item.Cart_Final_Disc != null ? !string.IsNullOrEmpty(item.Cart_Final_Disc.ToString()) ? Convert.ToDouble(item.Cart_Final_Disc.ToString()) : null : null),
                             (item.Cart_Final_Amt != null ? !string.IsNullOrEmpty(item.Cart_Final_Amt.ToString()) ? Convert.ToDouble(item.Cart_Final_Amt.ToString()) : null : null),
                             (item.Cart_Final_Disc_Max_Slab != null ? !string.IsNullOrEmpty(item.Cart_Final_Disc_Max_Slab.ToString()) ? Convert.ToDouble(item.Cart_Final_Disc_Max_Slab.ToString()) : null : null),
-                            (item.Cart_Final_Amt_Max_Slab != null ? !string.IsNullOrEmpty(item.Cart_Final_Amt_Max_Slab.ToString()) ? Convert.ToDouble(item.Cart_Final_Amt_Max_Slab.ToString()) : null : null));
+                            (item.Cart_Final_Amt_Max_Slab != null ? !string.IsNullOrEmpty(item.Cart_Final_Amt_Max_Slab.ToString()) ? Convert.ToDouble(item.Cart_Final_Amt_Max_Slab.ToString()) : null : null),
+                            (item.Buyer_Id > 0 ? item.Buyer_Id : approval_Management.User_Id ?? 0));
+
                         }
                     }
 
