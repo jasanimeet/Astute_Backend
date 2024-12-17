@@ -6934,7 +6934,7 @@ namespace astute.Controllers
                             (item.Buyer_Price_Per_Cts != null ? !string.IsNullOrEmpty(item.Buyer_Price_Per_Cts.ToString()) ? Convert.ToDouble(item.Buyer_Price_Per_Cts.ToString()) : null : null),
                             (item.Expected_Final_Disc != null ? !string.IsNullOrEmpty(item.Expected_Final_Disc.ToString()) ? Convert.ToDouble(item.Expected_Final_Disc.ToString()) : null : null),
                             (item.Expected_Final_Amt != null ? !string.IsNullOrEmpty(item.Expected_Final_Amt.ToString()) ? Convert.ToDouble(item.Expected_Final_Amt.ToString()) : null : null),
-                            (!string.IsNullOrEmpty(item.Cart_Status) ? Convert.ToDouble(item.Cart_Status.ToString()) : null));
+                            (!string.IsNullOrEmpty(item.Cart_Status) ? item.Cart_Status.ToString() : null));
                     }
 
                     DateTime Valid_Date;

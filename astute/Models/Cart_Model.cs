@@ -58,6 +58,7 @@ namespace astute.Models
 
         [JsonProperty("EXPECTED FINAL AMT")]
         public object? Expected_Final_Amt { get; set; }
+        [JsonProperty("CART STATUS")]
         public string? Cart_Status { get; set; }
     }
 }
