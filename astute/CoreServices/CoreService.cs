@@ -693,9 +693,16 @@ namespace astute.CoreServices
                 foreach (Dictionary<string, object> rowData in rowsData)
                 {
                     DataRow newRow = dataTable.NewRow();
-                    foreach (KeyValuePair<string, object> kvp in rowData)
+                    foreach (DataColumn column in dataTable.Columns)
                     {
-                        newRow[kvp.Key] = kvp.Value;
+                        if (rowData.ContainsKey(column.ColumnName))
+                        {
+                            newRow[column] = rowData[column.ColumnName];
+                        }
+                        else
+                    {
+                            newRow[column] = DBNull.Value;
+                        }
                     }
                     dataTable.Rows.Add(newRow);
                 }
