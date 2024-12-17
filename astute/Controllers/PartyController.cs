@@ -27,6 +27,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static astute.Models.Employee_Master;
 
 namespace astute.Controllers
 {
@@ -11471,8 +11472,11 @@ namespace astute.Controllers
                     }
                     if (tofortune)
                     {
-                        if (result_e != null && (string.IsNullOrEmpty(result_e.Company_Name) || result_e.Company_Name == "") && !order_Processing_Reply_To_Assist.Order_No.StartsWith("S"))// && result_e.User_Type.Contains("Buyer"))
+                        if ((string.IsNullOrEmpty(OrderResult[0].Customer) || OrderResult[0].Customer == "") && !order_Processing_Reply_To_Assist.Order_No.StartsWith("S"))// && result_e.User_Type.Contains("Buyer"))
                         {
+
+                            Employee_Fortune_Master employee_Fortune_Master = await _employeeService.GetEmployeeFortuneId(user_Id ?? 0);
+
                             IList<Order_Processing_Complete_Fortune_Detail> order_Processing_Complete_Fortune_Details = new List<Order_Processing_Complete_Fortune_Detail>();
 
                             foreach (var item in OrderResult)
@@ -11484,7 +11488,7 @@ namespace astute.Controllers
                                     SuppStockId = item.SupplierNo,
                                     CertificateNo = item.CertificateNo,
                                     Status = item.Status.ToUpper(),
-                                    BuyerCode = result_e.Fortune_Id,
+                                    BuyerCode = employee_Fortune_Master.Fortune_Id,
                                     BaseAmount = item.BaseAmount != null ? item.BaseAmount : null,
                                     CostAmount = item.CurrentCostAmount != null ? item.CurrentCostAmount : null,
                                     Shade = item.Shade,
@@ -11518,11 +11522,6 @@ namespace astute.Controllers
                                         string subject = order_Processing_Reply_To_Assist.Request_For + " request for order no " + order_Processing_Reply_To_Assist.Order_No + " completed";
 
                                         StringBuilder body = new StringBuilder();
-
-                                        if (result_e != null && !string.IsNullOrEmpty(result_e.Company_Name))
-                                        {
-                                            body.AppendLine(@"Company Name :  " + result_e.Company_Name + "<br/>");
-                                        }
 
                                         body.AppendLine(@"Request for : " + order_Processing_Reply_To_Assist.Request_For + "<br/>");
 
