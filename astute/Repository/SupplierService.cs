@@ -1056,6 +1056,42 @@ namespace astute.Repository
 
             return result;
         }
+
+        public async Task<string> Stock_Data_Supplier_Count_Select(int supplier_Id)
+        {
+            var _supplier_Id = new SqlParameter("@Supplier_Id", supplier_Id);
+
+            var sqlCommand = @"exec [Stock_Data_Supplier_Count_Select] @Supplier_Id";
+
+            var result = await Task.Run(async () =>
+            {
+                using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = sqlCommand;
+                    command.Parameters.Add(_supplier_Id);
+
+                    command.CommandTimeout = Convert.ToInt32(_configuration["CommandTimeout"]);
+
+                    await _dbContext.Database.OpenConnectionAsync();
+                    try
+                    {
+                        var result = await command.ExecuteScalarAsync();
+                        if (result != null) 
+                        {
+                            return result.ToString(); 
+                        }
+                        return result;
+                    }
+                    finally
+                    {
+                        _dbContext.Database.CloseConnection();
+                    }
+                }
+            });
+
+            return result.ToString();
+        }
+
         public async Task<int> Supplier_Stock_Manual_File_Insert_Update(int supplier_Id, int stock_Data_Id, bool is_Overwrite)
         {
             var _supplier_Id = new SqlParameter("@Supplier_Id", supplier_Id);

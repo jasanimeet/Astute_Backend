@@ -2901,8 +2901,13 @@ namespace astute.Controllers
                                 if (stock_Data_Master.Upload_Type == "O")
                                 {
                                     await _supplierService.Supplier_Stock_Insert_Update((int)stock_Data_Master.Supplier_Id, stock_Data_Id);
+                                    string count_message = await _supplierService.Stock_Data_Supplier_Count_Select((int)stock_Data_Master.Supplier_Id);
+                                    if (!string.IsNullOrEmpty(count_message) && count_message.Contains("Duplicate"))
+                                    {
+                                        _emailSender.SendEmail(toEmail: "farhan@sunrisediam.com, list@sunrisediam.com", externalLink: "", subject: count_message, strBody: count_message);
                                 }
                             }
+                        }
                         }
                         else
                         {
