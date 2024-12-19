@@ -2905,9 +2905,9 @@ namespace astute.Controllers
                                     if (!string.IsNullOrEmpty(count_message) && count_message.Contains("Duplicate"))
                                     {
                                         _emailSender.SendEmail(toEmail: "farhan@sunrisediam.com, list@sunrisediam.com", externalLink: "", subject: count_message, strBody: count_message);
+                                    }
                                 }
                             }
-                        }
                         }
                         else
                         {
@@ -11476,9 +11476,6 @@ namespace astute.Controllers
                     {
                         if ((string.IsNullOrEmpty(OrderResult[0].Customer) || OrderResult[0].Customer == "") && !order_Processing_Reply_To_Assist.Order_No.StartsWith("S"))
                         {
-
-                            Employee_Fortune_Master employee_Fortune_Master = await _employeeService.GetEmployeeFortuneId(user_Id ?? 0);
-
                             IList<Order_Processing_Complete_Fortune_Detail> order_Processing_Complete_Fortune_Details = new List<Order_Processing_Complete_Fortune_Detail>();
 
                             foreach (var item in OrderResult)
