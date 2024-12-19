@@ -139,6 +139,9 @@ namespace astute.Models
         [JsonProperty("BUYER")]
         public string? Buyer { get; set; }
 
+        [JsonProperty("BUYER CODE")]
+        public string? Buyer_Code { get; set; }
+
         [JsonProperty("QC REMARKS")]
         public string? QcRemarks { get; set; }
 

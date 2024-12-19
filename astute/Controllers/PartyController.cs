@@ -27,7 +27,6 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static astute.Models.Employee_Master;
 
 namespace astute.Controllers
 {
@@ -11475,7 +11474,7 @@ namespace astute.Controllers
                     }
                     if (tofortune)
                     {
-                        if ((string.IsNullOrEmpty(OrderResult[0].Customer) || OrderResult[0].Customer == "") && !order_Processing_Reply_To_Assist.Order_No.StartsWith("S"))// && result_e.User_Type.Contains("Buyer"))
+                        if ((string.IsNullOrEmpty(OrderResult[0].Customer) || OrderResult[0].Customer == "") && !order_Processing_Reply_To_Assist.Order_No.StartsWith("S"))
                         {
 
                             Employee_Fortune_Master employee_Fortune_Master = await _employeeService.GetEmployeeFortuneId(user_Id ?? 0);
@@ -11484,6 +11483,13 @@ namespace astute.Controllers
 
                             foreach (var item in OrderResult)
                             {
+                                int? buyerCode = 0;
+
+                                if (!string.IsNullOrEmpty(item.Buyer_Code))
+                                {
+                                    buyerCode = Convert.ToInt32(item.Buyer_Code);
+                                }
+
                                 var fortuneDetail = new Order_Processing_Complete_Fortune_Detail
                                 {
                                     Id = item.Id,
@@ -11491,7 +11497,7 @@ namespace astute.Controllers
                                     SuppStockId = item.SupplierNo,
                                     CertificateNo = item.CertificateNo,
                                     Status = item.Status.ToUpper(),
-                                    BuyerCode = employee_Fortune_Master.Fortune_Id,
+                                    BuyerCode = buyerCode,
                                     BaseAmount = item.BaseAmount != null ? item.BaseAmount : null,
                                     CostAmount = item.CurrentCostAmount != null ? item.CurrentCostAmount : null,
                                     Shade = item.Shade,
