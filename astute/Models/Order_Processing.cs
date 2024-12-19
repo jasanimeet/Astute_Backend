@@ -349,6 +349,8 @@ namespace astute.Models
         public string? remarks { get; set; }
         public string? current_cost_amt { get; set; }
         public string? current_cost_disc { get; set; }
+        public string? offer_amt { get; set; }
+        public string? offer_disc { get; set; }
     }
     #endregion
 }

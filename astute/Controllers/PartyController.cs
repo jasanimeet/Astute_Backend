@@ -12140,6 +12140,22 @@ namespace astute.Controllers
                             message = "Current cost amount cannot be null"
                         });
                     }
+                    else if (string.IsNullOrEmpty(order_Processing_Status_Model.offer_disc))
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = "Offer discount cannot be null"
+                        });
+                    }
+                    else if (string.IsNullOrEmpty(order_Processing_Status_Model.offer_amt))
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = "Offer amount cannot be null"
+                        });
+                    }
                     else
                     {
                         var result = await _supplierService.Order_Processing_Status_Update(order_Processing_Status_Model, user_Id ?? 0);

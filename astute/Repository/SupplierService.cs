@@ -3306,10 +3306,12 @@ namespace astute.Repository
             var remarks = !string.IsNullOrEmpty(order_Processing_Status_Model.remarks) ? new SqlParameter("@Remarks", order_Processing_Status_Model.remarks) : new SqlParameter("@Remarks", DBNull.Value);
             var current_cost_amt = !string.IsNullOrEmpty(order_Processing_Status_Model.current_cost_amt) ? new SqlParameter("@Current_cost_amt", order_Processing_Status_Model.current_cost_amt) : new SqlParameter("@Current_cost_amt", DBNull.Value);
             var current_cost_disc = !string.IsNullOrEmpty(order_Processing_Status_Model.current_cost_disc) ? new SqlParameter("@Current_cost_disc", order_Processing_Status_Model.current_cost_disc) : new SqlParameter("@Current_cost_disc", DBNull.Value);
+            var offer_amt = !string.IsNullOrEmpty(order_Processing_Status_Model.offer_amt) ? new SqlParameter("@Offer_amt", order_Processing_Status_Model.offer_amt) : new SqlParameter("@Offer_amt", DBNull.Value);
+            var offer_disc = !string.IsNullOrEmpty(order_Processing_Status_Model.offer_disc) ? new SqlParameter("@Offer_disc", order_Processing_Status_Model.offer_disc) : new SqlParameter("@Offer_disc", DBNull.Value);
             var _user_Id = new SqlParameter("@User_Id", user_Id);
 
             var result = await Task.Run(() => _dbContext.Database
-                   .ExecuteSqlRawAsync(@"EXEC Order_Processing_Status_Update @Id, @Status, @Remarks, @Current_cost_amt, @Current_cost_disc, @User_Id", id, status, remarks, current_cost_amt, current_cost_disc, _user_Id));
+                   .ExecuteSqlRawAsync(@"EXEC Order_Processing_Status_Update @Id, @Status, @Remarks, @Current_cost_amt, @Current_cost_disc, @Offer_amt, @Offer_disc, @User_Id", id, status, remarks, current_cost_amt, current_cost_disc, offer_amt, offer_disc, _user_Id));
 
             return result;
         }
