@@ -216,6 +216,35 @@ namespace astute.Controllers
                 });
             }
         }
+        
+        [HttpGet]
+        [Route("get_all_category_values")]
+        [Authorize]
+        public async Task<IActionResult> Get_All_Category_Values()
+        {
+            try
+            {
+                var result = await _categoryService.Get_All_Category_Values();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_All_Category_Values", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
 
         [HttpGet]
         [Route("get_active_category_values")]
