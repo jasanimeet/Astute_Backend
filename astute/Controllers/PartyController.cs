@@ -15576,6 +15576,90 @@ namespace astute.Controllers
 
         #endregion
 
+        #region Shree Krishna Api
+
+        [HttpPost]
+        [Route("get_skrishna_stock")]
+        public async Task<IActionResult> Get_SKrishna_Stock(string url, string token)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var request = new HttpRequestMessage(HttpMethod.Post, url);
+
+                    var collection = new List<KeyValuePair<string, string>>();
+                    collection.Add(new("Shape", ""));
+                    collection.Add(new("Color", ""));
+                    collection.Add(new("Clarity", ""));
+                    collection.Add(new("Cut", ""));
+                    collection.Add(new("Polish", ""));
+                    collection.Add(new("Symm", ""));
+                    collection.Add(new("Flour", ""));
+                    collection.Add(new("Lab", ""));
+                    collection.Add(new("FromSize", ""));
+                    collection.Add(new("ToSize", ""));
+                    collection.Add(new("FromLength", ""));
+                    collection.Add(new("ToLength", ""));
+                    collection.Add(new("FromWidth", ""));
+                    collection.Add(new("ToWidth", ""));
+                    collection.Add(new("FromHeight", ""));
+                    collection.Add(new("ToHeight", ""));
+                    collection.Add(new("FromTablePer", ""));
+                    collection.Add(new("ToTablePer", ""));
+                    collection.Add(new("FromDepthPer", ""));
+                    collection.Add(new("ToDepthPer", ""));
+                    collection.Add(new("Token", token));
+                    var content = new FormUrlEncodedContent(collection);
+                    
+                    request.Content = content;
+
+                    var response = await client.SendAsync(request);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseString = await response.Content.ReadAsStringAsync();
+
+                        return StatusCode((int)response.StatusCode, responseString);
+                    }
+                    else
+                    {
+                        var errorDetails = await response.Content.ReadAsStringAsync();
+
+                        await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_SKrishna_Stock", errorDetails);
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.ApiFailed,
+                            error = errorDetails
+                        });
+                    }
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                await _commonService.InsertErrorLog(httpEx.Message, "Get_SKrishna_Stock", httpEx.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = CoreCommonMessage.ApiError,
+                    error = httpEx.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_SKrishna_Stock", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = ex.Message,
+                    error = ex.StackTrace
+                });
+            }
+        }
+
+        #endregion
+        
         #region Supplier Special Price Validity
         [HttpPost]
         [Route("get_supplier_special_price_validity")]
