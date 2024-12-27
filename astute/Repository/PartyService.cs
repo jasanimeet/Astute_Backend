@@ -1141,6 +1141,12 @@ namespace astute.Repository
             return result;
         }
         public async Task<IList<DropdownModel>> Get_All_Party_Supplier()
+        {
+            var result = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"exec Get_All_Party_Supplier")
+                            .ToListAsync());
+            return result;
+        }
         public async Task<IList<DropdownModel>> Get_Party_Url_Format_Supplier()
         {
             var result = await Task.Run(() => _dbContext.DropdownModel
