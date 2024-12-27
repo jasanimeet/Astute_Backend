@@ -12561,7 +12561,7 @@ namespace astute.Controllers
                     }
                     string filename = string.Empty;
 
-                    filename = "AdminStatus_" + DateTime.UtcNow.ToString("ddMMyyyy") + "_"+ report_Filter.Order_Id + ".xlsx";
+                    filename = "AdminStatus_" + DateTime.UtcNow.ToString("ddMMyyyy") + "_" + report_Filter.Order_Id + ".xlsx";
                     if (is_Admin)
                     {
                         EpExcelExport.Create_Order_Processing_Excel_Admin(dt_Order, columnNamesTable, filePath, filePath + filename);
@@ -12629,7 +12629,7 @@ namespace astute.Controllers
                         Directory.CreateDirectory(filePath);
                     }
 
-                    filename = "OrderStatus_" + DateTime.UtcNow.ToString("ddMMyyyy") + "_"+ report_Filter.Order_Id.ToString() + ".xlsx";
+                    filename = "OrderStatus_" + DateTime.UtcNow.ToString("ddMMyyyy") + "_" + report_Filter.Order_Id.ToString() + ".xlsx";
 
                     EpExcelExport.Create_Order_Processing_Excel_Mazal(dt_Order, columnNamesTable, filePath, filePath + filename);
 
@@ -12771,7 +12771,7 @@ namespace astute.Controllers
                             byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
                             using (MemoryStream memoryStream = new MemoryStream(fileBytes))
                             {
-                                var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(user_Id ??0);
+                                var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(user_Id ?? 0);
                                 if (emp_email != null)
                                 {
                                     if (!(order_Excel_Email_Model.Send_From_Default ?? false) && (emp_email.Is_Default ?? false))
@@ -13319,7 +13319,8 @@ namespace astute.Controllers
                                 }
                                 var stockResponse = JsonConvert.DeserializeObject<StockResponse>(json1);
 
-                                SunriseStockResponse stock = new SunriseStockResponse { 
+                                SunriseStockResponse stock = new SunriseStockResponse
+                                {
                                     data = stockResponse.Data,
                                 };
                                 return Ok(stock);
@@ -15588,7 +15589,7 @@ namespace astute.Controllers
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
-                        message = "Special prices are going to expire on "+ SupplierPrice[0].Values.FirstOrDefault()?.ToString() + ". Please change the validity days accordingly."
+                        message = "Special prices are going to expire on " + SupplierPrice[0].Values.FirstOrDefault()?.ToString() + ". Please change the validity days accordingly."
                     });
                 }
                 else 
