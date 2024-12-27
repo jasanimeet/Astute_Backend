@@ -971,7 +971,7 @@ namespace astute.Controllers
                 });
             }
         }
-
+        
         [HttpPost]
         [Route("copyemployeerights")]
         [Authorize]
@@ -995,6 +995,38 @@ namespace astute.Controllers
                 throw;
             }
         }
+
+        [HttpPost]
+        [Route("add_update_employee_download_share_rights")]
+        [Authorize]
+        public async Task<IActionResult> Add_Update_Employee_Download_Share_Rights(Employee_Download_Share_Rights_Model employee_Download_Share_Rights_Model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _empRightsService.Insert_Update_Employee_Download_Share_Rights(employee_Download_Share_Rights_Model);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.EmployeeDownloadShareRightsCreated,
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Add_Update_Employee_Download_Share_Rights", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Employee Mail

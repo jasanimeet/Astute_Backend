@@ -198,7 +198,7 @@ namespace astute.Repository
 
             return menuList;
         }
-
+        
         public async Task<Menu_Rights_Model> Set_Menu_Rights(int menuId, IList<Emp_rights> rights)
         {
             var right = rights.FirstOrDefault(x => x.Menu_Id == menuId);
@@ -223,6 +223,72 @@ namespace astute.Repository
             }
             return 1;
         }
+
+        public async Task<IList<MenuDownloadShareMasterModel>> Get_All_Menus_Rights(int employeeId)
+        {
+            var allMenus = await _dbContext.Menu_Mas.ToListAsync();
+            var download_rights = employeeId > 0 ? await _dbContext.Employee_Download_Share_Rights.Where(x => x.Employee_Id == employeeId).ToListAsync() : new List<Employee_Download_Share_Rights>();
+            var rights = employeeId > 0 ? await _dbContext.Emp_rights.Where(x => x.Employee_Id == employeeId).ToListAsync() : new List<Emp_rights>();
+
+            var menus = new List<MenuDownloadShareMasterModel>();
+
+            menus = await Get_All_Sub_Menus_Rights(allMenus, download_rights, rights, 0, employeeId);
+
+            return menus;
+        }
+
+        public async Task<List<MenuDownloadShareMasterModel>> Get_All_Sub_Menus_Rights(List<Menu_Mas> allMenus, List<Employee_Download_Share_Rights> download_rights, List<Emp_rights> rights, int parentId, int employeeId)
+        {
+            var menuList = new List<MenuDownloadShareMasterModel>();
+
+            foreach (var item in allMenus.Where(x => x.Parent_Id == parentId))
+            {
+                var right_Model = await Set_Menu_Download_Share_Rights(item.Menu_Id, download_rights);
+
+                var excel_Model = await Set_Menu_Rights(item.Menu_Id, rights);
+
+                var menuModel = new MenuDownloadShareMasterModel
+                {
+                    Menu_Id = item.Menu_Id,
+                    Menu_Name = item.Menu_Name,
+                    Caption = item.Caption,
+                    Parent_Id = item.Parent_Id ?? 0,
+                    Menu_type = item.Menu_type,
+                    Short_Key = item.Short_Key,
+                    Order_No = item.Order_No,
+                    Status = item.Status,
+                    Module_Path = item.Module_Path,
+                    Excel_Allow = excel_Model.Excel_Allow,
+                    Print_Allow = excel_Model.Print_Allow,
+                    Menu_Rights = right_Model,
+                    SubMenu = new List<MenuDownloadShareMasterModel>()
+                };
+
+                menuModel.SubMenu = await Get_All_Sub_Menus_Rights(allMenus, download_rights, rights, item.Menu_Id, employeeId);
+                menuList.Add(menuModel);
+            }
+
+            return menuList;
+        }
+
+        public async Task<Menu_Download_Share_Rights_Model> Set_Menu_Download_Share_Rights(int menuId, IList<Employee_Download_Share_Rights> rights)
+        {
+            var right = rights.FirstOrDefault(x => x.Menu_Id == menuId);
+            return right != null ? new Menu_Download_Share_Rights_Model
+            {
+                D_Certificate = right.D_Certificate,
+                D_Custom_Excel = right.D_Custom_Excel,  
+                D_Default_Excel = right.D_Default_Excel,
+                D_Image = right.D_Image,
+                D_Video = right.D_Video,
+                S_Certificate = right.S_Certificate,
+                S_Custom_Excel = right.S_Custom_Excel,
+                S_Default_Excel = right.S_Default_Excel,
+                S_Image = right.S_Image,
+                S_Video = right.S_Video
+            } : new Menu_Download_Share_Rights_Model();
+        }
+
     }
     #endregion
 }

@@ -84,6 +84,36 @@ namespace astute.Repository
             }
             return result;
         }
+
+        public async Task<int> Insert_Update_Employee_Download_Share_Rights(Employee_Download_Share_Rights_Model employee_Download_Share_Rights_Model)
+        {
+            int result = 0;
+            if (employee_Download_Share_Rights_Model.Employee_Download_Share_Rights_Post_Model != null && employee_Download_Share_Rights_Model.Employee_Download_Share_Rights_Post_Model.Count > 0)
+            {
+                foreach (var right in employee_Download_Share_Rights_Model.Employee_Download_Share_Rights_Post_Model)
+                {
+                    var employeeId = employee_Download_Share_Rights_Model.Employee_Id > 0 ? new SqlParameter("@Employee_Id", employee_Download_Share_Rights_Model.Employee_Id) : new SqlParameter("@Employee_Id", DBNull.Value);
+                    var menuId = right.Menu_Id > 0 ? new SqlParameter("@Menu_Id", right.Menu_Id) : new SqlParameter("@Menu_Id", DBNull.Value);
+                    var D_Default_Excel = new SqlParameter("@D_Default_Excel", right.D_Default_Excel);
+                    var D_Custom_Excel = new SqlParameter("@D_Custom_Excel", right.D_Custom_Excel);
+                    var D_Image = new SqlParameter("@D_Image", right.D_Image);
+                    var D_Video = new SqlParameter("@D_Video", right.D_Video);
+                    var D_Certificate = new SqlParameter("@D_Certificate", right.D_Certificate);
+                    var S_Default_Excel = new SqlParameter("@S_Default_Excel", right.S_Default_Excel);
+                    var S_Custom_Excel = new SqlParameter("@S_Custom_Excel", right.S_Custom_Excel);
+                    var S_Image = new SqlParameter("@S_Image", right.S_Image);
+                    var S_Video = new SqlParameter("@S_Video", right.S_Video);
+                    var S_Certificate = new SqlParameter("@S_Certificate", right.S_Certificate);
+
+                    result = await Task.Run(() => _dbContext.Database
+                                    .ExecuteSqlRawAsync(@"EXEC Employee_Download_Share_Rights_Insert_Update @Menu_Id, @Employee_Id, @D_Default_Excel, @D_Custom_Excel, @D_Image, @D_Video,
+                                    @D_Certificate, @S_Default_Excel, @S_Custom_Excel, @S_Image, @S_Video, @S_Certificate", employeeId, menuId, D_Default_Excel, D_Custom_Excel, D_Image, D_Video, D_Certificate, S_Default_Excel, S_Custom_Excel, S_Image, S_Video, S_Certificate));
+                }
+                result = 1;
+            }
+            return result;
+        }
+
         #endregion
     }
 }

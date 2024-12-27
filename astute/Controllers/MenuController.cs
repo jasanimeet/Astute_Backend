@@ -55,7 +55,7 @@ namespace astute.Controllers
                 });
             }
         }
-
+        
         [HttpGet]
         [Route("getmenu")]
         [Authorize]
@@ -219,6 +219,36 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_recursive_menu_download_share_rights")]
+        [Authorize]
+        public async Task<IActionResult> Get_Recursive_Menu_Download_Share_Rights(int employeeId)
+        {
+            try
+            {
+                var result = await _menuService.Get_All_Menus_Rights(employeeId);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Recursive_Menu_Download_Share_Rights", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
     }
 }

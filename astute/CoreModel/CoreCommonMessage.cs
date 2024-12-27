@@ -542,5 +542,9 @@
         public static string Supplier_Stock_Upload_Status_Email = "Supplier Stock Upload Status Email";
         #endregion
 
+        #region Employee Download Share Rights
+        public static string EmployeeDownloadShareRights = "Employee Download Share Rights";
+        public static string EmployeeDownloadShareRightsCreated = EmployeeDownloadShareRights + AddedSuccessfully;
+        #endregion
     }
 }
