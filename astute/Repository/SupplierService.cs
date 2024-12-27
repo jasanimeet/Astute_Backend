@@ -1076,9 +1076,9 @@ namespace astute.Repository
                     try
                     {
                         var result = await command.ExecuteScalarAsync();
-                        if (result != null) 
+                        if (result != null)
                         {
-                            return result.ToString(); 
+                            return result.ToString();
                         }
                         return result;
                     }
@@ -1178,7 +1178,7 @@ namespace astute.Repository
         public async Task<int> Supplier_Stock_Start_End_Time_Update(Supplier_Stock_Update supplier_Stock_Update)
         {
             var supplier_Id = new SqlParameter("@Supplier_Id", supplier_Stock_Update.Supplier_Id);
-            var stock_Data_Id = supplier_Stock_Update.Stock_Data_Id > 0 ? new SqlParameter("@Stock_Data_Id", supplier_Stock_Update.Stock_Data_Id) : new SqlParameter("@Stock_Data_Id", DBNull.Value); 
+            var stock_Data_Id = supplier_Stock_Update.Stock_Data_Id > 0 ? new SqlParameter("@Stock_Data_Id", supplier_Stock_Update.Stock_Data_Id) : new SqlParameter("@Stock_Data_Id", DBNull.Value);
             var upload_Method = !string.IsNullOrEmpty(supplier_Stock_Update.Upload_Method) ? new SqlParameter("@Upload_Method", supplier_Stock_Update.Upload_Method) : new SqlParameter("@Upload_Method", DBNull.Value);
             var upload_Type = !string.IsNullOrEmpty(supplier_Stock_Update.Upload_Type) ? new SqlParameter("@Upload_Type", supplier_Stock_Update.Upload_Type) : new SqlParameter("@Upload_Type", DBNull.Value);
             var start_Time = new SqlParameter("@Start_Time", supplier_Stock_Update.Start_Time ?? (object)DBNull.Value);
@@ -1747,7 +1747,7 @@ namespace astute.Repository
             }
             return result;
         }
-        
+
         public async Task<int> Delete_Report_User_Role(int id, int user_Id, string format_Type)
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Report_Users_Role_Delete {id},{user_Id}, {format_Type}"));
@@ -2239,7 +2239,7 @@ namespace astute.Repository
         public async Task<List<Dictionary<string, object>>> Get_Stock_Avalibility_Report_Search(DataTable dataTable, string stock_Id, string stock_Type, string supp_Stock_Id, int iPgNo, int iPgSize, IList<Report_Sorting> iSort, int party_Id)
         {
             var result = new List<Dictionary<string, object>>();
-            
+
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
                 using (var command = new SqlCommand("Stock_Availability_Select", connection))
@@ -2515,7 +2515,7 @@ namespace astute.Repository
                 }
             }
             return dataTable;
-        }        
+        }
         public async Task<DataTable> Get_Stock_Availability_Report_Excel(DataTable dataTable, string stock_Id, string stock_Type, int party_Id)
         {
             DataTable dataTable1 = new DataTable();
@@ -2963,7 +2963,7 @@ namespace astute.Repository
             var _order_No = !string.IsNullOrEmpty(order_No) ? new SqlParameter("@Order_No", order_No) : new SqlParameter("@Order_No", DBNull.Value);
             var _sub_Order_Id = sub_Order_Id > 0 ? new SqlParameter("@Sub_Order_Id", sub_Order_Id) : new SqlParameter("@Sub_Order_Id", DBNull.Value);
             var _user_Id = new SqlParameter("@User_Id", user_Id);
-            
+
             var result = await Task.Run(() => _dbContext.Database
                    .ExecuteSqlRawAsync(@"EXEC Order_Processing_Delete @Order_No, @Sub_Order_Id, @User_Id", _order_No, _sub_Order_Id, _user_Id));
 
@@ -2978,7 +2978,7 @@ namespace astute.Repository
             {
                 Direction = ParameterDirection.Output
             };
-            
+
             var result = await Task.Run(() => _dbContext.Database
                    .ExecuteSqlRawAsync(@"EXEC Order_Processing_Entire_Delete @Order_No, @User_Id, @Is_Exist OUT", _order_No, _user_Id, is_Exist));
             bool _is_Exist = (bool)is_Exist.Value;
@@ -3112,7 +3112,7 @@ namespace astute.Repository
                     command.Parameters.Add(!string.IsNullOrEmpty(stock_Id) ? new SqlParameter("@STOCK_ID", stock_Id) : new SqlParameter("@STOCK_ID", DBNull.Value));
                     command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(order_Id) ? new SqlParameter("@Order_Id", order_Id) : new SqlParameter("@Order_Id", DBNull.Value));
-                    
+
                     var is_Admin = new SqlParameter("@Is_Admin", SqlDbType.Bit)
                     {
                         Direction = ParameterDirection.Output
@@ -3230,7 +3230,7 @@ namespace astute.Repository
                 }
             }
             return dataTable;
-        }    
+        }
         public async Task<List<Dictionary<string, object>>> Get_Company_Name()
         {
             var result = new List<Dictionary<string, object>>();
@@ -3373,6 +3373,117 @@ namespace astute.Repository
             return totalUpdatedRecords;
         }
 
+        public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Summary(int user_Id, Order_Processing_Summary order_Processing_Summary)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Lab_Entry_Master_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.Stock_Id) ? new SqlParameter("@Trans_Id", order_Processing_Summary.Stock_Id) : new SqlParameter("@Trans_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.From_Date) ? new SqlParameter("@From_Date", order_Processing_Summary.From_Date) : new SqlParameter("@From_Date", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Processing_Summary.To_Date) ? new SqlParameter("@To_Date", order_Processing_Summary.To_Date) : new SqlParameter("@To_Date", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Detail(int trans_id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Lab_Entry_Detail_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(trans_id > 0 ? new SqlParameter("@Trans_Id", trans_id) : new SqlParameter("@Trans_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public async Task<int> Insert_Update_Lab_Entry(DataTable masterDataTable, DataTable detailDataTable, int user_Id)
+        {
+            var masterParameter = new SqlParameter("@Lab_Entry_Master_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Lab_Entry_Master_Table_Type]",
+                Value = masterDataTable
+            };
+
+            var detailParameter = new SqlParameter("@Lab_Entry_Detail_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Lab_Entry_Detail_Table_Type]",
+                Value = detailDataTable
+            };
+
+            var _user_Id = new SqlParameter("@User_Id", user_Id);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Lab_Entry_Insert_Update @Lab_Entry_Master_Table_Type, @Lab_Entry_Detail_Table_Type, @User_Id", masterParameter, detailParameter, _user_Id));
+
+            return result;
+        }
+
+        public async Task<(int, bool)> Delete_Lab_Entry(int id)
+        {
+            var _id = id > 0 ? new SqlParameter("@Id", id) : new SqlParameter("@Id", DBNull.Value);
+            
+            var is_Exist = new SqlParameter("@Is_Exist", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Lab_Entry_Delete @Id, @Is_Exist OUT", _id, is_Exist));
+
+            var _is_Exist = (bool)is_Exist.Value;
+            if (_is_Exist)
+                return (409, _is_Exist);
+
+            return (result, _is_Exist);
+        }
         #endregion
 
         #region Party Url Format

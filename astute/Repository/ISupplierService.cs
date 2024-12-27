@@ -140,6 +140,11 @@ namespace astute.Repository
         Task<int> Order_Processing_Status_Update(Order_Processing_Status_Model order_Processing_Status_Model, int user_Id);
         Task<int> Final_Order_Processing_Create_Update(DataTable dataTable, int? user_Id);
         Task<int> Final_Order_Processing_Create_Update_Save(DataTable dataTable, int? user_Id);
+        Task<List<Dictionary<string, object>>> Get_Lab_Entry_Summary(int user_Id, Order_Processing_Summary order_Processing_Summary);
+        Task<List<Dictionary<string, object>>> Get_Lab_Entry_Detail(int trans_id);
+        Task<int> Insert_Update_Lab_Entry(DataTable masterDataTable, DataTable detailDataTable, int user_Id);
+        Task<(int, bool)> Delete_Lab_Entry(int id);
+
         #endregion
 
         #region Party Url Format

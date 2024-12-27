@@ -11,7 +11,7 @@ namespace astute.Models
         public string? Remarks { get; set; }
         public string? Status { get; set; }
         public object Order_Detail { get; set; }
-    }   
+    }
     public class Order_Processing_Detail
     {
         public int Id { get; set; }
@@ -22,7 +22,7 @@ namespace astute.Models
 
         [JsonProperty("BUYER AMOUNT")]
         public object? Buyer_Amt { get; set; }
-        
+
         [JsonProperty("COST DISC")]
         public object? Cost_Disc { get; set; }
 
@@ -63,8 +63,8 @@ namespace astute.Models
     {
         public string? Order_Id { get; set; }
         public string? Order_No { get; set; }
-        public string? Order_Status { get; set;}
-        public string? QC_Request { get; set;}
+        public string? Order_Status { get; set; }
+        public string? QC_Request { get; set; }
         public string? Remarks { get; set; }
     }
     public class Order_Process_Detail
@@ -73,7 +73,7 @@ namespace astute.Models
         public int? Sub_Order_Id { get; set; }
         public string? Company_Name { get; set; }
         public string? Is_Selected_Supp_Stock_Id { get; set; }
-    }    
+    }
     public class Order_Processing_Reply_To_Assist
     {
         public string? Order_No { get; set; }
@@ -328,6 +328,117 @@ namespace astute.Models
 
         [JsonProperty("Supplier Code")]
         public string? Supplier_code { get; set; }
+
+        [JsonProperty("Supplier_Id")]
+        public string? Supplier_Id { get; set; }
+
+        [JsonProperty("Supplier_Name")]
+        public string? Supplier_Name { get; set; }
+
+        [JsonProperty("Supplier_Short_Name")]
+        public string? Supplier_Short_Name { get; set; }
+
+        [JsonProperty("LAB_Id")]
+        public string? LAB_Id { get; set; }
+
+        [JsonProperty("Shape_Id")]
+        public string? Shape_Id { get; set; }
+
+        [JsonProperty("BGM_Id")]
+        public string? BGM_Id { get; set; }
+
+        [JsonProperty("Color_Id")]
+        public string? Color_Id { get; set; }
+
+        [JsonProperty("Clarity_Id")]
+        public string? Clarity_Id { get; set; }
+
+        [JsonProperty("Cut_Id")]
+        public string? Cut_Id { get; set; }
+
+        [JsonProperty("Polish_Id")]
+        public string? Polish_Id { get; set; }
+
+        [JsonProperty("Symm_Id")]
+        public string? Symm_Id { get; set; }
+
+        [JsonProperty("FLS_INTENSITY_Id")]
+        public string? FLS_INTENSITY_Id { get; set; }
+
+        [JsonProperty("Table_Black_Id")]
+        public string? Table_Black_Id { get; set; }
+
+        [JsonProperty("Crown_Black_Id")]
+        public string? Crown_Black_Id { get; set; }
+
+        [JsonProperty("Table_White_Id")]
+        public string? Table_White_Id { get; set; }
+
+        [JsonProperty("Crown_White_Id")]
+        public string? Crown_White_Id { get; set; }
+
+        [JsonProperty("Culet_Id")]
+        public string? Culet_Id { get; set; }
+
+        [JsonProperty("Table_Open_Id")]
+        public string? Table_Open_Id { get; set; }
+
+        [JsonProperty("Crown_Open_Id")]
+        public string? Crown_Open_Id { get; set; }
+
+        [JsonProperty("Pav_Open_Id")]
+        public string? Pav_Open_Id { get; set; }
+
+        [JsonProperty("Girdle_Open_Id")]
+        public string? Girdle_Open_Id { get; set; }
+
+        [JsonProperty("CERTIFICATE DATE")]
+        public string? Cert_Date { get; set; }
+
+        [JsonProperty("Cert_Type_Id")]
+        public string? Cert_Type_Id { get; set; }
+
+        [JsonProperty("LR HALF")]
+        public string? LR_Half { get; set; }
+
+        [JsonProperty("STAR LN")]
+        public string? Str_Ln { get; set; }
+
+        [JsonProperty("Fancy_Color_Id")]
+        public string? Fancy_Color_Id { get; set; }
+
+        [JsonProperty("Fancy_Intensity_Id")]
+        public string? Fancy_Intensity_Id { get; set; }
+
+        [JsonProperty("Fancy_Overtone_Id")]
+        public string? Fancy_Overtone_Id { get; set; }
+
+        [JsonProperty("Rough_Origin_Id")]
+        public string? Rough_Origin_Id { get; set; }
+
+        [JsonProperty("FANCY COLOR")]
+        public string? Fancy_Color { get; set; }
+
+        [JsonProperty("FANCY INTENSITY")]
+        public string? Fancy_Intensity { get; set; }
+
+        [JsonProperty("FANCY OVERTONE")]
+        public string? Fancy_Overtone { get; set; }
+
+        [JsonProperty("Rough_Origin")]
+        public string? Rough_Origin { get; set; }
+
+        [JsonProperty("Cert_Type_Link")]
+        public string? Cert_Type_Link { get; set; }
+
+        [JsonProperty("Laser_Insc_Id")]
+        public string? Laser_Insc_Id { get; set; }
+
+        [JsonProperty("Girdle_Condition_Id")]
+        public string? Girdle_Condition_Id { get; set; }
+
+        [JsonProperty("GIRDLE CONDITION")]
+        public string? Girdle_Condition { get; set; }
     }
     public class Order_Excel_Model
     {

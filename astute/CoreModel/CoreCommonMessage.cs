@@ -546,5 +546,14 @@
         public static string EmployeeDownloadShareRights = "Employee Download Share Rights";
         public static string EmployeeDownloadShareRightsCreated = EmployeeDownloadShareRights + AddedSuccessfully;
         #endregion
+
+        #region Lab Entry
+        public static string Lab_Entry = "Lab Entry";
+        public static string Lab_Entry_Created = Lab_Entry + AddedSuccessfully;
+        public static string Lab_Entry_Updated = Lab_Entry + UpdatedSuccessfully;
+        public static string Lab_Entry_Deleted = Lab_Entry + DeletedSuccessfully;
+        public static string Lab_Entry_Auto_Deleted = "Cannot delete auto generated " + Lab_Entry;
+        public static string Lab_Entry_Master = Lab_Entry + AlreadyExists;
+        #endregion
     }
 }
