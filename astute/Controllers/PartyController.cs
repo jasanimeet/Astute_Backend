@@ -7691,7 +7691,7 @@ namespace astute.Controllers
                     }
                     else
                     {
-                        return Conflict(new { message = "Order is already OPEN. Order Status update not allowed." });
+                        return Conflict(new { message = "Please refresh order records and then do further activity." });
                     }
                 }
                 else 
