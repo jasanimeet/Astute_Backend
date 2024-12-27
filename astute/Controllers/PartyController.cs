@@ -8173,11 +8173,11 @@ namespace astute.Controllers
                             dataTable.Rows.Add(dataRow);
                             success = true;
                         }
-                        else
-                        {
-                            success = false;
+                        //else
+                        //{
+                        //    success = false;
+                        //}
                         }
-                    }
 
                     var result = await _supplierService.Get_GIA_Certificate_Update_Data(dataTable, gIA_Certificate_Parameter_Model.supplier_Name, gIA_Certificate_Parameter_Model.customer_Name);
 
@@ -8213,7 +8213,7 @@ namespace astute.Controllers
                     //}
                     //else
                     //{
-                    var lst_Cert_No = gIA_Certificate_Parameter_Model.cert_no.Split(",").ToList();
+                    var lst_Cert_No = gIA_Certificate_Parameter_Model.cert_no.Replace(" ", "").Replace("\n", "").Split(",").ToList();
 
                     string certificate_no = "";
                     if (lst_Cert_No != null && lst_Cert_No.Count > 0)
