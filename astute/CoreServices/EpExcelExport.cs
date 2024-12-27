@@ -6259,6 +6259,10 @@ namespace astute.CoreServices
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["SUNRISE REMARKS"]);
                                 }
+                                else if (Column_Name == "SUB ZONE")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["SUB ZONE"]);
+                                }
                             }
 
                             var matchingDict = color_dt.Find(dict => dict.ContainsKey("Display_Name") && dict["Display_Name"].ToString() == Column_Name);
