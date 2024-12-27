@@ -1682,6 +1682,35 @@ namespace astute.Controllers
         }
 
         [HttpGet]
+        [Route("get_all_party_supplier")]
+        [Authorize]
+        public async Task<IActionResult> Get_All_Party_Supplier()
+        {
+            try
+            {
+                var result = await _partyService.Get_All_Party_Supplier();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_All_Party_Supplier", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
         [Route("get_party_url_format_supplier")]
         [Authorize]
         public async Task<IActionResult> Get_Party_Url_Format_Supplier()
