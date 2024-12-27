@@ -2,6 +2,7 @@
 using OfficeOpenXml.Drawing;
 using OfficeOpenXml.Style;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -5597,7 +5598,7 @@ namespace astute.CoreServices
                 throw;
             }
         }
-        public static void Create_Cart_Column_Wise_Excel(DataTable dtStock, DataTable column_dt, string _strFolderPath, string _strFilePath)
+        public static void Create_Cart_Column_Wise_Excel(DataTable dtStock, DataTable column_dt, List<Dictionary<string, object>> color_dt, string _strFolderPath, string _strFilePath)
         {
             try
             {
@@ -5728,27 +5729,6 @@ namespace astute.CoreServices
                         {
                             kk += 1;
                             string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
-
-                            if (ktsGradeValue == "K3" && statusValue != "SOLD" && cartStatusValue != "Rejected")
-                            {
-                                worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.None;
-                                for (int col = 1; col <= column_dt.Rows.Count; col++)
-                                {
-                                    worksheet.Cells[inwrkrow, col].Style.Font.Color.SetColor(Color.Red);
-                                }
-                            }
-                            if (statusValue == "SOLD")
-                            {
-                                worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                Color soldColor = ColorTranslator.FromHtml("#FFD4B5");
-                                worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(soldColor);
-                            }
-                            if (cartStatusValue == "Rejected")
-                            {
-                                worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                Color rejectedColor = ColorTranslator.FromHtml("#EE9C9C");
-                                worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(rejectedColor);
-                            }
 
                             if (Column_Name == "IMAGE LINK")
                             {
@@ -6279,6 +6259,52 @@ namespace astute.CoreServices
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["SUNRISE REMARKS"]);
                                 }
+                            }
+
+                            var matchingDict = color_dt.Find(dict => dict.ContainsKey("Display_Name") && dict["Display_Name"].ToString() == Column_Name);
+
+                            if (matchingDict != null)
+                            {
+                                if (matchingDict.ContainsKey("Back_Colour") && !string.IsNullOrWhiteSpace(matchingDict["Back_Colour"]?.ToString()))
+                                {
+                                    string backColour = matchingDict["Back_Colour"].ToString();
+
+                                    Color color = ColorTranslator.FromHtml(backColour);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(color);
+                                }
+
+                                if (matchingDict.ContainsKey("Fore_Colour") && !string.IsNullOrWhiteSpace(matchingDict["Fore_Colour"]?.ToString()))
+                                {
+                                    string foreColour = matchingDict["Fore_Colour"].ToString();
+
+                                    Color color = ColorTranslator.FromHtml(foreColour);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(color);
+                                }
+                            }
+
+                            if (ktsGradeValue == "K3" && statusValue != "SOLD" && cartStatusValue != "Rejected")
+                            {
+                                for (int col = 1; col <= column_dt.Rows.Count; col++)
+                                {
+                                    worksheet.Cells[inwrkrow, col].Style.Font.Color.SetColor(Color.Red);
+                                }
+                            }
+                            
+                            if (statusValue == "SOLD")
+                            {
+                                worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                Color soldColor = ColorTranslator.FromHtml("#FFD4B5");
+                                worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(soldColor);
+                            }
+                            
+                            if (cartStatusValue == "Rejected")
+                            {
+                                worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                Color rejectedColor = ColorTranslator.FromHtml("#EE9C9C");
+                                worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(rejectedColor);
                             }
                         }
 

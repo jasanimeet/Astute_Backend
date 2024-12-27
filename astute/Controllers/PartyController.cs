@@ -7439,8 +7439,12 @@ namespace astute.Controllers
                     string filename = string.Empty;
                     if (report_Filter.id == 2)
                     {
+                        var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                        int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                        var color_dt = await _supplierService.Get_Report_Users_Role(report_Filter.id, (int)user_Id, null);
+
                         filename = "Cart_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                        EpExcelExport.Create_Cart_Column_Wise_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                        EpExcelExport.Create_Cart_Column_Wise_Excel(dt_stock, columnNamesTable, color_dt, filePath, filePath + filename);
                         excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                     }
                     if (report_Filter.id == 3)
