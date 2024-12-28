@@ -369,7 +369,7 @@ namespace astute.Repository
 
             return categoryValue.FirstOrDefault();
         }
-        public async Task<List<Dictionary<string, object>>> Get_All_Category_Values()
+        public async Task<Dictionary<string, List<Dictionary<string, object>>>> Get_All_Category_Values()
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -406,8 +406,10 @@ namespace astute.Repository
                     }
                 }
             }
+            
+            var groupedResult = result.GroupBy(item => item["Column_Name"].ToString()).ToDictionary(group => group.Key,group => group.ToList());
 
-            return result;
+            return groupedResult;
         }
         public async Task<IList<CategoryValueModel>> GetCategoryValuesByCatId(int catId)
         {
