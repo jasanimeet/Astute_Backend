@@ -269,7 +269,7 @@ namespace astute.Models
         public string? LaserInscription { get; set; }
 
         [JsonProperty("GIRDLE PER")]
-        public long? GirdlePer { get; set; }
+        public string? GirdlePer { get; set; }
 
         [JsonProperty("LUSTER")]
         public string? Luster { get; set; }

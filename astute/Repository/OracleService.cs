@@ -1559,7 +1559,7 @@ namespace astute.Repository
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vGIRDLE_PER", OracleDbType.Double);
-                        param1.Value = (!string.IsNullOrEmpty(item.GirdlePer.ToString()) && item.GirdlePer > 0 ? Convert.ToDouble(item.GirdlePer) : 0);
+                        param1.Value = (!string.IsNullOrEmpty(item.GirdlePer.ToString()) && Convert.ToDouble(item.GirdlePer) > 0 ? Convert.ToDouble(item.GirdlePer) : 0);
                         paramList.Add(param1);
 
                         param1 = new OracleParameter("vGIRDLE_TYPE", OracleDbType.NVarchar2);
