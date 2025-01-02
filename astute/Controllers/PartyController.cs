@@ -8376,11 +8376,11 @@ namespace astute.Controllers
                                     certificate_no += ", " + certificate_no;
                                 }
                             }
-                            else
-                            {
-                                success = false;
+                            //else
+                            //{
+                            //    success = false;
+                            //}
                             }
-                        }
 
                         var result = await _supplierService.Get_GIA_Certificate_Update_Data(dataTable, gIA_Certificate_Parameter_Model.supplier_Name, gIA_Certificate_Parameter_Model.customer_Name);
 
