@@ -117,5 +117,6 @@ namespace astute.Models
         public DbSet<Party_Url_Format> Party_Url_Format { get; set; }
         public DbSet<Employee_Secretary> Employee_Secretary { get; set; }
         public DbSet<Employee_Download_Share_Rights> Employee_Download_Share_Rights { get; set; }
+        public DbSet<Rapaport_Rate_Detail_Model> Rapaport_Rate_Detail_Model { get; set; }
     }
 }

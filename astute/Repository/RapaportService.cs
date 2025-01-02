@@ -1,6 +1,7 @@
 ﻿using astute.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,12 +13,15 @@ namespace astute.Repository
     {
         #region Fields
         private readonly AstuteDbContext _dbContext;
+        private readonly IConfiguration _configuration;
         #endregion
 
         #region Ctor
-        public RapaportService(AstuteDbContext dbContext)
+        public RapaportService(AstuteDbContext dbContext,
+            IConfiguration configuration)
         {
             _dbContext = dbContext;
+            _configuration = configuration;
         }
         #endregion
 
@@ -144,6 +148,44 @@ namespace astute.Repository
         public async Task<IList<Diamond_Type_Value>> Get_Diamond_Type_Filter_Value()
         {
             var result = await _dbContext.Diamond_Type_Value.FromSqlRaw(@"EXEC Category_Diamond_Type_Value").ToListAsync();
+            return result;
+        }
+
+        public async Task<List<Dictionary<string, object>>> Get_Rapaport_Rate_Detail(Rapaport_Rate_Detail_Model rapaport_Rate_Detail_Model)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Rapaport_Rate_Detail_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(rapaport_Rate_Detail_Model.Certificate_No) ? new SqlParameter("@Certificate_No", rapaport_Rate_Detail_Model.Certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value)); 
+                    command.Parameters.Add(rapaport_Rate_Detail_Model.Shape > 0 ? new SqlParameter("@Shape", rapaport_Rate_Detail_Model.Shape) : new SqlParameter("@Shape", DBNull.Value));
+                    command.Parameters.Add(rapaport_Rate_Detail_Model.Color > 0 ? new SqlParameter("@Color", rapaport_Rate_Detail_Model.Color) : new SqlParameter("@Color", DBNull.Value));
+                    command.Parameters.Add(rapaport_Rate_Detail_Model.Clarity > 0 ? new SqlParameter("@Clarity", rapaport_Rate_Detail_Model.Clarity) : new SqlParameter("@Clarity", DBNull.Value));
+                    command.Parameters.Add(rapaport_Rate_Detail_Model.Cts > 0 ? new SqlParameter("@Cts", rapaport_Rate_Detail_Model.Cts) : new SqlParameter("@Cts", DBNull.Value));
+                    
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
             return result;
         }
         #endregion

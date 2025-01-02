@@ -191,7 +191,7 @@ namespace astute.Controllers
                 });
             }
         }
-
+        
         [HttpPost]
         [Route("createrapaportdetail")]
         [Authorize]
@@ -779,6 +779,48 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("get_rapaport_rate_detail")]
+        [Authorize]
+        public async Task<IActionResult> Get_Rapaport_Rate_Detail(List<Rapaport_Rate_Detail_Model> rapaport_Rate_Detail_Model)
+        {
+            try
+            {
+                List<Dictionary<string, object>> rapaport_Rate_Detail = new List<Dictionary<string, object>>();
+
+                foreach (var item in rapaport_Rate_Detail_Model)
+                {
+                    var result = await _rapaportService.Get_Rapaport_Rate_Detail(item);
+                    if (result != null)
+                    {
+                        foreach (var dict in result)
+                        {
+                            rapaport_Rate_Detail.Add(dict);
+                        }
+                    }
+                }
+                if (rapaport_Rate_Detail != null && rapaport_Rate_Detail.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = rapaport_Rate_Detail
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "GetRapaportDetail", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
     }
 }

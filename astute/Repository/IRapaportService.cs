@@ -25,6 +25,7 @@ namespace astute.Repository
         Task<IList<Bank_Dropdown_Model>> Get_Rapaport_Color();
         Task<IList<Shape_Value>> Get_Shape_Filter_Value();
         Task<IList<Diamond_Type_Value>> Get_Diamond_Type_Filter_Value();
+        Task<List<Dictionary<string, object>>> Get_Rapaport_Rate_Detail(Rapaport_Rate_Detail_Model rapaport_Rate_Detail_Model);
         #endregion
 
         #region Rapaport User
