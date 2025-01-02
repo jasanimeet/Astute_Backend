@@ -12529,6 +12529,35 @@ namespace astute.Controllers
         }
 
         [HttpPost]
+        [Route("get_lab_entry_report_summary")]
+        [Authorize]
+        public async Task<IActionResult> Get_Lab_Entry_Report_Summary(Lab_Entry_Summary lab_Entry_Summary)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Lab_Entry_Report_Summary(lab_Entry_Summary);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Lab_Entry_Report_Summary", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
         [Route("order_excel_export")]
         [Authorize]
         public async Task<IActionResult> Order_Excel_Export(Report_Filter report_Filter)

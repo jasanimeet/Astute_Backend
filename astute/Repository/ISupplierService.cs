@@ -144,7 +144,7 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Lab_Entry_Detail(int trans_id);
         Task<int> Insert_Update_Lab_Entry(DataTable masterDataTable, DataTable detailDataTable, int user_Id);
         Task<(int, bool)> Delete_Lab_Entry(int id);
-
+        Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Summary(Lab_Entry_Summary lab_Entry_Summary);
         #endregion
 
         #region Party Url Format

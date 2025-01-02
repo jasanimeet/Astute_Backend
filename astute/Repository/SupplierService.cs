@@ -3484,6 +3484,45 @@ namespace astute.Repository
 
             return (result, _is_Exist);
         }
+
+        public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Summary(Lab_Entry_Summary lab_Entry_Summary)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Lab_Entry_Report_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(lab_Entry_Summary.From_Date) ? new SqlParameter("@From_Date", lab_Entry_Summary.From_Date) : new SqlParameter("@From_Date", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(lab_Entry_Summary.To_Date) ? new SqlParameter("@To_Date", lab_Entry_Summary.To_Date) : new SqlParameter("@To_Date", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(lab_Entry_Summary.Order_Type) ? new SqlParameter("@Order_Type", lab_Entry_Summary.Order_Type) : new SqlParameter("@Order_Type", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(lab_Entry_Summary.Stone_Status) ? new SqlParameter("@Stone_Status", lab_Entry_Summary.Stone_Status) : new SqlParameter("@Stone_Status", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(lab_Entry_Summary.Order_Status) ? new SqlParameter("@Order_Status", lab_Entry_Summary.Order_Status) : new SqlParameter("@Order_Status", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(lab_Entry_Summary.Stock_Id) ? new SqlParameter("@Stock_Id", lab_Entry_Summary.Stock_Id) : new SqlParameter("@Stock_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
         #endregion
 
         #region Party Url Format
