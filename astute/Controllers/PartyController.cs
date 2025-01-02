@@ -11810,9 +11810,19 @@ namespace astute.Controllers
                                 detailDataTable.Columns.Add("Girdle_Condition", typeof(int));
                                 detailDataTable.Columns.Add("Laser_Insc_C", typeof(string));
                                 detailDataTable.Columns.Add("Girdle_Condition_C", typeof(string));
+                                detailDataTable.Columns.Add("Company", typeof(string));
 
                                 foreach (var item in OrderResult)
                                 {
+                                    DateTime Valid_Date;
+
+                                    string dateFormat = "dd-MM-yyyy";
+
+                                    if (!DateTime.TryParseExact(item.Cert_Date, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out Valid_Date))
+                                    {
+                                        Valid_Date = DateTime.MinValue;
+                                    }
+
                                     detailDataTable.Rows.Add(
                                         0,
                                         0,
@@ -11830,31 +11840,31 @@ namespace astute.Controllers
                                         item.BGM_Id != null ? Convert.ToInt32(item.BGM_Id) : null,
                                         item.Color_Id != null ? Convert.ToInt32(item.Color_Id) : null,
                                         item.Clarity_Id != null ? Convert.ToInt32(item.Clarity_Id) : null,
-                                        item.Cts != null ? Convert.ToDouble(item.Cts) : null,
-                                        item.RapRate != null ? Convert.ToDouble(item.RapRate) : null,
-                                        item.RapAmount != null ? Convert.ToDouble(item.RapAmount) : null,
-                                        item.BaseDisc != null ? Convert.ToDouble(item.BaseDisc) : null,
-                                        item.BaseAmount != null ? Convert.ToDouble(item.BaseAmount) : null,
-                                        item.CurrentCostDisc != null ? Convert.ToDouble(item.CurrentCostDisc) : null,
-                                        item.CurrentCostAmount != null ? Convert.ToDouble(item.CurrentCostAmount) : null,
-                                        item.OfferDisc != null ? Convert.ToDouble(item.OfferDisc) : null,
-                                        item.OfferAmount != null ? Convert.ToDouble(item.OfferAmount) : null,
+                                        SafeConvertToDouble(item.Cts?.ToString()),
+                                        SafeConvertToDouble(item.RapRate?.ToString()),
+                                        SafeConvertToDouble(item.RapAmount?.ToString()),
+                                        SafeConvertToDouble(item.BaseDisc?.ToString()),
+                                        SafeConvertToDouble(item.BaseAmount?.ToString()),
+                                        SafeConvertToDouble(item.CurrentCostDisc?.ToString()),
+                                        SafeConvertToDouble(item.CurrentCostAmount?.ToString()),
+                                        SafeConvertToDouble(item.OfferDisc?.ToString()),
+                                        SafeConvertToDouble(item.OfferAmount?.ToString()),
                                         item.Cut_Id != null ? Convert.ToInt32(item.Cut_Id) : null,
                                         item.Polish_Id != null ? Convert.ToInt32(item.Polish_Id) : null,
                                         item.Symm_Id != null ? Convert.ToInt32(item.Symm_Id) : null,
                                         item.FLS_INTENSITY_Id != null ? Convert.ToInt32(item.FLS_INTENSITY_Id) : null,
-                                        item.Length != null ? Convert.ToDouble(item.Length) : null,
-                                        item.Width != null ? Convert.ToDouble(item.Width) : null,
-                                        item.Depth != null ? Convert.ToDouble(item.Depth) : null,
-                                        item.DepthPer != null ? Convert.ToDouble(item.DepthPer) : null,
-                                        item.TablePer != null ? Convert.ToDouble(item.TablePer) : (double?)null,
+                                        SafeConvertToDouble(item.Length?.ToString()),
+                                        SafeConvertToDouble(item.Width?.ToString()),
+                                        SafeConvertToDouble(item.Depth?.ToString()),
+                                        SafeConvertToDouble(item.DepthPer?.ToString()),
+                                        SafeConvertToDouble(item.TablePer?.ToString()),
                                         item.KeyToSymbol ?? null,
                                         item.GiaComments ?? null,
-                                        item.GirdlePer != null ? Convert.ToDouble(item.GirdlePer) : null,
-                                        item.CrownAngle != null ? Convert.ToDouble(item.CrownAngle) : null,
-                                        item.CrownHeight != null ? Convert.ToDouble(item.CrownHeight) : null,
-                                        item.PavilionAngle != null ? Convert.ToDouble(item.PavilionAngle) : null,
-                                        item.PavilionHeight != null ? Convert.ToDouble(item.PavilionHeight) : null,
+                                        SafeConvertToDouble(item.GirdlePer?.ToString()),
+                                        SafeConvertToDouble(item.CrownAngle?.ToString()),
+                                        SafeConvertToDouble(item.CrownHeight?.ToString()),
+                                        SafeConvertToDouble(item.PavilionAngle?.ToString()),
+                                        SafeConvertToDouble(item.PavilionHeight?.ToString()),
                                         item.Table_Black_Id != null ? Convert.ToInt32(item.Table_Black_Id) : null,
                                         item.Crown_Black_Id != null ? Convert.ToInt32(item.Crown_Black_Id) : null,
                                         item.Table_White_Id != null ? Convert.ToInt32(item.Table_White_Id) : null,
@@ -11864,10 +11874,10 @@ namespace astute.Controllers
                                         item.Crown_Open_Id != null ? Convert.ToInt32(item.Crown_Open_Id) : null,
                                         item.Pav_Open_Id != null ? Convert.ToInt32(item.Pav_Open_Id) : null,
                                         item.Girdle_Open_Id != null ? Convert.ToInt32(item.Girdle_Open_Id) : null,
-                                        item.Cert_Date != null ? Convert.ToDateTime(item.Cert_Date) : null,
+                                        Valid_Date != null ? Convert.ToDateTime(Valid_Date) : null,
                                         item.Cert_Type_Id != null ? Convert.ToInt32(item.Cert_Type_Id) : null,
-                                        item.LR_Half != null ? Convert.ToDouble(item.LR_Half) : null,
-                                        item.Str_Ln != null ? Convert.ToDouble(item.Str_Ln) : null,
+                                        SafeConvertToDouble(item.LR_Half?.ToString()),
+                                        SafeConvertToDouble(item.Str_Ln?.ToString()),
                                         item.Fancy_Color_Id != null ? Convert.ToInt32(item.Fancy_Color_Id) : null,
                                         item.Fancy_Intensity_Id != null ? Convert.ToInt32(item.Fancy_Intensity_Id) : null,
                                         item.Fancy_Overtone_Id != null ? Convert.ToInt32(item.Fancy_Overtone_Id) : null,
@@ -11903,7 +11913,8 @@ namespace astute.Controllers
                                         item.Laser_Insc_Id != null ? Convert.ToInt32(item.Laser_Insc_Id) : null,
                                         item.Girdle_Condition_Id != null ? Convert.ToInt32(item.Girdle_Condition_Id) : null,
                                         item.LaserInscription ?? null,
-                                        item.Girdle_Condition ?? null
+                                        item.Girdle_Condition ?? null,
+                                        item.Company ?? null
                                     );
                                 }
 
@@ -12101,9 +12112,19 @@ namespace astute.Controllers
                                 detailDataTable.Columns.Add("Girdle_Condition", typeof(int));
                                 detailDataTable.Columns.Add("Laser_Insc_C", typeof(string));
                                 detailDataTable.Columns.Add("Girdle_Condition_C", typeof(string));
+                                detailDataTable.Columns.Add("Company", typeof(string));
 
                                 foreach (var item in OrderResult)
                                 {
+                                    DateTime Valid_Date;
+
+                                    string dateFormat = "dd-MM-yyyy";
+
+                                    if (!DateTime.TryParseExact(item.Cert_Date, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out Valid_Date))
+                                    {
+                                        Valid_Date = DateTime.MinValue;
+                                    }
+
                                     detailDataTable.Rows.Add(
                                         0,
                                         0,
@@ -12121,31 +12142,31 @@ namespace astute.Controllers
                                         item.BGM_Id != null ? Convert.ToInt32(item.BGM_Id) : null,
                                         item.Color_Id != null ? Convert.ToInt32(item.Color_Id) : null,
                                         item.Clarity_Id != null ? Convert.ToInt32(item.Clarity_Id) : null,
-                                        item.Cts != null ? Convert.ToDouble(item.Cts) : null,
-                                        item.RapRate != null ? Convert.ToDouble(item.RapRate) : null,
-                                        item.RapAmount != null ? Convert.ToDouble(item.RapAmount) : null,
-                                        item.BaseDisc != null ? Convert.ToDouble(item.BaseDisc) : null,
-                                        item.BaseAmount != null ? Convert.ToDouble(item.BaseAmount) : null,
-                                        item.CurrentCostDisc != null ? Convert.ToDouble(item.CurrentCostDisc) : null,
-                                        item.CurrentCostAmount != null ? Convert.ToDouble(item.CurrentCostAmount) : null,
-                                        item.OfferDisc != null ? Convert.ToDouble(item.OfferDisc) : null,
-                                        item.OfferAmount != null ? Convert.ToDouble(item.OfferAmount) : null,
+                                        SafeConvertToDouble(item.Cts?.ToString()),
+                                        SafeConvertToDouble(item.RapRate?.ToString()),
+                                        SafeConvertToDouble(item.RapAmount?.ToString()),
+                                        SafeConvertToDouble(item.BaseDisc?.ToString()),
+                                        SafeConvertToDouble(item.BaseAmount?.ToString()),
+                                        SafeConvertToDouble(item.CurrentCostDisc?.ToString()),
+                                        SafeConvertToDouble(item.CurrentCostAmount?.ToString()),
+                                        SafeConvertToDouble(item.OfferDisc?.ToString()),
+                                        SafeConvertToDouble(item.OfferAmount?.ToString()),
                                         item.Cut_Id != null ? Convert.ToInt32(item.Cut_Id) : null,
                                         item.Polish_Id != null ? Convert.ToInt32(item.Polish_Id) : null,
                                         item.Symm_Id != null ? Convert.ToInt32(item.Symm_Id) : null,
                                         item.FLS_INTENSITY_Id != null ? Convert.ToInt32(item.FLS_INTENSITY_Id) : null,
-                                        item.Length != null ? Convert.ToDouble(item.Length) : null,
-                                        item.Width != null ? Convert.ToDouble(item.Width) : null,
-                                        item.Depth != null ? Convert.ToDouble(item.Depth) : null,
-                                        item.DepthPer != null ? Convert.ToDouble(item.DepthPer) : null,
-                                        item.TablePer != null ? Convert.ToDouble(item.TablePer) : (double?)null,
+                                        SafeConvertToDouble(item.Length?.ToString()),
+                                        SafeConvertToDouble(item.Width?.ToString()),
+                                        SafeConvertToDouble(item.Depth?.ToString()),
+                                        SafeConvertToDouble(item.DepthPer?.ToString()),
+                                        SafeConvertToDouble(item.TablePer?.ToString()),
                                         item.KeyToSymbol ?? null,
                                         item.GiaComments ?? null,
-                                        item.GirdlePer != null ? Convert.ToDouble(item.GirdlePer) : null,
-                                        item.CrownAngle != null ? Convert.ToDouble(item.CrownAngle) : null,
-                                        item.CrownHeight != null ? Convert.ToDouble(item.CrownHeight) : null,
-                                        item.PavilionAngle != null ? Convert.ToDouble(item.PavilionAngle) : null,
-                                        item.PavilionHeight != null ? Convert.ToDouble(item.PavilionHeight) : null,
+                                        SafeConvertToDouble(item.GirdlePer?.ToString()),
+                                        SafeConvertToDouble(item.CrownAngle?.ToString()),
+                                        SafeConvertToDouble(item.CrownHeight?.ToString()),
+                                        SafeConvertToDouble(item.PavilionAngle?.ToString()),
+                                        SafeConvertToDouble(item.PavilionHeight?.ToString()),
                                         item.Table_Black_Id != null ? Convert.ToInt32(item.Table_Black_Id) : null,
                                         item.Crown_Black_Id != null ? Convert.ToInt32(item.Crown_Black_Id) : null,
                                         item.Table_White_Id != null ? Convert.ToInt32(item.Table_White_Id) : null,
@@ -12155,10 +12176,10 @@ namespace astute.Controllers
                                         item.Crown_Open_Id != null ? Convert.ToInt32(item.Crown_Open_Id) : null,
                                         item.Pav_Open_Id != null ? Convert.ToInt32(item.Pav_Open_Id) : null,
                                         item.Girdle_Open_Id != null ? Convert.ToInt32(item.Girdle_Open_Id) : null,
-                                        item.Cert_Date != null ? Convert.ToDateTime(item.Cert_Date) : null,
+                                        Valid_Date != null ? Convert.ToDateTime(Valid_Date) : null,
                                         item.Cert_Type_Id != null ? Convert.ToInt32(item.Cert_Type_Id) : null,
-                                        item.LR_Half != null ? Convert.ToDouble(item.LR_Half) : null,
-                                        item.Str_Ln != null ? Convert.ToDouble(item.Str_Ln) : null,
+                                        SafeConvertToDouble(item.LR_Half?.ToString()),
+                                        SafeConvertToDouble(item.Str_Ln?.ToString()),
                                         item.Fancy_Color_Id != null ? Convert.ToInt32(item.Fancy_Color_Id) : null,
                                         item.Fancy_Intensity_Id != null ? Convert.ToInt32(item.Fancy_Intensity_Id) : null,
                                         item.Fancy_Overtone_Id != null ? Convert.ToInt32(item.Fancy_Overtone_Id) : null,
@@ -12194,7 +12215,8 @@ namespace astute.Controllers
                                         item.Laser_Insc_Id != null ? Convert.ToInt32(item.Laser_Insc_Id) : null,
                                         item.Girdle_Condition_Id != null ? Convert.ToInt32(item.Girdle_Condition_Id) : null,
                                         item.LaserInscription ?? null,
-                                        item.Girdle_Condition ?? null
+                                        item.Girdle_Condition ?? null,
+                                        item.Company ?? null
                                     );
                                 }
 
@@ -12368,12 +12390,23 @@ namespace astute.Controllers
                 detailDataTable.Columns.Add("Girdle_Condition", typeof(int));
                 detailDataTable.Columns.Add("Laser_Insc_C", typeof(string));
                 detailDataTable.Columns.Add("Girdle_Condition_C", typeof(string));
+                detailDataTable.Columns.Add("Company", typeof(string));
 
                 foreach (var item in Lab_Entry_Detail_List)
                 {
+
+                    DateTime Valid_Date;
+
+                    string dateFormat = "dd-MM-yyyy";
+
+                    if (!DateTime.TryParseExact(item.CertificateDate, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out Valid_Date))
+                    {
+                        Valid_Date = DateTime.MinValue;
+                    }
+
                     detailDataTable.Rows.Add(
                         item.Id ?? 0,
-                        item.TransId ?? 0,
+                        Lab_Entry_Master.Trans_Id ?? 0,
                         item.StockId,
                         item.CertificateNo,
                         item.SupplierId != null ? Convert.ToInt32(item.SupplierId) : null,
@@ -12388,31 +12421,31 @@ namespace astute.Controllers
                         item.BgmId != null ? Convert.ToInt32(item.BgmId) : null,
                         item.ColorId != null ? Convert.ToInt32(item.ColorId) : null,
                         item.ClarityId != null ? Convert.ToInt32(item.ClarityId) : null,
-                        item.Cts != null ? Convert.ToDouble(item.Cts) : null,
-                        item.RapRate != null ? Convert.ToDouble(item.RapRate) : null,
-                        item.RapAmount != null ? Convert.ToDouble(item.RapAmount) : null,
-                        item.BaseDisc != null ? Convert.ToDouble(item.BaseDisc) : null,
-                        item.BaseAmount != null ? Convert.ToDouble(item.BaseAmount) : null,
-                        item.CostDisc != null ? Convert.ToDouble(item.CostDisc) : null,
-                        item.CostAmount != null ? Convert.ToDouble(item.CostAmount) : null,
-                        item.OfferDisc != null ? Convert.ToDouble(item.OfferDisc) : null,
-                        item.OfferAmount != null ? Convert.ToDouble(item.OfferAmount) : null,
+                        SafeConvertToDouble(item.Cts?.ToString()),
+                        SafeConvertToDouble(item.RapRate?.ToString()),
+                        SafeConvertToDouble(item.RapAmount?.ToString()),
+                        SafeConvertToDouble(item.BaseDisc?.ToString()),
+                        SafeConvertToDouble(item.BaseAmount?.ToString()),
+                        SafeConvertToDouble(item.CostDisc?.ToString()),
+                        SafeConvertToDouble(item.CostAmount?.ToString()),
+                        SafeConvertToDouble(item.OfferDisc?.ToString()),
+                        SafeConvertToDouble(item.OfferAmount?.ToString()),
                         item.CutId != null ? Convert.ToInt32(item.CutId) : null,
                         item.PolishId != null ? Convert.ToInt32(item.PolishId) : null,
                         item.SymmId != null ? Convert.ToInt32(item.SymmId) : null,
                         item.FlsintensityId != null ? Convert.ToInt32(item.FlsintensityId) : null,
-                        item.Length != null ? Convert.ToDouble(item.Length) : null,
-                        item.Width != null ? Convert.ToDouble(item.Width) : null,
-                        item.Depth != null ? Convert.ToDouble(item.Depth) : null,
-                        item.DepthPer != null ? Convert.ToDouble(item.DepthPer) : null,
-                        item.TablePer != null ? Convert.ToDouble(item.TablePer) : (double?)null,
+                        SafeConvertToDouble(item.Length?.ToString()),
+                        SafeConvertToDouble(item.Width?.ToString()),
+                        SafeConvertToDouble(item.Depth?.ToString()),
+                        SafeConvertToDouble(item.DepthPer?.ToString()),
+                        SafeConvertToDouble(item.TablePer?.ToString()),
                         item.KeyToSymbol ?? null,
                         item.GiaComments ?? null,
-                        item.GirdlePer != null ? Convert.ToDouble(item.GirdlePer) : null,
-                        item.CrownAngle != null ? Convert.ToDouble(item.CrownAngle) : null,
-                        item.CrownHeight != null ? Convert.ToDouble(item.CrownHeight) : null,
-                        item.PavilionAngle != null ? Convert.ToDouble(item.PavilionAngle) : null,
-                        item.PavilionHeight != null ? Convert.ToDouble(item.PavilionHeight) : null,
+                        SafeConvertToDouble(item.GirdlePer?.ToString()),
+                        SafeConvertToDouble(item.CrownAngle?.ToString()),
+                        SafeConvertToDouble(item.CrownHeight?.ToString()),
+                        SafeConvertToDouble(item.PavilionAngle?.ToString()),
+                        SafeConvertToDouble(item.PavilionHeight?.ToString()),
                         item.TableBlackId != null ? Convert.ToInt32(item.TableBlackId) : null,
                         item.CrownBlackId != null ? Convert.ToInt32(item.CrownBlackId) : null,
                         item.TableWhiteId != null ? Convert.ToInt32(item.TableWhiteId) : null,
@@ -12422,10 +12455,10 @@ namespace astute.Controllers
                         item.CrownOpenId != null ? Convert.ToInt32(item.CrownOpenId) : null,
                         item.PavOpenId != null ? Convert.ToInt32(item.PavOpenId) : null,
                         item.GirdleOpenId != null ? Convert.ToInt32(item.GirdleOpenId) : null,
-                        item.CertificateDate != null ? Convert.ToDateTime(item.CertificateDate) : null,
+                        Valid_Date != null ? Convert.ToDateTime(Valid_Date) : null,
                         item.CertTypeId != null ? Convert.ToInt32(item.CertTypeId) : null,
-                        item.LrHalf != null ? Convert.ToDouble(item.LrHalf) : null,
-                        item.StarLn != null ? Convert.ToDouble(item.StarLn) : null,
+                        SafeConvertToDouble(item.LrHalf?.ToString()),
+                        SafeConvertToDouble(item.StarLn?.ToString()),
                         item.FancyColorId != null ? Convert.ToInt32(item.FancyColorId) : null,
                         item.FancyintensityId != null ? Convert.ToInt32(item.FancyintensityId) : null,
                         item.FancyOvertoneId != null ? Convert.ToInt32(item.FancyOvertoneId) : null,
@@ -12461,7 +12494,8 @@ namespace astute.Controllers
                         item.LaserInscId != null ? Convert.ToInt32(item.LaserInscId) : null,
                         item.GirdleConditionId != null ? Convert.ToInt32(item.GirdleConditionId) : null,
                         item.LaserInscription ?? null,
-                        item.GirdleCondition ?? null
+                        item.GirdleCondition ?? null,
+                        item.Company ?? null
                     );
                 }
 
@@ -12482,6 +12516,15 @@ namespace astute.Controllers
                     message = ex.Message
                 });
             }
+        }
+
+        public static double? SafeConvertToDouble(string value)
+        {
+            if (double.TryParse(value, out double result))
+            {
+                return result;
+            }
+            return null;
         }
 
         [HttpDelete]

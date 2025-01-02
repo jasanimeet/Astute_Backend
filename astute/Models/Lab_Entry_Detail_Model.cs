@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
+using System.Text.Json.Serialization;
 
 namespace astute.Models
 {
@@ -277,5 +277,8 @@ namespace astute.Models
 
         [JsonProperty("GIRDLE CONDITION")]
         public string? GirdleCondition { get; set; }
+
+        [JsonPropertyName("COMPANY")]
+        public string? Company { get; set; }
     }
 }
