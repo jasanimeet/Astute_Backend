@@ -556,6 +556,35 @@ namespace astute.Controllers
                 });
             }
         }
+        
+        [HttpGet]
+        [Route("get_buyer_list")]
+        [Authorize]
+        public async Task<IActionResult> Get_Buyer_List()
+        {
+            try
+            {
+                var result = await _employeeService.Get_Buyer_List();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Buyer_List", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
 
         [HttpGet]
         [Route("get_secretary")]

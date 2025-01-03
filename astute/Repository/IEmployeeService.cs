@@ -53,6 +53,7 @@ namespace astute.Repository
 
         #region Buyer List
         Task<IList<DropdownModel>> Get_Buyer();
+        Task<IList<DropdownModel>> Get_Buyer_List();
         #endregion
         
         #region Secretary List
