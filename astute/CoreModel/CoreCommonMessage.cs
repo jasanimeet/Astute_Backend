@@ -420,6 +420,8 @@
         public static string Fortune_Sale_Disc_Kts = "Sale Disc KTS " + ApiFailed;
         public static string Fortune_Stock_Disc_Kts = "Stock Disc KTS " + ApiFailed;
         public static string Oracle_Notification = "Notification get from oracle successfully";
+        public static string Fortune_Overseas_Live_Data = "Fortune Overseas Live Data";
+        public static string Fortune_Overseas_Live_Data_Added = Fortune_Overseas_Live_Data + AddedSuccessfully;
 
 
         #endregion

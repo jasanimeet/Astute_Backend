@@ -19,5 +19,6 @@ namespace astute.Repository
         Task<int> Lab_Entry_Notification();
         Task<int> Order_Data_Detail_Transfer_Oracle(IList<Order_Processing_Complete_Fortune_Detail> order_Processing_Complete_Fortune_Details);
         Task<int> Sun_Pur_Notification();
+        Task<int> Get_Fortune_Overseas_Data();
     }
 }

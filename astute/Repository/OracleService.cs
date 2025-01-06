@@ -1859,6 +1859,142 @@ namespace astute.Repository
             return r;
         }
 
+        public async Task<int> Get_Fortune_Overseas_Data()
+        {
+            List<OracleParameter> paramList = new List<OracleParameter>();
+
+            OracleParameter param1 = new OracleParameter("vrec", OracleDbType.RefCursor);
+            param1.Direction = ParameterDirection.Output;
+            paramList.Add(param1);
+
+            DataTable dataTable = await _dbOracleAccess.CallSP_Timeout("web_trans.get_live_data_overseas", paramList);
+
+            DataTable newDataTable = new DataTable();
+
+            newDataTable.Columns.Add("Stock_Id", typeof(string));
+            newDataTable.Columns.Add("Shape", typeof(string));
+            newDataTable.Columns.Add("Cert_No", typeof(string));
+            newDataTable.Columns.Add("Pointer_Name", typeof(string));
+            newDataTable.Columns.Add("Color", typeof(string));
+            newDataTable.Columns.Add("Clarity", typeof(string));
+            newDataTable.Columns.Add("Cts", typeof(float));
+            newDataTable.Columns.Add("Rap_Rate", typeof(float));
+            newDataTable.Columns.Add("Rap_Amt", typeof(float));
+            newDataTable.Columns.Add("Base_Disc", typeof(float));
+            newDataTable.Columns.Add("Base_Amt", typeof(float));
+            newDataTable.Columns.Add("Cost_Disc", typeof(float));
+            newDataTable.Columns.Add("Cost_Amt", typeof(float));
+            newDataTable.Columns.Add("Offer_Disc", typeof(float));
+            newDataTable.Columns.Add("Offer_Amt", typeof(float));
+            newDataTable.Columns.Add("Cut", typeof(string));
+            newDataTable.Columns.Add("Polish", typeof(string));
+            newDataTable.Columns.Add("Symm", typeof(string));
+            newDataTable.Columns.Add("Flour_Intensity", typeof(string));
+            newDataTable.Columns.Add("Length", typeof(float));
+            newDataTable.Columns.Add("Width", typeof(float));
+            newDataTable.Columns.Add("Depth", typeof(float));
+            newDataTable.Columns.Add("Depth_Per", typeof(float));
+            newDataTable.Columns.Add("Table_Per", typeof(float));
+            newDataTable.Columns.Add("Lab", typeof(string));
+            newDataTable.Columns.Add("Crown_Angle", typeof(float));
+            newDataTable.Columns.Add("Crown_Height", typeof(float));
+            newDataTable.Columns.Add("Pavillion_Angle", typeof(float));
+            newDataTable.Columns.Add("Pavillion_Height", typeof(float));
+            newDataTable.Columns.Add("Table_Black", typeof(string));
+            newDataTable.Columns.Add("Crown_Black", typeof(string));
+            newDataTable.Columns.Add("Table_White", typeof(string));
+            newDataTable.Columns.Add("Crown_White", typeof(string));
+            newDataTable.Columns.Add("Culet", typeof(string));
+            newDataTable.Columns.Add("Key_to_Symbol", typeof(string));
+            newDataTable.Columns.Add("Additional_Comment", typeof(string));
+            newDataTable.Columns.Add("Laser_Insc", typeof(string));
+            newDataTable.Columns.Add("Girdle_Per", typeof(float));
+            newDataTable.Columns.Add("Girdle_Type", typeof(string));
+            newDataTable.Columns.Add("Image", typeof(string));
+            newDataTable.Columns.Add("Video", typeof(string));
+            newDataTable.Columns.Add("Supplier_Ref_No", typeof(string));
+            newDataTable.Columns.Add("Supplier_Name", typeof(string));
+            newDataTable.Columns.Add("Location", typeof(string));
+            newDataTable.Columns.Add("Cert_Link", typeof(string));
+            newDataTable.Columns.Add("BGM", typeof(string));
+            newDataTable.Columns.Add("Table_Open", typeof(string));
+            newDataTable.Columns.Add("Crown_Open", typeof(string));
+            newDataTable.Columns.Add("Pav_Open", typeof(string));
+            newDataTable.Columns.Add("Girdle_Open", typeof(string));
+            newDataTable.Columns.Add("Cert_Type", typeof(string));
+            newDataTable.Columns.Add("Party_Code", typeof(string));
+
+            foreach (DataRow row in dataTable.Rows)
+            {
+                DataRow newRow = newDataTable.NewRow();
+
+                newRow["Stock_Id"] = (!string.IsNullOrEmpty(row["Stock_Id"].ToString())) ? row["Stock_Id"] : DBNull.Value;
+                newRow["Shape"] = (!string.IsNullOrEmpty(row["Shape"].ToString())) ? row["Shape"] : DBNull.Value;
+                newRow["Cert_No"] = (!string.IsNullOrEmpty(row["Cert_No"].ToString())) ? row["Cert_No"] : DBNull.Value;
+                newRow["Pointer_Name"] = (!string.IsNullOrEmpty(row["Pointer_Name"].ToString())) ? row["Pointer_Name"] : DBNull.Value;
+                newRow["Color"] = (!string.IsNullOrEmpty(row["Color"].ToString())) ? row["Color"] : DBNull.Value;
+                newRow["Clarity"] = (!string.IsNullOrEmpty(row["Clarity"].ToString())) ? row["Clarity"] : DBNull.Value;
+                newRow["Cts"] = row["Cts"] != DBNull.Value ? row["Cts"] : DBNull.Value;
+                newRow["Rap_Rate"] = row["Rap_Rate"] != DBNull.Value ? row["Rap_Rate"] : DBNull.Value;
+                newRow["Rap_Amt"] = row["Rap_Amt"] != DBNull.Value ? row["Rap_Amt"] : DBNull.Value;
+                newRow["Base_Disc"] = row["Base_Disc"] != DBNull.Value ? row["Base_Disc"] : DBNull.Value;
+                newRow["Base_Amt"] = row["Base_Amt"] != DBNull.Value ? row["Base_Amt"] : DBNull.Value;
+                newRow["Cost_Disc"] = row["Cost_Disc"] != DBNull.Value ? row["Cost_Disc"] : DBNull.Value;
+                newRow["Cost_Amt"] = row["Cost_Amt"] != DBNull.Value ? row["Cost_Amt"] : DBNull.Value;
+                newRow["Offer_Disc"] = row["Offer_Disc"] != DBNull.Value ? row["Offer_Disc"] : DBNull.Value;
+                newRow["Offer_Amt"] = row["Offer_Amt"] != DBNull.Value ? row["Offer_Amt"] : DBNull.Value;
+                newRow["Cut"] = (!string.IsNullOrEmpty(row["Cut"].ToString())) ? row["Cut"] : DBNull.Value;
+                newRow["Polish"] = (!string.IsNullOrEmpty(row["Polish"].ToString())) ? row["Polish"] : DBNull.Value;
+                newRow["Symm"] = (!string.IsNullOrEmpty(row["Symm"].ToString())) ? row["Symm"] : DBNull.Value;
+                newRow["Flour_Intensity"] = (!string.IsNullOrEmpty(row["Flour_Intensity"].ToString())) ? row["Flour_Intensity"] : DBNull.Value;
+                newRow["Length"] = row["Length"] != DBNull.Value ? row["Length"] : DBNull.Value;
+                newRow["Width"] = row["Width"] != DBNull.Value ? row["Width"] : DBNull.Value;
+                newRow["Depth"] = row["Depth"] != DBNull.Value ? row["Depth"] : DBNull.Value;
+                newRow["Depth_Per"] = row["Depth_Per"] != DBNull.Value ? row["Depth_Per"] : DBNull.Value;
+                newRow["Table_Per"] = row["Table_Per"] != DBNull.Value ? row["Table_Per"] : DBNull.Value;
+                newRow["Lab"] = (!string.IsNullOrEmpty(row["Lab"].ToString())) ? row["Lab"] : DBNull.Value;
+                newRow["Crown_Angle"] = row["Crown_Angle"] != DBNull.Value ? row["Crown_Angle"] : DBNull.Value;
+                newRow["Crown_Height"] = row["Crown_Height"] != DBNull.Value ? row["Crown_Height"] : DBNull.Value;
+                newRow["Pavillion_Angle"] = row["Pavillion_Angle"] != DBNull.Value ? row["Pavillion_Angle"] : DBNull.Value;
+                newRow["Pavillion_Height"] = row["Pavillion_Height"] != DBNull.Value ? row["Pavillion_Height"] : DBNull.Value;
+                newRow["Table_Black"] = (!string.IsNullOrEmpty(row["Table_Black"].ToString())) ? row["Table_Black"] : DBNull.Value;
+                newRow["Crown_Black"] = (!string.IsNullOrEmpty(row["Crown_Black"].ToString())) ? row["Crown_Black"] : DBNull.Value;
+                newRow["Table_White"] = (!string.IsNullOrEmpty(row["Table_White"].ToString())) ? row["Table_White"] : DBNull.Value;
+                newRow["Crown_White"] = (!string.IsNullOrEmpty(row["Crown_White"].ToString())) ? row["Crown_White"] : DBNull.Value;
+                newRow["Culet"] = (!string.IsNullOrEmpty(row["Culet"].ToString())) ? row["Culet"] : DBNull.Value;
+                newRow["Key_to_Symbol"] = (!string.IsNullOrEmpty(row["Key_to_Symbol"].ToString())) ? row["Key_to_Symbol"] : DBNull.Value;
+                newRow["Additional_Comment"] = (!string.IsNullOrEmpty(row["Additional_Comment"].ToString())) ? row["Additional_Comment"] : DBNull.Value;
+                newRow["Laser_Insc"] = (!string.IsNullOrEmpty(row["Laser_Insc"].ToString())) ? row["Laser_Insc"] : DBNull.Value;
+                newRow["Girdle_Per"] = row["Girdle_Per"] != DBNull.Value ? row["Girdle_Per"] : DBNull.Value;
+                newRow["Girdle_Type"] = (!string.IsNullOrEmpty(row["Girdle_Type"].ToString())) ? row["Girdle_Type"] : DBNull.Value;
+                newRow["Image"] = (!string.IsNullOrEmpty(row["Image"].ToString())) ? row["Image"] : DBNull.Value;
+                newRow["Video"] = (!string.IsNullOrEmpty(row["Video"].ToString())) ? row["Video"] : DBNull.Value;
+                newRow["Supplier_Ref_No"] = (!string.IsNullOrEmpty(row["Supplier_Ref_No"].ToString())) ? row["Supplier_Ref_No"] : DBNull.Value;
+                newRow["Supplier_Name"] = (!string.IsNullOrEmpty(row["Supplier_Name"].ToString())) ? row["Supplier_Name"] : DBNull.Value;
+                newRow["Location"] = (!string.IsNullOrEmpty(row["Location"].ToString())) ? row["Location"] : DBNull.Value;
+                newRow["Cert_Link"] = (!string.IsNullOrEmpty(row["Cert_Link"].ToString())) ? row["Cert_Link"] : DBNull.Value;
+                newRow["BGM"] = (!string.IsNullOrEmpty(row["BGM"].ToString())) ? row["BGM"] : DBNull.Value;
+                newRow["Table_Open"] = (!string.IsNullOrEmpty(row["Table_Open"].ToString())) ? row["Table_Open"] : DBNull.Value;
+                newRow["Crown_Open"] = (!string.IsNullOrEmpty(row["Crown_Open"].ToString())) ? row["Crown_Open"] : DBNull.Value;
+                newRow["Pav_Open"] = (!string.IsNullOrEmpty(row["Pav_Open"].ToString())) ? row["Pav_Open"] : DBNull.Value;
+                newRow["Girdle_Open"] = (!string.IsNullOrEmpty(row["Girdle_Open"].ToString())) ? row["Girdle_Open"] : DBNull.Value;
+                newRow["Cert_Type"] = (!string.IsNullOrEmpty(row["Cert_Type"].ToString())) ? row["Cert_Type"] : DBNull.Value;
+                newRow["Party_Code"] = row["Party_Code"] != DBNull.Value ? row["Party_Code"] : DBNull.Value;
+
+                newDataTable.Rows.Add(newRow);
+            }
+
+            var parameter = new SqlParameter("@Fortune_Overseas_Stock_Type", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Fortune_Overseas_Stock_Type",
+                Value = newDataTable
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                                .ExecuteSqlRawAsync(@"EXEC [Fortune_Overseas_Stock_Ora_Insert_Update] @Fortune_Overseas_Stock_Type", parameter));
+            return result;
+        }
+        
         #endregion
     }
 }
