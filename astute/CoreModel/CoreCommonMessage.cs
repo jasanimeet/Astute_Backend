@@ -409,11 +409,11 @@
 
         #region Oracle 
         public static string Fortune_Discount = "Fortune Discount Oracle";
-        public static string Fortune_Discount_Added = "Fortune Discount Oracle" + AddedSuccessfully;
+        public static string Fortune_Discount_Added = Fortune_Discount + AddedSuccessfully;
         public static string Fortune_Party = "Fortune Party Oracle";
-        public static string Fortune_Party_Added = "Fortune Party Oracle" + AddedSuccessfully;
+        public static string Fortune_Party_Added = Fortune_Party + AddedSuccessfully;
         public static string Fortune_Party_Master = "Fortune Party Master Oracle";
-        public static string Fortune_Party_Master_Added = "Fortune Party Master Oracle" + AddedSuccessfully;
+        public static string Fortune_Party_Master_Added = Fortune_Party_Master + AddedSuccessfully;
         public static string Fortune_Purchase_Disc = "Purchase Disc " + ApiFailed;
         public static string Fortune_Sale_Disc = "Sale Disc " + ApiFailed;
         public static string Fortune_Stock_Disc = "Stock Disc " + ApiFailed;
@@ -422,6 +422,8 @@
         public static string Oracle_Notification = "Notification get from oracle successfully";
         public static string Fortune_Overseas_Live_Data = "Fortune Overseas Live Data";
         public static string Fortune_Overseas_Live_Data_Added = Fortune_Overseas_Live_Data + AddedSuccessfully;
+        public static string Fortune_Sunrise_Data = "Fortune Sunrise Live Data";
+        public static string Fortune_Sunrise_Data_Added = Fortune_Sunrise_Data + AddedSuccessfully;
 
 
         #endregion

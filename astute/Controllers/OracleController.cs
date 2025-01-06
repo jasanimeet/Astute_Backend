@@ -196,7 +196,7 @@ namespace astute.Controllers
                 });
             }
         }
-
+        
         [HttpGet]
         [Route("get_fortune_overseas_data")]
         public async Task<IActionResult> Get_Fortune_Overseas_Data()
@@ -223,6 +223,34 @@ namespace astute.Controllers
                 });
             }
         }
+        
+        [HttpGet]
+        [Route("get_fortune_sunrise_data")]
+        public async Task<IActionResult> Get_Fortune_Sunrise_Data()
+        {
+            try
+            {
+                var result = await _oracleService.Get_Fortune_Sunrise_Data();
+                if (result != null && result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.Fortune_Sunrise_Data_Added
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Fortune_Sunrise_Data", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
     }
 }

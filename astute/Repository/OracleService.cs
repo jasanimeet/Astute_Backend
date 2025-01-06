@@ -1819,6 +1819,7 @@ namespace astute.Repository
 
             return 1;
         }
+      
         public async Task<int> Sun_Pur_Notification()
         {
             int r = 0;
@@ -1995,6 +1996,28 @@ namespace astute.Repository
             return result;
         }
         
+        public async Task<int> Get_Fortune_Sunrise_Data()
+        {
+            var sqlCommand = @"exec [Fortune_Sunrise_Stock_Ora_Insert_Update]";
+
+            var result = await Task.Run(async () =>
+            {
+                using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = sqlCommand;
+
+                    command.CommandTimeout = 3600;
+
+                    await _dbContext.Database.OpenConnectionAsync();
+
+                    var affectedRows = await command.ExecuteNonQueryAsync();
+                    return affectedRows;
+                }
+            });
+
+            return result;
+        }
+
         #endregion
     }
 }
