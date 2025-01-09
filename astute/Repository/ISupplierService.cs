@@ -146,6 +146,7 @@ namespace astute.Repository
         Task<(int, bool)> Delete_Lab_Entry(int id);
         Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Summary(Lab_Entry_Summary lab_Entry_Summary);
         Task<DataTable> Get_Lab_Entry_Report_Data(Report_Lab_Entry_Filter report_Lab_Entry_Filter);
+        Task<DataTable> Get_Lab_Entry_Auto_Order_Not_Placed_Overseas_Email();
         #endregion
 
         #region Party Url Format

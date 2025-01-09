@@ -558,6 +558,8 @@
         public static string Lab_Entry_Deleted = Lab_Entry + DeletedSuccessfully;
         public static string Lab_Entry_Auto_Deleted = "Cannot delete auto generated " + Lab_Entry;
         public static string Lab_Entry_Master = Lab_Entry + AlreadyExists;
+        public static string Lab_Entry_Overseas_Not_Uploaded_Subject_Email = "Overseas Order Not Uploaded";
+        public static string Lab_Entry_Overseas_Not_Uploaded_Body_Email = "Please find the attached file with the order details for stones not uploaded for overseas orders.";
         #endregion
     }
 }

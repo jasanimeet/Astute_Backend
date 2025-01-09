@@ -7638,6 +7638,52 @@ namespace astute.Controllers
             }
         }
         
+        [HttpGet]
+        [Route("get_lab_entry_auto_order_not_placed_overseas_email")]
+        public async Task<IActionResult> Get_Lab_Entry_Auto_Order_Not_Placed_Overseas_Email()
+        {
+            try
+            {
+                var dtOrderDetail = await _supplierService.Get_Lab_Entry_Auto_Order_Not_Placed_Overseas_Email();
+                if (dtOrderDetail != null && dtOrderDetail.Rows.Count > 0)
+                {
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/LabEntryNotUploadedOverseasExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string filename = string.Empty;
+
+                    filename = "Lab_Entry_Not_Uploaded_Overseas_Order_" + DateTime.UtcNow.ToString("ddMMyyyy_HHmmss") + ".xlsx";
+                    EpExcelExport.Create_Lab_Entry_Auto_Order_Not_Placed_Overseas(dtOrderDetail, filePath, filePath + filename);
+                    excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.LabEntryNotUploadedOverseasExcelFiles + filename;
+
+                    byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
+                    using (MemoryStream memoryStream = new MemoryStream(fileBytes))
+                    {
+                        IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
+                        _emailSender.SendEmail(toEmail: "tejash@brainwaves.co.in, farhan@sunrisediam.com, list@sunrisediam.com, samit@sunrisediam.com", externalLink: "", subject: CoreCommonMessage.Lab_Entry_Overseas_Not_Uploaded_Subject_Email, formFile: formFile, strBody: CoreCommonMessage.Lab_Entry_Overseas_Not_Uploaded_Body_Email);
+
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.EmailSendSuccessMessage
+                        });
+                    }
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Lab_Entry_Auto_Order_Not_Placed_Overseas_Email", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         [HttpPost]
         [Route("stock_availability_report_excel_download")]
         [Authorize]
