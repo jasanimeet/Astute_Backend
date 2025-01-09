@@ -7478,6 +7478,166 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("lab_entry_report_excel_export")]
+        [Authorize]
+        public async Task<IActionResult> Lab_Entry_Report_Excel_Export(Report_Lab_Entry_Filter report_Lab_Entry_Filter)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var dt_Order = await _supplierService.Get_Lab_Entry_Report_Data(report_Lab_Entry_Filter);
+
+                if (dt_Order != null && dt_Order.Rows.Count > 0)
+                {
+                    var excelPath = string.Empty;
+
+                    string filename = string.Empty;
+
+                    report_Lab_Entry_Filter.column_Name = new List<string>{"IMAGE LINK",
+                                        "VIDEO LINK",
+                                        "Stock Id",
+                                        "Lab",
+                                        "Cert No",
+                                        "Status",
+                                        "Shape",
+                                        "Pointer",
+                                        "BGM",
+                                        "Color",
+                                        "Clarity",
+                                        "Cts",
+                                        "Rap Rate",
+                                        "Rap Amount",
+                                        "Final Disc%",
+                                        "Final Amount",
+                                        "Cut",
+                                        "Polish",
+                                        "Symm",
+                                        "Fls",
+                                        "Length",
+                                        "Width",
+                                        "Depth",
+                                        "Depth%",
+                                        "Table%",
+                                        "Key To Symbol",
+                                        "Comment",
+                                        "Girdle%",
+                                        "Crown Angle",
+                                        "Crown Height",
+                                        "Pavilion Angle",
+                                        "Pavilion Height",
+                                        "Table White",
+                                        "Crown White",
+                                        "Table Black",
+                                        "Crown Black",
+                                        "Culet",
+                                        "Table Open",
+                                        "Crown Open",
+                                        "Pavilion Open",
+                                        "Girdle Open"
+                    };
+
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in report_Lab_Entry_Filter.column_Name)
+                    {
+                        if (columnName != "CERTIFICATE LINK")
+                        {
+                            columnNamesTable.Rows.Add(columnName);
+                        }
+                    }
+                    columnNamesTable.Rows.Add("CERTIFICATE LINK");
+
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+
+                    filename = "D_Lab_Entry_Report_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+
+                    EpExcelExport.Create_Lab_Entry_Report_Excel(dt_Order, columnNamesTable, filePath, filePath + filename);
+
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Lab_Entry_Report_Excel_Export", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("lab_entry_report_column_wise_excel_download")]
+        [Authorize]
+        public async Task<IActionResult> Lab_Entry_Report_Column_Wise_Excel_Download(Report_Lab_Entry_Filter report_Lab_Entry_Filter)
+        {
+            try
+            {
+                var dt_Order = await _supplierService.Get_Lab_Entry_Report_Data(report_Lab_Entry_Filter);
+
+                if (dt_Order != null && dt_Order.Rows.Count > 0)
+                {
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in report_Lab_Entry_Filter.column_Name)
+                    {
+                        if (columnName != "CERTIFICATE LINK")
+                        {
+                            columnNamesTable.Rows.Add(columnName);
+                        }
+                    }
+                    columnNamesTable.Rows.Add("CERTIFICATE LINK");
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string filename = string.Empty;
+
+                    filename = "Lab_Entry_Report_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    EpExcelExport.Create_Lab_Entry_Report_Column_Wise_Excel(dt_Order, columnNamesTable, filePath, filePath + filename);
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Lab_Entry_Report_Column_Wise_Excel_Download", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        
         [HttpPost]
         [Route("stock_availability_report_excel_download")]
         [Authorize]

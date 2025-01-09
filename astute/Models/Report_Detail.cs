@@ -106,4 +106,16 @@ namespace astute.Models
         public string Stock_Id { get; set; }
         public string Url { get; set; }
     }
+
+    public class Report_Lab_Entry_Filter
+    {
+        public int id { get; set; }
+        public List<string>? column_Name { get; set; }
+        public string? Order_Type { get; set; }
+        public string? Stone_Status { get; set; }
+        public string? Order_Status { get; set; }
+        public string? From_Date { get; set; }
+        public string? To_Date { get; set; }
+        public string? Stock_Id { get; set; }
+    }
 }
