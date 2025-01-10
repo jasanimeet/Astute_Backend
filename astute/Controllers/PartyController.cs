@@ -11449,7 +11449,7 @@ namespace astute.Controllers
                                         var fortuneId = await _employeeService.GetEmployeeFortuneIdByOrderNo(order_Stone_Process.Order_No);
                                         if (fortuneId != null)
                                         {
-                                            var transferResult = await _oracleService.Order_Data_Transfer_Oracle(canceledOrders, fortuneId, order_Stone_Process.QC_Request);
+                                    var transferResult = await _oracleService.Order_Data_Transfer_Oracle(canceledOrders, fortuneId, order_Stone_Process.QC_Request, "W", "O");
                                         }
                                         return Ok(new
                                         {
@@ -12152,7 +12152,7 @@ namespace astute.Controllers
                         }
                         else
                         {
-                            var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e, order_Processing_Reply_To_Assist.Summary_QC_Remarks);
+                            var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e, order_Processing_Reply_To_Assist.Summary_QC_Remarks, "W", "O");
                             if (result_ > 0)
                             {
                                 if (Stock_Id.Count > 0)

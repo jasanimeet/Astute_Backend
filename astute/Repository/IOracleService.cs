@@ -15,7 +15,7 @@ namespace astute.Repository
         Task<(int, int, int, int, int)> Get_Fortune_Discount();
         Task<int> Get_Fortune_Party();
         Task<int> Get_Fortune_Party_Master();
-        Task<int> Order_Data_Transfer_Oracle(IList<Order_Processing_Complete_Detail> order_Processing_Complete_Details, Employee_Fortune_Order_Master employee_Fortune_Master, string Summary_QC_Remarks);
+        Task<int> Order_Data_Transfer_Oracle(IList<Order_Processing_Complete_Detail> order_Processing_Complete_Details, Employee_Fortune_Order_Master employee_Fortune_Master, string Summary_QC_Remarks, string vEntry_type, string type);
         Task<int> Lab_Entry_Notification();
         Task<int> Order_Data_Detail_Transfer_Oracle(IList<Order_Processing_Complete_Fortune_Detail> order_Processing_Complete_Fortune_Details);
         Task<int> Sun_Pur_Notification();
