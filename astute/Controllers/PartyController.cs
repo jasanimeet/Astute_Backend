@@ -7824,7 +7824,7 @@ namespace astute.Controllers
                     }
                 }
 
-                var dt_stock = await _supplierService.Get_Stock_Availability_Report_Excel(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.party_Id ?? 0);
+                var dt_stock = await _supplierService.Get_Stock_Availability_Report_Excel(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.party_Id ?? 0, stock_Avalibility.excel_Format);
                 if (dt_stock != null && dt_stock.Rows.Count > 0)
                 {
                     List<string> columnNames = new List<string>();
@@ -7848,8 +7848,17 @@ namespace astute.Controllers
                     }
                     string filename = string.Empty;
 
-                    filename = "Stock_Availability_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    if (!string.IsNullOrEmpty(stock_Avalibility.excel_Format) && stock_Avalibility.excel_Format == "Customer")
+                    {
+                        filename = "Customer_Stock_Availability_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                        EpExcelExport.Create_Customer_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                    } 
+                    else if (!string.IsNullOrEmpty(stock_Avalibility.excel_Format) && stock_Avalibility.excel_Format == "Default")
+                    {
+                        filename = "Default_Stock_Availability_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     EpExcelExport.Stock_Availability_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                    }
+
                     excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
 
                     return Ok(new
@@ -10500,7 +10509,7 @@ namespace astute.Controllers
                         dataTable.Rows.Add(!string.IsNullOrEmpty(item.Stock_Id) ? item.Stock_Id : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Amount) ? item.Offer_Amount : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Disc) ? item.Offer_Disc : DBNull.Value);
                     }
                 }
-                var dt_stock = await _supplierService.Get_Stock_Availability_Report_Excel(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.party_Id ?? 0);
+                var dt_stock = await _supplierService.Get_Stock_Availability_Report_Excel(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.party_Id ?? 0, stock_Avalibility.excel_Format);
                 if (dt_stock != null && dt_stock.Rows.Count > 0)
                 {
                     List<string> columnNames = new List<string>();
@@ -10524,8 +10533,16 @@ namespace astute.Controllers
                     }
                     string filename = string.Empty;
 
-                    filename = "Stock_Availability_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    if (!string.IsNullOrEmpty(stock_Avalibility.excel_Format) && stock_Avalibility.excel_Format == "Customer")
+                    {
+                        filename = "Customer_Stock_Availability_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                        EpExcelExport.Create_Customer_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                    }
+                    else if (!string.IsNullOrEmpty(stock_Avalibility.excel_Format) && stock_Avalibility.excel_Format == "Default")
+                    {
+                        filename = "Default_Stock_Availability_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                     EpExcelExport.Stock_Availability_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                    }
 
                     excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
                     byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);

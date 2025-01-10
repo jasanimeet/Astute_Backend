@@ -2516,7 +2516,7 @@ namespace astute.Repository
             }
             return dataTable;
         }
-        public async Task<DataTable> Get_Stock_Availability_Report_Excel(DataTable dataTable, string stock_Id, string stock_Type, int party_Id)
+        public async Task<DataTable> Get_Stock_Availability_Report_Excel(DataTable dataTable, string stock_Id, string stock_Type, int party_Id, string excel_Format)
         {
             DataTable dataTable1 = new DataTable();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -2534,6 +2534,7 @@ namespace astute.Repository
                     command.Parameters.Add(!string.IsNullOrEmpty(stock_Id) ? new SqlParameter("@STOCK_ID", stock_Id) : new SqlParameter("@STOCK_ID", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(stock_Type) ? new SqlParameter("@STOCK_TYPE", stock_Type) : new SqlParameter("@STOCK_TYPE", DBNull.Value));
                     command.Parameters.Add(party_Id > 0 ? new SqlParameter("@PARTY_ID", party_Id) : new SqlParameter("@PARTY_ID", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(excel_Format) ? new SqlParameter("@Excel_Format", excel_Format) : new SqlParameter("@Excel_Format", DBNull.Value));
                     command.CommandTimeout = 1800;
                     await connection.OpenAsync();
 
