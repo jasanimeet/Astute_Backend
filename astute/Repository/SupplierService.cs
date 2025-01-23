@@ -3027,7 +3027,7 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<int> Order_Processing_Completed(DataTable dataTable, string order_No, int sub_Order_Id, int user_Id)
+        public async Task<int> Order_Processing_Completed(DataTable dataTable, string order_No, int sub_Order_Id, int user_Id, string customer_Name)
         {
             var parameter = new SqlParameter("@tbl_Order", SqlDbType.Structured)
             {
@@ -3038,9 +3038,10 @@ namespace astute.Repository
             var _order_No = new SqlParameter("@Order_No", order_No);
             var _sub_Order_Id = new SqlParameter("@Sub_Order_Id", sub_Order_Id);
             var _user_Id = new SqlParameter("@User_Id", user_Id);
+            var _customer_Name = new SqlParameter("@Customer_Name", customer_Name);
 
             var result = await Task.Run(() => _dbContext.Database
-                   .ExecuteSqlRawAsync(@"EXEC Order_Processing_Completed @tbl_Order, @Order_No, @Sub_Order_Id, @User_Id", parameter, _order_No, _sub_Order_Id, _user_Id));
+                   .ExecuteSqlRawAsync(@"EXEC Order_Processing_Completed @tbl_Order, @Order_No, @Sub_Order_Id, @User_Id, @Customer_Name", parameter, _order_No, _sub_Order_Id, _user_Id, _customer_Name));
 
             return result;
         }

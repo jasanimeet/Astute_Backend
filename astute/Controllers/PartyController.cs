@@ -11813,7 +11813,7 @@ namespace astute.Controllers
                     Stock_Ids.Add(item.StockId);
                 }
 
-                var result = await _supplierService.Order_Processing_Completed(dataTable, order_Processing_Reply_To_Assist.Order_No, order_Processing_Reply_To_Assist.Sub_Order_Id ?? 0, user_Id ?? 0);
+                var result = await _supplierService.Order_Processing_Completed(dataTable, order_Processing_Reply_To_Assist.Order_No, order_Processing_Reply_To_Assist.Sub_Order_Id ?? 0, user_Id ?? 0, OrderResult[0].Customer);
                 if (result > 0)
                 {
                     var result_e = await _employeeService.GetEmployeeFortuneIdByOrderNo(order_Processing_Reply_To_Assist.Order_No);
