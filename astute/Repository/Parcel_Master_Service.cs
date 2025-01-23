@@ -133,5 +133,68 @@ namespace astute.Repository
 
         #endregion
 
+        #region Parcel Ref Master
+        public async Task<int> Insert_Update_Parcel_Ref_Master(Parcel_Ref_Master parcel_Ref_Master, int user_Id)
+        {
+            var Parcel_Ref_Id = new SqlParameter("@Parcel_Ref_Id", parcel_Ref_Master.Parcel_Ref_Id);
+            var Parcel_Name = new SqlParameter("@Parcel_Name", parcel_Ref_Master.Parcel_Name);
+            var Parcel_Id = new SqlParameter("@Parcel_Id", parcel_Ref_Master.Parcel_Id);
+            var Unit = new SqlParameter("@Unit", parcel_Ref_Master.Unit);
+            var Status = new SqlParameter("@Status", parcel_Ref_Master.Status);
+            var User_Id = new SqlParameter("@User_Id", user_Id);
+            var isExistParcel = new SqlParameter("@IsExistParcel", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"exec Parcel_Ref_Master_Insert_Update @Parcel_Ref_Id, @Parcel_Name, @Parcel_Id, @Unit, @Status, @User_Id,@IsExistParcel OUT", Parcel_Ref_Id, Parcel_Name, Parcel_Id, Unit, Status, User_Id, isExistParcel));
+
+            bool parcelIsExist = (bool)isExistParcel.Value;
+            if (parcelIsExist)
+                return 5;
+
+            return result;
+        }
+
+        public async Task<int> Delete_Parcel_Ref_Master(int parcel_Ref_Id, int user_Id)
+        {
+            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Parcel_Ref_Master_Delete {parcel_Ref_Id}, {user_Id}"));
+        }
+
+        public async Task<List<Dictionary<string, object>>> Get_Parcel_Ref_Master(int parcel_Ref_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Parcel_Ref_Master_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(parcel_Ref_Id > 0 ? new SqlParameter("@Parcel_Ref_Id", parcel_Ref_Id) : new SqlParameter("@Parcel_Ref_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        #endregion
     }
 }

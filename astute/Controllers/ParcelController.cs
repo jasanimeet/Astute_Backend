@@ -1,4 +1,5 @@
 ﻿using astute.CoreModel;
+using astute.CoreServices;
 using astute.Models;
 using astute.Repository;
 using Microsoft.AspNetCore.Authorization;
@@ -175,6 +176,125 @@ namespace astute.Controllers
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Parcel_Master_By_Cat_Val_Id", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
+        #region Parcel Ref Master
+        [HttpGet]
+        [Route("get_parcel_ref_master")]
+        [Authorize]
+        public async Task<IActionResult> Get_Parcel_Ref_Master(int parcel_Ref_Id)
+        {
+            try
+            {
+                var result = await _parcel_Master_Service.Get_Parcel_Ref_Master(parcel_Ref_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Parcel_Ref_Master", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("create_update_parcel_ref_master")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Parcel_Ref_Master(Parcel_Ref_Master parcel_Ref_Master)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                    var result = await _parcel_Master_Service.Insert_Update_Parcel_Ref_Master(parcel_Ref_Master, user_Id ?? 0);
+                    if (result == 1)
+                    {
+                        if (parcel_Ref_Master.Parcel_Ref_Id > 0)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.ParcelRefMasterUpdated
+                            });
+                        }
+                        else
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.ParcelRefMasterCreated
+                            });
+                        }
+                    }
+                    else if (result == 5)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.IsExistParcelRefMaster
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Parcel_Ref_Master", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_parcel_ref_master")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Parcel_Ref_Master(int parcel_ref_Id)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                    var result = await _parcel_Master_Service.Delete_Parcel_Ref_Master(parcel_ref_Id, user_Id ?? 0);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.ParcelRefMasterDeleted
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Parcel_Ref_Master", ex.StackTrace);
+                return Conflict(new
                 {
                     message = ex.Message
                 });

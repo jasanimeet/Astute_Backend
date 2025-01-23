@@ -561,5 +561,13 @@
         public static string Lab_Entry_Overseas_Not_Uploaded_Subject_Email = "Overseas Order Not Uploaded";
         public static string Lab_Entry_Overseas_Not_Uploaded_Body_Email = "Please find the attached file with the order details for stones not uploaded for overseas orders.";
         #endregion
+        #region Parcel Ref Master
+        public static string ParcelRefMaster = "Parcel Ref Master";
+        public static string ParcelRefMasterCreated = ParcelRefMaster + AddedSuccessfully;
+        public static string ParcelRefMasterUpdated = ParcelRefMaster + UpdatedSuccessfully;
+        public static string ParcelRefMasterDeleted = ParcelRefMaster + DeletedSuccessfully;
+        public static string IsExistParcelRefMaster = ParcelRefMaster + AlreadyExists;
+        #endregion
+
     }
 }
