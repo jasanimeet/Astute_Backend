@@ -8432,8 +8432,12 @@ namespace astute.Controllers
                     //}
                     //else
                     //{
-                    var lst_Cert_No = gIA_Certificate_Parameter_Model.cert_no.Replace(" ", "").Replace("\n", "").Split(",").ToList();
+                    List<string> lst_Cert_No = new List<string>();
 
+                    if (gIA_Certificate_Parameter_Model != null && !string.IsNullOrEmpty(gIA_Certificate_Parameter_Model.cert_no))
+                    {
+                        lst_Cert_No = gIA_Certificate_Parameter_Model.cert_no.Replace(" ", "").Replace("\n", "").Split(",").ToList();
+                    }
                     string certificate_no = "";
                     if (lst_Cert_No != null && lst_Cert_No.Count > 0)
                     {
