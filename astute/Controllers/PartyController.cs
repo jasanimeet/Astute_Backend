@@ -7497,10 +7497,11 @@ namespace astute.Controllers
 
                     string filename = string.Empty;
 
-                    report_Lab_Entry_Filter.column_Name = new List<string>{"IMAGE LINK",
-                                        "VIDEO LINK",
+                    report_Lab_Entry_Filter.column_Name = new List<string>{
                                         "Stock Id",
                                         "Lab",
+                                        "IMAGE LINK",
+                                        "VIDEO LINK",
                                         "Cert No",
                                         "Status",
                                         "Shape",
