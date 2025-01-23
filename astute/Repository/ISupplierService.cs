@@ -147,6 +147,12 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Summary(int user_Id, Lab_Entry_Summary lab_Entry_Summary);
         Task<DataTable> Get_Lab_Entry_Report_Data(int user_Id, Report_Lab_Entry_Filter report_Lab_Entry_Filter);
         Task<DataTable> Get_Lab_Entry_Auto_Order_Not_Placed_Overseas_Email();
+        Task<List<Dictionary<string, object>>> Get_Lab_Entry_Detail_For_Shipment_Verification(int supplier_Id, string certificate_No);
+        Task<List<Dictionary<string, object>>> Get_Purchase_Expenses_DropDown();
+        Task<int> Insert_Update_Purchase(DataTable masterDataTable, DataTable detailDataTable, DataTable termsDataTable, DataTable expensesDataTable, int user_Id);
+        Task<List<Dictionary<string, object>>> Get_Purchase_Master(Purchase_Master_Search_Model purchase_Master_Search_Model);
+        Task<Dictionary<string, object>> Get_Purchase(int Trans_Id);
+        Task<int> Delete_Purchase(int Trans_Id);
         #endregion
 
         #region Party Url Format

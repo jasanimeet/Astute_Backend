@@ -13432,6 +13432,547 @@ namespace astute.Controllers
             }
         }
 
+
+        [HttpPost]
+        [Route("get_lab_entry_detail_for_shipment")]
+        [Authorize]
+        public async Task<IActionResult> Get_Lab_Entry_Detail_For_Shipment(Lab_Entry_Detail_For_Shipment lab_Entry_Detail_For_Shipment)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Get_Lab_Entry_Detail_For_Shipment_Verification(lab_Entry_Detail_For_Shipment.Supplier_Id ?? 0, lab_Entry_Detail_For_Shipment.Certificate_No);
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = new
+                        {
+                            Lab_Entry_Detail_List = result
+                        }
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Lab_Entry_Detail_For_Shipment", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        
+        [HttpGet]
+        [Route("get_purchase_expenses_dropdown")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Expenses_DropDown()
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Get_Purchase_Expenses_DropDown();
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Expenses_DropDown", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+
+        [HttpPost]
+        [Route("create_update_purchase")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Purchase(Purchase_Master_Model purchase_Master_Model)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                Purchase_Master purchase_Master = JsonConvert.DeserializeObject<Purchase_Master>(purchase_Master_Model.Purchase_Master.ToString());
+
+                IList<Purchase_Detail> purchase_Detail_List = JsonConvert.DeserializeObject<IList<Purchase_Detail>>(purchase_Master_Model.Purchase_Detail_List.ToString());
+
+                IList<Purchase_Expenses> purchase_Expenses_List = JsonConvert.DeserializeObject<IList<Purchase_Expenses>>(purchase_Master_Model.Purchase_Expenses_List.ToString());
+                
+                IList<Purchase_Terms> purchase_Terms_List = JsonConvert.DeserializeObject<IList<Purchase_Terms>>(purchase_Master_Model.Purchase_Terms_List.ToString());
+
+                string dateFormat = "dd-MM-yyyy";
+
+                DateTime Trans_Dt;
+
+                if (!DateTime.TryParseExact(purchase_Master.Trans_Date, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out Trans_Dt))
+                {
+                    Trans_Dt = DateTime.MinValue;
+                }
+
+                DateTime Supplier_Doc_Dt;
+
+                if (!DateTime.TryParseExact(purchase_Master.Supplier_Doc_Date, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out Supplier_Doc_Dt))
+
+                {
+                    Supplier_Doc_Dt = DateTime.MinValue;
+                }
+
+                DataTable masterDataTable = new DataTable();
+                masterDataTable.Columns.Add("Trans_Id", typeof(int));
+                masterDataTable.Columns.Add("Trans_Date", typeof(DateTime));
+                masterDataTable.Columns.Add("Trans_Time", typeof(TimeSpan));
+                masterDataTable.Columns.Add("Year_Id", typeof(int));
+                masterDataTable.Columns.Add("Trans_Type", typeof(string));
+                masterDataTable.Columns.Add("Doc_Type", typeof(string));
+                masterDataTable.Columns.Add("Supplier_Doc_Date", typeof(DateTime));
+                masterDataTable.Columns.Add("Supplier_Doc_Time", typeof(TimeSpan));
+                masterDataTable.Columns.Add("Supplier_Invoice_No", typeof(string));
+                masterDataTable.Columns.Add("Internal_Invoice_No", typeof(string));
+                masterDataTable.Columns.Add("Supplier_Id", typeof(int));
+                masterDataTable.Columns.Add("Company_Id", typeof(int));
+                masterDataTable.Columns.Add("Currency_Id", typeof(int));
+                masterDataTable.Columns.Add("Exchange_Id", typeof(int));
+                masterDataTable.Columns.Add("Ex_Rate", typeof(float));
+                masterDataTable.Columns.Add("Process_Id", typeof(int));
+                masterDataTable.Columns.Add("Shipment_Type", typeof(string));
+                masterDataTable.Columns.Add("ETA_Days", typeof(int));
+                masterDataTable.Columns.Add("Contract", typeof(bool));
+
+                masterDataTable.Rows.Add(
+                    purchase_Master.Trans_Id ?? 0,
+                    //purchase_Master.Trans_Date ?? null,
+                    Trans_Dt != null ? Trans_Dt : null,
+                    purchase_Master.Trans_Time ?? null,
+                    purchase_Master.Year_Id ?? null,
+                    purchase_Master.Trans_Type ?? null,
+                    purchase_Master.Doc_Type ?? null,
+                    //purchase_Master.Supplier_Doc_Date ?? null,
+                    Supplier_Doc_Dt != null ? Supplier_Doc_Dt : null,
+                    purchase_Master.Supplier_Doc_Time ?? null,
+                    purchase_Master.Supplier_Invoice_No ?? null,
+                    purchase_Master.Internal_Invoice_No ?? null,
+                    purchase_Master.Supplier_Id ?? null,
+                    purchase_Master.Company_Id ?? null,
+                    purchase_Master.Currency_Id ?? null,
+                    purchase_Master.Exchange_Id ?? null,
+                    purchase_Master.Ex_Rate ?? null,
+                    purchase_Master.Process_Id ?? null,
+                    purchase_Master.Shipment_Type ?? null,
+                    purchase_Master.ETA_Days ?? null,
+                    purchase_Master.Contract ?? null
+                );
+
+                DataTable detailDataTable = new DataTable();
+
+                detailDataTable.Columns.Add("Id", typeof(int));
+                detailDataTable.Columns.Add("Trans_Id", typeof(int));
+                detailDataTable.Columns.Add("Lab_Entry_Detail_Id", typeof(int));
+                detailDataTable.Columns.Add("Stock_Id", typeof(string));
+                detailDataTable.Columns.Add("Cert_No", typeof(string));
+                detailDataTable.Columns.Add("Supplier_Id", typeof(int));
+                detailDataTable.Columns.Add("Supplier_Name", typeof(string));
+                detailDataTable.Columns.Add("Supplier_Short_Name", typeof(string));
+                detailDataTable.Columns.Add("Supplier_Ref_No", typeof(string));
+                detailDataTable.Columns.Add("Status", typeof(string));
+                detailDataTable.Columns.Add("Remarks", typeof(string));
+                detailDataTable.Columns.Add("Buyer", typeof(int));
+                detailDataTable.Columns.Add("Lab", typeof(int));
+                detailDataTable.Columns.Add("Shape", typeof(int));
+                detailDataTable.Columns.Add("BGM", typeof(int));
+                detailDataTable.Columns.Add("Color", typeof(int));
+                detailDataTable.Columns.Add("Clarity", typeof(int));
+                detailDataTable.Columns.Add("Cts", typeof(float));
+                detailDataTable.Columns.Add("Rap_Rate", typeof(float));
+                detailDataTable.Columns.Add("Rap_Amt", typeof(float));
+                detailDataTable.Columns.Add("Supplier_Base_Disc", typeof(float));
+                detailDataTable.Columns.Add("Supplier_Base_Amt", typeof(float));
+                detailDataTable.Columns.Add("Supplier_Cost_Disc", typeof(float));
+                detailDataTable.Columns.Add("Supplier_Cost_Amt", typeof(float));
+                detailDataTable.Columns.Add("Offer_Disc", typeof(float));
+                detailDataTable.Columns.Add("Offer_Amt", typeof(float));
+                detailDataTable.Columns.Add("Cut", typeof(int));
+                detailDataTable.Columns.Add("Polish", typeof(int));
+                detailDataTable.Columns.Add("Symm", typeof(int));
+                detailDataTable.Columns.Add("Flour_Intensity", typeof(int));
+                detailDataTable.Columns.Add("Length", typeof(float));
+                detailDataTable.Columns.Add("Width", typeof(float));
+                detailDataTable.Columns.Add("Depth", typeof(float));
+                detailDataTable.Columns.Add("Depth_Per", typeof(float));
+                detailDataTable.Columns.Add("Table_Per", typeof(float));
+                detailDataTable.Columns.Add("Key_to_Symbol", typeof(string));
+                detailDataTable.Columns.Add("Additional_Comment", typeof(string));
+                detailDataTable.Columns.Add("Girdle_Per", typeof(float));
+                detailDataTable.Columns.Add("Crown_Angle", typeof(float));
+                detailDataTable.Columns.Add("Crown_Height", typeof(float));
+                detailDataTable.Columns.Add("Pavillion_Angle", typeof(float));
+                detailDataTable.Columns.Add("Pavillion_Height", typeof(float));
+                detailDataTable.Columns.Add("Table_Black", typeof(int));
+                detailDataTable.Columns.Add("Crown_Black", typeof(int));
+                detailDataTable.Columns.Add("Table_White", typeof(int));
+                detailDataTable.Columns.Add("Crown_White", typeof(int));
+                detailDataTable.Columns.Add("Culet", typeof(int));
+                detailDataTable.Columns.Add("Table_Open", typeof(int));
+                detailDataTable.Columns.Add("Crown_Open", typeof(int));
+                detailDataTable.Columns.Add("Pav_Open", typeof(int));
+                detailDataTable.Columns.Add("Girdle_Open", typeof(int));
+                detailDataTable.Columns.Add("Cert_Date", typeof(DateTime));
+                detailDataTable.Columns.Add("Cert_Type", typeof(int));
+                detailDataTable.Columns.Add("LR_Half", typeof(float));
+                detailDataTable.Columns.Add("Str_Ln", typeof(float));
+                detailDataTable.Columns.Add("Fancy_Color", typeof(int));
+                detailDataTable.Columns.Add("Fancy_Intensity", typeof(int));
+                detailDataTable.Columns.Add("Fancy_Overtone", typeof(int));
+                detailDataTable.Columns.Add("Rough_Origin", typeof(int));
+                detailDataTable.Columns.Add("Image", typeof(string));
+                detailDataTable.Columns.Add("Video", typeof(string));
+                detailDataTable.Columns.Add("Cert_Link", typeof(string));
+                detailDataTable.Columns.Add("DNA", typeof(string));
+                detailDataTable.Columns.Add("Cert_Type_Link", typeof(string));
+                detailDataTable.Columns.Add("Lab_C", typeof(string));
+                detailDataTable.Columns.Add("Shape_C", typeof(string));
+                detailDataTable.Columns.Add("BGM_C", typeof(string));
+                detailDataTable.Columns.Add("Color_C", typeof(string));
+                detailDataTable.Columns.Add("Clarity_C", typeof(string));
+                detailDataTable.Columns.Add("Cut_C", typeof(string));
+                detailDataTable.Columns.Add("Polish_C", typeof(string));
+                detailDataTable.Columns.Add("Symm_C", typeof(string));
+                detailDataTable.Columns.Add("Flour_Intensity_C", typeof(string));
+                detailDataTable.Columns.Add("Table_Black_C", typeof(string));
+                detailDataTable.Columns.Add("Crown_Black_C", typeof(string));
+                detailDataTable.Columns.Add("Table_White_C", typeof(string));
+                detailDataTable.Columns.Add("Crown_White_C", typeof(string));
+                detailDataTable.Columns.Add("Culet_C", typeof(string));
+                detailDataTable.Columns.Add("Table_Open_C", typeof(string));
+                detailDataTable.Columns.Add("Crown_Open_C", typeof(string));
+                detailDataTable.Columns.Add("Pav_Open_C", typeof(string));
+                detailDataTable.Columns.Add("Girdle_Open_C", typeof(string));
+                detailDataTable.Columns.Add("Cert_Type_C", typeof(string));
+                detailDataTable.Columns.Add("Fancy_Color_C", typeof(string));
+                detailDataTable.Columns.Add("Fancy_Intensity_C", typeof(string));
+                detailDataTable.Columns.Add("Fancy_Overtone_C", typeof(string));
+                detailDataTable.Columns.Add("Rough_Origin_C", typeof(string));
+                detailDataTable.Columns.Add("Laser_Insc", typeof(int));
+                detailDataTable.Columns.Add("Laser_Insc_C", typeof(string));
+                detailDataTable.Columns.Add("Girdle_Condition", typeof(int));
+                detailDataTable.Columns.Add("Girdle_Condition_C", typeof(string));
+                detailDataTable.Columns.Add("Stone_Status", typeof(string));
+                detailDataTable.Columns.Add("Shipment_Type", typeof(string));
+                detailDataTable.Columns.Add("Purchase_Doc_No", typeof(string));
+                detailDataTable.Columns.Add("Expected_Delivery_Date", typeof(DateTime));
+                detailDataTable.Columns.Add("Web_Disc", typeof(float));
+                detailDataTable.Columns.Add("Web_Amount", typeof(float));
+                detailDataTable.Columns.Add("Sunrise_Stock_Id", typeof(string));
+                detailDataTable.Columns.Add("Sunrise_Status", typeof(string));
+                detailDataTable.Columns.Add("RFID_No", typeof(string));
+                detailDataTable.Columns.Add("Supp_Verified_Disc", typeof(float));
+                detailDataTable.Columns.Add("Supp_Verified_Amount", typeof(float));
+                detailDataTable.Columns.Add("Company", typeof(string));
+                detailDataTable.Columns.Add("Sunrise_Offer_Disc", typeof(float));
+                detailDataTable.Columns.Add("Sunrise_Offer_Amt", typeof(float));
+                detailDataTable.Columns.Add("Actual_Cost_Disc", typeof(float));
+                detailDataTable.Columns.Add("Actual_Cost_Amt", typeof(float));
+
+                foreach (var item in purchase_Detail_List)
+                {
+
+                    DateTime Valid_Date;
+
+                    if (!DateTime.TryParseExact(item.CertificateDate, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out Valid_Date))
+                    {
+                        Valid_Date = DateTime.MinValue;
+                    }
+
+                    DateTime Expected_Delivery_Date;
+
+                    if (!DateTime.TryParseExact(item.Expected_Delivery_Date, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out Expected_Delivery_Date))
+                    {
+                        Expected_Delivery_Date = DateTime.MinValue;
+                    }
+
+                    detailDataTable.Rows.Add(
+                        item.Id ?? 0,
+                        item.TransId ?? 0,
+                        item.Lab_Entry_Detail_Id ?? 0,
+                        item.StockId,
+                        item.CertificateNo,
+                        item.SupplierId != null ? Convert.ToInt32(item.SupplierId) : null,
+                        item.SupplierName ?? null,
+                        item.SupplierShortName ?? null,
+                        item.SupplierNo ?? null,
+                        item.Status ?? null,
+                        item.Remarks ?? null,
+                        item.BuyerCode != null ? Convert.ToInt32(item.BuyerCode) : null,
+                        item.LabId != null ? Convert.ToInt32(item.LabId) : null,
+                        item.ShapeId != null ? Convert.ToInt32(item.ShapeId) : null,
+                        item.BgmId != null ? Convert.ToInt32(item.BgmId) : null,
+                        item.ColorId != null ? Convert.ToInt32(item.ColorId) : null,
+                        item.ClarityId != null ? Convert.ToInt32(item.ClarityId) : null,
+                        SafeConvertToDouble(item.Cts?.ToString()),
+                        SafeConvertToDouble(item.RapRate?.ToString()),
+                        SafeConvertToDouble(item.RapAmount?.ToString()),
+                        SafeConvertToDouble(item.BaseDisc?.ToString()),
+                        SafeConvertToDouble(item.BaseAmount?.ToString()),
+                        SafeConvertToDouble(item.CostDisc?.ToString()),
+                        SafeConvertToDouble(item.CostAmount?.ToString()),
+                        SafeConvertToDouble(item.OfferDisc?.ToString()),
+                        SafeConvertToDouble(item.OfferAmount?.ToString()),
+                        item.CutId != null ? Convert.ToInt32(item.CutId) : null,
+                        item.PolishId != null ? Convert.ToInt32(item.PolishId) : null,
+                        item.SymmId != null ? Convert.ToInt32(item.SymmId) : null,
+                        item.FlsintensityId != null ? Convert.ToInt32(item.FlsintensityId) : null,
+                        SafeConvertToDouble(item.Length?.ToString()),
+                        SafeConvertToDouble(item.Width?.ToString()),
+                        SafeConvertToDouble(item.Depth?.ToString()),
+                        SafeConvertToDouble(item.DepthPer?.ToString()),
+                        SafeConvertToDouble(item.TablePer?.ToString()),
+                        item.KeyToSymbol ?? null,
+                        item.GiaComments ?? null,
+                        SafeConvertToDouble(item.GirdlePer?.ToString()),
+                        SafeConvertToDouble(item.CrownAngle?.ToString()),
+                        SafeConvertToDouble(item.CrownHeight?.ToString()),
+                        SafeConvertToDouble(item.PavilionAngle?.ToString()),
+                        SafeConvertToDouble(item.PavilionHeight?.ToString()),
+                        item.TableBlackId != null ? Convert.ToInt32(item.TableBlackId) : null,
+                        item.CrownBlackId != null ? Convert.ToInt32(item.CrownBlackId) : null,
+                        item.TableWhiteId != null ? Convert.ToInt32(item.TableWhiteId) : null,
+                        item.CrownWhiteId != null ? Convert.ToInt32(item.CrownWhiteId) : null,
+                        item.CuletId != null ? Convert.ToInt32(item.CuletId) : null,
+                        item.TableOpenId != null ? Convert.ToInt32(item.TableOpenId) : null,
+                        item.CrownOpenId != null ? Convert.ToInt32(item.CrownOpenId) : null,
+                        item.PavOpenId != null ? Convert.ToInt32(item.PavOpenId) : null,
+                        item.GirdleOpenId != null ? Convert.ToInt32(item.GirdleOpenId) : null,
+                        Valid_Date != null ? Convert.ToDateTime(Valid_Date) : null,
+                        item.CertTypeId != null ? Convert.ToInt32(item.CertTypeId) : null,
+                        SafeConvertToDouble(item.LrHalf?.ToString()),
+                        SafeConvertToDouble(item.StarLn?.ToString()),
+                        item.FancyColorId != null ? Convert.ToInt32(item.FancyColorId) : null,
+                        item.FancyintensityId != null ? Convert.ToInt32(item.FancyintensityId) : null,
+                        item.FancyOvertoneId != null ? Convert.ToInt32(item.FancyOvertoneId) : null,
+                        item.RoughOriginId != null ? Convert.ToInt32(item.RoughOriginId) : null,
+                        item.ImageLink ?? null,
+                        item.VideoLink ?? null,
+                        item.CertificateLink ?? null,
+                        item.Dna ?? null,
+                        item.CertTypeLink ?? null,
+                        item.Lab ?? null,
+                        item.Shape ?? null,
+                        item.Bgm ?? null,
+                        item.Color ?? null,
+                        item.Clarity ?? null,
+                        item.Cut ?? null,
+                        item.Polish ?? null,
+                        item.Symm ?? null,
+                        item.Flsintensity ?? null,
+                        item.TableBlack ?? null,
+                        item.SideBlack ?? null,
+                        item.TableWhite ?? null,
+                        item.SideWhite ?? null,
+                        item.Culet ?? null,
+                        item.TableOpen ?? null,
+                        item.CrownOpen ?? null,
+                        item.PavilionOpen ?? null,
+                        item.GirdleOpen ?? null,
+                        item.GiaType ?? null,
+                        item.FancyColor ?? null,
+                        item.Fancyintensity ?? null,
+                        item.FancyOvertone ?? null,
+                        item.RoughOrigin ?? null,
+                        item.LaserInscId != null ? Convert.ToInt32(item.LaserInscId) : null,
+                        item.LaserInscription ?? null,
+                        item.GirdleConditionId != null ? Convert.ToInt32(item.GirdleConditionId) : null,
+                        item.GirdleCondition ?? null,
+                        item.Stone_Status ?? null,
+                        item.Shipment_Type ?? null,
+                        item.Purchase_Doc_No ?? null,
+                        //item.Expected_Delivery_Date ?? null,
+                        Expected_Delivery_Date != null ? Expected_Delivery_Date : null,
+                        item.Web_Disc ?? null,
+                        item.Web_Amount ?? null,
+                        item.Sunrise_Stock_Id ?? null,
+                        item.Sunrise_Status ?? null,
+                        item.RFID_No ?? null,
+                        item.Supp_Verified_Disc ?? null,
+                        item.Supp_Verified_Amount ?? null,
+                        item.Company ?? null,
+                        item.Sunrise_Offer_Disc ?? null,
+                        item.Sunrise_Offer_Amt ?? null,
+                        //if (!purchase_Master.Contract) { item.ActualCostDisc} else { item.CostDisc},
+                        //if (!purchase_Master.Contract) { item.ActualCostAmount} else { item.CostAmount }
+                        (bool)(!purchase_Master.Contract) ? item.ActualCostDisc : item.CostDisc,
+                        (bool)(!purchase_Master.Contract) ? item.ActualCostAmount : item.CostAmount
+                    );
+                }
+
+                DataTable termsDataTable = new DataTable();
+                termsDataTable.Columns.Add("Purchase_Terms_Id", typeof(int));
+                termsDataTable.Columns.Add("Terms_Id", typeof(int));
+                termsDataTable.Columns.Add("Amount", typeof(decimal));
+                termsDataTable.Columns.Add("Purchase_Trans_Id", typeof(int));
+
+                foreach (var item in purchase_Terms_List)
+                {
+                    termsDataTable.Rows.Add(
+                        item.Purchase_Terms_Id ?? 0,
+                        item.Terms_Id ?? 0,
+                        item.Amount ?? null,
+                        item.Purchase_Trans_Id ?? 0
+                    );
+                }
+
+                DataTable expensesDataTable = new DataTable();
+                expensesDataTable.Columns.Add("Purchase_Expenses_Id", typeof(int));
+                expensesDataTable.Columns.Add("Expenses_Id", typeof(int));
+                expensesDataTable.Columns.Add("Amount", typeof(decimal));
+                expensesDataTable.Columns.Add("Purchase_Trans_Id", typeof(int));
+
+                foreach (var item in purchase_Expenses_List)
+                {
+                    expensesDataTable.Rows.Add(
+                        item.Purchase_Expenses_Id ?? 0,
+                        item.Expenses_Id ?? 0,
+                        item.Amount ?? null,
+                        item.Purchase_Trans_Id ?? 0
+                    );
+                }
+
+                var lab_entry_result = await _supplierService.Insert_Update_Purchase(masterDataTable, detailDataTable, termsDataTable, expensesDataTable, user_Id ?? 0);
+
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    message = purchase_Master.Trans_Id > 0 ? CoreCommonMessage.Purchase_Updated : CoreCommonMessage.Purchase_Created
+                });
+
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Purchase", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("get_purchase_master")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Master(Purchase_Master_Search_Model purchase_Master_Search_Model)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Purchase_Master(purchase_Master_Search_Model);
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = new
+                        {
+                            Lab_Entry_Detail_List = result
+                        }
+                    });
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Master", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_purchase")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase(int? Trans_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Purchase(Trans_Id ?? 0);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_purchase")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Purchase(int Trans_Id)
+        {
+            try
+            {
+                if (Trans_Id > 0)
+                {
+                    var result = await _supplierService.Delete_Purchase(Trans_Id);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.Purchase_Deleted
+                        });
+                    }
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (SqlException ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Purchase", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Lab User Activity

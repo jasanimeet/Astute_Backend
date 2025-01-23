@@ -3445,7 +3445,7 @@ namespace astute.Repository
             }
             return result;
         }
-
+        
         public async Task<int> Insert_Update_Lab_Entry(DataTable masterDataTable, DataTable detailDataTable, int user_Id)
         {
             var masterParameter = new SqlParameter("@Lab_Entry_Master_Table_Type", SqlDbType.Structured)
@@ -3580,6 +3580,232 @@ namespace astute.Repository
             return dataTable;
         }
 
+        public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Detail_For_Shipment_Verification(int supplier_Id, string certificate_No)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Lab_Entry_Detail_Shipment_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(certificate_No) ? new SqlParameter("@Certificate_No", certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Expenses_DropDown()
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Purchase_Expenses_DropDown_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public async Task<int> Insert_Update_Purchase(DataTable masterDataTable, DataTable detailDataTable, DataTable termsDataTable, DataTable expensesDataTable, int user_Id)
+        {
+            var masterParameter = new SqlParameter("@Purchase_Master_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Purchase_Master_Table_Type]",
+                Value = masterDataTable
+            };
+
+            var detailParameter = new SqlParameter("@Purchase_Detail_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Purchase_Detail_Table_Type]",
+                Value = detailDataTable
+            };
+
+            var termsParameter = new SqlParameter("@Purchase_Terms_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Purchase_Terms_Table_Type]",
+                Value = termsDataTable
+            };
+
+            var expensesParameter = new SqlParameter("@Purchase_Expenses_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Purchase_Expenses_Table_Type]",
+                Value = expensesDataTable
+            };
+            
+            var _user_Id = new SqlParameter("@User_Id", user_Id);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Purchase_Insert_Update @Purchase_Master_Table_Type, @Purchase_Detail_Table_Type, @Purchase_Terms_Table_Type, @Purchase_Expenses_Table_Type, @User_Id", masterParameter, detailParameter, termsParameter, expensesParameter, _user_Id));
+
+            return result;
+        }
+
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Master(Purchase_Master_Search_Model purchase_Master_Search_Model)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Purchase_Master_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Master_Search_Model.Doc_Type) ? new SqlParameter("@Doc_Type", purchase_Master_Search_Model.Doc_Type) : new SqlParameter("@Doc_Type", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Master_Search_Model.Stock_Status) ? new SqlParameter("@Stock_Status", purchase_Master_Search_Model.Stock_Status) : new SqlParameter("@Stock_Status", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Master_Search_Model.Stock_Certificate_No) ? new SqlParameter("@Stock_Certificate_No", purchase_Master_Search_Model.Stock_Certificate_No) : new SqlParameter("@Stock_Certificate_No", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+
+        public async Task<Dictionary<string, object>> Get_Purchase(int Trans_Id)
+        {
+            var output = new Dictionary<string, object>();
+
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                await connection.OpenAsync();
+
+                // Fetch Purchase_Master
+                var Purchase_Master_Result = await ExecuteStoredProcedure(connection, "Purchase_Master_By_Trans_Id_Select", Trans_Id);
+                if (Purchase_Master_Result != null)
+                {
+                    output["Purchase_Master"] = Purchase_Master_Result.FirstOrDefault();
+                }
+
+                // Fetch Purchase_Detail
+                var Purchase_Detail_Result = await ExecuteStoredProcedure(connection, "Purchase_Detail_By_Trans_Id_Select", Trans_Id);
+                if (Purchase_Detail_Result != null)
+                {
+                    output["Purchase_Detail_List"] = Purchase_Detail_Result;
+                }
+
+                // Fetch terms_Trans_Dets
+                var Purchase_Terms_Result = await ExecuteStoredProcedure(connection, "Purchase_Terms_By_Trans_Id_Select", Trans_Id);
+                if (Purchase_Terms_Result != null)
+                {
+                    output["Purchase_Terms_List"] = Purchase_Terms_Result;
+                }
+                else
+                {
+                    output["Purchase_Terms_List"] = new List<object>();
+                }
+
+                // Fetch expense_Trans_Dets
+                var expense_Trans_Dets_Result = await ExecuteStoredProcedure(connection, "Purchase_Expenses_By_Trans_Id_Select", Trans_Id);
+                if (expense_Trans_Dets_Result != null)
+                {
+                    output["Purchase_Expenses_List"] = expense_Trans_Dets_Result;
+                }
+                else
+                {
+                    output["Purchase_Expenses_List"] = new List<object>();
+                }
+            }
+
+            return output;
+        }
+        private async Task<List<Dictionary<string, object>>> ExecuteStoredProcedure(SqlConnection connection, string storedProcedureName, int Trans_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+
+            using (var command = new SqlCommand(storedProcedureName, connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.Add(new SqlParameter("@Trans_Id", Trans_Id));
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        var dict = new Dictionary<string, object>();
+
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            var columnName = reader.GetName(i);
+                            var columnValue = reader.GetValue(i);
+
+                            dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                        }
+
+                        result.Add(dict);
+                    }
+                }
+            }
+
+            return result.Count > 0 ? result : null;
+        }
+
+        public async Task<int> Delete_Purchase(int Trans_Id)
+        {
+            var trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
+            
+            var result = await _dbContext.Database
+                                .ExecuteSqlRawAsync("EXEC Purchase_Delete @Trans_Id", trans_Id);
+
+            return result;
+        }
         #endregion
 
         #region Party Url Format

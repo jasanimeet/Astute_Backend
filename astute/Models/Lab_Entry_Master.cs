@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace astute.Models
 {
@@ -68,12 +66,6 @@ namespace astute.Models
 
         [JsonPropertyName("Modified User")]
         public string? Modified_User { get; set; }
-
-    }
-    public class Lab_Entry_Master_Model
-    {
-        public object? Lab_Entry_Master { get; set; }
-        public object? Lab_Entry_Detail_List { get; set; }
 
     }
 }
