@@ -7489,7 +7489,7 @@ namespace astute.Controllers
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                var dt_Order = await _supplierService.Get_Lab_Entry_Report_Data(report_Lab_Entry_Filter);
+                var dt_Order = await _supplierService.Get_Lab_Entry_Report_Data(user_Id ?? 0, report_Lab_Entry_Filter);
 
                 if (dt_Order != null && dt_Order.Rows.Count > 0)
                 {
@@ -7592,7 +7592,10 @@ namespace astute.Controllers
         {
             try
             {
-                var dt_Order = await _supplierService.Get_Lab_Entry_Report_Data(report_Lab_Entry_Filter);
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var dt_Order = await _supplierService.Get_Lab_Entry_Report_Data(user_Id ?? 0, report_Lab_Entry_Filter);
 
                 if (dt_Order != null && dt_Order.Rows.Count > 0)
                 {
@@ -12802,7 +12805,10 @@ namespace astute.Controllers
         {
             try
             {
-                var result = await _supplierService.Get_Lab_Entry_Report_Summary(lab_Entry_Summary);
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Get_Lab_Entry_Report_Summary(user_Id ?? 0, lab_Entry_Summary);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new

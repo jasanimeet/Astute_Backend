@@ -3486,7 +3486,7 @@ namespace astute.Repository
             return (result, _is_Exist);
         }
 
-        public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Summary(Lab_Entry_Summary lab_Entry_Summary)
+        public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Summary(int user_Id, Lab_Entry_Summary lab_Entry_Summary)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -3500,6 +3500,7 @@ namespace astute.Repository
                     command.Parameters.Add(!string.IsNullOrEmpty(lab_Entry_Summary.Stone_Status) ? new SqlParameter("@Stone_Status", lab_Entry_Summary.Stone_Status) : new SqlParameter("@Stone_Status", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(lab_Entry_Summary.Order_Status) ? new SqlParameter("@Order_Status", lab_Entry_Summary.Order_Status) : new SqlParameter("@Order_Status", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(lab_Entry_Summary.Stock_Id) ? new SqlParameter("@Stock_Id", lab_Entry_Summary.Stock_Id) : new SqlParameter("@Stock_Id", DBNull.Value));
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
 
                     await connection.OpenAsync();
 
@@ -3525,7 +3526,7 @@ namespace astute.Repository
             return result;
         }
 
-        public async Task<DataTable> Get_Lab_Entry_Report_Data(Report_Lab_Entry_Filter report_Lab_Entry_Filter)
+        public async Task<DataTable> Get_Lab_Entry_Report_Data(int user_Id, Report_Lab_Entry_Filter report_Lab_Entry_Filter)
         {
             DataTable dataTable = new DataTable();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -3539,7 +3540,7 @@ namespace astute.Repository
                     command.Parameters.Add(!string.IsNullOrEmpty(report_Lab_Entry_Filter.Stone_Status) ? new SqlParameter("@Stone_Status", report_Lab_Entry_Filter.Stone_Status) : new SqlParameter("@Stone_Status", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(report_Lab_Entry_Filter.Order_Status) ? new SqlParameter("@Order_Status", report_Lab_Entry_Filter.Order_Status) : new SqlParameter("@Order_Status", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(report_Lab_Entry_Filter.Stock_Id) ? new SqlParameter("@Stock_Id", report_Lab_Entry_Filter.Stock_Id) : new SqlParameter("@Stock_Id", DBNull.Value));
-
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
                     await connection.OpenAsync();
 
                     using var da = new SqlDataAdapter();
