@@ -7960,7 +7960,7 @@ namespace astute.Controllers
         #region Get GIA Certificate Data
         [HttpPost]
         [Route("get_gia_cert_data")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Get_GIA_Cert_Data([FromForm] GIA_Certificate_Parameter_Model gIA_Certificate_Parameter_Model, IFormFile gIA_Cert_Excel_File)
         {
             var key = _configuration["Sunrise_Key"];
