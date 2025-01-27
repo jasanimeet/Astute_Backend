@@ -8,5 +8,6 @@
         public string? From_Date { get; set; }
         public string? To_Date { get; set; }
         public string? Stock_Id { get; set; }
+        public bool? PreSold { get; set; }
     }
 }

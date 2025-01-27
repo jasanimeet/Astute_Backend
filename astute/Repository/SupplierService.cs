@@ -3502,6 +3502,7 @@ namespace astute.Repository
                     command.Parameters.Add(!string.IsNullOrEmpty(lab_Entry_Summary.Order_Status) ? new SqlParameter("@Order_Status", lab_Entry_Summary.Order_Status) : new SqlParameter("@Order_Status", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(lab_Entry_Summary.Stock_Id) ? new SqlParameter("@Stock_Id", lab_Entry_Summary.Stock_Id) : new SqlParameter("@Stock_Id", DBNull.Value));
                     command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
+                    command.Parameters.Add(lab_Entry_Summary.PreSold != null ? new SqlParameter("@PreSold", lab_Entry_Summary.PreSold) : new SqlParameter("@PreSold", DBNull.Value));
 
                     await connection.OpenAsync();
 
