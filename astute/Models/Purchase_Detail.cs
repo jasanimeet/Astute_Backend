@@ -328,5 +328,11 @@ namespace astute.Models
         
         [JsonPropertyName("COMPANY")]
         public string? Company { get; set; }
+
+        [JsonPropertyName("TYPE")]
+        public string? Type { get; set; }
+
+        [JsonPropertyName("Assist_By")]
+        public int? Assist_By { get; set; }
     }
 }

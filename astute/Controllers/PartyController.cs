@@ -13692,6 +13692,8 @@ namespace astute.Controllers
                 detailDataTable.Columns.Add("Sunrise_Offer_Amt", typeof(float));
                 detailDataTable.Columns.Add("Actual_Cost_Disc", typeof(float));
                 detailDataTable.Columns.Add("Actual_Cost_Amt", typeof(float));
+                detailDataTable.Columns.Add("Type", typeof(string));
+                detailDataTable.Columns.Add("Assist_By", typeof(int));
 
                 foreach (var item in purchase_Detail_List)
                 {
@@ -13820,7 +13822,9 @@ namespace astute.Controllers
                         //if (!purchase_Master.Contract) { item.ActualCostDisc} else { item.CostDisc},
                         //if (!purchase_Master.Contract) { item.ActualCostAmount} else { item.CostAmount }
                         (bool)(!purchase_Master.Contract) ? item.ActualCostDisc : item.CostDisc,
-                        (bool)(!purchase_Master.Contract) ? item.ActualCostAmount : item.CostAmount
+                        (bool)(!purchase_Master.Contract) ? item.ActualCostAmount : item.CostAmount,
+                        item.Type ?? null,
+                        item.Assist_By ?? null
                     );
                 }
 
