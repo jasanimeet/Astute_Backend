@@ -26,7 +26,7 @@ namespace astute.Repository
         #endregion
 
         #region Methods
-        public async Task<(string, int, string)> Create_Update_Cart(DataTable dataTable, int Id, int User_Id, string customer_Name, string remarks, DateTime validity_Date)
+        public async Task<(string, int, string)> Create_Update_Cart(DataTable dataTable, int Id, int User_Id, string customer_Name, string remarks)
         {
             var parameter = new SqlParameter("@Cart_Table_Type", SqlDbType.Structured)
             {
@@ -38,7 +38,6 @@ namespace astute.Repository
             var id = Id > 0 ? new SqlParameter("@Id", Id) : new SqlParameter("@Id", DBNull.Value);
             var _customer_Name = !string.IsNullOrEmpty(customer_Name) ? new SqlParameter("@Customer_Name", customer_Name) : new SqlParameter("@Customer_Name", DBNull.Value);
             var _remarks = !string.IsNullOrEmpty(remarks) ? new SqlParameter("@Remarks", remarks) : new SqlParameter("@Remarks", DBNull.Value);
-            var _validity_Date = validity_Date != null ? new SqlParameter("@Validity_Date", validity_Date) : new SqlParameter("@Validity_Date", DBNull.Value);
             var is_Exists = new SqlParameter("@IsExist", SqlDbType.Bit)
             {
                 Direction = ParameterDirection.Output
@@ -50,8 +49,8 @@ namespace astute.Repository
             };
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Cart_Insert_Update] @Cart_Table_Type, @Id, @User_Id, @Customer_Name, @Remarks, @Validity_Date, @IsExist OUT, @Msg OUT",
-                        parameter,id, user_Id, _customer_Name, _remarks, _validity_Date, is_Exists, msg));
+                        .ExecuteSqlRawAsync(@"EXEC [Cart_Insert_Update] @Cart_Table_Type, @Id, @User_Id, @Customer_Name, @Remarks, @IsExist OUT, @Msg OUT",
+                        parameter,id, user_Id, _customer_Name, _remarks, is_Exists, msg));
 
             var _is_Exists = (bool)is_Exists.Value;
             var _msg = (string)msg.Value;

@@ -6976,12 +6976,7 @@ namespace astute.Controllers
 
                     string dateFormat = "dd-MM-yyyy";
 
-                    if (!DateTime.TryParseExact(cart_Model.Validity_Date, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out Valid_Date))
-                    {
-                        Valid_Date = DateTime.Now;
-                    }
-
-                    var (message, result, msg) = await _cartService.Create_Update_Cart(dataTable, cart_Model.Id, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks, Valid_Date);
+                    var (message, result, msg) = await _cartService.Create_Update_Cart(dataTable, cart_Model.Id, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks);
                     if ((message == "exist" && msg.Length > 0) || (message == "success" && msg.Length > 0))
                     {
                         // if alredy exists stone add again then message should show succsessfully added.

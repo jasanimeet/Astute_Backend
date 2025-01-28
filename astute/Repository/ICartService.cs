@@ -8,7 +8,7 @@ namespace astute.Repository
 {
     public partial interface ICartService
     {
-        Task<(string, int, string)> Create_Update_Cart(DataTable dataTable, int Id, int User_Id, string customer_Name, string remarks, DateTime validity_Date);
+        Task<(string, int, string)> Create_Update_Cart(DataTable dataTable, int Id, int User_Id, string customer_Name, string remarks);
         Task<(string, int, string)> Delete_Cart(string ids, int user_Id);
         Task<int> Approved_Or_Rejected_by_Management(Approval_Management approval_Management);
         Task<int> Approved_Management_Update_Status(Approval_Management_Status approval_Management);
