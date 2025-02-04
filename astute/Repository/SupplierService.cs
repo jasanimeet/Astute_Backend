@@ -3807,6 +3807,90 @@ namespace astute.Repository
 
             return result;
         }
+
+        public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Status_Summary(string Stock_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Lab_Entry_Report_Status_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(Stock_Id) ? new SqlParameter("@Stock_Id", Stock_Id) : new SqlParameter("@Stock_Id", DBNull.Value));
+                    
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Non_Status_Summary(string Stock_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Lab_Entry_Report_Non_Update_Status_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(Stock_Id) ? new SqlParameter("@Stock_Id", Stock_Id) : new SqlParameter("@Stock_Id", DBNull.Value));
+                    
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public async Task<int> Lab_Entry_Report_Status_Update(DataTable statusDataTable, int user_Id)
+        {
+            var masterParameter = new SqlParameter("@Lab_Entry_Status_Update_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Lab_Entry_Status_Update_Table_Type]",
+                Value = statusDataTable
+            };
+
+            var _user_Id = new SqlParameter("@User_Id", user_Id);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Lab_Entry_Status_Update @Lab_Entry_Status_Update_Table_Type, @User_Id", masterParameter, _user_Id));
+
+            return result;
+        }
         #endregion
 
         #region Party Url Format
