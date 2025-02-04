@@ -10672,6 +10672,7 @@ namespace astute.Controllers
                     dataTable.Columns.Add("Show_Amount", typeof(bool));
                     dataTable.Columns.Add("Order_History", typeof(bool));
                     dataTable.Columns.Add("Display_Own_Records", typeof(bool));
+                    dataTable.Columns.Add("Sub_User", typeof(bool));
 
                     if (lab_User_Detail.Lab_User_Masters != null && lab_User_Detail.Lab_User_Masters.Count > 0)
                     {
@@ -10692,7 +10693,8 @@ namespace astute.Controllers
                                 !string.IsNullOrEmpty(item.Email) ? item.Email : DBNull.Value,
                                 item.Show_Amount,
                                 item.Order_History,
-                                item.Display_Own_Records);
+                                item.Display_Own_Records,
+                                item.Sub_User);
                         }
                         var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                         int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);

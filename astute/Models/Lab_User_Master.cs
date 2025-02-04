@@ -22,6 +22,7 @@ namespace astute.Models
         public bool? Show_Amount { get; set; }
         public bool? Order_History { get; set; }
         public bool? Display_Own_Records { get; set; }
+        public bool? Sub_User { get; set; }
     }
 
     public class Lab_User_Detail
