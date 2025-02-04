@@ -58,6 +58,7 @@ namespace astute.Models
         public int? Modified_By { get; set; }
         public bool? Status { get; set; }        
         public int? Company_Code { get; set; }        
+        public decimal? Shipment_Min_Amt { get; set; }        
         [NotMapped]
         public IList<Party_Contact> Party_Contact_List { get; set; } = new List<Party_Contact>();
         [NotMapped]
