@@ -48,6 +48,7 @@ namespace astute.Controllers
         private readonly ILabUserService _labUserService;
         private readonly ILab_User_Login_Activity_Services _lab_User_Login_Activity_Services;
         private readonly IOracleService _oracleService;
+        private readonly ICategoryService _categoryService;
 
         #endregion
 
@@ -63,7 +64,8 @@ namespace astute.Controllers
             IEmployeeService employeeService,
             ILabUserService labUserService,
             ILab_User_Login_Activity_Services lab_User_Login_Activity_Services,
-            IOracleService oracleService)
+            IOracleService oracleService,
+            ICategoryService categoryService)
         {
             _partyService = partyService;
             _configuration = configuration;
@@ -77,6 +79,7 @@ namespace astute.Controllers
             _labUserService = labUserService;
             _lab_User_Login_Activity_Services = lab_User_Login_Activity_Services;
             _oracleService = oracleService;
+            _categoryService = categoryService;
         }
         #endregion
 
@@ -13442,13 +13445,231 @@ namespace astute.Controllers
 
                 if (result != null && result.Count > 0)
                 {
+                    List<Dictionary<string, object>> matchedRecords = new List<Dictionary<string, object>>();
+                    
+                    List<Dictionary<string, object>> finalRecords = new List<Dictionary<string, object>>();
+
+                    var certificateNos = result.Select(entry => entry["CERTIFICATE NO"].ToString()).ToList();
+
+                    var existingCertificateNos = lab_Entry_Detail_For_Shipment.Certificate_No.Split(',')
+                        .Where(cert => !string.IsNullOrEmpty(cert))
+                        .ToHashSet();
+
+                    existingCertificateNos.UnionWith(certificateNos);
+
+                    string finalCertificateNos = string.Join(",", existingCertificateNos);
+
+                    GIA_Certificate_Parameter_Model gIA_Certificate_Parameter_Model = new GIA_Certificate_Parameter_Model();
+                    gIA_Certificate_Parameter_Model.cert_no = finalCertificateNos;
+
+                    var gia = await Get_GIA_Cert_Data(gIA_Certificate_Parameter_Model, null);
+
+                    if (gia != null)
+                    {
+                        var shape_values = await _categoryService.GetCategoryValuesByCatId(13);
+                        var color_values = await _categoryService.GetCategoryValuesByCatId(14);
+                        var clarity_values = await _categoryService.GetCategoryValuesByCatId(15);
+                        var cut_values = await _categoryService.GetCategoryValuesByCatId(16);
+                        var polish_values = await _categoryService.GetCategoryValuesByCatId(17);
+                        var symm_values = await _categoryService.GetCategoryValuesByCatId(19);
+                        var fls_values = await _categoryService.GetCategoryValuesByCatId(21);
+                        var culet_values = await _categoryService.GetCategoryValuesByCatId(37);
+
+                        if (gia is OkObjectResult okResult)
+                        {
+                            var json = JsonConvert.SerializeObject(okResult.Value);
+                            GiaResponse response = JsonConvert.DeserializeObject<GiaResponse>(json);
+
+                            var shape = JsonConvert.SerializeObject(shape_values);
+                            List<Category_Value> category_Value_Shape = JsonConvert.DeserializeObject<List<Category_Value>>(shape);
+
+                            var color = JsonConvert.SerializeObject(color_values);
+                            List<Category_Value> category_Value_Color = JsonConvert.DeserializeObject<List<Category_Value>>(color);
+
+                            var clarity = JsonConvert.SerializeObject(clarity_values);
+                            List<Category_Value> category_Value_Clarity = JsonConvert.DeserializeObject<List<Category_Value>>(clarity);
+
+                            var cut = JsonConvert.SerializeObject(cut_values);
+                            List<Category_Value> category_Value_Cut = JsonConvert.DeserializeObject<List<Category_Value>>(cut);
+
+                            var polish = JsonConvert.SerializeObject(polish_values);
+                            List<Category_Value> category_Value_Polish = JsonConvert.DeserializeObject<List<Category_Value>>(polish);
+
+                            var symm = JsonConvert.SerializeObject(symm_values);
+                            List<Category_Value> category_Value_Symm = JsonConvert.DeserializeObject<List<Category_Value>>(symm);
+
+                            var fls = JsonConvert.SerializeObject(fls_values);
+                            List<Category_Value> category_Value_Fls = JsonConvert.DeserializeObject<List<Category_Value>>(fls);
+
+                            var culet = JsonConvert.SerializeObject(culet_values);
+                            List<Category_Value> category_Value_Culet = JsonConvert.DeserializeObject<List<Category_Value>>(culet);
+
+                            //var certificateDict = result.ToDictionary(r => r["CERTIFICATE NO"].ToString(), r => r);
+
+                            var certificateDict = result.GroupBy(r => r["CERTIFICATE NO"].ToString()).ToDictionary(g => g.Key, g => g.First());
+
+                            foreach (var certificate in response.Data)
+                            {
+                                if (certificateDict.ContainsKey(certificate.CertificateNo))
+                                {
+                                    var matchingEntry = certificateDict[certificate.CertificateNo];
+
+                                    decimal? ctsResult = matchingEntry["CTS"] != null ? Convert.ToDecimal(matchingEntry["CTS"]) : (decimal?)null;
+                                    string ctsResultFormatted = ctsResult.HasValue ? ctsResult.Value.ToString("F2") : null;
+
+                                    decimal? ctsCertificate = (decimal?)certificate.CTS;
+                                    string ctsCertificateFormatted = ctsCertificate.HasValue ? ctsCertificate.Value.ToString("F2") : null;
+
+                                    string shapeResult = matchingEntry["SHAPE"]?.ToString();
+                                    string colorResult = matchingEntry["COLOR"]?.ToString();
+                                    string clarityResult = matchingEntry["CLARITY"]?.ToString();
+                                    string cutResult = matchingEntry["CUT"]?.ToString();
+                                    string polishResult = matchingEntry["POLISH"]?.ToString();
+                                    string symmResult = matchingEntry["SYMM"]?.ToString();
+                                    string flsResult = matchingEntry["FLS INTENSITY"]?.ToString();
+                                    string culetResult = matchingEntry["CULET"]?.ToString();
+
+                                    var matchingShape = category_Value_Shape.FirstOrDefault(shape =>
+                                    shape.Cat_Name.Equals(certificate.Shape, StringComparison.OrdinalIgnoreCase) ||
+                                    (shape.Synonyms != null && shape.Synonyms.Split(',')
+                                        .Any(s => s.Trim().Equals(certificate.Shape, StringComparison.OrdinalIgnoreCase))));
+
+                                    var matchingColor = category_Value_Color.FirstOrDefault(color =>
+                                        color.Cat_Name.Equals(certificate.Color, StringComparison.OrdinalIgnoreCase) ||
+                                        (color.Synonyms != null && color.Synonyms.Split(',')
+                                            .Any(s => s.Trim().Equals(certificate.Color, StringComparison.OrdinalIgnoreCase))));
+
+                                    var matchingClarity = category_Value_Clarity.FirstOrDefault(clarity =>
+                                        clarity.Cat_Name.Equals(certificate.Clarity, StringComparison.OrdinalIgnoreCase) ||
+                                        (clarity.Synonyms != null && clarity.Synonyms.Split(',')
+                                            .Any(s => s.Trim().Equals(certificate.Clarity, StringComparison.OrdinalIgnoreCase))));
+
+                                    var matchingCut = category_Value_Cut.FirstOrDefault(cut =>
+                                        cut.Cat_Name.Equals(certificate.Cut, StringComparison.OrdinalIgnoreCase) ||
+                                        (cut.Synonyms != null && cut.Synonyms.Split(',')
+                                            .Any(s => s.Trim().Equals(certificate.Cut, StringComparison.OrdinalIgnoreCase))));
+
+                                    var matchingPolish = category_Value_Polish.FirstOrDefault(polish =>
+                                        polish.Cat_Name.Equals(certificate.Polish, StringComparison.OrdinalIgnoreCase) ||
+                                        (polish.Synonyms != null && polish.Synonyms.Split(',')
+                                            .Any(s => s.Trim().Equals(certificate.Polish, StringComparison.OrdinalIgnoreCase))));
+
+                                    var matchingSymm = category_Value_Symm.FirstOrDefault(symm =>
+                                        symm.Cat_Name.Equals(certificate.Symm, StringComparison.OrdinalIgnoreCase) ||
+                                        (symm.Synonyms != null && symm.Synonyms.Split(',')
+                                            .Any(s => s.Trim().Equals(certificate.Symm, StringComparison.OrdinalIgnoreCase))));
+
+                                    var matchingFls = category_Value_Fls.FirstOrDefault(fls =>
+                                        fls.Cat_Name.Equals(certificate.FlsIntensity, StringComparison.OrdinalIgnoreCase) ||
+                                        (fls.Synonyms != null && fls.Synonyms.Split(',')
+                                            .Any(s => s.Trim().Equals(certificate.FlsIntensity, StringComparison.OrdinalIgnoreCase))));
+
+                                    var matchingCulet = category_Value_Culet.FirstOrDefault(culet =>
+                                        culet.Cat_Name.Equals(certificate.Culet, StringComparison.OrdinalIgnoreCase) ||
+                                        (culet.Synonyms != null && culet.Synonyms.Split(',')
+                                            .Any(s => s.Trim().Equals(certificate.Culet, StringComparison.OrdinalIgnoreCase))));
+
+                                    string shapeCertificate = matchingShape?.Cat_Name ?? certificate.Shape;
+                                    string colorCertificate = matchingColor?.Cat_Name ?? certificate.Color;
+                                    string clarityCertificate = matchingClarity?.Cat_Name ?? certificate.Clarity;
+                                    string cutCertificate = matchingCut?.Cat_Name ?? certificate.Cut;
+                                    string polishCertificate = matchingPolish?.Cat_Name ?? certificate.Polish;
+                                    string symmCertificate = matchingSymm?.Cat_Name ?? certificate.Symm;
+                                    string flsCertificate = matchingFls?.Cat_Name ?? certificate.FlsIntensity;
+                                    string culetCertificate = matchingCulet?.Cat_Name ?? certificate.Culet;
+                                    int shapeCertificate_Id = matchingShape?.Cat_val_Id ?? 0;
+                                    int colorCertificate_Id = matchingColor?.Cat_val_Id ?? 0;
+                                    int clarityCertificate_Id = matchingClarity?.Cat_val_Id ?? 0;
+                                    int cutCertificate_Id = matchingCut?.Cat_val_Id ?? 0;
+                                    int polishCertificate_Id = matchingPolish?.Cat_val_Id ?? 0;
+                                    int symmCertificate_Id = matchingSymm?.Cat_val_Id ?? 0;
+                                    int flsCertificate_Id = matchingFls?.Cat_val_Id ?? 0;
+                                    int culetCertificate_Id = matchingCulet?.Cat_val_Id ?? 0;
+
+                                    if (cutCertificate == "EX" && polishCertificate == "EX" && symmCertificate == "EX")
+                                    {
+                                        cutCertificate = "3EX";
+
+                                        var cut_Certificate_Id = category_Value_Cut.FirstOrDefault(cut =>
+                                                            cut.Cat_Name.Equals(cutCertificate, StringComparison.OrdinalIgnoreCase) ||
+                                                            (cut.Synonyms != null && cut.Synonyms.Split(',')
+                                                                .Any(s => s.Trim().Equals(cutCertificate, StringComparison.OrdinalIgnoreCase))));
+                                        
+                                        cutCertificate_Id = cut_Certificate_Id?.Cat_val_Id ?? 0;
+                                    }
+
+                                    bool attributesMatch =
+                                        string.Equals(shapeResult, shapeCertificate, StringComparison.OrdinalIgnoreCase) &&
+                                        string.Equals(colorResult, colorCertificate, StringComparison.OrdinalIgnoreCase) &&
+                                        string.Equals(clarityResult, clarityCertificate, StringComparison.OrdinalIgnoreCase) &&
+                                        string.Equals(ctsResultFormatted, ctsCertificateFormatted, StringComparison.OrdinalIgnoreCase) &&
+                                        string.Equals(cutResult, cutCertificate, StringComparison.OrdinalIgnoreCase) &&
+                                        string.Equals(polishResult, polishCertificate, StringComparison.OrdinalIgnoreCase) &&
+                                        string.Equals(symmResult, symmCertificate, StringComparison.OrdinalIgnoreCase) &&
+                                        string.Equals(flsResult, flsCertificate, StringComparison.OrdinalIgnoreCase) &&
+                                        string.Equals(culetResult, culetCertificate, StringComparison.OrdinalIgnoreCase);
+
+                                    if (attributesMatch)
+                                    {
+                                        matchedRecords.Add(matchingEntry);
+                                    }
+                                    else
+                                    {
+                                        matchingEntry["GIA_SHAPE"] = shapeCertificate;
+                                        matchingEntry["GIA_COLOR"] = colorCertificate;
+                                        matchingEntry["GIA_CLARITY"] = clarityCertificate;
+                                        matchingEntry["GIA_CUT"] = cutCertificate;
+                                        matchingEntry["GIA_POLISH"] = polishCertificate;
+                                        matchingEntry["GIA_SYMM"] = symmCertificate;
+                                        matchingEntry["GIA_FLS_INTENSITY"] = flsCertificate;
+                                        matchingEntry["GIA_CULET"] = culetCertificate;
+                                        matchingEntry["GIA_CTS"] = ctsCertificateFormatted;
+                                        matchingEntry["GIA_SHAPE_ID"] = shapeCertificate_Id;
+                                        matchingEntry["GIA_COLOR_ID"] = colorCertificate_Id;
+                                        matchingEntry["GIA_CLARITY_ID"] = clarityCertificate_Id;
+                                        matchingEntry["GIA_CUT_ID"] = cutCertificate_Id;
+                                        matchingEntry["GIA_POLISH_ID"] = polishCertificate_Id;
+                                        matchingEntry["GIA_SYMM_ID"] = symmCertificate_Id;
+                                        matchingEntry["GIA_FLS_INTENSITY_ID"] = flsCertificate_Id;
+                                        matchingEntry["GIA_CULET_ID"] = culetCertificate_Id;
+
+                                        finalRecords.Add(matchingEntry);
+                                    }
+                                }
+                            }
+
+                            foreach (var certificate in result)
+                            {
+                                if (!response.Data.Any(c => c.CertificateNo == certificate["CERTIFICATE NO"].ToString()))
+                                {
+                                    matchedRecords.Add(certificate);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var certificate in result)
+                            {
+                                matchedRecords.Add(certificate);
+                            }
+                        }
+                    }
+                    else 
+                    {
+                        foreach (var certificate in result)
+                        {
+                            matchedRecords.Add(certificate);
+                        }
+                    }
+                    
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.DataSuccessfullyFound,
                         data = new
                         {
-                            Lab_Entry_Detail_List = result
+                            Lab_Entry_Detail_List = matchedRecords,
+                            GIA_Lab_Entry_Detail_List = finalRecords
                         }
                     });
                 }
