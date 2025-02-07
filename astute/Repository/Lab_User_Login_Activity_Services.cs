@@ -100,7 +100,7 @@ namespace astute.Repository
             return result;
         }
 
-        public async Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Lab_User_Activity(string? From_Date, string? To_Date)
+        public async Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Lab_User_Activity(string? From_Date, string? To_Date, int user_Id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -108,6 +108,8 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Supplier_Stock_User_Activity_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(From_Date) ? new SqlParameter("@From_Date", From_Date) : new SqlParameter("@From_Date", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(To_Date) ? new SqlParameter("@To_Date", To_Date) : new SqlParameter("@To_Date", DBNull.Value));
                     await connection.OpenAsync();
