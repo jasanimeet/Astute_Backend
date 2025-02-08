@@ -5755,6 +5755,8 @@ namespace astute.Controllers
 
                 DataTable dataTable = new DataTable();
                 dataTable.Columns.Add("STOCK_ID", typeof(string));
+                dataTable.Columns.Add("COST_AMOUNT", typeof(string));
+                dataTable.Columns.Add("COST_DISC", typeof(string));
                 dataTable.Columns.Add("OFFER_AMOUNT", typeof(string));
                 dataTable.Columns.Add("OFFER_DISC", typeof(string));
                 if (File_Location != null)
@@ -5777,7 +5779,7 @@ namespace astute.Controllers
                             if (!uniqueValues.Contains(value))
                             {
                                 uniqueValues.Add(value);
-                                dataTable.Rows.Add(value, !string.IsNullOrEmpty(offer_amt) ? offer_amt.Replace(",", "") : DBNull.Value, worksheet.Cells[row, 2].GetValue<string>());
+                                dataTable.Rows.Add(value, DBNull.Value, DBNull.Value, !string.IsNullOrEmpty(offer_amt) ? offer_amt.Replace(",", "") : DBNull.Value, worksheet.Cells[row, 2].GetValue<string>());
                             }
                         }
                         var uniqueRows = dataTable.AsEnumerable()
@@ -5791,7 +5793,7 @@ namespace astute.Controllers
                     stock_Avalibility.stock_Id = null;
                     foreach (var item in stock_Avalibility_Values)
                     {
-                        dataTable.Rows.Add(!string.IsNullOrEmpty(item.Stock_Id) ? item.Stock_Id : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Amount) ? item.Offer_Amount : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Disc) ? item.Offer_Disc : DBNull.Value);
+                        dataTable.Rows.Add(!string.IsNullOrEmpty(item.Stock_Id) ? item.Stock_Id : DBNull.Value, DBNull.Value, DBNull.Value, !string.IsNullOrEmpty(item.Offer_Amount) ? item.Offer_Amount : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Disc) ? item.Offer_Disc : DBNull.Value);
                     }
                 }
                 else
@@ -7763,15 +7765,74 @@ namespace astute.Controllers
                                             {
                                                 model.Offer_Amount = lst_stock_val[i];
                                             }
-                                            //var con_val_1 = Convert.ToDecimal(lst_stock_val[2]);
-                                            //if (con_val_1 >= -100 && con_val_1 <= 100)
-                                            //{
-                                            //    model.Offer_Disc = lst_stock_val[2];
-                                            //}
-                                            //else
-                                            //{
-                                            //    model.Offer_Amount = lst_stock_val[2];
-                                            //}
+                                        }
+                                    }
+                                }
+                                else if (lst_stock_val.Count == 4)
+                                {
+                                    for (int i = 0; i < lst_stock_val.Count; i++)
+                                    {
+                                        if (i == 0)
+                                        {
+                                            model.Stock_Id = lst_stock_val[0];
+                                        }
+                                        else if (i == 1 || i == 2)
+                                        {
+                                            var con_val = Convert.ToDecimal(lst_stock_val[i]);
+                                            if (con_val >= -100 && con_val <= 100)
+                                            {
+                                                model.Cost_Disc = lst_stock_val[i];
+                                            }
+                                            else
+                                            {
+                                                model.Cost_Amount = lst_stock_val[i];
+                                            }
+                                        }
+                                        else if (i == 3)
+                                        {
+                                            var con_val = Convert.ToDecimal(lst_stock_val[i]);
+                                            if (con_val >= -100 && con_val <= 100)
+                                            {
+                                                model.Offer_Disc = lst_stock_val[i];
+                                            }
+                                            else
+                                            {
+                                                model.Offer_Amount = lst_stock_val[i];
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (lst_stock_val.Count == 5)
+                                {
+                                    for (int i = 0; i < lst_stock_val.Count; i++)
+                                    {
+                                        if (i == 0)
+                                        {
+                                            model.Stock_Id = lst_stock_val[0];
+                                        }
+                                        else if (i == 1 || i == 2)
+                                        {
+                                            var con_val = Convert.ToDecimal(lst_stock_val[i]);
+                                            if (con_val >= -100 && con_val <= 100)
+                                            {
+                                                model.Cost_Disc = lst_stock_val[i];
+                                            }
+                                            else
+                                            {
+                                                model.Cost_Amount = lst_stock_val[i];
+                                            }
+                                        }
+                                        else if (i == 3 || i == 4)
+                                        {
+                                            var con_val = Convert.ToDecimal(lst_stock_val[i]);
+                                            if (con_val >= -100 && con_val <= 100)
+                                            {
+                                                model.Offer_Disc = lst_stock_val[i];
+                                            }
+                                            else
+                                            {
+                                                model.Offer_Amount = lst_stock_val[i];
+                                            }
                                         }
                                     }
                                 }
@@ -7784,6 +7845,8 @@ namespace astute.Controllers
 
                 DataTable dataTable = new DataTable();
                 dataTable.Columns.Add("STOCK_ID", typeof(string));
+                dataTable.Columns.Add("COST_AMOUNT", typeof(string));
+                dataTable.Columns.Add("COST_DISC", typeof(string));
                 dataTable.Columns.Add("OFFER_AMOUNT", typeof(string));
                 dataTable.Columns.Add("OFFER_DISC", typeof(string));
                 if (File_Location != null)
@@ -7802,12 +7865,13 @@ namespace astute.Controllers
                         for (int row = startRow; row <= worksheet.Dimension.End.Row; row++)
                         {
                             string value = worksheet.Cells[row, 1].GetValue<string>();
-                            string offer_amt = worksheet.Cells[row, 3].GetValue<string>();
+                            string cost_amt = worksheet.Cells[row, 3].GetValue<string>();
+                            string offer_amt = worksheet.Cells[row, 5].GetValue<string>();
                             if (!uniqueValues.Contains(value))
                             {
                                 uniqueValues.Add(value);
 
-                                dataTable.Rows.Add(value, !string.IsNullOrEmpty(offer_amt) ? offer_amt.Replace(",", "") : DBNull.Value, worksheet.Cells[row, 2].GetValue<string>());
+                                dataTable.Rows.Add(value, !string.IsNullOrEmpty(cost_amt) ? offer_amt.Replace(",", "") : DBNull.Value, worksheet.Cells[row, 2].GetValue<string>(), !string.IsNullOrEmpty(offer_amt) ? offer_amt.Replace(",", "") : DBNull.Value, worksheet.Cells[row, 4].GetValue<string>());
 
                             }
                         }
@@ -7822,7 +7886,7 @@ namespace astute.Controllers
                     stock_Avalibility.stock_Id = null;
                     foreach (var item in stock_Avalibility_Values)
                     {
-                        dataTable.Rows.Add(!string.IsNullOrEmpty(item.Stock_Id) ? item.Stock_Id : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Amount) ? item.Offer_Amount : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Disc) ? item.Offer_Disc : DBNull.Value);
+                        dataTable.Rows.Add(!string.IsNullOrEmpty(item.Stock_Id) ? item.Stock_Id : DBNull.Value, !string.IsNullOrEmpty(item.Cost_Amount) ? item.Cost_Amount : DBNull.Value, !string.IsNullOrEmpty(item.Cost_Disc) ? item.Cost_Disc : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Amount) ? item.Offer_Amount : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Disc) ? item.Offer_Disc : DBNull.Value);
                     }
                 }
 
@@ -10455,15 +10519,74 @@ namespace astute.Controllers
                                             {
                                                 model.Offer_Amount = lst_stock_val[i];
                                             }
-                                            //var con_val_1 = Convert.ToDecimal(lst_stock_val[2]);
-                                            //if (con_val_1 >= -100 && con_val_1 <= 100)
-                                            //{
-                                            //    model.Offer_Disc = lst_stock_val[2];
-                                            //}
-                                            //else
-                                            //{
-                                            //    model.Offer_Amount = lst_stock_val[2];
-                                            //}
+                                        }
+                                    }
+                                }
+                                else if (lst_stock_val.Count == 4)
+                                {
+                                    for (int i = 0; i < lst_stock_val.Count; i++)
+                                    {
+                                        if (i == 0)
+                                        {
+                                            model.Stock_Id = lst_stock_val[0];
+                                        }
+                                        else if (i == 1 || i == 2)
+                                        {
+                                            var con_val = Convert.ToDecimal(lst_stock_val[i]);
+                                            if (con_val >= -100 && con_val <= 100)
+                                            {
+                                                model.Cost_Disc = lst_stock_val[i];
+                                            }
+                                            else
+                                            {
+                                                model.Cost_Amount = lst_stock_val[i];
+                                            }
+                                        }
+                                        else if (i == 3)
+                                        {
+                                            var con_val = Convert.ToDecimal(lst_stock_val[i]);
+                                            if (con_val >= -100 && con_val <= 100)
+                                            {
+                                                model.Offer_Disc = lst_stock_val[i];
+                                            }
+                                            else
+                                            {
+                                                model.Offer_Amount = lst_stock_val[i];
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (lst_stock_val.Count == 5)
+                                {
+                                    for (int i = 0; i < lst_stock_val.Count; i++)
+                                    {
+                                        if (i == 0)
+                                        {
+                                            model.Stock_Id = lst_stock_val[0];
+                                        }
+                                        else if (i == 1 || i == 2)
+                                        {
+                                            var con_val = Convert.ToDecimal(lst_stock_val[i]);
+                                            if (con_val >= -100 && con_val <= 100)
+                                            {
+                                                model.Cost_Disc = lst_stock_val[i];
+                                            }
+                                            else
+                                            {
+                                                model.Cost_Amount = lst_stock_val[i];
+                                            }
+                                        }
+                                        else if (i == 3 || i == 4)
+                                        {
+                                            var con_val = Convert.ToDecimal(lst_stock_val[i]);
+                                            if (con_val >= -100 && con_val <= 100)
+                                            {
+                                                model.Offer_Disc = lst_stock_val[i];
+                                            }
+                                            else
+                                            {
+                                                model.Offer_Amount = lst_stock_val[i];
+                                            }
                                         }
                                     }
                                 }
@@ -10476,6 +10599,8 @@ namespace astute.Controllers
 
                 DataTable dataTable = new DataTable();
                 dataTable.Columns.Add("STOCK_ID", typeof(string));
+                dataTable.Columns.Add("COST_AMOUNT", typeof(string));
+                dataTable.Columns.Add("COST_DISC", typeof(string));
                 dataTable.Columns.Add("OFFER_AMOUNT", typeof(string));
                 dataTable.Columns.Add("OFFER_DISC", typeof(string));
                 if (File_Location != null)
@@ -10494,11 +10619,12 @@ namespace astute.Controllers
                         for (int row = startRow; row <= worksheet.Dimension.End.Row; row++)
                         {
                             string value = worksheet.Cells[row, 1].GetValue<string>();
-                            string offer_amt = worksheet.Cells[row, 3].GetValue<string>();
+                            string cost_amt = worksheet.Cells[row, 3].GetValue<string>();
+                            string offer_amt = worksheet.Cells[row, 5].GetValue<string>();
                             if (!uniqueValues.Contains(value))
                             {
                                 uniqueValues.Add(value);
-                                dataTable.Rows.Add(value, !string.IsNullOrEmpty(offer_amt) ? offer_amt.Replace(",", "") : DBNull.Value, worksheet.Cells[row, 2].GetValue<string>());
+                                dataTable.Rows.Add(value, !string.IsNullOrEmpty(cost_amt) ? cost_amt.Replace(",", "") : DBNull.Value, worksheet.Cells[row, 2].GetValue<string>(), !string.IsNullOrEmpty(offer_amt) ? offer_amt.Replace(",", "") : DBNull.Value, worksheet.Cells[row, 4].GetValue<string>());
                             }
                         }
                         var uniqueRows = dataTable.AsEnumerable()
@@ -10512,7 +10638,7 @@ namespace astute.Controllers
                     stock_Avalibility.stock_Id = null;
                     foreach (var item in stock_Avalibility_Values)
                     {
-                        dataTable.Rows.Add(!string.IsNullOrEmpty(item.Stock_Id) ? item.Stock_Id : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Amount) ? item.Offer_Amount : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Disc) ? item.Offer_Disc : DBNull.Value);
+                        dataTable.Rows.Add(!string.IsNullOrEmpty(item.Stock_Id) ? item.Stock_Id : DBNull.Value, !string.IsNullOrEmpty(item.Cost_Amount) ? item.Cost_Amount : DBNull.Value, !string.IsNullOrEmpty(item.Cost_Disc) ? item.Cost_Disc : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Amount) ? item.Offer_Amount : DBNull.Value, !string.IsNullOrEmpty(item.Offer_Disc) ? item.Offer_Disc : DBNull.Value);
                     }
                 }
                 var dt_stock = await _supplierService.Get_Stock_Availability_Report_Excel(dataTable, stock_Avalibility.stock_Id, stock_Avalibility.stock_Type, stock_Avalibility.party_Id ?? 0, stock_Avalibility.excel_Format);

@@ -32,6 +32,8 @@ namespace astute.Models
     public class Stock_Avalibility_Values
     {
         public string Stock_Id { get; set; }
+        public string Cost_Disc { get; set; }
+        public string Cost_Amount { get; set; }
         public string Offer_Disc { get; set; }
         public string Offer_Amount { get; set; }
     }
