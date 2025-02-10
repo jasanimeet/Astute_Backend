@@ -7917,7 +7917,7 @@ namespace astute.Controllers
                     if (!string.IsNullOrEmpty(stock_Avalibility.excel_Format) && stock_Avalibility.excel_Format == "Customer")
                     {
                         filename = "Customer_Stock_Availability_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                        EpExcelExport.Create_Customer_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                        EpExcelExport.Create_Customer_Stock_Availability_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
                     } 
                     else if (!string.IsNullOrEmpty(stock_Avalibility.excel_Format) && stock_Avalibility.excel_Format == "Default")
                     {
@@ -10668,7 +10668,7 @@ namespace astute.Controllers
                     if (!string.IsNullOrEmpty(stock_Avalibility.excel_Format) && stock_Avalibility.excel_Format == "Customer")
                     {
                         filename = "Customer_Stock_Availability_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                        EpExcelExport.Create_Customer_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                        EpExcelExport.Create_Customer_Stock_Availability_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
                     }
                     else if (!string.IsNullOrEmpty(stock_Avalibility.excel_Format) && stock_Avalibility.excel_Format == "Default")
                     {
