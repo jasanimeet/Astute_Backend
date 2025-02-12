@@ -188,6 +188,43 @@ namespace astute.Repository
 
             return ("success", result, _msg, order_no);
         }
+        
+        public async Task<(string, int,string, int)> Create_Update_Order_Processing_Stock_Availability(DataTable dataTable, int Id, int? user_Id, string customer_Name, string remarks, string status, int? assist_By)
+        {
+            var parameter = new SqlParameter("@Order_Processing_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Order_Processing_Table_Type]",
+                Value = dataTable
+            };
+            var id = Id > 0 ? new SqlParameter("@Id", Id) : new SqlParameter("@Id", DBNull.Value);
+            var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
+            var _customer_Name = !string.IsNullOrEmpty(customer_Name) ? new SqlParameter("@Customer_Name", customer_Name) : new SqlParameter("@Customer_Name", DBNull.Value);
+            var _remarks = !string.IsNullOrEmpty(remarks) ? new SqlParameter("@Remarks", remarks) : new SqlParameter("@Remarks", DBNull.Value);
+            var _status = !string.IsNullOrEmpty(status) ? new SqlParameter("@Status", status) : new SqlParameter("@Status", DBNull.Value);
+            var _assist_By = assist_By > 0 ? new SqlParameter("@Assist_By", assist_By) : new SqlParameter("@Assist_By", DBNull.Value);
+            var is_Exists = new SqlParameter("@IsExist", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            var msg = new SqlParameter("@Msg", SqlDbType.NVarChar)
+            {
+                Size = -1,
+                Direction = ParameterDirection.Output
+            };
+            var Order_No = new SqlParameter("@Order_No", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Stock_Availability_Insert_Update] @Order_Processing_Table_Type,@Id, @User_Id, @Customer_Name, @Remarks ,@Status, @Assist_By,@IsExist OUT,@Msg OUT, @Order_No OUT", parameter, id, _user_Id, _customer_Name, _remarks, _status, _assist_By, is_Exists,msg, Order_No));
+            var _is_Exists = (bool)is_Exists.Value;
+            var _msg = (string)msg.Value;
+            var order_no = (int)Order_No.Value;
+            if (_is_Exists)
+                return ("exist", 0, _msg, order_no);
+
+            return ("success", result, _msg, order_no);
+        }
         public async Task<int> Order_Processing_Inactive(Order_Processing_Inactive order_processing)
         {
             var _Ids = !string.IsNullOrEmpty(order_processing.Ids) ? new SqlParameter("@Ids", order_processing.Ids) : new SqlParameter("@Ids", DBNull.Value);

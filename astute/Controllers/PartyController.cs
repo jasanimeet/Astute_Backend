@@ -7305,6 +7305,87 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("create_update_order_processing_stock_availability")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Order_Processing_Stock_Availability(Order_Processing order_Processing)
+        {
+            try
+            {
+                IList<Order_Processing_Detail> OrderResult = JsonConvert.DeserializeObject<IList<Order_Processing_Detail>>(order_Processing.Order_Detail.ToString());
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("Id", typeof(int));
+                dataTable.Columns.Add("Supp_Stock_Id", typeof(int));
+                dataTable.Columns.Add("Buyer_Disc", typeof(double));
+                dataTable.Columns.Add("Buyer_Amt", typeof(double));
+                dataTable.Columns.Add("Cost_Disc", typeof(double));
+                dataTable.Columns.Add("Cost_Amt", typeof(double));
+                dataTable.Columns.Add("Base_Disc", typeof(double));
+                dataTable.Columns.Add("Base_Amt", typeof(double));
+                dataTable.Columns.Add("Offer_Disc", typeof(double));
+                dataTable.Columns.Add("Offer_Amt", typeof(double));
+                dataTable.Columns.Add("Status", typeof(string));
+                dataTable.Columns.Add("QC_Remarks", typeof(string));
+
+                foreach (var item in OrderResult)
+                {
+                    dataTable.Rows.Add(item.Id, item.Supp_Stock_Id,
+                        (item.Buyer_Disc != null ? !string.IsNullOrEmpty(item.Buyer_Disc.ToString()) ? Convert.ToDouble(item.Buyer_Disc.ToString()) : (item.Cost_Disc != null ? !string.IsNullOrEmpty(item.Cost_Disc.ToString()) ? Convert.ToDouble(item.Cost_Disc.ToString()) : null : null) : (item.Cost_Disc != null ? !string.IsNullOrEmpty(item.Cost_Disc.ToString()) ? Convert.ToDouble(item.Cost_Disc.ToString()) : null : null)),
+                        (item.Buyer_Amt != null ? !string.IsNullOrEmpty(item.Buyer_Amt.ToString()) ? Convert.ToDouble(item.Buyer_Amt.ToString()) : (item.Cost_Amt != null ? !string.IsNullOrEmpty(item.Cost_Amt.ToString()) ? Convert.ToDouble(item.Cost_Amt.ToString()) : null : null) : (item.Cost_Amt != null ? !string.IsNullOrEmpty(item.Cost_Amt.ToString()) ? Convert.ToDouble(item.Cost_Amt.ToString()) : null : null)),
+                        (item.Cost_Disc != null ? !string.IsNullOrEmpty(item.Cost_Disc.ToString()) ? Convert.ToDouble(item.Cost_Disc.ToString()) : null : null),
+                        (item.Cost_Amt != null ? !string.IsNullOrEmpty(item.Cost_Amt.ToString()) ? Convert.ToDouble(item.Cost_Amt.ToString()) : null : null),
+                        (item.Base_Disc != null ? !string.IsNullOrEmpty(item.Base_Disc.ToString()) ? Convert.ToDouble(item.Base_Disc.ToString()) : null : null),
+                        (item.Base_Amt != null ? !string.IsNullOrEmpty(item.Base_Amt.ToString()) ? Convert.ToDouble(item.Base_Amt.ToString()) : null : null),
+                        (item.Offer_Disc != null ? !string.IsNullOrEmpty(item.Offer_Disc.ToString()) ? Convert.ToDouble(item.Offer_Disc.ToString()) : null : null),
+                        (item.Offer_Amt != null ? !string.IsNullOrEmpty(item.Offer_Amt.ToString()) ? Convert.ToDouble(item.Offer_Amt.ToString()) : null : null),
+                        Convert.ToString(item.Status), Convert.ToString(item.QC_Remarks));
+                }
+
+                var (message, result, msg, order_No) = await _cartService.Create_Update_Order_Processing_Stock_Availability(dataTable, order_Processing.Id, order_Processing.User_Id, order_Processing.Customer_Name, order_Processing.Remarks, order_Processing.Status, order_Processing.Assist_By);
+                if ((message == "exist" && msg.Length > 0) || (message == "success" && msg.Length > 0))
+                {
+                    int assistBy = order_Processing.Assist_By ?? 0;
+
+                    string to_Email = "list@sunrisediam.com";
+
+                    string subject = order_Processing.Status + " request for order no " + order_No + " - " + order_Processing.Customer_Name;
+
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine(@"Company Name :  " + order_Processing.Customer_Name + "<br/>");
+
+                    var userId = assistBy > 0 ? assistBy : (order_Processing.User_Id ?? 0);
+
+                    var user = await _employeeService.Employee_Master_Name_Select(userId);
+
+                    sb.AppendLine(@"Assist By: " + user[0].Name + "<br/>");
+
+                    sb.AppendLine(@"Request for : " + order_Processing.Status + "<br/>");
+
+                    _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
+
+                    // if alredy exists stone add again then message should show succsessfully added.
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = msg
+
+                    });
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Order_Processing_Stock_Availability", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         [HttpPost]
         [Route("order_processing_inactive")]
         [Authorize]
