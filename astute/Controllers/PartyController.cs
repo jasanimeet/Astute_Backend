@@ -12007,6 +12007,8 @@ namespace astute.Controllers
 
                 DataTable dataTable = new DataTable();
                 dataTable.Columns.Add("Id", typeof(int));
+                dataTable.Columns.Add("Cert_No", typeof(string)); 
+                dataTable.Columns.Add("Certi_Flag", typeof(bool)); 
                 dataTable.Columns.Add("Status", typeof(string));
                 dataTable.Columns.Add("Remarks", typeof(string));
                 dataTable.Columns.Add("Cost_Disc", typeof(double));
@@ -12014,7 +12016,7 @@ namespace astute.Controllers
 
                 foreach (var item in OrderResult)
                 {
-                    dataTable.Rows.Add(item.Id, Convert.ToString(item.Status), Convert.ToString(item.Remarks),
+                    dataTable.Rows.Add(item.Id, Convert.ToString(item.CertificateNo),Convert.ToBoolean(item.Certi_Flag), Convert.ToString(item.Status), Convert.ToString(item.Remarks), 
                         (item.CurrentCostDisc != null ? !string.IsNullOrEmpty(item.CurrentCostDisc.ToString()) ? Convert.ToDouble(item.CurrentCostDisc.ToString()) : null : null),
                         (item.CurrentCostAmount != null ? !string.IsNullOrEmpty(item.CurrentCostAmount.ToString()) ? Convert.ToDouble(item.CurrentCostAmount.ToString()) : null : null));
                     if (item.Status == "CONFIRM")

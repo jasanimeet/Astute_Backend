@@ -439,6 +439,9 @@ namespace astute.Models
 
         [JsonProperty("GIRDLE CONDITION")]
         public string? Girdle_Condition { get; set; }
+
+        [JsonProperty("Certi_Flag")]
+        public bool? Certi_Flag { get; set; }
     }
     public class Order_Excel_Model
     {
