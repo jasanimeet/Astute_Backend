@@ -17120,13 +17120,13 @@ namespace astute.Controllers
 
         [HttpPost]
         [Route("get_excellent_diamonds_stock")]
-        public async Task<IActionResult> Get_Excellent_Diamonds_Stock(string url)
+        public async Task<IActionResult> Get_Excellent_Diamonds_Stock(Excellent_DIamonds_Model excellent_DIamonds_Model)
         {
             try
             {
                 using (var client = new HttpClient())
                 {
-                    HttpResponseMessage response = await client.GetAsync(url);
+                    HttpResponseMessage response = await client.GetAsync(excellent_DIamonds_Model.Stock_Url);
 
                     if (response.IsSuccessStatusCode)
                     {
