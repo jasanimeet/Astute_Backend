@@ -14456,12 +14456,62 @@ namespace astute.Controllers
                 DataTable statusDataTable = new DataTable();
                 statusDataTable.Columns.Add("Id", typeof(int));
                 statusDataTable.Columns.Add("Status", typeof(string));
+                statusDataTable.Columns.Add("Supplier_Base_Disc", typeof(float));
+                statusDataTable.Columns.Add("Supplier_Base_Amt", typeof(float));
+                statusDataTable.Columns.Add("Supplier_Cost_Disc", typeof(float));
+                statusDataTable.Columns.Add("Supplier_Cost_Amt", typeof(float));
+                statusDataTable.Columns.Add("Offer_Disc", typeof(float));
+                statusDataTable.Columns.Add("Offer_Amt", typeof(float));
+                statusDataTable.Columns.Add("Supplier_Short_Name", typeof(string));
+                statusDataTable.Columns.Add("BGM", typeof(int));
+                statusDataTable.Columns.Add("Table_Black", typeof(int));
+                statusDataTable.Columns.Add("Crown_Black", typeof(int));
+                statusDataTable.Columns.Add("Table_White", typeof(int));
+                statusDataTable.Columns.Add("Crown_White", typeof(int));
+                statusDataTable.Columns.Add("Table_Open", typeof(int));
+                statusDataTable.Columns.Add("Crown_Open", typeof(int));
+                statusDataTable.Columns.Add("Pav_Open", typeof(int));
+                statusDataTable.Columns.Add("Girdle_Open", typeof(int));
+                statusDataTable.Columns.Add("BGM_C", typeof(string));
+                statusDataTable.Columns.Add("Table_Black_C", typeof(string));
+                statusDataTable.Columns.Add("Crown_Black_C", typeof(string));
+                statusDataTable.Columns.Add("Table_White_C", typeof(string));
+                statusDataTable.Columns.Add("Crown_White_C", typeof(string));
+                statusDataTable.Columns.Add("Table_Open_C", typeof(string));
+                statusDataTable.Columns.Add("Crown_Open_C", typeof(string));
+                statusDataTable.Columns.Add("Pav_Open_C", typeof(string));
+                statusDataTable.Columns.Add("Girdle_Open_C", typeof(string));
 
                 foreach (var item in Lab_Entry_Status_List)
                 {
                     statusDataTable.Rows.Add(
                         item.Id ?? 0,
-                        item.New_Status
+                        item.New_Status,
+                        SafeConvertToDouble(item.Supp_Base_Disc.ToString()),
+                        SafeConvertToDouble(item.Supp_Base_Amt.ToString()),
+                        SafeConvertToDouble(item.Supp_Cost_Disc.ToString()),
+                        SafeConvertToDouble(item.Supp_Cost_Amt.ToString()),
+                        SafeConvertToDouble(item.Final_Disc.ToString()),
+                        SafeConvertToDouble(item.Final_Amt.ToString()),
+                        item.Supplier_Short_Name,
+                        item.BGM_Id, 
+                        item.Table_Black_Id,
+                        item.Crown_Black_Id,
+                        item.Table_White_Id,
+                        item.Crown_White_Id,
+                        item.Table_Open_Id,
+                        item.Crown_Open_Id,
+                        item.Pavilion_Open_Id,
+                        item.Girdle_Open_Id,
+                        item.BGM,
+                        item.Table_Black,
+                        item.Crown_Black,
+                        item.Table_White,
+                        item.Crown_White,
+                        item.Table_Open,
+                        item.Crown_Open,
+                        item.Pavilion_Open,
+                        item.Girdle_Open
                     );
                 }
 
