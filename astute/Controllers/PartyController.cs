@@ -12078,10 +12078,8 @@ namespace astute.Controllers
 
                             if (result_det > 0)
                             {
-                                if (Stock_Id.Count > 0)
+                                if (Stock_Ids.Count > 0)
                                 {
-                                    string concatenatedStockIds = string.Join(", ", Stock_Id);
-
                                     string concatenatedStockId = string.Join(",", Stock_Ids);
 
                                     var dt_Order = await _supplierService.Get_Order_Data_Mazal_Excel(concatenatedStockId, order_Processing_Reply_To_Assist.Order_No);
@@ -12372,7 +12370,7 @@ namespace astute.Controllers
                             var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e, order_Processing_Reply_To_Assist.Summary_QC_Remarks, "W", "O");
                             if (result_ > 0)
                             {
-                                if (Stock_Id.Count > 0)
+                                if (Stock_Ids.Count > 0)
                                 {
                                     string concatenatedStockIds = string.Join(", ", Stock_Id);
 
