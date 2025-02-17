@@ -3691,6 +3691,8 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Purchase_Master_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Master_Search_Model.From_Date) ? new SqlParameter("@From_Date", purchase_Master_Search_Model.From_Date) : new SqlParameter("@From_Date", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Master_Search_Model.To_Date) ? new SqlParameter("@To_Date", purchase_Master_Search_Model.To_Date) : new SqlParameter("@To_Date", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(purchase_Master_Search_Model.Doc_Type) ? new SqlParameter("@Doc_Type", purchase_Master_Search_Model.Doc_Type) : new SqlParameter("@Doc_Type", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(purchase_Master_Search_Model.Stock_Status) ? new SqlParameter("@Stock_Status", purchase_Master_Search_Model.Stock_Status) : new SqlParameter("@Stock_Status", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(purchase_Master_Search_Model.Stock_Certificate_No) ? new SqlParameter("@Stock_Certificate_No", purchase_Master_Search_Model.Stock_Certificate_No) : new SqlParameter("@Stock_Certificate_No", DBNull.Value));
