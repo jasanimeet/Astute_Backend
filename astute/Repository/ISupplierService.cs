@@ -49,7 +49,7 @@ namespace astute.Repository
         Task<IList<Stock_Data>> Get_Not_Uploaded_Stock_Data(int stock_data_Id);
         Task<int> Supplier_Stock_Insert_Update(int supplier_Id, int stock_Data_Id);
         Task<string> Stock_Data_Supplier_Count_Select(int supplier_Id);
-        Task<int> Supplier_Stock_Manual_File_Insert_Update(int supplier_Id, int stock_Data_Id, bool is_Overwrite);
+        Task<int> Supplier_Stock_Manual_File_Insert_Update(int supplier_Id, int stock_Data_Id, bool is_Overwrite, bool Priority);
         Task<int> Stock_Data_Shedular_Insert_Update(DataTable dataTable, int Stock_Data_Id);
         Task<DropdownModel> Get_Purchase_Order_Supplier(string supp_Ref_No);
         Task<int> Supplier_Stock_Start_End_Time_Update(Supplier_Stock_Update supplier_Stock_Update);

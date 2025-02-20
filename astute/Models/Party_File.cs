@@ -27,6 +27,9 @@ namespace astute.Models
         //[JsonIgnore]
         //[NotMapped] 
         //public bool is_Continue { get; set; }
+        [NotMapped]
+        [JsonIgnore]
+        public bool? Priority { get; set; }
 
     }
     public partial class Party_File_Detail
@@ -51,5 +54,8 @@ namespace astute.Models
         [NotMapped]
         [JsonIgnore]
         public bool? Is_Overwrite { get; set; } = false;
+        [NotMapped]
+        [JsonIgnore]
+        public bool? Priority { get; set; } = false;
     }
 }

@@ -15204,7 +15204,8 @@ namespace astute.Controllers
                                         Sheet_Name = party_file_obj.Sheet_Name,
                                         Short_Code = party_file_obj.Short_Code,
                                         Upload_Type = party_file_obj.Upload_Type,
-                                        Validity_Days = party_file_obj.Validity_Days
+                                        Validity_Days = party_file_obj.Validity_Days,
+                                        Priority = party_file_obj.Priority
                                     };
 
                                     var result = await _partyService.Add_Update_Party_File(party_File1, 0);
@@ -15943,7 +15944,7 @@ namespace astute.Controllers
                                                 {
                                                     if (stock_Data_Master_Schedular.Upload_Type == "O")
                                                     {
-                                                        await _supplierService.Supplier_Stock_Manual_File_Insert_Update((int)stock_Data_Master_Schedular.Supplier_Id, stock_Data_Id, party_File.Is_Overwrite ?? false);
+                                                        await _supplierService.Supplier_Stock_Manual_File_Insert_Update((int)stock_Data_Master_Schedular.Supplier_Id, stock_Data_Id, party_File.Is_Overwrite ?? false, party_File.Priority ?? false);
                                                         string endTime = DateTime.Now.TimeOfDay.ToString(@"hh\:mm\:ss");
 
                                                         Supplier_Stock_Update supplier_Stock_Update = new Supplier_Stock_Update()
