@@ -14512,7 +14512,7 @@ namespace astute.Controllers
                 {
                     statusDataTable.Rows.Add(
                         item.Id ?? 0,
-                        item.New_Status,
+                        item.Status,
                         SafeConvertToDouble(item.Supp_Base_Disc.ToString()),
                         SafeConvertToDouble(item.Supp_Base_Amt.ToString()),
                         SafeConvertToDouble(item.Supp_Cost_Disc.ToString()),

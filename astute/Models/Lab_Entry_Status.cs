@@ -7,8 +7,8 @@ namespace astute.Models
         [JsonProperty("Id")]
         public int? Id { get; set; }
 
-        [JsonProperty("NEW STATUS")]
-        public string? New_Status { get; set; }
+        [JsonProperty("STATUS")]
+        public string? Status { get; set; }
 
         [JsonProperty("BASE DISC")]
         public string? Supp_Base_Disc { get; set; }
