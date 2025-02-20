@@ -3615,6 +3615,64 @@ namespace astute.Repository
             }
             return result;
         }
+        
+        public async Task<string> Get_Unavailable_Lab_Entry_Detail_For_Shipment_Verification(string certificate_No)
+        {
+            string result = string.Empty; //= new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Lab_Entry_Detail_Unavailable_Shipment_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(certificate_No) ? new SqlParameter("@Certificate_No", certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            result = reader["CERTIFICATES"]?.ToString() ?? string.Empty;
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        
+        public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Detail_For_Shipment_Verification_By_Id(string Lab_Entry_Detail_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Lab_Entry_Detail_Shipment_By_Id_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(Lab_Entry_Detail_Id) ? new SqlParameter("@Lab_Entry_Detail_Id", Lab_Entry_Detail_Id) : new SqlParameter("@Lab_Entry_Detail_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
 
         public async Task<List<Dictionary<string, object>>> Get_Purchase_Expenses_DropDown()
         {

@@ -13652,6 +13652,42 @@ namespace astute.Controllers
 
                 var result = await _supplierService.Get_Lab_Entry_Detail_For_Shipment_Verification(lab_Entry_Detail_For_Shipment.Supplier_Id ?? 0, lab_Entry_Detail_For_Shipment.Certificate_No);
 
+                var result_Message = await _supplierService.Get_Unavailable_Lab_Entry_Detail_For_Shipment_Verification(lab_Entry_Detail_For_Shipment.Certificate_No);
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        unavailable_message = result_Message,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Lab_Entry_Detail_For_Shipment", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("get_lab_entry_detail_for_shipment_gia")]
+        [Authorize]
+        public async Task<IActionResult> Get_Lab_Entry_Detail_For_Shipment_GIA(Lab_Entry_Detail_For_Shipment lab_Entry_Detail_For_Shipment)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Get_Lab_Entry_Detail_For_Shipment_Verification_By_Id(lab_Entry_Detail_For_Shipment.Lab_Entry_Detail_Id);
+
                 if (result != null && result.Count > 0)
                 {
                     List<Dictionary<string, object>> matchedRecords = new List<Dictionary<string, object>>();
@@ -13660,13 +13696,7 @@ namespace astute.Controllers
 
                     var certificateNos = result.Select(entry => entry["CERTIFICATE NO"].ToString()).ToList();
 
-                    var existingCertificateNos = lab_Entry_Detail_For_Shipment.Certificate_No.Split(',')
-                        .Where(cert => !string.IsNullOrEmpty(cert))
-                        .ToHashSet();
-
-                    existingCertificateNos.UnionWith(certificateNos);
-
-                    string finalCertificateNos = string.Join(",", existingCertificateNos);
+                    string finalCertificateNos = string.Join(",", certificateNos);
 
                     GIA_Certificate_Parameter_Model gIA_Certificate_Parameter_Model = new GIA_Certificate_Parameter_Model();
                     gIA_Certificate_Parameter_Model.cert_no = finalCertificateNos;
@@ -13712,8 +13742,6 @@ namespace astute.Controllers
 
                             var culet = JsonConvert.SerializeObject(culet_values);
                             List<Category_Value> category_Value_Culet = JsonConvert.DeserializeObject<List<Category_Value>>(culet);
-
-                            //var certificateDict = result.ToDictionary(r => r["CERTIFICATE NO"].ToString(), r => r);
 
                             var certificateDict = result.GroupBy(r => r["CERTIFICATE NO"].ToString()).ToDictionary(g => g.Key, g => g.First());
 
@@ -13886,7 +13914,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Lab_Entry_Detail_For_Shipment", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Get_Lab_Entry_Detail_For_Shipment_GIA", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
