@@ -370,6 +370,7 @@
         public static string OrderStatusManagement = "Order Status has been changed successfully.";
         public static string OrderInactive = "Order has been inactive successfully.";
         public static string OrderProcessingFinalUpdate = "Order Processing Final" + UpdatedSuccessfully;
+        public static string OrderAccept= "Request already accepted, you can not delete.";
         #endregion
 
         #region Account Group

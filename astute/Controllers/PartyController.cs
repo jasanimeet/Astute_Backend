@@ -11821,7 +11821,7 @@ namespace astute.Controllers
                 return BadRequest(new
                 {
                     statusCode = HttpStatusCode.BadRequest,
-                    message = CoreCommonMessage.ParameterMismatched
+                    message = CoreCommonMessage.OrderAccept
                 });
             }
             catch (Exception ex)
@@ -11863,7 +11863,7 @@ namespace astute.Controllers
                 return BadRequest(new
                 {
                     statusCode = HttpStatusCode.BadRequest,
-                    message = CoreCommonMessage.ParameterMismatched
+                    message = CoreCommonMessage.OrderAccept
                 });
             }
             catch (Exception ex)
@@ -11930,7 +11930,7 @@ namespace astute.Controllers
                 return BadRequest(new
                 {
                     statusCode = HttpStatusCode.BadRequest,
-                    message = CoreCommonMessage.ParameterMismatched
+                    message = CoreCommonMessage.OrderAccept
                 });
             }
             catch (Exception ex)
