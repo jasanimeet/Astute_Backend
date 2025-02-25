@@ -14562,6 +14562,72 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_purchase_detail_excel")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Detail_Excel(int? Trans_Id, string Purchase_Invoice_No)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Purchase_Detail_Excel(Trans_Id ?? 0);
+                Purchase_Invoice_No = Purchase_Invoice_No.Split('-')[0]; // Extracts "P00013"
+
+                if (result != null && result.Rows.Count > 0)
+                {
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadShipmentVerificationExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string filename = string.Empty;
+
+                    filename = Purchase_Invoice_No + ".xlsx";
+                    
+                    List<string> columnNames = new List<string>();
+                    foreach (DataColumn column in result.Columns)
+                    {
+                        columnNames.Add(column.ColumnName);
+                    }
+
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in columnNames)
+                    {
+                        columnNamesTable.Rows.Add(columnName);
+                    }
+
+                    EpExcelExport.Create_Purchase_Detail_Excel(result, columnNamesTable, filePath, filePath + filename);
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadShipmentVerificationExcelFiles + filename;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.No_stock_uploaded_in_last,
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail_Excel", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Lab User Activity

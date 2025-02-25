@@ -3953,6 +3953,28 @@ namespace astute.Repository
 
             return result;
         }
+
+        public async Task<DataTable> Get_Purchase_Detail_Excel(int Trans_Id)
+        {
+            var dataTable = new DataTable();
+
+            var connectionString = _configuration["ConnectionStrings:AstuteConnection"];
+            using (var connection = new SqlConnection(connectionString))
+            using (var command = new SqlCommand("Purchase_Detail_By_Trans_Id_Select_Excel", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@Trans_Id", Trans_Id > 0 ? (object)Trans_Id : DBNull.Value);
+
+                await connection.OpenAsync();
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    dataTable.Load(reader);
+                }
+            }
+            return dataTable;
+        }
+
         #endregion
 
         #region Party Url Format

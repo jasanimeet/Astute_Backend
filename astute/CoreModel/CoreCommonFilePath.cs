@@ -17,6 +17,7 @@
         public static string DownloadStockExcelFilesPath = "/Files/DownloadStockExcelFiles/";
         public static string PreGeneratedStockExcelFilesPath = "/Files/PreGeneratedStockExcelFiles/";
         public static string DownloadLatestSupplierStockExcelFiles = "/Files/DownloadLatestSupplierStockExcelFiles/";
+        public static string DownloadShipmentVerificationExcelFiles = "/Files/DownloadShipmentVerificationExcelFiles/";
         public static string SupplierStockUploadStatusExcelFiles = "/Files/SupplierStockUploadStatusExcelFiles/";
         public static string LabEntryNotUploadedOverseasExcelFiles = "/Files/LabEntryNotUploadedOverseasExcelFiles/";
     }
