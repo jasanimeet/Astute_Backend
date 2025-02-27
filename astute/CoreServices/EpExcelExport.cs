@@ -9339,13 +9339,13 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
-                                else if (Column_Name == "Sunrise Final Disc%")
+                                else if (Column_Name == "Net Disc%")
                                 {
                                     string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
-                                else if (Column_Name == "Sunrise Final Amount")
+                                else if (Column_Name == "Net Amount")
                                 {
                                     string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
