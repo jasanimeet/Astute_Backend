@@ -7399,6 +7399,7 @@ namespace astute.CoreServices
                     Color yellow = ColorTranslator.FromHtml("#F2DC13");
                     Color pink = ColorTranslator.FromHtml("#FF99CC");
                     Color blue = ColorTranslator.FromHtml("#93C5F7");
+                    Color red = ColorTranslator.FromHtml("#FFABAB");
 
                     #region Company Detail on Header
                     ep.Workbook.Worksheets.Add("Order");
@@ -7434,10 +7435,16 @@ namespace astute.CoreServices
                         }
                         else
                         {
+                            if (Column_Name == "EXPECTED PROFIT AMT")
+                            {
+                                //k += 1;
+                            }
+                            else { 
                             k += 1;
                             worksheet.Cells[2, k].Value = Column_Name;
                             worksheet.Cells[2, k].AutoFitColumns(10);
                         }
+                    }
                     }
 
                     worksheet.Cells[1, 1].Value = "Total";
@@ -7505,6 +7512,18 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Formula = "=HYPERLINK(\"" + Video_URL + "\",\" Video \")";
                                     worksheet.Cells[inwrkrow, kk].Style.Font.UnderLine = true;
                                     worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Blue);
+                                }
+                            }
+                            else if (Column_Name == "EXPECTED PROFIT AMT")
+                            {
+                                string EXPECTED_PROFIT_AMT = Convert.ToString(dtStock.Rows[i - inStartIndex]["EXPECTED PROFIT AMT"]);
+                                if (EXPECTED_PROFIT_AMT.Contains("-")) 
+                                {
+                                    for (int col = 1; col <= column_dt.Rows.Count; col++)
+                                    {
+                                        worksheet.Cells[inwrkrow, col].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                        worksheet.Cells[inwrkrow, col].Style.Fill.BackgroundColor.SetColor(red);
+                                    }
                                 }
                             }
                             else
@@ -8229,6 +8248,8 @@ namespace astute.CoreServices
                     Color yellow = ColorTranslator.FromHtml("#F2DC13");
                     Color pink = ColorTranslator.FromHtml("#FF99CC");
                     Color blue = ColorTranslator.FromHtml("#93C5F7");
+                    Color red = ColorTranslator.FromHtml("#FFABAB");
+
                     #region Company Detail on Header
                     ep.Workbook.Worksheets.Add("Order");
 
@@ -8263,10 +8284,17 @@ namespace astute.CoreServices
                         }
                         else
                         {
+                            if (Column_Name == "EXPECTED PROFIT AMT")
+                            {
+                                //k += 1;
+                            }
+                            else
+                            {
                             k += 1;
                             worksheet.Cells[2, k].Value = Column_Name;
                             worksheet.Cells[2, k].AutoFitColumns(10);
                         }
+                    }
                     }
 
                     worksheet.Cells[1, 1].Value = "Total";
@@ -8334,6 +8362,18 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Formula = "=HYPERLINK(\"" + Video_URL + "\",\" Video \")";
                                     worksheet.Cells[inwrkrow, kk].Style.Font.UnderLine = true;
                                     worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Blue);
+                                }
+                            }
+                            else if (Column_Name == "EXPECTED PROFIT AMT")
+                            {
+                                string EXPECTED_PROFIT_AMT = Convert.ToString(dtStock.Rows[i - inStartIndex]["EXPECTED PROFIT AMT"]);
+                                if (EXPECTED_PROFIT_AMT.Contains("-"))
+                                {
+                                    for (int col = 1; col <= column_dt.Rows.Count; col++)
+                                    {
+                                        worksheet.Cells[inwrkrow, col].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                        worksheet.Cells[inwrkrow, col].Style.Fill.BackgroundColor.SetColor(red);
+                                    }
                                 }
                             }
                             else
