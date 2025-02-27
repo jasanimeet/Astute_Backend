@@ -672,6 +672,10 @@ namespace astute.Controllers
                     return BadRequest(new { message = "Username or password is incorrect" });
                 else
                 {
+                    if ((!string.IsNullOrEmpty(userModel.FCMToken_ANDROID) || !string.IsNullOrEmpty(userModel.FCMToken_IPHONE)) && response.Id > 0)
+                    {
+                        await _employeeService.Update_FCMToken(userModel, response.Id);
+                    }
                     var auth_user = await _jWTAuthentication.Get_Employee_JWT_Token(response.Id);
                     if (auth_user != null)
                     {

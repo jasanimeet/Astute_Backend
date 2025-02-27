@@ -516,6 +516,18 @@ namespace astute.Repository
             }
             return ("success", result);
         }
+        
+        public async Task<int> Update_FCMToken(UserModel userModel, int Id)
+        {
+            var _employee_Id = Id > 0 ? new SqlParameter("@Employee_Id", Id) : new SqlParameter("@Employee_Id", DBNull.Value);
+            var _FCMToken_ANDROID = !string.IsNullOrEmpty(userModel.FCMToken_ANDROID) ? new SqlParameter("@FCMToken_ANDROID", userModel.FCMToken_ANDROID) : new SqlParameter("@FCMToken_ANDROID", DBNull.Value);
+            var _FCMToken_IPHONE = !string.IsNullOrEmpty(userModel.FCMToken_IPHONE) ? new SqlParameter("@FCMToken_IPHONE", userModel.FCMToken_IPHONE) : new SqlParameter("@FCMToken_IPHONE", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Employee_Master_Update_FCMToken @Employee_Id, @FCMToken_ANDROID, @FCMToken_IPHONE ", _employee_Id, _FCMToken_ANDROID, _FCMToken_IPHONE));
+
+            return result;
+        }
 
         #endregion
 

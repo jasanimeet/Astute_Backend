@@ -18,6 +18,7 @@ namespace astute.Repository
         Task<Employee_Fortune_Order_Master> GetEmployeeFortuneIdByOrderNo(string order_No);
         Task<Employee_Master> EmployeeLogin(UserModel userModel);
         Task<AuthenticateResponse> AuthenticateEmployee(UserModel userModel);
+        Task<int> Update_FCMToken(UserModel userModel, int Id);
         Task<int> Get_Employee_Code();
         Task<IList<Employee_Master>> Get_Active_Employees(int employeeId, string userName, string personalEmail);
         Task Insert_Employee_Document_Trace(DataTable dataTable);
