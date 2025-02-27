@@ -3618,9 +3618,9 @@ namespace astute.Repository
             return result;
         }
         
-        public async Task<string> Get_Unavailable_Lab_Entry_Detail_For_Shipment_Verification(string certificate_No)
+        public async Task<List<Dictionary<string, object>>> Get_Unavailable_Lab_Entry_Detail_For_Shipment_Verification(string certificate_No)
         {
-            string result = string.Empty; //= new List<Dictionary<string, object>>();
+            var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
                 using (var command = new SqlCommand("Lab_Entry_Detail_Unavailable_Shipment_Select", connection))
@@ -3632,9 +3632,19 @@ namespace astute.Repository
 
                     using (var reader = await command.ExecuteReaderAsync())
                     {
-                        if (await reader.ReadAsync())
+                        while (await reader.ReadAsync())
                         {
-                            result = reader["CERTIFICATES"]?.ToString() ?? string.Empty;
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
                         }
                     }
                 }
