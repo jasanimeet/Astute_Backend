@@ -14628,6 +14628,67 @@ namespace astute.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("get_purchase_detail_contract")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Detail_Contract(string? Certificate_No)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Get_Purchase_Detail_Contract(Certificate_No);
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail_Contract", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("purchase_detail_contract_update")]
+        [Authorize]
+        public async Task<IActionResult> Purchase_Detail_Contract_Update(string Purchase_Detail_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Purchase_Detail_Contract_Update(Purchase_Detail_Id);
+                if (result != null && result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.ContractChangedSuccessMessage
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Purchase_Detail_Contract_Update", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Lab User Activity

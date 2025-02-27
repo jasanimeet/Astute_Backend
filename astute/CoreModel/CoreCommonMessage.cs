@@ -568,6 +568,7 @@
         public static string Purchase_Created = Purchase + AddedSuccessfully;
         public static string Purchase_Updated = Purchase + UpdatedSuccessfully;
         public static string Purchase_Deleted = Purchase + DeletedSuccessfully;
+        public static string ContractChangedSuccessMessage = "Contract successfully changed.";
         #endregion
 
         #region Parcel Ref Master

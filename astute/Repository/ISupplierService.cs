@@ -159,6 +159,8 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Non_Status_Summary(string Stock_Id);
         Task<int> Lab_Entry_Report_Status_Update(DataTable statusDataTable, int user_Id);
         Task<DataTable> Get_Purchase_Detail_Excel(int Trans_Id);
+        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Contract(string certificate_No);
+        Task<int> Purchase_Detail_Contract_Update(string Purchase_Detail_Id);
         #endregion
 
         #region Party Url Format
