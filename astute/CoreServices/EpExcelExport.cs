@@ -1655,6 +1655,8 @@ namespace astute.CoreServices
                         }
                         else
                         {
+                            if (Column_Name != "Cost Disc(%)" && Column_Name != "Cost Amt US($)")
+                            {
                             k += 1;
                             worksheet.Cells[2, k].Value = Column_Name;
                             worksheet.Cells[2, k].AutoFitColumns(10);
@@ -1665,6 +1667,7 @@ namespace astute.CoreServices
                                 worksheet.Cells[2, k].Style.Fill.BackgroundColor.SetColor(colFromHex_Pointer);
                             }
                         }
+                    }
                     }
 
                     worksheet.Cells[1, 1].Value = "Total";
@@ -1735,6 +1738,8 @@ namespace astute.CoreServices
                             }
                             else
                             {
+                                if (Column_Name != "Cost Disc(%)" && Column_Name != "Cost Amt US($)")
+                                {
                                 kk += 1;
                                 worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
                                 if (Column_Name == "Lab")
@@ -1906,6 +1911,7 @@ namespace astute.CoreServices
                                 }
                             }
                         }
+                        }
 
                         inwrkrow++;
                         #endregion
@@ -1926,6 +1932,8 @@ namespace astute.CoreServices
                         }
                         else
                         {
+                            if (Column_Name != "Cost Disc(%)" && Column_Name != "Cost Amt US($)")
+                            {
                             kkk += 1;
                             if (Column_Name == "Stock Id")
                             {
@@ -1982,6 +1990,7 @@ namespace astute.CoreServices
                                         = ExcelBorderStyle.Medium;
                             }
                         }
+                    }
                     }
 
                     int rowEnd = worksheet.Dimension.End.Row;
