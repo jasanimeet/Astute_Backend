@@ -1603,7 +1603,7 @@ namespace astute.CoreServices
             {
                 using (ExcelPackage ep = new ExcelPackage())
                 {
-                    int Row_Count = column_dt.Rows.Count;
+                    int Row_Count = column_dt.Rows.Count-2;
                     int inStartIndex = 3;
                     int inwrkrow = 3;
                     int inEndCounter = dtStock.Rows.Count + inStartIndex;
@@ -1640,22 +1640,21 @@ namespace astute.CoreServices
                     for (int j = 0; j < column_dt.Rows.Count; j++)
                     {
                         string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
-
-                        if (Column_Name == "Image")
+                        if (Column_Name != "Cost Disc(%)" && Column_Name != "Cost Amt US($)" && Column_Name != "Certificate_URL" && Column_Name != "Certificate_No")
                         {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Image";
-                            worksheet.Cells[2, k].AutoFitColumns(7);
-                        }
-                        else if (Column_Name == "Video")
-                        {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Video";
-                            worksheet.Cells[2, k].AutoFitColumns(7);
-                        }
-                        else
-                        {
-                            if (Column_Name != "Cost Disc(%)" && Column_Name != "Cost Amt US($)")
+                            if (Column_Name == "Image")
+                            {
+                                k += 1;
+                                worksheet.Cells[2, k].Value = "Image";
+                                worksheet.Cells[2, k].AutoFitColumns(7);
+                            }
+                            else if (Column_Name == "Video")
+                            {
+                                k += 1;
+                                worksheet.Cells[2, k].Value = "Video";
+                                worksheet.Cells[2, k].AutoFitColumns(7);
+                            }
+                            else
                             {
                                 k += 1;
                                 worksheet.Cells[2, k].Value = Column_Name;
@@ -1711,35 +1710,35 @@ namespace astute.CoreServices
                         for (int j = 0; j < column_dt.Rows.Count; j++)
                         {
                             string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
-
-                            if (Column_Name == "Image")
+                            if (Column_Name != "Cost Disc(%)" && Column_Name != "Cost Amt US($)" && Column_Name != "Certificate_URL" && Column_Name != "Certificate_No")
                             {
-                                kk += 1;
-
-                                string Image_URL = Convert.ToString(dtStock.Rows[i - inStartIndex]["Image"]);
-                                if (!string.IsNullOrEmpty(Image_URL))
+                                if (Column_Name == "Image")
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Formula = "=HYPERLINK(\"" + Image_URL + "\",\" Image \")";
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.UnderLine = true;
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Blue);
+                                    kk += 1;
+
+                                    string Image_URL = Convert.ToString(dtStock.Rows[i - inStartIndex]["Image"]);
+                                    if (!string.IsNullOrEmpty(Image_URL))
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Formula = "=HYPERLINK(\"" + Image_URL + "\",\" Image \")";
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.UnderLine = true;
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Blue);
+                                    }
                                 }
-                            }
-                            else if (Column_Name == "Video")
-                            {
-                                kk += 1;
+                                else if (Column_Name == "Video")
+                                {
+                                    kk += 1;
 
-                                string Video_URL = Convert.ToString(dtStock.Rows[i - inStartIndex]["Video"]);
-                                if (!string.IsNullOrEmpty(Video_URL))
-                                {
-                                    worksheet.Cells[inwrkrow, kk].Formula = "=HYPERLINK(\"" + Video_URL + "\",\" Video \")";
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.UnderLine = true;
-                                    worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Blue);
+                                    string Video_URL = Convert.ToString(dtStock.Rows[i - inStartIndex]["Video"]);
+                                    if (!string.IsNullOrEmpty(Video_URL))
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Formula = "=HYPERLINK(\"" + Video_URL + "\",\" Video \")";
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.UnderLine = true;
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Blue);
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                if (Column_Name != "Cost Disc(%)" && Column_Name != "Cost Amt US($)")
+                                else
                                 {
+
                                     kk += 1;
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
                                     if (Column_Name == "Lab")
@@ -1922,17 +1921,18 @@ namespace astute.CoreServices
                     for (int j = 0; j < column_dt.Rows.Count; j++)
                     {
                         string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
-                        if (Column_Name == "Image")
+
+                        if (Column_Name != "Cost Disc(%)" && Column_Name != "Cost Amt US($)" && Column_Name != "Certificate_URL" && Column_Name != "Certificate_No")
                         {
-                            kkk += 1;
-                        }
-                        else if (Column_Name == "Video")
-                        {
-                            kkk += 1;
-                        }
-                        else
-                        {
-                            if (Column_Name != "Cost Disc(%)" && Column_Name != "Cost Amt US($)")
+                            if (Column_Name == "Image")
+                            {
+                                kkk += 1;
+                            }
+                            else if (Column_Name == "Video")
+                            {
+                                kkk += 1;
+                            }
+                            else
                             {
                                 kkk += 1;
                                 if (Column_Name == "Stock Id")
