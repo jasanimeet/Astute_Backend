@@ -798,11 +798,11 @@ namespace astute.Controllers
                         }
 
                         var timeRemaining = expireDateTime - currentDateTime;
-                        if (timeRemaining <= TimeSpan.FromMinutes(15))
+                        if (timeRemaining <= TimeSpan.FromMinutes(35))
                         {
                             return Ok(new
                             {
-                                message = "Your token will expire in less than 10 minutes. Would you like to continue?",
+                                message = "Your token will expire in less than 30 minutes. Would you like to continue?",
                                 statusCode = (int)HttpStatusCode.OK
                             });
                         }
