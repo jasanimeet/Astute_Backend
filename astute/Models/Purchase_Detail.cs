@@ -174,10 +174,10 @@ namespace astute.Models
         public int? CertTypeId { get; set; }
 
         [JsonProperty("LR HALF")]
-        public int? LrHalf { get; set; }
+        public decimal? LrHalf { get; set; }
 
         [JsonProperty("STAR LN")]
-        public int? StarLn { get; set; }
+        public decimal? StarLn { get; set; }
 
         [JsonProperty("Fancy_Color_Id")]
         public int? FancyColorId { get; set; }
