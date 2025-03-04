@@ -14147,6 +14147,8 @@ namespace astute.Controllers
                 detailDataTable.Columns.Add("Actual_Cost_Amt", typeof(decimal));
                 detailDataTable.Columns.Add("Type", typeof(string));
                 detailDataTable.Columns.Add("Assist_By", typeof(int));
+                detailDataTable.Columns.Add("Company_Name_Id", typeof(int));
+                detailDataTable.Columns.Add("Company_Name", typeof(string));
 
                 foreach (var item in purchase_Detail_List)
                 {
@@ -14277,7 +14279,9 @@ namespace astute.Controllers
                         (bool)(!purchase_Master.Contract) ? item.ActualCostDisc : item.CostDisc,
                         (bool)(!purchase_Master.Contract) ? item.ActualCostAmount : item.CostAmount,
                         item.Type ?? null,
-                        item.Assist_By ?? null
+                        item.Assist_By ?? null,
+                        item.Company_Name_Id ?? null,
+                        item.Company_Name ?? null
                     );
                 }
 
