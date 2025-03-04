@@ -14668,11 +14668,25 @@ namespace astute.Controllers
         [HttpPost]
         [Route("purchase_detail_contract_update")]
         [Authorize]
-        public async Task<IActionResult> Purchase_Detail_Contract_Update(string Purchase_Detail_Id)
+        public async Task<IActionResult> Purchase_Detail_Contract_Update(Purchase_Detail_Contract_List purchase_Detail_Contract_List)
         {
             try
             {
-                var result = await _supplierService.Purchase_Detail_Contract_Update(Purchase_Detail_Id);
+                IList<Purchase_Detail_Contract> purchase_Detail_List = JsonConvert.DeserializeObject<IList<Purchase_Detail_Contract>>(purchase_Detail_Contract_List.Purchase_Detail_Contract.ToString());
+                
+                DataTable purchase_Detail_Contract_DataTable = new DataTable();
+                purchase_Detail_Contract_DataTable.Columns.Add("Id", typeof(int));
+                purchase_Detail_Contract_DataTable.Columns.Add("Contract", typeof(bool));
+
+                foreach (var item in purchase_Detail_List)
+                {
+                    purchase_Detail_Contract_DataTable.Rows.Add(
+                        item.Id,
+                        item.Contract
+                    );
+                }
+
+                var result = await _supplierService.Purchase_Detail_Contract_Update(purchase_Detail_Contract_DataTable);
                 if (result != null && result > 0)
                 {
                     return Ok(new

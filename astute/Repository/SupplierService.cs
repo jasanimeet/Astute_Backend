@@ -4018,12 +4018,16 @@ namespace astute.Repository
             return result;
         }
 
-        public async Task<int> Purchase_Detail_Contract_Update(string Purchase_Detail_Id)
+        public async Task<int> Purchase_Detail_Contract_Update(DataTable purchase_Detail_Contract_DataTable)
         {
-            var _purchase_Detail_Id = new SqlParameter("@Purchase_Detail_Id", Purchase_Detail_Id);
+            var _purchase_Detail_Contract_DataTable = new SqlParameter("@Purchase_Detail_Contract_Update_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Purchase_Detail_Contract_Update_Table_Type]",
+                Value = purchase_Detail_Contract_DataTable
+            };
 
             var result = await Task.Run(() => _dbContext.Database
-                   .ExecuteSqlRawAsync(@"EXEC Purchase_Detail_Contract_Update @Purchase_Detail_Id", _purchase_Detail_Id));
+                   .ExecuteSqlRawAsync(@"EXEC Purchase_Detail_Contract_Update @Purchase_Detail_Contract_Update_Table_Type", _purchase_Detail_Contract_DataTable));
 
             return result;
         }
