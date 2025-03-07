@@ -84,6 +84,9 @@ namespace astute.Models
 
         [JsonProperty("Girdle_Open_Id")]
         public int? Girdle_Open_Id { get; set; }
+
+        [JsonProperty("CERTIFICATE NO")]
+        public string? CertificateNo { get; set; }
     }
     public class Lab_Entry_Status_List 
     {

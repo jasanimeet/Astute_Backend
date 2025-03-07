@@ -14511,6 +14511,7 @@ namespace astute.Controllers
                 statusDataTable.Columns.Add("Crown_Open_C", typeof(string));
                 statusDataTable.Columns.Add("Pav_Open_C", typeof(string));
                 statusDataTable.Columns.Add("Girdle_Open_C", typeof(string));
+                statusDataTable.Columns.Add("Cert_No", typeof(string));
 
                 foreach (var item in Lab_Entry_Status_List)
                 {
@@ -14541,7 +14542,8 @@ namespace astute.Controllers
                         item.Table_Open,
                         item.Crown_Open,
                         item.Pavilion_Open,
-                        item.Girdle_Open
+                        item.Girdle_Open,
+                        item.CertificateNo
                     );
                 }
 
