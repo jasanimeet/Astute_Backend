@@ -466,6 +466,14 @@ namespace astute.Repository
 
             return employees;
         }
+        public async Task<IList<Employee_Master>> Get_Active_Secretary_Employees(int user_Id)
+        {
+            var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
+            
+            var employees = await Task.Run(() => _dbContext.Employee_Master.FromSqlRaw(@"exec Employee_Master_Secretary_Active_Select @User_Id", _user_Id).ToListAsync());
+
+            return employees;
+        }
         public async Task<IList<DropdownModel>> Get_Employee_For_Report(bool is_Exist, int rm_Id, int user_Id, string user_Type)
         {
             var _is_Exist = new SqlParameter("@Is_Exist", is_Exist);

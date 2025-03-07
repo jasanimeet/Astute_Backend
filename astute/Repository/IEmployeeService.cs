@@ -21,6 +21,7 @@ namespace astute.Repository
         Task<int> Update_FCMToken(UserModel userModel, int Id);
         Task<int> Get_Employee_Code();
         Task<IList<Employee_Master>> Get_Active_Employees(int employeeId, string userName, string personalEmail);
+        Task<IList<Employee_Master>> Get_Active_Secretary_Employees(int user_Id);
         Task Insert_Employee_Document_Trace(DataTable dataTable);
         Task Insert_Employee_Salary_Trace(DataTable dataTable);
         Task Insert_Emergency_Contact_Detail_Trace(DataTable dataTable);

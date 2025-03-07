@@ -108,6 +108,38 @@ namespace astute.Controllers
                 });
             }
         }
+        
+        [HttpGet]
+        [Route("get_active_secretary_employees")]
+        [Authorize]
+        public async Task<IActionResult> Get_Active_Secretary_Employees()
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _employeeService.Get_Active_Secretary_Employees(user_Id ?? 0);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Active_Secretary_Employees", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
 
         [HttpGet]
         [Route("get_employee_details")]
@@ -1067,6 +1099,7 @@ namespace astute.Controllers
         #region Employee Mail
         [HttpGet]
         [Route("getemployeemail")]
+        [Authorize]
         public async Task<IActionResult> GetEmployeeMail(int employeeId)
         {
             try
