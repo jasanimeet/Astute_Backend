@@ -90,6 +90,7 @@ namespace astute.Models
         public string? GOOD_TYPE { get; set; }
         public string? Short_Code { get; set; }
         public bool? Is_Uploaded { get; set; }
+        public string? Is_Natural { get; set; }
     }
     public partial class Stock_Data_Schedular
     {
@@ -178,6 +179,7 @@ namespace astute.Models
         public object? EYE_CLEAN { get; set; }
         public object? GOOD_TYPE { get; set; }
         public bool? Is_Uploaded { get; set; }
+        public object? IS_NATURAL { get; set; }
     }
     public partial class Supplier_Stock_Excel
     {

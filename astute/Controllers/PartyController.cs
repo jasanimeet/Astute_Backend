@@ -170,6 +170,8 @@ namespace astute.Controllers
             dt_stock_data.Columns.Add("EYE_CLEAN", typeof(string));
             dt_stock_data.Columns.Add("GOOD_TYPE", typeof(string));
             dt_stock_data.Columns.Add("Short_Code", typeof(string));
+            dt_stock_data.Columns.Add("IS_NATURAL", typeof(string));
+
             if (stock_Datas != null && stock_Datas.Count > 0)
             {
                 var lakhi_Party_Code = _configuration["Lakhi_Party_Code"];
@@ -276,7 +278,8 @@ namespace astute.Controllers
                         item.MAX_SLAB_BASE_VALUE ?? null,
                         item.EYE_CLEAN ?? null,
                         item.GOOD_TYPE ?? null,
-                        item.Short_Code ?? null);
+                        item.Short_Code ?? null,
+                        item.Is_Natural ?? null);
                 }
             }
             return dt_stock_data;
@@ -366,6 +369,8 @@ namespace astute.Controllers
             dt_stock_data.Columns.Add("EYE_CLEAN", typeof(string));
             dt_stock_data.Columns.Add("GOOD_TYPE", typeof(string));
             dt_stock_data.Columns.Add("Short_Code", typeof(string));
+            dt_stock_data.Columns.Add("IS_NATURAL", typeof(string));
+
             if (stock_Datas != null && stock_Datas.Count > 0)
             {
                 var lakhi_Party_Code = _configuration["Lakhi_Party_Code"];
@@ -471,7 +476,8 @@ namespace astute.Controllers
                         item.MAX_SLAB_BASE_VALUE != null ? Convert.ToString(item.MAX_SLAB_BASE_VALUE) : DBNull.Value,
                         item.EYE_CLEAN != null ? Convert.ToString(item.EYE_CLEAN) : DBNull.Value,
                         item.GOOD_TYPE != null ? Convert.ToString(item.GOOD_TYPE) : DBNull.Value,
-                        item.Short_Code != null ? Convert.ToString(item.Short_Code) : DBNull.Value);
+                        item.Short_Code != null ? Convert.ToString(item.Short_Code) : DBNull.Value,
+                        item.IS_NATURAL != null ? Convert.ToString(item.IS_NATURAL) : DBNull.Value);
                 }
             }
             return dt_stock_data;
@@ -559,6 +565,8 @@ namespace astute.Controllers
             dt_stock_data.Columns.Add("Max_Slab_Amt", typeof(string));
             dt_stock_data.Columns.Add("Eye_Clean", typeof(string));
             dt_stock_data.Columns.Add("Supp_Short_Name", typeof(string));
+            dt_stock_data.Columns.Add("Is_Natural", typeof(string));
+
             foreach (var item in stock_Datas)
             {
                 dt_stock_data.Rows.Add(item.SUPPLIER_NO, item.CERTIFICATE_NO, item.LAB, item.SHAPE, item.CTS, item.BASE_DISC, item.BASE_RATE, item.BASE_AMOUNT, item.COLOR,
@@ -569,7 +577,7 @@ namespace astute.Controllers
                     item.STAR_LN, item.CERT_TYPE, item.FANCY_COLOR, item.FANCY_INTENSITY, item.FANCY_OVERTONE, item.Image2, item.Image2, item.Video2, item.Video2, item.CERTIFICATE_LINK,
                     item.DNA, item.IMAGE_HEART_LINK, item.IMAGE_ARROW_LINK, item.H_A_LINK, item.CERTIFICATE_TYPE_LINK, item.KEY_TO_SYMBOL, item.LAB_COMMENTS, item.SUPPLIER_COMMENTS,
                     item.ORIGIN, item.BOW_TIE, item.EXTRA_FACET_TABLE, item.EXTRA_FACET_CROWN, item.EXTRA_FACET_PAVILION, item.INTERNAL_GRAINING, item.H_A, item.SUPPLIER_DISC, item.SUPPLIER_AMOUNT,
-                    item.OFFER_DISC, item.OFFER_VALUE, item.MAX_SLAB_BASE_DISC, item.MAX_SLAB_BASE_VALUE, item.EYE_CLEAN, item.Short_Code);
+                    item.OFFER_DISC, item.OFFER_VALUE, item.MAX_SLAB_BASE_DISC, item.MAX_SLAB_BASE_VALUE, item.EYE_CLEAN, item.Short_Code, item.Is_Natural);
             }
             return dt_stock_data;
         }
@@ -7048,7 +7056,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpPut]
         [Route("update_cart_validity_date")]
         [Authorize]
@@ -7264,13 +7272,13 @@ namespace astute.Controllers
                         Convert.ToString(item.Status), Convert.ToString(item.QC_Remarks));
                 }
 
-                var (message, result, msg, order_No) = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.Id, order_Processing.User_Id, order_Processing.Customer_Name, order_Processing.Remarks, order_Processing.Status, order_Processing.Assist_By);                
+                var (message, result, msg, order_No) = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.Id, order_Processing.User_Id, order_Processing.Customer_Name, order_Processing.Remarks, order_Processing.Status, order_Processing.Assist_By);
                 if ((message == "exist" && msg.Length > 0) || (message == "success" && msg.Length > 0))
                 {
                     int assistBy = order_Processing.Assist_By ?? 0;
 
                     string to_Email = "list@sunrisediam.com";
-                    
+
                     string subject = order_Processing.Status + " request for order no " + order_No + " - " + order_Processing.Customer_Name;
 
                     StringBuilder sb = new StringBuilder();
@@ -7384,7 +7392,7 @@ namespace astute.Controllers
                     sb.AppendLine(@"Request for : " + order_Processing.Status + "<br/>");
 
                     _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
-
+                    
                     List<string> DeviceIds = await _cartService.Get_Order_Process_FCM_Token();
 
                     if (DeviceIds.Count > 0)
@@ -8040,7 +8048,7 @@ namespace astute.Controllers
                     else if (!string.IsNullOrEmpty(stock_Avalibility.excel_Format) && stock_Avalibility.excel_Format == "Default")
                     {
                         filename = "Default_Stock_Availability_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                    EpExcelExport.Stock_Availability_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                        EpExcelExport.Stock_Availability_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
                     }
 
                     excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
@@ -8093,7 +8101,7 @@ namespace astute.Controllers
                         return Conflict(new { message = "Please refresh order records and then do further activity." });
                     }
                 }
-                else 
+                else
                 {
                     return Conflict(new { message = "Order is already COMPLETED or CLOSED. Order Status update not allowed." });
                 }
@@ -8576,7 +8584,7 @@ namespace astute.Controllers
                         //{
                         //    success = false;
                         //}
-                        }
+                    }
 
                     var result = await _supplierService.Get_GIA_Certificate_Update_Data(dataTable, gIA_Certificate_Parameter_Model.supplier_Name, gIA_Certificate_Parameter_Model.customer_Name);
 
@@ -8783,7 +8791,7 @@ namespace astute.Controllers
                             //{
                             //    success = false;
                             //}
-                            }
+                        }
 
                         var result = await _supplierService.Get_GIA_Certificate_Update_Data(dataTable, gIA_Certificate_Parameter_Model.supplier_Name, gIA_Certificate_Parameter_Model.customer_Name);
 
@@ -10791,7 +10799,7 @@ namespace astute.Controllers
                     else if (!string.IsNullOrEmpty(stock_Avalibility.excel_Format) && stock_Avalibility.excel_Format == "Default")
                     {
                         filename = "Default_Stock_Availability_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                    EpExcelExport.Stock_Availability_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
+                        EpExcelExport.Stock_Availability_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
                     }
 
                     excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
@@ -11635,77 +11643,77 @@ namespace astute.Controllers
                     var (Request_Status, Order_Status, Sub_Order_Id) = await _cartService.Check_Order_Processing_Order_Status(order_Stone_Process.Order_No);
                     //if (Request_Status != "COMPLETED" && Order_Status != "CLOSED")
                     //{
-                        //if (Request_Status == "REQUESTED" && Order_Status == "OPEN" && Sub_Order_Id <= 0)
-                        //{
+                    //if (Request_Status == "REQUESTED" && Order_Status == "OPEN" && Sub_Order_Id <= 0)
+                    //{
                     
                     Sub_Order_Id = Sub_Order_Id + 1;
 
-                            var result = await _supplierService.Create_Stone_Order_Process(order_Stone_Process, user_Id ?? 0);
-                            if (result > 0)
+                    var result = await _supplierService.Create_Stone_Order_Process(order_Stone_Process, user_Id ?? 0);
+                    if (result > 0)
+                    {
+                        if (order_Stone_Process.Order_Status == "CANCEL" && order_Stone_Process.Order_No.StartsWith("S"))
+                        {
+                            var orderProcessDetail = new Order_Process_Detail { Order_No = order_Stone_Process.Order_No };
+                            var orderResult = await _supplierService.Get_Order_Detail(user_Id ?? 0, orderProcessDetail);
+
+                            var json = JsonConvert.SerializeObject(orderResult);
+                            IList<Order_Processing_Complete_Detail> orderDetails = JsonConvert.DeserializeObject<IList<Order_Processing_Complete_Detail>>(json);
+
+                            List<string> stockIds = new List<string>();
+
+                            DataTable dataTable = new DataTable();
+                            dataTable.Columns.Add("Id", typeof(int));
+                            dataTable.Columns.Add("Status", typeof(string));
+                            dataTable.Columns.Add("Remarks", typeof(string));
+                            dataTable.Columns.Add("Cost_Disc", typeof(double));
+                            dataTable.Columns.Add("Cost_Amt", typeof(double));
+
+                            var orderIds = order_Stone_Process.Order_Id.Split(',').Select(id => id.Trim()).ToList();
+
+                            var canceledOrders = orderDetails
+                                .Where(item => item.Status == "CANCEL" && orderIds.Contains(item.Id.ToString()))
+                                .ToList();
+
+                            foreach (var item in canceledOrders)
                             {
-                                if (order_Stone_Process.Order_Status == "CANCEL" && order_Stone_Process.Order_No.StartsWith("S"))
+                                dataTable.Rows.Add(item.Id, item.Status, item.Remarks,
+                                    item.CurrentCostDisc,
+                                    item.CurrentCostAmount);
+
+                                stockIds.Add(item.StockId);
+                            }
+
+                            if (canceledOrders.Any())
+                            {
+
+                                var order_Processing = await _cartService.Get_Order_Summary(order_Stone_Process.Order_No);
+
+                                if (order_Processing != null && order_Processing.Count > 0)
                                 {
-                                    var orderProcessDetail = new Order_Process_Detail { Order_No = order_Stone_Process.Order_No };
-                                    var orderResult = await _supplierService.Get_Order_Detail(user_Id ?? 0, orderProcessDetail);
+                                    string to_Email = "list@sunrisediam.com";
 
-                                    var json = JsonConvert.SerializeObject(orderResult);
-                                    IList<Order_Processing_Complete_Detail> orderDetails = JsonConvert.DeserializeObject<IList<Order_Processing_Complete_Detail>>(json);
+                                    string subject = order_Stone_Process.Order_Status + " - " + order_Processing[0]["Customer_Name"] + " - " + order_Stone_Process.Order_No;
 
-                                    List<string> stockIds = new List<string>();
+                                    StringBuilder sb = new StringBuilder();
 
-                                    DataTable dataTable = new DataTable();
-                                    dataTable.Columns.Add("Id", typeof(int));
-                                    dataTable.Columns.Add("Status", typeof(string));
-                                    dataTable.Columns.Add("Remarks", typeof(string));
-                                    dataTable.Columns.Add("Cost_Disc", typeof(double));
-                                    dataTable.Columns.Add("Cost_Amt", typeof(double));
+                                    sb.AppendLine(@"Company Name :  " + order_Processing[0]["Customer_Name"] + "<br/>");
 
-                                    var orderIds = order_Stone_Process.Order_Id.Split(',').Select(id => id.Trim()).ToList();
+                                    var userId = Convert.ToInt32(order_Processing[0]["Assist_By"]) > 0 ? Convert.ToInt32(order_Processing[0]["Assist_By"]) : (user_Id ?? 0);
 
-                                    var canceledOrders = orderDetails
-                                        .Where(item => item.Status == "CANCEL" && orderIds.Contains(item.Id.ToString()))
-                                        .ToList();
+                                    var user = await _employeeService.Employee_Master_Name_Select(userId);
 
-                                    foreach (var item in canceledOrders)
-                                    {
-                                        dataTable.Rows.Add(item.Id, item.Status, item.Remarks,
-                                            item.CurrentCostDisc,
-                                            item.CurrentCostAmount);
+                                    sb.AppendLine(@"Assist By: " + user[0].Name + "<br/>");
 
-                                        stockIds.Add(item.StockId);
-                                    }
+                                    sb.AppendLine(@"Request for : " + order_Stone_Process.Order_Status + "<br/>");
 
-                                    if (canceledOrders.Any())
-                                    {
+                                    _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
+                                }
 
-                                        var order_Processing = await _cartService.Get_Order_Summary(order_Stone_Process.Order_No);
-
-                                        if (order_Processing != null && order_Processing.Count > 0)
-                                        {
-                                            string to_Email = "list@sunrisediam.com";
-
-                                            string subject = order_Stone_Process.Order_Status + " - " + order_Processing[0]["Customer_Name"] + " - " + order_Stone_Process.Order_No;
-
-                                            StringBuilder sb = new StringBuilder();
-
-                                            sb.AppendLine(@"Company Name :  " + order_Processing[0]["Customer_Name"] + "<br/>");
-
-                                            var userId = Convert.ToInt32(order_Processing[0]["Assist_By"]) > 0 ? Convert.ToInt32(order_Processing[0]["Assist_By"]) : (user_Id ?? 0);
-
-                                            var user = await _employeeService.Employee_Master_Name_Select(userId);
-
-                                            sb.AppendLine(@"Assist By: " + user[0].Name + "<br/>");
-
-                                            sb.AppendLine(@"Request for : " + order_Stone_Process.Order_Status + "<br/>");
-
-                                            _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
-                                        }
-
-                                        var fortuneId = await _employeeService.GetEmployeeFortuneIdByOrderNo(order_Stone_Process.Order_No);
-                                        if (fortuneId != null)
-                                        {
+                                var fortuneId = await _employeeService.GetEmployeeFortuneIdByOrderNo(order_Stone_Process.Order_No);
+                                if (fortuneId != null)
+                                {
                                     var transferResult = await _oracleService.Order_Data_Transfer_Oracle(canceledOrders, fortuneId, order_Stone_Process.QC_Request, "W", "O");
-                                        }
+                                }
 
                                 List<string> DeviceIds = await _cartService.Get_Order_Process_FCM_Token();
 
@@ -11724,36 +11732,36 @@ namespace astute.Controllers
 
                                     await Firebase_Messaging_Notification(DeviceIds: DeviceIds, title: title, body: body);
                                 }
-                                        return Ok(new
-                                        {
-                                            statusCode = HttpStatusCode.OK,
-                                            message = "Order completed successfully."
-                                        });
-                                    }
-                                }
-                                else
+                                return Ok(new
                                 {
-                                    var order_Processing = await _cartService.Get_Order_Summary(order_Stone_Process.Order_No);
+                                    statusCode = HttpStatusCode.OK,
+                                    message = "Order completed successfully."
+                                });
+                            }
+                        }
+                        else
+                        {
+                            var order_Processing = await _cartService.Get_Order_Summary(order_Stone_Process.Order_No);
 
-                                    if (order_Processing != null && order_Processing.Count > 0)
-                                    {
-                                        string to_Email = "list@sunrisediam.com";
+                            if (order_Processing != null && order_Processing.Count > 0)
+                            {
+                                string to_Email = "list@sunrisediam.com";
 
-                                        string subject = order_Stone_Process.Order_Status + " request for order no " + order_Stone_Process.Order_No + " - " + order_Processing[0]["Customer_Name"];
+                                string subject = order_Stone_Process.Order_Status + " request for order no " + order_Stone_Process.Order_No + " - " + order_Processing[0]["Customer_Name"];
 
-                                        StringBuilder sb = new StringBuilder();
+                                StringBuilder sb = new StringBuilder();
 
-                                        sb.AppendLine(@"Company Name :  " + order_Processing[0]["Customer_Name"] + "<br/>");
+                                sb.AppendLine(@"Company Name :  " + order_Processing[0]["Customer_Name"] + "<br/>");
 
-                                        var userId = Convert.ToInt32(order_Processing[0]["Assist_By"]) > 0 ? Convert.ToInt32(order_Processing[0]["Assist_By"]) : (user_Id ?? 0);
+                                var userId = Convert.ToInt32(order_Processing[0]["Assist_By"]) > 0 ? Convert.ToInt32(order_Processing[0]["Assist_By"]) : (user_Id ?? 0);
 
-                                        var user = await _employeeService.Employee_Master_Name_Select(userId);
+                                var user = await _employeeService.Employee_Master_Name_Select(userId);
 
-                                        sb.AppendLine(@"Assist By: " + user[0].Name + "<br/>");
+                                sb.AppendLine(@"Assist By: " + user[0].Name + "<br/>");
 
-                                        sb.AppendLine(@"Request for : " + order_Stone_Process.Order_Status + "<br/>");
+                                sb.AppendLine(@"Request for : " + order_Stone_Process.Order_Status + "<br/>");
 
-                                        _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
+                                _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
 
                                 List<string> DeviceIds = await _cartService.Get_Order_Process_FCM_Token();
 
@@ -11774,59 +11782,59 @@ namespace astute.Controllers
                                 }
                             }
                         }
-                                /*var employees = await _employeeService.GetEmployees(user_Id ?? 0, null, null);
-                                    var employee = employees.FirstOrDefault();
-                                    var (dt_Order, is_Admin) = await _supplierService.Get_Order_Excel_Data(null, user_Id ?? 0, order_Stone_Process.Order_Id);
-                                    if (dt_Order != null && dt_Order.Rows.Count > 0)
-                                    {
-                                        List<string> columnNames = new List<string>();
-                                        foreach (DataColumn column in dt_Order.Columns)
-                                        {
-                                            columnNames.Add(column.ColumnName);
-                                        }
-
-                                        DataTable columnNamesTable = new DataTable();
-                                        columnNamesTable.Columns.Add("Column_Name", typeof(string));
-
-                                        foreach (string columnName in columnNames)
-                                        {
-                                            columnNamesTable.Rows.Add(columnName);
-                                        }
-                                        var excelPath = string.Empty;
-                                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
-                                        if (!(Directory.Exists(filePath)))
-                                        {
-                                            Directory.CreateDirectory(filePath);
-                                        }
-                                        string filename = string.Empty;
-
-                                        filename = "Order_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
-                                        EpExcelExport.Create_Order_Processing_Excel_User(dt_Order, columnNamesTable, filePath, filePath + filename);
-
-                                        excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
-                                        byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
-                                        using (MemoryStream memoryStream = new MemoryStream(fileBytes))
-                                        {
-                                            var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(0);
-                                            if (emp_email != null)
-                                            {
-                                                IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
-                                                _emailSender.Send_Stock_Email(toEmail: employee.Company_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, user_Id: user_Id ?? 0, employee_Mail: emp_email);
-                                            }
-                                        }
-                                    }
-                                    */
-                                return Ok(new
+                        /*var employees = await _employeeService.GetEmployees(user_Id ?? 0, null, null);
+                            var employee = employees.FirstOrDefault();
+                            var (dt_Order, is_Admin) = await _supplierService.Get_Order_Excel_Data(null, user_Id ?? 0, order_Stone_Process.Order_Id);
+                            if (dt_Order != null && dt_Order.Rows.Count > 0)
+                            {
+                                List<string> columnNames = new List<string>();
+                                foreach (DataColumn column in dt_Order.Columns)
                                 {
-                                    statusCode = HttpStatusCode.OK,
-                                    message = "Stone has been processed successfully."
-                                });
+                                    columnNames.Add(column.ColumnName);
+                                }
+
+                                DataTable columnNamesTable = new DataTable();
+                                columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                                foreach (string columnName in columnNames)
+                                {
+                                    columnNamesTable.Rows.Add(columnName);
+                                }
+                                var excelPath = string.Empty;
+                                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                                if (!(Directory.Exists(filePath)))
+                                {
+                                    Directory.CreateDirectory(filePath);
+                                }
+                                string filename = string.Empty;
+
+                                filename = "Order_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                                EpExcelExport.Create_Order_Processing_Excel_User(dt_Order, columnNamesTable, filePath, filePath + filename);
+
+                                excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+                                byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
+                                using (MemoryStream memoryStream = new MemoryStream(fileBytes))
+                                {
+                                    var emp_email = await _employeeService.Get_Employee_Email_Or_Default_Email(0);
+                                    if (emp_email != null)
+                                    {
+                                        IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
+                                        _emailSender.Send_Stock_Email(toEmail: employee.Company_Email, externalLink: "", subject: CoreCommonMessage.StoneSelectionSubject, formFile: formFile, user_Id: user_Id ?? 0, employee_Mail: emp_email);
+                                    }
+                                }
                             }
-                        //}
-                        //else
-                        //{
-                        //    return Conflict(new { message = "Previous order incomplete, so can't place new order." });
-                        //}
+                            */
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = "Stone has been processed successfully."
+                        });
+                    }
+                    //}
+                    //else
+                    //{
+                    //    return Conflict(new { message = "Previous order incomplete, so can't place new order." });
+                    //}
                     //}
                     //else
                     //{
@@ -11909,7 +11917,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpDelete]
         [Route("entire_order_processing_delete")]
         [Authorize]
@@ -12232,7 +12240,7 @@ namespace astute.Controllers
                                         }
                                     }
                                 }
-
+                                
                                 DataTable masterDataTable = new DataTable();
                                 masterDataTable.Columns.Add("Trans_Id", typeof(int));
                                 masterDataTable.Columns.Add("Order_No", typeof(string));
@@ -12533,7 +12541,7 @@ namespace astute.Controllers
                                         }
                                     }
                                 }
-
+                                
                                 DataTable masterDataTable = new DataTable();
                                 masterDataTable.Columns.Add("Trans_Id", typeof(int));
                                 masterDataTable.Columns.Add("Order_No", typeof(string));
@@ -13273,7 +13281,7 @@ namespace astute.Controllers
             try
             {
                 if (ModelState.IsValid)
-                {  
+                {
                     var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                     int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
@@ -13294,7 +13302,7 @@ namespace astute.Controllers
                         {
                             var excelPath = string.Empty;
 
-                            
+
                             List<string> columnNames = new List<string>();
                             foreach (DataColumn column in dt_Order.Columns)
                             {
@@ -13366,7 +13374,7 @@ namespace astute.Controllers
                             {
                                 Directory.CreateDirectory(filePath);
                             }
-                            
+
                             if (is_Admin)
                             {
                                 EpExcelExport.Create_Order_Processing_Excel_Admin(dt_Order, columnNamesTable, filePath, filePath + filename);
@@ -13748,7 +13756,7 @@ namespace astute.Controllers
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
                 var result = await _supplierService.Get_Lab_Entry_Detail_For_Shipment_Verification(lab_Entry_Detail_For_Shipment.Supplier_Id ?? 0, lab_Entry_Detail_For_Shipment.Certificate_No);
-
+                
                 var result_Message = await _supplierService.Get_Unavailable_Lab_Entry_Detail_For_Shipment_Verification(lab_Entry_Detail_For_Shipment.Certificate_No);
 
                 if (result != null && result.Count > 0)
@@ -13788,7 +13796,7 @@ namespace astute.Controllers
                 if (result != null && result.Count > 0)
                 {
                     List<Dictionary<string, object>> matchedRecords = new List<Dictionary<string, object>>();
-                    
+
                     List<Dictionary<string, object>> finalRecords = new List<Dictionary<string, object>>();
 
                     var certificateNos = result.Select(entry => entry["CERTIFICATE NO"].ToString()).ToList();
@@ -14018,7 +14026,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_purchase_expenses_dropdown")]
         [Authorize]
@@ -14899,7 +14907,7 @@ namespace astute.Controllers
                 });
             }
         }
-
+        
         [HttpGet]
         [Route("get_supplier_stock_lab_user_activity")]
         [Authorize]
@@ -15188,9 +15196,9 @@ namespace astute.Controllers
                 }
 
                 return StatusCode((int)HttpStatusCode.Unauthorized, new
-                { 
-                    message = "Unauthorized Access", 
-                    statusCode = (int)HttpStatusCode.Unauthorized 
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
                 });
             }
             catch (Exception ex)
@@ -15233,7 +15241,7 @@ namespace astute.Controllers
             }
         }
         #endregion
-
+        
         #region Job transfer user pricing
 
         [HttpPost]
@@ -15348,7 +15356,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpPost]
         [Route("job_transfer_auto_stock_pricing")]
         [Authorize]
@@ -15968,6 +15976,8 @@ namespace astute.Controllers
                                             dt_stock_data.Columns.Add("EYE_CLEAN", typeof(string));
                                             dt_stock_data.Columns.Add("GOOD_TYPE", typeof(string));
                                             dt_stock_data.Columns.Add("Short_Code", typeof(string));
+                                            dt_stock_data.Columns.Add("IS_NATURAL", typeof(string));
+
                                             #endregion
                                             var mappedRows = excel_dataTable.AsEnumerable()
                                              .Select(row =>
@@ -16289,7 +16299,7 @@ namespace astute.Controllers
                 };
 
                 await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
-                
+
                 return Conflict(new
                 {
                     statusCode = HttpStatusCode.Conflict,
@@ -17387,7 +17397,7 @@ namespace astute.Controllers
         }
 
         #endregion
-        
+
 
         #region Excellent Diamonds Api
 
@@ -17461,7 +17471,7 @@ namespace astute.Controllers
                         message = "Special prices are going to expire on " + SupplierPrice[0].Values.FirstOrDefault()?.ToString() + ". Please change the validity days accordingly."
                     });
                 }
-                else 
+                else
                 {
                     return NoContent();
                 }
