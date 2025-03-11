@@ -319,6 +319,57 @@ namespace astute.Repository
 
             return (_request_Status, _order_Status, _sub_Order_Id ?? 0);
         }
+
+        public async Task<List<string>> Get_Order_Process_FCM_Token()
+        {
+            var result = new List<string>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Order_Process_FCM_Token_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            if (!reader.IsDBNull(0))
+                            {
+                                result.Add(reader.GetString(0));
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public async Task<List<string>> Get_Employee_Secretary_FCM_Token(int Employee_Id)
+        {
+            var result = new List<string>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Employee_Secretary_FCM_Token_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@Employee_Id", Employee_Id));
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            if (!reader.IsDBNull(0))
+                            {
+                                result.Add(reader.GetString(0));
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
+        }
         #endregion
     }
 }

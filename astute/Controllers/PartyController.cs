@@ -3,6 +3,7 @@ using astute.CoreServices;
 using astute.Models;
 using astute.Repository;
 using ExcelDataReader;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7286,7 +7287,25 @@ namespace astute.Controllers
 
                     _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
 
-                    // if alredy exists stone add again then message should show succsessfully added.
+                    List<string> DeviceIds = await _cartService.Get_Order_Process_FCM_Token();
+
+                    if (DeviceIds.Count > 0)
+                    {
+                        string title = $"Request from Solar";
+
+                        string customerName = order_Processing.Customer_Name?.ToString();
+
+                        if (string.IsNullOrWhiteSpace(customerName))
+                        {
+                            customerName = "Sunrise Diamonds Ltd";
+                        }
+
+                        string body = $"{order_Processing.Status} request for order no #{order_No + ".1" } from {customerName}";
+
+                        await Firebase_Messaging_Notification(DeviceIds: DeviceIds, title: title, body: body);
+                    }
+                    
+                    // if already exists stone add again then message should show successfully added.
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
@@ -7366,7 +7385,25 @@ namespace astute.Controllers
 
                     _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
 
-                    // if alredy exists stone add again then message should show succsessfully added.
+                    List<string> DeviceIds = await _cartService.Get_Order_Process_FCM_Token();
+
+                    if (DeviceIds.Count > 0)
+                    {
+                        string title = $"Request from Solar";
+
+                        string customerName = order_Processing.Customer_Name?.ToString();
+
+                        if (string.IsNullOrWhiteSpace(customerName))
+                        {
+                            customerName = "Sunrise Diamonds Ltd";
+                        }
+
+                        string body = $"{order_Processing.Status} request for order no #{order_No + ".1"} from {customerName}";
+
+                        await Firebase_Messaging_Notification(DeviceIds: DeviceIds, title: title, body: body);
+                    }
+
+                    // if already exists stone add again then message should show successfully added.
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
@@ -11600,6 +11637,9 @@ namespace astute.Controllers
                     //{
                         //if (Request_Status == "REQUESTED" && Order_Status == "OPEN" && Sub_Order_Id <= 0)
                         //{
+                    
+                    Sub_Order_Id = Sub_Order_Id + 1;
+
                             var result = await _supplierService.Create_Stone_Order_Process(order_Stone_Process, user_Id ?? 0);
                             if (result > 0)
                             {
@@ -11666,6 +11706,24 @@ namespace astute.Controllers
                                         {
                                     var transferResult = await _oracleService.Order_Data_Transfer_Oracle(canceledOrders, fortuneId, order_Stone_Process.QC_Request, "W", "O");
                                         }
+
+                                List<string> DeviceIds = await _cartService.Get_Order_Process_FCM_Token();
+
+                                if (DeviceIds.Count > 0)
+                                {
+                                    string title = $"Request from Solar";
+
+                                    string customerName = order_Processing[0]["Customer_Name"]?.ToString();
+
+                                    if (string.IsNullOrWhiteSpace(customerName))
+                                    {
+                                        customerName = "Sunrise Diamonds Ltd";
+                                    }
+
+                                    string body = $"{order_Stone_Process.Order_Status} request for order no #{order_Stone_Process.Order_No + "." + Sub_Order_Id} from {customerName}";
+
+                                    await Firebase_Messaging_Notification(DeviceIds: DeviceIds, title: title, body: body);
+                                }
                                         return Ok(new
                                         {
                                             statusCode = HttpStatusCode.OK,
@@ -11696,8 +11754,26 @@ namespace astute.Controllers
                                         sb.AppendLine(@"Request for : " + order_Stone_Process.Order_Status + "<br/>");
 
                                         _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
+
+                                List<string> DeviceIds = await _cartService.Get_Order_Process_FCM_Token();
+
+                                if (DeviceIds.Count > 0)
+                                {
+                                    string title = $"Request from Solar";
+
+                                    string customerName = order_Processing[0]["Customer_Name"]?.ToString();
+
+                                    if (string.IsNullOrWhiteSpace(customerName))
+                                    {
+                                        customerName = "Sunrise Diamonds Ltd";
                                     }
+
+                                    string body = $"{order_Stone_Process.Order_Status} request for order no #{order_Stone_Process.Order_No + "." + Sub_Order_Id} from {customerName}";
+
+                                    await Firebase_Messaging_Notification(DeviceIds: DeviceIds, title: title, body: body);
                                 }
+                            }
+                        }
                                 /*var employees = await _employeeService.GetEmployees(user_Id ?? 0, null, null);
                                     var employee = employees.FirstOrDefault();
                                     var (dt_Order, is_Admin) = await _supplierService.Get_Order_Excel_Data(null, user_Id ?? 0, order_Stone_Process.Order_Id);
@@ -12030,6 +12106,27 @@ namespace astute.Controllers
                 if (result > 0)
                 {
                     var result_e = await _employeeService.GetEmployeeFortuneIdByOrderNo(order_Processing_Reply_To_Assist.Order_No);
+
+                    if (result_e != null && result_e.Employee_Id > 0)
+                    {
+                        List<string> DeviceIds = await _cartService.Get_Employee_Secretary_FCM_Token(result_e.Employee_Id);
+
+                        if (DeviceIds.Count > 0)
+                        {
+                            string title = $"Request Completed";
+
+                            string customerName = OrderResult[0].Customer?.ToString();
+
+                            if (string.IsNullOrWhiteSpace(customerName))
+                            {
+                                customerName = "Sunrise Diamonds Ltd";
+                            }
+                            string body = $"{order_Processing_Reply_To_Assist.Request_For} request for order no #{order_Processing_Reply_To_Assist.Order_No + "." + order_Processing_Reply_To_Assist.Sub_Order_Id} is completed for {customerName}";
+
+                            await Firebase_Messaging_Notification(DeviceIds: DeviceIds, title: title, body: body);
+                        }
+                    }
+
                     tofortune = OrderResult.Any(order => order_Processing_Reply_To_Assist.Request_For.ToUpper().Contains("PLACE ORDER"));
 
                     string to_Email = "list@sunrisediam.com";
@@ -17378,6 +17475,66 @@ namespace astute.Controllers
                     message = ex.Message,
                     error = ex.StackTrace
                 });
+            }
+        }
+
+        #endregion
+
+        #region Firebase Messaging Notification
+        public async Task Firebase_Messaging_Notification(List<string> DeviceIds, string title, string body)
+        {
+            try
+            {
+                var firebaseConfig = _configuration.GetSection("FirebaseConfig");
+                string projectId = firebaseConfig["ProjectId"];
+                var serviceAccountJson = firebaseConfig.GetSection("ServiceAccount").Get<Dictionary<string, string>>();
+
+                if (string.IsNullOrEmpty(projectId) || serviceAccountJson == null)
+                {
+                    throw new Exception("Firebase configuration is missing in appsettings.json.");
+                }
+
+                string serviceAccountJsonString = JsonConvert.SerializeObject(serviceAccountJson);
+
+                var credential = GoogleCredential.FromJson(serviceAccountJsonString)
+                    .CreateScoped("https://www.googleapis.com/auth/firebase.messaging");
+
+                string url = $"https://fcm.googleapis.com/v1/projects/{projectId}/messages:send";
+
+                string accessToken = await credential.UnderlyingCredential.GetAccessTokenForRequestAsync();
+
+                foreach (var token in DeviceIds)
+                {
+                    var message = new
+                    {
+                        message = new
+                        {
+                            token = token.Trim(),
+                            notification = new
+                            {
+                                body = body,
+                                title = title
+                            }
+                        }
+                    };
+
+                    string jsonMessage = JsonConvert.SerializeObject(message);
+
+                    using (var client = new HttpClient())
+                    {
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                        var response = await client.PostAsync(url, new StringContent(jsonMessage, Encoding.UTF8, "application/json"));
+                        string responseString = await response.Content.ReadAsStringAsync();
+
+                        Console.WriteLine("Response: " + responseString);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Firebase_Messaging_Notification", ex.StackTrace);
             }
         }
 

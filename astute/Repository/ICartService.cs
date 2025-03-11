@@ -21,5 +21,7 @@ namespace astute.Repository
         Task<int> Order_Processing_Update_Order_Status(string order_Status, string order_No);
         Task<int> Cart_Update_Validity_Date(int Id, DateTime validity_Date, int User_Id);
         Task<(string, string, int)> Check_Order_Processing_Order_Status(string order_No);
+        Task<List<string>> Get_Order_Process_FCM_Token();
+        Task<List<string>> Get_Employee_Secretary_FCM_Token(int Employee_Id);
     }
 }
