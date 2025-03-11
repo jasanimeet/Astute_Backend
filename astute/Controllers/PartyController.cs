@@ -17495,8 +17495,12 @@ namespace astute.Controllers
         {
             try
             {
+                string sound = "default";
+
                 var firebaseConfig = _configuration.GetSection("FirebaseConfig");
+                
                 string projectId = firebaseConfig["ProjectId"];
+                
                 var serviceAccountJson = firebaseConfig.GetSection("ServiceAccount").Get<Dictionary<string, string>>();
 
                 if (string.IsNullOrEmpty(projectId) || serviceAccountJson == null)
@@ -17524,6 +17528,23 @@ namespace astute.Controllers
                             {
                                 body = body,
                                 title = title
+                            },
+                            android = new
+                            {
+                                notification = new
+                                {
+                                    sound = sound
+                                }
+                            },
+                            apns = new
+                            {
+                                payload = new
+                                {
+                                    aps = new
+                                    {
+                                        sound = sound
+                                    }
+                                }
                             }
                         }
                     };
