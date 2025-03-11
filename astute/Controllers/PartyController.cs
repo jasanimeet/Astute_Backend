@@ -14813,6 +14813,69 @@ namespace astute.Controllers
                 });
             }
         }
+        
+        [HttpGet]
+        [Route("order_process_pending_fcm_token")]
+        public async Task<IActionResult> Order_Process_Pending_FCM_Token()
+        {
+            try
+            {
+                var result = await _supplierService.Order_Process_Pending_FCM_Token();
+                if (result != null && result.Count > 0)
+                {
+                    foreach (var res in result)
+                    {
+                        List<string> DeviceIds = new List<string>();
+
+                        if (res.ContainsKey("FCMToken_ANDROID_E") && res["FCMToken_ANDROID_E"] != null)
+                            DeviceIds.Add(res["FCMToken_ANDROID_E"].ToString());
+
+                        if (res.ContainsKey("FCMToken_IPHONE_E") && res["FCMToken_IPHONE_E"] != null)
+                            DeviceIds.Add(res["FCMToken_IPHONE_E"].ToString());
+
+                        if (res.ContainsKey("FCMToken_ANDROID_S") && res["FCMToken_ANDROID_S"] != null)
+                            DeviceIds.Add(res["FCMToken_ANDROID_S"].ToString());
+
+                        if (res.ContainsKey("FCMToken_IPHONE_S") && res["FCMToken_IPHONE_S"] != null)
+                            DeviceIds.Add(res["FCMToken_IPHONE_S"].ToString());
+
+                        string Order_No = res["Order_No"]?.ToString();
+
+                        if (DeviceIds.Count > 0)
+                        {
+                            string title = $"Order from ConnectGIA";
+
+                            string customerName = res["Customer_Name"]?.ToString();
+
+                            if (string.IsNullOrWhiteSpace(customerName))
+                            {
+                                customerName = "Sunrise Diamonds Ltd";
+                            }
+
+                            string body = $"New order #{Order_No} received from {customerName}";
+
+                            await Firebase_Messaging_Notification(DeviceIds: DeviceIds, title: title, body: body);
+                        }
+
+                        var result_Update = await _supplierService.Order_Process_Pending_FCM_Token_Update(Order_No);
+                    }
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.Notification_Connect_Gia_Order_Send
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Order_Process_Pending_FCM_Token", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
 
         #endregion
 

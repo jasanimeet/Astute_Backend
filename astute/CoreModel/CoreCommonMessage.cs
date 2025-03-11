@@ -467,6 +467,7 @@
 
         #region Notification
         public static string Notification_Updated_Read_By = "Notification has been read by user" + UpdatedSuccessfully;
+        public static string Notification_Connect_Gia_Order_Send = "Notification has been send for connect gia order";
         #endregion
 
         #region Import Master

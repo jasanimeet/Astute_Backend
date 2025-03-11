@@ -4032,6 +4032,48 @@ namespace astute.Repository
             return result;
         }
 
+        public async Task<List<Dictionary<string, object>>> Order_Process_Pending_FCM_Token()
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Order_Process_Pending_FCM_Token", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public async Task<int> Order_Process_Pending_FCM_Token_Update(string Order_No)
+        {
+            var _Order_No = new SqlParameter("@Order_No", Order_No);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Order_Process_Pending_FCM_Token_Update @Order_No",  _Order_No));
+
+            return result;
+        }
         #endregion
 
         #region Party Url Format
