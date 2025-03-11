@@ -231,7 +231,7 @@ namespace astute.Controllers
             try
             {
                 var result = await _oracleService.Get_Fortune_Sunrise_Data();
-                if (result != null && result > 0)
+                if (result > 0)
                 {
                     return Ok(new
                     {
@@ -244,6 +244,33 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Fortune_Sunrise_Data", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_lab_entry_live_data_fortune")]
+        public async Task<IActionResult> Get_Lab_Entry_Live_Data_Fortune()
+        {
+            try
+            {
+                var result = await _oracleService.Get_Lab_Entry_Live_Data_Fortune();
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.Fortune_Lab_Entry_Live_Data_Update
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Lab_Entry_Live_Data_Fortune", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message

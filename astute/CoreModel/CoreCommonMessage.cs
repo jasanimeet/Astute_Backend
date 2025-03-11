@@ -425,6 +425,8 @@
         public static string Fortune_Overseas_Live_Data_Added = Fortune_Overseas_Live_Data + AddedSuccessfully;
         public static string Fortune_Sunrise_Data = "Fortune Sunrise Live Data";
         public static string Fortune_Sunrise_Data_Added = Fortune_Sunrise_Data + AddedSuccessfully;
+        public static string Fortune_Lab_Entry_Live_Data = "Fortune Lab Entry Live Data";
+        public static string Fortune_Lab_Entry_Live_Data_Update = Fortune_Lab_Entry_Live_Data + UpdatedSuccessfully;
 
 
         #endregion

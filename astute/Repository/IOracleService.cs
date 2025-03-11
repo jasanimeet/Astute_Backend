@@ -21,5 +21,6 @@ namespace astute.Repository
         Task<int> Sun_Pur_Notification();
         Task<int> Get_Fortune_Overseas_Data();
         Task<int> Get_Fortune_Sunrise_Data();
+        Task<int> Get_Lab_Entry_Live_Data_Fortune();
     }
 }

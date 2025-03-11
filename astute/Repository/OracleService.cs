@@ -1547,7 +1547,7 @@ namespace astute.Repository
 
             return r;
         }
-
+        
         public async Task<int> Get_Fortune_Overseas_Data()
         {
             List<OracleParameter> paramList = new List<OracleParameter>();
@@ -1704,6 +1704,47 @@ namespace astute.Repository
             });
 
             return result;
+        }
+
+        public async Task<int> Get_Lab_Entry_Live_Data_Fortune()
+        {
+            int r = 0;
+
+            List<OracleParameter> paramList = new List<OracleParameter>();
+
+            OracleParameter param1 = new OracleParameter("vrec", OracleDbType.RefCursor);
+            param1.Direction = ParameterDirection.Output;
+            paramList.Add(param1);
+
+            DataTable dt = await _dbOracleAccess.CallSP_Timeout("web_trans.get_live_data_fortune", paramList);
+
+            if (dt != null)
+            {
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("REF_NO", typeof(string));
+                dataTable.Columns.Add("RF_ID", typeof(string));
+                dataTable.Columns.Add("SUNRISE_STATUS", typeof(string));
+                dataTable.Columns.Add("FORTUNE_SOURCE_PARTY", typeof(string));
+                dataTable.Columns.Add("UPCOMING_FLAG", typeof(string));
+
+                foreach (DataRow item in dt.Rows)
+                {
+                    dataTable.Rows.Add(item["REF_NO"], item["RF_ID"], item["SUNRISE_STATUS"], item["SOURCE_PARTY"], item["UPCOMING_FLAG"]);
+                }
+
+                var parameter = new SqlParameter("@Lab_Entry_Live_Data_Fortune_Table_Type", SqlDbType.Structured)
+                {
+                    TypeName = "[dbo].[Lab_Entry_Live_Data_Fortune_Table_Type]",
+                    Value = dataTable
+                };
+
+                var result = await Task.Run(() => _dbContext.Database
+                       .ExecuteSqlRawAsync(@"EXEC [Lab_Entry_Live_Data_Fortune_Update_Oracle] @Lab_Entry_Live_Data_Fortune_Table_Type", parameter));
+
+                r = result;
+            }
+
+            return r;
         }
 
         #endregion
