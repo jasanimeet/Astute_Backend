@@ -10207,7 +10207,7 @@ namespace astute.CoreServices
 
                     ExcelWorksheet worksheet = ep.Workbook.Worksheets[0];
 
-                    worksheet.Name = DateTime.Now.ToString("dd-MM-yyyy");
+                    worksheet.Name = "Sheet1";
                     worksheet.Cells.Style.Font.Size = 11;
                     worksheet.Cells.Style.Font.Name = "Calibri";
 
