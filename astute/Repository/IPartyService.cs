@@ -141,5 +141,12 @@ namespace astute.Repository
         Task<DataTable> Get_Supplier_Stock_Upload_Status();
 
         #endregion
+
+        #region Connect GIA Report Layout Save
+
+        Task<List<Report_Layout_Save>> Get_Connect_GIA_Result_Layout(int User_Id, int Rm_Id);
+        Task<List<Report_Layout_Save_Detail>> Get_Connect_GIA_Result_Column_Caption(int? user_Pricing_Id);
+        
+        #endregion
     }
 }

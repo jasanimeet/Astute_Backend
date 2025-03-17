@@ -1370,5 +1370,31 @@ namespace astute.Repository
         }
 
         #endregion
+
+        #region Connect GIA Report Layout Save
+        public async Task<List<Report_Layout_Save_Detail>> Get_Connect_GIA_Result_Column_Caption(int? user_Pricing_Id)
+        {
+            var _user_Pricing_Id = user_Pricing_Id > 0 ? new SqlParameter("@User_Pricing_Id", user_Pricing_Id) : new SqlParameter("@User_Pricing_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Report_Layout_Save_Detail
+                            .FromSqlRaw(@"exec Connect_GIA_Result_Column_Caption_Select @User_Pricing_Id", _user_Pricing_Id)
+                            .AsEnumerable()
+                            .ToList());
+
+            return result;
+        }
+
+        public async Task<List<Report_Layout_Save>> Get_Connect_GIA_Result_Layout(int User_Id, int Rm_Id)
+        {
+            var user_Id = User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value);
+            var rm_Id = Rm_Id > 0 ? new SqlParameter("@Rm_Id", Rm_Id) : new SqlParameter("@Rm_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Report_Layout_Save
+                            .FromSqlRaw(@"EXEC Connect_GIA_Report_Layout_Save_Select @User_Id,@Rm_Id", user_Id, rm_Id)
+                            .ToListAsync());
+
+            return result;
+        }
+        #endregion
     }
 }

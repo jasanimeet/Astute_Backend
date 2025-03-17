@@ -4139,5 +4139,107 @@ namespace astute.Repository
 
         #endregion
 
+        #region Connect GIA Report Layout Save
+
+        public async Task<List<Dictionary<string, object>>> Get_Connect_GIA_Report_Users_Role(int id, int user_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Connect_GIA_Report_Users_Role_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(id > 0 ? new SqlParameter("@Id", id) : new SqlParameter("@Id", DBNull.Value));
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public async Task<IList<Report_Layout_Save>> Get_Connect_GIA_Report_Layout_Save(int User_Id, int Rm_Id)
+        {
+            var user_Id = User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value);
+            var rm_Id = Rm_Id > 0 ? new SqlParameter("@Rm_Id", Rm_Id) : new SqlParameter("@Rm_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Report_Layout_Save
+                            .FromSqlRaw(@"EXEC Connect_GIA_Report_Layout_Save_Select @User_Id,@Rm_Id", user_Id, rm_Id)
+                            .ToListAsync());
+            if (result != null && result.Count > 0)
+            {
+                foreach (var item in result)
+                {
+                    var report_layout_Id = item.Id > 0 ? new SqlParameter("@Report_Layout_Id", item.Id) : new SqlParameter("@Report_Layout_Id", DBNull.Value);
+
+                    item.Report_Layout_Save_Detail_List = await Task.Run(() => _dbContext.Report_Layout_Save_Detail
+                            .FromSqlRaw(@"EXEC Connect_GIA_Report_Layout_Save_Detail_Select @Report_Layout_Id", report_layout_Id)
+                            .ToListAsync());
+                }
+            }
+            return result;
+        }
+        
+        public async Task<(string, int)> Create_Update_Connect_GIA_Report_Layout_Save(Report_Layout_Save report_Layout_Save)
+        {
+            var id = new SqlParameter("@Id", report_Layout_Save.Id);
+            var user_Id = new SqlParameter("@User_Id", report_Layout_Save.User_Id);
+            var rm_Id = new SqlParameter("@Rm_Id", report_Layout_Save.Rm_Id);
+            var name = !string.IsNullOrEmpty(report_Layout_Save.Name) ? new SqlParameter("@Name", report_Layout_Save.Name) : new SqlParameter("@Name", DBNull.Value);
+            var status = new SqlParameter("@Status", report_Layout_Save.Status);
+            var insertedId = new SqlParameter("@Inserted_Id", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            var is_Exist = new SqlParameter("@IsExist", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var result = await Task.Run(() => _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Connect_GIA_Report_Layout_Save_Insert_Update @Id, @User_Id,@Rm_Id, @Name, @Status, @Inserted_Id OUT, @IsExist OUT",
+                id, user_Id, rm_Id, name, status, insertedId, is_Exist));
+
+            if ((int)is_Exist.Value == 1)
+            {
+                return ("exist", 0);
+            }
+            else
+            {
+                var _inserted_Id = (int)insertedId.Value;
+                return ("success", _inserted_Id);
+            }
+        }
+        
+        public async Task<int> Insert_Update_Connect_GIA_Report_Layout_Save_Detail(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@tblConnect_GIA_Report_Layout_Save_Detail", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Report_Layout_Save_Detail_Table_Type",
+                Value = dataTable
+            };
+
+            var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Connect_GIA_Report_Layout_Save_Detail_Insert_Update @tblConnect_GIA_Report_Layout_Save_Detail", parameter);
+
+            return result;
+        }
+
+        #endregion
     }
 }

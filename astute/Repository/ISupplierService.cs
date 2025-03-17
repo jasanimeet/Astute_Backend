@@ -174,5 +174,12 @@ namespace astute.Repository
         #region Get Lastest Supplier Stock
         Task<DataTable> Get_Latest_Supplier_Stock_Excel_Download(int supplier_Id);
         #endregion
+
+        #region Connect GIA Report Layout Save
+        Task<IList<Report_Layout_Save>> Get_Connect_GIA_Report_Layout_Save(int User_Id, int Rm_Id);
+        Task<List<Dictionary<string, object>>> Get_Connect_GIA_Report_Users_Role(int id, int user_Id);
+        Task<(string, int)> Create_Update_Connect_GIA_Report_Layout_Save(Report_Layout_Save report_Layout_Save);
+        Task<int> Insert_Update_Connect_GIA_Report_Layout_Save_Detail(DataTable dataTable);
+        #endregion
     }
 }

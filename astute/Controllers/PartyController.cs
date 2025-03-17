@@ -4698,7 +4698,7 @@ namespace astute.Controllers
                 });
             }
         }
-
+        
         [HttpGet]
         [Route("get_report_users_role_format_type")]
         [Authorize]
@@ -17629,6 +17629,189 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Firebase_Messaging_Notification", ex.StackTrace);
+            }
+        }
+
+        #endregion
+
+        #region Connect GIA Report Layout Save
+        
+        [HttpGet]
+        [Route("get_connect_gia_result_layout_detail")]
+        [Authorize]
+        public async Task<IActionResult> Get_Connect_GIA_Result_Layout_Detail(int user_pricing_id, int Rm_Id)
+        {
+            try
+            {
+                List<Report_Layout_Save> report_Layout_Saves = new List<Report_Layout_Save>();
+
+                report_Layout_Saves = await _partyService.Get_Connect_GIA_Result_Layout(user_pricing_id, Rm_Id);
+                
+                var customer_Column_Captions = await _partyService.Get_Connect_GIA_Result_Column_Caption(user_pricing_id);
+
+                if (report_Layout_Saves == null || report_Layout_Saves.Count == 0)
+                {
+                    report_Layout_Saves = new List<Report_Layout_Save>
+                    {
+                        new Report_Layout_Save
+                        {
+                            Id = 0,
+                            User_Id = user_pricing_id,
+                            Rm_Id = Rm_Id,
+                            Name = "DEFAULT",
+                            Status = false,
+                            Report_Layout_Save_Detail_List = customer_Column_Captions
+                        }
+                    };
+                }
+                else 
+                {
+                    report_Layout_Saves[0].User_Id = user_pricing_id; 
+                    report_Layout_Saves[0].Rm_Id = Rm_Id; 
+                    report_Layout_Saves[0].Report_Layout_Save_Detail_List = customer_Column_Captions; 
+                }
+
+                if (report_Layout_Saves != null && (customer_Column_Captions != null))
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        report_Layout_Saves = report_Layout_Saves
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Connect_GIA_Result_Layout_Detail", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("create_update_connect_gia_report_layout_save")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Connect_GIA_Report_Layout_Save(Report_Layout_Save report_Layout_Save)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var (message, report_layout_save_Id) = await _supplierService.Create_Update_Connect_GIA_Report_Layout_Save(report_Layout_Save);
+
+                    if (message == "success" && report_layout_save_Id > 0)
+                    {
+                        if (report_Layout_Save.Report_Layout_Save_Detail_List != null && report_Layout_Save.Report_Layout_Save_Detail_List.Count > 0)
+                        {
+                            DataTable dataTable = new DataTable();
+                            dataTable.Columns.Add("Id", typeof(int));
+                            dataTable.Columns.Add("Report_Layout_Id", typeof(int));
+                            dataTable.Columns.Add("colId", typeof(string));
+                            dataTable.Columns.Add("width", typeof(int));
+                            dataTable.Columns.Add("hide", typeof(bool));
+                            dataTable.Columns.Add("pinned", typeof(string));
+                            dataTable.Columns.Add("sort", typeof(string));
+                            dataTable.Columns.Add("sortIndex", typeof(int));
+                            dataTable.Columns.Add("aggFunc", typeof(string));
+                            dataTable.Columns.Add("rowGroup", typeof(bool));
+                            dataTable.Columns.Add("rowGroupIndex", typeof(int));
+                            dataTable.Columns.Add("pivot", typeof(bool));
+                            dataTable.Columns.Add("pivotIndex", typeof(int));
+                            dataTable.Columns.Add("flex", typeof(int));
+
+                            foreach (var item in report_Layout_Save.Report_Layout_Save_Detail_List)
+                            {
+                                dataTable.Rows.Add(item.Id, report_layout_save_Id, item.colId, item.width, item.hide, item.pinned, item.sort, item.sortIndex, item.aggFunc, item.rowGroup, item.rowGroupIndex, item.pivot, item.pivotIndex, item.flex);
+                            }
+                            await _supplierService.Insert_Update_Connect_GIA_Report_Layout_Save_Detail(dataTable);
+                        }
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = report_Layout_Save.Id > 0 ? CoreCommonMessage.LayoutReportUpdated : CoreCommonMessage.LayoutReportCreated
+                        });
+                    }
+                    else if (message == "exist")
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.LayoutReportNameExist,
+                        });
+
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Connect_GIA_Report_Layout_Save", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_connect_gia_report_users_role")]
+        [Authorize]
+        public async Task<IActionResult> Get_Connect_GIA_Report_Users_Role(int id, int user_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Connect_GIA_Report_Users_Role(id, user_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Connect_GIA_Report_Users_Role", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        
+        [HttpGet]
+        [Route("get_connect_gia_report_layout_save")]
+        [Authorize]
+        public async Task<IActionResult> Get_Connect_GIA_Report_Layout_Save(int User_Id, int Rm_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Connect_GIA_Report_Layout_Save(User_Id, Rm_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Connect_GIA_Report_Layout_Save", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
             }
         }
 
