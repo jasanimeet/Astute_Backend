@@ -13756,17 +13756,17 @@ namespace astute.Controllers
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
                 var result = await _supplierService.Get_Lab_Entry_Detail_For_Shipment_Verification(lab_Entry_Detail_For_Shipment.Supplier_Id ?? 0, lab_Entry_Detail_For_Shipment.Certificate_No);
-                
+
                 var result_Message = await _supplierService.Get_Unavailable_Lab_Entry_Detail_For_Shipment_Verification(lab_Entry_Detail_For_Shipment.Certificate_No);
 
-                    return Ok(new
-                    {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.DataSuccessfullyFound,
-                        unavailable_message = result_Message,
-                        data = result
-                    });
-                }
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    message = CoreCommonMessage.DataSuccessfullyFound,
+                    unavailable_message = result_Message,
+                    data = result
+                });
+            }
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Lab_Entry_Detail_For_Shipment", ex.StackTrace);
@@ -17362,6 +17362,64 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Krisha_Stock", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = ex.Message,
+                    error = ex.StackTrace
+                });
+            }
+        }
+
+        #endregion
+
+        #region Get Supplier Stock Get Post
+
+        [HttpPost]
+        [Route("get_supplier_stock_get_post")]
+        public async Task<IActionResult> Get_Supplier_Stock_Get_Post(Supplier_Stock_Get_Post_Model supplier_Stock_Get_Post_Model)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var request = new HttpRequestMessage(supplier_Stock_Get_Post_Model.Stock_Method.Equals("GET", StringComparison.OrdinalIgnoreCase) ? HttpMethod.Get : HttpMethod.Post, supplier_Stock_Get_Post_Model.Stock_Url);
+                    
+                    var response = await client.SendAsync(request);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseString = await response.Content.ReadAsStringAsync();
+
+                        return StatusCode((int)response.StatusCode, responseString);
+                    }
+                    else
+                    {
+                        var errorDetails = await response.Content.ReadAsStringAsync();
+
+                        await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_Supplier_Stock_Get_Post", errorDetails);
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.ApiFailed,
+                            error = errorDetails
+                        });
+                    }
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                await _commonService.InsertErrorLog(httpEx.Message, "Get_Supplier_Stock_Get_Post", httpEx.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = CoreCommonMessage.ApiError,
+                    error = httpEx.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_Stock_Get_Post", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     statusCode = HttpStatusCode.InternalServerError,
