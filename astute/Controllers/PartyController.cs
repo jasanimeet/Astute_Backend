@@ -13759,8 +13759,6 @@ namespace astute.Controllers
                 
                 var result_Message = await _supplierService.Get_Unavailable_Lab_Entry_Detail_For_Shipment_Verification(lab_Entry_Detail_For_Shipment.Certificate_No);
 
-                if (result != null && result.Count > 0)
-                {
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
@@ -13769,8 +13767,6 @@ namespace astute.Controllers
                         data = result
                     });
                 }
-                return NoContent();
-            }
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Lab_Entry_Detail_For_Shipment", ex.StackTrace);
