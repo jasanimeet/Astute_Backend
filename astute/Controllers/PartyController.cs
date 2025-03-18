@@ -14873,6 +14873,45 @@ namespace astute.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("update_purchase_master_file_status")]
+        [Authorize]
+        public async Task<IActionResult> Update_Purchase_Master_File_Status(int Trans_Id, bool File_Status)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if (Trans_Id > 0)
+                {
+                    var result = await _supplierService.Update_Purchase_Master_File_Status(Trans_Id, File_Status, user_Id ?? 0);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.Purchase_Updated
+                        });
+                    }
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (SqlException ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Purchase_Master_File_Status", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Lab User Activity

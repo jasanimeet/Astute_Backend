@@ -4074,6 +4074,18 @@ namespace astute.Repository
 
             return result;
         }
+
+        public async Task<int> Update_Purchase_Master_File_Status(int Trans_Id, bool File_Status, int User_Id)
+        {
+            var trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
+            var file_Status = new SqlParameter("@File_Status", File_Status);
+            var user_Id = new SqlParameter("@User_Id", User_Id);
+
+            var result = await _dbContext.Database
+                                .ExecuteSqlRawAsync("EXEC Purchase_Master_File_Status_Update @Trans_Id, @File_Status, @User_Id", trans_Id, file_Status, user_Id);
+
+            return result;
+        }
         #endregion
 
         #region Party Url Format
