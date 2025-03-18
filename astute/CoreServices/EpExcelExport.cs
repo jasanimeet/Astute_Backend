@@ -10491,9 +10491,9 @@ namespace astute.CoreServices
                             worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
                             worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
 
-                            ExcelStyle cellStyleHeader_RapAmt = worksheet.Cells[1, kkk].Style;
-                            cellStyleHeader_RapAmt.Border.Left.Style = cellStyleHeader_RapAmt.Border.Right.Style
-                                    = cellStyleHeader_RapAmt.Border.Top.Style = cellStyleHeader_RapAmt.Border.Bottom.Style
+                            ExcelStyle cellStyleHeader_FinalValue = worksheet.Cells[1, kkk].Style;
+                            cellStyleHeader_FinalValue.Border.Left.Style = cellStyleHeader_FinalValue.Border.Right.Style
+                                    = cellStyleHeader_FinalValue.Border.Top.Style = cellStyleHeader_FinalValue.Border.Bottom.Style
                                     = ExcelBorderStyle.Medium;
                         }
                         else if (Column_Name == "Supplier Final Value")
@@ -10503,22 +10503,29 @@ namespace astute.CoreServices
                             worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
                             worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
 
-                            ExcelStyle cellStyleHeader_RapAmt = worksheet.Cells[1, kkk].Style;
-                            cellStyleHeader_RapAmt.Border.Left.Style = cellStyleHeader_RapAmt.Border.Right.Style
-                                    = cellStyleHeader_RapAmt.Border.Top.Style = cellStyleHeader_RapAmt.Border.Bottom.Style
+                            ExcelStyle cellStyleHeader_SupplierFinalValue = worksheet.Cells[1, kkk].Style;
+                            cellStyleHeader_SupplierFinalValue.Border.Left.Style = cellStyleHeader_SupplierFinalValue.Border.Right.Style
+                                    = cellStyleHeader_SupplierFinalValue.Border.Top.Style = cellStyleHeader_SupplierFinalValue.Border.Bottom.Style
                                     = ExcelBorderStyle.Medium;
                         }
                         else if (Column_Name == "Supplier Per Carat")
                         {
-                            worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
-                            worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                            worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                            worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
+                            int ctsColumnIndex = GetColumnIndexByName(worksheet, "Cts");
+                            int supplierFinalValueColumnIndex = GetColumnIndexByName(worksheet, "Supplier Final Value");
 
-                            ExcelStyle cellStyleHeader_RapAmt = worksheet.Cells[1, kkk].Style;
-                            cellStyleHeader_RapAmt.Border.Left.Style = cellStyleHeader_RapAmt.Border.Right.Style
-                                    = cellStyleHeader_RapAmt.Border.Top.Style = cellStyleHeader_RapAmt.Border.Bottom.Style
-                                    = ExcelBorderStyle.Medium;
+                            if (ctsColumnIndex > 0 && supplierFinalValueColumnIndex > 0)
+                            {
+                                worksheet.Cells[1, kkk].Formula = "=" + GetExcelColumnLetter(supplierFinalValueColumnIndex) + "1/" + GetExcelColumnLetter(ctsColumnIndex) + "1";
+
+                                worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
+
+                                ExcelStyle cellStyleHeader_SupplierPerCarat = worksheet.Cells[1, kkk].Style;
+                                cellStyleHeader_SupplierPerCarat.Border.Left.Style = cellStyleHeader_SupplierPerCarat.Border.Right.Style
+                                        = cellStyleHeader_SupplierPerCarat.Border.Top.Style = cellStyleHeader_SupplierPerCarat.Border.Bottom.Style
+                                        = ExcelBorderStyle.Medium;
+                            }
                         }
                     }
 
@@ -10547,6 +10554,17 @@ namespace astute.CoreServices
                 throw;
             }
         }
-
+        
+        private static int GetColumnIndexByName(ExcelWorksheet worksheet, string columnName)
+        {
+            for (int col = 1; col <= worksheet.Dimension.End.Column; col++)
+            {
+                if (worksheet.Cells[2, col].Text.Trim().Equals(columnName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return col;
+                }
+            }
+            return -1;
+        }
     }
 }
