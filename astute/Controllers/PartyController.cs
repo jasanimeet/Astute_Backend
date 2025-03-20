@@ -7721,7 +7721,7 @@ namespace astute.Controllers
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                var dt_Order = await _supplierService.Get_Lab_Entry_Report_Data(user_Id ?? 0, report_Lab_Entry_Filter);
+                var dt_Order = await _supplierService.Get_Lab_Entry_Report_Data_Dynamic(user_Id ?? 0, report_Lab_Entry_Filter);
 
                 if (dt_Order != null && dt_Order.Rows.Count > 0)
                 {

@@ -9286,7 +9286,7 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
-                                else if (Column_Name == "Supp Base Disc%")
+                                else if (Column_Name == "Supp Base Disc %")
                                 {
                                     string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
@@ -9298,7 +9298,7 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
-                                else if (Column_Name == "Supp Cost Disc%")
+                                else if (Column_Name == "Supp Cost Disc %")
                                 {
                                     string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
@@ -9316,7 +9316,7 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(blue);
                                 }
-                                else if (Column_Name == "Final Disc%")
+                                else if (Column_Name == "Final Disc %")
                                 {
                                     string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
@@ -9336,7 +9336,7 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(common_bg);
                                 }
-                                else if (Column_Name == "Web Disc%")
+                                else if (Column_Name == "Web Disc %")
                                 {
                                     string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
@@ -9348,7 +9348,7 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
-                                else if (Column_Name == "Net Disc%")
+                                else if (Column_Name == "Net Disc %")
                                 {
                                     string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
@@ -9360,7 +9360,7 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
-                                else if (Column_Name == "Profit%")
+                                else if (Column_Name == "Profit %")
                                 {
                                     string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
@@ -9433,14 +9433,14 @@ namespace astute.CoreServices
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
                                 }
-                                else if (Column_Name == "Depth%")
+                                else if (Column_Name == "Depth %")
                                 {
                                     string pepth_per = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pepth_per) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
                                 }
-                                else if (Column_Name == "Table%")
+                                else if (Column_Name == "Table %")
                                 {
                                     string table_Per = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(table_Per) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
@@ -9455,7 +9455,7 @@ namespace astute.CoreServices
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                 }
-                                else if (Column_Name == "Girdle%")
+                                else if (Column_Name == "Girdle %")
                                 {
                                     string girdle_Per = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(girdle_Per) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
@@ -9552,6 +9552,10 @@ namespace astute.CoreServices
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                 }
+                                else if (Column_Name == "Fortune Source Company")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
+                                }
                                 else if (Column_Name == "Supp Verified Disc%")
                                 {
                                     string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
@@ -9612,7 +9616,7 @@ namespace astute.CoreServices
                                     = cellStyleHeader_RapAmt.Border.Top.Style = cellStyleHeader_RapAmt.Border.Bottom.Style
                                     = ExcelBorderStyle.Medium;
                         }
-                        else if (Column_Name == "Supp Base Disc%")
+                        else if (Column_Name == "Supp Base Disc %")
                         {
                             worksheet.Cells[1, kkk].Formula = "ROUND(AVERAGE(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "), 2)";
                             worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
@@ -9629,7 +9633,7 @@ namespace astute.CoreServices
                                     = cellStyleHeader_TotalAmt.Border.Top.Style = cellStyleHeader_TotalAmt.Border.Bottom.Style
                                     = ExcelBorderStyle.Medium;
                         }
-                        else if (Column_Name == "Final Disc%")
+                        else if (Column_Name == "Final Disc %")
                         {
                             worksheet.Cells[1, kkk].Formula = "ROUND(AVERAGE(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "), 2)";
                             worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
@@ -9646,7 +9650,7 @@ namespace astute.CoreServices
                                     = cellStyleHeader_TotalAmt.Border.Top.Style = cellStyleHeader_TotalAmt.Border.Bottom.Style
                                     = ExcelBorderStyle.Medium;
                         }
-                        else if (Column_Name == "Supp Cost Disc%")
+                        else if (Column_Name == "Supp Cost Disc %")
                         {
                             worksheet.Cells[1, kkk].Formula = "ROUND(AVERAGE(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "), 2)";
                             worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
