@@ -14677,9 +14677,11 @@ namespace astute.Controllers
             try
             {
                 var result = await _supplierService.Get_Purchase_Detail_Excel(Trans_Id ?? 0);
+
+                var pricing_result = await _supplierService.Get_Purchase_Pricing_Excel(Trans_Id ?? 0);
                 Purchase_Invoice_No = Purchase_Invoice_No.Split('-')[0]; // Extracts "P00013"
 
-                if (result != null && result.Rows.Count > 0)
+                if (result != null && result.Rows.Count > 0 && pricing_result != null && pricing_result.Rows.Count > 0)
                 {
                     var excelPath = string.Empty;
                     var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadShipmentVerificationExcelFiles/");
@@ -14705,7 +14707,21 @@ namespace astute.Controllers
                         columnNamesTable.Rows.Add(columnName);
                     }
 
-                    EpExcelExport.Create_Purchase_Detail_Excel(result, columnNamesTable, filePath, filePath + filename);
+                    List<string> pricing_columnNames = new List<string>();
+                    foreach (DataColumn pricing_column in pricing_result.Columns)
+                    {
+                        pricing_columnNames.Add(pricing_column.ColumnName);
+                    }
+
+                    DataTable pricing_columnNamesTable = new DataTable();
+                    pricing_columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string pricing_columnName in pricing_columnNames)
+                    {
+                        pricing_columnNamesTable.Rows.Add(pricing_columnName);
+                    }
+
+                    EpExcelExport.Create_Purchase_Detail_Excel(result, columnNamesTable, pricing_result, pricing_columnNamesTable, filePath, filePath + filename);
                     excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadShipmentVerificationExcelFiles + filename;
 
                     return Ok(new
