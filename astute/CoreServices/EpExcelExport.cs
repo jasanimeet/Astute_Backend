@@ -10577,11 +10577,11 @@ namespace astute.CoreServices
                             if (finalColumnIndex > 0 && rapColumnIndex > 0)
                             {
                                 worksheet.Cells[1, pkkk].Formula =
-                                                                    "=IFERROR(ROUND((SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + pinStartIndex +
+                                                                    "=IFERROR(ROUND((100-(SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + pinStartIndex +
                                                                     ":" + GetExcelColumnLetter(finalColumnIndex) + (pinwrkrow - 1) +
                                                                     ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + pinStartIndex +
                                                                     ":" + GetExcelColumnLetter(rapColumnIndex) + (pinwrkrow - 1) +
-                                                                    ")) * 100, 2), 0.00)";
+                                                                    ")) * 100), 2), 0.00)";
 
                                 worksheet.Cells[1, pkkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                 worksheet.Cells[1, pkkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
@@ -10649,11 +10649,11 @@ namespace astute.CoreServices
                             if (rapColumnIndex > 0 && supplierFinalValueColumnIndex > 0)
                             {
                                 worksheet.Cells[1, pkkk].Formula =
-                                                                    "=IFERROR(ROUND((SUBTOTAL(109, " + GetExcelColumnLetter(supplierFinalValueColumnIndex) + pinStartIndex +
+                                                                    "=IFERROR(ROUND((100-(SUBTOTAL(109, " + GetExcelColumnLetter(supplierFinalValueColumnIndex) + pinStartIndex +
                                                                     ":" + GetExcelColumnLetter(supplierFinalValueColumnIndex) + (pinwrkrow - 1) +
                                                                     ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + pinStartIndex +
                                                                     ":" + GetExcelColumnLetter(rapColumnIndex) + (pinwrkrow - 1) +
-                                                                    ")) * 100, 2), 0.00)";
+                                                                    ")) * 100), 2), 0.00)";
 
                                 worksheet.Cells[1, pkkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                 worksheet.Cells[1, pkkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
@@ -11382,11 +11382,11 @@ namespace astute.CoreServices
                             if (finalColumnIndex > 0 && rapColumnIndex > 0)
                             {
                                 worksheet.Cells[1, pkkk].Formula =
-                                                                    "=IFERROR(ROUND((SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + pinStartIndex +
+                                                                    "=IFERROR(ROUND((100-(SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + pinStartIndex +
                                                                     ":" + GetExcelColumnLetter(finalColumnIndex) + (pinwrkrow - 1) +
                                                                     ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + pinStartIndex +
                                                                     ":" + GetExcelColumnLetter(rapColumnIndex) + (pinwrkrow - 1) +
-                                                                    ")) * 100, 2), 0.00)";
+                                                                    ")) * 100), 2), 0.00)";
 
                                 worksheet.Cells[1, pkkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                 worksheet.Cells[1, pkkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
@@ -11454,11 +11454,11 @@ namespace astute.CoreServices
                             if (rapColumnIndex > 0 && supplierFinalValueColumnIndex > 0)
                             {
                                 worksheet.Cells[1, pkkk].Formula =
-                                                                    "=IFERROR(ROUND((SUBTOTAL(109, " + GetExcelColumnLetter(supplierFinalValueColumnIndex) + pinStartIndex +
+                                                                    "=IFERROR(ROUND((100-(SUBTOTAL(109, " + GetExcelColumnLetter(supplierFinalValueColumnIndex) + pinStartIndex +
                                                                     ":" + GetExcelColumnLetter(supplierFinalValueColumnIndex) + (pinwrkrow - 1) +
                                                                     ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + pinStartIndex +
                                                                     ":" + GetExcelColumnLetter(rapColumnIndex) + (pinwrkrow - 1) +
-                                                                    ")) * 100, 2), 0.00)";
+                                                                    ")) * 100), 2), 0.00)";
 
                                 worksheet.Cells[1, pkkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                 worksheet.Cells[1, pkkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
