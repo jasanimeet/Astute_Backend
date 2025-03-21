@@ -10219,7 +10219,7 @@ namespace astute.CoreServices
 
                     ExcelWorksheet worksheet = ep.Workbook.Worksheets[0];
 
-                    worksheet.Name = "Pricing_Layout";
+                    worksheet.Name = "Pricing Layout";
                     worksheet.Cells.Style.Font.Size = 11;
                     worksheet.Cells.Style.Font.Name = "Calibri";
 
@@ -10336,7 +10336,7 @@ namespace astute.CoreServices
 
                                     worksheet.Column(pkk).Hidden = true;
                                 }
-                                else if (Column_Name == "Final Disc" || Column_Name == "Final Value")
+                                else if (Column_Name == "Final Disc")
                                 {
                                     string pav_Height = Convert.ToString(pricing_dt.Rows[pi - pinStartIndex][Column_Name]);
 
@@ -10348,17 +10348,65 @@ namespace astute.CoreServices
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Font.Bold = true;
                                 }
-                                else if (Column_Name == "Profit (%)" || Column_Name == "Profit Value")
+                                else if (Column_Name == "Final Value")
                                 {
-                                    string pav_Height = Convert.ToString(pricing_dt.Rows[pi - pinStartIndex][Column_Name]);
+                                    int FinalColumnIndex = GetColumnIndexByName(worksheet, "Final Disc");
+                                    int RapColumnIndex = GetColumnIndexByName(worksheet, "Rap Value");
 
-                                    worksheet.Cells[pinwrkrow, pkk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(pricing_dt.Rows[pi - pinStartIndex][Column_Name]) : 0;
-                                    worksheet.Cells[pinwrkrow, pkk].Style.Numberformat.Format = "#,##0.00";
+                                    if (FinalColumnIndex > 0 && RapColumnIndex > 0)
+                                    {
+                                        worksheet.Cells[pinwrkrow, pkk].Formula = "IFERROR(((100 - " + GetExcelColumnLetter(FinalColumnIndex) + pi + ") * " + GetExcelColumnLetter(RapColumnIndex) + pi + ")/100,0)";
+                                        worksheet.Cells[pinwrkrow, pkk].Style.Numberformat.Format = "#,##0.00";
+                                    }
+
+                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(yellow);
+
+                                    worksheet.Cells[pinwrkrow, pkk].Style.Font.Bold = true;
+                                }
+                                else if (Column_Name == "Profit (%)")
+                                {
+                                    int ProfitColumnIndex = GetColumnIndexByName(worksheet, "Profit Value");
+                                    int SupplierColumnIndex = GetColumnIndexByName(worksheet, "Supplier Final Value");
+
+                                    if (ProfitColumnIndex > 0 && SupplierColumnIndex > 0)
+                                    {
+                                        worksheet.Cells[pinwrkrow, pkk].Formula = "IFERROR((" + GetExcelColumnLetter(ProfitColumnIndex) + pi + " / " + GetExcelColumnLetter(SupplierColumnIndex) + pi +")*100,0)";
+                                        worksheet.Cells[pinwrkrow, pkk].Style.Numberformat.Format = "#,##0.00";
+                                    }
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                     worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(light_yellow);
                                 }
-                                else if (Column_Name == "Supplier Final Disc(%)" || Column_Name == "Supplier Final Value")
+                                else if (Column_Name == "Profit Value")
+                                {
+                                    int FinalColumnIndex = GetColumnIndexByName(worksheet, "Final Value");
+                                    int SupplierColumnIndex = GetColumnIndexByName(worksheet, "Supplier Final Value");
+
+                                    if (FinalColumnIndex > 0 && SupplierColumnIndex > 0)
+                                    {
+                                        worksheet.Cells[pinwrkrow, pkk].Formula = "IFERROR((" + GetExcelColumnLetter(FinalColumnIndex) + pi + " - " + GetExcelColumnLetter(SupplierColumnIndex) + pi + "),0)";
+                                    worksheet.Cells[pinwrkrow, pkk].Style.Numberformat.Format = "#,##0.00";
+                                    }
+
+                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(light_yellow);
+                                }
+                                else if (Column_Name == "Supplier Final Disc(%)")
+                                {
+                                    int SupplierColumnIndex = GetColumnIndexByName(worksheet, "Supplier Final Value");
+                                    int RapColumnIndex = GetColumnIndexByName(worksheet, "Rap Value");
+
+                                    if (RapColumnIndex > 0 && SupplierColumnIndex > 0)
+                                    {
+                                        worksheet.Cells[pinwrkrow, pkk].Formula = "IFERROR((1 - (" + GetExcelColumnLetter(SupplierColumnIndex) + pi + " / " + GetExcelColumnLetter(RapColumnIndex) + pi + ")) * 100,0)";
+                                        worksheet.Cells[pinwrkrow, pkk].Style.Numberformat.Format = "#,##0.00";
+                                    }
+
+                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(pink);
+                                }
+                                else if (Column_Name == "Supplier Final Value")
                                 {
                                     string pav_Height = Convert.ToString(pricing_dt.Rows[pi - pinStartIndex][Column_Name]);
 
