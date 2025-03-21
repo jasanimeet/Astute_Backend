@@ -14499,7 +14499,7 @@ namespace astute.Controllers
                 });
             }
         }
-
+        
         [HttpDelete]
         [Route("delete_purchase")]
         [Authorize]
@@ -14928,6 +14928,92 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_purchase_pricing")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Pricing(int? Trans_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Purchase_Pricing(Trans_Id ?? 0);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Pricing", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        
+        [HttpGet]
+        [Route("get_purchase_pricing_excel")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Pricing_Excel(int? Trans_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Purchase_Pricing_Excel(Trans_Id ?? 0);
+                
+                if (result != null && result.Rows.Count > 0)
+                {
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadShipmentVerificationExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string filename = "Pricing_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+
+                    List<string> columnNames = new List<string>();
+                    foreach (DataColumn column in result.Columns)
+                    {
+                        columnNames.Add(column.ColumnName);
+                    }
+
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in columnNames)
+                    {
+                        columnNamesTable.Rows.Add(columnName);
+                    }
+
+                    EpExcelExport.Create_Purchase_Detail_Pricing_Excel(result, columnNamesTable, filePath, filePath + filename);
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.DownloadShipmentVerificationExcelFiles + filename;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Pricing_Excel", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        
         #endregion
 
         #region Lab User Activity
