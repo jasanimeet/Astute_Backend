@@ -8470,8 +8470,8 @@ namespace astute.Controllers
                             dataRow["Certificate_Date"] = Convert.ToDateTime(gIA_Report.Data.GetReport.ReportDate).ToString("dd-MM-yyyy");
                             if (arrMeasurements != null && arrMeasurements.Length == 3)
                             {
-                                var length = arrMeasurements[1].ToString().Replace("mm", "").Trim();
-                                var width = arrMeasurements[0].ToString().Replace("mm", "").Trim();
+                                var length = arrMeasurements[0].ToString().Replace("mm", "").Trim();
+                                var width = arrMeasurements[1].ToString().Replace("mm", "").Trim();
                                 var depth = arrMeasurements[2].ToString().Replace("mm", "").Trim();
                                 dataRow["Length"] = float.Parse(length);
                                 dataRow["Width"] = float.Parse(width);
@@ -8673,8 +8673,8 @@ namespace astute.Controllers
                                 dataRow["Certificate_Date"] = Convert.ToDateTime(gIA_Report.Data.GetReport.ReportDate).ToString("dd-MM-yyyy");
                                 if (arrMeasurements != null && arrMeasurements.Length == 3)
                                 {
-                                    var length = arrMeasurements[1].ToString().Replace("mm", "").Trim();
-                                    var width = arrMeasurements[0].ToString().Replace("mm", "").Trim();
+                                    var length = arrMeasurements[0].ToString().Replace("mm", "").Trim();
+                                    var width = arrMeasurements[1].ToString().Replace("mm", "").Trim();
                                     var depth = arrMeasurements[2].ToString().Replace("mm", "").Trim();
                                     dataRow["Length"] = float.Parse(length);
                                     dataRow["Width"] = float.Parse(width);
