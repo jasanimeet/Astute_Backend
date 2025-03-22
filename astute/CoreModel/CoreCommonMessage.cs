@@ -573,7 +573,7 @@
         public static string Purchase_Deleted = Purchase + DeletedSuccessfully;
         public static string ContractChangedSuccessMessage = "Contract successfully changed.";
         #endregion
-
+        
         #region Purchase Pricing
         public static string Purchase_Pricing = "Purchase Pricing";
         public static string Purchase_Pricing_Updated = Purchase_Pricing + UpdatedSuccessfully;

@@ -3942,7 +3942,7 @@ namespace astute.Repository
             }
             return result;
         }
-
+        
         public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Non_Status_Summary(string Stock_Id)
         {
             var result = new List<Dictionary<string, object>>();
@@ -4165,6 +4165,55 @@ namespace astute.Repository
 
             return result;
         }
+        
+        public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Status_Sunrise_Summary(string Sunrise_Stock_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Lab_Entry_Report_Status_Sunrise_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(Sunrise_Stock_Id) ? new SqlParameter("@Sunrise_Stock_Id", Sunrise_Stock_Id) : new SqlParameter("@Sunrise_Stock_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public async Task<int> Lab_Entry_Report_Status_Sunrise_Update(DataTable dataTable)
+        {
+            var Parameter = new SqlParameter("@Lab_Entry_Status_Update_Sunrise_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Lab_Entry_Status_Update_Sunrise_Table_Type]",
+                Value = dataTable
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Lab_Entry_Status_Sunrise_Update @Lab_Entry_Status_Update_Sunrise_Table_Type", Parameter));
+
+            return result;
+        }
+
         #endregion
 
         #region Party Url Format

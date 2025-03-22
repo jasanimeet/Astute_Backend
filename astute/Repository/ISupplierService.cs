@@ -168,6 +168,8 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Purchase_Pricing(int Trans_Id);
         Task<DataTable> Get_Purchase_Pricing_Excel(int Trans_Id);
         Task<int> Purchase_Detail_Pricing_Update(DataTable dataTable);
+        Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Status_Sunrise_Summary(string Sunrise_Stock_Id);
+        Task<int> Lab_Entry_Report_Status_Sunrise_Update(DataTable dataTable);
         #endregion
 
         #region Party Url Format

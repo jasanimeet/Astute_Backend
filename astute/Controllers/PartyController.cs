@@ -14549,7 +14549,7 @@ namespace astute.Controllers
                 var result = await _supplierService.Get_Lab_Entry_Report_Status_Summary(Stock_Id);
                 var result_non = await _supplierService.Get_Lab_Entry_Report_Non_Status_Summary(Stock_Id);
 
-                if ((result != null || result != null) && (result.Count > 0 || result_non.Count > 0))
+                if ((result != null || result_non != null) && (result.Count > 0 || result_non.Count > 0))
                 {
                     return Ok(new
                     {
@@ -15013,7 +15013,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpPost]
         [Route("update_purchase_detail_pricing")]
         [Authorize]
@@ -15051,6 +15051,81 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Update_Purchase_Detail_Pricing", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("get_lab_entry_report_status_sunrise_summary")]
+        [Authorize]
+        public async Task<IActionResult> Get_Lab_Entry_Report_Status_Sunrise_Summary(string Sunrise_Stock_Id)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Get_Lab_Entry_Report_Status_Sunrise_Summary(Sunrise_Stock_Id);
+
+                if ((result != null && result.Count > 0))
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result.Count > 0 ? result : null
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Lab_Entry_Report_Status_Sunrise_Summary", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("update_lab_entry_report_status_sunrise")]
+        [Authorize]
+        public async Task<IActionResult> Update_Lab_Entry_Report_Status_Sunrise(Lab_Entry_Status_List Lab_Entry_Status)
+        {
+            try
+            {
+                IList<Lab_Entry_Status> Lab_Entry_Status_List = JsonConvert.DeserializeObject<IList<Lab_Entry_Status>>(Lab_Entry_Status.Lab_Entry_Status.ToString());
+
+                DataTable statusDataTable = new DataTable();
+                statusDataTable.Columns.Add("Id", typeof(int));
+                statusDataTable.Columns.Add("Status", typeof(string));
+
+                foreach (var item in Lab_Entry_Status_List)
+                {
+                    statusDataTable.Rows.Add(
+                        item.Id ?? 0,
+                        item.Status
+                    );
+                }
+
+                var result = await _supplierService.Lab_Entry_Report_Status_Sunrise_Update(statusDataTable);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.StatusChangedSuccessMessage
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Lab_Entry_Report_Status_Sunrise", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
