@@ -9333,13 +9333,13 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(Supp_Cost);
                                 }
-                                else if (Column_Name == "Final Disc %")
+                                else if (Column_Name == "Offer Disc %")
                                 {
                                     string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
-                                else if (Column_Name == "Final Amount")
+                                else if (Column_Name == "Offer Amount")
                                 {
                                     string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
@@ -9357,7 +9357,7 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
                                 }
-                                else if (Column_Name == "Net Disc %")
+                                else if (Column_Name == "Final Disc %")
                                 {
                                     string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
@@ -9366,7 +9366,7 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(Net_Cost);
                                 }
-                                else if (Column_Name == "Net Amount")
+                                else if (Column_Name == "Final Amount")
                                 {
                                     string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                     worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
@@ -9664,8 +9664,27 @@ namespace astute.CoreServices
                         }
                         else if (Column_Name == "Supp Base Disc %")
                         {
-                            worksheet.Cells[1, kkk].Formula = "ROUND(AVERAGE(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "), 2)";
-                            worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
+                            int finalColumnIndex = GetColumnIndexByName(worksheet, "Supp Base Amount");
+                            int rapColumnIndex = GetColumnIndexByName(worksheet, "Rap Amount");
+
+                            if (finalColumnIndex > 0 && rapColumnIndex > 0)
+                            {
+                                worksheet.Cells[1, kkk].Formula =
+                                                                    "=IFERROR(ROUND((-100+(SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + inStartIndex +
+                                                                    ":" + GetExcelColumnLetter(finalColumnIndex) + (inwrkrow - 1) +
+                                                                    ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + inStartIndex +
+                                                                    ":" + GetExcelColumnLetter(rapColumnIndex) + (inwrkrow - 1) +
+                                                                    ")) * 100), 2), 0.00)";
+
+                                worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
+
+                                ExcelStyle cellStyleHeader_Profit = worksheet.Cells[1, kkk].Style;
+                                cellStyleHeader_Profit.Border.Left.Style = cellStyleHeader_Profit.Border.Right.Style
+                                        = cellStyleHeader_Profit.Border.Top.Style = cellStyleHeader_Profit.Border.Bottom.Style
+                                        = ExcelBorderStyle.Medium;
+                            }
                         }
                         else if (Column_Name == "Supp Base Amount")
                         {
@@ -9679,12 +9698,31 @@ namespace astute.CoreServices
                                     = cellStyleHeader_TotalAmt.Border.Top.Style = cellStyleHeader_TotalAmt.Border.Bottom.Style
                                     = ExcelBorderStyle.Medium;
                         }
-                        else if (Column_Name == "Final Disc %")
+                        else if (Column_Name == "Offer Disc %")
                         {
-                            worksheet.Cells[1, kkk].Formula = "ROUND(AVERAGE(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "), 2)";
-                            worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
+                            int finalColumnIndex = GetColumnIndexByName(worksheet, "Offer Amount");
+                            int rapColumnIndex = GetColumnIndexByName(worksheet, "Rap Amount");
+
+                            if (finalColumnIndex > 0 && rapColumnIndex > 0)
+                            {
+                                worksheet.Cells[1, kkk].Formula =
+                                                                    "=IFERROR(ROUND((-100+(SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + inStartIndex +
+                                                                    ":" + GetExcelColumnLetter(finalColumnIndex) + (inwrkrow - 1) +
+                                                                    ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + inStartIndex +
+                                                                    ":" + GetExcelColumnLetter(rapColumnIndex) + (inwrkrow - 1) +
+                                                                    ")) * 100), 2), 0.00)";
+
+                                worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
+
+                                ExcelStyle cellStyleHeader_Profit = worksheet.Cells[1, kkk].Style;
+                                cellStyleHeader_Profit.Border.Left.Style = cellStyleHeader_Profit.Border.Right.Style
+                                        = cellStyleHeader_Profit.Border.Top.Style = cellStyleHeader_Profit.Border.Bottom.Style
+                                        = ExcelBorderStyle.Medium;
+                            }
                         }
-                        else if (Column_Name == "Final Amount")
+                        else if (Column_Name == "Offer Amount")
                         {
                             worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                             worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -9698,8 +9736,27 @@ namespace astute.CoreServices
                         }
                         else if (Column_Name == "Supp Cost Disc %")
                         {
-                            worksheet.Cells[1, kkk].Formula = "ROUND(AVERAGE(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "), 2)";
-                            worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
+                            int finalColumnIndex = GetColumnIndexByName(worksheet, "Supp Cost Amount");
+                            int rapColumnIndex = GetColumnIndexByName(worksheet, "Rap Amount");
+
+                            if (finalColumnIndex > 0 && rapColumnIndex > 0)
+                            {
+                                worksheet.Cells[1, kkk].Formula =
+                                                                    "=IFERROR(ROUND((-100+(SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + inStartIndex +
+                                                                    ":" + GetExcelColumnLetter(finalColumnIndex) + (inwrkrow - 1) +
+                                                                    ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + inStartIndex +
+                                                                    ":" + GetExcelColumnLetter(rapColumnIndex) + (inwrkrow - 1) +
+                                                                    ")) * 100), 2), 0.00)";
+
+                                worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
+
+                                ExcelStyle cellStyleHeader_Profit = worksheet.Cells[1, kkk].Style;
+                                cellStyleHeader_Profit.Border.Left.Style = cellStyleHeader_Profit.Border.Right.Style
+                                        = cellStyleHeader_Profit.Border.Top.Style = cellStyleHeader_Profit.Border.Bottom.Style
+                                        = ExcelBorderStyle.Medium;
+                            }
                         }
                         else if (Column_Name == "Supp Cost Amount")
                         {
@@ -10157,8 +10214,27 @@ namespace astute.CoreServices
                         }
                         else if (Column_Name == "Final Disc%")
                         {
-                            worksheet.Cells[1, kkk].Formula = "ROUND(AVERAGE(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "), 2)";
-                            worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
+                            int finalColumnIndex = GetColumnIndexByName(worksheet, "Final Amount");
+                            int rapColumnIndex = GetColumnIndexByName(worksheet, "Rap Amount");
+
+                            if (finalColumnIndex > 0 && rapColumnIndex > 0)
+                            {
+                                worksheet.Cells[1, kkk].Formula =
+                                                                    "=IFERROR(ROUND((-100 + (SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + inStartIndex +
+                                                                    ":" + GetExcelColumnLetter(finalColumnIndex) + (inwrkrow - 1) +
+                                                                    ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + inStartIndex +
+                                                                    ":" + GetExcelColumnLetter(rapColumnIndex) + (inwrkrow - 1) +
+                                                                    ")) * 100), 2), 0.00)";
+
+                                worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
+
+                                ExcelStyle cellStyleHeader_Profit = worksheet.Cells[1, kkk].Style;
+                                cellStyleHeader_Profit.Border.Left.Style = cellStyleHeader_Profit.Border.Right.Style
+                                        = cellStyleHeader_Profit.Border.Top.Style = cellStyleHeader_Profit.Border.Bottom.Style
+                                        = ExcelBorderStyle.Medium;
+                            }
                         }
                         else if (Column_Name == "Final Amount")
                         {
