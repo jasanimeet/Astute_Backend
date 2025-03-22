@@ -1286,7 +1286,8 @@ namespace astute.Repository
                 TypeName = "dbo.Party_Price_Update_Table_Type",
                 Value = supplier_Price_Lists
             };
-
+            
+            _dbContext.Database.SetCommandTimeout(300);
             return await _dbContext.Database.ExecuteSqlRawAsync("EXEC Party_Price_Update @Party_Price_Update_Table_Type", parameter);
         }
 
