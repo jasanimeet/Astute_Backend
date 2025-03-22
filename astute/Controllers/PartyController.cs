@@ -15014,6 +15014,50 @@ namespace astute.Controllers
             }
         }
         
+        [HttpPost]
+        [Route("update_purchase_detail_pricing")]
+        [Authorize]
+        public async Task<IActionResult> Update_Purchase_Detail_Pricing(Purchase_Detail_Pricing_List purchase_Detail_Pricing)
+        {
+            try
+            {
+                IList<Purchase_Detail_Pricing> purchase_Detail_Pricing_List = JsonConvert.DeserializeObject<IList<Purchase_Detail_Pricing>>(purchase_Detail_Pricing.Purchase_Detail_Pricing.ToString());
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("Id", typeof(int));
+                dataTable.Columns.Add("Buyer_Final_Disc", typeof(float));
+                dataTable.Columns.Add("Buyer_Final_Amt", typeof(float));
+
+                foreach (var item in purchase_Detail_Pricing_List)
+                {
+                    dataTable.Rows.Add(
+                        item.Id ?? 0,
+                        SafeConvertToDouble(item.Buyer_Final_Disc.ToString()),
+                        SafeConvertToDouble(item.Buyer_Final_Value.ToString())
+                    );
+                }
+
+                var result = await _supplierService.Purchase_Detail_Pricing_Update(dataTable);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.Purchase_Pricing_Updated
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Purchase_Detail_Pricing", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Lab User Activity

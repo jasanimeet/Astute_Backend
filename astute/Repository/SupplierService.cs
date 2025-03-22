@@ -4151,6 +4151,20 @@ namespace astute.Repository
             }
             return dataTable;
         }
+
+        public async Task<int> Purchase_Detail_Pricing_Update(DataTable dataTable)
+        {
+            var Parameter = new SqlParameter("@Purchase_Detail_Pricing_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Purchase_Detail_Pricing_Table_Type]",
+                Value = dataTable
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Purchase_Detail_Pricing_Update @Purchase_Detail_Pricing_Table_Type", Parameter));
+
+            return result;
+        }
         #endregion
 
         #region Party Url Format

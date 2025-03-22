@@ -167,6 +167,7 @@ namespace astute.Repository
         Task<int> Update_Purchase_Master_File_Status(int Trans_Id, bool File_Status, int User_Id);
         Task<List<Dictionary<string, object>>> Get_Purchase_Pricing(int Trans_Id);
         Task<DataTable> Get_Purchase_Pricing_Excel(int Trans_Id);
+        Task<int> Purchase_Detail_Pricing_Update(DataTable dataTable);
         #endregion
 
         #region Party Url Format

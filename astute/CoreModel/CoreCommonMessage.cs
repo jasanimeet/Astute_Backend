@@ -574,6 +574,11 @@
         public static string ContractChangedSuccessMessage = "Contract successfully changed.";
         #endregion
 
+        #region Purchase Pricing
+        public static string Purchase_Pricing = "Purchase Pricing";
+        public static string Purchase_Pricing_Updated = Purchase_Pricing + UpdatedSuccessfully;
+        #endregion
+
         #region Parcel Ref Master
         public static string ParcelRefMaster = "Parcel Ref Master";
         public static string ParcelRefMasterCreated = ParcelRefMaster + AddedSuccessfully;
