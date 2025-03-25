@@ -584,6 +584,36 @@ namespace astute.Controllers
                 URL = linkUrl
             });
         }
+
+        [HttpGet]
+        [Route("get_bgm")]
+        [Authorize]
+        public async Task<IActionResult> Get_BGM()
+        {
+            try
+            {
+                var result = await _categoryService.Get_BGM();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_BGM", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Column Master
