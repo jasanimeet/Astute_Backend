@@ -442,6 +442,12 @@ namespace astute.Models
 
         [JsonProperty("Certi_Flag")]
         public bool? Certi_Flag { get; set; }
+        
+        [JsonProperty("SHADE_ID")]
+        public int? Shade_Id { get; set; }
+        
+        [JsonProperty("MILKY_ID")]
+        public int? Milky_Id { get; set; }
     }
     public class Order_Excel_Model
     {

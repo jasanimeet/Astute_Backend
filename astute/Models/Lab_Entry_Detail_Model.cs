@@ -280,5 +280,17 @@ namespace astute.Models
 
         [JsonPropertyName("COMPANY")]
         public string? Company { get; set; }
+
+        [JsonPropertyName("SHADE")]
+        public string? Shade { get; set; }
+        
+        [JsonPropertyName("SHADE_ID")]
+        public int? Shade_Id { get; set; }
+        
+        [JsonPropertyName("MILKY")]
+        public string? Milky { get; set; }
+        
+        [JsonPropertyName("MILKY_ID")]
+        public int? Milky_Id { get; set; }
     }
 }

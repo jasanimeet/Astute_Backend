@@ -12354,6 +12354,10 @@ namespace astute.Controllers
                                 detailDataTable.Columns.Add("Laser_Insc_C", typeof(string));
                                 detailDataTable.Columns.Add("Girdle_Condition_C", typeof(string));
                                 detailDataTable.Columns.Add("Company", typeof(string));
+                                detailDataTable.Columns.Add("Milky", typeof(int));
+                                detailDataTable.Columns.Add("Milky_C", typeof(string));
+                                detailDataTable.Columns.Add("Shade", typeof(int));
+                                detailDataTable.Columns.Add("Shade_C", typeof(string));
 
                                 foreach (var item in OrderResult)
                                 {
@@ -12457,7 +12461,11 @@ namespace astute.Controllers
                                         item.Girdle_Condition_Id != null ? Convert.ToInt32(item.Girdle_Condition_Id) : null,
                                         item.LaserInscription ?? null,
                                         item.Girdle_Condition ?? null,
-                                        item.Company ?? null
+                                        item.Company ?? null,
+                                        item.Milky_Id != null ? Convert.ToInt32(item.Milky_Id) : null,
+                                        item.Milky ?? null,
+                                        item.Shade_Id != null ? Convert.ToInt32(item.Shade_Id) : null,
+                                        item.Shade ?? null
                                     );
                                 }
 
@@ -12656,6 +12664,10 @@ namespace astute.Controllers
                                 detailDataTable.Columns.Add("Laser_Insc_C", typeof(string));
                                 detailDataTable.Columns.Add("Girdle_Condition_C", typeof(string));
                                 detailDataTable.Columns.Add("Company", typeof(string));
+                                detailDataTable.Columns.Add("Milky", typeof(int));
+                                detailDataTable.Columns.Add("Milky_C", typeof(string));
+                                detailDataTable.Columns.Add("Shade", typeof(int));
+                                detailDataTable.Columns.Add("Shade_C", typeof(string));
 
                                 foreach (var item in OrderResult)
                                 {
@@ -12759,7 +12771,11 @@ namespace astute.Controllers
                                         item.Girdle_Condition_Id != null ? Convert.ToInt32(item.Girdle_Condition_Id) : null,
                                         item.LaserInscription ?? null,
                                         item.Girdle_Condition ?? null,
-                                        item.Company ?? null
+                                        item.Company ?? null,
+                                        item.Milky_Id != null ? Convert.ToInt32(item.Milky_Id) : null,
+                                        item.Milky ?? null,
+                                        item.Shade_Id != null ? Convert.ToInt32(item.Shade_Id) : null,
+                                        item.Shade ?? null
                                     );
                                 }
 
@@ -12934,6 +12950,10 @@ namespace astute.Controllers
                 detailDataTable.Columns.Add("Laser_Insc_C", typeof(string));
                 detailDataTable.Columns.Add("Girdle_Condition_C", typeof(string));
                 detailDataTable.Columns.Add("Company", typeof(string));
+                detailDataTable.Columns.Add("Milky", typeof(int));
+                detailDataTable.Columns.Add("Milky_C", typeof(string));
+                detailDataTable.Columns.Add("Shade", typeof(int));
+                detailDataTable.Columns.Add("Shade_C", typeof(string));
 
                 foreach (var item in Lab_Entry_Detail_List)
                 {
@@ -13038,7 +13058,11 @@ namespace astute.Controllers
                         item.GirdleConditionId != null ? Convert.ToInt32(item.GirdleConditionId) : null,
                         item.LaserInscription ?? null,
                         item.GirdleCondition ?? null,
-                        item.Company ?? null
+                        item.Company ?? null,
+                        item.Milky_Id != null ? Convert.ToInt32(item.Milky_Id) : null,
+                        item.Milky ?? null,
+                        item.Shade_Id != null ? Convert.ToInt32(item.Shade_Id) : null,
+                        item.Shade ?? null
                     );
                 }
 
@@ -14250,6 +14274,10 @@ namespace astute.Controllers
                 detailDataTable.Columns.Add("Assist_By", typeof(int));
                 detailDataTable.Columns.Add("Company_Name_Id", typeof(int));
                 detailDataTable.Columns.Add("Company_Name", typeof(string));
+                detailDataTable.Columns.Add("Milky", typeof(int));
+                detailDataTable.Columns.Add("Milky_C", typeof(string));
+                detailDataTable.Columns.Add("Shade", typeof(int));
+                detailDataTable.Columns.Add("Shade_C", typeof(string));
 
                 foreach (var item in purchase_Detail_List)
                 {
@@ -14382,7 +14410,11 @@ namespace astute.Controllers
                         item.Type ?? null,
                         item.Assist_By ?? null,
                         item.Company_Name_Id ?? null,
-                        item.Company_Name ?? null
+                        item.Company_Name ?? null,
+                        item.Milky_Id != null ? Convert.ToInt32(item.Milky_Id) : null,
+                        item.Milky ?? null,
+                        item.Shade_Id != null ? Convert.ToInt32(item.Shade_Id) : null,
+                        item.Shade ?? null
                     );
                 }
 
