@@ -7255,6 +7255,8 @@ namespace astute.Controllers
                 dataTable.Columns.Add("Base_Amt", typeof(double));
                 dataTable.Columns.Add("Offer_Disc", typeof(double));
                 dataTable.Columns.Add("Offer_Amt", typeof(double));
+                dataTable.Columns.Add("Rap_Rate", typeof(double));
+                dataTable.Columns.Add("Rap_Amt", typeof(double));
                 dataTable.Columns.Add("Status", typeof(string));
                 dataTable.Columns.Add("QC_Remarks", typeof(string));
 
@@ -7269,6 +7271,8 @@ namespace astute.Controllers
                         (item.Base_Amt != null ? !string.IsNullOrEmpty(item.Base_Amt.ToString()) ? Convert.ToDouble(item.Base_Amt.ToString()) : null : null),
                         (item.Offer_Disc != null ? !string.IsNullOrEmpty(item.Offer_Disc.ToString()) ? Convert.ToDouble(item.Offer_Disc.ToString()) : null : null),
                         (item.Offer_Amt != null ? !string.IsNullOrEmpty(item.Offer_Amt.ToString()) ? Convert.ToDouble(item.Offer_Amt.ToString()) : null : null),
+                        (item.Rap_Rate != null ? !string.IsNullOrEmpty(item.Rap_Rate.ToString()) ? Convert.ToDouble(item.Rap_Rate.ToString()) : null : null),
+                        (item.Rap_Amt != null ? !string.IsNullOrEmpty(item.Rap_Amt.ToString()) ? Convert.ToDouble(item.Rap_Amt.ToString()) : null : null),
                         Convert.ToString(item.Status), Convert.ToString(item.QC_Remarks));
                 }
 
@@ -7353,6 +7357,8 @@ namespace astute.Controllers
                 dataTable.Columns.Add("Base_Amt", typeof(double));
                 dataTable.Columns.Add("Offer_Disc", typeof(double));
                 dataTable.Columns.Add("Offer_Amt", typeof(double));
+                dataTable.Columns.Add("Rap_Rate", typeof(double));
+                dataTable.Columns.Add("Rap_Amt", typeof(double));
                 dataTable.Columns.Add("Status", typeof(string));
                 dataTable.Columns.Add("QC_Remarks", typeof(string));
 
@@ -7367,6 +7373,8 @@ namespace astute.Controllers
                         (item.Base_Amt != null ? !string.IsNullOrEmpty(item.Base_Amt.ToString()) ? Convert.ToDouble(item.Base_Amt.ToString()) : null : null),
                         (item.Offer_Disc != null ? !string.IsNullOrEmpty(item.Offer_Disc.ToString()) ? Convert.ToDouble(item.Offer_Disc.ToString()) : null : null),
                         (item.Offer_Amt != null ? !string.IsNullOrEmpty(item.Offer_Amt.ToString()) ? Convert.ToDouble(item.Offer_Amt.ToString()) : null : null),
+                        (item.Rap_Rate != null ? !string.IsNullOrEmpty(item.Rap_Rate.ToString()) ? Convert.ToDouble(item.Rap_Rate.ToString()) : null : null),
+                        (item.Rap_Amt != null ? !string.IsNullOrEmpty(item.Rap_Amt.ToString()) ? Convert.ToDouble(item.Rap_Amt.ToString()) : null : null),
                         Convert.ToString(item.Status), Convert.ToString(item.QC_Remarks));
                 }
 

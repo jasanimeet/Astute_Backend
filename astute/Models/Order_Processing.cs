@@ -36,6 +36,10 @@ namespace astute.Models
         public object? Offer_Disc { get; set; }
         [JsonProperty("OFFER AMOUNT")]
         public object? Offer_Amt { get; set; }
+        [JsonProperty("RAP RATE")]
+        public object? Rap_Rate { get; set; }
+        [JsonProperty("RAP AMOUNT")]
+        public object? Rap_Amt { get; set; }
         [JsonProperty("STATUS")]
         public object? Status { get; set; }
         [JsonProperty("QC REMARK")]
