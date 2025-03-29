@@ -3464,10 +3464,15 @@ namespace astute.Repository
 
             var _user_Id = new SqlParameter("@User_Id", user_Id);
 
-            var result = await Task.Run(() => _dbContext.Database
-                   .ExecuteSqlRawAsync(@"EXEC Lab_Entry_Insert_Update @Lab_Entry_Master_Table_Type, @Lab_Entry_Detail_Table_Type, @User_Id", masterParameter, detailParameter, _user_Id));
+            var transIdParameter = new SqlParameter("@Trans_Id", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
 
-            return result;
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Lab_Entry_Insert_Update @Lab_Entry_Master_Table_Type, @Lab_Entry_Detail_Table_Type, @User_Id, @Trans_Id OUTPUT", masterParameter, detailParameter, _user_Id, transIdParameter));
+
+            return (int)transIdParameter.Value;
         }
 
         public async Task<(int, bool)> Delete_Lab_Entry(int id)
@@ -4214,6 +4219,38 @@ namespace astute.Repository
             return result;
         }
 
+        public async Task<List<Dictionary<string, object>>> Get_Fortune_Lab_Entry_Data()
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Fortune_Lab_Entry_Data_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
         #endregion
 
         #region Party Url Format

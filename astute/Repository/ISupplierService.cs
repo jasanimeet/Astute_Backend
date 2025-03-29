@@ -170,6 +170,7 @@ namespace astute.Repository
         Task<int> Purchase_Detail_Pricing_Update(DataTable dataTable);
         Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Status_Sunrise_Summary(string Sunrise_Stock_Id);
         Task<int> Lab_Entry_Report_Status_Sunrise_Update(DataTable dataTable);
+        Task<List<Dictionary<string, object>>> Get_Fortune_Lab_Entry_Data();
         #endregion
 
         #region Party Url Format

@@ -13076,6 +13076,87 @@ namespace astute.Controllers
 
                 var lab_entry_result = await _supplierService.Insert_Update_Lab_Entry(masterDataTable, detailDataTable, user_Id ?? 0);
 
+                if (Lab_Entry_Master.Trans_Id == null ||Lab_Entry_Master.Trans_Id == 0)
+                {
+                    IList<Order_Processing_Complete_Detail> OrderResult = Lab_Entry_Detail_List
+                        .Select(labDetail => new Order_Processing_Complete_Detail
+                        {
+                            Id = labDetail.TransId ?? 0,
+                            Dna = labDetail.Dna,
+                            ImageLink = labDetail.ImageLink,
+                            VideoLink = labDetail.VideoLink,
+                            Lab = labDetail.Lab,
+                            CertificateLink = labDetail.CertificateLink,
+                            Company = labDetail.Company,
+                            Customer = Lab_Entry_Master.Company_Name,
+                            StockId = labDetail.StockId,
+                            SupplierNo = labDetail.SupplierNo,
+                            CertificateNo = labDetail.CertificateNo,
+                            Shape = labDetail.Shape,
+                            Color = labDetail.Color,
+                            Clarity = labDetail.Clarity,
+                            Cts = labDetail.Cts,
+                            RapRate = labDetail.RapRate,
+                            RapAmount = labDetail.RapAmount,
+                            BaseDisc = labDetail.BaseDisc,
+                            BaseAmount = labDetail.BaseAmount,
+                            CurrentCostDisc = labDetail.CostDisc,
+                            CurrentCostAmount = labDetail.CostAmount,
+                            CostDisc = labDetail.CostDisc,
+                            CostAmount = labDetail.CostAmount,
+                            OfferDisc = labDetail.OfferDisc,
+                            OfferAmount = labDetail.OfferAmount,
+                            Status = labDetail.Status,
+                            Remarks = labDetail.Remarks,
+                            Cut = labDetail.Cut,
+                            Polish = labDetail.Polish,
+                            Symm = labDetail.Symm,
+                            FlsIntensity = labDetail.Flsintensity,
+                            KeyToSymbol = labDetail.KeyToSymbol,
+                            Length = labDetail.Length,
+                            Width = labDetail.Width,
+                            Depth = labDetail.Depth,
+                            DepthPer = labDetail.DepthPer,
+                            TablePer = labDetail.TablePer,
+                            CrownAngle = labDetail.CrownAngle,
+                            CrownHeight = labDetail.CrownHeight,
+                            PavilionAngle = labDetail.PavilionAngle,
+                            PavilionHeight = labDetail.PavilionHeight,
+                            LaserInscription = !string.IsNullOrEmpty(labDetail.LaserInscription) && labDetail.LaserInscription.Length > 1 ? "Y" : labDetail.LaserInscription,
+                            GirdlePer = labDetail.GirdlePer,
+                            TableWhite = labDetail.TableWhite,
+                            SideWhite = labDetail.SideWhite,
+                            TableBlack = labDetail.TableBlack,
+                            SideBlack = labDetail.SideBlack,
+                            Culet = labDetail.Culet,
+                            GiaComments = labDetail.GiaComments,
+                            GiaType = labDetail.GiaType,
+                            TableOpen = labDetail.TableOpen,
+                            CrownOpen = labDetail.CrownOpen,
+                            PavilionOpen = labDetail.PavilionOpen,
+                            GirdleOpen = labDetail.GirdleOpen,
+                            Shade = labDetail.Shade,
+                            Milky = labDetail.Milky,
+                            SupplierComments = labDetail.GiaComments,
+                            Bgm = labDetail.Bgm,
+                            Party_code = Lab_Entry_Master.Party_Id.ToString(),
+                            Cert_Date = labDetail.CertificateDate,
+                            LR_Half = labDetail.LrHalf.ToString(),
+                            Str_Ln = labDetail.StarLn.ToString()
+                        }).ToList();
+
+                    Employee_Fortune_Order_Master result_e = new Employee_Fortune_Order_Master();
+                    result_e.Fortune_Id = Lab_Entry_Master.Assist_By ?? 0;
+
+                    if (Lab_Entry_Master.Entry_Type == "M" && Lab_Entry_Master.Type == "L")
+                    {
+                        var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e, Lab_Entry_Master.Remarks, "W", "L");
+                    }
+                    else if (Lab_Entry_Master.Type == "O")
+                    {
+                        var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e, Lab_Entry_Master.Remarks, "OS", "L");
+                    }
+                }
                 return Ok(new
                 {
                     statusCode = HttpStatusCode.OK,
@@ -13100,6 +13181,141 @@ namespace astute.Controllers
                 return result;
             }
             return null;
+        }
+
+        [HttpPost]
+        [Route("job_add_to_fortune_lab_entry")]
+        public async Task<IActionResult> Job_Add_To_Fortune_Lab_Entry() 
+        {
+            try
+            {
+                var trans_Id_List = await _supplierService.Get_Fortune_Lab_Entry_Data();
+
+                if (trans_Id_List != null && trans_Id_List.Count > 0)
+                {
+                    foreach (var trans_Id in trans_Id_List)
+                    {
+                        if (trans_Id.TryGetValue("Trans_Id", out var idValue) && idValue != null)
+                        {
+                            int Id = Convert.ToInt32(idValue);
+
+                            Order_Processing_Summary order_Processing_Summary = new Order_Processing_Summary();
+                            order_Processing_Summary.Stock_Id = Id.ToString();
+
+                            var result = await _supplierService.Get_Lab_Entry_Summary(0, order_Processing_Summary);
+                            var result_det = await _supplierService.Get_Lab_Entry_Detail(Id);
+
+                            if (result != null && result.Count > 0 && result_det != null && result_det.Count > 0)
+                            {
+                                var json = JsonConvert.SerializeObject(result);
+                                List<Lab_Entry_Master> lab_Entry_Master = JsonConvert.DeserializeObject<List<Lab_Entry_Master>>(json);
+
+                                string jsonResult = JsonConvert.SerializeObject(result_det);
+
+                                IList<Lab_Entry_Detail_Model> Lab_Entry_Detail_List = JsonConvert.DeserializeObject<IList<Lab_Entry_Detail_Model>>(jsonResult);
+
+                                IList<Order_Processing_Complete_Detail> OrderResult = Lab_Entry_Detail_List
+                                    .Select(labDetail => new Order_Processing_Complete_Detail
+                                    {
+                                        Id = labDetail.TransId ?? 0,
+                                        Dna = labDetail.Dna,
+                                        ImageLink = labDetail.ImageLink,
+                                        VideoLink = labDetail.VideoLink,
+                                        Lab = labDetail.Lab,
+                                        CertificateLink = labDetail.CertificateLink,
+                                        Company = labDetail.SupplierName,
+                                        Customer = lab_Entry_Master[0].Company_Name,
+                                        StockId = labDetail.StockId,
+                                        SupplierNo = labDetail.SupplierNo,
+                                        CertificateNo = labDetail.CertificateNo,
+                                        Shape = labDetail.Shape,
+                                        Color = labDetail.Color,
+                                        Clarity = labDetail.Clarity,
+                                        Cts = labDetail.Cts,
+                                        RapRate = labDetail.RapRate,
+                                        RapAmount = labDetail.RapAmount,
+                                        BaseDisc = labDetail.BaseDisc,
+                                        BaseAmount = labDetail.BaseAmount,
+                                        CurrentCostDisc = labDetail.CostDisc,
+                                        CurrentCostAmount = labDetail.CostAmount,
+                                        CostDisc = labDetail.CostDisc,
+                                        CostAmount = labDetail.CostAmount,
+                                        OfferDisc = labDetail.OfferDisc,
+                                        OfferAmount = labDetail.OfferAmount,
+                                        Status = labDetail.Status,
+                                        Remarks = labDetail.Remarks,
+                                        Cut = labDetail.Cut,
+                                        Polish = labDetail.Polish,
+                                        Symm = labDetail.Symm,
+                                        FlsIntensity = labDetail.Flsintensity,
+                                        KeyToSymbol = labDetail.KeyToSymbol,
+                                        Length = labDetail.Length,
+                                        Width = labDetail.Width,
+                                        Depth = labDetail.Depth,
+                                        DepthPer = labDetail.DepthPer,
+                                        TablePer = labDetail.TablePer,
+                                        CrownAngle = labDetail.CrownAngle,
+                                        CrownHeight = labDetail.CrownHeight,
+                                        PavilionAngle = labDetail.PavilionAngle,
+                                        PavilionHeight = labDetail.PavilionHeight,
+                                        LaserInscription = !string.IsNullOrEmpty(labDetail.LaserInscription) && labDetail.LaserInscription.Length > 1 ? "Y" : labDetail.LaserInscription,
+                                        GirdlePer = labDetail.GirdlePer,
+                                        TableWhite = labDetail.TableWhite,
+                                        SideWhite = labDetail.SideWhite,
+                                        TableBlack = labDetail.TableBlack,
+                                        SideBlack = labDetail.SideBlack,
+                                        Culet = labDetail.Culet,
+                                        GiaComments = labDetail.GiaComments,
+                                        GiaType = labDetail.GiaType,
+                                        TableOpen = labDetail.TableOpen,
+                                        CrownOpen = labDetail.CrownOpen,
+                                        PavilionOpen = labDetail.PavilionOpen,
+                                        GirdleOpen = labDetail.GirdleOpen,
+                                        Shade = labDetail.Shade,
+                                        Milky = labDetail.Milky,
+                                        SupplierComments = labDetail.GiaComments,
+                                        Bgm = labDetail.Bgm,
+                                        Party_code = lab_Entry_Master[0].Party_Id.ToString(),
+                                        Cert_Date = labDetail.CertificateDate,
+                                        LR_Half = labDetail.LrHalf.ToString(),
+                                        Str_Ln = labDetail.StarLn.ToString()
+                                    }).ToList();
+
+                                Employee_Fortune_Order_Master result_e = new Employee_Fortune_Order_Master();
+                                result_e.Fortune_Id = lab_Entry_Master[0].Assist_By ?? 0;
+
+                                if (result_e.Fortune_Id > 0)
+                                {
+                                    if (lab_Entry_Master[0].Entry_Type == "M" && lab_Entry_Master[0].Type == "LAB")
+                                    {
+                                        var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e, lab_Entry_Master[0].Remarks, "W", "L");
+                                    }
+                                    else if (lab_Entry_Master[0].Type == "OVERSEAS")
+                                    {
+                                        var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e, lab_Entry_Master[0].Remarks, "OS", "L");
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    return Ok(new
+                    {
+                        StatusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.Lab_Entry_Created
+                    });
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Job_Add_To_Fortune_Lab_Entry", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
         }
 
         [HttpDelete]

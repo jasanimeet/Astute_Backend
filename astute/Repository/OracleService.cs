@@ -1328,16 +1328,29 @@ namespace astute.Repository
 
                     }
                 }
+                if (type == "O")
+                {
+                    
+                    string Order_Ids = string.Join(",",Order_Ids_List);
 
-                string Order_Ids = string.Join(",",Order_Ids_List);
-
-                var _order_Ids = new SqlParameter("@Order_Ids", !string.IsNullOrEmpty(Order_Ids) ? Order_Ids : DBNull.Value);
-                var _trans_Id = new SqlParameter("@Trans_Id", !string.IsNullOrEmpty(lab_trans_status) ? Convert.ToInt32(lab_trans_status) : DBNull.Value);
+                    var _order_Ids = new SqlParameter("@Order_Ids", !string.IsNullOrEmpty(Order_Ids) ? Order_Ids : DBNull.Value);
+                    var _trans_Id = new SqlParameter("@Trans_Id", !string.IsNullOrEmpty(lab_trans_status) ? Convert.ToInt32(lab_trans_status) : DBNull.Value);
 
 
-                var result = await Task.Run(() => _dbContext.Database
-                       .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Update_Tras_Id] @Order_Ids,@Trans_Id", _order_Ids,_trans_Id));
+                    var result = await Task.Run(() => _dbContext.Database
+                           .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Update_Tras_Id] @Order_Ids,@Trans_Id", _order_Ids,_trans_Id));
+                }
+                else if (type == "L") 
+                {
+                    string Order_Ids = string.Join(",", Order_Ids_List.Distinct());
 
+                    var _order_Ids = new SqlParameter("@Order_Ids", !string.IsNullOrEmpty(Order_Ids) ? Order_Ids : DBNull.Value);
+                    var _trans_Id = new SqlParameter("@Trans_Id", !string.IsNullOrEmpty(lab_trans_status) ? Convert.ToInt32(lab_trans_status) : DBNull.Value);
+
+
+                    var result = await Task.Run(() => _dbContext.Database
+                           .ExecuteSqlRawAsync(@"EXEC [Lab_Entry_Update_Fortune_Trans_Id] @Order_Ids,@Trans_Id", _order_Ids, _trans_Id));
+                }
             }
 
             return 1;
