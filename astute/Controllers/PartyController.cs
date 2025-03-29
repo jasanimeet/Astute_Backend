@@ -14795,15 +14795,15 @@ namespace astute.Controllers
         [HttpPost]
         [Route("get_lab_entry_report_status_summary")]
         [Authorize]
-        public async Task<IActionResult> Get_Lab_Entry_Report_Status_Summary(string Stock_Id)
+        public async Task<IActionResult> Get_Lab_Entry_Report_Status_Summary(Lab_Entry_Report_Status_Model lab_Entry_Report_Status_Model)
         {
             try
             {
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                var result = await _supplierService.Get_Lab_Entry_Report_Status_Summary(Stock_Id);
-                var result_non = await _supplierService.Get_Lab_Entry_Report_Non_Status_Summary(Stock_Id);
+                var result = await _supplierService.Get_Lab_Entry_Report_Status_Summary(lab_Entry_Report_Status_Model.Stock_Id);
+                var result_non = await _supplierService.Get_Lab_Entry_Report_Non_Status_Summary(lab_Entry_Report_Status_Model.Stock_Id);
 
                 if ((result != null || result_non != null) && (result.Count > 0 || result_non.Count > 0))
                 {
@@ -15010,14 +15010,14 @@ namespace astute.Controllers
         [HttpPost]
         [Route("get_purchase_detail_contract")]
         [Authorize]
-        public async Task<IActionResult> Get_Purchase_Detail_Contract(string? Certificate_No)
+        public async Task<IActionResult> Get_Purchase_Detail_Contract(Lab_Entry_Report_Status_Model lab_Entry_Report_Status_Model)
         {
             try
             {
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                var result = await _supplierService.Get_Purchase_Detail_Contract(Certificate_No);
+                var result = await _supplierService.Get_Purchase_Detail_Contract(lab_Entry_Report_Status_Model.Stock_Id);
 
                 if (result != null && result.Count > 0)
                 {
@@ -15317,14 +15317,14 @@ namespace astute.Controllers
         [HttpPost]
         [Route("get_lab_entry_report_status_sunrise_summary")]
         [Authorize]
-        public async Task<IActionResult> Get_Lab_Entry_Report_Status_Sunrise_Summary(string Sunrise_Stock_Id)
+        public async Task<IActionResult> Get_Lab_Entry_Report_Status_Sunrise_Summary(Lab_Entry_Report_Status_Model lab_Entry_Report_Status_Model)
         {
             try
             {
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                var result = await _supplierService.Get_Lab_Entry_Report_Status_Sunrise_Summary(Sunrise_Stock_Id);
+                var result = await _supplierService.Get_Lab_Entry_Report_Status_Sunrise_Summary(lab_Entry_Report_Status_Model.Stock_Id);
 
                 if ((result != null && result.Count > 0))
                 {
