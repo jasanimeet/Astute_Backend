@@ -15493,21 +15493,6 @@ namespace astute.Controllers
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                if (!string.IsNullOrEmpty(From_Date) && !string.IsNullOrEmpty(To_Date))
-                {
-                    if (DateTime.TryParse(From_Date, out DateTime fromDate) && DateTime.TryParse(To_Date, out DateTime toDate))
-                    {
-                        if (fromDate > toDate)
-                        {
-                            return BadRequest(new
-                            {
-                                statusCode = HttpStatusCode.BadRequest,
-                                message = CoreCommonMessage.InvalidDate
-                            });
-                        }
-                    }
-                }
-
                 var result = await _lab_User_Login_Activity_Services.Get_Supplier_Stock_Lab_User_Activity(From_Date, To_Date, user_Id ?? 0);
                 if (result != null && result.Count > 0)
                 {
