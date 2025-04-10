@@ -32,9 +32,9 @@ namespace astute.Repository
             var rap_Id = new SqlParameter("@Rap_Id", rapaport_Master.Rap_Id);
             var inserted_Date = new SqlParameter("@Insert_Date", rapaport_Master.Insert_Date);
             var record_Type = new SqlParameter("@recordType", "Insert");
-            var insertedId = new SqlParameter("@InsertedId", System.Data.SqlDbType.Int)
+            var insertedId = new SqlParameter("@InsertedId", SqlDbType.Int)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database

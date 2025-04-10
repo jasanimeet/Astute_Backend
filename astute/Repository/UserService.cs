@@ -103,9 +103,9 @@ namespace astute.Repository
             var assist_by_1 = user_Registration.Assist_By_1 > 0 ? new SqlParameter("@Assist_By_1", user_Registration.Assist_By_1) : new SqlParameter("@Assist_By_1", DBNull.Value);
             var assist_by_2 = user_Registration.Assist_By_2 > 0 ? new SqlParameter("@Assist_By_2", user_Registration.Assist_By_2) : new SqlParameter("@Assist_By_2", DBNull.Value);
 
-            var isExistUserName = new SqlParameter("@IsExistUserName", System.Data.SqlDbType.Bit)
+            var isExistUserName = new SqlParameter("@IsExistUserName", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database

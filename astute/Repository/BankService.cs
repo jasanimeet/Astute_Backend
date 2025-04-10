@@ -86,13 +86,13 @@ namespace astute.Repository
             var currency_Id = bank_Mas.Currency_Id > 0 ? new SqlParameter("@Currency_Id", bank_Mas.Currency_Id) : new SqlParameter("@Currency_Id", DBNull.Value);
             var account_Type = bank_Mas.Account_Type > 0 ? new SqlParameter("@Account_Type", bank_Mas.Account_Type) : new SqlParameter("@Account_Type", DBNull.Value);
             var recordType = new SqlParameter("@recordType", "Insert");
-            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
+            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistSortNo = new SqlParameter("@IsExistSortNo", System.Data.SqlDbType.Bit)
+            var isExistSortNo = new SqlParameter("@IsExistSortNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -136,13 +136,13 @@ namespace astute.Repository
             var currency_Id = bank_Mas.Currency_Id > 0 ? new SqlParameter("@Currency_Id", bank_Mas.Currency_Id) : new SqlParameter("@Currency_Id", DBNull.Value);
             var account_Type = bank_Mas.Account_Type > 0 ? new SqlParameter("@Account_Type", bank_Mas.Account_Type) : new SqlParameter("@Account_Type", DBNull.Value);
             var recordType = new SqlParameter("@recordType", "Update");
-            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
+            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistSortNo = new SqlParameter("@IsExistSortNo", System.Data.SqlDbType.Bit)
+            var isExistSortNo = new SqlParameter("@IsExistSortNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database

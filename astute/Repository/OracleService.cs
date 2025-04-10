@@ -1034,9 +1034,7 @@ namespace astute.Repository
 
         public async Task<int> Order_Data_Transfer_Oracle(IList<Order_Processing_Complete_Detail> order_Processing_Complete_Details, Employee_Fortune_Order_Master employee_Fortune_Master, string Summary_QC_Remarks, string vEntry_type, string type)
         {
-
-            int LabId = 0, UserId = 0, Assist_UserId = 0, vuser_code = 0, vparty_code = 0;
-            string vparty_name = "", lab_trans_status = "";
+            string lab_trans_status = "";
 
             if (employee_Fortune_Master != null)
             {

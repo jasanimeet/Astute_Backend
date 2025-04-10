@@ -42,9 +42,9 @@ namespace astute.Repository
             var Color = new SqlParameter("@Color", parcel_Master.Color);
             var Clarity = new SqlParameter("@Clarity", parcel_Master.Clarity);
             var Status = new SqlParameter("@Status", parcel_Master.Status);
-            var isExistTerms = new SqlParameter("@IsExistTerms", System.Data.SqlDbType.Bit)
+            var isExistTerms = new SqlParameter("@IsExistTerms", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database

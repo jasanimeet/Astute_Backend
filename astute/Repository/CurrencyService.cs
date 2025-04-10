@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -61,17 +62,17 @@ namespace astute.Repository
             var status = new SqlParameter("@status", currency_Mas.status);
             var recordType = new SqlParameter("@recordType", "Insert");
             var isForce_Insert = new SqlParameter("@IsForceInsert", currency_Mas.IsForceInsert);
-            var isExistCurrency = new SqlParameter("@IsExistCurrency", System.Data.SqlDbType.Bit)
+            var isExistCurrency = new SqlParameter("@IsExistCurrency", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
+            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistSortNo = new SqlParameter("@IsExistSortNo", System.Data.SqlDbType.Bit)
+            var isExistSortNo = new SqlParameter("@IsExistSortNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -108,17 +109,17 @@ namespace astute.Repository
             var status = new SqlParameter("@status", currency_Mas.status);
             var recordType = new SqlParameter("@recordType", "Update");
             var isForce_Insert = new SqlParameter("@IsForceInsert", currency_Mas.IsForceInsert);
-            var isExistCurrency = new SqlParameter("@IsExistCurrency", System.Data.SqlDbType.Bit)
+            var isExistCurrency = new SqlParameter("@IsExistCurrency", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
+            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistSortNo = new SqlParameter("@IsExistSortNo", System.Data.SqlDbType.Bit)
+            var isExistSortNo = new SqlParameter("@IsExistSortNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -146,9 +147,9 @@ namespace astute.Repository
         }
         public async Task<int> DeleteCurrency(int currency_Id)
         {
-            var isReferencedParameter = new SqlParameter("@IsReferenced", System.Data.SqlDbType.Bit)
+            var isReferencedParameter = new SqlParameter("@IsReferenced", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await _dbContext.Database

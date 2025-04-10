@@ -92,9 +92,9 @@ namespace astute.Repository
             var status = new SqlParameter("@Status", category_Master.Status);
             var colId = new SqlParameter("@ColId", category_Master.Col_Id);
             var recordType = new SqlParameter("@RecordType", "Insert");
-            var isReferencedParameter = new SqlParameter("@IsExistsCat", System.Data.SqlDbType.Bit)
+            var isReferencedParameter = new SqlParameter("@IsExistsCat", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -119,9 +119,9 @@ namespace astute.Repository
             var status = new SqlParameter("@Status", category_Master.Status);
             var colId = new SqlParameter("@ColId", category_Master.Col_Id);
             var recordType = new SqlParameter("@RecordType", "Update");
-            var isReferencedParameter = new SqlParameter("@IsExistsCat", System.Data.SqlDbType.Bit)
+            var isReferencedParameter = new SqlParameter("@IsExistsCat", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -140,9 +140,9 @@ namespace astute.Repository
         }
         public async Task<int> DeleteCategory(int id)
         {
-            var isReferencedParameter = new SqlParameter("@IsReferenced", System.Data.SqlDbType.Bit)
+            var isReferencedParameter = new SqlParameter("@IsReferenced", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             //if (CoreService.Enable_Trace_Records(_configuration))
@@ -656,9 +656,9 @@ namespace astute.Repository
 
         public async Task<int> Delete_Import_Master(int id)
         {
-            var isReferencedParameter = new SqlParameter("@IsReferenced", System.Data.SqlDbType.Bit)
+            var isReferencedParameter = new SqlParameter("@IsReferenced", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Import_Master_Delete @Import_Id, @IsReferenced OUT",

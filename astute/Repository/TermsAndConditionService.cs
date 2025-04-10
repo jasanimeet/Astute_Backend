@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -60,13 +61,13 @@ namespace astute.Repository
             var sort_No = termsAndCondition.Sort_No > 0 ? new SqlParameter("@Sort_No", termsAndCondition.Sort_No) : new SqlParameter("@Sort_No", DBNull.Value);
             var status = new SqlParameter("@Status", termsAndCondition.Status);
             var isForce_Insert = new SqlParameter("@IsForceInsert", termsAndCondition.IsForceInsert);
-            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
+            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistSortNo = new SqlParameter("@IsExistSortNo", System.Data.SqlDbType.Bit)
+            var isExistSortNo = new SqlParameter("@IsExistSortNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace astute.Repository
@@ -58,9 +59,9 @@ namespace astute.Repository
             var sortNo = terms_Mas.Sort_No > 0 ? new SqlParameter("@sortNo", terms_Mas.Sort_No) : new SqlParameter("@sortNo", DBNull.Value);
             var status = new SqlParameter("@status", terms_Mas.Status);
             var recordType = new SqlParameter("@recordType", "Insert");
-            var isExistTerms = new SqlParameter("@IsExistTerms", System.Data.SqlDbType.Bit)
+            var isExistTerms = new SqlParameter("@IsExistTerms", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -87,9 +88,9 @@ namespace astute.Repository
             var sortNo = terms_Mas.Sort_No > 0 ? new SqlParameter("@sortNo", terms_Mas.Sort_No) : new SqlParameter("@sortNo", DBNull.Value);
             var status = new SqlParameter("@status", terms_Mas.Status);
             var recordType = new SqlParameter("@recordType", "Update");
-            var isExistTerms = new SqlParameter("@IsExistTerms", System.Data.SqlDbType.Bit)
+            var isExistTerms = new SqlParameter("@IsExistTerms", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -161,9 +162,9 @@ namespace astute.Repository
             var trans_Id = terms_Trans_Det.Trans_Id > 0 ? new SqlParameter("@Trans_Id", terms_Trans_Det.Trans_Id) : new SqlParameter("@Trans_Id", DBNull.Value);
             var trans_Type = new SqlParameter("@Trans_Type", terms_Trans_Det.Trans_Type);
             var recordType = new SqlParameter("@recordType", "Insert");
-            var isExistTerms = new SqlParameter("@IsExistTerms", System.Data.SqlDbType.Bit)
+            var isExistTerms = new SqlParameter("@IsExistTerms", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -185,9 +186,9 @@ namespace astute.Repository
             var trans_Id = terms_Trans_Det.Trans_Id > 0 ? new SqlParameter("@Trans_Id", terms_Trans_Det.Trans_Id) : new SqlParameter("@Trans_Id", DBNull.Value);
             var trans_Type = new SqlParameter("@Trans_Type", terms_Trans_Det.Trans_Type);
             var recordType = new SqlParameter("@recordType", "Update");
-            var isExistTerms = new SqlParameter("@IsExistTerms", System.Data.SqlDbType.Bit)
+            var isExistTerms = new SqlParameter("@IsExistTerms", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database

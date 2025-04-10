@@ -35,13 +35,13 @@ namespace astute.Repository
                 TypeName = "dbo.Lab_User_Table_Type",
                 Value = dataTable
             };
-            var isExist_User_Name = new SqlParameter("@IsExist_User_Name", System.Data.SqlDbType.Bit)
+            var isExist_User_Name = new SqlParameter("@IsExist_User_Name", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExist_Primary_User = new SqlParameter("@IsExist_Primary_User", System.Data.SqlDbType.Bit)
+            var isExist_Primary_User = new SqlParameter("@IsExist_Primary_User", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
             var _party_Id = new SqlParameter("@Party_Id", party_Id);
             var _user_Id = new SqlParameter("@User_Id", user_Id);
@@ -208,14 +208,14 @@ namespace astute.Repository
         {
             var _id = new SqlParameter("@Id", id);
             var _check_Primary_User = new SqlParameter("@Check_Primary_User", check_Primary_User);
-            var is_Exist = new SqlParameter("@Is_Exist", System.Data.SqlDbType.Bit)
+            var is_Exist = new SqlParameter("@Is_Exist", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
-            var is_Sub_Exist = new SqlParameter("@Is_Sub_Exist", System.Data.SqlDbType.Bit)
+            var is_Sub_Exist = new SqlParameter("@Is_Sub_Exist", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database

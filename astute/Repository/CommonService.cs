@@ -121,17 +121,17 @@ namespace astute.Repository
             var status = new SqlParameter("@status", country_Mas.Status);
             var shortCode = !string.IsNullOrEmpty(country_Mas.Short_Code) ? new SqlParameter("@shortCode", country_Mas.Short_Code) : new SqlParameter("@shortCode", DBNull.Value);
             var recordType = new SqlParameter("@recordType", "Insert");
-            var isExistCountry = new SqlParameter("@IsExistCountry", System.Data.SqlDbType.Bit)
+            var isExistCountry = new SqlParameter("@IsExistCountry", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
+            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistSortNo = new SqlParameter("@IsExistSortNo", System.Data.SqlDbType.Bit)
+            var isExistSortNo = new SqlParameter("@IsExistSortNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -169,17 +169,17 @@ namespace astute.Repository
             var status = new SqlParameter("@status", country_Mas.Status);
             var shortCode = !string.IsNullOrEmpty(country_Mas.Short_Code) ? new SqlParameter("@shortCode", country_Mas.Short_Code) : new SqlParameter("@shortCode", DBNull.Value);
             var recordType = new SqlParameter("@recordType", "Update");
-            var isExistCountry = new SqlParameter("@IsExistCountry", System.Data.SqlDbType.Bit)
+            var isExistCountry = new SqlParameter("@IsExistCountry", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
+            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistSortNo = new SqlParameter("@IsExistSortNo", System.Data.SqlDbType.Bit)
+            var isExistSortNo = new SqlParameter("@IsExistSortNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -291,17 +291,17 @@ namespace astute.Repository
             var status = new SqlParameter("@status", state_Mas.Status);
             var recordType = new SqlParameter("@recordType", "Insert");
             var isForce_Insert = new SqlParameter("@IsForceInsert", state_Mas.IsForceInsert);
-            var isExistState = new SqlParameter("@IsExistState", System.Data.SqlDbType.Bit)
+            var isExistState = new SqlParameter("@IsExistState", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
+            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistSortNo = new SqlParameter("@IsExistSortNo", System.Data.SqlDbType.Bit)
+            var isExistSortNo = new SqlParameter("@IsExistSortNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -340,17 +340,17 @@ namespace astute.Repository
             var status = new SqlParameter("@status", state_Mas.Status);
             var recordType = new SqlParameter("@recordType", "Update");
             var isForce_Insert = new SqlParameter("@IsForceInsert", state_Mas.IsForceInsert);
-            var isExistState = new SqlParameter("@IsExistState", System.Data.SqlDbType.Bit)
+            var isExistState = new SqlParameter("@IsExistState", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
+            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistSortNo = new SqlParameter("@IsExistSortNo", System.Data.SqlDbType.Bit)
+            var isExistSortNo = new SqlParameter("@IsExistSortNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -485,13 +485,13 @@ namespace astute.Repository
             var stdCode = !string.IsNullOrEmpty(city_Mas.Std_Code) ? new SqlParameter("@std_Code", city_Mas.Std_Code) : new SqlParameter("@std_Code", DBNull.Value);
             var recordType = new SqlParameter("@recordType", "Update");
             var isForce_Insert = new SqlParameter("@IsForceInsert", city_Mas.IsForceInsert);
-            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
+            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistSortNo = new SqlParameter("@IsExistSortNo", System.Data.SqlDbType.Bit)
+            var isExistSortNo = new SqlParameter("@IsExistSortNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -874,13 +874,13 @@ namespace astute.Repository
             var menuId = layout_Master.Menu_id > 0 ? new SqlParameter("@Menu_id", layout_Master.Menu_id) : new SqlParameter("@Menu_id", DBNull.Value);
             var employeeId = layout_Master.Employee_id > 0 ? new SqlParameter("@Employee_id", layout_Master.Employee_id) : new SqlParameter("@Employee_id", DBNull.Value);
             var recordType = new SqlParameter("@recordType", "Insert");
-            var insertedId = new SqlParameter("@InsertedId", System.Data.SqlDbType.Int)
+            var insertedId = new SqlParameter("@InsertedId", SqlDbType.Int)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistLayoutId = new SqlParameter("@IsExistLayoutId", System.Data.SqlDbType.Int)
+            var isExistLayoutId = new SqlParameter("@IsExistLayoutId", SqlDbType.Int)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             result = await Task.Run(() => _dbContext.Database
@@ -904,9 +904,9 @@ namespace astute.Repository
                     var Individual_Layout_Name = !string.IsNullOrEmpty(item.Individual_Layout_Name) ? new SqlParameter("@Individual_Layout_Name", item.Individual_Layout_Name) : new SqlParameter("@Individual_Layout_Name", DBNull.Value);
                     var status = new SqlParameter("@Status", item.Status);
                     var record_Type = new SqlParameter("@recordType", "Insert");
-                    var inserted_det_Id = new SqlParameter("@InsertedId", System.Data.SqlDbType.Int)
+                    var inserted_det_Id = new SqlParameter("@InsertedId", SqlDbType.Int)
                     {
-                        Direction = System.Data.ParameterDirection.Output
+                        Direction = ParameterDirection.Output
                     };
 
                     result = await Task.Run(() => _dbContext.Database

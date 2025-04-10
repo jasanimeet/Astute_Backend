@@ -146,9 +146,9 @@ namespace astute.Repository
         #region Party Master        
         public async Task<(string, int)> DeleteParty(int party_Id)
         {
-            var isReferencedParameter = new SqlParameter("@IsReference", System.Data.SqlDbType.Bit)
+            var isReferencedParameter = new SqlParameter("@IsReference", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Party_Master_Delete @PartyId, @IsReference OUT",
@@ -266,9 +266,9 @@ namespace astute.Repository
             var partyType = new SqlParameter("@Party_Type", !string.IsNullOrEmpty(party_Type) ? (object)party_Type : DBNull.Value);
             var _page_Size = new SqlParameter("@PageSize", page_Size > 0 ? (object)page_Size : DBNull.Value);
             var _page_num = new SqlParameter("@PageNumber", Page_No > 0 ? (object)Page_No : DBNull.Value);
-            var total_Rec_Count = new SqlParameter("@Total_Rec_Count", System.Data.SqlDbType.Int)
+            var total_Rec_Count = new SqlParameter("@Total_Rec_Count", SqlDbType.Int)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await _dbContext.Party_Master_Replica.FromSqlRaw(@"EXEC Party_Master_Select_Raplicate_06052024 @PartyId, @Party_Type, @PageSize, @PageNumber, @Total_Rec_Count OUT", partyId, partyType, _page_Size, _page_num, total_Rec_Count).AsNoTracking()
@@ -634,13 +634,13 @@ namespace astute.Repository
             var company_Code = party_Master.Company_Code > 0 ? new SqlParameter("@Company_Code", party_Master.Company_Code) : new SqlParameter("@Company_Code", DBNull.Value);
             var shipment_Min_Amt = party_Master.Shipment_Min_Amt > 0 ? new SqlParameter("@Shipment_Min_Amt", party_Master.Shipment_Min_Amt) : new SqlParameter("@Shipment_Min_Amt", DBNull.Value);
             //var status = new SqlParameter("@Status", true);
-            var insertedId = new SqlParameter("@InsertedId", System.Data.SqlDbType.Int)
+            var insertedId = new SqlParameter("@InsertedId", SqlDbType.Int)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var party_Exists = new SqlParameter("@Party_Exists", System.Data.SqlDbType.Bit)
+            var party_Exists = new SqlParameter("@Party_Exists", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database

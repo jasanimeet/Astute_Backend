@@ -167,21 +167,21 @@ namespace astute.Repository
             var is_Secretary = new SqlParameter("@Is_Secretary", employee_Master.Is_Secretary);
             var confirm_Purchase = new SqlParameter("@Confirm_Purchase", employee_Master.Confirm_Purchase);
 
-            var isExistUserName = new SqlParameter("@IsExistUserName", System.Data.SqlDbType.Bit)
+            var isExistUserName = new SqlParameter("@IsExistUserName", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
+            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistSortNo = new SqlParameter("@IsExistSortNo", System.Data.SqlDbType.Bit)
+            var isExistSortNo = new SqlParameter("@IsExistSortNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var insertedId = new SqlParameter("@InsertedId", System.Data.SqlDbType.Int)
+            var insertedId = new SqlParameter("@InsertedId", SqlDbType.Int)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -309,21 +309,21 @@ namespace astute.Repository
             var personal_Mobile_No = !string.IsNullOrEmpty(employee_Master.Personal_Mobile_No) ? new SqlParameter("@personal_Mobile_No", employee_Master.Personal_Mobile_No) : new SqlParameter("@personal_Mobile_No", DBNull.Value);
             var designation_Id = employee_Master.Designation_Id > 0 ? new SqlParameter("@designation_Id", employee_Master.Designation_Id) : new SqlParameter("@designation_Id", DBNull.Value);
 
-            var isExistUserName = new SqlParameter("@IsExistUserName", System.Data.SqlDbType.Bit)
+            var isExistUserName = new SqlParameter("@IsExistUserName", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", System.Data.SqlDbType.Bit)
+            var isExistOrderNo = new SqlParameter("@IsExistOrderNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var isExistSortNo = new SqlParameter("@IsExistSortNo", System.Data.SqlDbType.Bit)
+            var isExistSortNo = new SqlParameter("@IsExistSortNo", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
-            var insertedId = new SqlParameter("@InsertedId", System.Data.SqlDbType.Int)
+            var insertedId = new SqlParameter("@InsertedId", SqlDbType.Int)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -351,9 +351,9 @@ namespace astute.Repository
         }
         public async Task<(string, int)> DeleteEmployee(int employeeId)
         {
-            var isReferencedParameter = new SqlParameter("@IsReference", System.Data.SqlDbType.Bit)
+            var isReferencedParameter = new SqlParameter("@IsReference", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Employee_Master_Delete @employeeId, @IsReference OUT",

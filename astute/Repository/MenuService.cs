@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -64,9 +65,9 @@ namespace astute.Repository
             var status = new SqlParameter("@Status", menu_Mas.Status);
             var modulePath = !string.IsNullOrEmpty(menu_Mas.Module_Path) ? new SqlParameter("@Module_Path", menu_Mas.Module_Path) : new SqlParameter("@Module_Path", DBNull.Value);
             var recoredType = new SqlParameter("@recordType", "Insert");
-            var isExistParameter = new SqlParameter("@IsExistsMenu", System.Data.SqlDbType.Bit)
+            var isExistParameter = new SqlParameter("@IsExistsMenu", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -98,9 +99,9 @@ namespace astute.Repository
             var status = new SqlParameter("@Status", menu_Mas.Status);
             var modulePath = !string.IsNullOrEmpty(menu_Mas.Module_Path) ? new SqlParameter("@Module_Path", menu_Mas.Module_Path) : new SqlParameter("@Module_Path", DBNull.Value);
             var recoredType = new SqlParameter("@recordType", "Update");
-            var isExistParameter = new SqlParameter("@IsExistsMenu", System.Data.SqlDbType.Bit)
+            var isExistParameter = new SqlParameter("@IsExistsMenu", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
@@ -119,9 +120,9 @@ namespace astute.Repository
         }
         public async Task<int> DeleteMenu(int menuId)
         {
-            var isReferencedParameter = new SqlParameter("@IsExists", System.Data.SqlDbType.Bit)
+            var isReferencedParameter = new SqlParameter("@IsExists", SqlDbType.Bit)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = ParameterDirection.Output
             };
 
             //if (CoreService.Enable_Trace_Records(_configuration))
