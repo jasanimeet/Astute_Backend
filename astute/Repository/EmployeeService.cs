@@ -165,6 +165,7 @@ namespace astute.Repository
             var designation_Id = employee_Master.Designation_Id > 0 ? new SqlParameter("@designation_Id", employee_Master.Designation_Id) : new SqlParameter("@designation_Id", DBNull.Value);
             var user_Type = !string.IsNullOrEmpty(employee_Master.User_Type) ? new SqlParameter("@User_Type", employee_Master.User_Type) : new SqlParameter("@User_Type", DBNull.Value);
             var is_Secretary = new SqlParameter("@Is_Secretary", employee_Master.Is_Secretary);
+            var confirm_Purchase = new SqlParameter("@Confirm_Purchase", employee_Master.Confirm_Purchase);
 
             var isExistUserName = new SqlParameter("@IsExistUserName", System.Data.SqlDbType.Bit)
             {
@@ -187,10 +188,12 @@ namespace astute.Repository
             .ExecuteSqlRawAsync(@"exec Employee_Master_Insert_Update @employeeId, @initial, @firstName, @middleName, @lastName,
             @chineseName, @address1, @address2, @address3, @cityId, @joindate, @employeeType, @birthDate, @gender, @mobileNo, @personalEmail, @companyEmail,
             @leaveDate, @pSNID, @bloodGroup, @contractStartDate, @contractEndDate, @approveHolidays, @orderNo, @sortNo, @userName, @password, @employee_Code, @status, @is_admin,
-            @marital_Status, @mobile_Country_Code, @mobile_1_Country_Code, @probation_End_Date, @personal_Mobile_No, @designation_Id, @User_Type, @Is_Secretary, @IsExistUserName OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT",
+            @marital_Status, @mobile_Country_Code, @mobile_1_Country_Code, @probation_End_Date, @personal_Mobile_No, @designation_Id, @User_Type, @Is_Secretary,
+            @Confirm_Purchase, @IsExistUserName OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT",
             employeeId, initial, firstName, middleName, lastName, chineseName, address1, address2, address3, cityId, joinDate, employeeType, birthDate, gender, mobileNo,
             personalEmail, companyEmail, leaveDate, pSNID, bloodGroup, contractStartDate, contractEndDate, approveHolidays, orderNo, sortNo, userName, password,
-            employeeCode, status, is_admin, marital_Status, mobile_Country_Code, mobile_1_Country_Code, probation_End_Date, personal_Mobile_No, designation_Id, user_Type, is_Secretary, isExistUserName, isExistOrderNo, isExistSortNo, insertedId));
+            employeeCode, status, is_admin, marital_Status, mobile_Country_Code, mobile_1_Country_Code, probation_End_Date, personal_Mobile_No, designation_Id, user_Type, is_Secretary,
+            confirm_Purchase, isExistUserName, isExistOrderNo, isExistSortNo, insertedId));
 
             bool _isExistUserName = (bool)isExistUserName.Value;
             if (_isExistUserName)
