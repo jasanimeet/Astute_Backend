@@ -3816,6 +3816,8 @@ namespace astute.Repository
                     command.Parameters.Add(!string.IsNullOrEmpty(purchase_Master_Search_Model.Doc_Type) ? new SqlParameter("@Doc_Type", purchase_Master_Search_Model.Doc_Type) : new SqlParameter("@Doc_Type", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(purchase_Master_Search_Model.Stock_Status) ? new SqlParameter("@Stock_Status", purchase_Master_Search_Model.Stock_Status) : new SqlParameter("@Stock_Status", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(purchase_Master_Search_Model.Stock_Certificate_No) ? new SqlParameter("@Stock_Certificate_No", purchase_Master_Search_Model.Stock_Certificate_No) : new SqlParameter("@Stock_Certificate_No", DBNull.Value));
+                    command.Parameters.Add(purchase_Master_Search_Model.Company_Id > 0 ? new SqlParameter("@Company_Id", purchase_Master_Search_Model.Company_Id) : new SqlParameter("@Company_Id", DBNull.Value));
+                    command.Parameters.Add(purchase_Master_Search_Model.Year_Id > 0 ? new SqlParameter("@Year_Id", purchase_Master_Search_Model.Year_Id) : new SqlParameter("@Year_Id", DBNull.Value));
 
                     await connection.OpenAsync();
 

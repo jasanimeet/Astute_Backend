@@ -7,5 +7,6 @@
         public string? Doc_Type { get; set; }
         public string? Stock_Status { get; set; }
         public string? Stock_Certificate_No { get; set; }
+        public int? Company_Id { get; set; }
     }
 }
