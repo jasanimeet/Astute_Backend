@@ -15180,6 +15180,37 @@ namespace astute.Controllers
             }
         }
         
+        [HttpPost]
+        [Route("purchase_confirm_update")]
+        [Authorize]
+        public async Task<IActionResult> Purchase_Confirm_Update(int Trans_Id)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Purchase_Confirm_Update(Trans_Id, user_Id ?? 0);
+                if (result != null && result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.ConfirmPurchaseMessage
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Purchase_Confirm_Update", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         [HttpGet]
         [Route("order_process_pending_fcm_token")]
         public async Task<IActionResult> Order_Process_Pending_FCM_Token()
