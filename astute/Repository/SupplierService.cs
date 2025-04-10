@@ -3778,7 +3778,7 @@ namespace astute.Repository
                 TypeName = "[dbo].[Purchase_Expenses_Table_Type]",
                 Value = expensesDataTable
             };
-            
+
             var purchaseDetailLooseParameter = new SqlParameter("@Purchase_Detail_Loose_Table_Type", SqlDbType.Structured)
             {
                 TypeName = "[dbo].[Purchase_Detail_Loose_Table_Type]",
@@ -3897,7 +3897,7 @@ namespace astute.Repository
                 if (purchase_Detail_Loose_Trans_Dets_Result != null)
                 {
                     output["Purchase_Detail_Loose_List"] = purchase_Detail_Loose_Trans_Dets_Result;
-            }
+                }
                 else
                 {
                     output["Purchase_Detail_Loose_List"] = new List<object>();
@@ -3940,7 +3940,7 @@ namespace astute.Repository
         public async Task<int> Delete_Purchase(int Trans_Id, int User_Id)
         {
             var trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
-            
+
             var user_Id = new SqlParameter("@User_Id", User_Id);
             
             var result = await _dbContext.Database
@@ -3948,7 +3948,7 @@ namespace astute.Repository
 
             return result;
         }
-
+       
         public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Status_Summary(string Stock_Id)
         {
             var result = new List<Dictionary<string, object>>();
@@ -4102,7 +4102,7 @@ namespace astute.Repository
 
             return result;
         }
-
+        
         public async Task<int> Purchase_Detail_Outward_Update(DataTable dataTable, int Trans_Id, int User_Id)
         {
             var _dataTable = new SqlParameter("@Purchase_Detail_Outward_Update_Table_Type", SqlDbType.Structured)

@@ -2,7 +2,6 @@
 using astute.CoreServices;
 using astute.Models;
 using astute.Repository;
-using ExcelDataReader;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -41,7 +40,6 @@ namespace astute.Controllers
         private readonly ICommonService _commonService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ISupplierService _supplierService;
-        IExcelDataReader _excelDataReader;
         private readonly ICartService _cartService;
         private readonly IEmailSender _emailSender;
         private readonly IJWTAuthentication _jWTAuthentication;
@@ -607,7 +605,7 @@ namespace astute.Controllers
 
             return dt;
         }
-        private string Split_Supplier_Stock_Measurement(string expression, string dimension)
+        public string Split_Supplier_Stock_Measurement(string expression, string dimension)
         {
             try
             {
@@ -642,7 +640,7 @@ namespace astute.Controllers
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Handle the exception or log it if needed
                 throw;
@@ -6986,10 +6984,6 @@ namespace astute.Controllers
                             (!string.IsNullOrEmpty(item.Cart_Status) ? item.Cart_Status.ToString() : null));
                     }
 
-                    DateTime Valid_Date;
-
-                    string dateFormat = "dd-MM-yyyy";
-
                     var (message, result, msg) = await _cartService.Create_Update_Cart(dataTable, cart_Model.Id, (int)cart_Model.User_Id, cart_Model.Customer_Name, cart_Model.Remarks);
                     if ((message == "exist" && msg.Length > 0) || (message == "success" && msg.Length > 0))
                     {
@@ -12156,644 +12150,650 @@ namespace astute.Controllers
                     {
                         if ((string.IsNullOrEmpty(OrderResult[0].Customer) || OrderResult[0].Customer == "") && !order_Processing_Reply_To_Assist.Order_No.StartsWith("S"))
                         {
-                            IList<Order_Processing_Complete_Fortune_Detail> order_Processing_Complete_Fortune_Details = new List<Order_Processing_Complete_Fortune_Detail>();
+                            if (Stock_Ids.Count > 0)
+                            {
+                                string concatenatedStockId = string.Join(",", Stock_Ids);
+
+                                var dt_Order = await _supplierService.Get_Order_Data_Mazal_Excel(concatenatedStockId, order_Processing_Reply_To_Assist.Order_No);
+
+                                if (dt_Order != null && dt_Order.Rows.Count > 0)
+                                {
+                                    var excelPath = string.Empty;
+
+                                    string filename = $"{"Order_Status_"}{DateTime.UtcNow.ToString("ddMMyyyy-HHmmss")}{order_Processing_Reply_To_Assist.Order_No}.xlsx";
+
+                                    string subject = order_Processing_Reply_To_Assist.Request_For + " request for order no " + order_Processing_Reply_To_Assist.Order_No + " completed";
+
+                                    StringBuilder body = new StringBuilder();
+
+                                    body.AppendLine(@"Request for : " + order_Processing_Reply_To_Assist.Request_For + "<br/>");
+
+                                    List<string> columnNames = new List<string>();
+                                    foreach (DataColumn column in dt_Order.Columns)
+                                    {
+                                        columnNames.Add(column.ColumnName);
+                                    }
+
+                                    DataTable columnNamesTable = new DataTable();
+                                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                                    foreach (string columnName in columnNames)
+                                    {
+                                        columnNamesTable.Rows.Add(columnName);
+                                    }
+                                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                                    if (!(Directory.Exists(filePath)))
+                                    {
+                                        Directory.CreateDirectory(filePath);
+                                    }
+
+                                    EpExcelExport.Create_Order_Processing_Excel_Mazal(dt_Order, columnNamesTable, filePath, filePath + filename);
+
+                                    excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+
+                                    byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
+                                    using (MemoryStream memoryStream = new MemoryStream(fileBytes))
+                                    {
+                                        Employee_Mail employee_Mail = new Employee_Mail
+                                        {
+                                            Email_id = _configuration["EmailSetting:FromEmail"],
+                                            Email_Password = _configuration["EmailSetting:FromPassword"],
+                                            SMTP_Server_Address = _configuration["EmailSetting:SmtpHost"],
+                                            SMTP_Port = Convert.ToInt32(_configuration["EmailSetting:SmtpPort"])
+                                        };
+
+                                        IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
+                                        _emailSender.Send_Stock_Email(toEmail: to_Email, externalLink: "", subject: subject, formFile: formFile, strBody: body.ToString(), user_Id: 0, employee_Mail: employee_Mail);
+                                    }
+                                }
+                            }
+
+                            DataTable masterDataTable = new DataTable();
+                            masterDataTable.Columns.Add("Trans_Id", typeof(int));
+                            masterDataTable.Columns.Add("Order_No", typeof(string));
+                            masterDataTable.Columns.Add("Entry_Type", typeof(string));
+                            masterDataTable.Columns.Add("Company_Name", typeof(string));
+                            masterDataTable.Columns.Add("Remarks", typeof(string));
+                            masterDataTable.Columns.Add("Order_Type", typeof(string));
+                            masterDataTable.Columns.Add("Assist_By", typeof(int));
+                            masterDataTable.Columns.Add("Entry_User", typeof(int));
+
+                            masterDataTable.Rows.Add(
+                                0,
+                                (order_Processing_Reply_To_Assist.Order_No + "." + order_Processing_Reply_To_Assist.Sub_Order_Id.ToString()) ?? null,
+                                "A",
+                                result_e != null ? result_e.Company_Name ?? null : null,
+                                order_Processing_Reply_To_Assist.Summary_QC_Remarks != null ? order_Processing_Reply_To_Assist.Summary_QC_Remarks : null,
+                                "S",
+                                result_e != null ? result_e.Fortune_Id : null,
+                                user_Id ?? null
+                            );
+
+                            DataTable detailDataTable = new DataTable();
+                            detailDataTable.Columns.Add("Id", typeof(int));
+                            detailDataTable.Columns.Add("Trans_Id", typeof(int));
+                            detailDataTable.Columns.Add("Stock_Id", typeof(string));
+                            detailDataTable.Columns.Add("Cert_No", typeof(string));
+                            detailDataTable.Columns.Add("Supplier_Id", typeof(int));
+                            detailDataTable.Columns.Add("Supplier_Name", typeof(string));
+                            detailDataTable.Columns.Add("Supplier_Short_Name", typeof(string));
+                            detailDataTable.Columns.Add("Supplier_Ref_No", typeof(string));
+                            detailDataTable.Columns.Add("Status", typeof(string));
+                            detailDataTable.Columns.Add("Remarks", typeof(string));
+                            detailDataTable.Columns.Add("Buyer", typeof(int));
+                            detailDataTable.Columns.Add("Lab", typeof(int));
+                            detailDataTable.Columns.Add("Shape", typeof(int));
+                            detailDataTable.Columns.Add("BGM", typeof(int));
+                            detailDataTable.Columns.Add("Color", typeof(int));
+                            detailDataTable.Columns.Add("Clarity", typeof(int));
+                            detailDataTable.Columns.Add("Cts", typeof(double));
+                            detailDataTable.Columns.Add("Rap_Rate", typeof(double));
+                            detailDataTable.Columns.Add("Rap_Amt", typeof(double));
+                            detailDataTable.Columns.Add("Supplier_Base_Disc", typeof(double));
+                            detailDataTable.Columns.Add("Supplier_Base_Amt", typeof(double));
+                            detailDataTable.Columns.Add("Supplier_Cost_Disc", typeof(double));
+                            detailDataTable.Columns.Add("Supplier_Cost_Amt", typeof(double));
+                            detailDataTable.Columns.Add("Offer_Disc", typeof(double));
+                            detailDataTable.Columns.Add("Offer_Amt", typeof(double));
+                            detailDataTable.Columns.Add("Cut", typeof(int));
+                            detailDataTable.Columns.Add("Polish", typeof(int));
+                            detailDataTable.Columns.Add("Symm", typeof(int));
+                            detailDataTable.Columns.Add("Flour_Intensity", typeof(int));
+                            detailDataTable.Columns.Add("Length", typeof(double));
+                            detailDataTable.Columns.Add("Width", typeof(double));
+                            detailDataTable.Columns.Add("Depth", typeof(double));
+                            detailDataTable.Columns.Add("Depth_Per", typeof(double));
+                            detailDataTable.Columns.Add("Table_Per", typeof(double));
+                            detailDataTable.Columns.Add("Key_to_Symbol", typeof(string));
+                            detailDataTable.Columns.Add("Additional_Comment", typeof(string));
+                            detailDataTable.Columns.Add("Girdle_Per", typeof(double));
+                            detailDataTable.Columns.Add("Crown_Angle", typeof(double));
+                            detailDataTable.Columns.Add("Crown_Height", typeof(double));
+                            detailDataTable.Columns.Add("Pavillion_Angle", typeof(double));
+                            detailDataTable.Columns.Add("Pavillion_Height", typeof(double));
+                            detailDataTable.Columns.Add("Table_Black", typeof(int));
+                            detailDataTable.Columns.Add("Crown_Black", typeof(int));
+                            detailDataTable.Columns.Add("Table_White", typeof(int));
+                            detailDataTable.Columns.Add("Crown_White", typeof(int));
+                            detailDataTable.Columns.Add("Culet", typeof(int));
+                            detailDataTable.Columns.Add("Table_Open", typeof(int));
+                            detailDataTable.Columns.Add("Crown_Open", typeof(int));
+                            detailDataTable.Columns.Add("Pav_Open", typeof(int));
+                            detailDataTable.Columns.Add("Girdle_Open", typeof(int));
+                            detailDataTable.Columns.Add("Cert_Date", typeof(DateTime));
+                            detailDataTable.Columns.Add("Cert_Type", typeof(int));
+                            detailDataTable.Columns.Add("LR_Half", typeof(double));
+                            detailDataTable.Columns.Add("Str_Ln", typeof(double));
+                            detailDataTable.Columns.Add("Fancy_Color", typeof(int));
+                            detailDataTable.Columns.Add("Fancy_Intensity", typeof(int));
+                            detailDataTable.Columns.Add("Fancy_Overtone", typeof(int));
+                            detailDataTable.Columns.Add("Rough_Origin", typeof(int));
+                            detailDataTable.Columns.Add("Image", typeof(string));
+                            detailDataTable.Columns.Add("Video", typeof(string));
+                            detailDataTable.Columns.Add("Cert_Link", typeof(string));
+                            detailDataTable.Columns.Add("DNA", typeof(string));
+                            detailDataTable.Columns.Add("Cert_Type_Link", typeof(string));
+                            detailDataTable.Columns.Add("Lab_C", typeof(string));
+                            detailDataTable.Columns.Add("Shape_C", typeof(string));
+                            detailDataTable.Columns.Add("BGM_C", typeof(string));
+                            detailDataTable.Columns.Add("Color_C", typeof(string));
+                            detailDataTable.Columns.Add("Clarity_C", typeof(string));
+                            detailDataTable.Columns.Add("Cut_C", typeof(string));
+                            detailDataTable.Columns.Add("Polish_C", typeof(string));
+                            detailDataTable.Columns.Add("Symm_C", typeof(string));
+                            detailDataTable.Columns.Add("Flour_Intensity_C", typeof(string));
+                            detailDataTable.Columns.Add("Table_Black_C", typeof(string));
+                            detailDataTable.Columns.Add("Crown_Black_C", typeof(string));
+                            detailDataTable.Columns.Add("Table_White_C", typeof(string));
+                            detailDataTable.Columns.Add("Crown_White_C", typeof(string));
+                            detailDataTable.Columns.Add("Culet_C", typeof(string));
+                            detailDataTable.Columns.Add("Table_Open_C", typeof(string));
+                            detailDataTable.Columns.Add("Crown_Open_C", typeof(string));
+                            detailDataTable.Columns.Add("Pav_Open_C", typeof(string));
+                            detailDataTable.Columns.Add("Girdle_Open_C", typeof(string));
+                            detailDataTable.Columns.Add("Cert_Type_C", typeof(string));
+                            detailDataTable.Columns.Add("Fancy_Color_C", typeof(string));
+                            detailDataTable.Columns.Add("Fancy_Intensity_C", typeof(string));
+                            detailDataTable.Columns.Add("Fancy_Overtone_C", typeof(string));
+                            detailDataTable.Columns.Add("Rough_Origin_C", typeof(string));
+                            detailDataTable.Columns.Add("Laser_Insc", typeof(int));
+                            detailDataTable.Columns.Add("Girdle_Condition", typeof(int));
+                            detailDataTable.Columns.Add("Laser_Insc_C", typeof(string));
+                            detailDataTable.Columns.Add("Girdle_Condition_C", typeof(string));
+                            detailDataTable.Columns.Add("Company", typeof(string));
+                            detailDataTable.Columns.Add("Milky", typeof(int));
+                            detailDataTable.Columns.Add("Milky_C", typeof(string));
+                            detailDataTable.Columns.Add("Shade", typeof(int));
+                            detailDataTable.Columns.Add("Shade_C", typeof(string));
 
                             foreach (var item in OrderResult)
                             {
-                                int? buyerCode = 0;
+                                DateTime Valid_Date;
 
-                                if (!string.IsNullOrEmpty(item.Buyer_Code))
+                                string dateFormat = "dd-MM-yyyy";
+
+                                if (!DateTime.TryParseExact(item.Cert_Date, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out Valid_Date))
                                 {
-                                    buyerCode = Convert.ToInt32(item.Buyer_Code);
+                                    Valid_Date = DateTime.MinValue;
                                 }
 
-                                var fortuneDetail = new Order_Processing_Complete_Fortune_Detail
-                                {
-                                    Id = item.Id,
-                                    Supplier_code = item.Supplier_code,
-                                    SuppStockId = item.SupplierNo,
-                                    CertificateNo = item.CertificateNo,
-                                    Status = item.Status.ToUpper(),
-                                    BuyerCode = buyerCode,
-                                    BaseAmount = item.BaseAmount != null ? item.BaseAmount : null,
-                                    CostAmount = item.CurrentCostAmount != null ? item.CurrentCostAmount : null,
-                                    Shade = item.Shade,
-                                    Milky = item.Milky,
-                                    TableOpen = item.TableOpen,
-                                    GirdleOpen = item.GirdleOpen,
-                                    CrownOpen = item.CrownOpen,
-                                    PavilionOpen = item.PavilionOpen
-                                };
-
-                                order_Processing_Complete_Fortune_Details.Add(fortuneDetail);
-                            }
-                            var result_det = await _oracleService.Order_Data_Detail_Transfer_Oracle(order_Processing_Complete_Fortune_Details);
-
-                            if (result_det > 0)
-                            {
-                                if (Stock_Ids.Count > 0)
-                                {
-                                    string concatenatedStockId = string.Join(",", Stock_Ids);
-
-                                    var dt_Order = await _supplierService.Get_Order_Data_Mazal_Excel(concatenatedStockId, order_Processing_Reply_To_Assist.Order_No);
-
-                                    if (dt_Order != null && dt_Order.Rows.Count > 0)
-                                    {
-                                        var excelPath = string.Empty;
-
-                                        string filename = $"{"Order_Status_"}{DateTime.UtcNow.ToString("ddMMyyyy-HHmmss")}{order_Processing_Reply_To_Assist.Order_No}.xlsx";
-
-                                        string subject = order_Processing_Reply_To_Assist.Request_For + " request for order no " + order_Processing_Reply_To_Assist.Order_No + " completed";
-
-                                        StringBuilder body = new StringBuilder();
-
-                                        body.AppendLine(@"Request for : " + order_Processing_Reply_To_Assist.Request_For + "<br/>");
-
-                                        List<string> columnNames = new List<string>();
-                                        foreach (DataColumn column in dt_Order.Columns)
-                                        {
-                                            columnNames.Add(column.ColumnName);
-                                        }
-
-                                        DataTable columnNamesTable = new DataTable();
-                                        columnNamesTable.Columns.Add("Column_Name", typeof(string));
-
-                                        foreach (string columnName in columnNames)
-                                        {
-                                            columnNamesTable.Rows.Add(columnName);
-                                        }
-                                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
-                                        if (!(Directory.Exists(filePath)))
-                                        {
-                                            Directory.CreateDirectory(filePath);
-                                        }
-
-                                        EpExcelExport.Create_Order_Processing_Excel_Mazal(dt_Order, columnNamesTable, filePath, filePath + filename);
-
-                                        excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
-
-                                        byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
-                                        using (MemoryStream memoryStream = new MemoryStream(fileBytes))
-                                        {
-                                            Employee_Mail employee_Mail = new Employee_Mail
-                                            {
-                                                Email_id = _configuration["EmailSetting:FromEmail"],
-                                                Email_Password = _configuration["EmailSetting:FromPassword"],
-                                                SMTP_Server_Address = _configuration["EmailSetting:SmtpHost"],
-                                                SMTP_Port = Convert.ToInt32(_configuration["EmailSetting:SmtpPort"])
-                                            };
-
-                                            IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
-                                            _emailSender.Send_Stock_Email(toEmail: to_Email, externalLink: "", subject: subject, formFile: formFile, strBody: body.ToString(), user_Id: 0, employee_Mail: employee_Mail);
-                                        }
-                                    }
-                                }
-                                
-                                DataTable masterDataTable = new DataTable();
-                                masterDataTable.Columns.Add("Trans_Id", typeof(int));
-                                masterDataTable.Columns.Add("Order_No", typeof(string));
-                                masterDataTable.Columns.Add("Entry_Type", typeof(string));
-                                masterDataTable.Columns.Add("Company_Name", typeof(string));
-                                masterDataTable.Columns.Add("Remarks", typeof(string));
-                                masterDataTable.Columns.Add("Order_Type", typeof(string));
-                                masterDataTable.Columns.Add("Assist_By", typeof(int));
-                                masterDataTable.Columns.Add("Entry_User", typeof(int));
-
-                                masterDataTable.Rows.Add(
+                                detailDataTable.Rows.Add(
                                     0,
-                                    (order_Processing_Reply_To_Assist.Order_No + "." + order_Processing_Reply_To_Assist.Sub_Order_Id.ToString()) ?? null,
-                                    "A",
-                                    result_e != null ? result_e.Company_Name ?? null : null,
-                                    order_Processing_Reply_To_Assist.Summary_QC_Remarks != null ? order_Processing_Reply_To_Assist.Summary_QC_Remarks : null,
-                                    "S",
-                                    result_e != null ? result_e.Fortune_Id : null,
-                                    user_Id ?? null
+                                    0,
+                                    item.StockId,
+                                    item.CertificateNo,
+                                    item.Supplier_Id != null ? Convert.ToInt32(item.Supplier_Id) : null,
+                                    item.Supplier_Name ?? null,
+                                    item.Supplier_Short_Name ?? null,
+                                    item.SupplierNo ?? null,
+                                    item.Status ?? null,
+                                    item.Remarks ?? null,
+                                    item.Buyer_Code != null ? Convert.ToInt32(item.Buyer_Code) : null,
+                                    item.LAB_Id != null ? Convert.ToInt32(item.LAB_Id) : null,
+                                    item.Shape_Id != null ? Convert.ToInt32(item.Shape_Id) : null,
+                                    item.BGM_Id != null ? Convert.ToInt32(item.BGM_Id) : null,
+                                    item.Color_Id != null ? Convert.ToInt32(item.Color_Id) : null,
+                                    item.Clarity_Id != null ? Convert.ToInt32(item.Clarity_Id) : null,
+                                    SafeConvertToDouble(item.Cts?.ToString()),
+                                    SafeConvertToDouble(item.RapRate?.ToString()),
+                                    SafeConvertToDouble(item.RapAmount?.ToString()),
+                                    SafeConvertToDouble(item.BaseDisc?.ToString()),
+                                    SafeConvertToDouble(item.BaseAmount?.ToString()),
+                                    SafeConvertToDouble(item.CurrentCostDisc?.ToString()),
+                                    SafeConvertToDouble(item.CurrentCostAmount?.ToString()),
+                                    SafeConvertToDouble(item.OfferDisc?.ToString()),
+                                    SafeConvertToDouble(item.OfferAmount?.ToString()),
+                                    item.Cut_Id != null ? Convert.ToInt32(item.Cut_Id) : null,
+                                    item.Polish_Id != null ? Convert.ToInt32(item.Polish_Id) : null,
+                                    item.Symm_Id != null ? Convert.ToInt32(item.Symm_Id) : null,
+                                    item.FLS_INTENSITY_Id != null ? Convert.ToInt32(item.FLS_INTENSITY_Id) : null,
+                                    SafeConvertToDouble(item.Length?.ToString()),
+                                    SafeConvertToDouble(item.Width?.ToString()),
+                                    SafeConvertToDouble(item.Depth?.ToString()),
+                                    SafeConvertToDouble(item.DepthPer?.ToString()),
+                                    SafeConvertToDouble(item.TablePer?.ToString()),
+                                    item.KeyToSymbol ?? null,
+                                    item.GiaComments ?? null,
+                                    SafeConvertToDouble(item.GirdlePer?.ToString()),
+                                    SafeConvertToDouble(item.CrownAngle?.ToString()),
+                                    SafeConvertToDouble(item.CrownHeight?.ToString()),
+                                    SafeConvertToDouble(item.PavilionAngle?.ToString()),
+                                    SafeConvertToDouble(item.PavilionHeight?.ToString()),
+                                    item.Table_Black_Id != null ? Convert.ToInt32(item.Table_Black_Id) : null,
+                                    item.Crown_Black_Id != null ? Convert.ToInt32(item.Crown_Black_Id) : null,
+                                    item.Table_White_Id != null ? Convert.ToInt32(item.Table_White_Id) : null,
+                                    item.Crown_White_Id != null ? Convert.ToInt32(item.Crown_White_Id) : null,
+                                    item.Culet_Id != null ? Convert.ToInt32(item.Culet_Id) : null,
+                                    item.Table_Open_Id != null ? Convert.ToInt32(item.Table_Open_Id) : null,
+                                    item.Crown_Open_Id != null ? Convert.ToInt32(item.Crown_Open_Id) : null,
+                                    item.Pav_Open_Id != null ? Convert.ToInt32(item.Pav_Open_Id) : null,
+                                    item.Girdle_Open_Id != null ? Convert.ToInt32(item.Girdle_Open_Id) : null,
+                                    Valid_Date != null ? Convert.ToDateTime(Valid_Date) : null,
+                                    item.Cert_Type_Id != null ? Convert.ToInt32(item.Cert_Type_Id) : null,
+                                    SafeConvertToDouble(item.LR_Half?.ToString()),
+                                    SafeConvertToDouble(item.Str_Ln?.ToString()),
+                                    item.Fancy_Color_Id != null ? Convert.ToInt32(item.Fancy_Color_Id) : null,
+                                    item.Fancy_Intensity_Id != null ? Convert.ToInt32(item.Fancy_Intensity_Id) : null,
+                                    item.Fancy_Overtone_Id != null ? Convert.ToInt32(item.Fancy_Overtone_Id) : null,
+                                    item.Rough_Origin_Id != null ? Convert.ToInt32(item.Rough_Origin_Id) : null,
+                                    item.ImageLink ?? null,
+                                    item.VideoLink ?? null,
+                                    item.CertificateLink ?? null,
+                                    item.Dna ?? null,
+                                    item.Cert_Type_Link ?? null,
+                                    item.Lab ?? null,
+                                    item.Shape ?? null,
+                                    item.Bgm ?? null,
+                                    item.Color ?? null,
+                                    item.Clarity ?? null,
+                                    item.Cut ?? null,
+                                    item.Polish ?? null,
+                                    item.Symm ?? null,
+                                    item.FlsIntensity ?? null,
+                                    item.TableBlack ?? null,
+                                    item.SideBlack ?? null,
+                                    item.TableWhite ?? null,
+                                    item.SideWhite ?? null,
+                                    item.Culet ?? null,
+                                    item.TableOpen ?? null,
+                                    item.CrownOpen ?? null,
+                                    item.PavilionOpen ?? null,
+                                    item.GirdleOpen ?? null,
+                                    item.GiaType ?? null,
+                                    item.Fancy_Color ?? null,
+                                    item.Fancy_Intensity ?? null,
+                                    item.Fancy_Overtone ?? null,
+                                    item.Rough_Origin ?? null,
+                                    item.Laser_Insc_Id != null ? Convert.ToInt32(item.Laser_Insc_Id) : null,
+                                    item.Girdle_Condition_Id != null ? Convert.ToInt32(item.Girdle_Condition_Id) : null,
+                                    item.LaserInscription ?? null,
+                                    item.Girdle_Condition ?? null,
+                                    item.Company ?? null,
+                                    item.Milky_Id != null ? Convert.ToInt32(item.Milky_Id) : null,
+                                    item.Milky ?? null,
+                                    item.Shade_Id != null ? Convert.ToInt32(item.Shade_Id) : null,
+                                    item.Shade ?? null
                                 );
+                            }
 
-                                DataTable detailDataTable = new DataTable();
-                                detailDataTable.Columns.Add("Id", typeof(int));
-                                detailDataTable.Columns.Add("Trans_Id", typeof(int));
-                                detailDataTable.Columns.Add("Stock_Id", typeof(string));
-                                detailDataTable.Columns.Add("Cert_No", typeof(string));
-                                detailDataTable.Columns.Add("Supplier_Id", typeof(int));
-                                detailDataTable.Columns.Add("Supplier_Name", typeof(string));
-                                detailDataTable.Columns.Add("Supplier_Short_Name", typeof(string));
-                                detailDataTable.Columns.Add("Supplier_Ref_No", typeof(string));
-                                detailDataTable.Columns.Add("Status", typeof(string));
-                                detailDataTable.Columns.Add("Remarks", typeof(string));
-                                detailDataTable.Columns.Add("Buyer", typeof(int));
-                                detailDataTable.Columns.Add("Lab", typeof(int));
-                                detailDataTable.Columns.Add("Shape", typeof(int));
-                                detailDataTable.Columns.Add("BGM", typeof(int));
-                                detailDataTable.Columns.Add("Color", typeof(int));
-                                detailDataTable.Columns.Add("Clarity", typeof(int));
-                                detailDataTable.Columns.Add("Cts", typeof(double));
-                                detailDataTable.Columns.Add("Rap_Rate", typeof(double));
-                                detailDataTable.Columns.Add("Rap_Amt", typeof(double));
-                                detailDataTable.Columns.Add("Supplier_Base_Disc", typeof(double));
-                                detailDataTable.Columns.Add("Supplier_Base_Amt", typeof(double));
-                                detailDataTable.Columns.Add("Supplier_Cost_Disc", typeof(double));
-                                detailDataTable.Columns.Add("Supplier_Cost_Amt", typeof(double));
-                                detailDataTable.Columns.Add("Offer_Disc", typeof(double));
-                                detailDataTable.Columns.Add("Offer_Amt", typeof(double));
-                                detailDataTable.Columns.Add("Cut", typeof(int));
-                                detailDataTable.Columns.Add("Polish", typeof(int));
-                                detailDataTable.Columns.Add("Symm", typeof(int));
-                                detailDataTable.Columns.Add("Flour_Intensity", typeof(int));
-                                detailDataTable.Columns.Add("Length", typeof(double));
-                                detailDataTable.Columns.Add("Width", typeof(double));
-                                detailDataTable.Columns.Add("Depth", typeof(double));
-                                detailDataTable.Columns.Add("Depth_Per", typeof(double));
-                                detailDataTable.Columns.Add("Table_Per", typeof(double));
-                                detailDataTable.Columns.Add("Key_to_Symbol", typeof(string));
-                                detailDataTable.Columns.Add("Additional_Comment", typeof(string));
-                                detailDataTable.Columns.Add("Girdle_Per", typeof(double));
-                                detailDataTable.Columns.Add("Crown_Angle", typeof(double));
-                                detailDataTable.Columns.Add("Crown_Height", typeof(double));
-                                detailDataTable.Columns.Add("Pavillion_Angle", typeof(double));
-                                detailDataTable.Columns.Add("Pavillion_Height", typeof(double));
-                                detailDataTable.Columns.Add("Table_Black", typeof(int));
-                                detailDataTable.Columns.Add("Crown_Black", typeof(int));
-                                detailDataTable.Columns.Add("Table_White", typeof(int));
-                                detailDataTable.Columns.Add("Crown_White", typeof(int));
-                                detailDataTable.Columns.Add("Culet", typeof(int));
-                                detailDataTable.Columns.Add("Table_Open", typeof(int));
-                                detailDataTable.Columns.Add("Crown_Open", typeof(int));
-                                detailDataTable.Columns.Add("Pav_Open", typeof(int));
-                                detailDataTable.Columns.Add("Girdle_Open", typeof(int));
-                                detailDataTable.Columns.Add("Cert_Date", typeof(DateTime));
-                                detailDataTable.Columns.Add("Cert_Type", typeof(int));
-                                detailDataTable.Columns.Add("LR_Half", typeof(double));
-                                detailDataTable.Columns.Add("Str_Ln", typeof(double));
-                                detailDataTable.Columns.Add("Fancy_Color", typeof(int));
-                                detailDataTable.Columns.Add("Fancy_Intensity", typeof(int));
-                                detailDataTable.Columns.Add("Fancy_Overtone", typeof(int));
-                                detailDataTable.Columns.Add("Rough_Origin", typeof(int));
-                                detailDataTable.Columns.Add("Image", typeof(string));
-                                detailDataTable.Columns.Add("Video", typeof(string));
-                                detailDataTable.Columns.Add("Cert_Link", typeof(string));
-                                detailDataTable.Columns.Add("DNA", typeof(string));
-                                detailDataTable.Columns.Add("Cert_Type_Link", typeof(string));
-                                detailDataTable.Columns.Add("Lab_C", typeof(string));
-                                detailDataTable.Columns.Add("Shape_C", typeof(string));
-                                detailDataTable.Columns.Add("BGM_C", typeof(string));
-                                detailDataTable.Columns.Add("Color_C", typeof(string));
-                                detailDataTable.Columns.Add("Clarity_C", typeof(string));
-                                detailDataTable.Columns.Add("Cut_C", typeof(string));
-                                detailDataTable.Columns.Add("Polish_C", typeof(string));
-                                detailDataTable.Columns.Add("Symm_C", typeof(string));
-                                detailDataTable.Columns.Add("Flour_Intensity_C", typeof(string));
-                                detailDataTable.Columns.Add("Table_Black_C", typeof(string));
-                                detailDataTable.Columns.Add("Crown_Black_C", typeof(string));
-                                detailDataTable.Columns.Add("Table_White_C", typeof(string));
-                                detailDataTable.Columns.Add("Crown_White_C", typeof(string));
-                                detailDataTable.Columns.Add("Culet_C", typeof(string));
-                                detailDataTable.Columns.Add("Table_Open_C", typeof(string));
-                                detailDataTable.Columns.Add("Crown_Open_C", typeof(string));
-                                detailDataTable.Columns.Add("Pav_Open_C", typeof(string));
-                                detailDataTable.Columns.Add("Girdle_Open_C", typeof(string));
-                                detailDataTable.Columns.Add("Cert_Type_C", typeof(string));
-                                detailDataTable.Columns.Add("Fancy_Color_C", typeof(string));
-                                detailDataTable.Columns.Add("Fancy_Intensity_C", typeof(string));
-                                detailDataTable.Columns.Add("Fancy_Overtone_C", typeof(string));
-                                detailDataTable.Columns.Add("Rough_Origin_C", typeof(string));
-                                detailDataTable.Columns.Add("Laser_Insc", typeof(int));
-                                detailDataTable.Columns.Add("Girdle_Condition", typeof(int));
-                                detailDataTable.Columns.Add("Laser_Insc_C", typeof(string));
-                                detailDataTable.Columns.Add("Girdle_Condition_C", typeof(string));
-                                detailDataTable.Columns.Add("Company", typeof(string));
-                                detailDataTable.Columns.Add("Milky", typeof(int));
-                                detailDataTable.Columns.Add("Milky_C", typeof(string));
-                                detailDataTable.Columns.Add("Shade", typeof(int));
-                                detailDataTable.Columns.Add("Shade_C", typeof(string));
+                            var lab_entry_result = await _supplierService.Insert_Update_Lab_Entry(masterDataTable, detailDataTable, user_Id ?? 0);
+
+                            if (lab_entry_result > 0)
+                            {
+                                IList<Order_Processing_Complete_Fortune_Detail> order_Processing_Complete_Fortune_Details = new List<Order_Processing_Complete_Fortune_Detail>();
 
                                 foreach (var item in OrderResult)
                                 {
-                                    DateTime Valid_Date;
+                                    int? buyerCode = 0;
 
-                                    string dateFormat = "dd-MM-yyyy";
-
-                                    if (!DateTime.TryParseExact(item.Cert_Date, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out Valid_Date))
+                                    if (!string.IsNullOrEmpty(item.Buyer_Code))
                                     {
-                                        Valid_Date = DateTime.MinValue;
+                                        buyerCode = Convert.ToInt32(item.Buyer_Code);
                                     }
 
-                                    detailDataTable.Rows.Add(
-                                        0,
-                                        0,
-                                        item.StockId,
-                                        item.CertificateNo,
-                                        item.Supplier_Id != null ? Convert.ToInt32(item.Supplier_Id) : null,
-                                        item.Supplier_Name ?? null,
-                                        item.Supplier_Short_Name ?? null,
-                                        item.SupplierNo ?? null,
-                                        item.Status ?? null,
-                                        item.Remarks ?? null,
-                                        item.Buyer_Code != null ? Convert.ToInt32(item.Buyer_Code) : null,
-                                        item.LAB_Id != null ? Convert.ToInt32(item.LAB_Id) : null,
-                                        item.Shape_Id != null ? Convert.ToInt32(item.Shape_Id) : null,
-                                        item.BGM_Id != null ? Convert.ToInt32(item.BGM_Id) : null,
-                                        item.Color_Id != null ? Convert.ToInt32(item.Color_Id) : null,
-                                        item.Clarity_Id != null ? Convert.ToInt32(item.Clarity_Id) : null,
-                                        SafeConvertToDouble(item.Cts?.ToString()),
-                                        SafeConvertToDouble(item.RapRate?.ToString()),
-                                        SafeConvertToDouble(item.RapAmount?.ToString()),
-                                        SafeConvertToDouble(item.BaseDisc?.ToString()),
-                                        SafeConvertToDouble(item.BaseAmount?.ToString()),
-                                        SafeConvertToDouble(item.CurrentCostDisc?.ToString()),
-                                        SafeConvertToDouble(item.CurrentCostAmount?.ToString()),
-                                        SafeConvertToDouble(item.OfferDisc?.ToString()),
-                                        SafeConvertToDouble(item.OfferAmount?.ToString()),
-                                        item.Cut_Id != null ? Convert.ToInt32(item.Cut_Id) : null,
-                                        item.Polish_Id != null ? Convert.ToInt32(item.Polish_Id) : null,
-                                        item.Symm_Id != null ? Convert.ToInt32(item.Symm_Id) : null,
-                                        item.FLS_INTENSITY_Id != null ? Convert.ToInt32(item.FLS_INTENSITY_Id) : null,
-                                        SafeConvertToDouble(item.Length?.ToString()),
-                                        SafeConvertToDouble(item.Width?.ToString()),
-                                        SafeConvertToDouble(item.Depth?.ToString()),
-                                        SafeConvertToDouble(item.DepthPer?.ToString()),
-                                        SafeConvertToDouble(item.TablePer?.ToString()),
-                                        item.KeyToSymbol ?? null,
-                                        item.GiaComments ?? null,
-                                        SafeConvertToDouble(item.GirdlePer?.ToString()),
-                                        SafeConvertToDouble(item.CrownAngle?.ToString()),
-                                        SafeConvertToDouble(item.CrownHeight?.ToString()),
-                                        SafeConvertToDouble(item.PavilionAngle?.ToString()),
-                                        SafeConvertToDouble(item.PavilionHeight?.ToString()),
-                                        item.Table_Black_Id != null ? Convert.ToInt32(item.Table_Black_Id) : null,
-                                        item.Crown_Black_Id != null ? Convert.ToInt32(item.Crown_Black_Id) : null,
-                                        item.Table_White_Id != null ? Convert.ToInt32(item.Table_White_Id) : null,
-                                        item.Crown_White_Id != null ? Convert.ToInt32(item.Crown_White_Id) : null,
-                                        item.Culet_Id != null ? Convert.ToInt32(item.Culet_Id) : null,
-                                        item.Table_Open_Id != null ? Convert.ToInt32(item.Table_Open_Id) : null,
-                                        item.Crown_Open_Id != null ? Convert.ToInt32(item.Crown_Open_Id) : null,
-                                        item.Pav_Open_Id != null ? Convert.ToInt32(item.Pav_Open_Id) : null,
-                                        item.Girdle_Open_Id != null ? Convert.ToInt32(item.Girdle_Open_Id) : null,
-                                        Valid_Date != null ? Convert.ToDateTime(Valid_Date) : null,
-                                        item.Cert_Type_Id != null ? Convert.ToInt32(item.Cert_Type_Id) : null,
-                                        SafeConvertToDouble(item.LR_Half?.ToString()),
-                                        SafeConvertToDouble(item.Str_Ln?.ToString()),
-                                        item.Fancy_Color_Id != null ? Convert.ToInt32(item.Fancy_Color_Id) : null,
-                                        item.Fancy_Intensity_Id != null ? Convert.ToInt32(item.Fancy_Intensity_Id) : null,
-                                        item.Fancy_Overtone_Id != null ? Convert.ToInt32(item.Fancy_Overtone_Id) : null,
-                                        item.Rough_Origin_Id != null ? Convert.ToInt32(item.Rough_Origin_Id) : null,
-                                        item.ImageLink ?? null,
-                                        item.VideoLink ?? null,
-                                        item.CertificateLink ?? null,
-                                        item.Dna ?? null,
-                                        item.Cert_Type_Link ?? null,
-                                        item.Lab ?? null,
-                                        item.Shape ?? null,
-                                        item.Bgm ?? null,
-                                        item.Color ?? null,
-                                        item.Clarity ?? null,
-                                        item.Cut ?? null,
-                                        item.Polish ?? null,
-                                        item.Symm ?? null,
-                                        item.FlsIntensity ?? null,
-                                        item.TableBlack ?? null,
-                                        item.SideBlack ?? null,
-                                        item.TableWhite ?? null,
-                                        item.SideWhite ?? null,
-                                        item.Culet ?? null,
-                                        item.TableOpen ?? null,
-                                        item.CrownOpen ?? null,
-                                        item.PavilionOpen ?? null,
-                                        item.GirdleOpen ?? null,
-                                        item.GiaType ?? null,
-                                        item.Fancy_Color ?? null,
-                                        item.Fancy_Intensity ?? null,
-                                        item.Fancy_Overtone ?? null,
-                                        item.Rough_Origin ?? null,
-                                        item.Laser_Insc_Id != null ? Convert.ToInt32(item.Laser_Insc_Id) : null,
-                                        item.Girdle_Condition_Id != null ? Convert.ToInt32(item.Girdle_Condition_Id) : null,
-                                        item.LaserInscription ?? null,
-                                        item.Girdle_Condition ?? null,
-                                        item.Company ?? null,
-                                        item.Milky_Id != null ? Convert.ToInt32(item.Milky_Id) : null,
-                                        item.Milky ?? null,
-                                        item.Shade_Id != null ? Convert.ToInt32(item.Shade_Id) : null,
-                                        item.Shade ?? null
-                                    );
+                                    var fortuneDetail = new Order_Processing_Complete_Fortune_Detail
+                                    {
+                                        Id = item.Id,
+                                        Supplier_code = item.Supplier_code,
+                                        SuppStockId = item.SupplierNo,
+                                        CertificateNo = item.CertificateNo,
+                                        Status = item.Status.ToUpper(),
+                                        BuyerCode = buyerCode,
+                                        BaseAmount = item.BaseAmount != null ? item.BaseAmount : null,
+                                        CostAmount = item.CurrentCostAmount != null ? item.CurrentCostAmount : null,
+                                        Shade = item.Shade,
+                                        Milky = item.Milky,
+                                        TableOpen = item.TableOpen,
+                                        GirdleOpen = item.GirdleOpen,
+                                        CrownOpen = item.CrownOpen,
+                                        PavilionOpen = item.PavilionOpen
+                                    };
+
+                                    order_Processing_Complete_Fortune_Details.Add(fortuneDetail);
                                 }
-
-                                var lab_entry_result = await _supplierService.Insert_Update_Lab_Entry(masterDataTable, detailDataTable, user_Id ?? 0);
-
-                                return Ok(new
+                                var result_det = await _oracleService.Order_Data_Detail_Transfer_Oracle(order_Processing_Complete_Fortune_Details);
+                                
+                                if (result_det > 0)
                                 {
-                                    statusCode = HttpStatusCode.OK,
-                                    message = "Order completed successfully."
-                                });
+                                    return Ok(new
+                                    {
+                                        statusCode = HttpStatusCode.OK,
+                                        message = "Order completed successfully."
+                                    });
+                                }
                             }
                         }
                         else
                         {
-                            var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e, order_Processing_Reply_To_Assist.Summary_QC_Remarks, "W", "O");
-                            if (result_ > 0)
+                            if (Stock_Ids.Count > 0)
                             {
-                                if (Stock_Ids.Count > 0)
+                                string concatenatedStockIds = string.Join(", ", Stock_Id);
+
+                                string concatenatedStockId = string.Join(",", Stock_Ids);
+
+                                var result_lo = await _supplierService.Order_Procesing_Stone_Location_Solar(order_Processing_Reply_To_Assist.Order_No, concatenatedStockIds);
+
+                                var dt_Order = await _supplierService.Get_Order_Data_Mazal_Excel(concatenatedStockId, order_Processing_Reply_To_Assist.Order_No);
+
+                                if (dt_Order != null && dt_Order.Rows.Count > 0)
                                 {
-                                    string concatenatedStockIds = string.Join(", ", Stock_Id);
+                                    var excelPath = string.Empty;
 
-                                    string concatenatedStockId = string.Join(",", Stock_Ids);
+                                    string filename = $"{"Order_Status_"}{DateTime.UtcNow.ToString("ddMMyyyy-HHmmss")}{order_Processing_Reply_To_Assist.Order_No}.xlsx";
 
-                                    var result_lo = await _supplierService.Order_Procesing_Stone_Location_Solar(order_Processing_Reply_To_Assist.Order_No, concatenatedStockIds);
+                                    string subject = order_Processing_Reply_To_Assist.Request_For + " request for order no " + order_Processing_Reply_To_Assist.Order_No + " completed";
 
-                                    var dt_Order = await _supplierService.Get_Order_Data_Mazal_Excel(concatenatedStockId, order_Processing_Reply_To_Assist.Order_No);
+                                    StringBuilder body = new StringBuilder();
 
-                                    if (dt_Order != null && dt_Order.Rows.Count > 0)
+                                    if (result_e != null && !string.IsNullOrEmpty(result_e.Company_Name))
                                     {
-                                        var excelPath = string.Empty;
+                                        body.AppendLine(@"Company Name :  " + result_e.Company_Name + "<br/>");
+                                    }
 
-                                        string filename = $"{"Order_Status_"}{DateTime.UtcNow.ToString("ddMMyyyy-HHmmss")}{order_Processing_Reply_To_Assist.Order_No}.xlsx";
+                                    body.AppendLine(@"Request for : " + order_Processing_Reply_To_Assist.Request_For + "<br/>");
 
-                                        string subject = order_Processing_Reply_To_Assist.Request_For + " request for order no " + order_Processing_Reply_To_Assist.Order_No + " completed";
+                                    List<string> columnNames = new List<string>();
+                                    foreach (DataColumn column in dt_Order.Columns)
+                                    {
+                                        columnNames.Add(column.ColumnName);
+                                    }
 
-                                        StringBuilder body = new StringBuilder();
+                                    DataTable columnNamesTable = new DataTable();
+                                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
 
-                                        if (result_e != null && !string.IsNullOrEmpty(result_e.Company_Name))
+                                    foreach (string columnName in columnNames)
+                                    {
+                                        columnNamesTable.Rows.Add(columnName);
+                                    }
+                                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
+                                    if (!(Directory.Exists(filePath)))
+                                    {
+                                        Directory.CreateDirectory(filePath);
+                                    }
+
+                                    EpExcelExport.Create_Order_Processing_Excel_Mazal(dt_Order, columnNamesTable, filePath, filePath + filename);
+
+                                    excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
+
+                                    byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
+                                    using (MemoryStream memoryStream = new MemoryStream(fileBytes))
+                                    {
+                                        Employee_Mail employee_Mail = new Employee_Mail
                                         {
-                                            body.AppendLine(@"Company Name :  " + result_e.Company_Name + "<br/>");
-                                        }
+                                            Email_id = _configuration["EmailSetting:FromEmail"],
+                                            Email_Password = _configuration["EmailSetting:FromPassword"],
+                                            SMTP_Server_Address = _configuration["EmailSetting:SmtpHost"],
+                                            SMTP_Port = Convert.ToInt32(_configuration["EmailSetting:SmtpPort"])
+                                        };
 
-                                        body.AppendLine(@"Request for : " + order_Processing_Reply_To_Assist.Request_For + "<br/>");
-
-                                        List<string> columnNames = new List<string>();
-                                        foreach (DataColumn column in dt_Order.Columns)
-                                        {
-                                            columnNames.Add(column.ColumnName);
-                                        }
-
-                                        DataTable columnNamesTable = new DataTable();
-                                        columnNamesTable.Columns.Add("Column_Name", typeof(string));
-
-                                        foreach (string columnName in columnNames)
-                                        {
-                                            columnNamesTable.Rows.Add(columnName);
-                                        }
-                                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
-                                        if (!(Directory.Exists(filePath)))
-                                        {
-                                            Directory.CreateDirectory(filePath);
-                                        }
-
-                                        EpExcelExport.Create_Order_Processing_Excel_Mazal(dt_Order, columnNamesTable, filePath, filePath + filename);
-
-                                        excelPath = Directory.GetCurrentDirectory() + CoreCommonFilePath.DownloadStockExcelFilesPath + filename;
-
-                                        byte[] fileBytes = System.IO.File.ReadAllBytes(excelPath);
-                                        using (MemoryStream memoryStream = new MemoryStream(fileBytes))
-                                        {
-                                            Employee_Mail employee_Mail = new Employee_Mail
-                                            {
-                                                Email_id = _configuration["EmailSetting:FromEmail"],
-                                                Email_Password = _configuration["EmailSetting:FromPassword"],
-                                                SMTP_Server_Address = _configuration["EmailSetting:SmtpHost"],
-                                                SMTP_Port = Convert.ToInt32(_configuration["EmailSetting:SmtpPort"])
-                                            };
-
-                                            IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
-                                            _emailSender.Send_Stock_Email(toEmail: to_Email, externalLink: "", subject: subject, formFile: formFile, strBody: body.ToString(), user_Id: 0, employee_Mail: employee_Mail);
-                                        }
+                                        IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
+                                        _emailSender.Send_Stock_Email(toEmail: to_Email, externalLink: "", subject: subject, formFile: formFile, strBody: body.ToString(), user_Id: 0, employee_Mail: employee_Mail);
                                     }
                                 }
-                                
-                                DataTable masterDataTable = new DataTable();
-                                masterDataTable.Columns.Add("Trans_Id", typeof(int));
-                                masterDataTable.Columns.Add("Order_No", typeof(string));
-                                masterDataTable.Columns.Add("Entry_Type", typeof(string));
-                                masterDataTable.Columns.Add("Company_Name", typeof(string));
-                                masterDataTable.Columns.Add("Remarks", typeof(string));
-                                masterDataTable.Columns.Add("Order_Type", typeof(string));
-                                masterDataTable.Columns.Add("Assist_By", typeof(int));
-                                masterDataTable.Columns.Add("Entry_User", typeof(int));
+                            }
 
-                                masterDataTable.Rows.Add(
+                            DataTable masterDataTable = new DataTable();
+                            masterDataTable.Columns.Add("Trans_Id", typeof(int));
+                            masterDataTable.Columns.Add("Order_No", typeof(string));
+                            masterDataTable.Columns.Add("Entry_Type", typeof(string));
+                            masterDataTable.Columns.Add("Company_Name", typeof(string));
+                            masterDataTable.Columns.Add("Remarks", typeof(string));
+                            masterDataTable.Columns.Add("Order_Type", typeof(string));
+                            masterDataTable.Columns.Add("Assist_By", typeof(int));
+                            masterDataTable.Columns.Add("Entry_User", typeof(int));
+
+                            masterDataTable.Rows.Add(
+                                0,
+                                (order_Processing_Reply_To_Assist.Order_No + "." + order_Processing_Reply_To_Assist.Sub_Order_Id.ToString()) ?? null,
+                                "A",
+                                result_e != null ? result_e.Company_Name ?? null : null,
+                                order_Processing_Reply_To_Assist.Summary_QC_Remarks != null ? order_Processing_Reply_To_Assist.Summary_QC_Remarks : null,
+                                "L",
+                                result_e != null ? result_e.Fortune_Id : null,
+                                user_Id ?? null
+                            );
+
+
+                            DataTable detailDataTable = new DataTable();
+                            detailDataTable.Columns.Add("Id", typeof(int));
+                            detailDataTable.Columns.Add("Trans_Id", typeof(int));
+                            detailDataTable.Columns.Add("Stock_Id", typeof(string));
+                            detailDataTable.Columns.Add("Cert_No", typeof(string));
+                            detailDataTable.Columns.Add("Supplier_Id", typeof(int));
+                            detailDataTable.Columns.Add("Supplier_Name", typeof(string));
+                            detailDataTable.Columns.Add("Supplier_Short_Name", typeof(string));
+                            detailDataTable.Columns.Add("Supplier_Ref_No", typeof(string));
+                            detailDataTable.Columns.Add("Status", typeof(string));
+                            detailDataTable.Columns.Add("Remarks", typeof(string));
+                            detailDataTable.Columns.Add("Buyer", typeof(int));
+                            detailDataTable.Columns.Add("Lab", typeof(int));
+                            detailDataTable.Columns.Add("Shape", typeof(int));
+                            detailDataTable.Columns.Add("BGM", typeof(int));
+                            detailDataTable.Columns.Add("Color", typeof(int));
+                            detailDataTable.Columns.Add("Clarity", typeof(int));
+                            detailDataTable.Columns.Add("Cts", typeof(double));
+                            detailDataTable.Columns.Add("Rap_Rate", typeof(double));
+                            detailDataTable.Columns.Add("Rap_Amt", typeof(double));
+                            detailDataTable.Columns.Add("Supplier_Base_Disc", typeof(double));
+                            detailDataTable.Columns.Add("Supplier_Base_Amt", typeof(double));
+                            detailDataTable.Columns.Add("Supplier_Cost_Disc", typeof(double));
+                            detailDataTable.Columns.Add("Supplier_Cost_Amt", typeof(double));
+                            detailDataTable.Columns.Add("Offer_Disc", typeof(double));
+                            detailDataTable.Columns.Add("Offer_Amt", typeof(double));
+                            detailDataTable.Columns.Add("Cut", typeof(int));
+                            detailDataTable.Columns.Add("Polish", typeof(int));
+                            detailDataTable.Columns.Add("Symm", typeof(int));
+                            detailDataTable.Columns.Add("Flour_Intensity", typeof(int));
+                            detailDataTable.Columns.Add("Length", typeof(double));
+                            detailDataTable.Columns.Add("Width", typeof(double));
+                            detailDataTable.Columns.Add("Depth", typeof(double));
+                            detailDataTable.Columns.Add("Depth_Per", typeof(double));
+                            detailDataTable.Columns.Add("Table_Per", typeof(double));
+                            detailDataTable.Columns.Add("Key_to_Symbol", typeof(string));
+                            detailDataTable.Columns.Add("Additional_Comment", typeof(string));
+                            detailDataTable.Columns.Add("Girdle_Per", typeof(double));
+                            detailDataTable.Columns.Add("Crown_Angle", typeof(double));
+                            detailDataTable.Columns.Add("Crown_Height", typeof(double));
+                            detailDataTable.Columns.Add("Pavillion_Angle", typeof(double));
+                            detailDataTable.Columns.Add("Pavillion_Height", typeof(double));
+                            detailDataTable.Columns.Add("Table_Black", typeof(int));
+                            detailDataTable.Columns.Add("Crown_Black", typeof(int));
+                            detailDataTable.Columns.Add("Table_White", typeof(int));
+                            detailDataTable.Columns.Add("Crown_White", typeof(int));
+                            detailDataTable.Columns.Add("Culet", typeof(int));
+                            detailDataTable.Columns.Add("Table_Open", typeof(int));
+                            detailDataTable.Columns.Add("Crown_Open", typeof(int));
+                            detailDataTable.Columns.Add("Pav_Open", typeof(int));
+                            detailDataTable.Columns.Add("Girdle_Open", typeof(int));
+                            detailDataTable.Columns.Add("Cert_Date", typeof(DateTime));
+                            detailDataTable.Columns.Add("Cert_Type", typeof(int));
+                            detailDataTable.Columns.Add("LR_Half", typeof(double));
+                            detailDataTable.Columns.Add("Str_Ln", typeof(double));
+                            detailDataTable.Columns.Add("Fancy_Color", typeof(int));
+                            detailDataTable.Columns.Add("Fancy_Intensity", typeof(int));
+                            detailDataTable.Columns.Add("Fancy_Overtone", typeof(int));
+                            detailDataTable.Columns.Add("Rough_Origin", typeof(int));
+                            detailDataTable.Columns.Add("Image", typeof(string));
+                            detailDataTable.Columns.Add("Video", typeof(string));
+                            detailDataTable.Columns.Add("Cert_Link", typeof(string));
+                            detailDataTable.Columns.Add("DNA", typeof(string));
+                            detailDataTable.Columns.Add("Cert_Type_Link", typeof(string));
+                            detailDataTable.Columns.Add("Lab_C", typeof(string));
+                            detailDataTable.Columns.Add("Shape_C", typeof(string));
+                            detailDataTable.Columns.Add("BGM_C", typeof(string));
+                            detailDataTable.Columns.Add("Color_C", typeof(string));
+                            detailDataTable.Columns.Add("Clarity_C", typeof(string));
+                            detailDataTable.Columns.Add("Cut_C", typeof(string));
+                            detailDataTable.Columns.Add("Polish_C", typeof(string));
+                            detailDataTable.Columns.Add("Symm_C", typeof(string));
+                            detailDataTable.Columns.Add("Flour_Intensity_C", typeof(string));
+                            detailDataTable.Columns.Add("Table_Black_C", typeof(string));
+                            detailDataTable.Columns.Add("Crown_Black_C", typeof(string));
+                            detailDataTable.Columns.Add("Table_White_C", typeof(string));
+                            detailDataTable.Columns.Add("Crown_White_C", typeof(string));
+                            detailDataTable.Columns.Add("Culet_C", typeof(string));
+                            detailDataTable.Columns.Add("Table_Open_C", typeof(string));
+                            detailDataTable.Columns.Add("Crown_Open_C", typeof(string));
+                            detailDataTable.Columns.Add("Pav_Open_C", typeof(string));
+                            detailDataTable.Columns.Add("Girdle_Open_C", typeof(string));
+                            detailDataTable.Columns.Add("Cert_Type_C", typeof(string));
+                            detailDataTable.Columns.Add("Fancy_Color_C", typeof(string));
+                            detailDataTable.Columns.Add("Fancy_Intensity_C", typeof(string));
+                            detailDataTable.Columns.Add("Fancy_Overtone_C", typeof(string));
+                            detailDataTable.Columns.Add("Rough_Origin_C", typeof(string));
+                            detailDataTable.Columns.Add("Laser_Insc", typeof(int));
+                            detailDataTable.Columns.Add("Girdle_Condition", typeof(int));
+                            detailDataTable.Columns.Add("Laser_Insc_C", typeof(string));
+                            detailDataTable.Columns.Add("Girdle_Condition_C", typeof(string));
+                            detailDataTable.Columns.Add("Company", typeof(string));
+                            detailDataTable.Columns.Add("Milky", typeof(int));
+                            detailDataTable.Columns.Add("Milky_C", typeof(string));
+                            detailDataTable.Columns.Add("Shade", typeof(int));
+                            detailDataTable.Columns.Add("Shade_C", typeof(string));
+
+                            foreach (var item in OrderResult)
+                            {
+                                DateTime Valid_Date;
+
+                                string dateFormat = "dd-MM-yyyy";
+
+                                if (!DateTime.TryParseExact(item.Cert_Date, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out Valid_Date))
+                                {
+                                    Valid_Date = DateTime.MinValue;
+                                }
+
+                                detailDataTable.Rows.Add(
                                     0,
-                                    (order_Processing_Reply_To_Assist.Order_No + "." + order_Processing_Reply_To_Assist.Sub_Order_Id.ToString()) ?? null,
-                                    "A",
-                                    result_e != null ? result_e.Company_Name ?? null : null,
-                                    order_Processing_Reply_To_Assist.Summary_QC_Remarks != null ? order_Processing_Reply_To_Assist.Summary_QC_Remarks : null,
-                                    "L",
-                                    result_e != null ? result_e.Fortune_Id : null,
-                                    user_Id ?? null
+                                    0,
+                                    item.StockId,
+                                    item.CertificateNo,
+                                    item.Supplier_Id != null ? Convert.ToInt32(item.Supplier_Id) : null,
+                                    item.Supplier_Name ?? null,
+                                    item.Supplier_Short_Name ?? null,
+                                    item.SupplierNo ?? null,
+                                    item.Status ?? null,
+                                    item.Remarks ?? null,
+                                    item.Buyer_Code != null ? Convert.ToInt32(item.Buyer_Code) : null,
+                                    item.LAB_Id != null ? Convert.ToInt32(item.LAB_Id) : null,
+                                    item.Shape_Id != null ? Convert.ToInt32(item.Shape_Id) : null,
+                                    item.BGM_Id != null ? Convert.ToInt32(item.BGM_Id) : null,
+                                    item.Color_Id != null ? Convert.ToInt32(item.Color_Id) : null,
+                                    item.Clarity_Id != null ? Convert.ToInt32(item.Clarity_Id) : null,
+                                    SafeConvertToDouble(item.Cts?.ToString()),
+                                    SafeConvertToDouble(item.RapRate?.ToString()),
+                                    SafeConvertToDouble(item.RapAmount?.ToString()),
+                                    SafeConvertToDouble(item.BaseDisc?.ToString()),
+                                    SafeConvertToDouble(item.BaseAmount?.ToString()),
+                                    SafeConvertToDouble(item.CurrentCostDisc?.ToString()),
+                                    SafeConvertToDouble(item.CurrentCostAmount?.ToString()),
+                                    SafeConvertToDouble(item.OfferDisc?.ToString()),
+                                    SafeConvertToDouble(item.OfferAmount?.ToString()),
+                                    item.Cut_Id != null ? Convert.ToInt32(item.Cut_Id) : null,
+                                    item.Polish_Id != null ? Convert.ToInt32(item.Polish_Id) : null,
+                                    item.Symm_Id != null ? Convert.ToInt32(item.Symm_Id) : null,
+                                    item.FLS_INTENSITY_Id != null ? Convert.ToInt32(item.FLS_INTENSITY_Id) : null,
+                                    SafeConvertToDouble(item.Length?.ToString()),
+                                    SafeConvertToDouble(item.Width?.ToString()),
+                                    SafeConvertToDouble(item.Depth?.ToString()),
+                                    SafeConvertToDouble(item.DepthPer?.ToString()),
+                                    SafeConvertToDouble(item.TablePer?.ToString()),
+                                    item.KeyToSymbol ?? null,
+                                    item.GiaComments ?? null,
+                                    SafeConvertToDouble(item.GirdlePer?.ToString()),
+                                    SafeConvertToDouble(item.CrownAngle?.ToString()),
+                                    SafeConvertToDouble(item.CrownHeight?.ToString()),
+                                    SafeConvertToDouble(item.PavilionAngle?.ToString()),
+                                    SafeConvertToDouble(item.PavilionHeight?.ToString()),
+                                    item.Table_Black_Id != null ? Convert.ToInt32(item.Table_Black_Id) : null,
+                                    item.Crown_Black_Id != null ? Convert.ToInt32(item.Crown_Black_Id) : null,
+                                    item.Table_White_Id != null ? Convert.ToInt32(item.Table_White_Id) : null,
+                                    item.Crown_White_Id != null ? Convert.ToInt32(item.Crown_White_Id) : null,
+                                    item.Culet_Id != null ? Convert.ToInt32(item.Culet_Id) : null,
+                                    item.Table_Open_Id != null ? Convert.ToInt32(item.Table_Open_Id) : null,
+                                    item.Crown_Open_Id != null ? Convert.ToInt32(item.Crown_Open_Id) : null,
+                                    item.Pav_Open_Id != null ? Convert.ToInt32(item.Pav_Open_Id) : null,
+                                    item.Girdle_Open_Id != null ? Convert.ToInt32(item.Girdle_Open_Id) : null,
+                                    Valid_Date != null ? Convert.ToDateTime(Valid_Date) : null,
+                                    item.Cert_Type_Id != null ? Convert.ToInt32(item.Cert_Type_Id) : null,
+                                    SafeConvertToDouble(item.LR_Half?.ToString()),
+                                    SafeConvertToDouble(item.Str_Ln?.ToString()),
+                                    item.Fancy_Color_Id != null ? Convert.ToInt32(item.Fancy_Color_Id) : null,
+                                    item.Fancy_Intensity_Id != null ? Convert.ToInt32(item.Fancy_Intensity_Id) : null,
+                                    item.Fancy_Overtone_Id != null ? Convert.ToInt32(item.Fancy_Overtone_Id) : null,
+                                    item.Rough_Origin_Id != null ? Convert.ToInt32(item.Rough_Origin_Id) : null,
+                                    item.ImageLink ?? null,
+                                    item.VideoLink ?? null,
+                                    item.CertificateLink ?? null,
+                                    item.Dna ?? null,
+                                    item.Cert_Type_Link ?? null,
+                                    item.Lab ?? null,
+                                    item.Shape ?? null,
+                                    item.Bgm ?? null,
+                                    item.Color ?? null,
+                                    item.Clarity ?? null,
+                                    item.Cut ?? null,
+                                    item.Polish ?? null,
+                                    item.Symm ?? null,
+                                    item.FlsIntensity ?? null,
+                                    item.TableBlack ?? null,
+                                    item.SideBlack ?? null,
+                                    item.TableWhite ?? null,
+                                    item.SideWhite ?? null,
+                                    item.Culet ?? null,
+                                    item.TableOpen ?? null,
+                                    item.CrownOpen ?? null,
+                                    item.PavilionOpen ?? null,
+                                    item.GirdleOpen ?? null,
+                                    item.GiaType ?? null,
+                                    item.Fancy_Color ?? null,
+                                    item.Fancy_Intensity ?? null,
+                                    item.Fancy_Overtone ?? null,
+                                    item.Rough_Origin ?? null,
+                                    item.Laser_Insc_Id != null ? Convert.ToInt32(item.Laser_Insc_Id) : null,
+                                    item.Girdle_Condition_Id != null ? Convert.ToInt32(item.Girdle_Condition_Id) : null,
+                                    item.LaserInscription ?? null,
+                                    item.Girdle_Condition ?? null,
+                                    item.Company ?? null,
+                                    item.Milky_Id != null ? Convert.ToInt32(item.Milky_Id) : null,
+                                    item.Milky ?? null,
+                                    item.Shade_Id != null ? Convert.ToInt32(item.Shade_Id) : null,
+                                    item.Shade ?? null
                                 );
+                            }
 
+                            var lab_entry_result = await _supplierService.Insert_Update_Lab_Entry(masterDataTable, detailDataTable, user_Id ?? 0);
 
-                                DataTable detailDataTable = new DataTable();
-                                detailDataTable.Columns.Add("Id", typeof(int));
-                                detailDataTable.Columns.Add("Trans_Id", typeof(int));
-                                detailDataTable.Columns.Add("Stock_Id", typeof(string));
-                                detailDataTable.Columns.Add("Cert_No", typeof(string));
-                                detailDataTable.Columns.Add("Supplier_Id", typeof(int));
-                                detailDataTable.Columns.Add("Supplier_Name", typeof(string));
-                                detailDataTable.Columns.Add("Supplier_Short_Name", typeof(string));
-                                detailDataTable.Columns.Add("Supplier_Ref_No", typeof(string));
-                                detailDataTable.Columns.Add("Status", typeof(string));
-                                detailDataTable.Columns.Add("Remarks", typeof(string));
-                                detailDataTable.Columns.Add("Buyer", typeof(int));
-                                detailDataTable.Columns.Add("Lab", typeof(int));
-                                detailDataTable.Columns.Add("Shape", typeof(int));
-                                detailDataTable.Columns.Add("BGM", typeof(int));
-                                detailDataTable.Columns.Add("Color", typeof(int));
-                                detailDataTable.Columns.Add("Clarity", typeof(int));
-                                detailDataTable.Columns.Add("Cts", typeof(double));
-                                detailDataTable.Columns.Add("Rap_Rate", typeof(double));
-                                detailDataTable.Columns.Add("Rap_Amt", typeof(double));
-                                detailDataTable.Columns.Add("Supplier_Base_Disc", typeof(double));
-                                detailDataTable.Columns.Add("Supplier_Base_Amt", typeof(double));
-                                detailDataTable.Columns.Add("Supplier_Cost_Disc", typeof(double));
-                                detailDataTable.Columns.Add("Supplier_Cost_Amt", typeof(double));
-                                detailDataTable.Columns.Add("Offer_Disc", typeof(double));
-                                detailDataTable.Columns.Add("Offer_Amt", typeof(double));
-                                detailDataTable.Columns.Add("Cut", typeof(int));
-                                detailDataTable.Columns.Add("Polish", typeof(int));
-                                detailDataTable.Columns.Add("Symm", typeof(int));
-                                detailDataTable.Columns.Add("Flour_Intensity", typeof(int));
-                                detailDataTable.Columns.Add("Length", typeof(double));
-                                detailDataTable.Columns.Add("Width", typeof(double));
-                                detailDataTable.Columns.Add("Depth", typeof(double));
-                                detailDataTable.Columns.Add("Depth_Per", typeof(double));
-                                detailDataTable.Columns.Add("Table_Per", typeof(double));
-                                detailDataTable.Columns.Add("Key_to_Symbol", typeof(string));
-                                detailDataTable.Columns.Add("Additional_Comment", typeof(string));
-                                detailDataTable.Columns.Add("Girdle_Per", typeof(double));
-                                detailDataTable.Columns.Add("Crown_Angle", typeof(double));
-                                detailDataTable.Columns.Add("Crown_Height", typeof(double));
-                                detailDataTable.Columns.Add("Pavillion_Angle", typeof(double));
-                                detailDataTable.Columns.Add("Pavillion_Height", typeof(double));
-                                detailDataTable.Columns.Add("Table_Black", typeof(int));
-                                detailDataTable.Columns.Add("Crown_Black", typeof(int));
-                                detailDataTable.Columns.Add("Table_White", typeof(int));
-                                detailDataTable.Columns.Add("Crown_White", typeof(int));
-                                detailDataTable.Columns.Add("Culet", typeof(int));
-                                detailDataTable.Columns.Add("Table_Open", typeof(int));
-                                detailDataTable.Columns.Add("Crown_Open", typeof(int));
-                                detailDataTable.Columns.Add("Pav_Open", typeof(int));
-                                detailDataTable.Columns.Add("Girdle_Open", typeof(int));
-                                detailDataTable.Columns.Add("Cert_Date", typeof(DateTime));
-                                detailDataTable.Columns.Add("Cert_Type", typeof(int));
-                                detailDataTable.Columns.Add("LR_Half", typeof(double));
-                                detailDataTable.Columns.Add("Str_Ln", typeof(double));
-                                detailDataTable.Columns.Add("Fancy_Color", typeof(int));
-                                detailDataTable.Columns.Add("Fancy_Intensity", typeof(int));
-                                detailDataTable.Columns.Add("Fancy_Overtone", typeof(int));
-                                detailDataTable.Columns.Add("Rough_Origin", typeof(int));
-                                detailDataTable.Columns.Add("Image", typeof(string));
-                                detailDataTable.Columns.Add("Video", typeof(string));
-                                detailDataTable.Columns.Add("Cert_Link", typeof(string));
-                                detailDataTable.Columns.Add("DNA", typeof(string));
-                                detailDataTable.Columns.Add("Cert_Type_Link", typeof(string));
-                                detailDataTable.Columns.Add("Lab_C", typeof(string));
-                                detailDataTable.Columns.Add("Shape_C", typeof(string));
-                                detailDataTable.Columns.Add("BGM_C", typeof(string));
-                                detailDataTable.Columns.Add("Color_C", typeof(string));
-                                detailDataTable.Columns.Add("Clarity_C", typeof(string));
-                                detailDataTable.Columns.Add("Cut_C", typeof(string));
-                                detailDataTable.Columns.Add("Polish_C", typeof(string));
-                                detailDataTable.Columns.Add("Symm_C", typeof(string));
-                                detailDataTable.Columns.Add("Flour_Intensity_C", typeof(string));
-                                detailDataTable.Columns.Add("Table_Black_C", typeof(string));
-                                detailDataTable.Columns.Add("Crown_Black_C", typeof(string));
-                                detailDataTable.Columns.Add("Table_White_C", typeof(string));
-                                detailDataTable.Columns.Add("Crown_White_C", typeof(string));
-                                detailDataTable.Columns.Add("Culet_C", typeof(string));
-                                detailDataTable.Columns.Add("Table_Open_C", typeof(string));
-                                detailDataTable.Columns.Add("Crown_Open_C", typeof(string));
-                                detailDataTable.Columns.Add("Pav_Open_C", typeof(string));
-                                detailDataTable.Columns.Add("Girdle_Open_C", typeof(string));
-                                detailDataTable.Columns.Add("Cert_Type_C", typeof(string));
-                                detailDataTable.Columns.Add("Fancy_Color_C", typeof(string));
-                                detailDataTable.Columns.Add("Fancy_Intensity_C", typeof(string));
-                                detailDataTable.Columns.Add("Fancy_Overtone_C", typeof(string));
-                                detailDataTable.Columns.Add("Rough_Origin_C", typeof(string));
-                                detailDataTable.Columns.Add("Laser_Insc", typeof(int));
-                                detailDataTable.Columns.Add("Girdle_Condition", typeof(int));
-                                detailDataTable.Columns.Add("Laser_Insc_C", typeof(string));
-                                detailDataTable.Columns.Add("Girdle_Condition_C", typeof(string));
-                                detailDataTable.Columns.Add("Company", typeof(string));
-                                detailDataTable.Columns.Add("Milky", typeof(int));
-                                detailDataTable.Columns.Add("Milky_C", typeof(string));
-                                detailDataTable.Columns.Add("Shade", typeof(int));
-                                detailDataTable.Columns.Add("Shade_C", typeof(string));
-
-                                foreach (var item in OrderResult)
+                            if (lab_entry_result > 0)
+                            {
+                                var result_ = await _oracleService.Order_Data_Transfer_Oracle(OrderResult, result_e, order_Processing_Reply_To_Assist.Summary_QC_Remarks, "W", "O");
+                                if (result_ > 0)
                                 {
-                                    DateTime Valid_Date;
-
-                                    string dateFormat = "dd-MM-yyyy";
-
-                                    if (!DateTime.TryParseExact(item.Cert_Date, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out Valid_Date))
+                                    return Ok(new
                                     {
-                                        Valid_Date = DateTime.MinValue;
-                                    }
-
-                                    detailDataTable.Rows.Add(
-                                        0,
-                                        0,
-                                        item.StockId,
-                                        item.CertificateNo,
-                                        item.Supplier_Id != null ? Convert.ToInt32(item.Supplier_Id) : null,
-                                        item.Supplier_Name ?? null,
-                                        item.Supplier_Short_Name ?? null,
-                                        item.SupplierNo ?? null,
-                                        item.Status ?? null,
-                                        item.Remarks ?? null,
-                                        item.Buyer_Code != null ? Convert.ToInt32(item.Buyer_Code) : null,
-                                        item.LAB_Id != null ? Convert.ToInt32(item.LAB_Id) : null,
-                                        item.Shape_Id != null ? Convert.ToInt32(item.Shape_Id) : null,
-                                        item.BGM_Id != null ? Convert.ToInt32(item.BGM_Id) : null,
-                                        item.Color_Id != null ? Convert.ToInt32(item.Color_Id) : null,
-                                        item.Clarity_Id != null ? Convert.ToInt32(item.Clarity_Id) : null,
-                                        SafeConvertToDouble(item.Cts?.ToString()),
-                                        SafeConvertToDouble(item.RapRate?.ToString()),
-                                        SafeConvertToDouble(item.RapAmount?.ToString()),
-                                        SafeConvertToDouble(item.BaseDisc?.ToString()),
-                                        SafeConvertToDouble(item.BaseAmount?.ToString()),
-                                        SafeConvertToDouble(item.CurrentCostDisc?.ToString()),
-                                        SafeConvertToDouble(item.CurrentCostAmount?.ToString()),
-                                        SafeConvertToDouble(item.OfferDisc?.ToString()),
-                                        SafeConvertToDouble(item.OfferAmount?.ToString()),
-                                        item.Cut_Id != null ? Convert.ToInt32(item.Cut_Id) : null,
-                                        item.Polish_Id != null ? Convert.ToInt32(item.Polish_Id) : null,
-                                        item.Symm_Id != null ? Convert.ToInt32(item.Symm_Id) : null,
-                                        item.FLS_INTENSITY_Id != null ? Convert.ToInt32(item.FLS_INTENSITY_Id) : null,
-                                        SafeConvertToDouble(item.Length?.ToString()),
-                                        SafeConvertToDouble(item.Width?.ToString()),
-                                        SafeConvertToDouble(item.Depth?.ToString()),
-                                        SafeConvertToDouble(item.DepthPer?.ToString()),
-                                        SafeConvertToDouble(item.TablePer?.ToString()),
-                                        item.KeyToSymbol ?? null,
-                                        item.GiaComments ?? null,
-                                        SafeConvertToDouble(item.GirdlePer?.ToString()),
-                                        SafeConvertToDouble(item.CrownAngle?.ToString()),
-                                        SafeConvertToDouble(item.CrownHeight?.ToString()),
-                                        SafeConvertToDouble(item.PavilionAngle?.ToString()),
-                                        SafeConvertToDouble(item.PavilionHeight?.ToString()),
-                                        item.Table_Black_Id != null ? Convert.ToInt32(item.Table_Black_Id) : null,
-                                        item.Crown_Black_Id != null ? Convert.ToInt32(item.Crown_Black_Id) : null,
-                                        item.Table_White_Id != null ? Convert.ToInt32(item.Table_White_Id) : null,
-                                        item.Crown_White_Id != null ? Convert.ToInt32(item.Crown_White_Id) : null,
-                                        item.Culet_Id != null ? Convert.ToInt32(item.Culet_Id) : null,
-                                        item.Table_Open_Id != null ? Convert.ToInt32(item.Table_Open_Id) : null,
-                                        item.Crown_Open_Id != null ? Convert.ToInt32(item.Crown_Open_Id) : null,
-                                        item.Pav_Open_Id != null ? Convert.ToInt32(item.Pav_Open_Id) : null,
-                                        item.Girdle_Open_Id != null ? Convert.ToInt32(item.Girdle_Open_Id) : null,
-                                        Valid_Date != null ? Convert.ToDateTime(Valid_Date) : null,
-                                        item.Cert_Type_Id != null ? Convert.ToInt32(item.Cert_Type_Id) : null,
-                                        SafeConvertToDouble(item.LR_Half?.ToString()),
-                                        SafeConvertToDouble(item.Str_Ln?.ToString()),
-                                        item.Fancy_Color_Id != null ? Convert.ToInt32(item.Fancy_Color_Id) : null,
-                                        item.Fancy_Intensity_Id != null ? Convert.ToInt32(item.Fancy_Intensity_Id) : null,
-                                        item.Fancy_Overtone_Id != null ? Convert.ToInt32(item.Fancy_Overtone_Id) : null,
-                                        item.Rough_Origin_Id != null ? Convert.ToInt32(item.Rough_Origin_Id) : null,
-                                        item.ImageLink ?? null,
-                                        item.VideoLink ?? null,
-                                        item.CertificateLink ?? null,
-                                        item.Dna ?? null,
-                                        item.Cert_Type_Link ?? null,
-                                        item.Lab ?? null,
-                                        item.Shape ?? null,
-                                        item.Bgm ?? null,
-                                        item.Color ?? null,
-                                        item.Clarity ?? null,
-                                        item.Cut ?? null,
-                                        item.Polish ?? null,
-                                        item.Symm ?? null,
-                                        item.FlsIntensity ?? null,
-                                        item.TableBlack ?? null,
-                                        item.SideBlack ?? null,
-                                        item.TableWhite ?? null,
-                                        item.SideWhite ?? null,
-                                        item.Culet ?? null,
-                                        item.TableOpen ?? null,
-                                        item.CrownOpen ?? null,
-                                        item.PavilionOpen ?? null,
-                                        item.GirdleOpen ?? null,
-                                        item.GiaType ?? null,
-                                        item.Fancy_Color ?? null,
-                                        item.Fancy_Intensity ?? null,
-                                        item.Fancy_Overtone ?? null,
-                                        item.Rough_Origin ?? null,
-                                        item.Laser_Insc_Id != null ? Convert.ToInt32(item.Laser_Insc_Id) : null,
-                                        item.Girdle_Condition_Id != null ? Convert.ToInt32(item.Girdle_Condition_Id) : null,
-                                        item.LaserInscription ?? null,
-                                        item.Girdle_Condition ?? null,
-                                        item.Company ?? null,
-                                        item.Milky_Id != null ? Convert.ToInt32(item.Milky_Id) : null,
-                                        item.Milky ?? null,
-                                        item.Shade_Id != null ? Convert.ToInt32(item.Shade_Id) : null,
-                                        item.Shade ?? null
-                                    );
+                                        statusCode = HttpStatusCode.OK,
+                                        message = "Order completed successfully."
+                                    });
                                 }
-
-                                var lab_entry_result = await _supplierService.Insert_Update_Lab_Entry(masterDataTable, detailDataTable, user_Id ?? 0);
-
-                                return Ok(new
-                                {
-                                    statusCode = HttpStatusCode.OK,
-                                    message = "Order completed successfully."
-                                });
                             }
                         }
                     }
@@ -14320,7 +14320,7 @@ namespace astute.Controllers
                 IList<Purchase_Detail> purchase_Detail_List = JsonConvert.DeserializeObject<IList<Purchase_Detail>>(purchase_Master_Model.Purchase_Detail_List.ToString());
 
                 IList<Purchase_Expenses> purchase_Expenses_List = JsonConvert.DeserializeObject<IList<Purchase_Expenses>>(purchase_Master_Model.Purchase_Expenses_List.ToString());
-                
+
                 IList<Purchase_Terms> purchase_Terms_List = JsonConvert.DeserializeObject<IList<Purchase_Terms>>(purchase_Master_Model.Purchase_Terms_List.ToString());
 
                 IList<Purchase_Detail_Loose> purchase_Detail_Loose_List = JsonConvert.DeserializeObject<IList<Purchase_Detail_Loose>>(purchase_Master_Model.Purchase_Detail_Loose_List.ToString());
@@ -14623,7 +14623,7 @@ namespace astute.Controllers
                         item.Sunrise_Stock_Id ?? null,
                         item.Sunrise_Status ?? null,
                         item.RFID_No ?? null,
-                        SafeConvertToDouble(item.Supp_Verified_Disc?.ToString()), 
+                        SafeConvertToDouble(item.Supp_Verified_Disc?.ToString()),
                         SafeConvertToDouble(item.Supp_Verified_Amount?.ToString()),
                         item.Company ?? null,
                         SafeConvertToDouble(item.Sunrise_Offer_Disc?.ToString()),
@@ -14718,11 +14718,11 @@ namespace astute.Controllers
                 }
                 else if (purchase_result > 0)
                 {
-                return Ok(new
-                {
-                    statusCode = HttpStatusCode.OK,
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
                         message = purchase_Master.Trans_Id > 0 ? CoreCommonMessage.Purchase_Updated : CoreCommonMessage.Purchase_Created,
-                });
+                    });
                 }
                 return BadRequest(new
                 {
@@ -15132,7 +15132,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpPost]
         [Route("purchase_detail_outward_update")]
         [Authorize]
@@ -17361,7 +17361,7 @@ namespace astute.Controllers
             }
         }
 
-        private bool ColumnExists(DataRow row, string columnName)
+        public bool ColumnExists(DataRow row, string columnName)
         {
             return row.Table.Columns.Contains(columnName);
         }
@@ -17624,7 +17624,6 @@ namespace astute.Controllers
                         message = CoreCommonMessage.Supplier_Id_Less_Than_0,
                     });
                 }
-                return NoContent();
             }
             catch (Exception ex)
             {
