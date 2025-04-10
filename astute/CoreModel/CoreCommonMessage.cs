@@ -572,6 +572,7 @@
         public static string Purchase_Updated = Purchase + UpdatedSuccessfully;
         public static string Purchase_Deleted = Purchase + DeletedSuccessfully;
         public static string ContractChangedSuccessMessage = "Contract successfully changed.";
+        public static string OutwardSuccessMessage = Purchase + " stones successfully outward.";
         #endregion
         
         #region Purchase Pricing

@@ -4103,6 +4103,24 @@ namespace astute.Repository
             return result;
         }
 
+        public async Task<int> Purchase_Detail_Outward_Update(DataTable dataTable, int Trans_Id, int User_Id)
+        {
+            var _dataTable = new SqlParameter("@Purchase_Detail_Outward_Update_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Purchase_Detail_Outward_Update_Table_Type]",
+                Value = dataTable
+            };
+
+            var _trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
+
+            var _user_Id = new SqlParameter("@User_Id", User_Id);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Purchase_Detail_Outward_Update @Purchase_Detail_Outward_Update_Table_Type, @Trans_Id, @User_Id", _dataTable, _trans_Id, _user_Id));
+
+            return result;
+        }
+                
         public async Task<List<Dictionary<string, object>>> Order_Process_Pending_FCM_Token()
         {
             var result = new List<Dictionary<string, object>>();

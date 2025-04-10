@@ -162,6 +162,7 @@ namespace astute.Repository
         Task<DataTable> Get_Purchase_Detail_Excel(int Trans_Id);
         Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Contract(string certificate_No);
         Task<int> Purchase_Detail_Contract_Update(DataTable purchase_Detail_Contract_DataTable, int User_Id);
+        Task<int> Purchase_Detail_Outward_Update(DataTable dataTable, int Trans_Id, int User_Id);
         Task<List<Dictionary<string, object>>> Order_Process_Pending_FCM_Token();
         Task<int> Order_Process_Pending_FCM_Token_Update(string Order_No);
         Task<int> Update_Purchase_Master_File_Status(int Trans_Id, bool File_Status, int User_Id);

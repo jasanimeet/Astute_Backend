@@ -15133,6 +15133,53 @@ namespace astute.Controllers
             }
         }
         
+        [HttpPost]
+        [Route("purchase_detail_outward_update")]
+        [Authorize]
+        public async Task<IActionResult> Purchase_Detail_Outward_Update(Purchase_Detail_Outward_List purchase_Detail_Outward_List)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                IList<Purchase_Detail_Outward> purchase_Detail_List = JsonConvert.DeserializeObject<IList<Purchase_Detail_Outward>>(purchase_Detail_Outward_List.Purchase_Detail_Outward.ToString());
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("Id", typeof(int));
+                dataTable.Columns.Add("Status", typeof(string));
+                dataTable.Columns.Add("Outward_Remarks", typeof(string));
+
+                foreach (var item in purchase_Detail_List)
+                {
+                    dataTable.Rows.Add(
+                        item.Id,
+                        item.Status,
+                        item.Outward_Remarks
+                    );
+                }
+
+                var result = await _supplierService.Purchase_Detail_Outward_Update(dataTable, purchase_Detail_Outward_List.Trans_Id, user_Id ?? 0);
+                if (result != null && result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.OutwardSuccessMessage
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Purchase_Detail_Outward_Update", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        
         [HttpGet]
         [Route("order_process_pending_fcm_token")]
         public async Task<IActionResult> Order_Process_Pending_FCM_Token()
