@@ -4283,7 +4283,19 @@ namespace astute.Repository
             {
                 using (var command = new SqlCommand("Fortune_Lab_Entry_Data_Select", connection))
                 {
+
+        #region Purchase Return
+
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Purchase_Return(int supplier_Id, string certificate_No)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Purchase_Detail_For_Purchase_Return_Select", connection))
+                {
                     command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(certificate_No) ? new SqlParameter("@Certificate_No", certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
 
                     await connection.OpenAsync();
 
@@ -4308,6 +4320,44 @@ namespace astute.Repository
             }
             return result;
         }
+
+        public async Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Purchase_Return(int supplier_Id, string certificate_No)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Purchase_Detail_Unavailable_For_Purchase_Return_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(certificate_No) ? new SqlParameter("@Certificate_No", certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        #endregion
+
         #endregion
 
         #region Party Url Format

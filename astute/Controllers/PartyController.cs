@@ -15523,6 +15523,222 @@ namespace astute.Controllers
 
         #endregion
 
+
+        #region Purchase Return
+
+        [HttpPost]
+        [Route("create_update_purchase_return")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Purchase_Return(Transactions_Master_Model transactions_Master_Model)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                Transaction_Master purchase_Master = JsonConvert.DeserializeObject<Transaction_Master>(transactions_Master_Model.Transaction_Master.ToString());
+
+                IList<Transaction_Detail> purchase_Detail_List = JsonConvert.DeserializeObject<IList<Transaction_Detail>>(transactions_Master_Model.Transaction_Detail_List.ToString());
+
+                IList<Transaction_Expenses> purchase_Expenses_List = JsonConvert.DeserializeObject<IList<Transaction_Expenses>>(transactions_Master_Model.Transaction_Expenses_List.ToString());
+
+                IList<Transaction_Terms> purchase_Terms_List = JsonConvert.DeserializeObject<IList<Transaction_Terms>>(transactions_Master_Model.Transaction_Terms_List.ToString());
+
+                IList<Transaction_Detail_Loose> purchase_Detail_Loose_List = JsonConvert.DeserializeObject<IList<Transaction_Detail_Loose>>(transactions_Master_Model.Transaction_Detail_Loose_List.ToString());
+
+                string dateFormat = "dd-MM-yyyy";
+
+                DateTime Trans_Dt;
+
+                if (!DateTime.TryParseExact(purchase_Master.Trans_Date, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out Trans_Dt))
+                {
+                    Trans_Dt = DateTime.MinValue;
+                }
+
+                DataTable masterDataTable = new DataTable();
+                masterDataTable.Columns.Add("Trans_Id", typeof(int));
+                masterDataTable.Columns.Add("Trans_Date", typeof(DateTime));
+                masterDataTable.Columns.Add("Trans_Time", typeof(TimeSpan));
+                masterDataTable.Columns.Add("Supplier_Id", typeof(int));
+                masterDataTable.Columns.Add("Company_Id", typeof(int));
+                masterDataTable.Columns.Add("Currency_Id", typeof(int));
+                masterDataTable.Columns.Add("Ex_Rate", typeof(float));
+                masterDataTable.Columns.Add("Process_Id", typeof(int));
+                masterDataTable.Columns.Add("Year_Id", typeof(int));
+                masterDataTable.Columns.Add("Transaction_Invoice_No", typeof(string));
+                masterDataTable.Columns.Add("Contract", typeof(bool));
+
+                masterDataTable.Rows.Add(
+                    purchase_Master.Trans_Id ?? 0,
+                    Trans_Dt != null ? Trans_Dt : null,
+                    purchase_Master.Trans_Time ?? null,
+                    purchase_Master.Supplier_Id ?? null,
+                    purchase_Master.Company_Id ?? null,
+                    purchase_Master.Currency_Id ?? null,
+                    purchase_Master.Ex_Rate ?? null,
+                    purchase_Master.Process_Id ?? null,
+                    purchase_Master.Year_Id ?? null,
+                    purchase_Master.Transaction_Invoice_No ?? null,
+                    purchase_Master.Contract ?? null
+                );
+
+                DataTable detailDataTable = new DataTable();
+
+                detailDataTable.Columns.Add("Id", typeof(int));
+                detailDataTable.Columns.Add("Trans_Id", typeof(int));
+                detailDataTable.Columns.Add("Purchase_Detail_Id", typeof(int));
+                detailDataTable.Columns.Add("Rap_Rate", typeof(decimal));
+                detailDataTable.Columns.Add("Rap_Amt", typeof(decimal));
+                detailDataTable.Columns.Add("Actual_Cost_Disc", typeof(float));
+                detailDataTable.Columns.Add("Actual_Cost_Amt", typeof(decimal));
+
+                foreach (var item in purchase_Detail_List)
+                {
+                    detailDataTable.Rows.Add(
+                        item.Id ?? 0,
+                        item.Trans_Id ?? 0,
+                        item.Purchase_Detail_Id ?? 0,
+                        SafeConvertToDouble(item.Rap_Rate?.ToString()),
+                        SafeConvertToDouble(item.Rap_Amount?.ToString()),
+                        SafeConvertToDouble(item.Actual_Cost_Disc?.ToString()),
+                        SafeConvertToDouble(item.Actual_Cost_Amt?.ToString())
+                    );
+                }
+
+                DataTable termsDataTable = new DataTable();
+                termsDataTable.Columns.Add("Transaction_Terms_Id", typeof(int));
+                termsDataTable.Columns.Add("Terms_Id", typeof(int));
+                termsDataTable.Columns.Add("Amount", typeof(decimal));
+                termsDataTable.Columns.Add("Trans_Id", typeof(int));
+
+                foreach (var item in purchase_Terms_List)
+                {
+                    termsDataTable.Rows.Add(
+                        item.Transaction_Terms_Id ?? 0,
+                        item.Terms_Id ?? 0,
+                        item.Amount ?? null,
+                        item.Trans_Id ?? 0
+                    );
+                }
+
+                DataTable expensesDataTable = new DataTable();
+                expensesDataTable.Columns.Add("Transaction_Expenses_Id", typeof(int));
+                expensesDataTable.Columns.Add("Expenses_Id", typeof(int));
+                expensesDataTable.Columns.Add("Sign", typeof(string));
+                expensesDataTable.Columns.Add("Percentage", typeof(decimal));
+                expensesDataTable.Columns.Add("Amount", typeof(decimal));
+                expensesDataTable.Columns.Add("Transaction_Trans_Id", typeof(int));
+
+                foreach (var item in purchase_Expenses_List)
+                {
+                    expensesDataTable.Rows.Add(
+                        item.Transaction_Expenses_Id ?? 0,
+                        item.Expenses_Id ?? 0,
+                        item.Sign ?? "+",
+                        item.Percentage ?? null,
+                        item.Amount ?? null,
+                        item.Trans_Id ?? 0
+                    );
+                }
+
+                DataTable detailLooseDataTable = new DataTable();
+                detailLooseDataTable.Columns.Add("Id", typeof(int));
+                detailLooseDataTable.Columns.Add("Trans_Id", typeof(int));
+                detailLooseDataTable.Columns.Add("Parcel_Name", typeof(int));
+                detailLooseDataTable.Columns.Add("Parcel_Type", typeof(int));
+                detailLooseDataTable.Columns.Add("Pcs", typeof(float));
+                detailLooseDataTable.Columns.Add("Cts", typeof(float));
+                detailLooseDataTable.Columns.Add("Unit", typeof(string)).MaxLength = 10;
+                detailLooseDataTable.Columns.Add("Rate_Unit", typeof(decimal));
+                detailLooseDataTable.Columns.Add("Value", typeof(decimal));
+
+                foreach (var item in purchase_Detail_Loose_List)
+                {
+                    detailLooseDataTable.Rows.Add(
+                        item.Id ?? 0,
+                        item.Trans_Id ?? 0,
+                        item.Parcel_Name ?? 0,
+                        item.Parcel_Type ?? 0,
+                        item.Pcs ?? 0,
+                        item.Cts ?? 0,
+                        item.Unit ?? null,
+                        SafeConvertToDouble(item.Rate_Unit.ToString()) ?? 0,
+                        SafeConvertToDouble(item.Value.ToString()) ?? 0
+                    );
+                }
+
+                var (purchase_result, Is_Exist) = await _supplierService.Insert_Update_Transaction(masterDataTable, detailDataTable, termsDataTable, expensesDataTable, detailLooseDataTable, user_Id ?? 0);
+
+                if (purchase_result == 409 && Is_Exist)
+                {
+                    if (Is_Exist)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.PurchaseAlreadyExists,
+                        });
+                    }
+                }
+                else if (purchase_result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = purchase_Master.Trans_Id > 0 ? CoreCommonMessage.Purchase_Return_Updated : CoreCommonMessage.Purchase_Return_Created,
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Purchase_Return", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        
+        [HttpPost]
+        [Route("get_purchase_detail_for_purchase_return")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Detail_For_Purchase_Return(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Get_Purchase_Detail_For_Purchase_Return(purchase_Detail_For_Purchase_Return.Supplier_Id ?? 0, purchase_Detail_For_Purchase_Return.Certificate_No);
+
+                var result_Message = await _supplierService.Get_Unavailable_Purchase_Detail_For_Purchase_Return(purchase_Detail_For_Purchase_Return.Supplier_Id ?? 0, purchase_Detail_For_Purchase_Return.Certificate_No);
+
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    message = CoreCommonMessage.DataSuccessfullyFound,
+                    unavailable_message = result_Message,
+                    data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail_For_Purchase_Return", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
         #region Lab User Activity
 
         [HttpGet]

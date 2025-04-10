@@ -573,6 +573,8 @@
         public static string Purchase_Deleted = Purchase + DeletedSuccessfully;
         public static string ContractChangedSuccessMessage = "Contract successfully changed.";
         public static string OutwardSuccessMessage = Purchase + " stones successfully outward.";
+        public static string ConfirmPurchaseMessage = Purchase + " confirm successfully.";
+        public static string PurchaseAlreadyExists = Purchase + AlreadyExists;
         #endregion
         
         #region Purchase Pricing
@@ -586,6 +588,14 @@
         public static string ParcelRefMasterUpdated = ParcelRefMaster + UpdatedSuccessfully;
         public static string ParcelRefMasterDeleted = ParcelRefMaster + DeletedSuccessfully;
         public static string IsExistParcelRefMaster = ParcelRefMaster + AlreadyExists;
+        #endregion
+
+        #region Purchase Return
+        public static string Purchase_Return = Purchase + " Return";
+        public static string Purchase_Return_Created = Purchase_Return + AddedSuccessfully;
+        public static string Purchase_Return_Updated = Purchase_Return + UpdatedSuccessfully;
+        public static string Purchase_Return_Deleted = Purchase_Return + DeletedSuccessfully;
+        public static string Purchase_Return_AlreadyExists = Purchase_Return + AlreadyExists;
         #endregion
 
     }
