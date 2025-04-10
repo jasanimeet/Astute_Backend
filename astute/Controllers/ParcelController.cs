@@ -71,7 +71,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpPost]
         [Route("create_update_parcel_master")]
         [Authorize]
@@ -295,6 +295,35 @@ namespace astute.Controllers
             {
                 await _commonService.InsertErrorLog(ex.Message, "Delete_Parcel_Ref_Master", ex.StackTrace);
                 return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_parcel_ref")]
+        [Authorize]
+        public async Task<IActionResult> Get_Parcel_Ref()
+        {
+            try
+            {
+                var result = await _parcel_Master_Service.Get_Parcel_Ref();
+                if (result != null)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Parcel_Ref", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
