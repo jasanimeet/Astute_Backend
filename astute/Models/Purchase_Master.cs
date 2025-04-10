@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Text.Json.Serialization;
 
 namespace astute.Models
@@ -79,5 +80,8 @@ namespace astute.Models
         
         [JsonPropertyName("Updated_By")]
         public int? Updated_By { get; set; }
+
+        [JsonProperty("Invoice_Amount")]
+        public string? Invoice_Amount { get; set; }
     }
 }

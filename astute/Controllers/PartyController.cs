@@ -14323,6 +14323,8 @@ namespace astute.Controllers
                 
                 IList<Purchase_Terms> purchase_Terms_List = JsonConvert.DeserializeObject<IList<Purchase_Terms>>(purchase_Master_Model.Purchase_Terms_List.ToString());
 
+                IList<Purchase_Detail_Loose> purchase_Detail_Loose_List = JsonConvert.DeserializeObject<IList<Purchase_Detail_Loose>>(purchase_Master_Model.Purchase_Detail_Loose_List.ToString());
+
                 string dateFormat = "dd-MM-yyyy";
 
                 DateTime Trans_Dt;
@@ -14360,16 +14362,15 @@ namespace astute.Controllers
                 masterDataTable.Columns.Add("Shipment_Type", typeof(string));
                 masterDataTable.Columns.Add("ETA_Days", typeof(int));
                 masterDataTable.Columns.Add("Contract", typeof(bool));
+                masterDataTable.Columns.Add("Invoice_Amount", typeof(decimal));
 
                 masterDataTable.Rows.Add(
                     purchase_Master.Trans_Id ?? 0,
-                    //purchase_Master.Trans_Date ?? null,
                     Trans_Dt != null ? Trans_Dt : null,
                     purchase_Master.Trans_Time ?? null,
                     purchase_Master.Year_Id ?? null,
                     purchase_Master.Trans_Type ?? null,
                     purchase_Master.Doc_Type ?? null,
-                    //purchase_Master.Supplier_Doc_Date ?? null,
                     Supplier_Doc_Dt != null ? Supplier_Doc_Dt : null,
                     purchase_Master.Supplier_Doc_Time ?? null,
                     purchase_Master.Supplier_Invoice_No ?? null,
@@ -14382,7 +14383,8 @@ namespace astute.Controllers
                     purchase_Master.Process_Id ?? null,
                     purchase_Master.Shipment_Type ?? null,
                     purchase_Master.ETA_Days ?? null,
-                    purchase_Master.Contract ?? null
+                    purchase_Master.Contract ?? null,
+                    SafeConvertToDouble(purchase_Master.Invoice_Amount) ?? null
                 );
 
                 DataTable detailDataTable = new DataTable();
@@ -14615,7 +14617,6 @@ namespace astute.Controllers
                         item.Stone_Status ?? null,
                         item.Shipment_Type ?? null,
                         item.Purchase_Doc_No ?? null,
-                        //item.Expected_Delivery_Date ?? null,
                         Expected_Delivery_Date != null ? Expected_Delivery_Date : null,
                         SafeConvertToDouble(item.Web_Disc?.ToString()),
                         SafeConvertToDouble(item.Web_Amount?.ToString()),
@@ -14627,8 +14628,6 @@ namespace astute.Controllers
                         item.Company ?? null,
                         SafeConvertToDouble(item.Sunrise_Offer_Disc?.ToString()),
                         SafeConvertToDouble(item.Sunrise_Offer_Amt?.ToString()),
-                        //if (!purchase_Master.Contract) { item.ActualCostDisc} else { item.CostDisc},
-                        //if (!purchase_Master.Contract) { item.ActualCostAmount} else { item.CostAmount }
                         (bool)(!purchase_Master.Contract) ? item.ActualCostDisc : item.CostDisc,
                         (bool)(!purchase_Master.Contract) ? item.ActualCostAmount : item.CostAmount,
                         item.Type ?? null,
@@ -14661,6 +14660,8 @@ namespace astute.Controllers
                 DataTable expensesDataTable = new DataTable();
                 expensesDataTable.Columns.Add("Purchase_Expenses_Id", typeof(int));
                 expensesDataTable.Columns.Add("Expenses_Id", typeof(int));
+                expensesDataTable.Columns.Add("Sign", typeof(string));
+                expensesDataTable.Columns.Add("Percentage", typeof(decimal));
                 expensesDataTable.Columns.Add("Amount", typeof(decimal));
                 expensesDataTable.Columns.Add("Purchase_Trans_Id", typeof(int));
 
@@ -14669,17 +14670,64 @@ namespace astute.Controllers
                     expensesDataTable.Rows.Add(
                         item.Purchase_Expenses_Id ?? 0,
                         item.Expenses_Id ?? 0,
+                        item.Sign ?? "+",
+                        item.Percentage ?? null,
                         item.Amount ?? null,
                         item.Purchase_Trans_Id ?? 0
                     );
                 }
 
-                var lab_entry_result = await _supplierService.Insert_Update_Purchase(masterDataTable, detailDataTable, termsDataTable, expensesDataTable, user_Id ?? 0);
+                DataTable purchaseDetailLooseDataTable = new DataTable();
+                purchaseDetailLooseDataTable.Columns.Add("Id", typeof(int));
+                purchaseDetailLooseDataTable.Columns.Add("Trans_Id", typeof(int));
+                purchaseDetailLooseDataTable.Columns.Add("Parcel_Name", typeof(int));
+                purchaseDetailLooseDataTable.Columns.Add("Parcel_Type", typeof(int));
+                purchaseDetailLooseDataTable.Columns.Add("Pcs", typeof(float));
+                purchaseDetailLooseDataTable.Columns.Add("Cts", typeof(float));
+                purchaseDetailLooseDataTable.Columns.Add("Unit", typeof(string)).MaxLength = 10;
+                purchaseDetailLooseDataTable.Columns.Add("Rate_Unit", typeof(decimal));
+                purchaseDetailLooseDataTable.Columns.Add("Value", typeof(decimal));
 
+                foreach (var item in purchase_Detail_Loose_List)
+                {
+                    purchaseDetailLooseDataTable.Rows.Add(
+                        item.Id ?? 0,
+                        item.Trans_Id ?? 0,
+                        item.Parcel_Name ?? 0,
+                        item.Parcel_Type ?? 0,
+                        item.Pcs ?? 0,
+                        item.Cts ?? 0,
+                        item.Unit ?? null,
+                        SafeConvertToDouble(item.Rate_Unit.ToString()) ?? 0,
+                        SafeConvertToDouble(item.Value.ToString()) ?? 0
+                    );
+                }
+
+                var (purchase_result, Is_Exist) = await _supplierService.Insert_Update_Purchase(masterDataTable, detailDataTable, termsDataTable, expensesDataTable, purchaseDetailLooseDataTable, user_Id ?? 0);
+
+                if (purchase_result == 409 && Is_Exist)
+                {
+                    if (Is_Exist)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.PurchaseAlreadyExists,
+                        });
+                    }
+                }
+                else if (purchase_result > 0)
+                {
                 return Ok(new
                 {
                     statusCode = HttpStatusCode.OK,
-                    message = purchase_Master.Trans_Id > 0 ? CoreCommonMessage.Purchase_Updated : CoreCommonMessage.Purchase_Created
+                        message = purchase_Master.Trans_Id > 0 ? CoreCommonMessage.Purchase_Updated : CoreCommonMessage.Purchase_Created,
+                });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
                 });
 
             }

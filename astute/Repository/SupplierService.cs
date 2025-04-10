@@ -3753,7 +3753,7 @@ namespace astute.Repository
             return result;
         }
 
-        public async Task<int> Insert_Update_Purchase(DataTable masterDataTable, DataTable detailDataTable, DataTable termsDataTable, DataTable expensesDataTable, int user_Id)
+        public async Task<(int, bool)> Insert_Update_Purchase(DataTable masterDataTable, DataTable detailDataTable, DataTable termsDataTable, DataTable expensesDataTable, DataTable purchaseDetailLooseDataTable, int user_Id)
         {
             var masterParameter = new SqlParameter("@Purchase_Master_Table_Type", SqlDbType.Structured)
             {
@@ -3779,12 +3779,28 @@ namespace astute.Repository
                 Value = expensesDataTable
             };
             
+            var purchaseDetailLooseParameter = new SqlParameter("@Purchase_Detail_Loose_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Purchase_Detail_Loose_Table_Type]",
+                Value = purchaseDetailLooseDataTable
+            };
+
             var _user_Id = new SqlParameter("@User_Id", user_Id);
 
-            var result = await Task.Run(() => _dbContext.Database
-                   .ExecuteSqlRawAsync(@"EXEC Purchase_Insert_Update @Purchase_Master_Table_Type, @Purchase_Detail_Table_Type, @Purchase_Terms_Table_Type, @Purchase_Expenses_Table_Type, @User_Id", masterParameter, detailParameter, termsParameter, expensesParameter, _user_Id));
+            var is_Exists = new SqlParameter("@Is_Exists", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
 
-            return result;
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Purchase_Insert_Update @Purchase_Master_Table_Type, @Purchase_Detail_Table_Type, @Purchase_Terms_Table_Type, @Purchase_Expenses_Table_Type, @Purchase_Detail_Loose_Table_Type, @User_Id, @Is_Exists OUT", masterParameter, detailParameter, termsParameter, expensesParameter, purchaseDetailLooseParameter, _user_Id, is_Exists));
+
+            var _is_Exist = (bool)is_Exists.Value;
+
+            if (_is_Exist)
+                return (409, _is_Exist);
+
+            return (result, _is_Exist);
         }
 
         public async Task<List<Dictionary<string, object>>> Get_Purchase_Master(Purchase_Master_Search_Model purchase_Master_Search_Model)

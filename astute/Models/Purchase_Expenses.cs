@@ -15,5 +15,12 @@ namespace astute.Models
 
         [JsonPropertyName("Purchase_Trans_Id")]
         public int? Purchase_Trans_Id { get; set; }
+
+        [JsonPropertyName("Sign")]
+        public string? Sign { get; set; }
+
+        [JsonPropertyName("Percentage")]
+        public float? Percentage { get; set; }
+
     }
 }
