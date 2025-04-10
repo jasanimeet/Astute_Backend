@@ -4121,6 +4121,18 @@ namespace astute.Repository
             return result;
         }
                 
+        public async Task<int> Purchase_Confirm_Update(int Trans_Id, int User_Id)
+        {
+            var _trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
+
+            var user_Id = new SqlParameter("@User_Id", User_Id);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Purchase_Confirm_Update @Trans_Id, @User_Id", _trans_Id, user_Id));
+
+            return result;
+        }
+
         public async Task<List<Dictionary<string, object>>> Order_Process_Pending_FCM_Token()
         {
             var result = new List<Dictionary<string, object>>();
