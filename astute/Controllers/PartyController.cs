@@ -15038,11 +15038,7 @@ namespace astute.Controllers
                 }
                 else
                 {
-                    return Ok(new
-                    {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.No_stock_uploaded_in_last,
-                    });
+                    return NoContent();
                 }
             }
             catch (Exception ex)
