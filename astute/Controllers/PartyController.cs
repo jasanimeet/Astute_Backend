@@ -14813,7 +14813,11 @@ namespace astute.Controllers
             {
                 if (Trans_Id > 0)
                 {
-                    var result = await _supplierService.Delete_Purchase(Trans_Id);
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                    var result = await _supplierService.Delete_Purchase(Trans_Id, user_Id ?? 0);
+
                     if (result > 0)
                     {
                         return Ok(new
@@ -15091,6 +15095,9 @@ namespace astute.Controllers
         {
             try
             {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
                 IList<Purchase_Detail_Contract> purchase_Detail_List = JsonConvert.DeserializeObject<IList<Purchase_Detail_Contract>>(purchase_Detail_Contract_List.Purchase_Detail_Contract.ToString());
                 
                 DataTable purchase_Detail_Contract_DataTable = new DataTable();
@@ -15105,7 +15112,7 @@ namespace astute.Controllers
                     );
                 }
 
-                var result = await _supplierService.Purchase_Detail_Contract_Update(purchase_Detail_Contract_DataTable);
+                var result = await _supplierService.Purchase_Detail_Contract_Update(purchase_Detail_Contract_DataTable, user_Id ?? 0);
                 if (result != null && result > 0)
                 {
                     return Ok(new
@@ -15321,6 +15328,9 @@ namespace astute.Controllers
         {
             try
             {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
                 IList<Purchase_Detail_Pricing> purchase_Detail_Pricing_List = JsonConvert.DeserializeObject<IList<Purchase_Detail_Pricing>>(purchase_Detail_Pricing.Purchase_Detail_Pricing.ToString());
 
                 DataTable dataTable = new DataTable();
@@ -15337,7 +15347,7 @@ namespace astute.Controllers
                     );
                 }
 
-                var result = await _supplierService.Purchase_Detail_Pricing_Update(dataTable);
+                var result = await _supplierService.Purchase_Detail_Pricing_Update(dataTable, user_Id ?? 0);
                 if (result > 0)
                 {
                     return Ok(new

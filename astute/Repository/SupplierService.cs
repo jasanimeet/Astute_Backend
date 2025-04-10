@@ -3920,12 +3920,14 @@ namespace astute.Repository
             return result.Count > 0 ? result : null;
         }
 
-        public async Task<int> Delete_Purchase(int Trans_Id)
+        public async Task<int> Delete_Purchase(int Trans_Id, int User_Id)
         {
             var trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
             
+            var user_Id = new SqlParameter("@User_Id", User_Id);
+            
             var result = await _dbContext.Database
-                                .ExecuteSqlRawAsync("EXEC Purchase_Delete @Trans_Id", trans_Id);
+                                .ExecuteSqlRawAsync("EXEC Purchase_Delete @Trans_Id, @User_Id", trans_Id, user_Id);
 
             return result;
         }
@@ -4068,7 +4070,7 @@ namespace astute.Repository
             return result;
         }
 
-        public async Task<int> Purchase_Detail_Contract_Update(DataTable purchase_Detail_Contract_DataTable)
+        public async Task<int> Purchase_Detail_Contract_Update(DataTable purchase_Detail_Contract_DataTable, int User_Id)
         {
             var _purchase_Detail_Contract_DataTable = new SqlParameter("@Purchase_Detail_Contract_Update_Table_Type", SqlDbType.Structured)
             {
@@ -4076,8 +4078,10 @@ namespace astute.Repository
                 Value = purchase_Detail_Contract_DataTable
             };
 
+            var user_Id = new SqlParameter("@User_Id", User_Id);
+
             var result = await Task.Run(() => _dbContext.Database
-                   .ExecuteSqlRawAsync(@"EXEC Purchase_Detail_Contract_Update @Purchase_Detail_Contract_Update_Table_Type", _purchase_Detail_Contract_DataTable));
+                   .ExecuteSqlRawAsync(@"EXEC Purchase_Detail_Contract_Update @Purchase_Detail_Contract_Update_Table_Type, @User_Id", _purchase_Detail_Contract_DataTable, user_Id));
 
             return result;
         }
@@ -4173,7 +4177,7 @@ namespace astute.Repository
             return dataTable;
         }
 
-        public async Task<int> Purchase_Detail_Pricing_Update(DataTable dataTable)
+        public async Task<int> Purchase_Detail_Pricing_Update(DataTable dataTable, int User_Id)
         {
             var Parameter = new SqlParameter("@Purchase_Detail_Pricing_Table_Type", SqlDbType.Structured)
             {
@@ -4181,8 +4185,10 @@ namespace astute.Repository
                 Value = dataTable
             };
 
+            var user_Id = new SqlParameter("@User_Id", User_Id);
+
             var result = await Task.Run(() => _dbContext.Database
-                   .ExecuteSqlRawAsync(@"EXEC Purchase_Detail_Pricing_Update @Purchase_Detail_Pricing_Table_Type", Parameter));
+                   .ExecuteSqlRawAsync(@"EXEC Purchase_Detail_Pricing_Update @Purchase_Detail_Pricing_Table_Type, @User_Id", Parameter, user_Id));
 
             return result;
         }
