@@ -4283,6 +4283,198 @@ namespace astute.Repository
             {
                 using (var command = new SqlCommand("Fortune_Lab_Entry_Data_Select", connection))
                 {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        #endregion
+
+        #region Transaction
+
+        public async Task<List<Dictionary<string, object>>> Get_Transaction_Master(Transaction_Master_Search_Model transaction_Master_Search_Model)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Transaction_Master_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(transaction_Master_Search_Model.From_Date) ? new SqlParameter("@From_Date", transaction_Master_Search_Model.From_Date) : new SqlParameter("@From_Date", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(transaction_Master_Search_Model.To_Date) ? new SqlParameter("@To_Date", transaction_Master_Search_Model.To_Date) : new SqlParameter("@To_Date", DBNull.Value));
+                    command.Parameters.Add(transaction_Master_Search_Model.Company_Id > 0 ? new SqlParameter("@Company_Id", transaction_Master_Search_Model.Company_Id) : new SqlParameter("@Company_Id", DBNull.Value));
+                    command.Parameters.Add(transaction_Master_Search_Model.Year_Id > 0 ? new SqlParameter("@Year_Id", transaction_Master_Search_Model.Year_Id) : new SqlParameter("@Year_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public async Task<Dictionary<string, object>> Get_Transaction(int Trans_Id)
+        {
+            var output = new Dictionary<string, object>();
+
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                await connection.OpenAsync();
+
+                // Fetch Transaction_Master
+                var Transaction_Master_Result = await ExecuteStoredProcedure(connection, "Transaction_Master_By_Trans_Id_Select", Trans_Id);
+                if (Transaction_Master_Result != null)
+                {
+                    output["Transaction_Master"] = Transaction_Master_Result.FirstOrDefault();
+                }
+
+                // Fetch Transaction_Detail
+                var Transaction_Detail_Result = await ExecuteStoredProcedure(connection, "Transaction_Detail_By_Trans_Id_Select", Trans_Id);
+                if (Transaction_Detail_Result != null)
+                {
+                    output["Transaction_Detail_List"] = Transaction_Detail_Result;
+                }
+                else
+                {
+                    output["Transaction_Detail_List"] = new List<object>();
+                }
+
+                // Fetch terms_Trans_Dets
+                var Transaction_Terms_Result = await ExecuteStoredProcedure(connection, "Transaction_Terms_By_Trans_Id_Select", Trans_Id);
+                if (Transaction_Terms_Result != null)
+                {
+                    output["Transaction_Terms_List"] = Transaction_Terms_Result;
+                }
+                else
+                {
+                    output["Transaction_Terms_List"] = new List<object>();
+                }
+
+                // Fetch expense_Trans_Dets
+                var Transaction_Expense_Trans_Dets_Result = await ExecuteStoredProcedure(connection, "Transaction_Expenses_By_Trans_Id_Select", Trans_Id);
+                if (Transaction_Expense_Trans_Dets_Result != null)
+                {
+                    output["Transaction_Expenses_List"] = Transaction_Expense_Trans_Dets_Result;
+                }
+                else
+                {
+                    output["Transaction_Expenses_List"] = new List<object>();
+                }
+
+                //Fetch Transaction_Detail_Loose_Trans_Dets
+                var Transaction_Detail_Loose_Trans_Dets_Result = await ExecuteStoredProcedure(connection, "Transaction_Detail_Loose_By_Trans_Id_Select", Trans_Id);
+                if (Transaction_Detail_Loose_Trans_Dets_Result != null)
+                {
+                    output["Transaction_Detail_Loose_List"] = Transaction_Detail_Loose_Trans_Dets_Result;
+                }
+                else
+                {
+                    output["Transaction_Detail_Loose_List"] = new List<object>();
+                }
+            }
+
+            return output;
+        }
+
+        public async Task<(int, bool)> Insert_Update_Transaction(DataTable masterDataTable, DataTable detailDataTable, DataTable termsDataTable, DataTable expensesDataTable, DataTable detailLooseDataTable, int user_Id)
+        {
+            var masterParameter = new SqlParameter("@Transaction_Master_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Transaction_Master_Table_Type]",
+                Value = masterDataTable
+            };
+
+            var detailParameter = new SqlParameter("@Transaction_Detail_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Transaction_Detail_Table_Type]",
+                Value = detailDataTable
+            };
+
+            var termsParameter = new SqlParameter("@Transaction_Terms_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Transaction_Terms_Table_Type]",
+                Value = termsDataTable
+            };
+
+            var expensesParameter = new SqlParameter("@Transaction_Expenses_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Transaction_Expenses_Table_Type]",
+                Value = expensesDataTable
+            };
+
+            var purchaseDetailLooseParameter = new SqlParameter("@Transaction_Detail_Loose_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Transaction_Detail_Loose_Table_Type]",
+                Value = detailLooseDataTable
+            };
+
+            var _user_Id = new SqlParameter("@User_Id", user_Id);
+
+            var is_Exists = new SqlParameter("@Is_Exists", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Transaction_Insert_Update @Transaction_Master_Table_Type, @Transaction_Detail_Table_Type, @Transaction_Terms_Table_Type, @Transaction_Expenses_Table_Type, @Transaction_Detail_Loose_Table_Type, @User_Id, @Is_Exists OUT", masterParameter, detailParameter, termsParameter, expensesParameter, purchaseDetailLooseParameter, _user_Id, is_Exists));
+
+            var _is_Exist = (bool)is_Exists.Value;
+
+            if (_is_Exist)
+                return (409, _is_Exist);
+
+            return (result, _is_Exist);
+        }
+
+        public async Task<int> Delete_Transaction(int Trans_Id, int User_Id)
+        {
+            var trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
+
+            var user_Id = new SqlParameter("@User_Id", User_Id);
+
+            var result = await _dbContext.Database
+                                .ExecuteSqlRawAsync("EXEC Transaction_Delete @Trans_Id, @User_Id", trans_Id, user_Id);
+
+            return result;
+        }
+
+        #endregion
 
         #region Purchase Return
 

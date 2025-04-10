@@ -15523,6 +15523,112 @@ namespace astute.Controllers
 
         #endregion
 
+        #region Transaction
+
+        [HttpPost]
+        [Route("get_transaction_master")]
+        [Authorize]
+        public async Task<IActionResult> Get_Transaction_Master(Transaction_Master_Search_Model transaction_Master_Search_Model)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Transaction_Master(transaction_Master_Search_Model);
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = new
+                        {
+                            Transaction_Detail_List = result
+                        }
+                    });
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Transaction_Master", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_transaction")]
+        [Authorize]
+        public async Task<IActionResult> Get_Transaction(int? Trans_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Transaction(Trans_Id ?? 0);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Transaction", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_transaction")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Transaction(int Trans_Id)
+        {
+            try
+            {
+                if (Trans_Id > 0)
+                {
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                    var result = await _supplierService.Delete_Transaction(Trans_Id, user_Id ?? 0);
+
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.TransactionDeleted
+                        });
+                    }
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (SqlException ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Transaction", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
 
         #region Purchase Return
 
