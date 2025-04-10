@@ -3865,6 +3865,10 @@ namespace astute.Repository
                 {
                     output["Purchase_Detail_List"] = Purchase_Detail_Result;
                 }
+                else
+                {
+                    output["Purchase_Detail_List"] = new List<object>();
+                }
 
                 // Fetch terms_Trans_Dets
                 var Purchase_Terms_Result = await ExecuteStoredProcedure(connection, "Purchase_Terms_By_Trans_Id_Select", Trans_Id);
@@ -3886,6 +3890,17 @@ namespace astute.Repository
                 else
                 {
                     output["Purchase_Expenses_List"] = new List<object>();
+                }
+
+                //Fetch purchase_Detail_Loose_Trans_Dets
+                var purchase_Detail_Loose_Trans_Dets_Result = await ExecuteStoredProcedure(connection, "Purchase_Detail_Loose_By_Trans_Id_Select", Trans_Id);
+                if (purchase_Detail_Loose_Trans_Dets_Result != null)
+                {
+                    output["Purchase_Detail_Loose_List"] = purchase_Detail_Loose_Trans_Dets_Result;
+            }
+                else
+                {
+                    output["Purchase_Detail_Loose_List"] = new List<object>();
                 }
             }
 
