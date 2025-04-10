@@ -576,7 +576,7 @@
         public static string ConfirmPurchaseMessage = Purchase + " confirm successfully.";
         public static string PurchaseAlreadyExists = Purchase + AlreadyExists;
         #endregion
-        
+
         #region Purchase Pricing
         public static string Purchase_Pricing = "Purchase Pricing";
         public static string Purchase_Pricing_Updated = Purchase_Pricing + UpdatedSuccessfully;
