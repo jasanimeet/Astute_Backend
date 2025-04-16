@@ -27,10 +27,12 @@ namespace astute.Controllers
 
         #region Ctor
         public CompanyController(ICompanyService companyService,
+            ICommonService commonService,
             IHttpContextAccessor httpContextAccessor,
             IConfiguration configuration)
         {
             _companyService = companyService;
+            _commonService = commonService;
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
         }
