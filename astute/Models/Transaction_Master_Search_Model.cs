@@ -6,5 +6,6 @@
         public string? To_Date { get; set; }
         public int? Company_Id { get; set; }
         public int? Year_Id { get; set; }
+        public string? Process_Id { get; set; }
     }
 }

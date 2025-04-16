@@ -4334,6 +4334,7 @@ namespace astute.Repository
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(!string.IsNullOrEmpty(transaction_Master_Search_Model.From_Date) ? new SqlParameter("@From_Date", transaction_Master_Search_Model.From_Date) : new SqlParameter("@From_Date", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(transaction_Master_Search_Model.To_Date) ? new SqlParameter("@To_Date", transaction_Master_Search_Model.To_Date) : new SqlParameter("@To_Date", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(transaction_Master_Search_Model.Process_Id) ? new SqlParameter("@Process_Id", transaction_Master_Search_Model.Process_Id) : new SqlParameter("@Process_Id", DBNull.Value));
                     command.Parameters.Add(transaction_Master_Search_Model.Company_Id > 0 ? new SqlParameter("@Company_Id", transaction_Master_Search_Model.Company_Id) : new SqlParameter("@Company_Id", DBNull.Value));
                     command.Parameters.Add(transaction_Master_Search_Model.Year_Id > 0 ? new SqlParameter("@Year_Id", transaction_Master_Search_Model.Year_Id) : new SqlParameter("@Year_Id", DBNull.Value));
 
@@ -4635,7 +4636,7 @@ namespace astute.Repository
         }
 
         #endregion
-
+        
         #region Purchase from Consignment
 
         public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Consignment_Purchase(int supplier_Id, string certificate_No)
