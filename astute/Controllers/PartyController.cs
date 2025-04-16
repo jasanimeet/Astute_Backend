@@ -15673,6 +15673,8 @@ namespace astute.Controllers
                 masterDataTable.Columns.Add("Year_Id", typeof(int));
                 masterDataTable.Columns.Add("Transaction_Invoice_No", typeof(string));
                 masterDataTable.Columns.Add("Contract", typeof(bool));
+                masterDataTable.Columns.Add("Supplier_Invoice_No", typeof(string));
+                masterDataTable.Columns.Add("Remarks", typeof(string));
 
                 masterDataTable.Rows.Add(
                     purchase_Master.Trans_Id ?? 0,
@@ -15685,7 +15687,9 @@ namespace astute.Controllers
                     purchase_Master.Process_Id ?? null,
                     purchase_Master.Year_Id ?? null,
                     purchase_Master.Transaction_Invoice_No ?? null,
-                    purchase_Master.Contract ?? null
+                    purchase_Master.Contract ?? null,
+                    purchase_Master.Supplier_Invoice_No ?? null,
+                    purchase_Master.Remarks ?? null
                 );
 
                 DataTable detailDataTable = new DataTable();
@@ -15791,7 +15795,7 @@ namespace astute.Controllers
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
-                        message = purchase_Master.Trans_Id > 0 ? CoreCommonMessage.Purchase_Return_Updated : CoreCommonMessage.Purchase_Return_Created,
+                        message = purchase_Master.Trans_Id > 0 ? CoreCommonMessage.TransactionUpdated : CoreCommonMessage.TransactionCreated,
                     });
                 }
                 return BadRequest(new

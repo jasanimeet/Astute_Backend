@@ -56,5 +56,11 @@ namespace astute.Models
 
         [JsonPropertyName("Updated_By")]
         public int? Updated_By { get; set; }
+
+        [JsonPropertyName("Remarks")]
+        public string? Remarks { get; set; }
+
+        [JsonPropertyName("Supplier_Invoice_No")]
+        public string? Supplier_Invoice_No { get; set; }
     }
 }
