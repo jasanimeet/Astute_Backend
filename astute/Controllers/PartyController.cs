@@ -15661,6 +15661,127 @@ namespace astute.Controllers
                     Trans_Dt = DateTime.MinValue;
                 }
 
+                if (purchase_Master.Process_Id == "27" && (purchase_Master.Trans_Id ?? 0) == 0)
+                {
+                    DataTable cmasterDataTable = new DataTable();
+                    cmasterDataTable.Columns.Add("Trans_Id", typeof(int));
+                    cmasterDataTable.Columns.Add("Trans_Date", typeof(DateTime));
+                    cmasterDataTable.Columns.Add("Trans_Time", typeof(TimeSpan));
+                    cmasterDataTable.Columns.Add("Supplier_Id", typeof(int));
+                    cmasterDataTable.Columns.Add("Company_Id", typeof(int));
+                    cmasterDataTable.Columns.Add("Currency_Id", typeof(int));
+                    cmasterDataTable.Columns.Add("Ex_Rate", typeof(float));
+                    cmasterDataTable.Columns.Add("Process_Id", typeof(int));
+                    cmasterDataTable.Columns.Add("Year_Id", typeof(int));
+                    cmasterDataTable.Columns.Add("Transaction_Invoice_No", typeof(string));
+                    cmasterDataTable.Columns.Add("Contract", typeof(bool));
+                    cmasterDataTable.Columns.Add("Supplier_Invoice_No", typeof(string));
+                    cmasterDataTable.Columns.Add("Remarks", typeof(string));
+
+                    cmasterDataTable.Rows.Add(
+                        purchase_Master.Trans_Id ?? 0,
+                        Trans_Dt != null ? Trans_Dt : null,
+                        purchase_Master.Trans_Time ?? null,
+                        purchase_Master.Supplier_Id ?? null,
+                        purchase_Master.Company_Id ?? null,
+                        purchase_Master.Currency_Id ?? null,
+                        purchase_Master.Ex_Rate ?? null,
+                        26,
+                        purchase_Master.Year_Id ?? null,
+                        purchase_Master.Transaction_Invoice_No ?? null,
+                        purchase_Master.Contract ?? null,
+                        purchase_Master.Supplier_Invoice_No ?? null,
+                        purchase_Master.Remarks ?? null
+                    );
+
+                    DataTable cdetailDataTable = new DataTable();
+
+                    cdetailDataTable.Columns.Add("Id", typeof(int));
+                    cdetailDataTable.Columns.Add("Trans_Id", typeof(int));
+                    cdetailDataTable.Columns.Add("Purchase_Detail_Id", typeof(int));
+                    cdetailDataTable.Columns.Add("Rap_Rate", typeof(decimal));
+                    cdetailDataTable.Columns.Add("Rap_Amt", typeof(decimal));
+                    cdetailDataTable.Columns.Add("Actual_Cost_Disc", typeof(float));
+                    cdetailDataTable.Columns.Add("Actual_Cost_Amt", typeof(decimal));
+
+                    foreach (var item in purchase_Detail_List)
+                    {
+                        cdetailDataTable.Rows.Add(
+                            item.Id ?? 0,
+                            item.Trans_Id ?? 0,
+                            item.Purchase_Detail_Id ?? 0,
+                            SafeConvertToDouble(item.Rap_Rate?.ToString()),
+                            SafeConvertToDouble(item.Rap_Amount?.ToString()),
+                            SafeConvertToDouble(item.Actual_Cost_Disc?.ToString()),
+                            SafeConvertToDouble(item.Actual_Cost_Amt?.ToString())
+                        );
+                    }
+
+                    DataTable ctermsDataTable = new DataTable();
+                    ctermsDataTable.Columns.Add("Transaction_Terms_Id", typeof(int));
+                    ctermsDataTable.Columns.Add("Terms_Id", typeof(int));
+                    ctermsDataTable.Columns.Add("Amount", typeof(decimal));
+                    ctermsDataTable.Columns.Add("Trans_Id", typeof(int));
+
+                    foreach (var item in purchase_Terms_List)
+                    {
+                        ctermsDataTable.Rows.Add(
+                            item.Transaction_Terms_Id ?? 0,
+                            item.Terms_Id ?? 0,
+                            item.Amount ?? null,
+                            item.Trans_Id ?? 0
+                        );
+                    }
+
+                    DataTable cexpensesDataTable = new DataTable();
+                    cexpensesDataTable.Columns.Add("Transaction_Expenses_Id", typeof(int));
+                    cexpensesDataTable.Columns.Add("Expenses_Id", typeof(int));
+                    cexpensesDataTable.Columns.Add("Sign", typeof(string));
+                    cexpensesDataTable.Columns.Add("Percentage", typeof(decimal));
+                    cexpensesDataTable.Columns.Add("Amount", typeof(decimal));
+                    cexpensesDataTable.Columns.Add("Transaction_Trans_Id", typeof(int));
+
+                    foreach (var item in purchase_Expenses_List)
+                    {
+                        cexpensesDataTable.Rows.Add(
+                            item.Transaction_Expenses_Id ?? 0,
+                            item.Expenses_Id ?? 0,
+                            item.Sign ?? "+",
+                            item.Percentage ?? null,
+                            item.Amount ?? null,
+                            item.Trans_Id ?? 0
+                        );
+                    }
+
+                    DataTable cdetailLooseDataTable = new DataTable();
+                    cdetailLooseDataTable.Columns.Add("Id", typeof(int));
+                    cdetailLooseDataTable.Columns.Add("Trans_Id", typeof(int));
+                    cdetailLooseDataTable.Columns.Add("Parcel_Name", typeof(int));
+                    cdetailLooseDataTable.Columns.Add("Parcel_Type", typeof(int));
+                    cdetailLooseDataTable.Columns.Add("Pcs", typeof(float));
+                    cdetailLooseDataTable.Columns.Add("Cts", typeof(float));
+                    cdetailLooseDataTable.Columns.Add("Unit", typeof(string)).MaxLength = 10;
+                    cdetailLooseDataTable.Columns.Add("Rate_Unit", typeof(decimal));
+                    cdetailLooseDataTable.Columns.Add("Value", typeof(decimal));
+
+                    foreach (var item in purchase_Detail_Loose_List)
+                    {
+                        cdetailLooseDataTable.Rows.Add(
+                            item.Id ?? 0,
+                            item.Trans_Id ?? 0,
+                            item.Parcel_Name ?? 0,
+                            item.Parcel_Type ?? 0,
+                            item.Pcs ?? 0,
+                            item.Cts ?? 0,
+                            item.Unit ?? null,
+                            SafeConvertToDouble(item.Rate_Unit.ToString()) ?? 0,
+                            SafeConvertToDouble(item.Value.ToString()) ?? 0
+                        );
+                    }
+
+                    var (cpurchase, cIs_Exists) = await _supplierService.Insert_Update_Transaction(cmasterDataTable, cdetailDataTable, ctermsDataTable, cexpensesDataTable, cdetailLooseDataTable, user_Id ?? 0);
+                }
+
                 DataTable masterDataTable = new DataTable();
                 masterDataTable.Columns.Add("Trans_Id", typeof(int));
                 masterDataTable.Columns.Add("Trans_Date", typeof(DateTime));
@@ -15884,7 +16005,7 @@ namespace astute.Controllers
         }
 
         #endregion
-
+        
         #region Purchase from Consignment
 
         [HttpPost]

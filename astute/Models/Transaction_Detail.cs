@@ -25,5 +25,11 @@ namespace astute.Models
 
         [JsonProperty("ACTUAL COST AMOUNT")]
         public string? Actual_Cost_Amt { get; set; }
+
+        [JsonProperty("CONSIGNMENT COST DISC")]
+        public string? Consignment_Cost_Disc { get; set; }
+
+        [JsonProperty("CONSIGNMENT COST AMOUNT")]
+        public string? Consignment_Cost_Amt { get; set; }
     }
 }
