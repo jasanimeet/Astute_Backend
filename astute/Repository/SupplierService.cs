@@ -3583,6 +3583,29 @@ namespace astute.Repository
             return dataTable;
         }
 
+        public async Task<DataTable> Get_Lab_Entry_Report_Data_Pickup(Report_Lab_Entry_Filter report_Lab_Entry_Filter)
+        {
+            DataTable dataTable = new DataTable();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Lab_Entry_Report_Pickup_Select_Excel", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(report_Lab_Entry_Filter.Stock_Id) ? new SqlParameter("@Stock_Id", report_Lab_Entry_Filter.Stock_Id) : new SqlParameter("@Stock_Id", DBNull.Value));
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    dataTable = ds.Tables[ds.Tables.Count - 1];
+                }
+            }
+            return dataTable;
+        }
+
         public async Task<DataTable> Get_Lab_Entry_Auto_Order_Not_Placed_Overseas_Email()
         {
             DataTable dataTable = new DataTable();
