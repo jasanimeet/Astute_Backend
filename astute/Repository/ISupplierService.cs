@@ -145,7 +145,7 @@ namespace astute.Repository
         Task<int> Insert_Update_Lab_Entry(DataTable masterDataTable, DataTable detailDataTable, int user_Id);
         Task<(int, bool)> Delete_Lab_Entry(int id);
         Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Summary(int user_Id, Lab_Entry_Summary lab_Entry_Summary);
-        Task<DataTable> Get_Lab_Entry_Report_Data(int user_Id, Report_Lab_Entry_Filter report_Lab_Entry_Filter);
+        Task<DataTable> Get_Lab_Entry_Report_Data(Report_Lab_Entry_Filter report_Lab_Entry_Filter);
         Task<DataTable> Get_Lab_Entry_Report_Data_Dynamic(int user_Id, Report_Lab_Entry_Filter report_Lab_Entry_Filter);
         Task<DataTable> Get_Lab_Entry_Auto_Order_Not_Placed_Overseas_Email();
         Task<List<Dictionary<string, object>>> Get_Lab_Entry_Detail_For_Shipment_Verification(int supplier_Id, string certificate_No);
