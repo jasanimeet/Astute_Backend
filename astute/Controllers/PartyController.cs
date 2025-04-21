@@ -3089,6 +3089,77 @@ namespace astute.Controllers
 
         }
 
+        /*
+         * Date: 2025/04/21 By Jashmin Patel
+         * Aded for To Get Stock List For Rapnet Price Update by Inrease/Decrease Type
+         */
+        [HttpGet]
+        [Route("get_stock_data_by_rapaport_increase_decrease")]
+        [Authorize]
+        public async Task<IActionResult> Get_Stock_Data_By_Rapaport_Increase_Decrease(string rap_increase, string rap_decrease)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(rap_increase) || string.IsNullOrEmpty(rap_increase))
+                {
+                    return BadRequest(new { message = "Invalid data provided." });
+                }
+                var result = await _supplierService.Get_Stock_Data_By_Rapaport_Increase_Decrease(rap_increase, rap_decrease);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Stock_Data_By_Rapaport_Increase_Decrease", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        /*
+        * Date: 2025/04/21 By Jashmin Patel
+        * Aded for To Update Supplier Stock List For Rapnet Price Update by Inrease/Decrease Type
+        */
+        [HttpPost]
+        [Route("update_stock_data_by_rapaport_increase_decrease")]
+        public async Task<IActionResult> Update_Stock_Data_By_Rapaport_Increase_Decrease(string rap_increase, string rap_decrease)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(rap_increase) || string.IsNullOrEmpty(rap_increase))
+                {
+                    return BadRequest(new { message = "Invalid data provided." });
+                }
+                var result = await _supplierService.Update_Stock_Data_By_Rapaport_Increase_Decrease(rap_increase, rap_decrease);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.StkUpdate
+                    });
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Stock_Data_By_Rapaport_Increase_Decrease", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Stock Number Generate

@@ -53,7 +53,8 @@ namespace astute.Repository
         Task<int> Stock_Data_Shedular_Insert_Update(DataTable dataTable, int Stock_Data_Id);
         Task<DropdownModel> Get_Purchase_Order_Supplier(string supp_Ref_No);
         Task<int> Supplier_Stock_Start_End_Time_Update(Supplier_Stock_Update supplier_Stock_Update);
-
+        Task<List<Dictionary<string, object>>> Get_Stock_Data_By_Rapaport_Increase_Decrease(string rap_increase, string rap_decrease);
+        Task<int> Update_Stock_Data_By_Rapaport_Increase_Decrease(string rap_increase, string rap_decrease);
         #endregion
 
         #region Stock Number Generation

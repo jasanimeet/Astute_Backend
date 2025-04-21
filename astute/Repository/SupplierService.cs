@@ -1224,6 +1224,79 @@ namespace astute.Repository
             return result;
 
         }
+        public async Task<List<Dictionary<string, object>>> Get_Stock_Data_By_Rapaport_Increase_Decrease(string rap_increase, string rap_decrease)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Stock_Data_By_Rapaoort_Increase_Decrease", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@IncreaseType", rap_increase));
+                    command.Parameters.Add(new SqlParameter("@DecreaseType", rap_decrease));
+
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    var dataTable = ds.Tables[ds.Tables.Count - 1];
+
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        var dict = new Dictionary<string, object>();
+                        foreach (DataColumn col in dataTable.Columns)
+                        {
+                            if (row[col] == DBNull.Value)
+                            {
+                                dict[col.ColumnName] = "Blank";
+                            }
+                            else
+                            {
+                                dict[col.ColumnName] = row[col];
+                            }
+                        }
+                        result.Add(dict);
+                    }
+                }
+            }
+
+            return result;
+        }
+        public async Task<int> Update_Stock_Data_By_Rapaport_Increase_Decrease(string rap_increase, string rap_decrease)
+        {
+            var sqlCommand = @"exec [Stock_Data_Update_By_Rapaoort_Increase_Decrease] @IncreaseType, @DecreaseType";
+
+            var result = await Task.Run(async () =>
+            {
+                using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = sqlCommand;
+                    command.Parameters.Add(rap_increase);
+                    command.Parameters.Add(rap_decrease);
+
+                    // Set the command timeout to 30 minutes (in seconds)
+                    command.CommandTimeout = 1800;
+
+                    await _dbContext.Database.OpenConnectionAsync();
+                    try
+                    {
+                        var affectedRows = await command.ExecuteNonQueryAsync();
+                        return affectedRows;
+                    }
+                    finally
+                    {
+                        _dbContext.Database.CloseConnection();
+                    }
+                }
+            });
+
+            return result;
+
+        }
         #endregion
 
         #region Stock Number Generation
