@@ -4,5 +4,6 @@
     {
         public int? Supplier_Id { get; set; }
         public string? Certificate_No { get; set; }
+        public string? Trans_Date { get; set; }
     }
 }

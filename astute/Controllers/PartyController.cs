@@ -7822,7 +7822,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpPost]
         [Route("lab_entry_report_column_wise_excel_download")]
         [Authorize]
@@ -16157,9 +16157,9 @@ namespace astute.Controllers
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                var result = await _supplierService.Get_Purchase_Detail_For_Purchase_Return(purchase_Detail_For_Purchase_Return.Supplier_Id ?? 0, purchase_Detail_For_Purchase_Return.Certificate_No);
+                var result = await _supplierService.Get_Purchase_Detail_For_Purchase_Return(purchase_Detail_For_Purchase_Return);
 
-                var result_Message = await _supplierService.Get_Unavailable_Purchase_Detail_For_Purchase_Return(purchase_Detail_For_Purchase_Return.Supplier_Id ?? 0, purchase_Detail_For_Purchase_Return.Certificate_No);
+                var result_Message = await _supplierService.Get_Unavailable_Purchase_Detail_For_Purchase_Return(purchase_Detail_For_Purchase_Return);
 
                 return Ok(new
                 {
@@ -16193,9 +16193,9 @@ namespace astute.Controllers
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                var result = await _supplierService.Get_Purchase_Detail_For_Consignment_Return(purchase_Detail_For_Purchase_Return.Supplier_Id ?? 0, purchase_Detail_For_Purchase_Return.Certificate_No);
+                var result = await _supplierService.Get_Purchase_Detail_For_Consignment_Return(purchase_Detail_For_Purchase_Return);
 
-                var result_Message = await _supplierService.Get_Unavailable_Purchase_Detail_For_Consignment_Return(purchase_Detail_For_Purchase_Return.Supplier_Id ?? 0, purchase_Detail_For_Purchase_Return.Certificate_No);
+                var result_Message = await _supplierService.Get_Unavailable_Purchase_Detail_For_Consignment_Return(purchase_Detail_For_Purchase_Return);
 
                 return Ok(new
                 {
@@ -16229,9 +16229,9 @@ namespace astute.Controllers
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                var result = await _supplierService.Get_Purchase_Detail_For_Consignment_Purchase(purchase_Detail_For_Purchase_Return.Supplier_Id ?? 0, purchase_Detail_For_Purchase_Return.Certificate_No);
+                var result = await _supplierService.Get_Purchase_Detail_For_Consignment_Purchase(purchase_Detail_For_Purchase_Return);
 
-                var result_Message = await _supplierService.Get_Unavailable_Purchase_Detail_For_Consignment_Purchase(purchase_Detail_For_Purchase_Return.Supplier_Id ?? 0, purchase_Detail_For_Purchase_Return.Certificate_No);
+                var result_Message = await _supplierService.Get_Unavailable_Purchase_Detail_For_Consignment_Purchase(purchase_Detail_For_Purchase_Return);
 
                 return Ok(new
                 {

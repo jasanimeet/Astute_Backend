@@ -4504,7 +4504,7 @@ namespace astute.Repository
 
         #region Purchase Return
 
-        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Purchase_Return(int supplier_Id, string certificate_No)
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Purchase_Return(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -4512,8 +4512,9 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Purchase_Detail_For_Purchase_Return_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(certificate_No) ? new SqlParameter("@Certificate_No", certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(purchase_Detail_For_Purchase_Return.Supplier_Id > 0 ? new SqlParameter("@Supplier_Id", purchase_Detail_For_Purchase_Return.Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Certificate_No) ? new SqlParameter("@Certificate_No", purchase_Detail_For_Purchase_Return.Certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Trans_Date) ? new SqlParameter("@Trans_Date", purchase_Detail_For_Purchase_Return.Trans_Date) : new SqlParameter("@Trans_Date", DBNull.Value));
 
                     await connection.OpenAsync();
 
@@ -4539,7 +4540,7 @@ namespace astute.Repository
             return result;
         }
 
-        public async Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Purchase_Return(int supplier_Id, string certificate_No)
+        public async Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Purchase_Return(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -4547,8 +4548,9 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Purchase_Detail_Unavailable_For_Purchase_Return_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(certificate_No) ? new SqlParameter("@Certificate_No", certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(purchase_Detail_For_Purchase_Return.Supplier_Id > 0 ? new SqlParameter("@Supplier_Id", purchase_Detail_For_Purchase_Return.Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Certificate_No) ? new SqlParameter("@Certificate_No", purchase_Detail_For_Purchase_Return.Certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Trans_Date) ? new SqlParameter("@Trans_Date", purchase_Detail_For_Purchase_Return.Trans_Date) : new SqlParameter("@Trans_Date", DBNull.Value));
 
                     await connection.OpenAsync();
 
@@ -4578,7 +4580,7 @@ namespace astute.Repository
 
         #region Consignment Return
 
-        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Consignment_Return(int supplier_Id, string certificate_No)
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Consignment_Return(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -4586,8 +4588,9 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Purchase_Detail_For_Consignment_Return_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(certificate_No) ? new SqlParameter("@Certificate_No", certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(purchase_Detail_For_Purchase_Return.Supplier_Id > 0 ? new SqlParameter("@Supplier_Id", purchase_Detail_For_Purchase_Return.Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Certificate_No) ? new SqlParameter("@Certificate_No", purchase_Detail_For_Purchase_Return.Certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Trans_Date) ? new SqlParameter("@Trans_Date", purchase_Detail_For_Purchase_Return.Trans_Date) : new SqlParameter("@Trans_Date", DBNull.Value));
 
                     await connection.OpenAsync();
 
@@ -4613,7 +4616,7 @@ namespace astute.Repository
             return result;
         }
 
-        public async Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Consignment_Return(int supplier_Id, string certificate_No)
+        public async Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Consignment_Return(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -4621,8 +4624,9 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Purchase_Detail_Unavailable_For_Consignment_Return_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(certificate_No) ? new SqlParameter("@Certificate_No", certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(purchase_Detail_For_Purchase_Return.Supplier_Id > 0 ? new SqlParameter("@Supplier_Id", purchase_Detail_For_Purchase_Return.Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Certificate_No) ? new SqlParameter("@Certificate_No", purchase_Detail_For_Purchase_Return.Certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Trans_Date) ? new SqlParameter("@Trans_Date", purchase_Detail_For_Purchase_Return.Trans_Date) : new SqlParameter("@Trans_Date", DBNull.Value));
 
                     await connection.OpenAsync();
 
@@ -4652,7 +4656,7 @@ namespace astute.Repository
         
         #region Purchase from Consignment
 
-        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Consignment_Purchase(int supplier_Id, string certificate_No)
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Consignment_Purchase(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -4660,8 +4664,9 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Purchase_Detail_For_Consignment_Purchase_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(certificate_No) ? new SqlParameter("@Certificate_No", certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(purchase_Detail_For_Purchase_Return.Supplier_Id > 0 ? new SqlParameter("@Supplier_Id", purchase_Detail_For_Purchase_Return.Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Certificate_No) ? new SqlParameter("@Certificate_No", purchase_Detail_For_Purchase_Return.Certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Trans_Date) ? new SqlParameter("@Trans_Date", purchase_Detail_For_Purchase_Return.Trans_Date) : new SqlParameter("@Trans_Date", DBNull.Value));
 
                     await connection.OpenAsync();
 
@@ -4687,7 +4692,7 @@ namespace astute.Repository
             return result;
         }
 
-        public async Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Consignment_Purchase(int supplier_Id, string certificate_No)
+        public async Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Consignment_Purchase(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -4695,8 +4700,9 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Purchase_Detail_Unavailable_For_Consignment_Purchase_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(supplier_Id > 0 ? new SqlParameter("@Supplier_Id", supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(certificate_No) ? new SqlParameter("@Certificate_No", certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(purchase_Detail_For_Purchase_Return.Supplier_Id > 0 ? new SqlParameter("@Supplier_Id", purchase_Detail_For_Purchase_Return.Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Certificate_No) ? new SqlParameter("@Certificate_No", purchase_Detail_For_Purchase_Return.Certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Trans_Date) ? new SqlParameter("@Trans_Date", purchase_Detail_For_Purchase_Return.Trans_Date) : new SqlParameter("@Trans_Date", DBNull.Value));
 
                     await connection.OpenAsync();
 
