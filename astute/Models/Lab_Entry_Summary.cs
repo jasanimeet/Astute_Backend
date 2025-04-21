@@ -9,5 +9,7 @@
         public string? To_Date { get; set; }
         public string? Stock_Id { get; set; }
         public bool? PreSold { get; set; }
+        public string? Party_Id { get; set; }
+        public bool? Delivered { get; set; }
     }
 }

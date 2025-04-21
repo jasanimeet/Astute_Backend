@@ -1738,10 +1738,11 @@ namespace astute.Repository
                 dataTable.Columns.Add("FORTUNE_SOURCE_PARTY", typeof(string));
                 dataTable.Columns.Add("UPCOMING_FLAG", typeof(string));
                 dataTable.Columns.Add("CLOSE_DATE", typeof(DateTime));
+                dataTable.Columns.Add("DELIVERY_STATUS", typeof(string));
 
                 foreach (DataRow item in dt.Rows)
                 {
-                    dataTable.Rows.Add(item["REF_NO"], item["RF_ID"], item["SUNRISE_STATUS"], item["SOURCE_PARTY"], item["UPCOMING_FLAG"], item["CLOSE_DATE"]);
+                    dataTable.Rows.Add(item["REF_NO"], item["RF_ID"], item["SUNRISE_STATUS"], item["SOURCE_PARTY"], item["UPCOMING_FLAG"], item["CLOSE_DATE"], item["DELIVERY_STATUS"]);
                 }
 
                 var parameter = new SqlParameter("@Lab_Entry_Live_Data_Fortune_Table_Type", SqlDbType.Structured)
