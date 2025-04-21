@@ -3292,6 +3292,119 @@ namespace astute.Controllers
                 });
             }
         }
+        /*
+         * Date: 2025/04/18 By Jashmin Patel
+         * Aded for Price_Lock -> PARTY With API/FTP/File whose's Status=1 those all data will updated as Price Lock
+         */
+        [HttpGet]
+        [Route("party_api_ftp_file_price_lock")]
+        [Authorize]
+        public async Task<IActionResult> Party_Api_Ftp_File_Price_Lock()
+        {
+            try
+            {
+                var result = await _partyService.Party_Api_Ftp_File_Price_Lock();
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.UpdatedSuccessfully,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Party_Api_Ftp_File_Price_Lock", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        /*
+        * Date: 2025/04/18 By Jashmin Patel
+        * Aded for Price_Locked List -> PARTY With API/FTP/File whose's Parice_Lock = 1 to update.
+        */
+        [HttpGet]
+        [Route("party_api_ftp_file_price_lock_list")]
+        [Authorize]
+        public async Task<IActionResult> Party_Api_Ftp_File_Price_Lock_List()
+        {
+            try
+            {
+                var result = await _partyService.Party_Api_Ftp_File_Price_Lock_List();
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Party_Api_Ftp_File_Price_Lock_List", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        /*
+        * Date: 2025/04/18 By Jashmin Patel
+        * Aded for Price_Locked List -> PARTY With API/FTP/File whose's Parice_Lock = 1 to update.
+        */
+        [HttpPost]
+        [Route("update_supplier_pricelock_list")]
+        [Authorize]
+        public async Task<IActionResult> Update_Supplier_PriceLock_List(IList<Supplier_PriceLock_List> supplier_PriceLock_Lists)
+        {
+            if (supplier_PriceLock_Lists == null || supplier_PriceLock_Lists.Count == 0)
+            {
+                return NoContent();
+            }
+
+            try
+            {
+                var dataTable = new DataTable();
+                dataTable.Columns.Add("Party_Id", typeof(int));
+                dataTable.Columns.Add("Price_Lock", typeof(bool));
+                dataTable.Columns.Add("Stage", typeof(string));
+
+                foreach (var item in supplier_PriceLock_Lists)
+                {
+                    dataTable.Rows.Add(item.Party_Id, item.Price_Lock, item.Stage);
+                }
+
+                var result = await _partyService.Update_Supplier_Price_Lock_List(dataTable);
+
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.SupplierPriceLockUpdate,
+                    });
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Supplier_PriceLock_List", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Supplier FTP
@@ -4696,7 +4809,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_report_users_role_format_type")]
         [Authorize]
@@ -7306,11 +7419,11 @@ namespace astute.Controllers
                             customerName = "Sunrise Diamonds Ltd";
                         }
 
-                        string body = $"{order_Processing.Status} request for order no #{order_No + ".1" } from {customerName}";
+                        string body = $"{order_Processing.Status} request for order no #{order_No + ".1"} from {customerName}";
 
                         await Firebase_Messaging_Notification(DeviceIds: DeviceIds, title: title, body: body);
                     }
-                    
+
                     // if already exists stone add again then message should show successfully added.
                     return Ok(new
                     {
@@ -7394,7 +7507,7 @@ namespace astute.Controllers
                     sb.AppendLine(@"Request for : " + order_Processing.Status + "<br/>");
 
                     _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
-                    
+
                     List<string> DeviceIds = await _cartService.Get_Order_Process_FCM_Token();
 
                     if (DeviceIds.Count > 0)
@@ -7769,7 +7882,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_lab_entry_auto_order_not_placed_overseas_email")]
         public async Task<IActionResult> Get_Lab_Entry_Auto_Order_Not_Placed_Overseas_Email()
@@ -8046,7 +8159,7 @@ namespace astute.Controllers
                     {
                         filename = "Customer_Stock_Availability_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                         EpExcelExport.Create_Customer_Stock_Availability_Excel(dt_stock, columnNamesTable, filePath, filePath + filename);
-                    } 
+                    }
                     else if (!string.IsNullOrEmpty(stock_Avalibility.excel_Format) && stock_Avalibility.excel_Format == "Default")
                     {
                         filename = "Default_Stock_Availability_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
@@ -11647,7 +11760,7 @@ namespace astute.Controllers
                     //{
                     //if (Request_Status == "REQUESTED" && Order_Status == "OPEN" && Sub_Order_Id <= 0)
                     //{
-                    
+
                     Sub_Order_Id = Sub_Order_Id + 1;
 
                     var result = await _supplierService.Create_Stone_Order_Process(order_Stone_Process, user_Id ?? 0);
@@ -12093,8 +12206,8 @@ namespace astute.Controllers
 
                 DataTable dataTable = new DataTable();
                 dataTable.Columns.Add("Id", typeof(int));
-                dataTable.Columns.Add("Cert_No", typeof(string)); 
-                dataTable.Columns.Add("Certi_Flag", typeof(bool)); 
+                dataTable.Columns.Add("Cert_No", typeof(string));
+                dataTable.Columns.Add("Certi_Flag", typeof(bool));
                 dataTable.Columns.Add("Status", typeof(string));
                 dataTable.Columns.Add("Remarks", typeof(string));
                 dataTable.Columns.Add("Cost_Disc", typeof(double));
@@ -12102,7 +12215,7 @@ namespace astute.Controllers
 
                 foreach (var item in OrderResult)
                 {
-                    dataTable.Rows.Add(item.Id, Convert.ToString(item.CertificateNo),Convert.ToBoolean(item.Certi_Flag), Convert.ToString(item.Status), Convert.ToString(item.Remarks), 
+                    dataTable.Rows.Add(item.Id, Convert.ToString(item.CertificateNo), Convert.ToBoolean(item.Certi_Flag), Convert.ToString(item.Status), Convert.ToString(item.Remarks),
                         (item.CurrentCostDisc != null ? !string.IsNullOrEmpty(item.CurrentCostDisc.ToString()) ? Convert.ToDouble(item.CurrentCostDisc.ToString()) : null : null),
                         (item.CurrentCostAmount != null ? !string.IsNullOrEmpty(item.CurrentCostAmount.ToString()) ? Convert.ToDouble(item.CurrentCostAmount.ToString()) : null : null));
                     if (item.Status == "CONFIRM")
@@ -12472,7 +12585,7 @@ namespace astute.Controllers
                                     order_Processing_Complete_Fortune_Details.Add(fortuneDetail);
                                 }
                                 var result_det = await _oracleService.Order_Data_Detail_Transfer_Oracle(order_Processing_Complete_Fortune_Details);
-                                
+
                                 if (result_det > 0)
                                 {
                                     return Ok(new
@@ -13076,7 +13189,7 @@ namespace astute.Controllers
 
                 var lab_entry_result = await _supplierService.Insert_Update_Lab_Entry(masterDataTable, detailDataTable, user_Id ?? 0);
 
-                if (Lab_Entry_Master.Trans_Id == null ||Lab_Entry_Master.Trans_Id == 0)
+                if (Lab_Entry_Master.Trans_Id == null || Lab_Entry_Master.Trans_Id == 0)
                 {
                     IList<Order_Processing_Complete_Detail> OrderResult = Lab_Entry_Detail_List
                         .Select(labDetail => new Order_Processing_Complete_Detail
@@ -13185,7 +13298,7 @@ namespace astute.Controllers
 
         [HttpPost]
         [Route("job_add_to_fortune_lab_entry")]
-        public async Task<IActionResult> Job_Add_To_Fortune_Lab_Entry() 
+        public async Task<IActionResult> Job_Add_To_Fortune_Lab_Entry()
         {
             try
             {
@@ -14180,7 +14293,7 @@ namespace astute.Controllers
                                                             cut.Cat_Name.Equals(cutCertificate, StringComparison.OrdinalIgnoreCase) ||
                                                             (cut.Synonyms != null && cut.Synonyms.Split(',')
                                                                 .Any(s => s.Trim().Equals(cutCertificate, StringComparison.OrdinalIgnoreCase))));
-                                        
+
                                         cutCertificate_Id = cut_Certificate_Id?.Cat_val_Id ?? 0;
                                     }
 
@@ -14240,14 +14353,14 @@ namespace astute.Controllers
                             }
                         }
                     }
-                    else 
+                    else
                     {
                         foreach (var certificate in result)
                         {
                             matchedRecords.Add(certificate);
                         }
                     }
-                    
+
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
@@ -14803,7 +14916,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpDelete]
         [Route("delete_purchase")]
         [Authorize]
@@ -14934,7 +15047,7 @@ namespace astute.Controllers
                         SafeConvertToDouble(item.Final_Disc.ToString()),
                         SafeConvertToDouble(item.Final_Amt.ToString()),
                         item.Supplier_Short_Name,
-                        item.BGM_Id, 
+                        item.BGM_Id,
                         item.Table_Black_Id,
                         item.Crown_Black_Id,
                         item.Table_White_Id,
@@ -15000,7 +15113,7 @@ namespace astute.Controllers
                     string filename = string.Empty;
 
                     filename = Purchase_Invoice_No + ".xlsx";
-                    
+
                     List<string> columnNames = new List<string>();
                     foreach (DataColumn column in result.Columns)
                     {
@@ -15099,7 +15212,7 @@ namespace astute.Controllers
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
                 IList<Purchase_Detail_Contract> purchase_Detail_List = JsonConvert.DeserializeObject<IList<Purchase_Detail_Contract>>(purchase_Detail_Contract_List.Purchase_Detail_Contract.ToString());
-                
+
                 DataTable purchase_Detail_Contract_DataTable = new DataTable();
                 purchase_Detail_Contract_DataTable.Columns.Add("Id", typeof(int));
                 purchase_Detail_Contract_DataTable.Columns.Add("Contract", typeof(bool));
@@ -15179,7 +15292,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpPost]
         [Route("purchase_confirm_update")]
         [Authorize]
@@ -15341,7 +15454,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_purchase_pricing_excel")]
         [Authorize]
@@ -15350,7 +15463,7 @@ namespace astute.Controllers
             try
             {
                 var result = await _supplierService.Get_Purchase_Pricing_Excel(Trans_Id ?? 0);
-                
+
                 if (result != null && result.Rows.Count > 0)
                 {
                     var excelPath = string.Empty;
@@ -15935,7 +16048,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpPost]
         [Route("get_purchase_detail_for_purchase_return")]
         [Authorize]
@@ -16005,7 +16118,7 @@ namespace astute.Controllers
         }
 
         #endregion
-        
+
         #region Purchase from Consignment
 
         [HttpPost]
@@ -16133,7 +16246,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_supplier_stock_lab_user_activity")]
         [Authorize]
@@ -16452,7 +16565,7 @@ namespace astute.Controllers
             }
         }
         #endregion
-        
+
         #region Job transfer user pricing
 
         [HttpPost]
@@ -18535,7 +18648,7 @@ namespace astute.Controllers
                 using (var client = new HttpClient())
                 {
                     var request = new HttpRequestMessage(supplier_Stock_Get_Post_Model.Stock_Method.Equals("GET", StringComparison.OrdinalIgnoreCase) ? HttpMethod.Get : HttpMethod.Post, supplier_Stock_Get_Post_Model.Stock_Url);
-                    
+
                     var response = await client.SendAsync(request);
 
                     if (response.IsSuccessStatusCode)
@@ -18617,7 +18730,7 @@ namespace astute.Controllers
                     collection.Add(new("ToDepthPer", ""));
                     collection.Add(new("Token", token));
                     var content = new FormUrlEncodedContent(collection);
-                    
+
                     request.Content = content;
 
                     var response = await client.SendAsync(request);
@@ -18766,9 +18879,9 @@ namespace astute.Controllers
                 string sound = "default";
 
                 var firebaseConfig = _configuration.GetSection("FirebaseConfig");
-                
+
                 string projectId = firebaseConfig["ProjectId"];
-                
+
                 var serviceAccountJson = firebaseConfig.GetSection("ServiceAccount").Get<Dictionary<string, string>>();
 
                 if (string.IsNullOrEmpty(projectId) || serviceAccountJson == null)
@@ -18840,7 +18953,7 @@ namespace astute.Controllers
         #endregion
 
         #region Connect GIA Report Layout Save
-        
+
         [HttpGet]
         [Route("get_connect_gia_result_layout_detail")]
         [Authorize]
@@ -18851,7 +18964,7 @@ namespace astute.Controllers
                 List<Report_Layout_Save> report_Layout_Saves = new List<Report_Layout_Save>();
 
                 report_Layout_Saves = await _partyService.Get_Connect_GIA_Result_Layout(user_pricing_id, Rm_Id);
-                
+
                 var customer_Column_Captions = await _partyService.Get_Connect_GIA_Result_Column_Caption(user_pricing_id);
 
                 if (report_Layout_Saves == null || report_Layout_Saves.Count == 0)
@@ -18869,11 +18982,11 @@ namespace astute.Controllers
                         }
                     };
                 }
-                else 
+                else
                 {
-                    report_Layout_Saves[0].User_Id = user_pricing_id; 
-                    report_Layout_Saves[0].Rm_Id = Rm_Id; 
-                    report_Layout_Saves[0].Report_Layout_Save_Detail_List = customer_Column_Captions; 
+                    report_Layout_Saves[0].User_Id = user_pricing_id;
+                    report_Layout_Saves[0].Rm_Id = Rm_Id;
+                    report_Layout_Saves[0].Report_Layout_Save_Detail_List = customer_Column_Captions;
                 }
 
                 if (report_Layout_Saves != null && (customer_Column_Captions != null))
@@ -18990,7 +19103,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_connect_gia_report_layout_save")]
         [Authorize]

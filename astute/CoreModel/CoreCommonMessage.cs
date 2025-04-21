@@ -530,6 +530,7 @@
 
         #region SupplierPriceUpdate
         public static string SupplierPriceUpdate = "Supplier Price Update successfully.";
+        public static string SupplierPriceLockUpdate = "Supplier Price Lock Update successfully.";
         public static string SupplierPriceUpdateCheck = "Please check Price Update.";
         #endregion
 

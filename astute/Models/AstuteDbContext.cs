@@ -114,6 +114,7 @@ namespace astute.Models
         public DbSet<Shape_Value> Shape_Value { get; set; }
         public DbSet<Diamond_Type_Value> Diamond_Type_Value { get; set; }
         public DbSet<Supplier_Price_List> Supplier_Price_List { get; set; }
+        public DbSet<Supplier_PriceLock_List> Supplier_PriceLock_List { get; set; }
         public DbSet<Party_Url_Format> Party_Url_Format { get; set; }
         public DbSet<Employee_Secretary> Employee_Secretary { get; set; }
         public DbSet<Employee_Download_Share_Rights> Employee_Download_Share_Rights { get; set; }

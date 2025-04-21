@@ -1323,6 +1323,60 @@ namespace astute.Repository
             }
             return result;
         }
+        public async Task<int> Party_Api_Ftp_File_Price_Lock()
+        {
+            _dbContext.Database.SetCommandTimeout(300);
+            return await _dbContext.Database.ExecuteSqlRawAsync(@"EXEC [Party_Api_Ftp_File_Price_Lock]");
+        }
+
+        public async Task<List<Dictionary<string, object>>> Party_Api_Ftp_File_Price_Lock_List()
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Party_Api_Ftp_File_Price_Lock_List", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+            //var result = await Task.Run(() => _dbContext.Supplier_PriceLock_List
+            //                .FromSqlRaw(@"EXEC Party_Api_Ftp_File_Price_Lock_List")
+            //                .ToListAsync());
+            //return result;
+        }
+
+        public async Task<int> Update_Supplier_Price_Lock_List(DataTable supplier_Price_Lists)
+        {
+            var parameter = new SqlParameter("@Party_Price_Lock_Update_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Party_Price_Lock_Update_Table_Type",
+                Value = supplier_Price_Lists
+            };
+
+            _dbContext.Database.SetCommandTimeout(300);
+            return await _dbContext.Database.ExecuteSqlRawAsync("EXEC Party_Price_Lock_Update @Party_Price_Lock_Update_Table_Type", parameter);
+        }
+
         #region Hold
 
         public async Task<IList<PartyMasterDrop>> Get_Party()

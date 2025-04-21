@@ -110,7 +110,7 @@ namespace astute.Repository
         Task<List<Customer_Column_Caption>> Get_Customer_Pricing_Column_Caption(int? user_Pricing_Id, string? map_Flag,string? upload_Method);
         #endregion
         #region Party
-        
+
         Task<IList<Supplier_Details_List>> Get_Suplier_Detail_List(int party_Id);
         Task<IList<DropdownModel>> Get_Party_Suplier();
         Task<IList<DropdownModel>> Get_All_Party_Supplier();
@@ -125,7 +125,9 @@ namespace astute.Repository
         Task<IList<Supplier_Price_List>> Get_Supplier_Price_List();
         Task<int> Update_Supplier_Price_List(DataTable supplier_Price_Lists);
         Task<List<Dictionary<string, object>>> Get_Supplier_Special_Price_Validity(int party_Id);
-
+        Task<int> Party_Api_Ftp_File_Price_Lock();
+        Task<List<Dictionary<string, object>>> Party_Api_Ftp_File_Price_Lock_List();
+        Task<int> Update_Supplier_Price_Lock_List(DataTable supplier_Price_Lists);
         #endregion
 
         #region Hold
@@ -146,7 +148,7 @@ namespace astute.Repository
 
         Task<List<Report_Layout_Save>> Get_Connect_GIA_Result_Layout(int User_Id, int Rm_Id);
         Task<List<Report_Layout_Save_Detail>> Get_Connect_GIA_Result_Column_Caption(int? user_Pricing_Id);
-        
+
         #endregion
     }
 }
