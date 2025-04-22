@@ -1229,7 +1229,7 @@ namespace astute.Repository
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
-                using (var command = new SqlCommand("Stock_Data_By_Rapaoort_Increase_Decrease", connection))
+                using (var command = new SqlCommand("Stock_Data_By_Rapaport_Increase_Decrease", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(new SqlParameter("@IncreaseType", rap_increase));
@@ -1268,7 +1268,7 @@ namespace astute.Repository
         }
         public async Task<int> Update_Stock_Data_By_Rapaport_Increase_Decrease(string rap_increase, string rap_decrease)
         {
-            var sqlCommand = @"exec [Stock_Data_Update_By_Rapaoort_Increase_Decrease] @IncreaseType, @DecreaseType";
+            var sqlCommand = @"exec [Stock_Data_Update_By_Rapaport_Increase_Decrease] @IncreaseType, @DecreaseType";
 
             var result = await Task.Run(async () =>
             {
