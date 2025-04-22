@@ -175,6 +175,8 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Status_Sunrise_Summary(string Sunrise_Stock_Id);
         Task<int> Lab_Entry_Report_Status_Sunrise_Update(DataTable dataTable);
         Task<List<Dictionary<string, object>>> Get_Fortune_Lab_Entry_Data();
+        Task<List<Dictionary<string, object>>> Get_Purchase_Master_Pricing(Purchase_Master_Search_Model purchase_Master_Search_Model);
+        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Pricing(int Trans_Id);
         #endregion
 
         #region Transaction

@@ -15804,6 +15804,68 @@ namespace astute.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("get_purchase_master_pricing")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Master_Pricing(Purchase_Master_Search_Model purchase_Master_Search_Model)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Purchase_Master_Pricing(purchase_Master_Search_Model);
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Master_Pricing", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_purchase_detail_pricing")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Detail_Pricing(int? Trans_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Purchase_Detail_Pricing(Trans_Id ?? 0);
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail_Pricing", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Transaction
