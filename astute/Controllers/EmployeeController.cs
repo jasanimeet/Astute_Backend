@@ -732,6 +732,8 @@ namespace astute.Controllers
                         is_Admin = response.Is_Admin,
                         is_Secretary = response.Is_Secretary,
                         confirm_Purchase = response.Confirm_Purchase,
+                        upcoming_Approved = response.Upcoming_Approved,
+                        repricing_Approved = response.Repricing_Approved,
                         token = response.Token,
                         user_Type = response.Usert_Type
                     });
@@ -910,6 +912,8 @@ namespace astute.Controllers
                                 is_Admin = response.Is_Admin,
                                 Is_Secretary = response.Is_Secretary,
                                 Confirm_Purchase = response.Confirm_Purchase,
+                                Upcoming_Approved = response.Upcoming_Approved,
+                                Repricing_Approved = response.Repricing_Approved,
                                 token = response.Token,
                                 user_Type = response.Usert_Type
                             });
