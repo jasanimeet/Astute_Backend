@@ -1224,6 +1224,7 @@ namespace astute.Repository
             return result;
 
         }
+
         public async Task<List<Dictionary<string, object>>> Get_Stock_Data_By_Rapaport_Increase_Decrease(string rap_increase, string rap_decrease)
         {
             var result = new List<Dictionary<string, object>>();
@@ -1266,6 +1267,7 @@ namespace astute.Repository
 
             return result;
         }
+
         public async Task<int> Update_Stock_Data_By_Rapaport_Increase_Decrease(string rap_increase, string rap_decrease)
         {
             var sqlCommand = @"exec [Stock_Data_Update_By_Rapaport_Increase_Decrease] @IncreaseType, @DecreaseType";
@@ -1299,6 +1301,7 @@ namespace astute.Repository
             return result;
 
         }
+
         #endregion
 
         #region Stock Number Generation
@@ -4259,7 +4262,7 @@ namespace astute.Repository
             var _Order_No = new SqlParameter("@Order_No", Order_No);
 
             var result = await Task.Run(() => _dbContext.Database
-                   .ExecuteSqlRawAsync(@"EXEC Order_Process_Pending_FCM_Token_Update @Order_No",  _Order_No));
+                   .ExecuteSqlRawAsync(@"EXEC Order_Process_Pending_FCM_Token_Update @Order_No", _Order_No));
 
             return result;
         }
@@ -4408,6 +4411,57 @@ namespace astute.Repository
             }
             return result;
         }
+
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Master_Pricing(Purchase_Master_Search_Model purchase_Master_Search_Model)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Purchase_Master_Pricing_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Master_Search_Model.From_Date) ? new SqlParameter("@From_Date", purchase_Master_Search_Model.From_Date) : new SqlParameter("@From_Date", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Master_Search_Model.To_Date) ? new SqlParameter("@To_Date", purchase_Master_Search_Model.To_Date) : new SqlParameter("@To_Date", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Pricing(int Trans_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                await connection.OpenAsync();
+
+                result = await ExecuteStoredProcedure(connection, "Purchase_Detail_By_Trans_Id_Pricing_Select", Trans_Id);
+
+            }
+
+            return result;
+        }
+
         #endregion
 
         #region Transaction

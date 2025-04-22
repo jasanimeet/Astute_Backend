@@ -166,6 +166,8 @@ namespace astute.Repository
             var user_Type = !string.IsNullOrEmpty(employee_Master.User_Type) ? new SqlParameter("@User_Type", employee_Master.User_Type) : new SqlParameter("@User_Type", DBNull.Value);
             var is_Secretary = new SqlParameter("@Is_Secretary", employee_Master.Is_Secretary);
             var confirm_Purchase = new SqlParameter("@Confirm_Purchase", employee_Master.Confirm_Purchase);
+            var upcoming_Approved = new SqlParameter("@Upcoming_Approved", employee_Master.Upcoming_Approved);
+            var repricing_Approved = new SqlParameter("@Repricing_Approved", employee_Master.Repricing_Approved);
 
             var isExistUserName = new SqlParameter("@IsExistUserName", SqlDbType.Bit)
             {
@@ -189,11 +191,11 @@ namespace astute.Repository
             @chineseName, @address1, @address2, @address3, @cityId, @joindate, @employeeType, @birthDate, @gender, @mobileNo, @personalEmail, @companyEmail,
             @leaveDate, @pSNID, @bloodGroup, @contractStartDate, @contractEndDate, @approveHolidays, @orderNo, @sortNo, @userName, @password, @employee_Code, @status, @is_admin,
             @marital_Status, @mobile_Country_Code, @mobile_1_Country_Code, @probation_End_Date, @personal_Mobile_No, @designation_Id, @User_Type, @Is_Secretary,
-            @Confirm_Purchase, @IsExistUserName OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT",
+            @Confirm_Purchase, @Upcoming_Approved, @Repricing_Approved, @IsExistUserName OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT",
             employeeId, initial, firstName, middleName, lastName, chineseName, address1, address2, address3, cityId, joinDate, employeeType, birthDate, gender, mobileNo,
             personalEmail, companyEmail, leaveDate, pSNID, bloodGroup, contractStartDate, contractEndDate, approveHolidays, orderNo, sortNo, userName, password,
             employeeCode, status, is_admin, marital_Status, mobile_Country_Code, mobile_1_Country_Code, probation_End_Date, personal_Mobile_No, designation_Id, user_Type, is_Secretary,
-            confirm_Purchase, isExistUserName, isExistOrderNo, isExistSortNo, insertedId));
+            confirm_Purchase, upcoming_Approved, repricing_Approved, isExistUserName, isExistOrderNo, isExistSortNo, insertedId));
 
             bool _isExistUserName = (bool)isExistUserName.Value;
             if (_isExistUserName)
