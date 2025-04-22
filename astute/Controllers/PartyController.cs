@@ -3130,13 +3130,14 @@ namespace astute.Controllers
         * Date: 2025/04/21 By Jashmin Patel
         * Aded for To Update Supplier Stock List For Rapnet Price Update by Inrease/Decrease Type
         */
-        [HttpPost]
+        [HttpPut]
         [Route("update_stock_data_by_rapaport_increase_decrease")]
+        [Authorize]
         public async Task<IActionResult> Update_Stock_Data_By_Rapaport_Increase_Decrease(string rap_increase, string rap_decrease)
         {
             try
             {
-                if (string.IsNullOrEmpty(rap_increase) || string.IsNullOrEmpty(rap_increase))
+                if (string.IsNullOrEmpty(rap_increase) || string.IsNullOrEmpty(rap_decrease))
                 {
                     return BadRequest(new { message = "Invalid data provided." });
                 }

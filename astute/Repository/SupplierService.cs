@@ -1275,8 +1275,10 @@ namespace astute.Repository
                 using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
                 {
                     command.CommandText = sqlCommand;
-                    command.Parameters.Add(rap_increase);
-                    command.Parameters.Add(rap_decrease);
+                    var increaseType = new SqlParameter("@IncreaseType", rap_increase);
+                    var decreaseType = new SqlParameter("@DecreaseType", rap_decrease);
+                    command.Parameters.Add(increaseType);
+                    command.Parameters.Add(decreaseType);
 
                     // Set the command timeout to 30 minutes (in seconds)
                     command.CommandTimeout = 1800;
