@@ -15,6 +15,9 @@ namespace astute.Models
         public bool? API_Status { get; set; }
         public bool? Ftp_Status { get; set; }
         public bool? File_Status { get; set; }
+        public bool? API_Price_Lock { get; set; }
+        public bool? Ftp_Price_Lock { get; set; }
+        public bool? File_Price_Lock { get; set; }
         public string? Created_Date { get; set; }
         public string? Created_Time { get; set; }
         public string? Created_By { get; set; }

@@ -1640,7 +1640,7 @@ namespace astute.Controllers
         {
             try
             {
-                var result = await _partyService.Get_Suplier_Detail_List(party_Id);
+                var result = await _partyService.Get_Supplier_Detail_List(party_Id);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -1906,6 +1906,7 @@ namespace astute.Controllers
                         supplier_API_FTP_File_Details.Short_Code = result_api.Short_Code;
                         supplier_API_FTP_File_Details.Stock_Api_Method = result_api.Stock_Api_Method;
                         supplier_API_FTP_File_Details.Method_Type = result_api.Method_Type;
+                        supplier_API_FTP_File_Details.Price_Lock = result_api.Price_Lock;
                         supplier_API_FTP_File_Details.Supplier_Column_Mapping_List = await _partyService.Common_Funtion_To_Get_Supp_Col_Map(supplier_API_FTP_File_Details.Party_Id ?? 0, "API");
                         return Ok(new
                         {
@@ -1936,6 +1937,7 @@ namespace astute.Controllers
                         supplier_API_FTP_File_Details.Ftp_File_Name = result_ftp.Ftp_File_Name;
                         supplier_API_FTP_File_Details.Ftp_File_Type = result_ftp.Ftp_File_Type;
                         supplier_API_FTP_File_Details.Secure_Ftp = result_ftp.Secure_Ftp;
+                        supplier_API_FTP_File_Details.Price_Lock = result_ftp.Price_Lock;
                         supplier_API_FTP_File_Details.Supplier_Column_Mapping_List = await _partyService.Common_Funtion_To_Get_Supp_Col_Map(supplier_API_FTP_File_Details.Party_Id ?? 0, "FTP");
                         return Ok(new
                         {
@@ -1981,6 +1983,7 @@ namespace astute.Controllers
                             supplier_API_FTP_File_Details.Short_Code = result.Short_Code;
                             supplier_API_FTP_File_Details.Stock_Api_Method = result.Stock_Api_Method;
                             supplier_API_FTP_File_Details.Method_Type = result.Method_Type;
+                            supplier_API_FTP_File_Details.Price_Lock = result.Price_Lock;
                             supplier_API_FTP_File_Details.Supplier_Column_Mapping_List = await _partyService.Common_Funtion_To_Get_Supp_Col_Map(supplier_API_FTP_File_Details.Party_Id ?? 0, "API");
                             return Ok(new
                             {
@@ -2013,6 +2016,7 @@ namespace astute.Controllers
                             supplier_API_FTP_File_Details.Ftp_File_Name = result.Ftp_File_Name;
                             supplier_API_FTP_File_Details.Ftp_File_Type = result.Ftp_File_Type;
                             supplier_API_FTP_File_Details.Secure_Ftp = result.Secure_Ftp;
+                            supplier_API_FTP_File_Details.Price_Lock = result.Price_Lock;
                             supplier_API_FTP_File_Details.Supplier_Column_Mapping_List = await _partyService.Common_Funtion_To_Get_Supp_Col_Map(supplier_API_FTP_File_Details.Party_Id ?? 0, "FTP");
                             return Ok(new
                             {

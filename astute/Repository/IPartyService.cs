@@ -111,7 +111,7 @@ namespace astute.Repository
         #endregion
         #region Party
 
-        Task<IList<Supplier_Details_List>> Get_Suplier_Detail_List(int party_Id);
+        Task<IList<Supplier_Details_List>> Get_Supplier_Detail_List(int party_Id);
         Task<IList<DropdownModel>> Get_Party_Suplier();
         Task<IList<DropdownModel>> Get_All_Party_Supplier();
         Task<IList<DropdownModel>> Get_Party_Url_Format_Supplier();

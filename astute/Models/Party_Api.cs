@@ -35,5 +35,6 @@ namespace astute.Models
         public bool? Is_Same_Id { get; set; }
         public bool? Overseas_Same_Id { get; set; }
         public string? Party_Name { get; set; }
+        public bool? Price_Lock { get; set; }
     }
 }

@@ -1125,7 +1125,7 @@ namespace astute.Repository
 
         #endregion
 
-        public async Task<IList<Supplier_Details_List>> Get_Suplier_Detail_List(int party_Id)
+        public async Task<IList<Supplier_Details_List>> Get_Supplier_Detail_List(int party_Id)
         {
             var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
 
