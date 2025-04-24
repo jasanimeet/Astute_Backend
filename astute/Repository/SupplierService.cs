@@ -3525,7 +3525,7 @@ namespace astute.Repository
             }
             return result;
         }
-        
+
         public async Task<int> Insert_Update_Lab_Entry(DataTable masterDataTable, DataTable detailDataTable, int user_Id)
         {
             var masterParameter = new SqlParameter("@Lab_Entry_Master_Table_Type", SqlDbType.Structured)
@@ -3556,7 +3556,7 @@ namespace astute.Repository
         public async Task<(int, bool)> Delete_Lab_Entry(int id)
         {
             var _id = id > 0 ? new SqlParameter("@Id", id) : new SqlParameter("@Id", DBNull.Value);
-            
+
             var is_Exist = new SqlParameter("@Is_Exist", SqlDbType.Bit)
             {
                 Direction = ParameterDirection.Output
@@ -3637,7 +3637,7 @@ namespace astute.Repository
             }
             return dataTable;
         }
-        
+
         public async Task<DataTable> Get_Lab_Entry_Report_Data_Dynamic(Report_Lab_Entry_Filter report_Lab_Entry_Filter)
         {
             DataTable dataTable = new DataTable();
@@ -3646,7 +3646,7 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Lab_Entry_Report_Dynamic_Select_Excel", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(!string.IsNullOrEmpty(report_Lab_Entry_Filter.Stock_Id) ? new SqlParameter("@Stock_Id", report_Lab_Entry_Filter.Stock_Id) : new SqlParameter("@Stock_Id", DBNull.Value));                    
+                    command.Parameters.Add(!string.IsNullOrEmpty(report_Lab_Entry_Filter.Stock_Id) ? new SqlParameter("@Stock_Id", report_Lab_Entry_Filter.Stock_Id) : new SqlParameter("@Stock_Id", DBNull.Value));
                     await connection.OpenAsync();
 
                     using var da = new SqlDataAdapter();
@@ -3742,7 +3742,7 @@ namespace astute.Repository
             }
             return result;
         }
-        
+
         public async Task<List<Dictionary<string, object>>> Get_Unavailable_Lab_Entry_Detail_For_Shipment_Verification(string certificate_No)
         {
             var result = new List<Dictionary<string, object>>();
@@ -3776,7 +3776,7 @@ namespace astute.Repository
             }
             return result;
         }
-        
+
         public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Detail_For_Shipment_Verification_By_Id(string Lab_Entry_Detail_Id)
         {
             var result = new List<Dictionary<string, object>>();
@@ -3819,7 +3819,7 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Purchase_Expenses_DropDown_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    
+
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -4033,13 +4033,13 @@ namespace astute.Repository
             var trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
 
             var user_Id = new SqlParameter("@User_Id", User_Id);
-            
+
             var result = await _dbContext.Database
                                 .ExecuteSqlRawAsync("EXEC Purchase_Delete @Trans_Id, @User_Id", trans_Id, user_Id);
 
             return result;
         }
-       
+
         public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Status_Summary(string Stock_Id)
         {
             var result = new List<Dictionary<string, object>>();
@@ -4049,7 +4049,7 @@ namespace astute.Repository
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(!string.IsNullOrEmpty(Stock_Id) ? new SqlParameter("@Stock_Id", Stock_Id) : new SqlParameter("@Stock_Id", DBNull.Value));
-                    
+
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -4073,7 +4073,7 @@ namespace astute.Repository
             }
             return result;
         }
-        
+
         public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Non_Status_Summary(string Stock_Id)
         {
             var result = new List<Dictionary<string, object>>();
@@ -4083,7 +4083,7 @@ namespace astute.Repository
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(!string.IsNullOrEmpty(Stock_Id) ? new SqlParameter("@Stock_Id", Stock_Id) : new SqlParameter("@Stock_Id", DBNull.Value));
-                    
+
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -4193,7 +4193,7 @@ namespace astute.Repository
 
             return result;
         }
-        
+
         public async Task<int> Purchase_Detail_Outward_Update(DataTable dataTable, int Trans_Id, int User_Id)
         {
             var _dataTable = new SqlParameter("@Purchase_Detail_Outward_Update_Table_Type", SqlDbType.Structured)
@@ -4211,7 +4211,7 @@ namespace astute.Repository
 
             return result;
         }
-                
+
         public async Task<int> Purchase_Confirm_Update(int Trans_Id, int User_Id)
         {
             var _trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
@@ -4232,7 +4232,7 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Order_Process_Pending_FCM_Token", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    
+
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -4330,7 +4330,7 @@ namespace astute.Repository
 
             return result;
         }
-        
+
         public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Status_Sunrise_Summary(string Sunrise_Stock_Id)
         {
             var result = new List<Dictionary<string, object>>();
@@ -4490,6 +4490,18 @@ namespace astute.Repository
             return result;
         }
         
+        public async Task<int> Update_Purchase_Master_Is_Repricing_Approval(int Trans_Id, bool Is_Repricing_Approval, int User_Id)
+        {
+            var trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
+            var is_Repricing_Approval = new SqlParameter("@Is_Repricing_Approval", Is_Repricing_Approval);
+            var user_Id = new SqlParameter("@User_Id", User_Id);
+
+            var result = await _dbContext.Database
+                                .ExecuteSqlRawAsync("EXEC Purchase_Master_Is_Repricing_Approval_Update @Trans_Id, @Is_Repricing_Approval, @User_Id", trans_Id, is_Repricing_Approval, user_Id);
+
+            return result;
+        }
+
         #endregion
 
         #region Transaction
@@ -4810,7 +4822,7 @@ namespace astute.Repository
         }
 
         #endregion
-        
+
         #region Purchase from Consignment
 
         public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Consignment_Purchase(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return)
@@ -5007,7 +5019,7 @@ namespace astute.Repository
             }
             return result;
         }
-        
+
         public async Task<(string, int)> Create_Update_Connect_GIA_Report_Layout_Save(Report_Layout_Save report_Layout_Save)
         {
             var id = new SqlParameter("@Id", report_Layout_Save.Id);
@@ -5037,7 +5049,7 @@ namespace astute.Repository
                 return ("success", _inserted_Id);
             }
         }
-        
+
         public async Task<int> Insert_Update_Connect_GIA_Report_Layout_Save_Detail(DataTable dataTable)
         {
             var parameter = new SqlParameter("@tblConnect_GIA_Report_Layout_Save_Detail", SqlDbType.Structured)

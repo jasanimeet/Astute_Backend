@@ -179,6 +179,7 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Pricing(int Trans_Id);
         Task<int> Purchase_Pricing_Update(DataTable dataTable, int User_Id);
         Task<int> Update_Purchase_Master_Is_Upcoming_Approval(int Trans_Id, bool Is_Upcoming_Approval, int User_Id);
+        Task<int> Update_Purchase_Master_Is_Repricing_Approval(int Trans_Id, bool Is_Repricing_Approval, int User_Id);
         #endregion
 
         #region Transaction
