@@ -4478,6 +4478,18 @@ namespace astute.Repository
             return result;
         }
 
+        public async Task<int> Update_Purchase_Master_Is_Upcoming_Approval(int Trans_Id, bool Is_Upcoming_Approval, int User_Id)
+        {
+            var trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
+            var is_Upcoming_Approval = new SqlParameter("@Is_Upcoming_Approval", Is_Upcoming_Approval);
+            var user_Id = new SqlParameter("@User_Id", User_Id);
+
+            var result = await _dbContext.Database
+                                .ExecuteSqlRawAsync("EXEC Purchase_Master_Is_Upcoming_Approval_Update @Trans_Id, @Is_Upcoming_Approval, @User_Id", trans_Id, is_Upcoming_Approval, user_Id);
+
+            return result;
+        }
+        
         #endregion
 
         #region Transaction

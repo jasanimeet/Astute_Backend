@@ -15919,6 +15919,45 @@ namespace astute.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("update_purchase_master_is_upcoming_approval")]
+        [Authorize]
+        public async Task<IActionResult> Update_Purchase_Master_Is_Upcoming_Approval(int Trans_Id, bool Is_Upcoming_Approval)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if (Trans_Id > 0)
+                {
+                    var result = await _supplierService.Update_Purchase_Master_Is_Upcoming_Approval(Trans_Id, Is_Upcoming_Approval, user_Id ?? 0);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.Purchase_Updated
+                        });
+                    }
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (SqlException ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Purchase_Master_Is_Upcoming_Approval", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Transaction
