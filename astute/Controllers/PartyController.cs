@@ -15870,6 +15870,55 @@ namespace astute.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("update_purchase_pricing")]
+        [Authorize]
+        public async Task<IActionResult> Update_Purchase_Pricing(Purchase_Pricing_List purchase_Pricing)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                IList<Purchase_Pricing> purchase_Detail_Pricing_List = JsonConvert.DeserializeObject<IList<Purchase_Pricing>>(purchase_Pricing.Purchase_Pricing.ToString());
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("Id", typeof(int));
+                dataTable.Columns.Add("Final_Disc", typeof(float));
+                dataTable.Columns.Add("Final_Amt", typeof(float));
+                dataTable.Columns.Add("Is_Repriced", typeof(bool));
+
+                foreach (var item in purchase_Detail_Pricing_List)
+                {
+                    dataTable.Rows.Add(
+                        item.Id ?? 0,
+                        SafeConvertToDouble(item.Final_Disc.ToString()),
+                        SafeConvertToDouble(item.Final_Value.ToString()),
+                        item.Is_Repriced
+                    );
+                }
+
+                var result = await _supplierService.Purchase_Pricing_Update(dataTable, user_Id ?? 0);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.Purchase_Pricing_Updated
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Purchase_Pricing", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Transaction

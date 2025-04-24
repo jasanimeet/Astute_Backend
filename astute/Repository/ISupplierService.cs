@@ -177,6 +177,7 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Fortune_Lab_Entry_Data();
         Task<List<Dictionary<string, object>>> Get_Purchase_Master_Pricing(Purchase_Master_Search_Model purchase_Master_Search_Model);
         Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Pricing(int Trans_Id);
+        Task<int> Purchase_Pricing_Update(DataTable dataTable, int User_Id);
         #endregion
 
         #region Transaction
