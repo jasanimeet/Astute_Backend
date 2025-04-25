@@ -181,8 +181,8 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Purchase_Master_Pricing(Purchase_Master_Search_Model purchase_Master_Search_Model);
         Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Pricing(int Trans_Id);
         Task<int> Purchase_Pricing_Update(DataTable dataTable, int User_Id);
-        Task<int> Update_Purchase_Master_Is_Upcoming_Approval(Purchase_Approval purchase_Approval, int User_Id);
-        Task<int> Update_Purchase_Master_Is_Repricing_Approval(Purchase_Approval purchase_Approval, int User_Id);
+        Task<int> Update_Purchase_Master_Is_Upcoming_Approval(int Trans_Id, bool Is_Upcoming_Approval, int User_Id);
+        Task<int> Update_Purchase_Master_Is_Repricing_Approval(int Trans_Id, bool Is_Repricing_Approval, int User_Id);
         Task<DataTable> Get_Purchase_Detail_Pricing_Excel(int Trans_Id);
         Task<List<Dictionary<string, object>>> Get_Purchase_Media_Upload(Purchase_Media_Upload_Search_Model purchase_Media_Upload_Search_Model);
         Task<int> Update_Purchase_Media_Upload(Purchase_Media_Upload_Model purchase_Media_Upload_Model);
