@@ -321,6 +321,7 @@
         public static string StockNumberAlreadyExistLab = "Front prefix already exists on lab";
         public static string StockNumberAlreadyExistOverses = "Front prefix already exists on overseas";
         public static string StockNumberAlreadyExistSunrise = "Front prefix already exists on sunrise";
+        public static string StockNumberAlreadyExistOversesBackPrefix = "Back prefix already exists on overseas";
         #endregion
 
         #region Temp Layout

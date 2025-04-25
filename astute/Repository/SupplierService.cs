@@ -1415,6 +1415,54 @@ namespace astute.Repository
 
             return result;
         }
+
+        public async Task<IList<Stock_Number_Generation_Overseas>> Get_Stock_Number_Generation_Overseas(int Id)
+        {
+            var _Id = Id > 0 ? new SqlParameter("@Id", Id) : new SqlParameter("@Id", DBNull.Value);
+            var result = await Task.Run(() => _dbContext.Stock_Number_Generation_Overseas
+                            .FromSqlRaw(@"exec Stock_Number_Generation_Overseas_Select @Id", _Id).ToListAsync());
+
+            return result;
+        }
+        public async Task<int> Add_Update_Stock_Number_Generation_Overseas(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@Stock_Number_Generation_Overseas_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Stock_Number_Generation_Overseas_Table_Type",
+                Value = dataTable
+            };
+
+            var isExist = new SqlParameter("@IsExist", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"exec Stock_Number_Generation_Overseas_Insert_Update @Stock_Number_Generation_Overseas_Table_Type,@IsExist OUT", parameter, isExist));
+
+            int _isExist = (int)isExist.Value;
+            if (_isExist == 1)
+                return -1;
+
+            return result;
+        }
+        public async Task<int> Delete_Stock_Number_Generation_Overseas(int Id)
+        {
+            var _id = new SqlParameter("@Id", Id);
+            var isExist = new SqlParameter("@IsExist", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"exec Stock_Number_Generation_Overseas_Delete @Id, @IsExist OUT", _id, isExist));
+
+            var _isExist = (bool)isExist.Value;
+            if (_isExist)
+                return 409;
+            
+            return result;
+        }
         #endregion
 
         #region Api/FTP/File Party Name 
@@ -4489,7 +4537,7 @@ namespace astute.Repository
 
             return result;
         }
-        
+
         public async Task<int> Update_Purchase_Master_Is_Repricing_Approval(int Trans_Id, bool Is_Repricing_Approval, int User_Id)
         {
             var trans_Id = new SqlParameter("@Trans_Id", Trans_Id);

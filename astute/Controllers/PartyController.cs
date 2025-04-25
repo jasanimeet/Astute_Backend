@@ -3337,6 +3337,147 @@ namespace astute.Controllers
                 });
             }
         }
+
+        /*
+         * Date: 2025/04/24 By Jashmin Patel
+         * Aded for create stock number generation overseas get list if id null then return all record.
+         */
+        [HttpGet]
+        [Route("get_stock_number_generation_overseas")]
+        [Authorize]
+        public async Task<IActionResult> Get_Stock_Number_Generation_Overseas(int Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Stock_Number_Generation_Overseas(Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Stock_Number_Generation_Overseas", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        /*
+         * Date: 2025/04/24 By Jashmin Patel
+         * Aded for create stock number generation overseas add/edit 
+         */
+        [HttpPost]
+        [Route("create_stock_number_generation_overseas")]
+        [Authorize]
+        public async Task<IActionResult> Create_Stock_Number_Generation_Overseas(Stock_Number_Generation_Overseas_List stock_Number_Generation_List)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    int id = stock_Number_Generation_List.stock_Number_Generations.Select(x => x.Id).FirstOrDefault();
+                    if (stock_Number_Generation_List.stock_Number_Generations != null && stock_Number_Generation_List.stock_Number_Generations.Count > 0)
+                    {
+
+                        DataTable dataTable = new DataTable();
+                        dataTable.Columns.Add("Id", typeof(int));
+                        dataTable.Columns.Add("Party_Id", typeof(int));
+                        dataTable.Columns.Add("Shape", typeof(string));
+                        dataTable.Columns.Add("From_Cts", typeof(decimal));
+                        dataTable.Columns.Add("To_Cts", typeof(decimal));
+                        dataTable.Columns.Add("Front_Prefix", typeof(string));
+                        dataTable.Columns.Add("Back_Prefix", typeof(string));
+                        dataTable.Columns.Add("Front_Prefix_Alloted", typeof(string));
+                        dataTable.Columns.Add("Start_Format", typeof(string));
+                        dataTable.Columns.Add("Start_Number", typeof(string));
+                        dataTable.Columns.Add("End_Number", typeof(string));
+                        dataTable.Columns.Add("Query_Flag", typeof(string));
+                        dataTable.Columns.Add("User_Id", typeof(int));
+                        string ids = string.Empty;
+                        foreach (var item in stock_Number_Generation_List.stock_Number_Generations)
+                        {
+                            dataTable.Rows.Add(item.Id, item.Party_Id, item.Shape, item.From_Cts, item.To_Cts, item.Front_Prefix, item.Back_Prefix, item.Front_Prefix_Alloted, item.Start_Format, item.Start_Number, item.End_Number, item.Id > 0 ? 'U' : 'I', stock_Number_Generation_List.User_Id);
+
+                            if (item.Id > 0)
+                                ids += (ids.Length > 0 ? "," : "") + item.Id;
+                        }
+
+                        var result = await _supplierService.Add_Update_Stock_Number_Generation_Overseas(dataTable);
+                        if (result == -1)
+                        {
+                            return Conflict(new
+                            {
+                                statusCode = HttpStatusCode.Conflict,
+                                message = CoreCommonMessage.StockNumberAlreadyExistOversesBackPrefix,
+                            });
+                        }
+                        else
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = id > 0 ? CoreCommonMessage.StockNumberUpdated : CoreCommonMessage.StockNumberCreated,
+                            });
+                        }
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Stock_Number_Generation_Overseas", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        /*
+         * Date: 2025/04/24 By Jashmin Patel
+         * Aded for create stock number generation overseas delete 
+         */
+        [HttpDelete]
+        [Route("delete_stock_number_generation_overseas")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Stock_Number_Generation_Overseas(int Id)
+        {
+            try
+            {
+                var result = await _supplierService.Delete_Stock_Number_Generation_Overseas(Id);
+                if (result == 409)
+                {
+                    return Conflict(new
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        message = CoreCommonMessage.ReferenceFoundError
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.StockNumberDeleted
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Stock_Number_Generation_Overseas", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Api/FTP/File Party Name
