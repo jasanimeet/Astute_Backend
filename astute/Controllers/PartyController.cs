@@ -16226,6 +16226,41 @@ namespace astute.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("update_purchase_media_upload")]
+        public async Task<IActionResult> Update_Purchase_Media_Upload(Purchase_Media_Upload_Model purchase_Media_Upload_Model)
+        {
+            try
+            {
+                if (purchase_Media_Upload_Model.Id > 0)
+                {
+                    var result = await _supplierService.Update_Purchase_Media_Upload(purchase_Media_Upload_Model);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.Purchase_Updated
+                        });
+                    }
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (SqlException ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Purchase_Media_Upload", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Transaction

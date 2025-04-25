@@ -1460,7 +1460,7 @@ namespace astute.Repository
             var _isExist = (bool)isExist.Value;
             if (_isExist)
                 return 409;
-            
+
             return result;
         }
         #endregion
@@ -4606,6 +4606,19 @@ namespace astute.Repository
                     }
                 }
             }
+            return result;
+        }
+
+        public async Task<int> Update_Purchase_Media_Upload(Purchase_Media_Upload_Model purchase_Media_Upload_Model)
+        {
+            var Id = new SqlParameter("@Id", purchase_Media_Upload_Model.Id ?? (object)DBNull.Value);
+            var Image_Status = new SqlParameter("@Image_Status", purchase_Media_Upload_Model.Image_Status ?? (object)DBNull.Value);
+            var Video_Status = new SqlParameter("@Video_Status", purchase_Media_Upload_Model.Video_Status ?? (object)DBNull.Value);
+            var Certificate_Status = new SqlParameter("@Certificate_Status", purchase_Media_Upload_Model.Certificate_Status ?? (object)DBNull.Value);
+
+            var result = await _dbContext.Database
+                                .ExecuteSqlRawAsync("EXEC Purchase_Media_Upload_Update @Id, @Image_Status, @Video_Status, @Certificate_Status", Id, Image_Status, Video_Status, Certificate_Status);
+
             return result;
         }
 
