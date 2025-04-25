@@ -16063,16 +16063,16 @@ namespace astute.Controllers
         [HttpPost]
         [Route("update_purchase_master_is_upcoming_approval")]
         [Authorize]
-        public async Task<IActionResult> Update_Purchase_Master_Is_Upcoming_Approval(int Trans_Id, bool Is_Upcoming_Approval)
+        public async Task<IActionResult> Update_Purchase_Master_Is_Upcoming_Approval(Purchase_Approval purchase_Approval)
         {
             try
             {
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                if (Trans_Id > 0)
+                if (purchase_Approval != null)
                 {
-                    var result = await _supplierService.Update_Purchase_Master_Is_Upcoming_Approval(Trans_Id, Is_Upcoming_Approval, user_Id ?? 0);
+                    var result = await _supplierService.Update_Purchase_Master_Is_Upcoming_Approval(purchase_Approval, user_Id ?? 0);
                     if (result > 0)
                     {
                         return Ok(new
@@ -16102,16 +16102,16 @@ namespace astute.Controllers
         [HttpPost]
         [Route("update_purchase_master_is_repricing_approval")]
         [Authorize]
-        public async Task<IActionResult> Update_Purchase_Master_Is_Repricing_Approval(int Trans_Id, bool Is_Repricing_Approval)
+        public async Task<IActionResult> Update_Purchase_Master_Is_Repricing_Approval(Purchase_Approval purchase_Approval)
         {
             try
             {
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                if (Trans_Id > 0)
+                if (purchase_Approval != null)
                 {
-                    var result = await _supplierService.Update_Purchase_Master_Is_Repricing_Approval(Trans_Id, Is_Repricing_Approval, user_Id ?? 0);
+                    var result = await _supplierService.Update_Purchase_Master_Is_Repricing_Approval(purchase_Approval, user_Id ?? 0);
                     if (result > 0)
                     {
                         return Ok(new

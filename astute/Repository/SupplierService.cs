@@ -4526,10 +4526,10 @@ namespace astute.Repository
             return result;
         }
 
-        public async Task<int> Update_Purchase_Master_Is_Upcoming_Approval(int Trans_Id, bool Is_Upcoming_Approval, int User_Id)
+        public async Task<int> Update_Purchase_Master_Is_Upcoming_Approval(Purchase_Approval purchase_Approval, int User_Id)
         {
-            var trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
-            var is_Upcoming_Approval = new SqlParameter("@Is_Upcoming_Approval", Is_Upcoming_Approval);
+            var trans_Id = new SqlParameter("@Trans_Id", purchase_Approval.Trans_Id);
+            var is_Upcoming_Approval = new SqlParameter("@Is_Upcoming_Approval", purchase_Approval.Is_Upcoming_Approval);
             var user_Id = new SqlParameter("@User_Id", User_Id);
 
             var result = await _dbContext.Database
@@ -4538,10 +4538,10 @@ namespace astute.Repository
             return result;
         }
 
-        public async Task<int> Update_Purchase_Master_Is_Repricing_Approval(int Trans_Id, bool Is_Repricing_Approval, int User_Id)
+        public async Task<int> Update_Purchase_Master_Is_Repricing_Approval(Purchase_Approval purchase_Approval, int User_Id)
         {
-            var trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
-            var is_Repricing_Approval = new SqlParameter("@Is_Repricing_Approval", Is_Repricing_Approval);
+            var trans_Id = new SqlParameter("@Trans_Id", purchase_Approval.Trans_Id);
+            var is_Repricing_Approval = new SqlParameter("@Is_Repricing_Approval", purchase_Approval.Is_Repricing_Approval);
             var user_Id = new SqlParameter("@User_Id", User_Id);
 
             var result = await _dbContext.Database

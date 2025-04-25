@@ -72,7 +72,7 @@ namespace astute.Repository
         #endregion
 
         #region Supplier Stock Error Log
-        Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Error_Log(string supplier_Ids, string upload_Type, string from_Date, string from_Time, string to_Date, string to_Time, bool is_Last_Entry,string stock_Type, string supplierNo_CertNo);
+        Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Error_Log(string supplier_Ids, string upload_Type, string from_Date, string from_Time, string to_Date, string to_Time, bool is_Last_Entry, string stock_Type, string supplierNo_CertNo);
         Task<List<Dictionary<string, object>>> Get_Supplier_Stock_Error_Log_Detail(string supplier_Ids, string stock_Data_Ids, string upload_Type, string supplierNo_CertNo, string stock_Type);
         Task<List<Dictionary<string, object>>> Get_Supplier_Stock_File_Error_Log(int supplier_Id, int stock_Data_Id);
         Task<DataTable> Get_Supplier_Stock_File_Error_Log_Detail(int supplier_Id, string upload_Type);
@@ -181,8 +181,8 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Purchase_Master_Pricing(Purchase_Master_Search_Model purchase_Master_Search_Model);
         Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Pricing(int Trans_Id);
         Task<int> Purchase_Pricing_Update(DataTable dataTable, int User_Id);
-        Task<int> Update_Purchase_Master_Is_Upcoming_Approval(int Trans_Id, bool Is_Upcoming_Approval, int User_Id);
-        Task<int> Update_Purchase_Master_Is_Repricing_Approval(int Trans_Id, bool Is_Repricing_Approval, int User_Id);
+        Task<int> Update_Purchase_Master_Is_Upcoming_Approval(Purchase_Approval purchase_Approval, int User_Id);
+        Task<int> Update_Purchase_Master_Is_Repricing_Approval(Purchase_Approval purchase_Approval, int User_Id);
         Task<DataTable> Get_Purchase_Detail_Pricing_Excel(int Trans_Id);
         Task<List<Dictionary<string, object>>> Get_Purchase_Media_Upload(Purchase_Media_Upload_Search_Model purchase_Media_Upload_Search_Model);
         Task<int> Update_Purchase_Media_Upload(Purchase_Media_Upload_Model purchase_Media_Upload_Model);
