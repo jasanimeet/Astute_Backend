@@ -1271,6 +1271,49 @@ namespace astute.Repository
 
         }
 
+        public async Task<(List<Dictionary<string, object>>, string)> Get_ShipmentNotification(int? User_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            var totalRecordr = string.Empty;
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Notification_Shipment_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    var totalRecordParameter = new SqlParameter("@iTotalRec", SqlDbType.Int);
+                    totalRecordParameter.Direction = ParameterDirection.Output;
+                    command.Parameters.Add(totalRecordParameter);
+
+                    command.Parameters.Add(User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value));
+                    command.CommandTimeout = 1800;
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+
+                    totalRecordr = Convert.ToString(totalRecordParameter.Value);
+                }
+            }
+
+            return (result, totalRecordr);
+
+        }
         public async Task<IList<Supplier_Price_List>> Get_Supplier_Price_List()
         {
             var result = await Task.Run(() => _dbContext.Supplier_Price_List

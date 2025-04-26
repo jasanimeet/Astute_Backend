@@ -17191,6 +17191,49 @@ namespace astute.Controllers
                 });
             }
         }
+        /*
+         * Date: 2025/04/25 By Jashmin Patel
+         * Aded for notification of new purchase(shipment) - with counts
+         */
+        [HttpGet]
+        [Route("get_shipmentnotification")]
+        public async Task<IActionResult> Get_ShipmentNotification()
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                if (user_Id > 0)
+                {
+                    var (result, totalRecordr) = await _partyService.Get_ShipmentNotification(user_Id ?? 0);
+                    if (result != null && result.Count > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            total_Records = totalRecordr,
+                            data = result
+                        });
+                    }
+                    return NoContent();
+                }
+
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_ShipmentNotification", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Job transfer user pricing
