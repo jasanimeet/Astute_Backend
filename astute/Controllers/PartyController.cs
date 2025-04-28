@@ -17194,10 +17194,11 @@ namespace astute.Controllers
         /*
          * Date: 2025/04/25 By Jashmin Patel
          * Aded for notification of new purchase(shipment) - with counts
+         * Pricing notification
          */
         [HttpGet]
-        [Route("get_shipmentnotification")]
-        public async Task<IActionResult> Get_ShipmentNotification()
+        [Route("get_notification_menu")]
+        public async Task<IActionResult> Get_Notification_Menu()
         {
             try
             {
@@ -17205,7 +17206,7 @@ namespace astute.Controllers
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                 if (user_Id > 0)
                 {
-                    var (result, totalRecordr) = await _partyService.Get_ShipmentNotification(user_Id ?? 0);
+                    var (result, totalRecordr) = await _partyService.Get_Notification_Menu(user_Id ?? 0);
                     if (result != null && result.Count > 0)
                     {
                         return Ok(new

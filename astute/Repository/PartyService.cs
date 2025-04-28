@@ -1271,13 +1271,13 @@ namespace astute.Repository
 
         }
 
-        public async Task<(List<Dictionary<string, object>>, string)> Get_ShipmentNotification(int? User_Id)
+        public async Task<(List<Dictionary<string, object>>, string)> Get_Notification_Menu(int? User_Id)
         {
             var result = new List<Dictionary<string, object>>();
             var totalRecordr = string.Empty;
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
-                using (var command = new SqlCommand("Notification_Shipment_Select", connection))
+                using (var command = new SqlCommand("Notification_Menu_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
