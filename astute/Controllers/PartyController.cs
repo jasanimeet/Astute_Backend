@@ -12868,6 +12868,7 @@ namespace astute.Controllers
 
                             if (lab_entry_result > 0)
                             {
+                                /*
                                 IList<Order_Processing_Complete_Fortune_Detail> order_Processing_Complete_Fortune_Details = new List<Order_Processing_Complete_Fortune_Detail>();
 
                                 foreach (var item in OrderResult)
@@ -12900,15 +12901,15 @@ namespace astute.Controllers
                                     order_Processing_Complete_Fortune_Details.Add(fortuneDetail);
                                 }
                                 var result_det = await _oracleService.Order_Data_Detail_Transfer_Oracle(order_Processing_Complete_Fortune_Details);
-
-                                if (result_det > 0)
-                                {
+                                */
+                                //if (result_det > 0)
+                                //{
                                     return Ok(new
                                     {
                                         statusCode = HttpStatusCode.OK,
                                         message = "Order completed successfully."
                                     });
-                                }
+                                //}
                             }
                         }
                         else
