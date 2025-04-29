@@ -12412,7 +12412,7 @@ namespace astute.CoreServices
                         string Column_Name = Convert.ToString(pricing_column_dt.Rows[j]["Column_Name"]);
 
                         pkkk += 1;
-                        if (Column_Name == "Supplier Stock ID")
+                        if (Column_Name == "Stock Id")
                         {
                             worksheet.Cells[1, pkkk].Formula = "ROUND(SUBTOTAL(103," + GetExcelColumnLetter(pkkk) + "" + pinStartIndex + ":" + GetExcelColumnLetter(pkkk) + "" + (pinwrkrow - 1) + "),2)";
                             worksheet.Cells[1, pkkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
