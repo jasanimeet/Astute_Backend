@@ -11099,7 +11099,7 @@ namespace astute.CoreServices
                         string Column_Name = Convert.ToString(pricing_column_dt.Rows[j]["Column_Name"]);
 
                         pkkk += 1;
-                        if (Column_Name == "Supplier Stock ID")
+                        if (Column_Name == "Stock Id")
                         {
                             worksheet.Cells[1, pkkk].Formula = "ROUND(SUBTOTAL(103," + GetExcelColumnLetter(pkkk) + "" + pinStartIndex + ":" + GetExcelColumnLetter(pkkk) + "" + (pinwrkrow - 1) + "),2)";
                             worksheet.Cells[1, pkkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -11336,15 +11336,7 @@ namespace astute.CoreServices
                                 if (Column_Name == "Lab")
                                 {
                                     string labValue = Convert.ToString(dt.Rows[i - inStartIndex]["Lab"]);
-                                    string certificateURL = Convert.ToString(dt.Rows[i - inStartIndex]["CERTIFICATE LINK"]);
-
-                                    if (!string.IsNullOrEmpty(certificateURL) && !string.IsNullOrEmpty(labValue))
-                                    {
-                                        worksheet1.Cells[inwrkrow, kk].Value = labValue;
-                                        worksheet1.Cells[inwrkrow, kk].Formula = "=HYPERLINK(\"" + certificateURL + "\",\"" + labValue + "\")";
-                                        worksheet1.Cells[inwrkrow, kk].Style.Font.UnderLine = true;
-                                        worksheet1.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Blue);
-                                    }
+                                    worksheet1.Cells[inwrkrow, kk].Value = labValue;
                                 }
                                 else if (Column_Name == "Cts")
                                 {
@@ -11503,7 +11495,7 @@ namespace astute.CoreServices
                         string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
 
                         kkk += 1;
-                        if (Column_Name == "Supplier Stock ID")
+                        if (Column_Name == "Stock_Id")
                         {
                             worksheet1.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(103," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
                             worksheet1.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
