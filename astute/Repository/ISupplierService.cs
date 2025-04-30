@@ -65,6 +65,7 @@ namespace astute.Repository
         Task<IList<Stock_Number_Generation_Overseas>> Get_Stock_Number_Generation_Overseas(int Id);
         Task<int> Add_Update_Stock_Number_Generation_Overseas(DataTable dataTable);
         Task<int> Delete_Stock_Number_Generation_Overseas(int Id);
+        Task<int> Add_Update_Stock_Number_Generation_Overseas_Raplicate(string ids);
         #endregion
 
         #region  Api/FTP/File Party Name
@@ -228,6 +229,11 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Connect_GIA_Report_Users_Role(int id, int user_Id);
         Task<(string, int)> Create_Update_Connect_GIA_Report_Layout_Save(Report_Layout_Save report_Layout_Save);
         Task<int> Insert_Update_Connect_GIA_Report_Layout_Save_Detail(DataTable dataTable);
+        #endregion
+        
+        #region Purchase Detail Manual Discount
+        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Manual_Discount(string certificate_No, int type);
+        Task<int> Set_Purchase_Detail_Manual_Discount(DataTable dataTable, int User_Id);
         #endregion
     }
 }

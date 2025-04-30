@@ -3411,6 +3411,7 @@ namespace astute.Controllers
                         }
 
                         var result = await _supplierService.Add_Update_Stock_Number_Generation_Overseas(dataTable);
+                        await _supplierService.Add_Update_Stock_Number_Generation_Overseas_Raplicate(ids);
                         if (result == -1)
                         {
                             return Conflict(new
@@ -14421,7 +14422,6 @@ namespace astute.Controllers
             }
         }
 
-
         [HttpPost]
         [Route("get_lab_entry_detail_for_shipment")]
         [Authorize]
@@ -15495,6 +15495,7 @@ namespace astute.Controllers
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
                 var result = await _supplierService.Get_Purchase_Detail_Contract(lab_Entry_Report_Status_Model.Stock_Id);
+
 
                 if (result != null && result.Count > 0)
                 {
@@ -19451,7 +19452,6 @@ namespace astute.Controllers
 
         #endregion
 
-
         #region Excellent Diamonds Api
 
         [HttpPost]
@@ -19798,6 +19798,99 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Connect_GIA_Report_Layout_Save", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
+        #region Purchase Detail Manual Discount
+        /*
+         * Date: 2025/04/28 By Jashmin Patel
+         * get list of purchase details by cert_no or stock_id
+         */
+        [HttpPost]
+        [Route("purchase_detail_manual_discount")]
+        [Authorize]
+        public async Task<IActionResult> Purchase_Detail_Manual_Discount(Purchase_Detail_Manual_Discount_Model model)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Get_Purchase_Detail_Manual_Discount(model.Stock_Id, 1);
+                var result_Message = await _supplierService.Get_Purchase_Detail_Manual_Discount(model.Stock_Id, 2);
+
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    message = CoreCommonMessage.DataSuccessfullyFound,
+                    unavailable_message = result_Message,
+                    data = result,
+                });
+
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Purchase_Detail_Manual_Discount", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        /*
+         * Date: 2025/04/28 By Jashmin Patel
+         * get list of purchase details by cert_no or stock_id
+         */
+        [HttpPost]
+        [Route("update_purchase_detail_manual_discount")]
+        [Authorize]
+        public async Task<IActionResult> Update_Purchase_Detail_Manual_Discount(Purchase_Detail_Manual_Discount_List purchase_Detail_Manual_Discount)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                IList<Purchase_Detail_Manual_Discount> purchase_Detail_Discount_List = JsonConvert.DeserializeObject<IList<Purchase_Detail_Manual_Discount>>(purchase_Detail_Manual_Discount.Purchase_Detail_Manual_Discount.ToString());
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("Purchase_Detail_Id", typeof(int));
+                dataTable.Columns.Add("Manual_Discount_Detail_Id", typeof(int));
+                dataTable.Columns.Add("Stock_Id", typeof(string));
+                dataTable.Columns.Add("Cert_No", typeof(string));
+                dataTable.Columns.Add("Prev_Disc", typeof(decimal));
+                dataTable.Columns.Add("New_Disc", typeof(decimal));
+
+                foreach (var item in purchase_Detail_Discount_List)
+                {
+                    dataTable.Rows.Add(
+                        item.Id ?? 0,
+                        item.Manual_Discount_Detail_Id ?? 0,
+                        item.Stock_Id,
+                        item.Cert_No,
+                        item.Prev_Disc,
+                        item.New_Disc
+                    );
+                }
+
+                var result = await _supplierService.Set_Purchase_Detail_Manual_Discount(dataTable, user_Id ?? 0);
+
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    message = CoreCommonMessage.UpdatedSuccessfully,
+                    data = result,
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "update_purchase_detail_manual_discount", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message

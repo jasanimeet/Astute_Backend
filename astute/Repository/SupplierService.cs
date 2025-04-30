@@ -1463,6 +1463,16 @@ namespace astute.Repository
 
             return result;
         }
+        public async Task<int> Add_Update_Stock_Number_Generation_Overseas_Raplicate(string ids)
+        {
+            var _ids = new SqlParameter("@Ids", ids);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"exec Stock_Number_Generation_Overseas_Replicate_Insert_Update @Ids", _ids));
+
+
+            return result;
+        }
         #endregion
 
         #region Api/FTP/File Party Name 
@@ -5183,6 +5193,58 @@ namespace astute.Repository
             return result;
         }
 
+        #endregion
+
+        #region Purchase Detail Manual Discount
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Manual_Discount(string certificate_No, int type)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Purchase_Detail_Manual_Discount_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(certificate_No) ? new SqlParameter("@Certificate_No", certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(new SqlParameter("@Type", type));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public async Task<int> Set_Purchase_Detail_Manual_Discount(DataTable dataTable, int User_Id)
+        {
+            var Parameter = new SqlParameter("@Purchase_Detail_Manual_Discount_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Purchase_Detail_Manual_Discount_Table_Type]",
+                Value = dataTable
+            };
+
+            var user_Id = new SqlParameter("@User_Id", User_Id);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Purchase_Detail_Manual_Discount_Update @Purchase_Detail_Manual_Discount_Table_Type, @User_Id", Parameter, user_Id));
+
+            return result;
+        }
         #endregion
     }
 }
