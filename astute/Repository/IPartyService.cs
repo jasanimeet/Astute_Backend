@@ -88,9 +88,9 @@ namespace astute.Repository
         #endregion
 
         #region Customer Party File
-        Task<int> Add_Update_Customer_Party_File(Customer_Party_File party_File, int modified_By,string map_Flag);
+        Task<int> Add_Update_Customer_Party_File(Customer_Party_File party_File, int modified_By, string map_Flag);
         Task<int> Delete_Customer_Party_File(int file_Id);
-        Task<Customer_Party_File> Get_Customer_Party_File(int? file_Id, int party_Id,string map_Flag);
+        Task<Customer_Party_File> Get_Customer_Party_File(int? file_Id, int party_Id, string map_Flag);
         #endregion
 
         #region Customer Party FTP
@@ -107,7 +107,7 @@ namespace astute.Repository
 
         #region Customer Column Caption
         Task<int> Add_Update_Customer_Column_Caption(DataTable dataTable, int UserId);
-        Task<List<Customer_Column_Caption>> Get_Customer_Pricing_Column_Caption(int? user_Pricing_Id, string? map_Flag,string? upload_Method);
+        Task<List<Customer_Column_Caption>> Get_Customer_Pricing_Column_Caption(int? user_Pricing_Id, string? map_Flag, string? upload_Method);
         #endregion
         #region Party
 
@@ -121,8 +121,10 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Party_Search_Select(string common_Search, int user_Id);
         Task<IList<DropdownModel>> Get_Party_Type_Suplier();
         Task<(List<Dictionary<string, object>>, string)> Get_Notification(int? User_Id);
-        Task<int> Notification_Master_Update_Read_By(int? Notification_Id, bool? Is_Read,int? User_Id);
+        Task<int> Notification_Master_Update_Read_By(int? Notification_Id, bool? Is_Read, int? User_Id);
         Task<(List<Dictionary<string, object>>, string)> Get_Notification_Menu(int? User_Id);
+        Task<List<Dictionary<string, object>>> Get_Notification_Menu_Select(int? User_Id);
+        Task<int> Set_Notification_Menu(DataTable dataTable);
         Task<IList<Supplier_Price_List>> Get_Supplier_Price_List();
         Task<int> Update_Supplier_Price_List(DataTable supplier_Price_Lists);
         Task<List<Dictionary<string, object>>> Get_Supplier_Special_Price_Validity(int party_Id);

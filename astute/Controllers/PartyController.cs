@@ -3411,9 +3411,9 @@ namespace astute.Controllers
                         }
 
                         var result = await _supplierService.Add_Update_Stock_Number_Generation_Overseas(dataTable);
-                        
+
                         await _supplierService.Add_Update_Stock_Number_Generation_Overseas_Raplicate(ids);
-                        
+
                         if (result == -1)
                         {
                             return Conflict(new
@@ -12907,11 +12907,11 @@ namespace astute.Controllers
                                 */
                                 //if (result_det > 0)
                                 //{
-                                    return Ok(new
-                                    {
-                                        statusCode = HttpStatusCode.OK,
-                                        message = "Order completed successfully."
-                                    });
+                                return Ok(new
+                                {
+                                    statusCode = HttpStatusCode.OK,
+                                    message = "Order completed successfully."
+                                });
                                 //}
                             }
                         }
@@ -17232,7 +17232,101 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Get_ShipmentNotification", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Get_Notification_Menu", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        /*
+         * Date: 2025/04/30 By Jashmin Patel
+         * notification menu list
+         */
+        [HttpGet]
+        [Route("get_notification_menu_select")]
+        public async Task<IActionResult> Get_Notification_Menu_Select()
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                if (user_Id > 0)
+                {
+                    var result = await _partyService.Get_Notification_Menu_Select(user_Id ?? 0);
+                    if (result != null && result.Count > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = result
+                        });
+                    }
+                    return NoContent();
+                }
+
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Notification_Menu_Select", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        /*
+         * Date: 2025/04/30 By Jashmin Patel
+         * notification menu list
+         */
+        [HttpPut]
+        [Route("update_notification_menu")]
+        public async Task<IActionResult> Update_Notification_Menu(Notification_Menu_List model)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                if (user_Id > 0)
+                {
+                    IList<Notification_Menu> notification_Menu_List = JsonConvert.DeserializeObject<IList<Notification_Menu>>(model.Notification_Menu.ToString());
+
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Notification_Id", typeof(int));
+                    dataTable.Columns.Add("Notification_Title", typeof(string));
+                    dataTable.Columns.Add("Employee", typeof(string));
+
+                    foreach (var item in notification_Menu_List)
+                    {
+                        dataTable.Rows.Add(
+                            item.Notification_Id ?? 0,
+                            item.Notification_Title,
+                            item.Employee
+                        );
+                    }
+                    var result = await _partyService.Set_Notification_Menu(dataTable);
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.UpdatedSuccessfully,
+                    });
+                }
+
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Notification_Menu", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message

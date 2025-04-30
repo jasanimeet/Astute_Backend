@@ -408,7 +408,7 @@ namespace astute.Repository
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(party_Id > 0 ? new SqlParameter("@PartyId", party_Id) : new SqlParameter("@PartyId", DBNull.Value));
-                    
+
                     await connection.OpenAsync();
 
                     using var da = new SqlDataAdapter();
@@ -1226,7 +1226,7 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Notification_Master_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    
+
                     var totalRecordParameter = new SqlParameter("@iTotalRec", SqlDbType.Int);
                     totalRecordParameter.Direction = ParameterDirection.Output;
                     command.Parameters.Add(totalRecordParameter);
@@ -1314,6 +1314,52 @@ namespace astute.Repository
             return (result, totalRecordr);
 
         }
+        public async Task<List<Dictionary<string, object>>> Get_Notification_Menu_Select(int? User_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            var totalRecordr = string.Empty;
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Notification_Menu_SelectList", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandTimeout = 1800;
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public async Task<int> Set_Notification_Menu(DataTable dataTable)
+        {
+            var Parameter = new SqlParameter("@Notification_Menu_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Notification_Menu_Table_Type]",
+                Value = dataTable
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Notification_Menu_Update @Notification_Menu_Table_Type", Parameter));
+
+            return result;
+        }
         public async Task<IList<Supplier_Price_List>> Get_Supplier_Price_List()
         {
             var result = await Task.Run(() => _dbContext.Supplier_Price_List
@@ -1329,7 +1375,7 @@ namespace astute.Repository
                 TypeName = "dbo.Party_Price_Update_Table_Type",
                 Value = supplier_Price_Lists
             };
-            
+
             _dbContext.Database.SetCommandTimeout(300);
             return await _dbContext.Database.ExecuteSqlRawAsync("EXEC Party_Price_Update @Party_Price_Update_Table_Type", parameter);
         }
@@ -1440,7 +1486,7 @@ namespace astute.Repository
         }
 
         #endregion
- 
+
         #region Send Mail for Supplier Upload Stock
 
         public async Task<DataTable> Get_Supplier_Stock_Upload_Status()
@@ -1451,7 +1497,7 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Supplier_Stock_Upload_Status_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    
+
                     await connection.OpenAsync();
 
                     using var da = new SqlDataAdapter();
