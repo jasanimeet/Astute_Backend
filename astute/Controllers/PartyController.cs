@@ -3411,7 +3411,9 @@ namespace astute.Controllers
                         }
 
                         var result = await _supplierService.Add_Update_Stock_Number_Generation_Overseas(dataTable);
+                        
                         await _supplierService.Add_Update_Stock_Number_Generation_Overseas_Raplicate(ids);
+                        
                         if (result == -1)
                         {
                             return Conflict(new
