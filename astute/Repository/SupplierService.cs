@@ -5196,15 +5196,21 @@ namespace astute.Repository
         #endregion
 
         #region Purchase Detail Manual Discount
-        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Manual_Discount(string certificate_No, int type)
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Manual_Discount(DataTable dataTable, int type)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
-                using (var command = new SqlCommand("Purchase_Detail_Manual_Discount_Select", connection))
+                using (var command = new SqlCommand("[dbo].[Purchase_Detail_Manual_Discount_Select]", connection))
                 {
+                    var Parameter = new SqlParameter("@Purchase_Detail_Manual_Discount_Table_Type", SqlDbType.Structured)
+                    {
+                        TypeName = "[dbo].[Purchase_Detail_Manual_Discount_Table_Type]",
+                        Value = dataTable
+                    };
+
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(!string.IsNullOrEmpty(certificate_No) ? new SqlParameter("@Certificate_No", certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(Parameter);
                     command.Parameters.Add(new SqlParameter("@Type", type));
 
                     await connection.OpenAsync();

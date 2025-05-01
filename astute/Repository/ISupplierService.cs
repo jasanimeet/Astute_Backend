@@ -232,7 +232,7 @@ namespace astute.Repository
         #endregion
         
         #region Purchase Detail Manual Discount
-        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Manual_Discount(string certificate_No, int type);
+        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Manual_Discount(DataTable dataTable, int type);
         Task<int> Set_Purchase_Detail_Manual_Discount(DataTable dataTable, int User_Id);
         #endregion
     }

@@ -19911,24 +19911,74 @@ namespace astute.Controllers
         [HttpPost]
         [Route("purchase_detail_manual_discount")]
         [Authorize]
-        public async Task<IActionResult> Purchase_Detail_Manual_Discount(Purchase_Detail_Manual_Discount_Model model)
+        public async Task<IActionResult> Purchase_Detail_Manual_Discount([FromForm] Purchase_Detail_Manual_Discount_Model model, IFormFile manualDiscountFile)
         {
             try
             {
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                var result = await _supplierService.Get_Purchase_Detail_Manual_Discount(model.Stock_Id, 1);
-                var result_Message = await _supplierService.Get_Purchase_Detail_Manual_Discount(model.Stock_Id, 2);
-
-                return Ok(new
+                if ((user_Id ?? 0) > 0)
                 {
-                    statusCode = HttpStatusCode.OK,
-                    message = CoreCommonMessage.DataSuccessfullyFound,
-                    unavailable_message = result_Message,
-                    data = result,
-                });
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Purchase_Detail_Id", typeof(int));
+                    dataTable.Columns.Add("Manual_Discount_Detail_Id", typeof(int));
+                    dataTable.Columns.Add("Stock_Id", typeof(string));
+                    dataTable.Columns.Add("Cert_No", typeof(string));
+                    dataTable.Columns.Add("Prev_Disc", typeof(decimal));
+                    dataTable.Columns.Add("New_Disc", typeof(decimal));
 
+                    if (model.Stock_Id != null)
+                    {
+                        string[] stock_ids = model.Stock_Id.Split(",");
+
+                        foreach (var item in stock_ids)
+                        {
+                            dataTable.Rows.Add(DBNull.Value, DBNull.Value, string.IsNullOrEmpty(item) ? DBNull.Value : item, DBNull.Value, DBNull.Value, DBNull.Value);
+                        }
+                    }
+                    if (manualDiscountFile != null && manualDiscountFile.Length > 0)
+                    {
+                        var filePath = Path.GetTempFileName();
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await manualDiscountFile.CopyToAsync(stream);
+                        }
+                        using (var package = new ExcelPackage(new FileInfo(filePath)))
+                        {
+                            var worksheet = package.Workbook.Worksheets[0];
+                            int startRow = 2;
+
+                            HashSet<string> uniqueValues = new HashSet<string>();
+                            for (int row = startRow; row <= worksheet.Dimension.End.Row; row++)
+                            {
+                                string stock_id = worksheet.Cells[row, 1].GetValue<string>();
+                                string new_discount = worksheet.Cells[row, 2].GetValue<string>();
+
+                                dataTable.Rows.Add(DBNull.Value, DBNull.Value, string.IsNullOrEmpty(stock_id) ? DBNull.Value : stock_id, DBNull.Value, DBNull.Value, new_discount);
+                            }
+                        }
+                    }
+                    if (dataTable != null || dataTable.Rows.Count > 0)
+                    {
+                        var result = await _supplierService.Get_Purchase_Detail_Manual_Discount(dataTable, 1);
+                        var result_Message = await _supplierService.Get_Purchase_Detail_Manual_Discount(dataTable, 2);
+
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            unavailable_message = result_Message,
+                            data = result,
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
             }
             catch (Exception ex)
             {
@@ -19950,38 +20000,46 @@ namespace astute.Controllers
         {
             try
             {
-                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-
-                IList<Purchase_Detail_Manual_Discount> purchase_Detail_Discount_List = JsonConvert.DeserializeObject<IList<Purchase_Detail_Manual_Discount>>(purchase_Detail_Manual_Discount.Purchase_Detail_Manual_Discount.ToString());
-
-                DataTable dataTable = new DataTable();
-                dataTable.Columns.Add("Purchase_Detail_Id", typeof(int));
-                dataTable.Columns.Add("Manual_Discount_Detail_Id", typeof(int));
-                dataTable.Columns.Add("Stock_Id", typeof(string));
-                dataTable.Columns.Add("Cert_No", typeof(string));
-                dataTable.Columns.Add("Prev_Disc", typeof(decimal));
-                dataTable.Columns.Add("New_Disc", typeof(decimal));
-
-                foreach (var item in purchase_Detail_Discount_List)
+                if (ModelState.IsValid)
                 {
-                    dataTable.Rows.Add(
-                        item.Id ?? 0,
-                        item.Manual_Discount_Detail_Id ?? 0,
-                        item.Stock_Id,
-                        item.Cert_No,
-                        item.Prev_Disc,
-                        item.New_Disc
-                    );
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                    IList<Purchase_Detail_Manual_Discount> purchase_Detail_Discount_List = JsonConvert.DeserializeObject<IList<Purchase_Detail_Manual_Discount>>(purchase_Detail_Manual_Discount.Purchase_Detail_Manual_Discount.ToString());
+
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Purchase_Detail_Id", typeof(int));
+                    dataTable.Columns.Add("Manual_Discount_Detail_Id", typeof(int));
+                    dataTable.Columns.Add("Stock_Id", typeof(string));
+                    dataTable.Columns.Add("Cert_No", typeof(string));
+                    dataTable.Columns.Add("Prev_Disc", typeof(decimal));
+                    dataTable.Columns.Add("New_Disc", typeof(decimal));
+
+                    foreach (var item in purchase_Detail_Discount_List)
+                    {
+                        dataTable.Rows.Add(
+                            item.Id ?? 0,
+                            item.Manual_Discount_Detail_Id ?? 0,
+                            item.Stock_Id,
+                            item.Cert_No,
+                            item.Prev_Disc,
+                            item.New_Disc
+                        );
+                    }
+
+                    var result = await _supplierService.Set_Purchase_Detail_Manual_Discount(dataTable, user_Id ?? 0);
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.UpdatedSuccessfully,
+                        data = result,
+                    });
                 }
-
-                var result = await _supplierService.Set_Purchase_Detail_Manual_Discount(dataTable, user_Id ?? 0);
-
-                return Ok(new
+                return BadRequest(new
                 {
-                    statusCode = HttpStatusCode.OK,
-                    message = CoreCommonMessage.UpdatedSuccessfully,
-                    data = result,
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
                 });
             }
             catch (Exception ex)
