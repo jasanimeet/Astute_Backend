@@ -7387,7 +7387,7 @@ namespace astute.CoreServices
             {
                 using (ExcelPackage ep = new ExcelPackage())
                 {
-                    int Row_Count = column_dt.Rows.Count;
+                    int Row_Count = column_dt.Rows.Count - 1;
                     int inStartIndex = 3;
                     int inwrkrow = 3;
                     int inEndCounter = dtStock.Rows.Count + inStartIndex;
@@ -7444,7 +7444,7 @@ namespace astute.CoreServices
                         }
                         else
                         {
-                            if (Column_Name == "EXPECTED PROFIT AMT")
+                            if (Column_Name == "EXPECTED PROFIT AMT" || Column_Name == "CERTIFICATE LINK")
                             {
                                 //k += 1;
                             }
@@ -7716,7 +7716,10 @@ namespace astute.CoreServices
                                 }
                                 else
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
+                                    if (Column_Name != "CERTIFICATE LINK")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
+                                    }
                                 }
 
                             }
@@ -8237,7 +8240,7 @@ namespace astute.CoreServices
             {
                 using (ExcelPackage ep = new ExcelPackage())
                 {
-                    int Row_Count = column_dt.Rows.Count;
+                    int Row_Count = column_dt.Rows.Count - 1;
                     int inStartIndex = 3;
                     int inwrkrow = 3;
                     int inEndCounter = dtStock.Rows.Count + inStartIndex;
@@ -8293,7 +8296,7 @@ namespace astute.CoreServices
                         }
                         else
                         {
-                            if (Column_Name == "EXPECTED PROFIT AMT")
+                            if (Column_Name == "EXPECTED PROFIT AMT" || Column_Name == "CERTIFICATE LINK")
                             {
                                 //k += 1;
                             }
@@ -8545,7 +8548,10 @@ namespace astute.CoreServices
                                 }
                                 else
                                 {
-                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
+                                    if (Column_Name != "CERTIFICATE LINK")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
+                                    }
                                 }
                             }
                         }
