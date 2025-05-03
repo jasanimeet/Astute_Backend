@@ -17483,6 +17483,34 @@ namespace astute.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("job_transfer_auto_party_url_format")]
+        [Authorize]
+        public async Task<IActionResult> Job_Transfer_Auto_Party_Url_Format()
+        {
+            try
+            {
+                var result = await _labUserService.Job_Transfer_Auto_Party_Url_Format();
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataTransfer
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Job_Transfer_Auto_Party_Url_Format", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Create Update Manual Upload Falguni

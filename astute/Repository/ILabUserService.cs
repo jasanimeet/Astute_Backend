@@ -19,5 +19,6 @@ namespace astute.Repository
         Task<int> Job_Transfer_Auto_Supplier_Stock();
         Task<int> Job_Transfer_Auto_Category_Value();
         Task<int> Job_Transfer_Auto_Stock_Pricing(string? Upload_From);
+        Task<int> Job_Transfer_Auto_Party_Url_Format();
     }
 }
