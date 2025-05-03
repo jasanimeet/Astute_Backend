@@ -13849,8 +13849,13 @@ namespace astute.Controllers
 
                     foreach (string columnName in columnNames)
                     {
+                        if (columnName != "CERTIFICATE LINK")
+                        {
                         columnNamesTable.Rows.Add(columnName);
                     }
+                    }
+                    columnNamesTable.Rows.Add("CERTIFICATE LINK");
+
                     var excelPath = string.Empty;
                     var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/DownloadStockExcelFiles/");
                     if (!(Directory.Exists(filePath)))
