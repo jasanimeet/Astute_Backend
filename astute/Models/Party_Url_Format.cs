@@ -17,8 +17,17 @@ namespace astute.Models
         public int? Is_Img_Cert { get; set; }
         public int? Is_Video_Cert { get; set; }
         public int? Is_Cert_Cert { get; set; }
-        public bool? No_Image { get; set; }
-        public bool? No_Video { get; set; }
-        public bool? No_Cert { get; set; }
+        public string? Image_Caption { get; set; }
+        public string? Video_Caption { get; set; }
+        public string? Cert_Caption { get; set; }
+        public string? Image_Link_1 { get; set; }
+        public string? Video_Link_1 { get; set; }
+        public string? Cert_Link_1 { get; set; }
+        public string? Similar_Image_Link_1 { get; set; }
+        public string? Similar_Image_Link_2 { get; set; }
+        public string? Similar_Video_Link_1 { get; set; }
+        public string? Similar_Video_Link_2 { get; set; }
+        public string? Similar_Cert_Link_1 { get; set; }
+        public string? Similar_Cert_Link_2 { get; set; }
     }
 }

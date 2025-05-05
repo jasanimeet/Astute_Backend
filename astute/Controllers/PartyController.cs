@@ -13851,8 +13851,8 @@ namespace astute.Controllers
                     {
                         if (columnName != "CERTIFICATE LINK")
                         {
-                        columnNamesTable.Rows.Add(columnName);
-                    }
+                            columnNamesTable.Rows.Add(columnName);
+                        }
                     }
                     columnNamesTable.Rows.Add("CERTIFICATE LINK");
 
@@ -18560,9 +18560,18 @@ namespace astute.Controllers
                         dataTable.Columns.Add("Is_Video_Cert", typeof(int));
                         dataTable.Columns.Add("Is_Cert_Cert", typeof(int));
                         dataTable.Columns.Add("Is_Video_Iframe", typeof(bool));
-                        dataTable.Columns.Add("No_Image", typeof(bool));
-                        dataTable.Columns.Add("No_Video", typeof(bool));
-                        dataTable.Columns.Add("No_Cert", typeof(bool));
+                        dataTable.Columns.Add("Image_Caption", typeof(string));
+                        dataTable.Columns.Add("Video_Caption", typeof(string));
+                        dataTable.Columns.Add("Cert_Caption", typeof(string));
+                        dataTable.Columns.Add("Image_Link_1", typeof(string));
+                        dataTable.Columns.Add("Video_Link_1", typeof(string));
+                        dataTable.Columns.Add("Cert_Link_1", typeof(string));
+                        dataTable.Columns.Add("Similar_Image_Link_1", typeof(string));
+                        dataTable.Columns.Add("Similar_Image_Link_2", typeof(string));
+                        dataTable.Columns.Add("Similar_Video_Link_1", typeof(string));
+                        dataTable.Columns.Add("Similar_Video_Link_2", typeof(string));
+                        dataTable.Columns.Add("Similar_Cert_Link_1", typeof(string));
+                        dataTable.Columns.Add("Similar_Cert_Link_2", typeof(string));
 
                         dataTable.Rows.Add(
                             party_Url_Format.Id,
@@ -18576,9 +18585,18 @@ namespace astute.Controllers
                             party_Url_Format.Is_Video_Cert,
                             party_Url_Format.Is_Cert_Cert,
                             party_Url_Format.Is_Video_Iframe,
-                            party_Url_Format.No_Image,
-                            party_Url_Format.No_Video,
-                            party_Url_Format.No_Cert
+                            party_Url_Format.Image_Caption,
+                            party_Url_Format.Video_Caption,
+                            party_Url_Format.Cert_Caption,
+                            party_Url_Format.Image_Link_1,
+                            party_Url_Format.Video_Link_1,
+                            party_Url_Format.Cert_Link_1,
+                            party_Url_Format.Similar_Image_Link_1,
+                            party_Url_Format.Similar_Image_Link_2,
+                            party_Url_Format.Similar_Video_Link_1,
+                            party_Url_Format.Similar_Video_Link_2,
+                            party_Url_Format.Similar_Cert_Link_1,
+                            party_Url_Format.Similar_Cert_Link_2
                             );
 
                         var result = await _supplierService.Create_Update_Party_Url_Format(dataTable);
