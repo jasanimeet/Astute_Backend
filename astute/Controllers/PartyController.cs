@@ -48,6 +48,7 @@ namespace astute.Controllers
         private readonly ILab_User_Login_Activity_Services _lab_User_Login_Activity_Services;
         private readonly IOracleService _oracleService;
         private readonly ICategoryService _categoryService;
+        private readonly ICompanyService _companyService;
 
         #endregion
 
@@ -64,7 +65,8 @@ namespace astute.Controllers
             ILabUserService labUserService,
             ILab_User_Login_Activity_Services lab_User_Login_Activity_Services,
             IOracleService oracleService,
-            ICategoryService categoryService)
+            ICategoryService categoryService,
+            ICompanyService companyService)
         {
             _partyService = partyService;
             _configuration = configuration;
@@ -79,6 +81,7 @@ namespace astute.Controllers
             _lab_User_Login_Activity_Services = lab_User_Login_Activity_Services;
             _oracleService = oracleService;
             _categoryService = categoryService;
+            _companyService = companyService;
         }
         #endregion
 
@@ -20141,11 +20144,17 @@ namespace astute.Controllers
                             if (quotation_Id > 0)
                             {
                                 var quotation_data = await _supplierService.Get_Quotation_Master(quotation_Id, user_Id ?? 0, model.Is_Summary);
+                                var company_data = await _companyService.Get_Company_Details_By_Id(model.Company_Id ?? 0);
+                                var party_data = await _partyService.Get_Quotation_BillParty_Detail(model.Bill_To_Id ?? 0);
+                                var term_data = await _supplierService.Get_Quotation_Other_Detail(model.Trans_Date);
                                 return Ok(new
                                 {
                                     statusCode = HttpStatusCode.OK,
                                     message = CoreCommonMessage.DataSuccessfullyFound,
                                     data = quotation_data,
+                                    company_detail = company_data,
+                                    party_detail = party_data,
+                                    term_detail = term_data,
                                 });
                             }
                         }

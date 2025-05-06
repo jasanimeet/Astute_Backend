@@ -230,7 +230,7 @@ namespace astute.Repository
         Task<(string, int)> Create_Update_Connect_GIA_Report_Layout_Save(Report_Layout_Save report_Layout_Save);
         Task<int> Insert_Update_Connect_GIA_Report_Layout_Save_Detail(DataTable dataTable);
         #endregion
-        
+
         #region Purchase Detail Manual Discount
         Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Manual_Discount(DataTable dataTable, int type);
         Task<int> Set_Purchase_Detail_Manual_Discount(DataTable dataTable, int User_Id);
@@ -239,6 +239,7 @@ namespace astute.Repository
         #region Quotation Master
         Task<List<Dictionary<string, object>>> Get_Quotation_Master(int Quotation_Id, int User_Id, bool isSummary = false);
         Task<int> Set_Quotation_Master(DataTable dataTable, Quotation_Master model, int User_Id);
+        Task<List<Dictionary<string, object>>> Get_Quotation_Other_Detail(string Trans_Date);
         #endregion
     }
 }

@@ -153,5 +153,9 @@ namespace astute.Repository
         Task<List<Report_Layout_Save_Detail>> Get_Connect_GIA_Result_Column_Caption(int? user_Pricing_Id);
 
         #endregion
+
+        #region Quotation Print Detail
+        Task<List<Dictionary<string, object>>> Get_Quotation_BillParty_Detail(int party_Id);
+        #endregion
     }
 }

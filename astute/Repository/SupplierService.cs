@@ -5334,69 +5334,40 @@ namespace astute.Repository
                         _labEntryData, _inserted_Id));
 
             return (int)_inserted_Id.Value;
-            //if (_insertedId > 0)
-            //{
-            //    return ("success", _insertedId);
-            //}
-            //return ("error", 0);
-            //return quotation_Id;
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Quotation_Other_Detail(string Trans_Date)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("[dbo].[Quotation_Other_Detail]", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    
+                    command.Parameters.Add(!string.IsNullOrEmpty(Trans_Date) ? new SqlParameter("@Trans_Date", Trans_Date) : new SqlParameter("@Trans_Date", DBNull.Value));
+                    
+                    await connection.OpenAsync();
 
-            //var result = new List<Dictionary<string, object>>();
-            //using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
-            //{
-            //    using (var command = new SqlCommand("[dbo].[Quotation_Master_Insert_Update]", connection))
-            //    {
-            //        var Parameter = new SqlParameter("@LabEntryData", SqlDbType.Structured)
-            //        {
-            //            TypeName = "[dbo].[Quotation_Master_Table_Type]",
-            //            Value = dataTable
-            //        };
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
 
-            //        DateTime transDate;
-            //        if (!DateTime.TryParseExact(model.Trans_Date, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out transDate))
-            //        {
-            //            transDate = DateTime.Now.Date;
-            //        }
-            //        var _trance_Date = new SqlParameter("@Trans_Date", SqlDbType.Date)
-            //        {
-            //            Value = transDate
-            //        };
-            //        command.CommandType = CommandType.StoredProcedure;
-            //        command.Parameters.Add(Parameter);
-            //        command.Parameters.Add(!string.IsNullOrEmpty(model.Trans_Date) ? _trance_Date : new SqlParameter("@Trans_Date", DBNull.Value));
-            //        command.Parameters.Add(model.Bill_To_Id > 0 ? new SqlParameter("@Bill_To_Id", model.Bill_To_Id) : new SqlParameter("@Bill_To_Id", DBNull.Value));
-            //        command.Parameters.Add(model.Ship_To_Id > 0 ? new SqlParameter("@Ship_To_Id", model.Ship_To_Id) : new SqlParameter("@Ship_To_Id", DBNull.Value));
-            //        command.Parameters.Add(model.Terms_Id > 0 ? new SqlParameter("@Terms_Id", model.Terms_Id) : new SqlParameter("@Terms_Id", DBNull.Value));
-            //        command.Parameters.Add(model.Currency_Id > 0 ? new SqlParameter("@Currency_Id", model.Currency_Id) : new SqlParameter("@Currency_Id", DBNull.Value));
-            //        command.Parameters.Add(model.Ex_Rate > 0 ? new SqlParameter("@Ex_Rate", model.Ex_Rate) : new SqlParameter("@Ex_Rate", DBNull.Value));
-            //        command.Parameters.Add(model.First_Voucher_No > 0 ? new SqlParameter("@First_Voucher_No", model.First_Voucher_No) : new SqlParameter("@First_Voucher_No", DBNull.Value));
-            //        command.Parameters.Add(model.Year_Id > 0 ? new SqlParameter("@Year_Id", model.Year_Id) : new SqlParameter("@Year_Id", DBNull.Value));
-            //        command.Parameters.Add(User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value));
-            //        command.Parameters.Add(new SqlParameter("@Is_Replace", model.Is_Replace));
-            //        command.Parameters.Add(new SqlParameter("@Is_Summary", model.Is_Summary));
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
 
-            //        await connection.OpenAsync();
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
 
-            //        using (var reader = await command.ExecuteReaderAsync())
-            //        {
-            //            while (await reader.ReadAsync())
-            //            {
-            //                var dict = new Dictionary<string, object>();
-
-            //                for (int i = 0; i < reader.FieldCount; i++)
-            //                {
-            //                    var columnName = reader.GetName(i);
-            //                    var columnValue = reader.GetValue(i);
-
-            //                    dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
-            //                }
-
-            //                result.Add(dict);
-            //            }
-            //        }
-            //    }
-            //}
-            //return result;
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
         }
         #endregion
     }
