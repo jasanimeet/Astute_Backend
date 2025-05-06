@@ -20104,5 +20104,74 @@ namespace astute.Controllers
         }
 
         #endregion
+
+        #region Quotation Master From Lab Detail
+        /*
+         * Date: 2025/05/05 By Jashmin Patel
+         * quotation master...
+         */
+        [HttpPost]
+        [Route("quotation_master_insert_update")]
+        [Authorize]
+        public async Task<IActionResult> Quotation_Master_Insert_Update(Quotation_Master model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                    if ((user_Id ?? 0) > 0)
+                    {
+                        IList<Quotation_Master_Lab_Entry_Detail> lab_Entry_Detail_List = JsonConvert.DeserializeObject<IList<Quotation_Master_Lab_Entry_Detail>>(model.Quotation_Master_Lab_Entry_Detail.ToString());
+
+                        DataTable dataTable = new DataTable();
+                        dataTable.Columns.Add("Trans_Id", typeof(int));
+                        dataTable.Columns.Add("Order_No", typeof(string));
+                        dataTable.Columns.Add("Stock_Id", typeof(string));
+                        foreach (var item in lab_Entry_Detail_List)
+                        {
+                            dataTable.Rows.Add(item.Trans_Id ?? 0, item.Order_No?.ToString(), item.Stock_Id?.ToString());
+                        }
+
+                        if (dataTable != null || dataTable.Rows.Count > 0)
+                        {
+                            var quotation_Id = await _supplierService.Set_Quotation_Master(dataTable, model, user_Id ?? 0);
+                            if (quotation_Id > 0)
+                            {
+                                var quotation_data = await _supplierService.Get_Quotation_Master(quotation_Id, user_Id ?? 0, model.Is_Summary);
+                                return Ok(new
+                                {
+                                    statusCode = HttpStatusCode.OK,
+                                    message = CoreCommonMessage.DataSuccessfullyFound,
+                                    data = quotation_data,
+                                });
+                            }
+                        }
+                        return NoContent();
+                    }
+                    return StatusCode((int)HttpStatusCode.Unauthorized, new
+                    {
+                        message = "Unauthorized Access",
+                        statusCode = (int)HttpStatusCode.Unauthorized
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Quotation_Master_Insert_Update", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
     }
 }

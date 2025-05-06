@@ -235,5 +235,10 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Manual_Discount(DataTable dataTable, int type);
         Task<int> Set_Purchase_Detail_Manual_Discount(DataTable dataTable, int User_Id);
         #endregion
+
+        #region Quotation Master
+        Task<List<Dictionary<string, object>>> Get_Quotation_Master(int Quotation_Id, int User_Id, bool isSummary = false);
+        Task<int> Set_Quotation_Master(DataTable dataTable, Quotation_Master model, int User_Id);
+        #endregion
     }
 }

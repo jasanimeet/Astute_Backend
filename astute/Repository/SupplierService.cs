@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -5250,6 +5251,152 @@ namespace astute.Repository
                    .ExecuteSqlRawAsync(@"EXEC Purchase_Detail_Manual_Discount_Update @Purchase_Detail_Manual_Discount_Table_Type, @User_Id", Parameter, user_Id));
 
             return result;
+        }
+        #endregion
+
+        #region Quotation Master
+        public async Task<List<Dictionary<string, object>>> Get_Quotation_Master(int Quotation_Id, int User_Id, bool isSummary = false)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("[dbo].[Quotation_Master_Select]", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(Quotation_Id > 0 ? new SqlParameter("@Quotation_Id", Quotation_Id) : new SqlParameter("@Quotation_Id", DBNull.Value));
+                    command.Parameters.Add(new SqlParameter("@Is_Summary", isSummary));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public async Task<int> Set_Quotation_Master(DataTable dataTable, Quotation_Master model, int User_Id)
+        {
+            var _labEntryData = new SqlParameter("@LabEntryData", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Quotation_Master_Table_Type]",
+                Value = dataTable
+            };
+
+            var user_Id = new SqlParameter("@User_Id", User_Id);
+
+            DateTime transDate;
+            if (!DateTime.TryParseExact(model.Trans_Date, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out transDate))
+            {
+                transDate = DateTime.Now.Date;
+            }
+            var _trance_Date = new SqlParameter("@Trans_Date", SqlDbType.Date)
+            {
+                Value = transDate
+            };
+            var _trance_date_param = (!string.IsNullOrEmpty(model.Trans_Date) ? _trance_Date : new SqlParameter("@Trans_Date", DBNull.Value));
+            var _bill_to_id = (model.Bill_To_Id > 0 ? new SqlParameter("@Bill_To_Id", model.Bill_To_Id) : new SqlParameter("@Bill_To_Id", DBNull.Value));
+            var _ship_to_id = (model.Ship_To_Id > 0 ? new SqlParameter("@Ship_To_Id", model.Ship_To_Id) : new SqlParameter("@Ship_To_Id", DBNull.Value));
+            var _terms_Id = (model.Terms_Id > 0 ? new SqlParameter("@Terms_Id", model.Terms_Id) : new SqlParameter("@Terms_Id", DBNull.Value));
+            var _currency_Id = (model.Currency_Id > 0 ? new SqlParameter("@Currency_Id", model.Currency_Id) : new SqlParameter("@Currency_Id", DBNull.Value));
+            var _ex_Rate = (model.Ex_Rate > 0 ? new SqlParameter("@Ex_Rate", model.Ex_Rate) : new SqlParameter("@Ex_Rate", DBNull.Value));
+            var _year_Id = (model.Year_Id > 0 ? new SqlParameter("@Year_Id", model.Year_Id) : new SqlParameter("@Year_Id", DBNull.Value));
+            var _user_Id = (User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value));
+            var _company_Id = (model.Company_Id > 0 ? new SqlParameter("@Company_Id", model.Company_Id) : new SqlParameter("@Company_Id", DBNull.Value));
+            var _inserted_Id = new SqlParameter("@Inserted_Id", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"
+                        EXEC [dbo].[Quotation_Master_Insert_Update]
+                        @Trans_Date, @Bill_To_Id, @Ship_To_Id, @Terms_Id, @Currency_Id, @Ex_Rate,
+                        @Year_Id, @User_Id, @Company_Id,
+                        @LabEntryData, @Inserted_Id OUT",
+                        _trance_Date, _bill_to_id, _ship_to_id, _terms_Id, _currency_Id, _ex_Rate,
+                        _year_Id, _user_Id, _company_Id,
+                        _labEntryData, _inserted_Id));
+
+            return (int)_inserted_Id.Value;
+            //if (_insertedId > 0)
+            //{
+            //    return ("success", _insertedId);
+            //}
+            //return ("error", 0);
+            //return quotation_Id;
+
+            //var result = new List<Dictionary<string, object>>();
+            //using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            //{
+            //    using (var command = new SqlCommand("[dbo].[Quotation_Master_Insert_Update]", connection))
+            //    {
+            //        var Parameter = new SqlParameter("@LabEntryData", SqlDbType.Structured)
+            //        {
+            //            TypeName = "[dbo].[Quotation_Master_Table_Type]",
+            //            Value = dataTable
+            //        };
+
+            //        DateTime transDate;
+            //        if (!DateTime.TryParseExact(model.Trans_Date, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out transDate))
+            //        {
+            //            transDate = DateTime.Now.Date;
+            //        }
+            //        var _trance_Date = new SqlParameter("@Trans_Date", SqlDbType.Date)
+            //        {
+            //            Value = transDate
+            //        };
+            //        command.CommandType = CommandType.StoredProcedure;
+            //        command.Parameters.Add(Parameter);
+            //        command.Parameters.Add(!string.IsNullOrEmpty(model.Trans_Date) ? _trance_Date : new SqlParameter("@Trans_Date", DBNull.Value));
+            //        command.Parameters.Add(model.Bill_To_Id > 0 ? new SqlParameter("@Bill_To_Id", model.Bill_To_Id) : new SqlParameter("@Bill_To_Id", DBNull.Value));
+            //        command.Parameters.Add(model.Ship_To_Id > 0 ? new SqlParameter("@Ship_To_Id", model.Ship_To_Id) : new SqlParameter("@Ship_To_Id", DBNull.Value));
+            //        command.Parameters.Add(model.Terms_Id > 0 ? new SqlParameter("@Terms_Id", model.Terms_Id) : new SqlParameter("@Terms_Id", DBNull.Value));
+            //        command.Parameters.Add(model.Currency_Id > 0 ? new SqlParameter("@Currency_Id", model.Currency_Id) : new SqlParameter("@Currency_Id", DBNull.Value));
+            //        command.Parameters.Add(model.Ex_Rate > 0 ? new SqlParameter("@Ex_Rate", model.Ex_Rate) : new SqlParameter("@Ex_Rate", DBNull.Value));
+            //        command.Parameters.Add(model.First_Voucher_No > 0 ? new SqlParameter("@First_Voucher_No", model.First_Voucher_No) : new SqlParameter("@First_Voucher_No", DBNull.Value));
+            //        command.Parameters.Add(model.Year_Id > 0 ? new SqlParameter("@Year_Id", model.Year_Id) : new SqlParameter("@Year_Id", DBNull.Value));
+            //        command.Parameters.Add(User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value));
+            //        command.Parameters.Add(new SqlParameter("@Is_Replace", model.Is_Replace));
+            //        command.Parameters.Add(new SqlParameter("@Is_Summary", model.Is_Summary));
+
+            //        await connection.OpenAsync();
+
+            //        using (var reader = await command.ExecuteReaderAsync())
+            //        {
+            //            while (await reader.ReadAsync())
+            //            {
+            //                var dict = new Dictionary<string, object>();
+
+            //                for (int i = 0; i < reader.FieldCount; i++)
+            //                {
+            //                    var columnName = reader.GetName(i);
+            //                    var columnValue = reader.GetValue(i);
+
+            //                    dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+            //                }
+
+            //                result.Add(dict);
+            //            }
+            //        }
+            //    }
+            //}
+            //return result;
         }
         #endregion
     }
