@@ -20143,18 +20143,34 @@ namespace astute.Controllers
                             var quotation_Id = await _supplierService.Set_Quotation_Master(dataTable, model, user_Id ?? 0);
                             if (quotation_Id > 0)
                             {
-                                var quotation_data = await _supplierService.Get_Quotation_Master(quotation_Id, user_Id ?? 0, model.Is_Summary);
+                                var quotation_master_data = await _supplierService.Get_Quotation_Master(quotation_Id);
+                                var quotation_detail_data = await _supplierService.Get_Quotation_Detail(quotation_Id, model.Is_Summary);
                                 var company_data = await _companyService.Get_Company_Details_By_Id(model.Company_Id ?? 0);
                                 var party_data = await _partyService.Get_Quotation_BillParty_Detail(model.Bill_To_Id ?? 0);
                                 var term_data = await _supplierService.Get_Quotation_Other_Detail(model.Trans_Date);
+
+                                var data = new
+                                {
+                                    Quotation_Master = quotation_master_data,
+                                    Quotation_Detail = quotation_detail_data,
+                                };
+                                var report_icons_data = new
+                                {
+                                    SHAIRU_Group_LOGO = _configuration["BaseUrl"] + CoreCommonFilePath.RepostIconFilePath + "SHAIRU_Group_LOGO.png",
+                                    sightholder = _configuration["BaseUrl"] + CoreCommonFilePath.RepostIconFilePath + "sightholder.png",
+                                    chop = _configuration["BaseUrl"] + CoreCommonFilePath.RepostIconFilePath + "chop.png",
+                                    sign = _configuration["BaseUrl"] + CoreCommonFilePath.RepostIconFilePath + "sign.png",
+                                };
+
                                 return Ok(new
                                 {
                                     statusCode = HttpStatusCode.OK,
                                     message = CoreCommonMessage.DataSuccessfullyFound,
-                                    data = quotation_data,
+                                    data = data,
                                     company_detail = company_data,
                                     party_detail = party_data,
                                     term_detail = term_data,
+                                    report_icons = report_icons_data,
                                 });
                             }
                         }
@@ -20170,6 +20186,45 @@ namespace astute.Controllers
                 {
                     statusCode = HttpStatusCode.BadRequest,
                     message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Quotation_Master_Insert_Update", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("quotation_master_remark_list")]
+        [Authorize]
+        public async Task<IActionResult> Quotation_Master_Remark_List()
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if ((user_Id ?? 0) > 0)
+                {
+                    var result = await _supplierService.Get_Quotation_Remarks_List();
+                    if (result != null && result.Count > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = result,
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
                 });
             }
             catch (Exception ex)

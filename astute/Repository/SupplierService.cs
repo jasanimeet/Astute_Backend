@@ -5255,12 +5255,46 @@ namespace astute.Repository
         #endregion
 
         #region Quotation Master
-        public async Task<List<Dictionary<string, object>>> Get_Quotation_Master(int Quotation_Id, int User_Id, bool isSummary = false)
+        public async Task<Dictionary<string, object>> Get_Quotation_Master(int Quotation_Id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
                 using (var command = new SqlCommand("[dbo].[Quotation_Master_Select]", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(Quotation_Id > 0 ? new SqlParameter("@Quotation_Id", Quotation_Id) : new SqlParameter("@Quotation_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result.FirstOrDefault();
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Quotation_Detail(int Quotation_Id, bool isSummary = false)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("[dbo].[Quotation_Detail_Select]", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
@@ -5315,6 +5349,7 @@ namespace astute.Repository
             var _terms_Id = (model.Terms_Id > 0 ? new SqlParameter("@Terms_Id", model.Terms_Id) : new SqlParameter("@Terms_Id", DBNull.Value));
             var _currency_Id = (model.Currency_Id > 0 ? new SqlParameter("@Currency_Id", model.Currency_Id) : new SqlParameter("@Currency_Id", DBNull.Value));
             var _ex_Rate = (model.Ex_Rate > 0 ? new SqlParameter("@Ex_Rate", model.Ex_Rate) : new SqlParameter("@Ex_Rate", DBNull.Value));
+            var _remark= (!string.IsNullOrEmpty(model.Remark) ? new SqlParameter("@Remark", model.Remark) : new SqlParameter("@Remark", DBNull.Value));
             var _year_Id = (model.Year_Id > 0 ? new SqlParameter("@Year_Id", model.Year_Id) : new SqlParameter("@Year_Id", DBNull.Value));
             var _user_Id = (User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value));
             var _company_Id = (model.Company_Id > 0 ? new SqlParameter("@Company_Id", model.Company_Id) : new SqlParameter("@Company_Id", DBNull.Value));
@@ -5326,10 +5361,10 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                    .ExecuteSqlRawAsync(@"
                         EXEC [dbo].[Quotation_Master_Insert_Update]
-                        @Trans_Date, @Bill_To_Id, @Ship_To_Id, @Terms_Id, @Currency_Id, @Ex_Rate,
+                        @Trans_Date, @Bill_To_Id, @Ship_To_Id, @Terms_Id, @Currency_Id, @Ex_Rate, @Remark,
                         @Year_Id, @User_Id, @Company_Id,
                         @LabEntryData, @Inserted_Id OUT",
-                        _trance_Date, _bill_to_id, _ship_to_id, _terms_Id, _currency_Id, _ex_Rate,
+                        _trance_Date, _bill_to_id, _ship_to_id, _terms_Id, _currency_Id, _ex_Rate, _remark,
                         _year_Id, _user_Id, _company_Id,
                         _labEntryData, _inserted_Id));
 
@@ -5367,6 +5402,12 @@ namespace astute.Repository
                     }
                 }
             }
+            return result;
+        }
+        public async Task<IList<DropdownModel>> Get_Quotation_Remarks_List()
+        {
+            var result = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"EXEC [dbo].[Quotation_Master_Remark_List]").ToListAsync());
             return result;
         }
         #endregion

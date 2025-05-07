@@ -237,9 +237,11 @@ namespace astute.Repository
         #endregion
 
         #region Quotation Master
-        Task<List<Dictionary<string, object>>> Get_Quotation_Master(int Quotation_Id, int User_Id, bool isSummary = false);
+        Task<Dictionary<string, object>> Get_Quotation_Master(int Quotation_Id);
+        Task<List<Dictionary<string, object>>> Get_Quotation_Detail(int Quotation_Id, bool isSummary = false);
         Task<int> Set_Quotation_Master(DataTable dataTable, Quotation_Master model, int User_Id);
         Task<List<Dictionary<string, object>>> Get_Quotation_Other_Detail(string Trans_Date);
+        Task<IList<DropdownModel>> Get_Quotation_Remarks_List();
         #endregion
     }
 }

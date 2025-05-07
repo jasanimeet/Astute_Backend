@@ -20,5 +20,6 @@
         public static string DownloadShipmentVerificationExcelFiles = "/Files/DownloadShipmentVerificationExcelFiles/";
         public static string SupplierStockUploadStatusExcelFiles = "/Files/SupplierStockUploadStatusExcelFiles/";
         public static string LabEntryNotUploadedOverseasExcelFiles = "/Files/LabEntryNotUploadedOverseasExcelFiles/";
+        public static string RepostIconFilePath = "/Files/ReportIcon/";
     }
 }
