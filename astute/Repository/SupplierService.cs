@@ -5349,7 +5349,8 @@ namespace astute.Repository
             var _terms_Id = (model.Terms_Id > 0 ? new SqlParameter("@Terms_Id", model.Terms_Id) : new SqlParameter("@Terms_Id", DBNull.Value));
             var _currency_Id = (model.Currency_Id > 0 ? new SqlParameter("@Currency_Id", model.Currency_Id) : new SqlParameter("@Currency_Id", DBNull.Value));
             var _ex_Rate = (model.Ex_Rate > 0 ? new SqlParameter("@Ex_Rate", model.Ex_Rate) : new SqlParameter("@Ex_Rate", DBNull.Value));
-            var _remark= (!string.IsNullOrEmpty(model.Remark) ? new SqlParameter("@Remark", model.Remark) : new SqlParameter("@Remark", DBNull.Value));
+            var _bank_Id = (model.Bank_Id > 0 ? new SqlParameter("@Bank_Id", model.Bank_Id) : new SqlParameter("@Bank_Id", DBNull.Value));
+            var _remark = (!string.IsNullOrEmpty(model.Remark) ? new SqlParameter("@Remark", model.Remark) : new SqlParameter("@Remark", DBNull.Value));
             var _year_Id = (model.Year_Id > 0 ? new SqlParameter("@Year_Id", model.Year_Id) : new SqlParameter("@Year_Id", DBNull.Value));
             var _user_Id = (User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value));
             var _company_Id = (model.Company_Id > 0 ? new SqlParameter("@Company_Id", model.Company_Id) : new SqlParameter("@Company_Id", DBNull.Value));
@@ -5361,10 +5362,10 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                    .ExecuteSqlRawAsync(@"
                         EXEC [dbo].[Quotation_Master_Insert_Update]
-                        @Trans_Date, @Bill_To_Id, @Ship_To_Id, @Terms_Id, @Currency_Id, @Ex_Rate, @Remark,
+                        @Trans_Date, @Bill_To_Id, @Ship_To_Id, @Terms_Id, @Currency_Id, @Ex_Rate, @Bank_Id, @Remark,
                         @Year_Id, @User_Id, @Company_Id,
                         @LabEntryData, @Inserted_Id OUT",
-                        _trance_Date, _bill_to_id, _ship_to_id, _terms_Id, _currency_Id, _ex_Rate, _remark,
+                        _trance_Date, _bill_to_id, _ship_to_id, _terms_Id, _currency_Id, _ex_Rate, _bank_Id, _remark,
                         _year_Id, _user_Id, _company_Id,
                         _labEntryData, _inserted_Id));
 
@@ -5378,9 +5379,9 @@ namespace astute.Repository
                 using (var command = new SqlCommand("[dbo].[Quotation_Other_Detail]", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    
+
                     command.Parameters.Add(!string.IsNullOrEmpty(Trans_Date) ? new SqlParameter("@Trans_Date", Trans_Date) : new SqlParameter("@Trans_Date", DBNull.Value));
-                    
+
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -5410,6 +5411,64 @@ namespace astute.Repository
                             .FromSqlRaw(@"EXEC [dbo].[Quotation_Master_Remark_List]").ToListAsync());
             return result;
         }
+        public async Task<(IList<DropdownModel>, int)> Get_Quotation_Company_Bank_List(int Company_Id, int Currency_Id)
+        {
+            var _company_Id = Company_Id > 0 ? new SqlParameter("@Company_Id", Company_Id) : new SqlParameter("@Company_Id", DBNull.Value);
+            var _currency_Id = Currency_Id > 0 ? new SqlParameter("@Currency_Id", Currency_Id) : new SqlParameter("@Currency_Id", DBNull.Value);
+            var _selected_Id = new SqlParameter("@Selected_Id", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            var result = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"EXEC [dbo].[Quotation_Company_Bank_List] @Company_Id, @Currency_Id, @Selected_Id OUT", _company_Id, _currency_Id, _selected_Id).ToListAsync());
+
+            int selectedId = (int)_selected_Id.Value;
+            return (result, selectedId);
+        }
+        #endregion
+
+        #region Grade Master
+        public async Task<(IList<Dictionary<string, object>>, int)> Get_Grade_Master_Select(int Grade_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            int totalRecord = 0;
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("[dbo].[Grade_Master_Select]", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(Grade_Id > 0 ? new SqlParameter("@Grade_Id", Grade_Id) : new SqlParameter("@Grade_Id", DBNull.Value));
+
+                    var totalRecordParameter = new SqlParameter("@iTotalRec", SqlDbType.Int);
+                    totalRecordParameter.Direction = ParameterDirection.Output;
+                    command.Parameters.Add(totalRecordParameter);
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                    totalRecord = Convert.ToInt32(totalRecordParameter.Value);
+                }
+            }
+            return (result, totalRecord);
+        }
+
         #endregion
     }
 }

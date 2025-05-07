@@ -25,6 +25,7 @@ namespace astute.Models
         public int? Terms_Id { get; set; }
         public int? Currency_Id { get; set; }
         public float? Ex_Rate { get; set; }
+        public int? Bank_Id { get; set; }
         public string? Remark { get; set; }
         public int? Year_Id { get; set; }
         public int? Company_Id { get; set; }
