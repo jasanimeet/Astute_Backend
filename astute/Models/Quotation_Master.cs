@@ -16,6 +16,14 @@ namespace astute.Models
         [JsonProperty("Stock_Id")]
         public string? Stock_Id { get; set; }
     }
+    public class Quotation_Expense_Detail
+    {
+        [JsonProperty("Expense_Id")]
+        public int? Expense_Id { get; set; }
+
+        [JsonProperty("Expense_Value")]
+        public decimal? Expense_Value { get; set; }
+    }
     public class Quotation_Master
     {
         [Required]
@@ -31,5 +39,6 @@ namespace astute.Models
         public int? Company_Id { get; set; }
         public bool Is_Summary { get; set; }
         public object? Quotation_Master_Lab_Entry_Detail { get; set; }
+        public object? Quotation_Expense_Detail { get; set; }
     }
 }

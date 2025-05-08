@@ -239,14 +239,16 @@ namespace astute.Repository
         #region Quotation Master
         Task<Dictionary<string, object>> Get_Quotation_Master(int Quotation_Id);
         Task<List<Dictionary<string, object>>> Get_Quotation_Detail(int Quotation_Id, bool isSummary = false);
-        Task<int> Set_Quotation_Master(DataTable dataTable, Quotation_Master model, int User_Id);
+        Task<int> Set_Quotation_Master(DataTable dataTable, DataTable quotaion_Expense, Quotation_Master model, int User_Id);
         Task<List<Dictionary<string, object>>> Get_Quotation_Other_Detail(string Trans_Date);
         Task<IList<DropdownModel>> Get_Quotation_Remarks_List();
         Task<(IList<DropdownModel>, int)> Get_Quotation_Company_Bank_List(int Company_Id, int Currency_Id);
+        Task<List<Dictionary<string, object>>> Get_Quotation_Expense_Detail(int Quotation_Id);
         #endregion
 
         #region Grade Master
-        Task<(IList<Dictionary<string, object>>, int)> Get_Grade_Master_Select(int Grade_Id);
+        Task<(IList<Dictionary<string, object>>, int)> Get_Grade_Master(int Grade_Id);
+        Task<(IList<Dictionary<string, object>>, int)> Get_Grade_Detail(int Grade_Id);
         #endregion
     }
 }

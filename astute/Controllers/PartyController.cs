@@ -20128,6 +20128,7 @@ namespace astute.Controllers
                     if ((user_Id ?? 0) > 0)
                     {
                         IList<Quotation_Master_Lab_Entry_Detail> lab_Entry_Detail_List = JsonConvert.DeserializeObject<IList<Quotation_Master_Lab_Entry_Detail>>(model.Quotation_Master_Lab_Entry_Detail.ToString());
+                        IList<Quotation_Expense_Detail> quotation_Expense_Detail_List = JsonConvert.DeserializeObject<IList<Quotation_Expense_Detail>>(model.Quotation_Expense_Detail.ToString());
 
                         DataTable dataTable = new DataTable();
                         dataTable.Columns.Add("Trans_Id", typeof(int));
@@ -20137,10 +20138,17 @@ namespace astute.Controllers
                         {
                             dataTable.Rows.Add(item.Trans_Id ?? 0, item.Order_No?.ToString(), item.Stock_Id?.ToString());
                         }
+                        DataTable quotation_Expense = new DataTable();
+                        quotation_Expense.Columns.Add("Expense_Id", typeof(int));
+                        quotation_Expense.Columns.Add("Expense_Value", typeof(decimal));
+                        foreach (var item in quotation_Expense_Detail_List)
+                        {
+                            quotation_Expense.Rows.Add(item.Expense_Id ?? 0, item.Expense_Value ?? 0);
+                        }
 
                         if (dataTable != null || dataTable.Rows.Count > 0)
                         {
-                            var quotation_Id = await _supplierService.Set_Quotation_Master(dataTable, model, user_Id ?? 0);
+                            var quotation_Id = await _supplierService.Set_Quotation_Master(dataTable, quotation_Expense, model, user_Id ?? 0);
                             if (quotation_Id > 0)
                             {
                                 var quotation_master_data = await _supplierService.Get_Quotation_Master(quotation_Id);
@@ -20148,11 +20156,13 @@ namespace astute.Controllers
                                 var company_data = await _companyService.Get_Company_Details_By_Id(model.Company_Id ?? 0);
                                 var party_data = await _partyService.Get_Quotation_BillParty_Detail(model.Bill_To_Id ?? 0);
                                 var term_data = await _supplierService.Get_Quotation_Other_Detail(model.Trans_Date);
-
+                                var quotation_expense_data = await _supplierService.Get_Quotation_Expense_Detail(quotation_Id);
+                                
                                 var data = new
                                 {
                                     Quotation_Master = quotation_master_data,
                                     Quotation_Detail = quotation_detail_data,
+                                    Quotation_Expense_Detail = quotation_expense_data,
                                 };
                                 var report_icons_data = new
                                 {
@@ -20295,7 +20305,7 @@ namespace astute.Controllers
 
                 if ((user_Id ?? 0) > 0)
                 {
-                    var (result, totalRecord) = await _supplierService.Get_Grade_Master_Select(Grade_Id);
+                    var (result, totalRecord) = await _supplierService.Get_Grade_Master(Grade_Id);
                     if (result != null && result.Count > 0)
                     {
                         return Ok(new
@@ -20317,6 +20327,46 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Grade_Master_Select", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("get_grade_detail_select")]
+        [Authorize]
+        public async Task<IActionResult> Get_Grade_Detail_Select(int Grade_Id)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if ((user_Id ?? 0) > 0)
+                {
+                    var (result, totalRecord) = await _supplierService.Get_Grade_Detail(Grade_Id);
+                    if (result != null && result.Count > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            total_Records = totalRecord,
+                            data = result,
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Grade_Detail_Select", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message

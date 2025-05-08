@@ -5324,12 +5324,18 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<int> Set_Quotation_Master(DataTable dataTable, Quotation_Master model, int User_Id)
+        public async Task<int> Set_Quotation_Master(DataTable dataTable, DataTable quotaion_Expense, Quotation_Master model, int User_Id)
         {
             var _labEntryData = new SqlParameter("@LabEntryData", SqlDbType.Structured)
             {
                 TypeName = "[dbo].[Quotation_Master_Table_Type]",
                 Value = dataTable
+            };
+            
+            var _quotationExpenseData = new SqlParameter("@Quotation_Expense", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Quotation_Expense_Table_Type]",
+                Value = quotaion_Expense
             };
 
             var user_Id = new SqlParameter("@User_Id", User_Id);
@@ -5364,10 +5370,10 @@ namespace astute.Repository
                         EXEC [dbo].[Quotation_Master_Insert_Update]
                         @Trans_Date, @Bill_To_Id, @Ship_To_Id, @Terms_Id, @Currency_Id, @Ex_Rate, @Bank_Id, @Remark,
                         @Year_Id, @User_Id, @Company_Id,
-                        @LabEntryData, @Inserted_Id OUT",
+                        @Quotation_Expense, @LabEntryData, @Inserted_Id OUT",
                         _trance_Date, _bill_to_id, _ship_to_id, _terms_Id, _currency_Id, _ex_Rate, _bank_Id, _remark,
                         _year_Id, _user_Id, _company_Id,
-                        _labEntryData, _inserted_Id));
+                        _quotationExpenseData, _labEntryData, _inserted_Id));
 
             return (int)_inserted_Id.Value;
         }
@@ -5425,16 +5431,90 @@ namespace astute.Repository
             int selectedId = (int)_selected_Id.Value;
             return (result, selectedId);
         }
+        public async Task<List<Dictionary<string, object>>> Get_Quotation_Expense_Detail(int Quotation_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("[dbo].[Quotation_Expense_Detail_Select]", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(Quotation_Id > 0 ? new SqlParameter("@Quotation_Id", Quotation_Id) : new SqlParameter("@Quotation_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
         #endregion
 
         #region Grade Master
-        public async Task<(IList<Dictionary<string, object>>, int)> Get_Grade_Master_Select(int Grade_Id)
+        public async Task<(IList<Dictionary<string, object>>, int)> Get_Grade_Master(int Grade_Id)
         {
             var result = new List<Dictionary<string, object>>();
             int totalRecord = 0;
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
                 using (var command = new SqlCommand("[dbo].[Grade_Master_Select]", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(Grade_Id > 0 ? new SqlParameter("@Grade_Id", Grade_Id) : new SqlParameter("@Grade_Id", DBNull.Value));
+
+                    var totalRecordParameter = new SqlParameter("@iTotalRec", SqlDbType.Int);
+                    totalRecordParameter.Direction = ParameterDirection.Output;
+                    command.Parameters.Add(totalRecordParameter);
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                    totalRecord = Convert.ToInt32(totalRecordParameter.Value);
+                }
+            }
+            return (result, totalRecord);
+        }
+        public async Task<(IList<Dictionary<string, object>>, int)> Get_Grade_Detail(int Grade_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            int totalRecord = 0;
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("[dbo].[Grade_Detail_Select]", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
