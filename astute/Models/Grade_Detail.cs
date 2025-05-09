@@ -53,5 +53,21 @@ namespace astute.Models
         public bool? Avg_Is_Pcs { get; set; }
         public bool? Avg_Is_Disc { get; set; }
         public bool? Avg_Is_Value { get; set; }
+
+        public string? Lab_Name { get; set; }
+        public string? Shape_Name { get; set; }
+        public string? Color_Name { get; set; }
+        public string? Clarity_Name { get; set; }
+        public string? Cut_Name { get; set; }
+        public string? Polish_Name { get; set; }
+        public string? Symm_Name { get; set; }
+        public string? FLS_Name { get; set; }
+        public string? Shade_Name { get; set; }
+        public string? Milky_Name { get; set; }
+        public string? Include_Key_To_Symbol_Name { get; set; }
+        public string? Exclude_Key_To_Symbol_Name { get; set; }
+        public string? Include_Comment_Name { get; set; }
+        public string? Exclude_Comment_Name { get; set; }
+        public string? Culet_Name { get; set; }
     }
 }

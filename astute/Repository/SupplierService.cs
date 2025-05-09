@@ -5586,11 +5586,7 @@ namespace astute.Repository
             var isReferenced = (bool)isReferencedParameter.Value;
             if (isReferenced)
                 return ("_reference_found", (int)HttpStatusCode.Conflict);
-
-            if (result > 0)
-                return ("success", result);
-            else
-                return ("success", result);
+            return ("success", result);
         }
         #endregion
     }

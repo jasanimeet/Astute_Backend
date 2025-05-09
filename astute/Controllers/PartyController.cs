@@ -20534,45 +20534,37 @@ namespace astute.Controllers
             }
         }
 
-        //[HttpDelete]
-        //[Route("delete_grade_master")]
-        //[Authorize]
-        //public async Task<IActionResult> Delete_Grade_Master(int Grade_Id)
-        //{
-        //    try
-        //    {
-        //        var (message, result) = await _supplierService.Delete_Grade_Master(Grade_Id);
-        //        if (message == "success" && result > 0)
-        //        {
-        //            return Ok(new
-        //            {
-        //                statusCode = HttpStatusCode.OK,
-        //                message = CoreCommonMessage.PartyMasterDeleted
-        //            });
-        //        }
-        //        //else if (message == "_reference_found" && result == (int)HttpStatusCode.Conflict)
-        //        //{
-        //        //    return Conflict(new
-        //        //    {
-        //        //        statusCode = HttpStatusCode.Conflict,
-        //        //        message = "Reference found in the Party Api/ Party File/ Party FTP, you can not delete this record."
-        //        //    });
-        //        //}
-        //        return BadRequest(new
-        //        {
-        //            statusCode = HttpStatusCode.BadRequest,
-        //            message = "parameter mismatched."
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await _commonService.InsertErrorLog(ex.Message, "DeleteParty", ex.StackTrace);
-        //        return Conflict(new
-        //        {
-        //            message = ex.Message
-        //        });
-        //    }
-        //}
+        [HttpDelete]
+        [Route("delete_grade_master")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Grade_Master(int Grade_Id)
+        {
+            try
+            {
+                var (message, result) = await _supplierService.Delete_Grade_Master(Grade_Id);
+                if (message == "success" && result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.GradeMasterDeleted
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = "parameter mismatched."
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Grade_Master", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }
