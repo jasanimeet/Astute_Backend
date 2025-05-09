@@ -5534,6 +5534,7 @@ namespace astute.Repository
         {
             var transId = new SqlParameter("@Trans_Id", model.Trans_Id);
             var grade = new SqlParameter("@Grade", model.Grade);
+            var grade_type = new SqlParameter("@Grade_Type", model.Grade_Type);
             var userId = (user_Id > 0) ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
 
             var gradeDetail = new SqlParameter("@Grade_Detail_Table_Type", SqlDbType.Structured)
@@ -5553,10 +5554,10 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC [dbo].[Grade_Master_Insert_Update]
-                            @Trans_Id, @Grade, @User_Id,
+                            @Trans_Id, @Grade, @Grade_Type, @User_Id,
                             @Grade_Detail_Table_Type,
                             @Inserted_Id OUT, @Party_Exists OUT",
-                            transId, grade, userId,
+                            transId, grade, grade_type, userId,
                             gradeDetail,
                             insertedId, party_Exists));
 
