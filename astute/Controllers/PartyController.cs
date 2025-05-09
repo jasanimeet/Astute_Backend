@@ -20157,7 +20157,7 @@ namespace astute.Controllers
                                 var party_data = await _partyService.Get_Quotation_BillParty_Detail(model.Bill_To_Id ?? 0);
                                 var term_data = await _supplierService.Get_Quotation_Other_Detail(model.Trans_Date);
                                 var quotation_expense_data = await _supplierService.Get_Quotation_Expense_Detail(quotation_Id);
-                                
+
                                 var data = new
                                 {
                                     Quotation_Master = quotation_master_data,
@@ -20294,9 +20294,9 @@ namespace astute.Controllers
          * Grade master...
          */
         [HttpGet]
-        [Route("get_grade_master_select")]
+        [Route("get_grade_master")]
         [Authorize]
-        public async Task<IActionResult> Get_Grade_Master_Select(int Grade_Id)
+        public async Task<IActionResult> Get_Grade_Master(int Grade_Id)
         {
             try
             {
@@ -20333,10 +20333,11 @@ namespace astute.Controllers
                 });
             }
         }
+
         [HttpGet]
-        [Route("get_grade_detail_select")]
+        [Route("get_grade_detail")]
         [Authorize]
-        public async Task<IActionResult> Get_Grade_Detail_Select(int Grade_Id)
+        public async Task<IActionResult> Get_Grade_Detail(int Grade_Id)
         {
             try
             {
@@ -20345,14 +20346,13 @@ namespace astute.Controllers
 
                 if ((user_Id ?? 0) > 0)
                 {
-                    var (result, totalRecord) = await _supplierService.Get_Grade_Detail(Grade_Id);
-                    if (result != null && result.Count > 0)
+                    var result = await _supplierService.Get_Grade_Detail(Grade_Id);
+                    if (result != null)
                     {
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
                             message = CoreCommonMessage.DataSuccessfullyFound,
-                            total_Records = totalRecord,
                             data = result,
                         });
                     }
@@ -20366,13 +20366,213 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Grade_Detail_Select", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Get_Grade_Detail", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
             }
         }
+
+        [HttpPost]
+        [Route("set_grade_master")]
+        [Authorize]
+        public async Task<IActionResult> Set_Grade_Master(Grade_Master model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                    if ((user_Id ?? 0) > 0)
+                    {
+                        DataTable dataTable = new DataTable();
+                        dataTable.Columns.Add("Id", typeof(int));
+                        dataTable.Columns.Add("Trans_Id", typeof(int));
+                        dataTable.Columns.Add("Lab", typeof(string));
+                        dataTable.Columns.Add("Shape", typeof(string));
+                        dataTable.Columns.Add("Color", typeof(string));
+                        dataTable.Columns.Add("Clarity", typeof(string));
+                        dataTable.Columns.Add("Cut", typeof(string));
+                        dataTable.Columns.Add("Polish", typeof(string));
+                        dataTable.Columns.Add("Symm", typeof(string));
+                        dataTable.Columns.Add("FLS", typeof(string));
+                        dataTable.Columns.Add("Shade", typeof(string));
+                        dataTable.Columns.Add("Milky", typeof(string));
+                        dataTable.Columns.Add("Include_Key_To_Symbol", typeof(string));
+                        dataTable.Columns.Add("Kts_Count", typeof(decimal));
+                        dataTable.Columns.Add("Exclude_Key_To_Symbol", typeof(string));
+                        dataTable.Columns.Add("Include_Comment", typeof(string));
+                        dataTable.Columns.Add("Exclude_Comment", typeof(string));
+                        dataTable.Columns.Add("From_Cts", typeof(decimal));
+                        dataTable.Columns.Add("To_Cts", typeof(decimal));
+                        dataTable.Columns.Add("From_Table", typeof(decimal));
+                        dataTable.Columns.Add("To_Table", typeof(decimal));
+                        dataTable.Columns.Add("From_Dept", typeof(decimal));
+                        dataTable.Columns.Add("To_Dept", typeof(decimal));
+                        dataTable.Columns.Add("From_CA", typeof(decimal));
+                        dataTable.Columns.Add("To_CA", typeof(decimal));
+                        dataTable.Columns.Add("From_PA", typeof(decimal));
+                        dataTable.Columns.Add("To_PA", typeof(decimal));
+                        dataTable.Columns.Add("From_Chgt", typeof(decimal));
+                        dataTable.Columns.Add("To_Chgt", typeof(decimal));
+                        dataTable.Columns.Add("From_Phgt", typeof(decimal));
+                        dataTable.Columns.Add("To_Phgt", typeof(decimal));
+                        dataTable.Columns.Add("From_Len", typeof(decimal));
+                        dataTable.Columns.Add("To_Len", typeof(decimal));
+                        dataTable.Columns.Add("From_Width", typeof(decimal));
+                        dataTable.Columns.Add("To_Width", typeof(decimal));
+                        dataTable.Columns.Add("Culet", typeof(string));
+                        dataTable.Columns.Add("From_Girdle", typeof(decimal));
+                        dataTable.Columns.Add("To_Girdle", typeof(decimal));
+                        dataTable.Columns.Add("From_Str_Ln", typeof(decimal));
+                        dataTable.Columns.Add("To_Str_Ln", typeof(decimal));
+                        dataTable.Columns.Add("From_Lower", typeof(decimal));
+                        dataTable.Columns.Add("To_Lower", typeof(decimal));
+                        dataTable.Columns.Add("Grade", typeof(string));
+                        dataTable.Columns.Add("Avg_Last_Month", typeof(int));
+                        dataTable.Columns.Add("Avg_Type", typeof(string));
+                        dataTable.Columns.Add("Avg_Is_Pcs", typeof(bool));
+                        dataTable.Columns.Add("Avg_Is_Disc", typeof(bool));
+                        dataTable.Columns.Add("Avg_Is_Value", typeof(bool));
+
+                        if (model.Grade_Detail_List != null && model.Grade_Detail_List.Count > 0)
+                        {
+                            foreach (var item in model.Grade_Detail_List)
+                            {
+                                dataTable.Rows.Add(
+                                    item.Id,
+                                    item.Trans_Id,
+                                    item.Lab?.ToString(),
+                                    item.Shape?.ToString(),
+                                    item.Color?.ToString(),
+                                    item.Clarity?.ToString(),
+                                    item.Cut?.ToString(),
+                                    item.Polish?.ToString(),
+                                    item.Symm?.ToString(),
+                                    item.FLS?.ToString(),
+                                    item.Shade?.ToString(),
+                                    item.Milky?.ToString(),
+                                    item.Include_Key_To_Symbol?.ToString(),
+                                    item.Kts_Count,
+                                    item.Exclude_Key_To_Symbol?.ToString(),
+                                    item.Include_Comment?.ToString(),
+                                    item.Exclude_Comment?.ToString(),
+                                    item.From_Cts,
+                                    item.To_Cts,
+                                    item.From_Table,
+                                    item.To_Table,
+                                    item.From_Dept,
+                                    item.To_Dept,
+                                    item.From_CA,
+                                    item.To_CA,
+                                    item.From_PA,
+                                    item.To_PA,
+                                    item.From_Chgt,
+                                    item.To_Chgt,
+                                    item.From_Phgt,
+                                    item.To_Phgt,
+                                    item.From_Len,
+                                    item.To_Len,
+                                    item.From_Width,
+                                    item.To_Width,
+                                    item.Culet?.ToString(),
+                                    item.From_Girdle,
+                                    item.To_Girdle,
+                                    item.From_Str_Ln,
+                                    item.To_Str_Ln,
+                                    item.From_Lower,
+                                    item.To_Lower,
+                                    item.Grade?.ToString(),
+                                    item.Avg_Last_Month,
+                                    item.Avg_Type?.ToString(),
+                                    item.Avg_Is_Pcs,
+                                    item.Avg_Is_Disc,
+                                    item.Avg_Is_Value
+                                );
+                            }
+                        }
+                        var (message, trans_id) = await _supplierService.Set_Grade_Master(model, dataTable, user_Id ?? 0);
+                        if (message == "success" && trans_id > 0)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = model.Trans_Id > 0 ? CoreCommonMessage.GradeMasterUpdated : CoreCommonMessage.GradeMasterCreated
+                            });
+                        }
+                        else if (message == "_grade_exists" && trans_id == 0)
+                        {
+                            return Conflict(new
+                            {
+                                statusCode = HttpStatusCode.Conflict,
+                                message = CoreCommonMessage.GradeAlreadyExist
+                            });
+                        }
+                        else
+                        {
+                            return NoContent();
+                        }
+                    }
+                    return StatusCode((int)HttpStatusCode.Unauthorized, new
+                    {
+                        message = "Unauthorized Access",
+                        statusCode = (int)HttpStatusCode.Unauthorized
+                    });
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Set_Grade_Master", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        //[HttpDelete]
+        //[Route("delete_grade_master")]
+        //[Authorize]
+        //public async Task<IActionResult> Delete_Grade_Master(int Grade_Id)
+        //{
+        //    try
+        //    {
+        //        var (message, result) = await _supplierService.Delete_Grade_Master(Grade_Id);
+        //        if (message == "success" && result > 0)
+        //        {
+        //            return Ok(new
+        //            {
+        //                statusCode = HttpStatusCode.OK,
+        //                message = CoreCommonMessage.PartyMasterDeleted
+        //            });
+        //        }
+        //        //else if (message == "_reference_found" && result == (int)HttpStatusCode.Conflict)
+        //        //{
+        //        //    return Conflict(new
+        //        //    {
+        //        //        statusCode = HttpStatusCode.Conflict,
+        //        //        message = "Reference found in the Party Api/ Party File/ Party FTP, you can not delete this record."
+        //        //    });
+        //        //}
+        //        return BadRequest(new
+        //        {
+        //            statusCode = HttpStatusCode.BadRequest,
+        //            message = "parameter mismatched."
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await _commonService.InsertErrorLog(ex.Message, "DeleteParty", ex.StackTrace);
+        //        return Conflict(new
+        //        {
+        //            message = ex.Message
+        //        });
+        //    }
+        //}
         #endregion
     }
 }

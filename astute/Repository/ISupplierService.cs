@@ -248,7 +248,8 @@ namespace astute.Repository
 
         #region Grade Master
         Task<(IList<Dictionary<string, object>>, int)> Get_Grade_Master(int Grade_Id);
-        Task<(IList<Dictionary<string, object>>, int)> Get_Grade_Detail(int Grade_Id);
+        Task<Grade_Master> Get_Grade_Detail(int Grade_Id);
+        Task<(string, int)> Set_Grade_Master(Grade_Master model, DataTable dataTable, int user_Id);
         #endregion
     }
 }

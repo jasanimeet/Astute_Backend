@@ -121,5 +121,7 @@ namespace astute.Models
         public DbSet<Employee_Download_Share_Rights> Employee_Download_Share_Rights { get; set; }
         public DbSet<Rapaport_Rate_Detail_Model> Rapaport_Rate_Detail_Model { get; set; }
         public DbSet<Parcel_Ref_Master> Parcel_Ref_Master { get; set; }
+        public DbSet<Grade_Master> Grade_Master { get; set; }
+        public DbSet<Grade_Detail> Grade_Detail { get; set; }
     }
 }

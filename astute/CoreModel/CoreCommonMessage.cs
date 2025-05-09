@@ -600,5 +600,12 @@
         public static string Purchase_Return_AlreadyExists = Purchase_Return + AlreadyExists;
         #endregion
 
+        #region Grade Master
+        public static string GradeMaster = "Grade";
+        public static string GradeMasterCreated = GradeMaster + " has been added successfully";
+        public static string GradeMasterUpdated = GradeMaster + " has been updated successfully";
+        public static string GradeMasterDeleted = GradeMaster + " has been deleted successfully";
+        public static string GradeAlreadyExist = GradeMaster + AlreadyExists;
+        #endregion
     }
 }

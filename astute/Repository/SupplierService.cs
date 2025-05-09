@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace astute.Repository
@@ -5331,7 +5332,7 @@ namespace astute.Repository
                 TypeName = "[dbo].[Quotation_Master_Table_Type]",
                 Value = dataTable
             };
-            
+
             var _quotationExpenseData = new SqlParameter("@Quotation_Expense", SqlDbType.Structured)
             {
                 TypeName = "[dbo].[Quotation_Expense_Table_Type]",
@@ -5478,7 +5479,7 @@ namespace astute.Repository
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.Add(Grade_Id > 0 ? new SqlParameter("@Grade_Id", Grade_Id) : new SqlParameter("@Grade_Id", DBNull.Value));
+                    command.Parameters.Add(Grade_Id > 0 ? new SqlParameter("@Trans_Id", Grade_Id) : new SqlParameter("@Trans_Id", DBNull.Value));
 
                     var totalRecordParameter = new SqlParameter("@iTotalRec", SqlDbType.Int);
                     totalRecordParameter.Direction = ParameterDirection.Output;
@@ -5508,47 +5509,88 @@ namespace astute.Repository
             }
             return (result, totalRecord);
         }
-        public async Task<(IList<Dictionary<string, object>>, int)> Get_Grade_Detail(int Grade_Id)
+        public async Task<Grade_Master> Get_Grade_Detail(int Grade_Id)
         {
-            var result = new List<Dictionary<string, object>>();
-            int totalRecord = 0;
-            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            var trans_Id = Grade_Id > 0 ? new SqlParameter("@Trans_Id", Grade_Id) : new SqlParameter("@Trans_Id", DBNull.Value);
+            var totalRecordParameter = new SqlParameter("@iTotalRec", SqlDbType.Int);
+            totalRecordParameter.Direction = ParameterDirection.Output;
+
+            var result = await Task.Run(() => _dbContext.Grade_Master
+            .FromSqlRaw(@"EXEC [dbo].[Grade_Master_Select] @Trans_Id, @iTotalRec", trans_Id, totalRecordParameter)
+            .AsEnumerable()
+            .FirstOrDefault());
+
+            if (result != null)
             {
-                using (var command = new SqlCommand("[dbo].[Grade_Detail_Select]", connection))
+                if (Grade_Id > 0)
                 {
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.Add(Grade_Id > 0 ? new SqlParameter("@Grade_Id", Grade_Id) : new SqlParameter("@Grade_Id", DBNull.Value));
-
-                    var totalRecordParameter = new SqlParameter("@iTotalRec", SqlDbType.Int);
-                    totalRecordParameter.Direction = ParameterDirection.Output;
-                    command.Parameters.Add(totalRecordParameter);
-
-                    await connection.OpenAsync();
-
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            var dict = new Dictionary<string, object>();
-
-                            for (int i = 0; i < reader.FieldCount; i++)
-                            {
-                                var columnName = reader.GetName(i);
-                                var columnValue = reader.GetValue(i);
-
-                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
-                            }
-
-                            result.Add(dict);
-                        }
-                    }
-                    totalRecord = Convert.ToInt32(totalRecordParameter.Value);
+                    result.Grade_Detail_List = await Task.Run(() => _dbContext.Grade_Detail
+                            .FromSqlRaw(@"EXEC [dbo].[Grade_Detail_Select] @Trans_Id", trans_Id).ToList());
                 }
             }
-            return (result, totalRecord);
+            return result;
         }
+        public async Task<(string, int)> Set_Grade_Master(Grade_Master model, DataTable dataTable, int user_Id)
+        {
+            var transId = new SqlParameter("@Trans_Id", model.Trans_Id);
+            var grade = new SqlParameter("@Grade", model.Grade);
+            var userId = (user_Id > 0) ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
 
+            var gradeDetail = new SqlParameter("@Grade_Detail_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Grade_Detail_Table_Type]",
+                Value = dataTable
+            };
+
+            var insertedId = new SqlParameter("@Inserted_Id", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            var party_Exists = new SqlParameter("@Party_Exists", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC [dbo].[Grade_Master_Insert_Update]
+                            @Trans_Id, @Grade, @User_Id,
+                            @Grade_Detail_Table_Type,
+                            @Inserted_Id OUT, @Party_Exists OUT",
+                            transId, grade, userId,
+                            gradeDetail,
+                            insertedId, party_Exists));
+
+            var _party_exists = (bool)party_Exists.Value;
+            if (_party_exists)
+                return ("_grade_exists", 0);
+
+            if (result > 0)
+            {
+                int _insertedId = (int)insertedId.Value;
+                return ("success", _insertedId);
+            }
+            return ("error", 0);
+        }
+        public async Task<(string, int)> Delete_Grade_Master(int Grade_Id)
+        {
+            var isReferencedParameter = new SqlParameter("@IsReference", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Grade_Master_Delete @Trans_Id, @IsReference OUT",
+                                        new SqlParameter("@Trans_Id", Grade_Id),
+                                        isReferencedParameter);
+
+            var isReferenced = (bool)isReferencedParameter.Value;
+            if (isReferenced)
+                return ("_reference_found", (int)HttpStatusCode.Conflict);
+
+            if (result > 0)
+                return ("success", result);
+            else
+                return ("success", result);
+        }
         #endregion
     }
 }
