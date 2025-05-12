@@ -17531,6 +17531,7 @@ namespace astute.Controllers
             var message = string.Empty;
             var stock_Data_Id = 0;
             string party_name = string.Empty;
+            string Stock_Type = "L";
             try
             {
                 if (ModelState.IsValid)
@@ -17559,6 +17560,7 @@ namespace astute.Controllers
                             stock_Data_Master_Schedular.Upload_Method = "FILE";
                             stock_Data_Master_Schedular.Upload_Type = "O";
                             stock_Data_Master_Schedular.Upload_From = "M";
+                            stock_Data_Master_Schedular.Stock_Type = Stock_Type;
 
                             (message, stock_Data_Id) = await _supplierService.Stock_Data_Custom_Insert_Update(stock_Data_Master_Schedular);
                             if (message == "success" && stock_Data_Id > 0)
@@ -17959,7 +17961,9 @@ namespace astute.Controllers
                                                                                         Supplier_Id = party_File.Party_Id ?? 0,
                                                                                         Stock_Data_Id = stock_Data_Id,
                                                                                         Start_Time = startTime,
-                                                                                        Upload_Status = "Column not mapped"
+                                                                                        Upload_Status = "Column not mapped",
+                                                                                        Stock_Type = Stock_Type
+
                                                                                     };
                                                                                     await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
 
@@ -18341,7 +18345,8 @@ namespace astute.Controllers
                                                             Start_Time = startTime,
                                                             Supplier_Response_Time = null,
                                                             End_Time = endTime,
-                                                            Upload_Status = "Stock uploaded successfully"
+                                                            Upload_Status = "Stock uploaded successfully",
+                                                            Stock_Type = Stock_Type
                                                         };
                                                         await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
                                                     }
@@ -18374,7 +18379,8 @@ namespace astute.Controllers
                                         Supplier_Id = party_File.Party_Id ?? 0,
                                         Stock_Data_Id = stock_Data_Id,
                                         Start_Time = startTime,
-                                        Upload_Status = "No column mapping found!"
+                                        Upload_Status = "No column mapping found!",
+                                        Stock_Type = Stock_Type
                                     };
                                     await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);
 
@@ -18398,7 +18404,8 @@ namespace astute.Controllers
                     Supplier_Id = party_File.Party_Id ?? 0,
                     Stock_Data_Id = stock_Data_Id,
                     Start_Time = startTime,
-                    Upload_Status = CoreCommonMessage.SupplierPriceUpdateCheck
+                    Upload_Status = CoreCommonMessage.SupplierPriceUpdateCheck,
+                    Stock_Type = Stock_Type
                 };
                 await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock);
 
@@ -18428,7 +18435,8 @@ namespace astute.Controllers
                     Supplier_Id = party_File.Party_Id ?? 0,
                     Stock_Data_Id = stock_Data_Id,
                     Start_Time = startTime,
-                    Upload_Status = message
+                    Upload_Status = message,
+                    Stock_Type = Stock_Type
                 };
 
                 await _supplierService.Supplier_Stock_Start_End_Time_Update(supplier_Stock_Update);

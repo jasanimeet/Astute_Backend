@@ -11,6 +11,6 @@
         public string? Upload_Method { get; set; }
         public string? Upload_Type { get; set; }
         public string? Upload_Status { get; set; }
-
+        public string? Stock_Type { get; set; }
     }
 }

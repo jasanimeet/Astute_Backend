@@ -921,14 +921,15 @@ namespace astute.Repository
             var upload_Method = !string.IsNullOrEmpty(stock_Data_Master.Upload_Method) ? new SqlParameter("@Upload_Method", stock_Data_Master.Upload_Method) : new SqlParameter("@Upload_Method", DBNull.Value);
             var upload_Type = !string.IsNullOrEmpty(stock_Data_Master.Upload_Type) ? new SqlParameter("@Upload_Type", stock_Data_Master.Upload_Type) : new SqlParameter("@Upload_Type", DBNull.Value);
             var upload_From = !string.IsNullOrEmpty(stock_Data_Master.Upload_From) ? new SqlParameter("@Upload_From", stock_Data_Master.Upload_From) : new SqlParameter("@Upload_From", DBNull.Value);
+            var stock_Type = !string.IsNullOrEmpty(stock_Data_Master.Stock_Type) ? new SqlParameter("@Stock_Type", stock_Data_Master.Stock_Type) : new SqlParameter("@Stock_Type", DBNull.Value);
             var inserted_Id = new SqlParameter("@Inserted_Id", SqlDbType.Int)
             {
                 Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Stock_Data_Master_Insert_Update @Stock_Data_Id, @Supplier_Id, @Upload_Method, @Upload_Type, @Upload_From, @Inserted_Id OUT",
-                        stock_Data_Id, supplier_Id, upload_Method, upload_Type, upload_From, inserted_Id));
+                        .ExecuteSqlRawAsync(@"EXEC Stock_Data_Master_Insert_Update @Stock_Data_Id, @Supplier_Id, @Upload_Method, @Upload_Type, @Upload_From, Stock_Type, @Inserted_Id OUT",
+                        stock_Data_Id, supplier_Id, upload_Method, upload_Type, upload_From, stock_Type, inserted_Id));
 
             int _insertedId = (int)inserted_Id.Value;
             if (_insertedId > 0)
@@ -944,14 +945,15 @@ namespace astute.Repository
             var upload_Method = !string.IsNullOrEmpty(stock_Data_Master.Upload_Method) ? new SqlParameter("@Upload_Method", stock_Data_Master.Upload_Method) : new SqlParameter("@Upload_Method", DBNull.Value);
             var upload_Type = !string.IsNullOrEmpty(stock_Data_Master.Upload_Type) ? new SqlParameter("@Upload_Type", stock_Data_Master.Upload_Type) : new SqlParameter("@Upload_Type", DBNull.Value);
             var upload_From = !string.IsNullOrEmpty(stock_Data_Master.Upload_From) ? new SqlParameter("@Upload_From", stock_Data_Master.Upload_From) : new SqlParameter("@Upload_From", DBNull.Value);
+            var stock_Type = !string.IsNullOrEmpty(stock_Data_Master.Stock_Type) ? new SqlParameter("@Stock_Type", stock_Data_Master.Stock_Type) : new SqlParameter("@Stock_Type", DBNull.Value);
             var inserted_Id = new SqlParameter("@Inserted_Id", SqlDbType.Int)
             {
                 Direction = ParameterDirection.Output
             };
 
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC Stock_Data_Master_Insert_Update @Stock_Data_Id, @Supplier_Id, @Upload_Method, @Upload_Type, @Upload_From, @Inserted_Id OUT",
-                        stock_Data_Id, supplier_Id, upload_Method, upload_Type, upload_From, inserted_Id));
+                        .ExecuteSqlRawAsync(@"EXEC Stock_Data_Master_Insert_Update @Stock_Data_Id, @Supplier_Id, @Upload_Method, @Upload_Type, @Upload_From, @Stock_Type, @Inserted_Id OUT",
+                        stock_Data_Id, supplier_Id, upload_Method, upload_Type, upload_From, stock_Type, inserted_Id));
 
             int _insertedId = (int)inserted_Id.Value;
             if (_insertedId > 0)
@@ -1189,9 +1191,10 @@ namespace astute.Repository
             var supplier_Response_Time = new SqlParameter("@Supplier_Response_Time", supplier_Stock_Update.Supplier_Response_Time ?? (object)DBNull.Value);
             var end_Time = new SqlParameter("@End_Time", supplier_Stock_Update.End_Time ?? (object)DBNull.Value);
             var upload_Status = !string.IsNullOrEmpty(supplier_Stock_Update.Upload_Status) ? new SqlParameter("@Upload_Status", supplier_Stock_Update.Upload_Status) : new SqlParameter("@Upload_Status", DBNull.Value);
+            var stock_Type = !string.IsNullOrEmpty(supplier_Stock_Update.Stock_Type) ? new SqlParameter("@Stock_Type", supplier_Stock_Update.Stock_Type) : new SqlParameter("@Stock_Type", DBNull.Value);
 
 
-            var sqlCommand = @"exec [Supplier_Stock_Start_End_Process] @Supplier_Id, @Stock_Data_Id, @Upload_Method, @Upload_Type, @Start_Time, @Supplier_Response_Time, @End_Time, @Upload_Status";
+            var sqlCommand = @"exec [Supplier_Stock_Start_End_Process] @Supplier_Id, @Stock_Data_Id, @Upload_Method, @Upload_Type, @Start_Time, @Supplier_Response_Time, @End_Time, @Upload_Status, @Stock_Type";
 
             var result = await Task.Run(async () =>
             {
@@ -1206,6 +1209,7 @@ namespace astute.Repository
                     command.Parameters.Add(supplier_Response_Time);
                     command.Parameters.Add(end_Time);
                     command.Parameters.Add(upload_Status);
+                    command.Parameters.Add(stock_Type);
 
                     // Set the command timeout to 30 minutes (in seconds)
                     command.CommandTimeout = 1800;
