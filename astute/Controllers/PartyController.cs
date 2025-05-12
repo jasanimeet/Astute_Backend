@@ -16474,8 +16474,8 @@ namespace astute.Controllers
                             item.Purchase_Detail_Id ?? 0,
                             SafeConvertToDouble(item.Rap_Rate?.ToString()),
                             SafeConvertToDouble(item.Rap_Amount?.ToString()),
-                            SafeConvertToDouble(item.Actual_Cost_Disc?.ToString()),
-                            SafeConvertToDouble(item.Actual_Cost_Amt?.ToString())
+                            SafeConvertToDouble(item.Consignment_Cost_Disc?.ToString()),
+                            SafeConvertToDouble(item.Consignment_Cost_Amt?.ToString())
                         );
                     }
 
