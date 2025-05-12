@@ -2944,7 +2944,7 @@ namespace astute.Controllers
                             var result = await _supplierService.Stock_Data_Shedular_Insert_Update(dt_our_stock_data, stock_Data_Id);
                             if (result > 0)
                             {
-                                if (stock_Data_Master.Upload_Type == "O")
+                                if (stock_Data_Master.Upload_Type == "O" && stock_Data_Master.Stock_Type == "L")
                                 {
                                     await _supplierService.Supplier_Stock_Insert_Update((int)stock_Data_Master.Supplier_Id, stock_Data_Id);
                                     /*
@@ -2955,7 +2955,11 @@ namespace astute.Controllers
                                     }
                                     */
                                 }
+                                else if (stock_Data_Master.Upload_Type == "O" && stock_Data_Master.Stock_Type == "O")
+                                {
+                                    await _supplierService.Supplier_Overseas_Stock_Insert_Update((int)stock_Data_Master.Supplier_Id, stock_Data_Id);
                             }
+                        }
                         }
                         else
                         {

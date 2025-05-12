@@ -55,6 +55,8 @@ namespace astute.Repository
         Task<int> Supplier_Stock_Start_End_Time_Update(Supplier_Stock_Update supplier_Stock_Update);
         Task<List<Dictionary<string, object>>> Get_Stock_Data_By_Rapaport_Increase_Decrease(string rap_increase, string rap_decrease);
         Task<int> Update_Stock_Data_By_Rapaport_Increase_Decrease(string rap_increase, string rap_decrease);
+        Task<int> Supplier_Overseas_Stock_Insert_Update(int supplier_Id, int stock_Data_Id);
+        Task<int> Supplier_Overseas_Stock_Manual_File_Insert_Update(int supplier_Id, int stock_Data_Id, bool is_Overwrite, bool Priority);
         #endregion
 
         #region Stock Number Generation
