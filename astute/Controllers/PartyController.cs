@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
+using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16249,19 +16250,27 @@ namespace astute.Controllers
         {
             try
             {
-                if (purchase_Media_Upload_Model.Id > 0)
+                if (purchase_Media_Upload_Model?.Id > 0)
                 {
-                    if (purchase_Media_Upload_Model.IsFortune == true)
-                    {
-                        var res = await _oracleService.Get_Media_Upload(purchase_Media_Upload_Model);
-                    }
-
                     var result = await _supplierService.Update_Purchase_Media_Upload(purchase_Media_Upload_Model);
                     if (result > 0)
                     {
+                        if (purchase_Media_Upload_Model.IsFortune == true &&
+                            ((purchase_Media_Upload_Model.Image_Status == 1 && !string.IsNullOrEmpty(purchase_Media_Upload_Model.NewImageUrl)) ||
+                             (purchase_Media_Upload_Model.Video_Status == 1 && !string.IsNullOrEmpty(purchase_Media_Upload_Model.NewVideoUrl))))
+                        {
+                            try
+                            {
+                                await _oracleService.Get_Media_Upload(purchase_Media_Upload_Model);
+                            }
+                            catch (OracleException oex)
+                            {
+                                await _commonService.InsertErrorLog(oex.Message, "Oracle_SP_Get_Media_Upload", oex.StackTrace);
+                            }
+                        }
+
                         return Ok(new
                         {
-
                             statusCode = HttpStatusCode.OK,
                             message = CoreCommonMessage.Purchase_Updated
                         });
@@ -16273,7 +16282,23 @@ namespace astute.Controllers
                     message = CoreCommonMessage.ParameterMismatched
                 });
             }
+            catch (OracleException oex)
+            {
+                await _commonService.InsertErrorLog(oex.Message, "Update_Purchase_Media_Upload", oex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = oex.Message
+                });
+            }
             catch (SqlException ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Purchase_Media_Upload", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+            catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Update_Purchase_Media_Upload", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
