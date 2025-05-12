@@ -1760,6 +1760,51 @@ namespace astute.Repository
             return r;
         }
 
+        public async Task<DataTable> Get_Media_Inward()
+        {
+            int r = 0;
+
+            List<OracleParameter> paramList = new List<OracleParameter>();
+
+            OracleParameter param1 = new OracleParameter("vrec", OracleDbType.RefCursor);
+            param1.Direction = ParameterDirection.Output;
+            paramList.Add(param1);
+
+            DataTable dt = await _dbOracleAccess.CallSP_Timeout("web_trans.get_media_inward", paramList);
+
+            return dt;
+        }
+
+
+        public async Task<int> Get_Media_Upload(Purchase_Media_Upload_Model purchase_Media_Upload_Model)
+        {
+            if (purchase_Media_Upload_Model != null)
+            {
+                List<OracleParameter> paramList = new List<OracleParameter>();
+
+                OracleParameter param1 = new OracleParameter("vrec", OracleDbType.RefCursor);
+                param1.Direction = ParameterDirection.Output;
+                paramList.Add(param1);
+
+                param1 = new OracleParameter("vREF_NO", OracleDbType.NVarchar2);
+                param1.Value = !string.IsNullOrEmpty(purchase_Media_Upload_Model.Sunrise_Stock_Id) ? Convert.ToString(purchase_Media_Upload_Model.Sunrise_Stock_Id) : DBNull.Value;
+                paramList.Add(param1);
+
+                param1 = new OracleParameter("vSUPP_IMG_LINK", OracleDbType.NVarchar2);
+                param1.Value = !string.IsNullOrEmpty(purchase_Media_Upload_Model.NewImageUrl) ? Convert.ToString(purchase_Media_Upload_Model.NewImageUrl) : DBNull.Value;
+                paramList.Add(param1);
+                
+                param1 = new OracleParameter("vSUPP_VDO_LINK", OracleDbType.NVarchar2);
+                param1.Value = !string.IsNullOrEmpty(purchase_Media_Upload_Model.NewVideoUrl) ? Convert.ToString(purchase_Media_Upload_Model.NewVideoUrl) : DBNull.Value;
+                paramList.Add(param1);
+
+                DataTable dt = await _dbOracleAccess.CallSP("web_trans.get_media_upload", paramList);
+            }
+
+            return 1;
+        }
+
+
         #endregion
     }
 }

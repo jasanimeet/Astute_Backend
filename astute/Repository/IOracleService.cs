@@ -1,7 +1,7 @@
 ﻿using astute.Models;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
-using static astute.Models.Employee_Master;
 
 namespace astute.Repository
 {
@@ -22,5 +22,7 @@ namespace astute.Repository
         Task<int> Get_Fortune_Overseas_Data();
         Task<int> Get_Fortune_Sunrise_Data();
         Task<int> Get_Lab_Entry_Live_Data_Fortune();
+        Task<DataTable> Get_Media_Inward();
+        Task<int> Get_Media_Upload(Purchase_Media_Upload_Model purchase_Media_Upload_Model);
     }
 }

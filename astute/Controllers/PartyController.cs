@@ -2958,8 +2958,8 @@ namespace astute.Controllers
                                 else if (stock_Data_Master.Upload_Type == "O" && stock_Data_Master.Stock_Type == "O")
                                 {
                                     await _supplierService.Supplier_Overseas_Stock_Insert_Update((int)stock_Data_Master.Supplier_Id, stock_Data_Id);
+                                }
                             }
-                        }
                         }
                         else
                         {
@@ -16214,11 +16214,12 @@ namespace astute.Controllers
 
         [HttpPost]
         [Route("get_purchase_media_upload")]
-        public async Task<IActionResult> Get_Purchase_Media_Upload(Purchase_Media_Upload_Search_Model purchase_Media_Upload_Search_Model1)
+        public async Task<IActionResult> Get_Purchase_Media_Upload(Purchase_Media_Upload_Search_Model purchase_Media_Upload_Search_Model)
         {
             try
             {
-                var result = await _supplierService.Get_Purchase_Media_Upload(purchase_Media_Upload_Search_Model1);
+                DataTable dt = await _oracleService.Get_Media_Inward();
+                var result = await _supplierService.Get_Purchase_Media_Upload(purchase_Media_Upload_Search_Model, dt);
 
                 if (result != null && result.Count > 0)
                 {
@@ -16250,6 +16251,11 @@ namespace astute.Controllers
             {
                 if (purchase_Media_Upload_Model.Id > 0)
                 {
+                    if (purchase_Media_Upload_Model.IsFortune == true)
+                    {
+                        var res = await _oracleService.Get_Media_Upload(purchase_Media_Upload_Model);
+                    }
+
                     var result = await _supplierService.Update_Purchase_Media_Upload(purchase_Media_Upload_Model);
                     if (result > 0)
                     {
