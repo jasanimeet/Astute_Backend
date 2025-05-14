@@ -20298,6 +20298,7 @@ namespace astute.Controllers
                                 var quotation_detail_data = await _supplierService.Get_Quotation_Detail(quotation_Id, model.Is_Summary);
                                 var company_data = await _companyService.Get_Company_Details_By_Id(model.Company_Id ?? 0);
                                 var party_data = await _partyService.Get_Quotation_BillParty_Detail(model.Bill_To_Id ?? 0);
+                                var ship_to_data = await _partyService.Get_Quotation_BillParty_Detail(model.Ship_To_Id ?? 0);
                                 var term_data = await _supplierService.Get_Quotation_Other_Detail(model.Trans_Date);
                                 var quotation_expense_data = await _supplierService.Get_Quotation_Expense_Detail(quotation_Id);
 
@@ -20322,6 +20323,7 @@ namespace astute.Controllers
                                     data = data,
                                     company_detail = company_data,
                                     party_detail = party_data,
+                                    shipping_party_detail = ship_to_data,
                                     term_detail = term_data,
                                     report_icons = report_icons_data,
                                 });
