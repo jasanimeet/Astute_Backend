@@ -734,6 +734,8 @@ namespace astute.Controllers
                         confirm_Purchase = response.Confirm_Purchase,
                         upcoming_Approved = response.Upcoming_Approved,
                         repricing_Approved = response.Repricing_Approved,
+                        upcoming_Approval = response.Upcoming_Approval,
+                        repricing_Approval = response.Repricing_Approval,
                         token = response.Token,
                         user_Type = response.Usert_Type
                     });
@@ -914,6 +916,8 @@ namespace astute.Controllers
                                 Confirm_Purchase = response.Confirm_Purchase,
                                 Upcoming_Approved = response.Upcoming_Approved,
                                 Repricing_Approved = response.Repricing_Approved,
+                                Upcoming_Approval = response.Upcoming_Approval,
+                                Repricing_Approval = response.Repricing_Approval,
                                 token = response.Token,
                                 user_Type = response.Usert_Type
                             });

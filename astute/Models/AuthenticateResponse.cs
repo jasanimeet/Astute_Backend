@@ -13,6 +13,8 @@
             Confirm_Purchase = employee_Master.Confirm_Purchase;
             Upcoming_Approved = employee_Master.Upcoming_Approved;
             Repricing_Approved = employee_Master.Repricing_Approved;
+            Upcoming_Approval = employee_Master.Upcoming_Approval;
+            Repricing_Approval = employee_Master.Repricing_Approval;
         }
         public int Id { get; set; }
         public string? Username { get; set; }
@@ -21,6 +23,8 @@
         public bool? Confirm_Purchase { get; set; }
         public bool? Upcoming_Approved { get; set; }
         public bool? Repricing_Approved { get; set; }
+        public bool? Upcoming_Approval { get; set; }
+        public bool? Repricing_Approval { get; set; }
         public string Token { get; set; }
         public string Usert_Type { get; set; }
     }

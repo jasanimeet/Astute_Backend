@@ -168,6 +168,8 @@ namespace astute.Repository
             var confirm_Purchase = new SqlParameter("@Confirm_Purchase", employee_Master.Confirm_Purchase);
             var upcoming_Approved = new SqlParameter("@Upcoming_Approved", employee_Master.Upcoming_Approved);
             var repricing_Approved = new SqlParameter("@Repricing_Approved", employee_Master.Repricing_Approved);
+            var upcoming_Approval = employee_Master.Upcoming_Approval.HasValue ? new SqlParameter("@Upcoming_Approval", employee_Master.Upcoming_Approval) : new SqlParameter("@Upcoming_Approval", DBNull.Value);
+            var repricing_Approval = employee_Master.Repricing_Approval.HasValue ? new SqlParameter("@Repricing_Approval", employee_Master.Repricing_Approval) : new SqlParameter("@Repricing_Approval", DBNull.Value);
 
             var isExistUserName = new SqlParameter("@IsExistUserName", SqlDbType.Bit)
             {
@@ -191,11 +193,11 @@ namespace astute.Repository
             @chineseName, @address1, @address2, @address3, @cityId, @joindate, @employeeType, @birthDate, @gender, @mobileNo, @personalEmail, @companyEmail,
             @leaveDate, @pSNID, @bloodGroup, @contractStartDate, @contractEndDate, @approveHolidays, @orderNo, @sortNo, @userName, @password, @employee_Code, @status, @is_admin,
             @marital_Status, @mobile_Country_Code, @mobile_1_Country_Code, @probation_End_Date, @personal_Mobile_No, @designation_Id, @User_Type, @Is_Secretary,
-            @Confirm_Purchase, @Upcoming_Approved, @Repricing_Approved, @IsExistUserName OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT",
+            @Confirm_Purchase, @Upcoming_Approved, @Repricing_Approved,@Upcoming_Approval, @Repricing_Approval, @IsExistUserName OUT, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT",
             employeeId, initial, firstName, middleName, lastName, chineseName, address1, address2, address3, cityId, joinDate, employeeType, birthDate, gender, mobileNo,
             personalEmail, companyEmail, leaveDate, pSNID, bloodGroup, contractStartDate, contractEndDate, approveHolidays, orderNo, sortNo, userName, password,
             employeeCode, status, is_admin, marital_Status, mobile_Country_Code, mobile_1_Country_Code, probation_End_Date, personal_Mobile_No, designation_Id, user_Type, is_Secretary,
-            confirm_Purchase, upcoming_Approved, repricing_Approved, isExistUserName, isExistOrderNo, isExistSortNo, insertedId));
+            confirm_Purchase, upcoming_Approved, repricing_Approved, upcoming_Approval, repricing_Approval, isExistUserName, isExistOrderNo, isExistSortNo, insertedId));
 
             bool _isExistUserName = (bool)isExistUserName.Value;
             if (_isExistUserName)
@@ -401,7 +403,7 @@ namespace astute.Repository
 
             var employees = await Task.Run(() => _dbContext.Employee_Fortune_Order_Master
                             .FromSqlRaw(@"exec Employee_Master_Fortune_Id_Order_No_Select @Order_No", OrderNo)
-                            .AsEnumerable()  
+                            .AsEnumerable()
                             .FirstOrDefault());
 
             return employees;
@@ -474,7 +476,7 @@ namespace astute.Repository
         public async Task<IList<Employee_Master>> Get_Active_Secretary_Employees(int user_Id)
         {
             var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
-            
+
             var employees = await Task.Run(() => _dbContext.Employee_Master.FromSqlRaw(@"exec Employee_Master_Secretary_Active_Select @User_Id", _user_Id).ToListAsync());
 
             return employees;
@@ -529,7 +531,7 @@ namespace astute.Repository
             }
             return ("success", result);
         }
-        
+
         public async Task<int> Update_FCMToken(UserModel userModel, int Id)
         {
             var _employee_Id = Id > 0 ? new SqlParameter("@Employee_Id", Id) : new SqlParameter("@Employee_Id", DBNull.Value);
