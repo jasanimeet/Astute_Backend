@@ -13395,7 +13395,7 @@ namespace astute.Controllers
                 detailDataTable.Columns.Add("Rough_Origin_C", typeof(string));
                 detailDataTable.Columns.Add("Laser_Insc", typeof(int));
                 detailDataTable.Columns.Add("Girdle_Condition", typeof(int));
-                detailDataTable.Columns.Add("Laser_Insc_C", typeof(string));
+                detailDataTable.Columns.Add("Laser_Insc_C", typeof(string)).MaxLength = 20;
                 detailDataTable.Columns.Add("Girdle_Condition_C", typeof(string));
                 detailDataTable.Columns.Add("Company", typeof(string));
                 detailDataTable.Columns.Add("Milky", typeof(int));
@@ -13504,7 +13504,7 @@ namespace astute.Controllers
                         item.RoughOrigin ?? null,
                         item.LaserInscId != null ? Convert.ToInt32(item.LaserInscId) : null,
                         item.GirdleConditionId != null ? Convert.ToInt32(item.GirdleConditionId) : null,
-                        item.LaserInscription ?? null,
+                        string.IsNullOrEmpty(item.LaserInscription) ? DBNull.Value : item.LaserInscription.Length > 20 ? item.LaserInscription.Substring(0, 20) : item.LaserInscription,
                         item.GirdleCondition ?? null,
                         item.Company ?? null,
                         item.Milky_Id != null ? Convert.ToInt32(item.Milky_Id) : null,
