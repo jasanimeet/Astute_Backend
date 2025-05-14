@@ -13512,6 +13512,33 @@ namespace astute.Controllers
                         item.Shade_Id != null ? Convert.ToInt32(item.Shade_Id) : null,
                         item.Shade ?? null
                     );
+
+                    string certificateLink = item.CertificateLink;
+
+                    if (!string.IsNullOrWhiteSpace(certificateLink) &&
+                        (Lab_Entry_Master.Trans_Id == null || Lab_Entry_Master.Trans_Id == 0))
+                    {
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), CoreCommonFilePath.CertificatesFilePath);
+                        if (!(Directory.Exists(filePath)))
+                        {
+                            Directory.CreateDirectory(filePath);
+                        }
+
+                        string filename = "/" + item.CertificateNo + ".pdf";
+                        filePath += filename;
+
+                        try
+                        {
+                            using (WebClient client = new WebClient())
+                            {
+                                client.DownloadFile(certificateLink, filePath);
+                            }
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
                 }
 
                 var lab_entry_result = await _supplierService.Insert_Update_Lab_Entry(masterDataTable, detailDataTable, user_Id ?? 0);
@@ -14664,6 +14691,32 @@ namespace astute.Controllers
                                         matchingEntry["GIA_CULET_ID"] = culetCertificate_Id;
 
                                         finalRecords.Add(matchingEntry);
+                                    }
+
+                                    string certificateLink = certificate.CertificateLink;
+
+                                    if (!string.IsNullOrWhiteSpace(certificateLink))
+                                    {
+
+                                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), CoreCommonFilePath.CertificatesFilePath);
+                                        if (!(Directory.Exists(filePath)))
+                                        {
+                                            Directory.CreateDirectory(filePath);
+                                        }
+                                        string filename = "/" + certificate.CertificateNo + ".pdf";
+                                        filePath += filename;
+                                        var path = _configuration["BaseUrl"] + "/Files/Image" + filename;
+                                        try
+                                        {
+                                            using (WebClient client = new WebClient())
+                                            {
+                                                client.DownloadFile(certificateLink, filePath);
+                                            }
+                                        }
+                                        catch (Exception)
+                                        {
+
+                                        }
                                     }
                                 }
                             }
