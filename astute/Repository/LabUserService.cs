@@ -405,6 +405,28 @@ namespace astute.Repository
                 }
             }
         }
+        
+        public async Task<int> Job_Transfer_Auto_Party_Account_Master()
+        {
+            using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = @"EXEC [Job_Transfer_Party_Master_Account_Master]";
+
+                command.CommandTimeout = 3600;
+
+                await _dbContext.Database.OpenConnectionAsync();
+
+                try
+                {
+                    var result = await command.ExecuteNonQueryAsync();
+                    return result;
+                }
+                finally
+                {
+                    _dbContext.Database.CloseConnection();
+                }
+            }
+        }
 
         #endregion
     }

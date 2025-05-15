@@ -17461,7 +17461,6 @@ namespace astute.Controllers
             }
         }
 
-
         [HttpPost]
         [Route("job_transfer_supplier_pricing_cal")]
         [Authorize]
@@ -17595,6 +17594,34 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Job_Transfer_Auto_Party_Url_Format", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("job_transfer_auto_party_account_master")]
+        [Authorize]
+        public async Task<IActionResult> Job_Transfer_Auto_Party_Account_Master()
+        {
+            try
+            {
+                var result = await _labUserService.Job_Transfer_Auto_Party_Account_Master();
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataTransfer
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Job_Transfer_Auto_Party_Account_Master", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
