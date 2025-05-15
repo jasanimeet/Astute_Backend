@@ -59,6 +59,10 @@ namespace astute.Repository
         Task<int> Add_Update_Party_Print_Process(DataTable dataTable);
         #endregion
 
+        #region Party QC Criteria
+        Task<int> Add_Update_Party_QcCriteria(DataTable dataTable);
+        #endregion
+
         #region Party Details
         Task<(string, int)> Add_Update_Party(Party_Master party_Master);
         Task<Party_Master> Get_Party_Details(int party_Id);

@@ -82,6 +82,7 @@ namespace astute.Models
         public DbSet<Employee_JWT_Token> Employee_JWT_Token { get; set; }
         public DbSet<Emergency_Contact_Detail> Emergency_Contact_Detail { get; set; }
         public DbSet<Party_Media> Party_Media { get; set; }
+        public DbSet<Party_QcCriteria> Party_QcCriteria { get; set; }
         public DbSet<Value_Config> Value_Config { get; set; }
         public DbSet<Party_Print_Process> Party_Print_Process { get; set; }
         public DbSet<City_Master_Export> City_Master_Export { get; set; }

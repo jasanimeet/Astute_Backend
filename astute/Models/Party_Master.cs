@@ -73,6 +73,8 @@ namespace astute.Models
         public IList<Party_Shipping> Party_Shipping_List { get; set; } = new List<Party_Shipping>();
         [NotMapped]
         public IList<Party_Print_Process> Party_Print_Process_List { get; set; } = new List<Party_Print_Process>();
-       
+        [NotMapped]
+        public IList<Party_QcCriteria> Party_QcCriteria_List { get; set; } = new List<Party_QcCriteria>();
+
     }
 }

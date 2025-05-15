@@ -591,6 +591,21 @@ namespace astute.Repository
             return result;
         }
         #endregion
+        #region Party QC Criteria
+        public async Task<int> Add_Update_Party_QcCriteria(DataTable dataTable)
+        {
+            var parameter = new SqlParameter("@tblParty_QcCriteria", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Party_QcCriteria_Table_Type",
+                Value = dataTable
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC Party_QcCriteria_Insert_Update @tblParty_QcCriteria", parameter));
+            return result;
+        }
+        #endregion
+
         #endregion
 
         #region Party Details
@@ -712,6 +727,9 @@ namespace astute.Repository
 
                     result.Party_Print_Process_List = await Task.Run(() => _dbContext.Party_Print_Process
                                                 .FromSqlRaw(@"exec Party_Print_Process_Select @PartyId", _partyId).ToListAsync());
+
+                    result.Party_QcCriteria_List = await Task.Run(() => _dbContext.Party_QcCriteria
+                                                .FromSqlRaw(@"exec Party_QcCriteria_Select @PartyId", _partyId).ToListAsync());
                 }
             }
 

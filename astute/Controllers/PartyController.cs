@@ -1392,6 +1392,24 @@ namespace astute.Controllers
                             //    await _partyService.Insert_Party_Print_Trace(dataTable1);
                             //}
                         }
+                        //Party Qc Criteria
+                        if (party_Master.Party_QcCriteria_List != null && party_Master.Party_QcCriteria_List.Count > 0)
+                        {
+                            DataTable dataTable = new DataTable();
+                            dataTable.Columns.Add("QcCriteria_Id", typeof(int));
+                            dataTable.Columns.Add("Party_Id", typeof(int));
+                            dataTable.Columns.Add("Criteria", typeof(string));
+                            dataTable.Columns.Add("FromCts", typeof(decimal));
+                            dataTable.Columns.Add("ToCts", typeof(decimal));
+                            dataTable.Columns.Add("Presold", typeof(string));
+                            dataTable.Columns.Add("QueryFlag", typeof(string));
+
+                            foreach (var item in party_Master.Party_QcCriteria_List)
+                            {
+                                dataTable.Rows.Add(item.QcCriteria_Id, party_Id, item.Criteria, item.FromCts, item.ToCts, item.Presold, item.QueryFlag);
+                            }
+                            await _partyService.Add_Update_Party_QcCriteria(dataTable);
+                        }
 
                         return Ok(new
                         {
