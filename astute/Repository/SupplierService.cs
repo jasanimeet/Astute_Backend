@@ -4689,6 +4689,7 @@ namespace astute.Repository
                         command.Parameters.Add(!string.IsNullOrEmpty(purchase_Media_Upload_Search_Model.Image_Status.ToString()) ? new SqlParameter("@Image_Status", purchase_Media_Upload_Search_Model.Image_Status) : new SqlParameter("@Image_Status", DBNull.Value));
                         command.Parameters.Add(!string.IsNullOrEmpty(purchase_Media_Upload_Search_Model.Video_Status.ToString()) ? new SqlParameter("@Video_Status", purchase_Media_Upload_Search_Model.Video_Status) : new SqlParameter("@Video_Status", DBNull.Value));
                         command.Parameters.Add(!string.IsNullOrEmpty(purchase_Media_Upload_Search_Model.Certificate_Status.ToString()) ? new SqlParameter("@Certificate_Status", purchase_Media_Upload_Search_Model.Certificate_Status) : new SqlParameter("@Certificate_Status", DBNull.Value));
+                        command.Parameters.Add(purchase_Media_Upload_Search_Model.PreSold != null ? new SqlParameter("@PreSold", purchase_Media_Upload_Search_Model.PreSold) : new SqlParameter("@PreSold", DBNull.Value));
                         command.Parameters.Add(parameter);
 
                         await connection.OpenAsync();
