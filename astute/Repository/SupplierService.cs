@@ -4735,7 +4735,7 @@ namespace astute.Repository
             var _trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
 
             var result = await _dbContext.Database
-                                .ExecuteSqlRawAsync("EXEC Purchase_Shioment_Receive_Update @Trans_Id", _trans_Id);
+                                .ExecuteSqlRawAsync("EXEC Purchase_Shipment_Receive_Update @Trans_Id", _trans_Id);
 
             return result;
         }
