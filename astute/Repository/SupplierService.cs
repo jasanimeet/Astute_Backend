@@ -4730,6 +4730,16 @@ namespace astute.Repository
             return result;
         }
 
+        public async Task<int> Update_Purchase_Shipment_Receive(string Trans_Id)
+        {
+            var _trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
+
+            var result = await _dbContext.Database
+                                .ExecuteSqlRawAsync("EXEC Purchase_Shioment_Receive_Update @Trans_Id", _trans_Id);
+
+            return result;
+        }
+
         #endregion
 
         #region Transaction

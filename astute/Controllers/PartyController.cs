@@ -16379,6 +16379,41 @@ namespace astute.Controllers
             }
         }
 
+        [HttpPut]
+        [Route("update_purchase_shipment_receive")]
+        public async Task<IActionResult> Update_Purchase_Shipment_Receive(string Trans_Id)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(Trans_Id))
+                {
+                    var result = await _supplierService.Update_Purchase_Shipment_Receive(Trans_Id);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.Purchase_Shipment_Receive_Updated
+                        });
+                    }
+                    return NoContent();
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Purchase_Shipment_Receive", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Transaction

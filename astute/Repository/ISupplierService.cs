@@ -189,6 +189,7 @@ namespace astute.Repository
         Task<DataTable> Get_Purchase_Detail_Pricing_Excel(int Trans_Id);
         Task<List<Dictionary<string, object>>> Get_Purchase_Media_Upload(Purchase_Media_Upload_Search_Model purchase_Media_Upload_Search_Model, DataTable dt);
         Task<int> Update_Purchase_Media_Upload(Purchase_Media_Upload_Model purchase_Media_Upload_Model);
+        Task<int> Update_Purchase_Shipment_Receive(string Trans_Id);
         #endregion
 
         #region Transaction

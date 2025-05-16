@@ -577,6 +577,8 @@
         public static string OutwardSuccessMessage = Purchase + " stones successfully outward.";
         public static string ConfirmPurchaseMessage = Purchase + " confirm successfully.";
         public static string PurchaseAlreadyExists = Purchase + AlreadyExists;
+        public static string Shipment_Receive = " shipment receive";
+        public static string Purchase_Shipment_Receive_Updated = Purchase + Shipment_Receive + UpdatedSuccessfully;
         #endregion
 
         #region Purchase Pricing
