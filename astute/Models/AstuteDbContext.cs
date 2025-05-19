@@ -124,5 +124,7 @@ namespace astute.Models
         public DbSet<Parcel_Ref_Master> Parcel_Ref_Master { get; set; }
         public DbSet<Grade_Master> Grade_Master { get; set; }
         public DbSet<Grade_Detail> Grade_Detail { get; set; }
+        public DbSet<QC_Master> QC_Master { get; set; }
+        public DbSet<QC_Detail> QC_Detail { get; set; }
     }
 }

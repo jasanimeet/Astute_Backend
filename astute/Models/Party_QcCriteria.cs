@@ -8,10 +8,12 @@ namespace astute.Models
         [Key]
         public int QcCriteria_Id { get; set; }
         public int? Party_Id { get; set; }
-        public string? Criteria { get; set; }
+        public string? Purchase { get; set; }
         public float? FromCts { get; set; }
         public float? ToCts { get; set; }
         public string? Presold { get; set; }
+        public bool? Status { get; set; }
+        public string? Contract { get; set; }
         [NotMapped]
         public string? QueryFlag { get; set; }
     }

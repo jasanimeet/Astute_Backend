@@ -5695,5 +5695,72 @@ namespace astute.Repository
             return ("success", result);
         }
         #endregion
+
+        #region QC Master / Detail
+        public async Task<IList<QC_Master>> Get_QC_Master()
+        {
+            var result = await Task.Run(() => _dbContext.QC_Master
+                          .FromSqlRaw(@"exec QC_Master_Select").ToListAsync());
+            if (result != null && result.Count > 0)
+            {
+                foreach (var item in result)
+                {
+                    item.QC_Detail_List = await Get_QC_Detail(item.Trans_Id);
+                }
+            }
+            return result;
+        }
+        public async Task<IList<QC_Detail>> Get_QC_Detail(int Trans_Id)
+        {
+            var _trans_Id = Trans_Id > 0 ? new SqlParameter("@Trans_Id", Trans_Id) : new SqlParameter("@Trans_Id", DBNull.Value);
+            var result = await Task.Run(() => _dbContext.QC_Detail
+                         .FromSqlRaw(@"exec QC_Detail_Select @Trans_Id", _trans_Id).ToListAsync());
+            return result;
+        }
+        public async Task<int> Create_Update_QC_Master(int Trans_Id, string Criteria_Name, bool? Status, string QC_Type, DataTable dataTable, int user_Id)
+        {
+            var _transId = new SqlParameter("@Trans_Id", Trans_Id);
+            var _criteria_Name = new SqlParameter("@Criteria_Name", Criteria_Name);
+            var _status = new SqlParameter("@Status", Status);
+            var _qc_Type = new SqlParameter("@QC_Type", QC_Type);
+            var _userId = (user_Id > 0) ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
+            var _qcDetail = new SqlParameter("@QC_Detail_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[QC_Detail_Table_Type]",
+                Value = dataTable
+            };
+
+            var insertedId = new SqlParameter("@Inserted_Id", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC [dbo].[QC_Master_Insert_Update]
+                            @Trans_Id, @Criteria_Name, @Status, @QC_Type, @User_Id,
+                            @QC_Detail_Table_Type,
+                            @Inserted_Id OUT",
+                            _transId, _criteria_Name, _status, _qc_Type, _userId,
+                            _qcDetail,
+                            insertedId));
+            return result;
+        }
+        public async Task<(string, int)> Delete_QC_Master(int Trans_Id)
+        {
+            var isReferencedParameter = new SqlParameter("@IsReference", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC QC_Master_Delete @Trans_Id, @IsReference OUT",
+                                        new SqlParameter("@Trans_Id", Trans_Id),
+                                        isReferencedParameter);
+
+            var isReferenced = (bool)isReferencedParameter.Value;
+            if (isReferenced)
+                return ("_reference_found", (int)HttpStatusCode.Conflict);
+            return ("success", result);
+        }
+        #endregion
     }
 }

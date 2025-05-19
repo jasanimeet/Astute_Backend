@@ -609,5 +609,13 @@
         public static string GradeMasterDeleted = GradeMaster + " has been deleted successfully";
         public static string GradeAlreadyExist = GradeMaster + AlreadyExists;
         #endregion
+
+        #region Grade Master
+        public static string QCMaster = "QC";
+        public static string QCMasterCreated = QCMaster + " has been added successfully";
+        public static string QCMasterUpdated = QCMaster + " has been updated successfully";
+        public static string QCMasterDeleted = QCMaster + " has been deleted successfully";
+        public static string QCAlreadyExist = QCMaster + AlreadyExists;
+        #endregion
     }
 }

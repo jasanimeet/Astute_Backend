@@ -1398,15 +1398,17 @@ namespace astute.Controllers
                             DataTable dataTable = new DataTable();
                             dataTable.Columns.Add("QcCriteria_Id", typeof(int));
                             dataTable.Columns.Add("Party_Id", typeof(int));
-                            dataTable.Columns.Add("Criteria", typeof(string));
+                            dataTable.Columns.Add("Purchase", typeof(string));
                             dataTable.Columns.Add("FromCts", typeof(decimal));
                             dataTable.Columns.Add("ToCts", typeof(decimal));
                             dataTable.Columns.Add("Presold", typeof(string));
+                            dataTable.Columns.Add("Status", typeof(bool));
+                            dataTable.Columns.Add("Contract", typeof(string));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
 
                             foreach (var item in party_Master.Party_QcCriteria_List)
                             {
-                                dataTable.Rows.Add(item.QcCriteria_Id, party_Id, item.Criteria, item.FromCts, item.ToCts, item.Presold, item.QueryFlag);
+                                dataTable.Rows.Add(item.QcCriteria_Id, party_Id, item.Purchase, item.FromCts, item.ToCts, item.Presold, item.Status, item.Contract, item.QueryFlag);
                             }
                             await _partyService.Add_Update_Party_QcCriteria(dataTable);
                         }
@@ -20837,6 +20839,136 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Delete_Grade_Master", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region QC Master / Detail
+        /*
+         * Date: 2025/05/16 By Jashmin Patel
+         * Grade master...
+         */
+        [HttpGet]
+        [Route("get_qc_master")]
+        [Authorize]
+        public async Task<IActionResult> Get_QC_Master()
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if ((user_Id ?? 0) > 0)
+                {
+                    var result = await _supplierService.Get_QC_Master();
+                    if (result != null)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = result,
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_QC_Master", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("create_update_qc_master")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_QC_Master(QC_Master model)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if ((user_Id ?? 0) > 0)
+                {
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Id", typeof(int));
+                    dataTable.Columns.Add("Trans_Id", typeof(int));
+                    dataTable.Columns.Add("QC_Name", typeof(string));
+                    dataTable.Columns.Add("Status", typeof(bool));
+
+                    if (model.QC_Detail_List != null && model.QC_Detail_List.Count > 0)
+                    {
+                        foreach (var item in model.QC_Detail_List)
+                        {
+                            dataTable.Rows.Add(item.Id, item.Trans_Id, item.QC_Name, item.Status);
+                        }
+                    }
+                    var result = await _supplierService.Create_Update_QC_Master(model.Trans_Id, model.Criteria_Name, model.Status, model.QC_Type, dataTable, user_Id ?? 0);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = model.Trans_Id > 0 ? CoreCommonMessage.QCMasterUpdated : CoreCommonMessage.QCMasterCreated
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_QC_Master", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_qc_master")]
+        [Authorize]
+        public async Task<IActionResult> Delete_QC_Master(int Trans_Id)
+        {
+            try
+            {
+                var (message, result) = await _supplierService.Delete_QC_Master(Trans_Id);
+                if (message == "success" && result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.QCMasterDeleted
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = "parameter mismatched."
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_QC_Master", ex.StackTrace);
                 return Conflict(new
                 {
                     message = ex.Message
