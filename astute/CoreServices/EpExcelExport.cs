@@ -10322,29 +10322,64 @@ namespace astute.CoreServices
                     #endregion
 
                     #region Header Name Declaration
+                    Dictionary<string, int> columnPixelWidths = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+                    {
+                        ["Stock Id"] = 60,
+                        ["Ref No"] = 60,
+                        ["Location"] = 70,
+                        ["Lab"] = 55,
+                        ["Image"] = 55,
+                        ["Video"] = 55,
+                        ["Cert No"] = 70,
+                        ["Shape"] = 70,
+                        ["Pointer"] = 70,
+                        ["BGM"] = 70,
+                        ["Color"] = 50,
+                        ["Clarity"] = 50,
+                        ["Cts"] = 70,
+                        ["Rap Rate"] = 70,
+                        ["Rap Amount"] = 70,
+                        ["Final Disc%"] = 70,
+                        ["Final Amount"] = 70,
+                        ["Cut"] = 50,
+                        ["Polish"] = 50,
+                        ["Symm"] = 50,
+                        ["Fls"] = 50,
+                        ["Length"] = 50,
+                        ["Width"] = 50,
+                        ["Depth"] = 50,
+                        ["Depth%"] = 50,
+                        ["Table%"] = 50,
+                        ["Key To Symbol"] = 323,
+                        ["Comment"] = 115,
+                        ["Girdle%"] = 50,
+                        ["Crown Angle"] = 50,
+                        ["Crown Height"] = 50,
+                        ["Pavilion Angle"] = 50,
+                        ["Pavilion Height"] = 50,
+                        ["Table White"] = 50,
+                        ["Crown White"] = 50,
+                        ["Table Black"] = 50,
+                        ["Crown Black"] = 50,
+                        ["Culet"] = 50,
+                        ["Table Open"] = 50,
+                        ["Crown Open"] = 50,
+                        ["Pavilion Open"] = 50,
+                        ["Girdle Open"] = 50
+                    };
+
                     int k = 0;
                     for (int j = 0; j < column_dt.Rows.Count; j++)
                     {
                         string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
+                        k++;
 
-                        if (Column_Name == "IMAGE LINK")
-                        {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Image";
-                            worksheet.Cells[2, k].AutoFitColumns(7);
-                        }
-                        else if (Column_Name == "VIDEO LINK")
-                        {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = "Video";
-                            worksheet.Cells[2, k].AutoFitColumns(7);
-                        }
-                        else
-                        {
-                            k += 1;
-                            worksheet.Cells[2, k].Value = Column_Name;
-                            worksheet.Cells[2, k].AutoFitColumns(10);
-                        }
+                        worksheet.Cells[2, k].Value = Column_Name;
+
+                        int pixelWidth = columnPixelWidths.TryGetValue(Column_Name, out int value) ? value : 0;
+                        double excelWidth = GetExcelWidth(pixelWidth);
+
+                        worksheet.Column(k).Width = excelWidth;
                     }
 
                     worksheet.Cells[1, 1, 1, Row_Count].Style.Font.Bold = true;
@@ -10661,6 +10696,25 @@ namespace astute.CoreServices
                                 else if (Column_Name == "Location")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
+
+                                    if (Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]) == "Hong Kong")
+                                    {
+                                        Color light_Green = ColorTranslator.FromHtml("#E2EFDA");
+                                        worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                        worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(light_Green);
+                                    }
+                                    else if(Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]) == "In Transit")
+                                    {
+                                        Color light_Blue = ColorTranslator.FromHtml("#BDD7EE");
+                                        worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                        worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(light_Blue);
+                                    }
+                                    else if(Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]) == "Not Shipped")
+                                    {
+                                        Color light_Gold = ColorTranslator.FromHtml("#FFF2CC");
+                                        worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                        worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(light_Gold);
+                                    }
                                 }
                             }
                         }
@@ -10676,7 +10730,7 @@ namespace astute.CoreServices
                         string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
 
                         kkk += 1;
-                        if (Column_Name == "Ref No")
+                        if (Column_Name == "Shape")
                         {
                             worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(103,B" + inStartIndex + ":B" + (inwrkrow - 1) + "),2)";
                             worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
