@@ -10378,6 +10378,23 @@ namespace astute.CoreServices
 
                         int pixelWidth = columnPixelWidths.TryGetValue(Column_Name, out int value) ? value : 0;
                         double excelWidth = GetExcelWidth(pixelWidth);
+                        
+                        if (Column_Name.Equals("IMAGE LINK", StringComparison.OrdinalIgnoreCase))
+                        {
+                            worksheet.Cells[2, k].Value = "Image";
+
+                            pixelWidth = columnPixelWidths.TryGetValue("Image", out value) ? value : 0;
+                            excelWidth = GetExcelWidth(pixelWidth);
+                            worksheet.Column(k).Width = excelWidth;
+                        }
+                        else if (Column_Name.Equals("VIDEO LINK", StringComparison.OrdinalIgnoreCase))
+                        {
+                            worksheet.Cells[2, k].Value = "Video";
+
+                            pixelWidth = columnPixelWidths.TryGetValue("Video", out value) ? value : 0;
+                            excelWidth = GetExcelWidth(pixelWidth);
+                            worksheet.Column(k).Width = excelWidth;
+                        }
 
                         worksheet.Column(k).Width = excelWidth;
                     }
