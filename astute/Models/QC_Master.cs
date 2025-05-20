@@ -11,7 +11,12 @@ namespace astute.Models
         public string Criteria_Name { get; set; }
         public bool? Status { get; set; }
         public string? QC_Type { get; set; }
-        [NotMapped]
+        public string? Created_By { get; set; }
+        public string? Created_Date { get; set; }
+        public string? Created_Time { get; set; }
+        public string? Updated_By { get; set; }
+        public string? Updated_Date { get; set; }
+        public string? Updated_Time { get; set; }
         public IList<QC_Detail> QC_Detail_List { get; set; }
     }
     public class QC_Detail
