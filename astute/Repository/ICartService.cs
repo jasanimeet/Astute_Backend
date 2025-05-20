@@ -14,8 +14,8 @@ namespace astute.Repository
         Task<int> Approved_Management_Update_Status(Approval_Management_Status approval_Management);
         //Task<int> Create_Approved_Management(Approval_Management_Create_Update approval_Management);
         Task<(string, int, string)> Create_Approved_Management(DataTable dataTable, int Id, int user_Id, string remarks, string status);
-        Task<(string, int, string, int)> Create_Update_Order_Processing(DataTable dataTable, int Id, int? user_Id, string customer_Name, string remarks, string status, int? assist_By);
-        Task<(string, int, string, int)> Create_Update_Order_Processing_Stock_Availability(DataTable dataTable, int Id, int? user_Id, string customer_Name, string remarks, string status, int? assist_By);
+        Task<(string, int, string, int)> Create_Update_Order_Processing(DataTable dataTable, int Id, int? user_Id, string customer_Name, string remarks, string status, int? assist_By, int? buyer_Code);
+        Task<(string, int, string, int)> Create_Update_Order_Processing_Stock_Availability(DataTable dataTable, int Id, int? user_Id, string customer_Name, string remarks, string status, int? assist_By, int? buyer_Code);
         Task<int> Order_Processing_Inactive(Order_Processing_Inactive order_processing);
         Task<List<Dictionary<string, object>>> Get_Order_Summary(string order_no);
         Task<int> Order_Processing_Update_Order_Status(string order_Status, string order_No);

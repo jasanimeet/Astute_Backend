@@ -737,7 +737,9 @@ namespace astute.Controllers
                         upcoming_Approval = response.Upcoming_Approval,
                         repricing_Approval = response.Repricing_Approval,
                         token = response.Token,
-                        user_Type = response.Usert_Type
+                        user_Type = response.User_Type,
+                        Middle_Name = response.Middle_Name,
+                        Buyer_Code = response.Buyer_Code,
                     });
                 }
             }
@@ -919,7 +921,9 @@ namespace astute.Controllers
                                 Upcoming_Approval = response.Upcoming_Approval,
                                 Repricing_Approval = response.Repricing_Approval,
                                 token = response.Token,
-                                user_Type = response.Usert_Type
+                                user_Type = response.User_Type,
+                                Middle_Name = response.Middle_Name,
+                                Buyer_Code = response.Buyer_Code,
                             });
                         }
                     }

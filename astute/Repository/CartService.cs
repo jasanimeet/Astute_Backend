@@ -152,7 +152,7 @@ namespace astute.Repository
 
             return ("success", result, _msg);
         }
-        public async Task<(string, int,string, int)> Create_Update_Order_Processing(DataTable dataTable, int Id, int? user_Id, string customer_Name, string remarks, string status, int? assist_By)
+        public async Task<(string, int,string, int)> Create_Update_Order_Processing(DataTable dataTable, int Id, int? user_Id, string customer_Name, string remarks, string status, int? assist_By, int? buyer_Code)
         {
             var parameter = new SqlParameter("@Order_Processing_Table_Type", SqlDbType.Structured)
             {
@@ -165,6 +165,7 @@ namespace astute.Repository
             var _remarks = !string.IsNullOrEmpty(remarks) ? new SqlParameter("@Remarks", remarks) : new SqlParameter("@Remarks", DBNull.Value);
             var _status = !string.IsNullOrEmpty(status) ? new SqlParameter("@Status", status) : new SqlParameter("@Status", DBNull.Value);
             var _assist_By = assist_By > 0 ? new SqlParameter("@Assist_By", assist_By) : new SqlParameter("@Assist_By", DBNull.Value);
+            var _buyer_Code = buyer_Code > 0 ? new SqlParameter("@Buyer_Code", buyer_Code) : new SqlParameter("@Buyer_Code", DBNull.Value);
             var is_Exists = new SqlParameter("@IsExist", SqlDbType.Bit)
             {
                 Direction = ParameterDirection.Output
@@ -179,7 +180,7 @@ namespace astute.Repository
                 Direction = ParameterDirection.Output
             };
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Insert_Update] @Order_Processing_Table_Type,@Id, @User_Id, @Customer_Name, @Remarks ,@Status, @Assist_By,@IsExist OUT,@Msg OUT, @Order_No OUT", parameter, id, _user_Id, _customer_Name, _remarks, _status, _assist_By, is_Exists,msg, Order_No));
+                        .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Insert_Update] @Order_Processing_Table_Type,@Id, @User_Id, @Customer_Name, @Remarks ,@Status, @Assist_By, @Buyer_Code, @IsExist OUT,@Msg OUT, @Order_No OUT", parameter, id, _user_Id, _customer_Name, _remarks, _status, _assist_By, _buyer_Code, is_Exists,msg, Order_No));
             var _is_Exists = (bool)is_Exists.Value;
             var _msg = (string)msg.Value;
             var order_no = (int)Order_No.Value;
@@ -189,7 +190,7 @@ namespace astute.Repository
             return ("success", result, _msg, order_no);
         }
         
-        public async Task<(string, int,string, int)> Create_Update_Order_Processing_Stock_Availability(DataTable dataTable, int Id, int? user_Id, string customer_Name, string remarks, string status, int? assist_By)
+        public async Task<(string, int,string, int)> Create_Update_Order_Processing_Stock_Availability(DataTable dataTable, int Id, int? user_Id, string customer_Name, string remarks, string status, int? assist_By, int? buyer_Code)
         {
             var parameter = new SqlParameter("@Order_Processing_Table_Type", SqlDbType.Structured)
             {
@@ -202,6 +203,7 @@ namespace astute.Repository
             var _remarks = !string.IsNullOrEmpty(remarks) ? new SqlParameter("@Remarks", remarks) : new SqlParameter("@Remarks", DBNull.Value);
             var _status = !string.IsNullOrEmpty(status) ? new SqlParameter("@Status", status) : new SqlParameter("@Status", DBNull.Value);
             var _assist_By = assist_By > 0 ? new SqlParameter("@Assist_By", assist_By) : new SqlParameter("@Assist_By", DBNull.Value);
+            var _buyer_Code = buyer_Code > 0 ? new SqlParameter("@Buyer_Code", buyer_Code) : new SqlParameter("@Buyer_Code", DBNull.Value); 
             var is_Exists = new SqlParameter("@IsExist", SqlDbType.Bit)
             {
                 Direction = ParameterDirection.Output
@@ -216,7 +218,7 @@ namespace astute.Repository
                 Direction = ParameterDirection.Output
             };
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Stock_Availability_Insert_Update] @Order_Processing_Table_Type,@Id, @User_Id, @Customer_Name, @Remarks ,@Status, @Assist_By,@IsExist OUT,@Msg OUT, @Order_No OUT", parameter, id, _user_Id, _customer_Name, _remarks, _status, _assist_By, is_Exists,msg, Order_No));
+                        .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Stock_Availability_Insert_Update] @Order_Processing_Table_Type,@Id, @User_Id, @Customer_Name, @Remarks ,@Status, @Assist_By, @Buyer_Code, @IsExist OUT,@Msg OUT, @Order_No OUT", parameter, id, _user_Id, _customer_Name, _remarks, _status, _assist_By, _buyer_Code, is_Exists,msg, Order_No));
             var _is_Exists = (bool)is_Exists.Value;
             var _msg = (string)msg.Value;
             var order_no = (int)Order_No.Value;

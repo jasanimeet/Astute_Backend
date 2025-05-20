@@ -11,6 +11,7 @@ namespace astute.Models
         public string? Remarks { get; set; }
         public string? Status { get; set; }
         public object Order_Detail { get; set; }
+        public int? Buyer_Code { get; set; }
     }
     public class Order_Processing_Detail
     {

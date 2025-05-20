@@ -57,6 +57,7 @@ namespace astute.Models
         public bool? Repricing_Approved { get; set; }
         public bool? Upcoming_Approval { get; set; }
         public bool? Repricing_Approval { get; set; }
+        public int? Fortune_Id { get; set; }
         [NotMapped]
         public IList<Employee_Document> Employee_Document_List { get; set; } = new List<Employee_Document>();
         [NotMapped]

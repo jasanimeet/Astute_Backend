@@ -7631,7 +7631,7 @@ namespace astute.Controllers
                         Convert.ToString(item.Status), Convert.ToString(item.QC_Remarks));
                 }
 
-                var (message, result, msg, order_No) = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.Id, order_Processing.User_Id, order_Processing.Customer_Name, order_Processing.Remarks, order_Processing.Status, order_Processing.Assist_By);
+                var (message, result, msg, order_No) = await _cartService.Create_Update_Order_Processing(dataTable, order_Processing.Id, order_Processing.User_Id, order_Processing.Customer_Name, order_Processing.Remarks, order_Processing.Status, order_Processing.Assist_By, order_Processing.Buyer_Code);
                 if ((message == "exist" && msg.Length > 0) || (message == "success" && msg.Length > 0))
                 {
                     int assistBy = order_Processing.Assist_By ?? 0;
@@ -7733,7 +7733,7 @@ namespace astute.Controllers
                         Convert.ToString(item.Status), Convert.ToString(item.QC_Remarks));
                 }
 
-                var (message, result, msg, order_No) = await _cartService.Create_Update_Order_Processing_Stock_Availability(dataTable, order_Processing.Id, order_Processing.User_Id, order_Processing.Customer_Name, order_Processing.Remarks, order_Processing.Status, order_Processing.Assist_By);
+                var (message, result, msg, order_No) = await _cartService.Create_Update_Order_Processing_Stock_Availability(dataTable, order_Processing.Id, order_Processing.User_Id, order_Processing.Customer_Name, order_Processing.Remarks, order_Processing.Status, order_Processing.Assist_By, order_Processing.Buyer_Code);
                 if ((message == "exist" && msg.Length > 0) || (message == "success" && msg.Length > 0))
                 {
                     int assistBy = order_Processing.Assist_By ?? 0;
