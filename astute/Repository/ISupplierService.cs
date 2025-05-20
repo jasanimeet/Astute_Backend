@@ -259,7 +259,8 @@ namespace astute.Repository
         #region QC Master / Detail
         Task<IList<QC_Master>> Get_QC_Master();
         Task<IList<QC_Detail>> Get_QC_Detail(int Grade_Id);
-        Task<int> Create_Update_QC_Master(int Trans_Id, string Criteria_Name, bool? Status, string QC_Type, DataTable dataTable, int user_Id);
+        Task<int> Create_Update_QC_Master(DataTable dataTable, int user_Id);
+        Task<int> Create_Update_QC_Detail(DataTable dataTable, int user_Id);
         Task<(string, int)> Delete_QC_Master(int Grade_Id);
         #endregion
     }

@@ -20895,7 +20895,59 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_update_qc_master")]
         [Authorize]
-        public async Task<IActionResult> Create_Update_QC_Master(QC_Master model)
+        public async Task<IActionResult> Create_Update_QC_Master(IList<QC_Master_Model> model)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if ((user_Id ?? 0) > 0)
+                {
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Trans_Id", typeof(int));
+                    dataTable.Columns.Add("Criteria_Name", typeof(string));
+                    dataTable.Columns.Add("Status", typeof(bool));
+                    dataTable.Columns.Add("QC_Type", typeof(string));
+                    dataTable.Columns.Add("Query_Flag", typeof(string));
+
+                    if (model != null && model.Count > 0)
+                    {
+                        foreach (var item in model)
+                        {
+                            dataTable.Rows.Add(item.Trans_Id, item.Criteria_Name, item.Status, item.QC_Type, item.Query_Flag);
+                        }
+                    }
+                    var result = await _supplierService.Create_Update_QC_Master(dataTable, user_Id ?? 0);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.QCMasterUpdated
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_QC_Master", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPost]
+        [Route("create_update_qc_detail")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_QC_Detail(IList<QC_Detail> model)
         {
             try
             {
@@ -20910,20 +20962,20 @@ namespace astute.Controllers
                     dataTable.Columns.Add("QC_Name", typeof(string));
                     dataTable.Columns.Add("Status", typeof(bool));
 
-                    if (model.QC_Detail_List != null && model.QC_Detail_List.Count > 0)
+                    if (model != null && model.Count > 0)
                     {
-                        foreach (var item in model.QC_Detail_List)
+                        foreach (var item in model)
                         {
                             dataTable.Rows.Add(item.Id, item.Trans_Id, item.QC_Name, item.Status);
                         }
                     }
-                    var result = await _supplierService.Create_Update_QC_Master(model.Trans_Id, model.Criteria_Name, model.Status, model.QC_Type, dataTable, user_Id ?? 0);
+                    var result = await _supplierService.Create_Update_QC_Detail(dataTable, user_Id ?? 0);
                     if (result > 0)
                     {
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
-                            message = model.Trans_Id > 0 ? CoreCommonMessage.QCMasterUpdated : CoreCommonMessage.QCMasterCreated
+                            message = CoreCommonMessage.QCMasterUpdated
                         });
                     }
                     return NoContent();
@@ -20936,7 +20988,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Create_Update_QC_Master", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_QC_Detail", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message

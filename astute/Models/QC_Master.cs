@@ -26,4 +26,12 @@ namespace astute.Models
         public string QC_Name { get; set; }
         public bool Status { get; set; }
     }
+    public class QC_Master_Model
+    {
+        public int Trans_Id { get; set; }
+        public string Criteria_Name { get; set; }
+        public bool? Status { get; set; }
+        public string? QC_Type { get; set; }
+        public string Query_Flag { get; set; }
+    }
 }

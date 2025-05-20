@@ -5717,32 +5717,34 @@ namespace astute.Repository
                          .FromSqlRaw(@"exec QC_Detail_Select @Trans_Id", _trans_Id).ToListAsync());
             return result;
         }
-        public async Task<int> Create_Update_QC_Master(int Trans_Id, string Criteria_Name, bool? Status, string QC_Type, DataTable dataTable, int user_Id)
+        public async Task<int> Create_Update_QC_Master(DataTable dataTable, int user_Id)
         {
-            var _transId = new SqlParameter("@Trans_Id", Trans_Id);
-            var _criteria_Name = new SqlParameter("@Criteria_Name", Criteria_Name);
-            var _status = new SqlParameter("@Status", Status);
-            var _qc_Type = new SqlParameter("@QC_Type", QC_Type);
             var _userId = (user_Id > 0) ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
+
+            var _qcMaster = new SqlParameter("@QC_Master_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[QC_Master_Table_Type]",
+                Value = dataTable
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC [dbo].[QC_Master_Insert_Update]
+                            @User_Id, @QC_Master_Table_Type",
+                             _userId, _qcMaster
+                            ));
+            return result;
+        }
+        public async Task<int> Create_Update_QC_Detail(DataTable dataTable, int user_Id)
+        {
+            //var _userId = (user_Id > 0) ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
             var _qcDetail = new SqlParameter("@QC_Detail_Table_Type", SqlDbType.Structured)
             {
                 TypeName = "[dbo].[QC_Detail_Table_Type]",
                 Value = dataTable
             };
 
-            var insertedId = new SqlParameter("@Inserted_Id", SqlDbType.Int)
-            {
-                Direction = ParameterDirection.Output
-            };
-
             var result = await Task.Run(() => _dbContext.Database
-                        .ExecuteSqlRawAsync(@"EXEC [dbo].[QC_Master_Insert_Update]
-                            @Trans_Id, @Criteria_Name, @Status, @QC_Type, @User_Id,
-                            @QC_Detail_Table_Type,
-                            @Inserted_Id OUT",
-                            _transId, _criteria_Name, _status, _qc_Type, _userId,
-                            _qcDetail,
-                            insertedId));
+                        .ExecuteSqlRawAsync(@"EXEC [dbo].[QC_Detail_Insert_Update] @QC_Detail_Table_Type", _qcDetail));
             return result;
         }
         public async Task<(string, int)> Delete_QC_Master(int Trans_Id)
