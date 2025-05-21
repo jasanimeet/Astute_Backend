@@ -16416,6 +16416,39 @@ namespace astute.Controllers
             }
         }
 
+        /*
+         * Date: 2025/05/21 Get Purchase Detail for QC by Jashmin Patel
+         */
+        [HttpGet]
+        [Route("get_purchase_detail_for_qc")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Detail_For_Qc(int? Trans_Id, string Doc_Type)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Purchase_Detail_For_Qc(Trans_Id ?? 0, Doc_Type);
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail_Pricing", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Transaction
