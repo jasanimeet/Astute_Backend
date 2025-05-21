@@ -15831,6 +15831,79 @@ namespace astute.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("purchase_detail_qc_update")]
+        [Authorize]
+        public async Task<IActionResult> Purchase_Detail_QC_Update(Purchase_Detail_QC_List purchase_Detail_QC_List)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                IList<Purchase_Detail_QC> purchase_Detail_List = JsonConvert.DeserializeObject<IList<Purchase_Detail_QC>>(purchase_Detail_QC_List.Purchase_Detail_QC.ToString());
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("Id", typeof(int));
+                dataTable.Columns.Add("QC_Remarks", typeof(string));
+                dataTable.Columns.Add("Sunrise_Grade", typeof(string));
+                dataTable.Columns.Add("Shade", typeof(int));
+                dataTable.Columns.Add("Shade_C", typeof(string));
+                dataTable.Columns.Add("Milky", typeof(int));
+                dataTable.Columns.Add("Milky_C", typeof(string));
+                dataTable.Columns.Add("Table_Black", typeof(int));
+                dataTable.Columns.Add("Table_Black_C", typeof(string));
+                dataTable.Columns.Add("Crown_Black", typeof(int));
+                dataTable.Columns.Add("Crown_Black_C", typeof(string));
+                dataTable.Columns.Add("Table_White", typeof(int));
+                dataTable.Columns.Add("Table_White_C", typeof(string));
+                dataTable.Columns.Add("Crown_White", typeof(int));
+                dataTable.Columns.Add("Crown_White_C", typeof(string));
+                dataTable.Columns.Add("Outward_Remarks", typeof(string));
+
+                foreach (var item in purchase_Detail_List)
+                {
+                    dataTable.Rows.Add(
+                        item.Id,
+                        item.QC_Remarks,
+                        item.Sunrise_Grade,
+                        item.Shade,
+                        item.Shade_C,
+                        item.Milky,
+                        item.Milky_C,
+                        item.Table_Black,
+                        item.Table_Black_C,
+                        item.Crown_Black,
+                        item.Crown_Black_C,
+                        item.Table_White,
+                        item.Table_White_C,
+                        item.Crown_White,
+                        item.Crown_White_C,
+                        item.Additional_Remarks
+                    );
+                }
+
+                var result = await _supplierService.Purchase_Detail_QC_Update(dataTable, purchase_Detail_QC_List.Trans_Id, user_Id ?? 0);
+                if (result != null && result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.QCSuccessMessage
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Purchase_Detail_Outward_Update", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         [HttpGet]
         [Route("get_purchase_pricing")]
         [Authorize]
