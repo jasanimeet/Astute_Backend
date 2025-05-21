@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Text.Json.Serialization;
 
 namespace astute.Models
@@ -62,5 +61,8 @@ namespace astute.Models
 
         [JsonPropertyName("Supplier_Invoice_No")]
         public string? Supplier_Invoice_No { get; set; }
+
+        [JsonPropertyName("Customer_Id")]
+        public int? Customer_Id { get; set; }
     }
 }

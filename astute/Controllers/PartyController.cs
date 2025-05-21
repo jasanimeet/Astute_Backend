@@ -16572,6 +16572,7 @@ namespace astute.Controllers
                     cmasterDataTable.Columns.Add("Contract", typeof(bool));
                     cmasterDataTable.Columns.Add("Supplier_Invoice_No", typeof(string));
                     cmasterDataTable.Columns.Add("Remarks", typeof(string));
+                    cmasterDataTable.Columns.Add("Customer_Id", typeof(int));
 
                     cmasterDataTable.Rows.Add(
                         purchase_Master.Trans_Id ?? 0,
@@ -16586,7 +16587,8 @@ namespace astute.Controllers
                         purchase_Master.Transaction_Invoice_No ?? null,
                         purchase_Master.Contract ?? null,
                         purchase_Master.Supplier_Invoice_No ?? null,
-                        purchase_Master.Remarks ?? null
+                        purchase_Master.Remarks ?? null,
+                        purchase_Master.Customer_Id ?? null
                     );
 
                     DataTable cdetailDataTable = new DataTable();
@@ -16598,6 +16600,10 @@ namespace astute.Controllers
                     cdetailDataTable.Columns.Add("Rap_Amt", typeof(decimal));
                     cdetailDataTable.Columns.Add("Actual_Cost_Disc", typeof(float));
                     cdetailDataTable.Columns.Add("Actual_Cost_Amt", typeof(decimal));
+                    cdetailDataTable.Columns.Add("Offer_Disc", typeof(float));
+                    cdetailDataTable.Columns.Add("Offer_Amt", typeof(decimal));
+                    cdetailDataTable.Columns.Add("Web_Disc", typeof(float));
+                    cdetailDataTable.Columns.Add("Web_Amt", typeof(decimal));
 
                     foreach (var item in purchase_Detail_List)
                     {
@@ -16608,7 +16614,11 @@ namespace astute.Controllers
                             SafeConvertToDouble(item.Rap_Rate?.ToString()),
                             SafeConvertToDouble(item.Rap_Amount?.ToString()),
                             SafeConvertToDouble(item.Consignment_Cost_Disc?.ToString()),
-                            SafeConvertToDouble(item.Consignment_Cost_Amt?.ToString())
+                            SafeConvertToDouble(item.Consignment_Cost_Amt?.ToString()),
+                            null,
+                            null,
+                            null,
+                            null
                         );
                     }
 
@@ -16691,6 +16701,7 @@ namespace astute.Controllers
                 masterDataTable.Columns.Add("Contract", typeof(bool));
                 masterDataTable.Columns.Add("Supplier_Invoice_No", typeof(string));
                 masterDataTable.Columns.Add("Remarks", typeof(string));
+                masterDataTable.Columns.Add("Customer_Id", typeof(int));
 
                 masterDataTable.Rows.Add(
                     purchase_Master.Trans_Id ?? 0,
@@ -16705,7 +16716,8 @@ namespace astute.Controllers
                     purchase_Master.Transaction_Invoice_No ?? null,
                     purchase_Master.Contract ?? null,
                     purchase_Master.Supplier_Invoice_No ?? null,
-                    purchase_Master.Remarks ?? null
+                    purchase_Master.Remarks ?? null,
+                    purchase_Master.Customer_Id ?? null
                 );
 
                 DataTable detailDataTable = new DataTable();
@@ -16717,6 +16729,10 @@ namespace astute.Controllers
                 detailDataTable.Columns.Add("Rap_Amt", typeof(decimal));
                 detailDataTable.Columns.Add("Actual_Cost_Disc", typeof(float));
                 detailDataTable.Columns.Add("Actual_Cost_Amt", typeof(decimal));
+                detailDataTable.Columns.Add("Offer_Disc", typeof(float));
+                detailDataTable.Columns.Add("Offer_Amt", typeof(decimal));
+                detailDataTable.Columns.Add("Web_Disc", typeof(float));
+                detailDataTable.Columns.Add("Web_Amt", typeof(decimal));
 
                 foreach (var item in purchase_Detail_List)
                 {
@@ -16727,7 +16743,11 @@ namespace astute.Controllers
                         SafeConvertToDouble(item.Rap_Rate?.ToString()),
                         SafeConvertToDouble(item.Rap_Amount?.ToString()),
                         SafeConvertToDouble(item.Actual_Cost_Disc?.ToString()),
-                        SafeConvertToDouble(item.Actual_Cost_Amt?.ToString())
+                        SafeConvertToDouble(item.Actual_Cost_Amt?.ToString()),
+                        SafeConvertToDouble(item.Offer_Disc?.ToString()),
+                        SafeConvertToDouble(item.Offer_Amt?.ToString()),
+                        SafeConvertToDouble(item.Web_Disc?.ToString()),
+                        SafeConvertToDouble(item.Web_Amt?.ToString())
                     );
                 }
 
@@ -16928,6 +16948,42 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail_For_Consignment_Purchase", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
+        #region Hold
+
+        [HttpPost]
+        [Route("get_purchase_detail_for_hold")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Detail_For_Hold(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Get_Purchase_Detail_For_Hold(purchase_Detail_For_Purchase_Return);
+
+                var result_Message = await _supplierService.Get_Unavailable_Purchase_Detail_For_Hold(purchase_Detail_For_Purchase_Return);
+
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    message = CoreCommonMessage.DataSuccessfullyFound,
+                    unavailable_message = result_Message,
+                    data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail_For_Hold", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message

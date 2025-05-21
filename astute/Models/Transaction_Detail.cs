@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.Text.Json.Serialization;
 
 namespace astute.Models
 {
@@ -31,5 +30,17 @@ namespace astute.Models
 
         [JsonProperty("CONSIGNMENT COST AMOUNT")]
         public string? Consignment_Cost_Amt { get; set; }
+
+        [JsonProperty("OFFER DISC")]
+        public string? Offer_Disc { get; set; }
+
+        [JsonProperty("OFFER AMOUNT")]
+        public string? Offer_Amt { get; set; }
+
+        [JsonProperty("WEB DISC")]
+        public string? Web_Disc { get; set; }
+
+        [JsonProperty("WEB AMOUNT")]
+        public string? Web_Amt { get; set; }
     }
 }
