@@ -15831,7 +15831,7 @@ namespace astute.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("get_purchase_detail_qc_excel")]
         [Authorize]
         public async Task<IActionResult> Get_Purchase_Detail_QC_Excel(Purchase_Search_Model purchase_Search_Model)
