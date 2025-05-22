@@ -4280,6 +4280,28 @@ namespace astute.Repository
             }
             return dataTable;
         }
+
+        public async Task<DataTable> Get_Purchase_Detail_QC_Excel(string Id)
+        {
+            var dataTable = new DataTable();
+
+            var connectionString = _configuration["ConnectionStrings:AstuteConnection"];
+            using (var connection = new SqlConnection(connectionString))
+            using (var command = new SqlCommand("Purchase_Detail_By_Id_QC_Select_Excel", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.Add(!string.IsNullOrEmpty(Id) ? new SqlParameter("@Id", Id) : new SqlParameter("@Id", DBNull.Value));
+
+                await connection.OpenAsync();
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    dataTable.Load(reader);
+                }
+            }
+            return dataTable;
+        }
+
         public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Contract(string certificate_No)
         {
             var result = new List<Dictionary<string, object>>();

@@ -15831,6 +15831,67 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_purchase_detail_qc_excel")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Detail_QC_Excel(Purchase_Search_Model purchase_Search_Model)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Purchase_Detail_QC_Excel(purchase_Search_Model.Id);
+
+                if (result != null && result.Rows.Count > 0)
+                {
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/PurchaseQCExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string filename = string.Empty;
+
+                    filename = "QC_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".xlsx";
+
+                    List<string> columnNames = new List<string>();
+                    foreach (DataColumn column in result.Columns)
+                    {
+                        columnNames.Add(column.ColumnName);
+                    }
+
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in columnNames)
+                    {
+                        columnNamesTable.Rows.Add(columnName);
+                    }
+
+                    EpExcelExport.Create_Purchase_Detail_QC_Excel(result, columnNamesTable, filePath, filePath + filename);
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.PurchaseQCExcelFiles + filename;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+                else
+                {
+                    return NoContent();
+                }
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail_QC_Excel", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         [HttpPost]
         [Route("purchase_detail_qc_update")]
         [Authorize]

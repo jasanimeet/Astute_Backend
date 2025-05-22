@@ -22,5 +22,6 @@
         public static string LabEntryNotUploadedOverseasExcelFiles = "/Files/LabEntryNotUploadedOverseasExcelFiles/";
         public static string RepostIconFilePath = "/Files/ReportIcon/";
         public static string CertificatesFilePath = "Files/Certificates";
+        public static string PurchaseQCExcelFiles = "/Files/PurchaseQCExcelFiles/";
     }
 }
