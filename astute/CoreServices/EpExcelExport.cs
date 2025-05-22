@@ -9464,40 +9464,21 @@ namespace astute.CoreServices
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(common_bg);
                                 }
-                                else if (Column_Name == "Length")
+                                else if (Column_Name == "Length" || Column_Name == "Width" || Column_Name == "Depth" || Column_Name == "Depth %" || Column_Name == "Table %" || Column_Name == "Girdle %" || Column_Name == "Crown Angle" || Column_Name == "Crown Height" || Column_Name == "Pavilion Angle" || Column_Name == "Pavilion Height")
                                 {
-                                    string Length = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(Length) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
+                                    string value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
+                                    if (!string.IsNullOrEmpty(value))
+                                    {
+                                        double rounded = Math.Round(Convert.ToDouble(value), 2);
+                                        worksheet.Cells[inwrkrow, kk].Value = rounded;
+                                    }
+                                    else
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Value = null;
+                                    }
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Width")
-                                {
-                                    string Width = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(Width) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
 
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Depth")
-                                {
-                                    string Depth = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(Depth) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Depth %")
-                                {
-                                    string pepth_per = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pepth_per) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Table %")
-                                {
-                                    string table_Per = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(table_Per) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
                                 }
                                 else if (Column_Name == "Key To Symbol")
                                 {
@@ -9506,41 +9487,6 @@ namespace astute.CoreServices
                                 else if (Column_Name == "Comment")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
-                                }
-                                else if (Column_Name == "Girdle %")
-                                {
-                                    string girdle_Per = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(girdle_Per) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Crown Angle")
-                                {
-                                    string crown_Angle = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(crown_Angle) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Crown Height")
-                                {
-                                    string crown_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(crown_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Pavilion Angle")
-                                {
-                                    string pav_Angle = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Angle) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Pavilion Height")
-                                {
-                                    string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
                                 }
                                 else if (Column_Name == "Table White")
                                 {
@@ -10062,40 +10008,21 @@ namespace astute.CoreServices
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
                                 }
-                                else if (Column_Name == "Length")
+                                else if (Column_Name == "Length" || Column_Name == "Width" || Column_Name == "Depth" || Column_Name == "Depth%" || Column_Name == "Table%" || Column_Name == "Girdle%" || Column_Name == "Crown Angle" || Column_Name == "Crown Height" || Column_Name == "Pavilion Angle" || Column_Name == "Pavilion Height")
                                 {
-                                    string Length = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(Length) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
+                                    string value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
+                                    if (!string.IsNullOrEmpty(value))
+                                    {
+                                        double rounded = Math.Round(Convert.ToDouble(value), 2);
+                                        worksheet.Cells[inwrkrow, kk].Value = rounded;
+                                    }
+                                    else
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Value = null;
+                                    }
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Width")
-                                {
-                                    string Width = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(Width) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
 
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Depth")
-                                {
-                                    string Depth = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(Depth) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Depth%")
-                                {
-                                    string pepth_per = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pepth_per) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Table%")
-                                {
-                                    string table_Per = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(table_Per) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
                                 }
                                 else if (Column_Name == "Key To Symbol")
                                 {
@@ -10104,41 +10031,6 @@ namespace astute.CoreServices
                                 else if (Column_Name == "Comment")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                }
-                                else if (Column_Name == "Girdle%")
-                                {
-                                    string girdle_Per = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(girdle_Per) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Crown Angle")
-                                {
-                                    string crown_Angle = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(crown_Angle) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Crown Height")
-                                {
-                                    string crown_Height = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(crown_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Pavilion Angle")
-                                {
-                                    string pav_Angle = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Angle) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Pavilion Height")
-                                {
-                                    string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
                                 }
                                 else if (Column_Name == "Table White")
                                 {
@@ -10497,7 +10389,7 @@ namespace astute.CoreServices
                                     {
                                         worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Red);
                                         worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
-                                }
+                                    }
 
                                     if (statusValue == "BUSY")
                                     {
@@ -10592,40 +10484,21 @@ namespace astute.CoreServices
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
                                 }
-                                else if (Column_Name == "Length")
+                                else if (Column_Name == "Length" || Column_Name == "Width" || Column_Name == "Depth" || Column_Name == "Depth%" || Column_Name == "Table%" || Column_Name == "Girdle%" || Column_Name == "Crown Angle" || Column_Name == "Crown Height" || Column_Name == "Pavilion Angle" || Column_Name == "Pavilion Height")
                                 {
-                                    string Length = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(Length) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
+                                    string value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
+                                    if (!string.IsNullOrEmpty(value))
+                                    {
+                                        double rounded = Math.Round(Convert.ToDouble(value), 2);
+                                        worksheet.Cells[inwrkrow, kk].Value = rounded;
+                                    }
+                                    else
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Value = null;
+                                    }
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Width")
-                                {
-                                    string Width = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(Width) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
 
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Depth")
-                                {
-                                    string Depth = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(Depth) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Depth%")
-                                {
-                                    string pepth_per = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pepth_per) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Table%")
-                                {
-                                    string table_Per = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(table_Per) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
                                 }
                                 else if (Column_Name == "Key To Symbol")
                                 {
@@ -10634,41 +10507,6 @@ namespace astute.CoreServices
                                 else if (Column_Name == "Comment")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                }
-                                else if (Column_Name == "Girdle%")
-                                {
-                                    string girdle_Per = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(girdle_Per) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Crown Angle")
-                                {
-                                    string crown_Angle = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(crown_Angle) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Crown Height")
-                                {
-                                    string crown_Height = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(crown_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Pavilion Angle")
-                                {
-                                    string pav_Angle = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Angle) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
-                                }
-                                else if (Column_Name == "Pavilion Height")
-                                {
-                                    string pav_Height = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
-                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dtStock.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-
-                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
                                 }
                                 else if (Column_Name == "Table White")
                                 {
@@ -12846,13 +12684,6 @@ namespace astute.CoreServices
                                     {
                                         worksheet.Cells[inwrkrow, pkk].Style.Font.Bold = true;
                                     }
-                                }
-                                else if (Column_Name == "Length" || Column_Name == "Width" || Column_Name == "Depth" || Column_Name == "Depth (%)" || Column_Name == "Table (%)" || Column_Name == "Girdle (%)" || Column_Name == "Crown Angle" || Column_Name == "Crown Height" || Column_Name == "Pav Angle" || Column_Name == "Pav Height")
-                                {
-                                    string value = Convert.ToString(dt.Rows[i - inStartIndex][Column_Name]);
-
-                                    worksheet.Cells[inwrkrow, pkk].Value = !string.IsNullOrEmpty(value) ? Convert.ToDouble(dt.Rows[i - inStartIndex][Column_Name]) : DBNull.Value;
-                                    worksheet.Cells[inwrkrow, pkk].Style.Numberformat.Format = "0.00";
                                 }
                                 else
                                 {
