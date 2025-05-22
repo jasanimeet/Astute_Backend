@@ -174,7 +174,7 @@ namespace astute.Repository
         {
             var menuList = new List<MenuMasterModel>();
 
-            foreach (var item in allMenus.Where(x => x.Parent_Id == parentId))
+            foreach (var item in allMenus.Where(x => x.Parent_Id == parentId).OrderBy(x => x.Order_No))
             {
                 var right_Model = await Set_Menu_Rights(item.Menu_Id, rights);
 
