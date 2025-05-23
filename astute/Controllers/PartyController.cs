@@ -3509,6 +3509,61 @@ namespace astute.Controllers
                 });
             }
         }
+        /*
+         * Date: 2025/05/22 By Jashmin Patel
+         * Aded for sending mail while stock number going to expired or no more prefix exists.
+         */
+        [HttpGet]
+        [Route("stock_number_generation_replicate_availability_mail")]
+        public async Task<IActionResult> Stock_Number_Generation_Replicate_Availability_Mail()
+        {
+            try
+            {
+                var result = await _supplierService.Stock_Number_Generation_Replicate_Availability();
+
+                if (result != null && result.Count > 0)
+                {
+                    List<string> to_Emails = new List<string>() { "list@sunrisediam.com", "tejash@brainwaves.co.in", "samit@sunrisediam.com" };
+                    //string to_Email = "list@sunrisediam.com";
+
+                    string subject = "Alert - Stock No is going to expire";
+
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine(@"Hi," + "<br/>");
+                    sb.AppendLine(@"Below stock no is going to expire kindly add another one asap." + "<br/>" + "<br/>");
+                    sb.AppendLine(@"<table border='1' cellspacing='2' cellpadding='3'>");
+                    sb.AppendLine(@"<thead><tr><td>Prefix</td><td>Current No</td></tr></thead>");
+                    sb.AppendLine(@"<tbody>");
+
+                    foreach (var item in result)
+                    {
+                        sb.AppendLine($"<tr><td>{item["Prefix"]}</td><td>{item["Current_No"]}</td></tr>");
+                    }
+                    sb.AppendLine(@"</tbody>");
+                    sb.AppendLine(@"</table>");
+
+                    foreach (var to_Email in to_Emails)
+                    {
+                        _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
+                    }
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Stock_Number_Generation_Replicate_Availability_Mail", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Api/FTP/File Party Name
