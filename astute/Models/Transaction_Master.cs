@@ -64,5 +64,14 @@ namespace astute.Models
 
         [JsonPropertyName("Customer_Id")]
         public int? Customer_Id { get; set; }
+        
+        [JsonPropertyName("Due_Date")]
+        public string? Due_Date { get; set; }
+
+        [JsonPropertyName("Confirm_Hold")]
+        public bool? Confirm_Hold { get; set; }
+
+        [JsonPropertyName("Reserver_Stock")]
+        public bool? Reserver_Stock { get; set; }
     }
 }

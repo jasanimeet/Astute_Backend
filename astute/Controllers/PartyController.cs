@@ -16796,325 +16796,227 @@ namespace astute.Controllers
         [HttpPost]
         [Route("create_update_purchase_return")]
         [Authorize]
-        public async Task<IActionResult> Create_Update_Purchase_Return(Transactions_Master_Model transactions_Master_Model)
+        public async Task<IActionResult> Create_Update_Purchase_Return(Transactions_Master_Model model)
         {
             try
             {
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                int? userId = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                Transaction_Master purchase_Master = JsonConvert.DeserializeObject<Transaction_Master>(transactions_Master_Model.Transaction_Master.ToString());
+                var master = JsonConvert.DeserializeObject<Transaction_Master>(model.Transaction_Master.ToString());
+                var details = JsonConvert.DeserializeObject<IList<Transaction_Detail>>(model.Transaction_Detail_List.ToString());
+                var expenses = JsonConvert.DeserializeObject<IList<Transaction_Expenses>>(model.Transaction_Expenses_List.ToString());
+                var terms = JsonConvert.DeserializeObject<IList<Transaction_Terms>>(model.Transaction_Terms_List.ToString());
+                var looseDetails = JsonConvert.DeserializeObject<IList<Transaction_Detail_Loose>>(model.Transaction_Detail_Loose_List.ToString());
 
-                IList<Transaction_Detail> purchase_Detail_List = JsonConvert.DeserializeObject<IList<Transaction_Detail>>(transactions_Master_Model.Transaction_Detail_List.ToString());
+                DateTime.TryParseExact(master.Trans_Date, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime transDate);
+                DateTime.TryParseExact(master.Due_Date, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dueDate);
 
-                IList<Transaction_Expenses> purchase_Expenses_List = JsonConvert.DeserializeObject<IList<Transaction_Expenses>>(transactions_Master_Model.Transaction_Expenses_List.ToString());
-
-                IList<Transaction_Terms> purchase_Terms_List = JsonConvert.DeserializeObject<IList<Transaction_Terms>>(transactions_Master_Model.Transaction_Terms_List.ToString());
-
-                IList<Transaction_Detail_Loose> purchase_Detail_Loose_List = JsonConvert.DeserializeObject<IList<Transaction_Detail_Loose>>(transactions_Master_Model.Transaction_Detail_Loose_List.ToString());
-
-                string dateFormat = "dd-MM-yyyy";
-
-                DateTime Trans_Dt;
-
-                if (!DateTime.TryParseExact(purchase_Master.Trans_Date, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out Trans_Dt))
+                if (master.Process_Id == "27" && (master.Trans_Id ?? 0) == 0)
                 {
-                    Trans_Dt = DateTime.MinValue;
-                }
-
-                if (purchase_Master.Process_Id == "27" && (purchase_Master.Trans_Id ?? 0) == 0)
-                {
-                    DataTable cmasterDataTable = new DataTable();
-                    cmasterDataTable.Columns.Add("Trans_Id", typeof(int));
-                    cmasterDataTable.Columns.Add("Trans_Date", typeof(DateTime));
-                    cmasterDataTable.Columns.Add("Trans_Time", typeof(TimeSpan));
-                    cmasterDataTable.Columns.Add("Supplier_Id", typeof(int));
-                    cmasterDataTable.Columns.Add("Company_Id", typeof(int));
-                    cmasterDataTable.Columns.Add("Currency_Id", typeof(int));
-                    cmasterDataTable.Columns.Add("Ex_Rate", typeof(float));
-                    cmasterDataTable.Columns.Add("Process_Id", typeof(int));
-                    cmasterDataTable.Columns.Add("Year_Id", typeof(int));
-                    cmasterDataTable.Columns.Add("Transaction_Invoice_No", typeof(string));
-                    cmasterDataTable.Columns.Add("Contract", typeof(bool));
-                    cmasterDataTable.Columns.Add("Supplier_Invoice_No", typeof(string));
-                    cmasterDataTable.Columns.Add("Remarks", typeof(string));
-                    cmasterDataTable.Columns.Add("Customer_Id", typeof(int));
-
-                    cmasterDataTable.Rows.Add(
-                        purchase_Master.Trans_Id ?? 0,
-                        Trans_Dt != null ? Trans_Dt : null,
-                        purchase_Master.Trans_Time ?? null,
-                        purchase_Master.Supplier_Id ?? null,
-                        purchase_Master.Company_Id ?? null,
-                        purchase_Master.Currency_Id ?? null,
-                        purchase_Master.Ex_Rate ?? null,
-                        26,
-                        purchase_Master.Year_Id ?? null,
-                        purchase_Master.Transaction_Invoice_No ?? null,
-                        purchase_Master.Contract ?? null,
-                        purchase_Master.Supplier_Invoice_No ?? null,
-                        purchase_Master.Remarks ?? null,
-                        purchase_Master.Customer_Id ?? null
+                    var purchaseResult = await _supplierService.Insert_Update_Transaction(
+                        Build_Transaction_Master_Table(master, transDate, dueDate, true),
+                        Build_Transaction_Detail_Table(details, true),
+                        Build_Transaction_Terms_Table(terms),
+                        Build_Transaction_Expenses_Table(expenses),
+                        Build_Transaction_Loose_Detail_Table(looseDetails),
+                        userId ?? 0
                     );
-
-                    DataTable cdetailDataTable = new DataTable();
-
-                    cdetailDataTable.Columns.Add("Id", typeof(int));
-                    cdetailDataTable.Columns.Add("Trans_Id", typeof(int));
-                    cdetailDataTable.Columns.Add("Purchase_Detail_Id", typeof(int));
-                    cdetailDataTable.Columns.Add("Rap_Rate", typeof(decimal));
-                    cdetailDataTable.Columns.Add("Rap_Amt", typeof(decimal));
-                    cdetailDataTable.Columns.Add("Actual_Cost_Disc", typeof(float));
-                    cdetailDataTable.Columns.Add("Actual_Cost_Amt", typeof(decimal));
-                    cdetailDataTable.Columns.Add("Offer_Disc", typeof(float));
-                    cdetailDataTable.Columns.Add("Offer_Amt", typeof(decimal));
-                    cdetailDataTable.Columns.Add("Web_Disc", typeof(float));
-                    cdetailDataTable.Columns.Add("Web_Amt", typeof(decimal));
-
-                    foreach (var item in purchase_Detail_List)
-                    {
-                        cdetailDataTable.Rows.Add(
-                            item.Id ?? 0,
-                            item.Trans_Id ?? 0,
-                            item.Purchase_Detail_Id ?? 0,
-                            SafeConvertToDouble(item.Rap_Rate?.ToString()),
-                            SafeConvertToDouble(item.Rap_Amount?.ToString()),
-                            SafeConvertToDouble(item.Consignment_Cost_Disc?.ToString()),
-                            SafeConvertToDouble(item.Consignment_Cost_Amt?.ToString()),
-                            null,
-                            null,
-                            null,
-                            null
-                        );
-                    }
-
-                    DataTable ctermsDataTable = new DataTable();
-                    ctermsDataTable.Columns.Add("Transaction_Terms_Id", typeof(int));
-                    ctermsDataTable.Columns.Add("Terms_Id", typeof(int));
-                    ctermsDataTable.Columns.Add("Amount", typeof(decimal));
-                    ctermsDataTable.Columns.Add("Trans_Id", typeof(int));
-
-                    foreach (var item in purchase_Terms_List)
-                    {
-                        ctermsDataTable.Rows.Add(
-                            item.Transaction_Terms_Id ?? 0,
-                            item.Terms_Id ?? 0,
-                            item.Amount ?? null,
-                            item.Trans_Id ?? 0
-                        );
-                    }
-
-                    DataTable cexpensesDataTable = new DataTable();
-                    cexpensesDataTable.Columns.Add("Transaction_Expenses_Id", typeof(int));
-                    cexpensesDataTable.Columns.Add("Expenses_Id", typeof(int));
-                    cexpensesDataTable.Columns.Add("Sign", typeof(string));
-                    cexpensesDataTable.Columns.Add("Percentage", typeof(decimal));
-                    cexpensesDataTable.Columns.Add("Amount", typeof(decimal));
-                    cexpensesDataTable.Columns.Add("Transaction_Trans_Id", typeof(int));
-
-                    foreach (var item in purchase_Expenses_List)
-                    {
-                        cexpensesDataTable.Rows.Add(
-                            item.Transaction_Expenses_Id ?? 0,
-                            item.Expenses_Id ?? 0,
-                            item.Sign ?? "+",
-                            item.Percentage ?? null,
-                            item.Amount ?? null,
-                            item.Trans_Id ?? 0
-                        );
-                    }
-
-                    DataTable cdetailLooseDataTable = new DataTable();
-                    cdetailLooseDataTable.Columns.Add("Id", typeof(int));
-                    cdetailLooseDataTable.Columns.Add("Trans_Id", typeof(int));
-                    cdetailLooseDataTable.Columns.Add("Parcel_Name", typeof(int));
-                    cdetailLooseDataTable.Columns.Add("Parcel_Type", typeof(int));
-                    cdetailLooseDataTable.Columns.Add("Pcs", typeof(float));
-                    cdetailLooseDataTable.Columns.Add("Cts", typeof(float));
-                    cdetailLooseDataTable.Columns.Add("Unit", typeof(string)).MaxLength = 10;
-                    cdetailLooseDataTable.Columns.Add("Rate_Unit", typeof(decimal));
-                    cdetailLooseDataTable.Columns.Add("Value", typeof(decimal));
-
-                    foreach (var item in purchase_Detail_Loose_List)
-                    {
-                        cdetailLooseDataTable.Rows.Add(
-                            item.Id ?? 0,
-                            item.Trans_Id ?? 0,
-                            item.Parcel_Name ?? 0,
-                            item.Parcel_Type ?? 0,
-                            item.Pcs ?? 0,
-                            item.Cts ?? 0,
-                            item.Unit ?? null,
-                            SafeConvertToDouble(item.Rate_Unit.ToString()) ?? 0,
-                            SafeConvertToDouble(item.Value.ToString()) ?? 0
-                        );
-                    }
-
-                    var (cpurchase, cIs_Exists) = await _supplierService.Insert_Update_Transaction(cmasterDataTable, cdetailDataTable, ctermsDataTable, cexpensesDataTable, cdetailLooseDataTable, user_Id ?? 0);
                 }
 
-                DataTable masterDataTable = new DataTable();
-                masterDataTable.Columns.Add("Trans_Id", typeof(int));
-                masterDataTable.Columns.Add("Trans_Date", typeof(DateTime));
-                masterDataTable.Columns.Add("Trans_Time", typeof(TimeSpan));
-                masterDataTable.Columns.Add("Supplier_Id", typeof(int));
-                masterDataTable.Columns.Add("Company_Id", typeof(int));
-                masterDataTable.Columns.Add("Currency_Id", typeof(int));
-                masterDataTable.Columns.Add("Ex_Rate", typeof(float));
-                masterDataTable.Columns.Add("Process_Id", typeof(int));
-                masterDataTable.Columns.Add("Year_Id", typeof(int));
-                masterDataTable.Columns.Add("Transaction_Invoice_No", typeof(string));
-                masterDataTable.Columns.Add("Contract", typeof(bool));
-                masterDataTable.Columns.Add("Supplier_Invoice_No", typeof(string));
-                masterDataTable.Columns.Add("Remarks", typeof(string));
-                masterDataTable.Columns.Add("Customer_Id", typeof(int));
-
-                masterDataTable.Rows.Add(
-                    purchase_Master.Trans_Id ?? 0,
-                    Trans_Dt != null ? Trans_Dt : null,
-                    purchase_Master.Trans_Time ?? null,
-                    purchase_Master.Supplier_Id ?? null,
-                    purchase_Master.Company_Id ?? null,
-                    purchase_Master.Currency_Id ?? null,
-                    purchase_Master.Ex_Rate ?? null,
-                    purchase_Master.Process_Id ?? null,
-                    purchase_Master.Year_Id ?? null,
-                    purchase_Master.Transaction_Invoice_No ?? null,
-                    purchase_Master.Contract ?? null,
-                    purchase_Master.Supplier_Invoice_No ?? null,
-                    purchase_Master.Remarks ?? null,
-                    purchase_Master.Customer_Id ?? null
+                var (result, isExist) = await _supplierService.Insert_Update_Transaction(
+                    Build_Transaction_Master_Table(master, transDate, dueDate),
+                    Build_Transaction_Detail_Table(details),
+                    Build_Transaction_Terms_Table(terms),
+                    Build_Transaction_Expenses_Table(expenses),
+                    Build_Transaction_Loose_Detail_Table(looseDetails),
+                    userId ?? 0
                 );
 
-                DataTable detailDataTable = new DataTable();
-
-                detailDataTable.Columns.Add("Id", typeof(int));
-                detailDataTable.Columns.Add("Trans_Id", typeof(int));
-                detailDataTable.Columns.Add("Purchase_Detail_Id", typeof(int));
-                detailDataTable.Columns.Add("Rap_Rate", typeof(decimal));
-                detailDataTable.Columns.Add("Rap_Amt", typeof(decimal));
-                detailDataTable.Columns.Add("Actual_Cost_Disc", typeof(float));
-                detailDataTable.Columns.Add("Actual_Cost_Amt", typeof(decimal));
-                detailDataTable.Columns.Add("Offer_Disc", typeof(float));
-                detailDataTable.Columns.Add("Offer_Amt", typeof(decimal));
-                detailDataTable.Columns.Add("Web_Disc", typeof(float));
-                detailDataTable.Columns.Add("Web_Amt", typeof(decimal));
-
-                foreach (var item in purchase_Detail_List)
+                return result switch
                 {
-                    detailDataTable.Rows.Add(
-                        item.Id ?? 0,
-                        item.Trans_Id ?? 0,
-                        item.Purchase_Detail_Id ?? 0,
-                        SafeConvertToDouble(item.Rap_Rate?.ToString()),
-                        SafeConvertToDouble(item.Rap_Amount?.ToString()),
-                        SafeConvertToDouble(item.Actual_Cost_Disc?.ToString()),
-                        SafeConvertToDouble(item.Actual_Cost_Amt?.ToString()),
-                        SafeConvertToDouble(item.Offer_Disc?.ToString()),
-                        SafeConvertToDouble(item.Offer_Amt?.ToString()),
-                        SafeConvertToDouble(item.Web_Disc?.ToString()),
-                        SafeConvertToDouble(item.Web_Amt?.ToString())
-                    );
-                }
-
-                DataTable termsDataTable = new DataTable();
-                termsDataTable.Columns.Add("Transaction_Terms_Id", typeof(int));
-                termsDataTable.Columns.Add("Terms_Id", typeof(int));
-                termsDataTable.Columns.Add("Amount", typeof(decimal));
-                termsDataTable.Columns.Add("Trans_Id", typeof(int));
-
-                foreach (var item in purchase_Terms_List)
-                {
-                    termsDataTable.Rows.Add(
-                        item.Transaction_Terms_Id ?? 0,
-                        item.Terms_Id ?? 0,
-                        item.Amount ?? null,
-                        item.Trans_Id ?? 0
-                    );
-                }
-
-                DataTable expensesDataTable = new DataTable();
-                expensesDataTable.Columns.Add("Transaction_Expenses_Id", typeof(int));
-                expensesDataTable.Columns.Add("Expenses_Id", typeof(int));
-                expensesDataTable.Columns.Add("Sign", typeof(string));
-                expensesDataTable.Columns.Add("Percentage", typeof(decimal));
-                expensesDataTable.Columns.Add("Amount", typeof(decimal));
-                expensesDataTable.Columns.Add("Transaction_Trans_Id", typeof(int));
-
-                foreach (var item in purchase_Expenses_List)
-                {
-                    expensesDataTable.Rows.Add(
-                        item.Transaction_Expenses_Id ?? 0,
-                        item.Expenses_Id ?? 0,
-                        item.Sign ?? "+",
-                        item.Percentage ?? null,
-                        item.Amount ?? null,
-                        item.Trans_Id ?? 0
-                    );
-                }
-
-                DataTable detailLooseDataTable = new DataTable();
-                detailLooseDataTable.Columns.Add("Id", typeof(int));
-                detailLooseDataTable.Columns.Add("Trans_Id", typeof(int));
-                detailLooseDataTable.Columns.Add("Parcel_Name", typeof(int));
-                detailLooseDataTable.Columns.Add("Parcel_Type", typeof(int));
-                detailLooseDataTable.Columns.Add("Pcs", typeof(float));
-                detailLooseDataTable.Columns.Add("Cts", typeof(float));
-                detailLooseDataTable.Columns.Add("Unit", typeof(string)).MaxLength = 10;
-                detailLooseDataTable.Columns.Add("Rate_Unit", typeof(decimal));
-                detailLooseDataTable.Columns.Add("Value", typeof(decimal));
-
-                foreach (var item in purchase_Detail_Loose_List)
-                {
-                    detailLooseDataTable.Rows.Add(
-                        item.Id ?? 0,
-                        item.Trans_Id ?? 0,
-                        item.Parcel_Name ?? 0,
-                        item.Parcel_Type ?? 0,
-                        item.Pcs ?? 0,
-                        item.Cts ?? 0,
-                        item.Unit ?? null,
-                        SafeConvertToDouble(item.Rate_Unit.ToString()) ?? 0,
-                        SafeConvertToDouble(item.Value.ToString()) ?? 0
-                    );
-                }
-
-                var (purchase_result, Is_Exist) = await _supplierService.Insert_Update_Transaction(masterDataTable, detailDataTable, termsDataTable, expensesDataTable, detailLooseDataTable, user_Id ?? 0);
-
-                if (purchase_result == 409 && Is_Exist)
-                {
-                    if (Is_Exist)
-                    {
-                        return Conflict(new
-                        {
-                            statusCode = HttpStatusCode.Conflict,
-                            message = CoreCommonMessage.PurchaseAlreadyExists,
-                        });
-                    }
-                }
-                else if (purchase_result > 0)
-                {
-                    return Ok(new
+                    409 when isExist => Conflict(new { statusCode = HttpStatusCode.Conflict, message = CoreCommonMessage.PurchaseAlreadyExists }),
+                    > 0 => Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
-                        message = purchase_Master.Trans_Id > 0 ? CoreCommonMessage.TransactionUpdated : CoreCommonMessage.TransactionCreated,
-                    });
-                }
-                return BadRequest(new
-                {
-                    statusCode = HttpStatusCode.BadRequest,
-                    message = CoreCommonMessage.ParameterMismatched
-                });
-
+                        message = master.Trans_Id > 0 ? CoreCommonMessage.TransactionUpdated : CoreCommonMessage.TransactionCreated,
+                    }),
+                    _ => BadRequest(new { statusCode = HttpStatusCode.BadRequest, message = CoreCommonMessage.ParameterMismatched })
+                };
             }
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Create_Update_Purchase_Return", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
+                return StatusCode((int)HttpStatusCode.InternalServerError, new { message = ex.Message });
             }
+        }
+
+        private DataTable Build_Transaction_Master_Table(Transaction_Master m, DateTime transDate, DateTime dueDate, bool isConsignment = false)
+        {
+            var table = new DataTable();
+            table.Columns.AddRange(new[]
+            {
+                new DataColumn("Trans_Id", typeof(int)),
+                new DataColumn("Trans_Date", typeof(DateTime)),
+                new DataColumn("Trans_Time", typeof(TimeSpan)),
+                new DataColumn("Supplier_Id", typeof(int)),
+                new DataColumn("Company_Id", typeof(int)),
+                new DataColumn("Currency_Id", typeof(int)),
+                new DataColumn("Ex_Rate", typeof(float)),
+                new DataColumn("Process_Id", typeof(int)),
+                new DataColumn("Year_Id", typeof(int)),
+                new DataColumn("Transaction_Invoice_No", typeof(string)),
+                new DataColumn("Contract", typeof(bool)),
+                new DataColumn("Supplier_Invoice_No", typeof(string)),
+                new DataColumn("Remarks", typeof(string)),
+                new DataColumn("Customer_Id", typeof(int)),
+                new DataColumn("Due_Date", typeof(DateTime)),
+                new DataColumn("Confirm_Hold", typeof(bool)),
+                new DataColumn("Reserver_Stock", typeof(bool))
+            });
+
+            table.Rows.Add(
+                m.Trans_Id ?? (object)DBNull.Value,
+                transDate,
+                m.Trans_Time ?? TimeSpan.Zero,
+                m.Supplier_Id ?? (object)DBNull.Value,
+                m.Company_Id ?? (object)DBNull.Value,
+                m.Currency_Id ?? (object)DBNull.Value,
+                m.Ex_Rate ?? (object)DBNull.Value,
+                isConsignment ? 26 : m.Process_Id,
+                m.Year_Id ?? (object)DBNull.Value,
+                m.Transaction_Invoice_No ?? (object)DBNull.Value,
+                m.Contract ?? (object)DBNull.Value,
+                m.Supplier_Invoice_No ?? (object)DBNull.Value,
+                m.Remarks ?? (object)DBNull.Value,
+                m.Customer_Id ?? (object)DBNull.Value,
+                dueDate == DateTime.MinValue ? (object)DBNull.Value : dueDate,
+                m.Confirm_Hold ?? (object)DBNull.Value,
+                m.Reserver_Stock ?? (object)DBNull.Value
+            );
+            return table;
+        }
+
+        private DataTable Build_Transaction_Detail_Table(IList<Transaction_Detail> details, bool isConsignment = false)
+        {
+            var table = new DataTable();
+            table.Columns.AddRange(new[]
+            {
+                new DataColumn("Id", typeof(int)),
+                new DataColumn("Trans_Id", typeof(int)),
+                new DataColumn("Purchase_Detail_Id", typeof(int)),
+                new DataColumn("Rap_Rate", typeof(decimal)),
+                new DataColumn("Rap_Amt", typeof(decimal)),
+                new DataColumn("Actual_Cost_Disc", typeof(float)),
+                new DataColumn("Actual_Cost_Amt", typeof(decimal)),
+                new DataColumn("Offer_Disc", typeof(float)),
+                new DataColumn("Offer_Amt", typeof(decimal)),
+                new DataColumn("Web_Disc", typeof(float)),
+                new DataColumn("Web_Amt", typeof(decimal))
+            });
+
+            foreach (var d in details)
+            {
+                table.Rows.Add(
+                    d.Id ?? 0,
+                    d.Trans_Id ?? 0,
+                    d.Purchase_Detail_Id ?? 0,
+                    SafeConvertToDouble(d.Rap_Rate),
+                    SafeConvertToDouble(d.Rap_Amount),
+                    SafeConvertToDouble(isConsignment ? d.Consignment_Cost_Disc : d.Actual_Cost_Disc),
+                    SafeConvertToDouble(isConsignment ? d.Consignment_Cost_Amt : d.Actual_Cost_Amt),
+                    isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Offer_Disc),
+                    isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Offer_Amt),
+                    isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Web_Disc),
+                    isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Web_Amt)
+                );
+            }
+            return table;
+        }
+
+        private DataTable Build_Transaction_Terms_Table(IList<Transaction_Terms> terms)
+        {
+            var table = new DataTable();
+            table.Columns.AddRange(new[]
+            {
+                new DataColumn("Transaction_Terms_Id", typeof(int)),
+                new DataColumn("Terms_Id", typeof(int)),
+                new DataColumn("Amount", typeof(decimal)),
+                new DataColumn("Trans_Id", typeof(int))
+            });
+
+            foreach (var t in terms)
+            {
+                table.Rows.Add(
+                    t.Transaction_Terms_Id ?? 0,
+                    t.Terms_Id ?? 0,
+                    t.Amount ?? 0,
+                    t.Trans_Id ?? 0
+                );
+            }
+            return table;
+        }
+
+        private DataTable Build_Transaction_Expenses_Table(IList<Transaction_Expenses> expenses)
+        {
+            var table = new DataTable();
+            table.Columns.AddRange(new[]
+            {
+                new DataColumn("Transaction_Expenses_Id", typeof(int)),
+                new DataColumn("Expenses_Id", typeof(int)),
+                new DataColumn("Sign", typeof(string)),
+                new DataColumn("Percentage", typeof(decimal)),
+                new DataColumn("Amount", typeof(decimal)),
+                new DataColumn("Transaction_Trans_Id", typeof(int))
+            });
+
+            foreach (var e in expenses)
+            {
+                table.Rows.Add(
+                    e.Transaction_Expenses_Id ?? 0,
+                    e.Expenses_Id ?? 0,
+                    e.Sign ?? "+",
+                    e.Percentage ?? 0,
+                    e.Amount ?? 0,
+                    e.Trans_Id ?? 0
+                );
+            }
+
+            return table;
+        }
+
+        private DataTable Build_Transaction_Loose_Detail_Table(IList<Transaction_Detail_Loose> looseDetails)
+        {
+            var table = new DataTable();
+            table.Columns.AddRange(new[]
+            {
+                new DataColumn("Id", typeof(int)),
+                new DataColumn("Trans_Id", typeof(int)),
+                new DataColumn("Parcel_Name", typeof(int)),
+                new DataColumn("Parcel_Type", typeof(int)),
+                new DataColumn("Pcs", typeof(float)),
+                new DataColumn("Cts", typeof(float)),
+                new DataColumn("Unit", typeof(string)),
+                new DataColumn("Rate_Unit", typeof(decimal)),
+                new DataColumn("Value", typeof(decimal))
+            });
+
+            foreach (var l in looseDetails)
+            {
+                table.Rows.Add(
+                    l.Id ?? 0,
+                    l.Trans_Id ?? 0,
+                    l.Parcel_Name ?? 0,
+                    l.Parcel_Type ?? 0,
+                    l.Pcs ?? 0,
+                    l.Cts ?? 0,
+                    l.Unit ?? "",
+                    SafeConvertToDouble(l.Rate_Unit.ToString()),
+                    SafeConvertToDouble(l.Value.ToString())
+                );
+            }
+
+            return table;
         }
 
         [HttpPost]
