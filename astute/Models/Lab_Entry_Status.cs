@@ -21,13 +21,13 @@ namespace astute.Models
 
         [JsonProperty("COST AMOUNT")]
         public string? Supp_Cost_Amt { get; set; }
-        
+
         [JsonProperty("OFFER DISC")]
         public string? Final_Disc { get; set; }
 
         [JsonProperty("OFFER AMOUNT")]
         public string? Final_Amt { get; set; }
-                
+
         [JsonProperty("Supplier_Short_Name")]
         public string? Supplier_Short_Name { get; set; }
 
@@ -88,7 +88,7 @@ namespace astute.Models
         [JsonProperty("CERTIFICATE NO")]
         public string? CertificateNo { get; set; }
     }
-    public class Lab_Entry_Status_List 
+    public class Lab_Entry_Status_List
     {
         public object? Lab_Entry_Status { get; set; }
     }

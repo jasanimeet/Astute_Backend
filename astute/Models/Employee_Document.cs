@@ -14,7 +14,7 @@ namespace astute.Models
         public string? Document_Expiry_Date { get; set; }
         [NotMapped]
         public IFormFile? Document_Url_Name { get; set; }
-        public string? Document_Url { get; set; }        
+        public string? Document_Url { get; set; }
         [NotMapped]
         public IFormFile? Document_Url_Name_2 { get; set; }
         public string? Document_Url_2 { get; set; }

@@ -22,7 +22,7 @@ namespace astute.Models
         public string? Report_Comments { get; set; }
         public float? Table_Pct { get; set; }
         public float? Depth_Pct { get; set; }
-        public float? Crown_Angle { get;set; }
+        public float? Crown_Angle { get; set; }
         public float? Crown_Height { get; set; }
         public float? Pavilion_Angle { get; set; }
         public float? Pavilion_Depth { get; set; }

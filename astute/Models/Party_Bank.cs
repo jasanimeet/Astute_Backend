@@ -16,7 +16,7 @@ namespace astute.Models
         public string? Correspondent_Ifsc_Code { get; set; }
         public string? Account_No { get; set; }
         public bool? Status { get; set; }
-        public int? Account_Type { get; set; } 
+        public int? Account_Type { get; set; }
         public string? Account_Type_Value { get; set; }
         public bool? Default_Bank { get; set; }
         [NotMapped]

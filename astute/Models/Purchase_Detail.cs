@@ -289,43 +289,43 @@ namespace astute.Models
 
         [JsonProperty("Stone_Status")]
         public string? Stone_Status { get; set; }
-        
+
         [JsonProperty("Shipment_Type")]
         public string? Shipment_Type { get; set; }
-        
+
         [JsonProperty("Purchase_Doc_No")]
         public string? Purchase_Doc_No { get; set; }
-        
+
         [JsonProperty("Expected_Delivery_Date")]
         public string? Expected_Delivery_Date { get; set; }
-        
+
         [JsonProperty("Web_Disc")]
         public string? Web_Disc { get; set; }
-        
+
         [JsonProperty("Web_Amount")]
         public string? Web_Amount { get; set; }
-        
+
         [JsonProperty("Sunrise_Stock_Id")]
         public string? Sunrise_Stock_Id { get; set; }
-        
+
         [JsonProperty("Sunrise_Status")]
         public string? Sunrise_Status { get; set; }
-        
+
         [JsonProperty("RFID_No")]
         public string? RFID_No { get; set; }
-        
+
         [JsonProperty("Supp_Verified_Disc")]
         public string? Supp_Verified_Disc { get; set; }
-        
+
         [JsonProperty("Supp_Verified_Amount")]
         public string? Supp_Verified_Amount { get; set; }
-        
+
         [JsonProperty("Sunrise_Offer_Disc")]
         public string? Sunrise_Offer_Disc { get; set; }
-        
+
         [JsonProperty("Sunrise_Offer_Amt")]
         public string? Sunrise_Offer_Amt { get; set; }
-        
+
         [JsonPropertyName("COMPANY")]
         public string? Company { get; set; }
 

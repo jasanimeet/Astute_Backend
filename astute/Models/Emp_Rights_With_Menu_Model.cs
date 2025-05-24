@@ -8,7 +8,7 @@ namespace astute.Models
         public int EmployeeId { get; set; }
     }
 
-    public partial class Emp_Rights_List_Model 
+    public partial class Emp_Rights_List_Model
     {
         public Int16 Menu_Id { get; set; }
         public string MenuName { get; set; }

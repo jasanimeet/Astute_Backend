@@ -3,7 +3,7 @@
 namespace astute.Models
 {
     public class City_Master_Export
-    {   
+    {
         public string? City { get; set; }
         public string? State { get; set; }
         public string? Country { get; set; }

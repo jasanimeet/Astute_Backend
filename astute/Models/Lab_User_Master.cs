@@ -11,7 +11,7 @@ namespace astute.Models
         public string Password { get; set; }
         public bool Active_Status { get; set; }
         public string? User_Type { get; set; }
-        public bool Stock_View {  get; set; }
+        public bool Stock_View { get; set; }
         public bool Stock_Download { get; set; }
         public bool Order_Placed { get; set; }
         public bool Enable_Status { get; set; }

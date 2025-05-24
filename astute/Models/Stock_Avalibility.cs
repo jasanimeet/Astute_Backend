@@ -11,7 +11,7 @@ namespace astute.Models
         public int? iPgNo { get; set; }
         public int? iPgSize { get; set; }
         public IList<Report_Sorting> iSort { get; set; } = new List<Report_Sorting>();
-        public string? excel_Format { get; set; } 
+        public string? excel_Format { get; set; }
 
     }
 

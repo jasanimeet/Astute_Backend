@@ -7,7 +7,7 @@ namespace astute.Models
     {
         [Key]
         public int Id { get; set; }
-        public int? BGM_Id { get; set;}
+        public int? BGM_Id { get; set; }
         public string? BGM { get; set; }
         public int? Shade { get; set; }
         public string? Shade_Category { get; set; }

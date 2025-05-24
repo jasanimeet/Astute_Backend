@@ -10,7 +10,7 @@ namespace astute.Models
         public int? Cat_Val_Id { get; set; }
         public string? Social_Media_Name { get; set; }
         public int? Company_Id { get; set; }
-        public string? Company_Name { get; set; }        
+        public string? Company_Name { get; set; }
         public string? Media_Detail { get; set; }
         [NotMapped]
         public string? QueryFlag { get; set; }

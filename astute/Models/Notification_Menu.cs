@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 
 namespace astute.Models
 {
@@ -7,7 +6,7 @@ namespace astute.Models
     {
         [JsonProperty("Notification_Id")]
         public int? Notification_Id { get; set; }
-        
+
         [JsonProperty("Notification_Title")]
         public string? Notification_Title { get; set; }
 

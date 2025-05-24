@@ -66,7 +66,7 @@ namespace astute.Models
         [NotMapped]
         public IList<Emergency_Contact_Detail> Emergency_Contact_Detail_List { get; set; } = new List<Emergency_Contact_Detail>();
 
-        [NotMapped] 
+        [NotMapped]
         public IList<Employee_Secretary> Employee_Secretary_List { get; set; } = new List<Employee_Secretary>();
 
         public partial class Employee_Fortune_Master

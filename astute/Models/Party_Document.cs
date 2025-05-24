@@ -10,7 +10,7 @@ namespace astute.Models
         public int Document_Id { get; set; }
         public int? Party_Id { get; set; }
         public string? Party_Name { get; set; }
-        public int? Document_Type { get; set;}
+        public int? Document_Type { get; set; }
         public string? Document_Type_Value { get; set; }
         public string? Document_No { get; set; }
         [NotMapped]

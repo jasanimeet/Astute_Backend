@@ -21,7 +21,7 @@ namespace astute.Models
     }
 
     public class Get_Transaction_Model
-    { 
+    {
         public string? Stock_Id { get; set; }
         public string? Id { get; set; }
         public string? Sign { get; set; }

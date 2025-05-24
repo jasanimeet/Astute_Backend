@@ -21,7 +21,7 @@ namespace astute.Models
         public string? POLISH { get; set; }
         public string? SYMM { get; set; }
         public string? FLS_COLOR { get; set; }
-        public string? FLS_INTENSITY { get; set; }        
+        public string? FLS_INTENSITY { get; set; }
         public string? LENGTH { get; set; }
         public string? WIDTH { get; set; }
         public string? DEPTH { get; set; }

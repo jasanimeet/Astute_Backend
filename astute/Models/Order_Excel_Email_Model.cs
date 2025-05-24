@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace astute.Models
+﻿namespace astute.Models
 {
     public class Order_Excel_Email_Model
     {

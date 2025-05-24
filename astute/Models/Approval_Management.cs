@@ -30,7 +30,7 @@ namespace astute.Models
     //}
 
     public partial class Approval_Management_Create_Update
-    {   
+    {
         public int Id { get; set; }
         public int? User_Id { get; set; }
         public string? Remarks { get; set; }
@@ -84,7 +84,7 @@ namespace astute.Models
 
         [JsonProperty("MAX SLAB BASE AMOUNT")]
         public object? Cart_Final_Amt_Max_Slab { get; set; }
-        
+
         [JsonProperty("BUYER ID")]
         public int? Buyer_Id { get; set; }
 

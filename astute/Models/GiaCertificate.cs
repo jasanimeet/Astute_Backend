@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 
 namespace astute.Models
@@ -121,5 +120,5 @@ namespace astute.Models
         [JsonProperty("Customer_Name")]
         public string CustomerName { get; set; }
 
-    } 
+    }
 }

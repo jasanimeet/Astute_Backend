@@ -10,7 +10,7 @@ namespace astute.Models
         public Layout_Master()
         {
             Layout_Details = new List<Layout_Detail>();
-         }
+        }
         [Key]
         public int Layout_Id { get; set; }
         public Int16 Menu_id { get; set; }

@@ -19,6 +19,6 @@ namespace astute.Models
         public string? Updated_Time { get; set; }
         [NotMapped]
         public IList<Grade_Detail> Grade_Detail_List { get; set; } = new List<Grade_Detail>();
-       
+
     }
 }

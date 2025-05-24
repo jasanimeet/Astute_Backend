@@ -15,7 +15,7 @@ namespace astute.Models
         public string? Color { get; set; }
         public string? Clarity { get; set; }
         public bool? Status { get; set; }
-        
+
         [NotMapped]
         public bool IsForceInsert { get; set; }
 

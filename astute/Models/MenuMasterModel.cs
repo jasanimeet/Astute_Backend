@@ -19,7 +19,7 @@ namespace astute.Models
     }
 
     public partial class Menu_Rights_Model
-    {   
+    {
         public bool Insert_Allow { get; set; }
         public bool Update_Allow { get; set; }
         public bool Delete_Allow { get; set; }

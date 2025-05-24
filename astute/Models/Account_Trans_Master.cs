@@ -9,7 +9,7 @@ namespace astute.Models
         public string? invoice_No { get; set; }
         public int currency { get; set; }
         public int company { get; set; }
-        public int year{ get; set; }
+        public int year { get; set; }
         public int account { get; set; }
         public string type { get; set; }
         public decimal rate { get; set; }
