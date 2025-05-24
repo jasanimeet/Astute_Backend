@@ -13351,10 +13351,10 @@ namespace astute.Controllers
         /*
         * Date: 2025/05/23 Validate Lab Entry Is_Img_Cert by Jashmin Patel
         */
-        [HttpGet]
+        [HttpPost]
         [Route("validate_lab_entry_is_img_cert")]
         [Authorize]
-        public async Task<IActionResult> Validate_Lab_Entry_Is_Img_Cert(int Supplier_Id)
+        public async Task<IActionResult> Validate_Lab_Entry_Is_Img_Cert(Lab_Entry_Is_Img_Cert_Model model)
         {
             try
             {
@@ -13362,7 +13362,7 @@ namespace astute.Controllers
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                 if ((user_Id ?? 0) > 0)
                 {
-                    var result = await _supplierService.Get_Lab_Entry_Is_Img_Cert(Supplier_Id);
+                    var result = await _supplierService.Get_Lab_Entry_Is_Img_Cert(model);
                     if (result != null && result.Count > 0)
                     {
                         return Ok(new

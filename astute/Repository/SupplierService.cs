@@ -3700,7 +3700,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<Dictionary<string, object>> Get_Lab_Entry_Is_Img_Cert(int Supplier_Id)
+        public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Is_Img_Cert(Lab_Entry_Is_Img_Cert_Model lab_Entry_Is_Img_Cert_Model)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -3709,7 +3709,7 @@ namespace astute.Repository
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.Add(Supplier_Id > 0 ? new SqlParameter("@Supplier_Id", Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(lab_Entry_Is_Img_Cert_Model.Supplier_Ids) ? new SqlParameter("@Supplier_Ids", lab_Entry_Is_Img_Cert_Model.Supplier_Ids) : new SqlParameter("@Supplier_Ids", DBNull.Value));
 
                     await connection.OpenAsync();
 
@@ -3732,7 +3732,7 @@ namespace astute.Repository
                     }
                 }
             }
-            return result.FirstOrDefault();
+            return result;
         }
         public async Task<int> Insert_Update_Lab_Entry(DataTable masterDataTable, DataTable detailDataTable, int user_Id)
         {
