@@ -3471,6 +3471,7 @@ namespace astute.Controllers
                 });
             }
         }
+
         /*
          * Date: 2025/04/24 By Jashmin Patel
          * Aded for create stock number generation overseas delete 
@@ -3509,6 +3510,7 @@ namespace astute.Controllers
                 });
             }
         }
+
         /*
          * Date: 2025/05/22 By Jashmin Patel
          * Aded for sending mail while stock number going to expired or no more prefix exists.
@@ -12348,9 +12350,9 @@ namespace astute.Controllers
                     }
                     //}
                     //else
-                    //{
-                    //    return Conflict(new { message = "Previous order incomplete, so can't place new order." });
-                    //}
+                    {
+                        return Conflict(new { message = "Previous order incomplete, so can't place new order." });
+                    }
                     //}
                     //else
                     //{
