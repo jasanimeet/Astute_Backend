@@ -67,7 +67,7 @@ namespace astute.Repository
             await _dbContext.Database.ExecuteSqlRawAsync("EXEC Company_Document_Trace_Insert @Struct_Company_Document_Trace", parameter);
         }
         public async Task Insert_Company_Media_Trace(DataTable dataTable)
-        {   
+        {
             var parameter = new SqlParameter("@Struct_Company_Media_Trace", SqlDbType.Structured)
             {
                 TypeName = "dbo.Company_Media_Trace_Data_Type",
@@ -249,7 +249,7 @@ namespace astute.Repository
             };
 
             var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Company_Document_Insert_Update @company_Document", parameter);
-            
+
             return result;
         }
         #endregion

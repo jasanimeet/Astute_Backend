@@ -145,7 +145,7 @@ namespace astute.Repository
             }
             return result;
         }
-        
+
         public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail()
         {
             var result = new List<Dictionary<string, object>>();
@@ -212,7 +212,7 @@ namespace astute.Repository
             }
             return result;
         }
-        
+
         public async Task<List<Dictionary<string, object>>> Get_Account_Trans_Master_Remarks(string Trans_Type)
         {
             var result = new List<Dictionary<string, object>>();

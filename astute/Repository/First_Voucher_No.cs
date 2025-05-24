@@ -59,7 +59,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<(string,bool,bool,int)> Create_Update_First_Voucher_No_Master(DataTable dataTable, int? user_Id)
+        public async Task<(string, bool, bool, int)> Create_Update_First_Voucher_No_Master(DataTable dataTable, int? user_Id)
         {
             var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
 
@@ -81,11 +81,11 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
           .ExecuteSqlRawAsync(@"EXEC First_Voucher_No_Insert_Update @First_Voucher_No_Table_Type, @User_Id, @Is_Exists OUT,@Is_Prefix_Exists OUT", parameter, _user_Id, is_Exists, is_Prefix_Exists));
-            
+
             var _is_Exists = (bool)is_Exists.Value;
             var _is_Prefix_Exists = (bool)is_Prefix_Exists.Value;
             if (_is_Exists || _is_Prefix_Exists)
-            return ("exist", _is_Exists, _is_Prefix_Exists, result);
+                return ("exist", _is_Exists, _is_Prefix_Exists, result);
 
             return ("success", _is_Exists, _is_Prefix_Exists, result);
         }

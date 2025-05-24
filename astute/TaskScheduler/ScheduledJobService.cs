@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace astute.TaskScheduler
 {
     public class ScheduledJobService : BackgroundService
-    {   
+    {
         private readonly IServiceProvider _serviceProvider;
         public ScheduledJobService(IServiceProvider serviceProvider)
         {

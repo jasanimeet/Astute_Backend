@@ -29,8 +29,8 @@ namespace astute.Repository
 
         #region Column Master
         Task<List<Dictionary<string, object>>> Get_Column_Master();
-        #endregion 
-        
+        #endregion
+
         #region Import Master
         Task<List<Dictionary<string, object>>> Get_Import_Master();
         Task<int> Insert_Import_Master(Import_Master import_Master, int user_Id);

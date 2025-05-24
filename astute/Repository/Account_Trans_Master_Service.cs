@@ -70,7 +70,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Account_Trans_Master(int account_Trans_Id,int account_Trans_Detail_Id,string trans_Type)
+        public async Task<List<Dictionary<string, object>>> Get_Account_Trans_Master(int account_Trans_Id, int account_Trans_Detail_Id, string trans_Type)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -104,9 +104,9 @@ namespace astute.Repository
                 }
             }
             return result;
-        } 
+        }
 
-        public async Task<(string,int)> Create_Update_Account_Trans_Master(DataTable dataTable, int account_Trans_Id, string trans_Type, string? invoice_No, int currency_Id, int company_Id, int year_Id, int account_Id, decimal rate, int user_Id)
+        public async Task<(string, int)> Create_Update_Account_Trans_Master(DataTable dataTable, int account_Trans_Id, string trans_Type, string? invoice_No, int currency_Id, int company_Id, int year_Id, int account_Id, decimal rate, int user_Id)
         {
             var parameter = new SqlParameter("@Account_Trans_Detail_Table_Type", SqlDbType.Structured)
             {
@@ -132,7 +132,7 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC [dbo].[Account_Trans_Master_Insert_Update] @Account_Trans_Detail_Table_Type, @Account_Trans_Id, @Trans_Type, @Invoice_No, @Currency_Id, @Company_Id, @Year_Id, @Account_Id, @Rate, @User_Id, @Is_First_Voucher_Add OUT",
-                        parameter, _account_Trans_Id, _trans_Type, _invoice_No,_currency_Id,_company_Id,_year_Id,_account_Id,_rate,_user_Id, is_First_Voucher_Add));
+                        parameter, _account_Trans_Id, _trans_Type, _invoice_No, _currency_Id, _company_Id, _year_Id, _account_Id, _rate, _user_Id, is_First_Voucher_Add));
 
 
             var _is_Exists = (bool)is_First_Voucher_Add.Value;
@@ -184,7 +184,7 @@ namespace astute.Repository
             var _rate = new SqlParameter("@Rate", rate);
             var _user_Id = new SqlParameter("@User_Id", user_Id);
             var _remarks = new SqlParameter("@Remarks", string.IsNullOrEmpty(remarks) ? (object)DBNull.Value : remarks);
-            var _supplier_Id = new SqlParameter("@Supplier_Id", supplier_Id > 0 ? supplier_Id: (object)DBNull.Value);
+            var _supplier_Id = new SqlParameter("@Supplier_Id", supplier_Id > 0 ? supplier_Id : (object)DBNull.Value);
 
             var _invoice_Date = new SqlParameter("@Invoice_Date", SqlDbType.Date)
             {
@@ -223,23 +223,23 @@ namespace astute.Repository
                     @Invoice_Time, 
                     @Supplier_Id, 
                     @Is_First_Voucher_Add OUT",
-                    parameter, 
-                    parameter_Terms, 
-                    parameter_Expense, 
-                    parameter_Inward_Detail, 
-                    _account_Trans_Id, 
-                    _trans_Type, 
-                    _invoice_No, 
-                    _currency_Id, 
-                    _company_Id, 
-                    _year_Id, 
-                    _account_Id, 
-                    _rate, 
-                    _user_Id, 
-                    _remarks, 
-                    _invoice_Date, 
-                    _invoice_Time, 
-                    _supplier_Id, 
+                    parameter,
+                    parameter_Terms,
+                    parameter_Expense,
+                    parameter_Inward_Detail,
+                    _account_Trans_Id,
+                    _trans_Type,
+                    _invoice_No,
+                    _currency_Id,
+                    _company_Id,
+                    _year_Id,
+                    _account_Id,
+                    _rate,
+                    _user_Id,
+                    _remarks,
+                    _invoice_Date,
+                    _invoice_Time,
+                    _supplier_Id,
                     is_First_Voucher_Add);
 
                 var _is_Exists = (bool)is_First_Voucher_Add.Value;
@@ -419,7 +419,7 @@ namespace astute.Repository
                 {
                     Direction = ParameterDirection.Output
                 };
-                                
+
                 await _dbContext.Database.ExecuteSqlRawAsync(
                     @"EXEC [dbo].[Stock_Number_Generation_Purchase] 
                     @Cts,

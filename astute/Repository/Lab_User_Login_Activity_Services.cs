@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace astute.Repository
 {
-    public partial class Lab_User_Login_Activity_Services :ILab_User_Login_Activity_Services
+    public partial class Lab_User_Login_Activity_Services : ILab_User_Login_Activity_Services
     {
         #region Fields
         private readonly AstuteDbContext _dbContext;

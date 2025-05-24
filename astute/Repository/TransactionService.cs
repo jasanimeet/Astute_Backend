@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace astute.Repository
 {
-    public partial class TransactionService :ITransactionService
+    public partial class TransactionService : ITransactionService
     {
 
         #region Fields
@@ -37,7 +37,7 @@ namespace astute.Repository
 
         #region Hold
 
-        public async Task<int> Create_Update_Transaction_Details(DataTable dataTable, int? Trans_Id,int Party_Code,int Due_Days,string Process,string Remarks)
+        public async Task<int> Create_Update_Transaction_Details(DataTable dataTable, int? Trans_Id, int Party_Code, int Due_Days, string Process, string Remarks)
         {
             var trans_id = new SqlParameter("@Trans_Id", Trans_Id);
             var party_code = Party_Code > 0 ? new SqlParameter("@Party_Code", Party_Code) : new SqlParameter("@Party_Code", DBNull.Value);
@@ -90,7 +90,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Transaction_Details(DataTable dataTable,string Stock_id,string Id,string Sign,string value)
+        public async Task<List<Dictionary<string, object>>> Get_Transaction_Details(DataTable dataTable, string Stock_id, string Id, string Sign, string value)
         {
             var result = new List<Dictionary<string, object>>();
 

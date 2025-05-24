@@ -60,7 +60,7 @@ namespace astute.Repository
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(ac_Group_Code > 0 ? new SqlParameter("@AC_GRP_CODE", ac_Group_Code) : new SqlParameter("@AC_GRP_CODE", DBNull.Value));
-                    
+
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())

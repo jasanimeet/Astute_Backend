@@ -34,6 +34,6 @@ namespace astute.Repository
         #region Company Bank
         Task<int> InsertCompanyBank(DataTable dataTable);
         #endregion
-        
+
     }
 }

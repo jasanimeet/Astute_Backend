@@ -18,7 +18,7 @@ namespace astute.Authorization
             _requestDelegate = requestDelegate;
             _httpContextAccessor = httpContextAccessor;
         }
-        
+
         public async Task Invoke(HttpContext context, IJWTAuthentication userService, IJWTAuthentication jWTAuthentication)
         {
             // Extract the JWT token from the Authorization header
@@ -49,7 +49,7 @@ namespace astute.Authorization
                     if (employee.Token.Equals(token) && employee.IP_Address.Equals(ipAddress))
                     {
                         // Attach user information to the context on successful validation
-                        context.Items["User"] = employee;   
+                        context.Items["User"] = employee;
                     }
                     else
                     {
@@ -70,7 +70,7 @@ namespace astute.Authorization
                     var responseBody = JsonSerializer.Serialize(responseData);
                     context.Response.ContentType = "application/json";
                     await context.Response.WriteAsync(responseBody);
-                    return;                    
+                    return;
                 }
             }
 

@@ -23,7 +23,7 @@ namespace astute.Repository
         #endregion
 
         #region Ctor
-        public JWTAuthentication(IConfiguration configuration, 
+        public JWTAuthentication(IConfiguration configuration,
             IHttpContextAccessor httpContextAccessor,
             AstuteDbContext dbContext)
         {
@@ -35,7 +35,7 @@ namespace astute.Repository
 
         #region Methods
         public string Generate_Jwt_Token(Employee_Master employee_Master)
-        {   
+        {
             var clims = new[]
             {
                 new Claim("user_Id", employee_Master.Employee_Id.ToString()),
@@ -87,7 +87,7 @@ namespace astute.Repository
             }
         }
         public async Task<int> Insert_Update_Employee_JWT_Token(Employee_JWT_Token employee_JWT_Token)
-        {   
+        {
             var ip_Address = await CoreService.GetIP_Address(_httpContextAccessor);
 
             var token_Id = new SqlParameter("@Token_Id", employee_JWT_Token.Token_Id);

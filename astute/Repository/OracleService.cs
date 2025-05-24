@@ -913,7 +913,7 @@ namespace astute.Repository
             param1.Direction = ParameterDirection.Output;
             paramList.Add(param1);
 
-            DataTable dataTable_Party_Info = await _dbOracleAccess.CallSP("party_info_transfer", paramList);            
+            DataTable dataTable_Party_Info = await _dbOracleAccess.CallSP("party_info_transfer", paramList);
 
             DataTable newDataTable_Party_Info = new DataTable();
 
@@ -999,7 +999,7 @@ namespace astute.Repository
             foreach (DataRow row in dataTable_Party_Contact.Rows)
             {
                 DataRow newRow = newDataTable_Party_Contact.NewRow();
-                
+
                 newRow["PARTY_CODE"] = DBNull.Value.Equals(row["PARTY_CODE"]) ? DBNull.Value : row["PARTY_CODE"].ToString();
                 newRow["FIRST_NAME"] = DBNull.Value.Equals(row["NAME"]) ? DBNull.Value : row["NAME"].ToString();
                 newRow["DESIGNATION_ID"] = DBNull.Value.Equals(row["DESG"]) ? DBNull.Value : row["DESG"].ToString();
@@ -1016,7 +1016,7 @@ namespace astute.Repository
                 TypeName = "[dbo].[Fortune_Party_Master_Table_Type]",
                 Value = newDataTable_Party_Info
             };
-            
+
             var parameter_Fortune_Party_Contact_Table_Type = new SqlParameter("@Fortune_Party_Contact_Table_Type", SqlDbType.Structured)
             {
                 TypeName = "[dbo].[Fortune_Party_Contact_Table_Type]",
@@ -1025,8 +1025,8 @@ namespace astute.Repository
 
             _dbContext.Database.SetCommandTimeout(1800);
             var result = await _dbContext.Database.ExecuteSqlRawAsync(
-                @"EXEC [Fortune_Party_Master_Ora_Insert_Update] @Fortune_Party_Master_Table_Type, @Fortune_Party_Contact_Table_Type", 
-                parameter_Fortune_Party_Master_Table_Type, 
+                @"EXEC [Fortune_Party_Master_Ora_Insert_Update] @Fortune_Party_Master_Table_Type, @Fortune_Party_Contact_Table_Type",
+                parameter_Fortune_Party_Master_Table_Type,
                 parameter_Fortune_Party_Contact_Table_Type);
 
             return result;
@@ -1328,17 +1328,17 @@ namespace astute.Repository
                 }
                 if (type == "O")
                 {
-                    
-                    string Order_Ids = string.Join(",",Order_Ids_List);
+
+                    string Order_Ids = string.Join(",", Order_Ids_List);
 
                     var _order_Ids = new SqlParameter("@Order_Ids", !string.IsNullOrEmpty(Order_Ids) ? Order_Ids : DBNull.Value);
                     var _trans_Id = new SqlParameter("@Trans_Id", !string.IsNullOrEmpty(lab_trans_status) ? Convert.ToInt32(lab_trans_status) : DBNull.Value);
 
 
                     var result = await Task.Run(() => _dbContext.Database
-                           .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Update_Tras_Id] @Order_Ids,@Trans_Id", _order_Ids,_trans_Id));
+                           .ExecuteSqlRawAsync(@"EXEC [Order_Processing_Update_Tras_Id] @Order_Ids,@Trans_Id", _order_Ids, _trans_Id));
                 }
-                else if (type == "L") 
+                else if (type == "L")
                 {
                     string Order_Ids = string.Join(",", Order_Ids_List.Distinct());
 
@@ -1397,7 +1397,7 @@ namespace astute.Repository
 
             return r;
         }
-                
+
         public async Task<int> Order_Data_Detail_Transfer_Oracle(IList<Order_Processing_Complete_Fortune_Detail> order_Processing_Complete_Fortune_Details)
         {
             if (order_Processing_Complete_Fortune_Details == null || order_Processing_Complete_Fortune_Details.Count == 0)
@@ -1518,7 +1518,7 @@ namespace astute.Repository
 
             return 1;
         }
-      
+
         public async Task<int> Sun_Pur_Notification()
         {
             int r = 0;
@@ -1558,7 +1558,7 @@ namespace astute.Repository
 
             return r;
         }
-        
+
         public async Task<int> Get_Fortune_Overseas_Data()
         {
             List<OracleParameter> paramList = new List<OracleParameter>();
@@ -1694,7 +1694,7 @@ namespace astute.Repository
                                 .ExecuteSqlRawAsync(@"EXEC [Fortune_Overseas_Stock_Ora_Insert_Update] @Fortune_Overseas_Stock_Type", parameter));
             return result;
         }
-        
+
         public async Task<int> Get_Fortune_Sunrise_Data()
         {
             var sqlCommand = @"exec [Fortune_Sunrise_Stock_Ora_Insert_Update]";
@@ -1789,7 +1789,7 @@ namespace astute.Repository
                 param1 = new OracleParameter("vSUPP_IMG_LINK", OracleDbType.NVarchar2);
                 param1.Value = !string.IsNullOrEmpty(purchase_Media_Upload_Model.NewImageUrl) ? Convert.ToString(purchase_Media_Upload_Model.NewImageUrl) : DBNull.Value;
                 paramList.Add(param1);
-                
+
                 param1 = new OracleParameter("vSUPP_VDO_LINK", OracleDbType.NVarchar2);
                 param1.Value = !string.IsNullOrEmpty(purchase_Media_Upload_Model.NewVideoUrl) ? Convert.ToString(purchase_Media_Upload_Model.NewVideoUrl) : DBNull.Value;
                 paramList.Add(param1);
