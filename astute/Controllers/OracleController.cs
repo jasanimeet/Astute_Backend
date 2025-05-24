@@ -20,7 +20,7 @@ namespace astute.Controllers
 
         #region Ctor
         public OracleController(IOracleService oracleService,
-            ICommonService commonService) 
+            ICommonService commonService)
         {
             _oracleService = oracleService;
             _commonService = commonService;
@@ -196,7 +196,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_fortune_overseas_data")]
         public async Task<IActionResult> Get_Fortune_Overseas_Data()
@@ -223,7 +223,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_fortune_sunrise_data")]
         public async Task<IActionResult> Get_Fortune_Sunrise_Data()

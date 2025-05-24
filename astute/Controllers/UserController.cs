@@ -109,7 +109,7 @@ namespace astute.Controllers
                             message = CoreCommonMessage.UserRegisteredSuccessfully
                         });
                     }
-                    else if(message == "_error_username_exist" && result == 409)
+                    else if (message == "_error_username_exist" && result == 409)
                     {
                         return Conflict(new
                         {
@@ -117,7 +117,7 @@ namespace astute.Controllers
                             message = CoreCommonMessage.UserNameAlreadyExist
                         });
                     }
-                    
+
                 }
                 return BadRequest(ModelState);
             }
@@ -252,7 +252,7 @@ namespace astute.Controllers
 
         #region City/State/Country
         [HttpGet]
-        [Route("get_active_cities")]        
+        [Route("get_active_cities")]
         public async Task<IActionResult> Get_Active_Cities(string city)
         {
             try

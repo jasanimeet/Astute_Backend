@@ -1022,7 +1022,7 @@ namespace astute.Controllers
                             foreach (var item in account_Trans_Master.inwardDetails)
                             {
                                 var exists = await _account_Trans_Master_Service.Check_Inward_Detail_Stock_Id(item.Reference_No);
-                                
+
                                 if (exists != null && exists.Count > 0)
                                 {
                                     DataRow row = dataTable_InwardDetail.NewRow();
@@ -1125,11 +1125,11 @@ namespace astute.Controllers
                                     hasError = true;
                                     if (string.IsNullOrEmpty(errorMessages))
                                     {
-                                        errorMessages = item.Reference_No; 
+                                        errorMessages = item.Reference_No;
                                     }
-                                    else 
+                                    else
                                     {
-                                        errorMessages += " , " + item.Reference_No; 
+                                        errorMessages += " , " + item.Reference_No;
                                     }
                                 }
                             }
@@ -1178,7 +1178,7 @@ namespace astute.Controllers
                             return Ok(new
                             {
                                 statusCode = HttpStatusCode.OK,
-                                message = message                                
+                                message = message
                             });
                         }
                     }
@@ -1433,7 +1433,8 @@ namespace astute.Controllers
                         }
                     });
                 }
-                else {
+                else
+                {
                     return NoContent();
                 }
             }

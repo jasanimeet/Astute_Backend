@@ -35,9 +35,9 @@ namespace astute.Controllers
             try
             {
                 var result = await _menuService.Get_all_menus(employeeId);
-                if(result != null && result.Count > 0)
+                if (result != null && result.Count > 0)
                 {
-                    return Ok(new 
+                    return Ok(new
                     {
                         StatusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.DataSuccessfullyFound,
@@ -55,7 +55,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("getmenu")]
         [Authorize]
@@ -64,7 +64,7 @@ namespace astute.Controllers
             try
             {
                 var result = await _menuService.GetMenu(menuId);
-                if(result != null && result.Count > 0)
+                if (result != null && result.Count > 0)
                 {
                     return Ok(new
                     {
@@ -92,7 +92,7 @@ namespace astute.Controllers
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     var result = await _menuService.InsertMenu(menu_Mas);
                     if (result == 1)
@@ -171,7 +171,7 @@ namespace astute.Controllers
             try
             {
                 var result = await _menuService?.DeleteMenu(menuId);
-                if(result > 0)
+                if (result > 0)
                 {
                     return Ok(new
                     {
@@ -179,7 +179,7 @@ namespace astute.Controllers
                         message = CoreCommonMessage.MenuMasterDeleted
                     });
                 }
-                return BadRequest(new 
+                return BadRequest(new
                 {
                     StatusCode = HttpStatusCode.BadRequest,
                     message = CoreCommonMessage.ParameterMismatched

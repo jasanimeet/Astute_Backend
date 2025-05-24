@@ -80,7 +80,7 @@ namespace astute.Controllers
                             {
                                 var exists = await _transactionService.Check_Transaction_Detail_Stock_Id(item.Stock_Id);
 
-                                if (exists.Count == 0 || transaction_Master_Model.Trans_Id >0)
+                                if (exists.Count == 0 || transaction_Master_Model.Trans_Id > 0)
                                 {
                                     DataRow row = dataTable.NewRow();
 
@@ -125,7 +125,8 @@ namespace astute.Controllers
                                 message = message
                             });
                         }
-                        else {
+                        else
+                        {
 
                             message = $"Stock Ids : {errorMessages} already hold";
 

@@ -179,7 +179,7 @@ namespace astute.Controllers
                                 {
                                     var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/CompanyDocuments");
                                     if (!(Directory.Exists(filePath)))
-                                    {   
+                                    {
                                         Directory.CreateDirectory(filePath);
                                     }
                                     string fileName = Path.GetFileNameWithoutExtension(item.Upload_Path_Name.FileName);
@@ -269,7 +269,7 @@ namespace astute.Controllers
                             dataTable.Columns.Add("Cat_Val_Id", typeof(int));
                             dataTable.Columns.Add("Media_Detail", typeof(string));
                             dataTable.Columns.Add("QueryFlag", typeof(string));
-                                                        
+
                             DataTable dataTable2 = new DataTable();
 
                             //if (CoreService.Enable_Trace_Records(_configuration))

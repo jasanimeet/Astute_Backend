@@ -216,7 +216,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_all_category_values")]
         [Authorize]
@@ -646,7 +646,7 @@ namespace astute.Controllers
             }
         }
         #endregion
-        
+
         #region Import Master
         [HttpGet]
         [Route("get_import_master")]
@@ -928,7 +928,7 @@ namespace astute.Controllers
             }
         }
         #endregion
-        
+
         #region Import Excel
         [HttpGet]
         [Route("get_import_excel")]
@@ -958,7 +958,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_import_master_detail")]
         [Authorize]
@@ -1017,7 +1017,7 @@ namespace astute.Controllers
                                 dr["Import_Id"] = Import_Master_Result;
                                 dr["Import_Det_Id"] = item.Import_Det_Id;
                                 dr["Column_Name"] = item.Column_Name;
-                                dr["Excel_Column_No"] = item.Excel_Column_No > 0 ? item.Excel_Column_No : DBNull.Value;                                    
+                                dr["Excel_Column_No"] = item.Excel_Column_No > 0 ? item.Excel_Column_No : DBNull.Value;
                                 dr["Required"] = item.Required;
 
                                 dataTable.Rows.Add(dr);

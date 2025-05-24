@@ -108,7 +108,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_active_secretary_employees")]
         [Authorize]
@@ -372,7 +372,7 @@ namespace astute.Controllers
                             //    await _employeeService.Insert_Emergency_Contact_Detail_Trace(dataTable1);
                             //}
                         }
-                        if (employee_Master.Employee_Secretary_List != null && employee_Master.Employee_Secretary_List.Count > 0) 
+                        if (employee_Master.Employee_Secretary_List != null && employee_Master.Employee_Secretary_List.Count > 0)
                         {
 
                             var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
@@ -588,7 +588,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_buyer_list")]
         [Authorize]
@@ -854,7 +854,7 @@ namespace astute.Controllers
                     message = "Unauthorized Access",
                     statusCode = (int)HttpStatusCode.Unauthorized
                 });
-                
+
             }
             catch (Exception ex)
             {
@@ -875,7 +875,7 @@ namespace astute.Controllers
             {
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-                if (user_Id > 0) 
+                if (user_Id > 0)
                 {
                     var user = await _employeeService.Get_Employee_Details(user_Id ?? 0);
                     if (user != null)
@@ -928,7 +928,7 @@ namespace astute.Controllers
                         }
                     }
                 }
-                
+
                 return StatusCode((int)HttpStatusCode.Unauthorized, new
                 {
                     message = "Unauthorized Access",
@@ -998,16 +998,16 @@ namespace astute.Controllers
                 var empMaster = employee.FirstOrDefault();
 
                 empMaster.Password = CoreService.Decrypt(empMaster.Password);
-                
+
                 Change_Password_Model change_Password_Model = new Change_Password_Model()
                 {
                     OldPassword = empMaster.Password,
                     NewPassword = resetPasswordModel.Password,
                     ConfirmPassword = resetPasswordModel.Password
                 };
-                
+
                 var (msg, result) = await _employeeService.Change_Password(change_Password_Model, empMaster.Employee_Id);
-                
+
                 if (result > 0)
                 {
                     return Ok(new
@@ -1052,7 +1052,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpPost]
         [Route("copyemployeerights")]
         [Authorize]

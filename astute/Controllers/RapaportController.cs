@@ -191,7 +191,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpPost]
         [Route("createrapaportdetail")]
         [Authorize]
@@ -443,7 +443,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("rapaport_pricelist_round_pear")]
         [Authorize]
-        public async Task<IActionResult> Rapaport_PriceList_Round_Pear(string userName, string password, [FromForm]IFormFile[] files)
+        public async Task<IActionResult> Rapaport_PriceList_Round_Pear(string userName, string password, [FromForm] IFormFile[] files)
         {
             try
             {
@@ -463,7 +463,7 @@ namespace astute.Controllers
                             new("Username", userName),
                             new("Password", password)
                         };
-                        
+
                         requestround.Content = new FormUrlEncodedContent(collectionRound);
 
                         var responseRound = await client.SendAsync(requestround);
@@ -530,7 +530,7 @@ namespace astute.Controllers
                                         Rate = csvReader.GetField<decimal>(5),
                                         Date = csvReader.GetField<string>(6).Trim()
                                     };
-                                    
+
                                     dataList.Add(dataItem);
                                 }
                             }
@@ -605,7 +605,7 @@ namespace astute.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = $"Error: {ex.Message}"
-                }); 
+                });
             }
         }
 
