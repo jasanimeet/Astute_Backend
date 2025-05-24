@@ -3700,7 +3700,40 @@ namespace astute.Repository
             }
             return result;
         }
+        public async Task<Dictionary<string, object>> Get_Lab_Entry_Is_Img_Cert(int Supplier_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("[dbo].[Lab_Entry_Validate_Party_Url_Format_Id_Select]", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
 
+                    command.Parameters.Add(Supplier_Id > 0 ? new SqlParameter("@Supplier_Id", Supplier_Id) : new SqlParameter("@Supplier_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result.FirstOrDefault();
+        }
         public async Task<int> Insert_Update_Lab_Entry(DataTable masterDataTable, DataTable detailDataTable, int user_Id)
         {
             var masterParameter = new SqlParameter("@Lab_Entry_Master_Table_Type", SqlDbType.Structured)

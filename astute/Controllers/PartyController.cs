@@ -13346,6 +13346,48 @@ namespace astute.Controllers
             }
         }
 
+        /*
+        * Date: 2025/05/23 Validate Lab Entry Is_Img_Cert by Jashmin Patel
+        */
+        [HttpGet]
+        [Route("validate_lab_entry_is_img_cert")]
+        [Authorize]
+        public async Task<IActionResult> Validate_Lab_Entry_Is_Img_Cert(int Supplier_Id)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                if ((user_Id ?? 0) > 0)
+                {
+                    var result = await _supplierService.Get_Lab_Entry_Is_Img_Cert(Supplier_Id);
+                    if (result != null && result.Count > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = result
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Validate_Lab_Entry_Is_Img_Cert", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         [HttpPost]
         [Route("create_update_lab_entry")]
         [Authorize]

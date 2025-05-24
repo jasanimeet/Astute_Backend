@@ -150,6 +150,7 @@ namespace astute.Repository
         Task<int> Final_Order_Processing_Create_Update_Save(DataTable dataTable, int? user_Id);
         Task<List<Dictionary<string, object>>> Get_Lab_Entry_Summary(int user_Id, Order_Processing_Summary order_Processing_Summary);
         Task<List<Dictionary<string, object>>> Get_Lab_Entry_Detail(int trans_id);
+        Task<Dictionary<string, object>> Get_Lab_Entry_Is_Img_Cert(int Supplier_Id);
         Task<int> Insert_Update_Lab_Entry(DataTable masterDataTable, DataTable detailDataTable, int user_Id);
         Task<(int, bool)> Delete_Lab_Entry(int id);
         Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Summary(int user_Id, Lab_Entry_Summary lab_Entry_Summary);
