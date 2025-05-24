@@ -126,12 +126,12 @@ namespace astute.Repository
             return result;
         }
         public async Task<IList<Rapaport_Clarity_Value>> Get_Rapaport_Clarity_Filter_Value()
-        {   
+        {
             var result = await _dbContext.Rapaport_Clarity_Value.FromSqlRaw(@"EXEC Category_Clarity_Value").ToListAsync();
             return result;
         }
         public async Task<IList<Rapaport_Date_Value>> Get_Rapaport_Date_Filter_Value()
-        {   
+        {
             var result = await _dbContext.Rapaport_Date_Value.FromSqlRaw(@"EXEC Rapaport_Date_Select").ToListAsync();
             return result;
         }
@@ -159,12 +159,12 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Rapaport_Rate_Detail_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(!string.IsNullOrEmpty(rapaport_Rate_Detail_Model.Certificate_No) ? new SqlParameter("@Certificate_No", rapaport_Rate_Detail_Model.Certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value)); 
+                    command.Parameters.Add(!string.IsNullOrEmpty(rapaport_Rate_Detail_Model.Certificate_No) ? new SqlParameter("@Certificate_No", rapaport_Rate_Detail_Model.Certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
                     command.Parameters.Add(rapaport_Rate_Detail_Model.Shape > 0 ? new SqlParameter("@Shape", rapaport_Rate_Detail_Model.Shape) : new SqlParameter("@Shape", DBNull.Value));
                     command.Parameters.Add(rapaport_Rate_Detail_Model.Color > 0 ? new SqlParameter("@Color", rapaport_Rate_Detail_Model.Color) : new SqlParameter("@Color", DBNull.Value));
                     command.Parameters.Add(rapaport_Rate_Detail_Model.Clarity > 0 ? new SqlParameter("@Clarity", rapaport_Rate_Detail_Model.Clarity) : new SqlParameter("@Clarity", DBNull.Value));
                     command.Parameters.Add(rapaport_Rate_Detail_Model.Cts > 0 ? new SqlParameter("@Cts", rapaport_Rate_Detail_Model.Cts) : new SqlParameter("@Cts", DBNull.Value));
-                    
+
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -192,7 +192,7 @@ namespace astute.Repository
 
         #region Rapaport User
         public async Task<int> InsertRapaportUser(Rapaport_User rapaport_User)
-        {   
+        {
             var rap_User = !string.IsNullOrEmpty(rapaport_User.Rap_User) ? new SqlParameter("@Rap_User", rapaport_User.Rap_User) : new SqlParameter("@Rap_User", DBNull.Value);
             var rap_Password = !string.IsNullOrEmpty(rapaport_User.Rap_Password) ? new SqlParameter("@Rap_Password", rapaport_User.Rap_Password) : new SqlParameter("@Rap_User", DBNull.Value);
             var recordType = new SqlParameter("@recordType", "Insert");
@@ -203,7 +203,7 @@ namespace astute.Repository
             return result;
         }
         public async Task<int> UpdateRapaportUser(Rapaport_User rapaport_User)
-        {   
+        {
             var rap_User = !string.IsNullOrEmpty(rapaport_User.Rap_User) ? new SqlParameter("@Rap_User", rapaport_User.Rap_User) : new SqlParameter("@Rap_User", DBNull.Value);
             var rap_Password = !string.IsNullOrEmpty(rapaport_User.Rap_Password) ? new SqlParameter("@Rap_Password", rapaport_User.Rap_Password) : new SqlParameter("@Rap_User", DBNull.Value);
             var recordType = new SqlParameter("@recordType", "Update");

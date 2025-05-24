@@ -15,7 +15,7 @@ namespace astute.Repository
     public partial class UserService : IUserService
     {
         #region Fields
-        private readonly AstuteDbContext _dbContext;        
+        private readonly AstuteDbContext _dbContext;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
         #endregion
@@ -160,8 +160,8 @@ namespace astute.Repository
                             else if (col.ColumnName == "Address_Proof_Upload" && row[col] != DBNull.Value)
                             {
                                 dict[col.ColumnName] = !string.IsNullOrEmpty(row[col].ToString()) ? _configuration["BaseUrl"] + CoreCommonFilePath.CompanyDocumentsPath + row[col].ToString() : null;
-                            }                            
-                            else if(col.ColumnName == "Password" && row[col] != DBNull.Value)
+                            }
+                            else if (col.ColumnName == "Password" && row[col] != DBNull.Value)
                             {
                                 dict[col.ColumnName] = CoreService.Decrypt(row[col].ToString());
                             }

@@ -33,7 +33,7 @@ namespace astute.Repository
 
         #region Utilities
         private async Task Insert_Menu_Trace(Menu_Mas menu_Mas, string recordType)
-        {           
+        {
             var menuName = !string.IsNullOrEmpty(menu_Mas.Menu_Name) ? new SqlParameter("@Menu_Name", menu_Mas.Menu_Name) : new SqlParameter("@Menu_Name", DBNull.Value);
             var caption = !string.IsNullOrEmpty(menu_Mas.Caption) ? new SqlParameter("@Caption", menu_Mas.Caption) : new SqlParameter("@Caption", DBNull.Value);
             var parentId = menu_Mas.Parent_Id > 0 ? new SqlParameter("@Parent_Id", menu_Mas.Parent_Id) : new SqlParameter("@Parent_Id", DBNull.Value);
@@ -199,7 +199,7 @@ namespace astute.Repository
 
             return menuList;
         }
-        
+
         public async Task<Menu_Rights_Model> Set_Menu_Rights(int menuId, IList<Emp_rights> rights)
         {
             var right = rights.FirstOrDefault(x => x.Menu_Id == menuId);
@@ -278,7 +278,7 @@ namespace astute.Repository
             return right != null ? new Menu_Download_Share_Rights_Model
             {
                 D_Certificate = right.D_Certificate,
-                D_Custom_Excel = right.D_Custom_Excel,  
+                D_Custom_Excel = right.D_Custom_Excel,
                 D_Default_Excel = right.D_Default_Excel,
                 D_Image = right.D_Image,
                 D_Video = right.D_Video,

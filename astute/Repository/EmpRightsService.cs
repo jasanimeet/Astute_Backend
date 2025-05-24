@@ -63,7 +63,7 @@ namespace astute.Repository
 
                 await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Emp_Rights_Delete {empId}"));
 
-                if(fromEmpRights != null && fromEmpRights.Count > 0)
+                if (fromEmpRights != null && fromEmpRights.Count > 0)
                 {
                     foreach (var right in fromEmpRights)
                     {

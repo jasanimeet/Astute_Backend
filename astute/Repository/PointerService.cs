@@ -47,7 +47,7 @@ namespace astute.Repository
 
             await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"exec Pointer_Master_Trace_Insert @Employee_Id, @IP_Address, @Trace_Date, @Trace_Time, @Record_Type, @Pointer_Name, 
-                        @From_Cts, @To_Cts, @Pointer_Type, @Order_No, @Sort_No, @Status", empId, ipaddress, date, time, record_Type, pointerName, fromCts, toCts, 
+                        @From_Cts, @To_Cts, @Pointer_Type, @Order_No, @Sort_No, @Status", empId, ipaddress, date, time, record_Type, pointerName, fromCts, toCts,
                         pointerType, orderNo, sortNo, status));
         }
         public async Task Insert_Pointer_Detail_Trace(DataTable dataTable)
@@ -65,7 +65,7 @@ namespace astute.Repository
         #region Methods
         #region Pointer Master
         public async Task<(string, int)> Add_Update_Pointer(Pointer_Master pointer_Mas)
-        {   
+        {
             var pointerId = new SqlParameter("@Pointer_Id", pointer_Mas.Pointer_Id);
             var pointerName = new SqlParameter("@Pointer_Name", pointer_Mas.Pointer_Name);
             var fromCts = new SqlParameter("@From_Cts", pointer_Mas.From_Cts);
@@ -134,9 +134,9 @@ namespace astute.Repository
                             .AsEnumerable()
                             .FirstOrDefault());
 
-            if(result != null)
+            if (result != null)
             {
-                if(pointer_Id > 0)
+                if (pointer_Id > 0)
                 {
                     result.Pointer_Detail_List = await GetPointerDetail(0, pointer_Id);
                 }
@@ -186,7 +186,7 @@ namespace astute.Repository
             return result;
         }
         public async Task<IList<Pointer_Master>> GetPointer(int pointerId)
-        {   
+        {
             var pointer_Id = pointerId > 0 ? new SqlParameter("@Pointer_Id", pointerId) : new SqlParameter("@Pointer_Id", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.Pointer_Master

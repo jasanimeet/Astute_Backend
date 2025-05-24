@@ -698,7 +698,7 @@ namespace astute.Repository
             {
                 using (var command = new SqlCommand("Year_Master_Active_Select", connection))
                 {
-                    command.CommandType = CommandType.StoredProcedure;                    
+                    command.CommandType = CommandType.StoredProcedure;
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -723,7 +723,7 @@ namespace astute.Repository
             return result;
         }
         public async Task<int> Insert_Update_Years(Year_Master year_Mas)
-        {   
+        {
             var year_Id = new SqlParameter("@Year_Id", year_Mas.Year_Id);
             var year = !string.IsNullOrEmpty(year_Mas.Year) ? new SqlParameter("@Year", year_Mas.Year) : new SqlParameter("@Year", DBNull.Value);
             var current_Status = new SqlParameter("@Current_Status", year_Mas.Current_Status);
@@ -1160,7 +1160,7 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Temp_Layout_Master
                             .FromSqlRaw(@"EXEC Temp_Layout_Master_Select @Layout_Id, @Menu_Id, @Employee_Id", _layout_Id, _menu_Id, _employee_Id)
                             .ToListAsync());
-            if(result != null && result.Count > 0)
+            if (result != null && result.Count > 0)
             {
                 foreach (var item in result)
                 {
@@ -1173,7 +1173,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<(string,int)> Insert_Update_Temp_Layout(Temp_Layout_Master temp_Layout_Master)
+        public async Task<(string, int)> Insert_Update_Temp_Layout(Temp_Layout_Master temp_Layout_Master)
         {
             var layout_Id = new SqlParameter("@Layout_Id", temp_Layout_Master.Layout_Id);
             var layout_Name = !string.IsNullOrEmpty(temp_Layout_Master.Layout_Name) ? new SqlParameter("@Layout_Name", temp_Layout_Master.Layout_Name) : new SqlParameter("@Layout_Name", DBNull.Value);
@@ -1190,7 +1190,7 @@ namespace astute.Repository
                         employee_Id, status, insertedId));
 
             var _inserted_Id = (int)insertedId.Value;
-            if(result > 0)
+            if (result > 0)
             {
                 return ("success", _inserted_Id);
             }
@@ -1213,7 +1213,7 @@ namespace astute.Repository
             return result;
         }
         public async Task<int> Update_Temp_Layout_Status(int layout_Id, int menu_Id, int employee_Id, bool status)
-        {   
+        {
             var _layout_Id = new SqlParameter("@Layout_Id", layout_Id);
             var _menu_Id = new SqlParameter("@Menu_Id", menu_Id);
             var _employee_Id = new SqlParameter("@Employee_Id", employee_Id);
@@ -1226,7 +1226,7 @@ namespace astute.Repository
         }
 
         public async Task<int> Set_Default_Temp_Layout(int menu_Id, int employee_Id)
-        {   
+        {
             var _menu_Id = new SqlParameter("@Menu_Id", menu_Id);
             var _employee_Id = new SqlParameter("@Employee_Id", employee_Id);
 

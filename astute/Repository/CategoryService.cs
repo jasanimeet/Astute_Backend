@@ -181,7 +181,7 @@ namespace astute.Repository
 
         #region Category Values
         public async Task<int> InsertCategoryValue(Category_Value category_Value)
-        {   
+        {
             var catvalId = new SqlParameter("@CatvalId", category_Value.Cat_val_Id);
             var catName = new SqlParameter("@CatName", category_Value.Cat_Name);
             var groupName = !string.IsNullOrEmpty(category_Value.Group_Name) ? new SqlParameter("@GroupName", category_Value.Group_Name) : new SqlParameter("@GroupName", DBNull.Value);
@@ -221,7 +221,7 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
             .ExecuteSqlRawAsync(@"exec Category_Value_Insert_Update @CatvalId, @CatName, @GroupName, @RapaportName, @Rapnetname,
             @Synonyms, @OrderNo, @SortNo, @Status, @Icon_Url, @CatId, @DisplayName, @ShortName, @WebName, @RecordType, @IsExistsCatVal OUT, @IsExistsOrderNo OUT, @IsExistsSortNo OUT, @IsForceInsert,@Inserted_Id OUT",
-            catvalId, catName, groupName, rapaportName, rapnetname, synonyms, orderNo, sortNo, status, icon_Url, catId, displayName, shortName, webName,recordType,
+            catvalId, catName, groupName, rapaportName, rapnetname, synonyms, orderNo, sortNo, status, icon_Url, catId, displayName, shortName, webName, recordType,
             isExistCatVal, isExistOrderNo, isExistSortNo, isForce_Insert, inserted_Id));
 
             bool isExist = (bool)isExistCatVal.Value;
@@ -235,7 +235,7 @@ namespace astute.Repository
             bool isExistSort_No = (bool)isExistSortNo.Value;
             if (isExistSort_No)
                 return 4;
-          
+
             if (CoreService.Enable_Trace_Records(_configuration))
             {
                 await Insert_Category_Value_Trace(category_Value, "Insert");
@@ -244,7 +244,7 @@ namespace astute.Repository
             int inserted_id = (int)inserted_Id.Value;
             return inserted_id;
         }
-        public async Task<int> InsertCategoryValuePricing(int Cat_Val_Id,int Cat_Id)
+        public async Task<int> InsertCategoryValuePricing(int Cat_Val_Id, int Cat_Id)
         {
             var catvalId = new SqlParameter("@CatvalId", Cat_Val_Id);
             var catId = new SqlParameter("@CatId", Cat_Id);
@@ -377,7 +377,7 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Category_Value_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    
+
                     await connection.OpenAsync();
 
                     using var da = new SqlDataAdapter();
@@ -406,8 +406,8 @@ namespace astute.Repository
                     }
                 }
             }
-            
-            var groupedResult = result.GroupBy(item => item["Column_Name"].ToString()).ToDictionary(group => group.Key,group => group.ToList());
+
+            var groupedResult = result.GroupBy(item => item["Column_Name"].ToString()).ToDictionary(group => group.Key, group => group.ToList());
 
             return groupedResult;
         }
@@ -425,7 +425,7 @@ namespace astute.Repository
                     model.Add(new CategoryValueModel()
                     {
                         Cat_val_Id = x.Cat_val_Id,
-                        Cat_Name = x.Cat_Name.Replace("_"," "),
+                        Cat_Name = x.Cat_Name.Replace("_", " "),
                         Group_Name = x.Group_Name,
                         Rapaport_Name = x.Rapaport_Name,
                         Rapnet_name = x.Rapnet_name,
@@ -542,7 +542,7 @@ namespace astute.Repository
             }
             return result;
         }
-        
+
         #endregion
 
         #region Column Master
@@ -672,7 +672,7 @@ namespace astute.Repository
             return result;
         }
         #endregion
-        
+
         #region Import Detail
         public async Task<List<Dictionary<string, object>>> Get_Import_Detail()
         {

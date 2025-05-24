@@ -151,9 +151,9 @@ namespace astute.Repository
             return result;
         }
         #endregion
-        
+
         #region Terms Trans Det
-        
+
         public async Task<int> Insert_Terms_Trans_Det(Terms_Trans_Det terms_Trans_Det)
         {
             var terms_Id = new SqlParameter("@Terms_Id", terms_Trans_Det.Terms_Id);

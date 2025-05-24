@@ -204,7 +204,7 @@ namespace astute.Repository
             }
             return result.FirstOrDefault();
         }
-        public async Task<(int,string)> Delete_Lab_User(int id, bool check_Primary_User)
+        public async Task<(int, string)> Delete_Lab_User(int id, bool check_Primary_User)
         {
             var _id = new SqlParameter("@Id", id);
             var _check_Primary_User = new SqlParameter("@Check_Primary_User", check_Primary_User);
@@ -223,13 +223,13 @@ namespace astute.Repository
                         _id, _check_Primary_User, is_Exist, is_Sub_Exist));
             var _is_Exist = (bool)is_Exist.Value;
             if (_is_Exist)
-                return (409,"exist");
+                return (409, "exist");
 
             var _is_Sub_Exist = (bool)is_Sub_Exist.Value;
             if (_is_Sub_Exist)
                 return (409, "subExist");
 
-            return (result,"success");
+            return (result, "success");
 
             //return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Lab_User_Delete {id}"));
         }
@@ -276,7 +276,7 @@ namespace astute.Repository
 
             return result;
         }
-        
+
         public async Task<int> Job_Transfer_Supplier_Pricing_Cal(int party_Id)
         {
             var _party_Id = party_Id > 0 ? new SqlParameter("@Party_Id", party_Id) : new SqlParameter("@Party_Id", DBNull.Value);
@@ -358,7 +358,7 @@ namespace astute.Repository
 
             return result;
         }
-        
+
         public async Task<int> Job_Transfer_Auto_Stock_Pricing(string? Upload_From)
         {
             var _upload_From = !string.IsNullOrEmpty(Upload_From) ? new SqlParameter("@Upload_From", Upload_From) : new SqlParameter("@Upload_From", DBNull.Value);
@@ -383,7 +383,7 @@ namespace astute.Repository
                 }
             }
         }
-        
+
         public async Task<int> Job_Transfer_Auto_Party_Url_Format()
         {
             using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
@@ -405,7 +405,7 @@ namespace astute.Repository
                 }
             }
         }
-        
+
         public async Task<int> Job_Transfer_Auto_Party_Account_Master()
         {
             using (var command = _dbContext.Database.GetDbConnection().CreateCommand())

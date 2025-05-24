@@ -700,7 +700,7 @@ namespace astute.CoreServices
                             newRow[column] = rowData[column.ColumnName];
                         }
                         else
-                    {
+                        {
                             newRow[column] = DBNull.Value;
                         }
                     }
@@ -766,7 +766,7 @@ namespace astute.CoreServices
 
                 if (result != null && result.Length > 0)
                 {
-                    r = result[Sequence-1];
+                    r = result[Sequence - 1];
                     return r;
                 }
 

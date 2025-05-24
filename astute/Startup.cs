@@ -45,7 +45,7 @@ namespace astute
             services.Configure<FormOptions>(options =>
             {
                 options.MultipartBodyLengthLimit = int.MaxValue; // Adjust as needed
-                options.ValueCountLimit = int.MaxValue; 
+                options.ValueCountLimit = int.MaxValue;
             });
 
             services.Configure<KestrelServerOptions>(options =>
@@ -77,7 +77,7 @@ namespace astute
                 options.Providers.Add<BrotliCompressionProvider>();
                 options.Providers.Add<GzipCompressionProvider>();
 
-                options.EnableForHttps = true; 
+                options.EnableForHttps = true;
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] { "application/json" });
             });
@@ -126,7 +126,7 @@ namespace astute
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
-            {   
+            {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -154,7 +154,7 @@ namespace astute
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {   
+        {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -162,13 +162,13 @@ namespace astute
             app.UseResponseCompression();
             app.UseHttpsRedirection();
             app.UseAuthentication();
-            app.UseRouting();   
+            app.UseRouting();
             app.UseAuthorization();
             app.UseCors("corsapp");
             app.UseStaticFiles();
             app.UseMiddleware<JwtMiddleware>();
             app.UseEndpoints(endpoints =>
-            {   
+            {
                 endpoints.MapControllers();
             });
         }

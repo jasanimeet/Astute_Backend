@@ -371,7 +371,7 @@
         public static string OrderStatusManagement = "Order Status has been changed successfully.";
         public static string OrderInactive = "Order has been inactive successfully.";
         public static string OrderProcessingFinalUpdate = "Order Processing Final" + UpdatedSuccessfully;
-        public static string OrderAccept= "Request already accepted, you can not delete.";
+        public static string OrderAccept = "Request already accepted, you can not delete.";
         #endregion
 
         #region Account Group
@@ -404,7 +404,7 @@
         public static string TransExistsPrefixOMasterUpdated = TransExistsPrefixMaster + TransExistsOMaster + UpdatedSuccessfully;
         public static string TransExistsTransPrefixMasterCreated = TransExistsTransPrefixMaster;
         public static string TransExistsTransPrefixMasterUpdated = TransExistsTransPrefixMaster;
-        public static string TransExistsTransPrefixOMasterCreated = TransExistsTransPrefixMaster + TransExistsOMaster+ AddedSuccessfully;
+        public static string TransExistsTransPrefixOMasterCreated = TransExistsTransPrefixMaster + TransExistsOMaster + AddedSuccessfully;
         public static string TransExistsTransPrefixOMasterUpdated = TransExistsTransPrefixMaster + TransExistsOMaster + UpdatedSuccessfully;
 
         #endregion

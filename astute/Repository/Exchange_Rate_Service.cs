@@ -31,7 +31,7 @@ namespace astute.Repository
             };
 
             var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Exchange_Rate_Master_Insert_Update @Struct_Exchange_Rate", parameter);
-            
+
             return result;
         }
         public async Task<IList<Exchange_Rate_Master>> Get_Exchange_Rate(int exchange_Id)
