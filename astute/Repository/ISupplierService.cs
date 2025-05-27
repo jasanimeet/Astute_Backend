@@ -275,5 +275,10 @@ namespace astute.Repository
         Task<int> Create_Update_QC_Detail(DataTable dataTable, int user_Id);
         Task<(string, int)> Delete_QC_Master(int Grade_Id);
         #endregion
+
+        #region QC Pricing Skip
+        Task<List<Dictionary<string, object>>> Get_Supplier_With_Pending_Upcoming_QC_Pricing();
+        Task<List<Dictionary<string, object>>> Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing(int Trans_Id);
+        #endregion
     }
 }
