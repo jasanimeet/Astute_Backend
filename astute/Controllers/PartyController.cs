@@ -13349,6 +13349,48 @@ namespace astute.Controllers
         }
 
         /*
+        * Date: 2025/05/24 Get Order Processing AND Summary With Hold Stones..  by Jashmin Patel
+        */
+        [HttpGet]
+        [Route("get_order_processing_hold")]
+        [Authorize]
+        public async Task<IActionResult> Get_Order_Processing_Hold()
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                if ((user_Id ?? 0) > 0)
+                {
+                    var result = await _supplierService.Get_Order_Processing_Hold(user_Id ?? 0);
+                    if (result != null && result.Count > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = result
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Order_Processing_Hold", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        /*
         * Date: 2025/05/23 Validate Lab Entry Is_Img_Cert by Jashmin Patel
         */
         [HttpPost]
