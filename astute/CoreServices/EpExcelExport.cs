@@ -52,10 +52,10 @@ namespace astute.CoreServices
                     Int64 number_1 = 0;
                     bool success1 = false;
 
-                    Color colFromHex_Pointer = System.Drawing.ColorTranslator.FromHtml("#c6e0b4");
-                    Color colFromHex_Dis = System.Drawing.ColorTranslator.FromHtml("#ccffff");
-                    Color colFromHexTotal = System.Drawing.ColorTranslator.FromHtml("#d9e1f2");
-                    Color tcpg_bg_clr = System.Drawing.ColorTranslator.FromHtml("#fff2cc");
+                    Color colFromHex_Pointer = ColorTranslator.FromHtml("#c6e0b4");
+                    Color colFromHex_Dis = ColorTranslator.FromHtml("#ccffff");
+                    Color colFromHexTotal = ColorTranslator.FromHtml("#d9e1f2");
+                    Color tcpg_bg_clr = ColorTranslator.FromHtml("#fff2cc");
 
                     #region Add header details
                     ep.Workbook.Properties.Author = "SUNRISE DIAMOND";
@@ -79,9 +79,9 @@ namespace astute.CoreServices
                     worksheet.Cells[1, 6].Style.Font.Size = 24;
                     worksheet.Cells[1, 6].Style.Font.Bold = true;
 
-                    Color colFromHex_H1 = System.Drawing.ColorTranslator.FromHtml("#8497b0");
+                    Color colFromHex_H1 = ColorTranslator.FromHtml("#8497b0");
                     worksheet.Cells[1, 6].Style.Font.Color.SetColor(colFromHex_H1);
-                    Color col_color_Red = System.Drawing.ColorTranslator.FromHtml("#ff0000");
+                    Color col_color_Red = ColorTranslator.FromHtml("#ff0000");
 
                     worksheet.Row(5).Height = 40;
                     worksheet.Row(6).Height = 40;
@@ -124,7 +124,7 @@ namespace astute.CoreServices
 
                     var cellBackgroundColor1 = worksheet.Cells[6, 1, 6, 49].Style.Fill;
                     cellBackgroundColor1.PatternType = ExcelFillStyle.Solid;
-                    Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#d3d3d3");
+                    Color colFromHex = ColorTranslator.FromHtml("#d3d3d3");
                     cellBackgroundColor1.BackgroundColor.SetColor(colFromHex);
                     #endregion
 
@@ -538,7 +538,7 @@ namespace astute.CoreServices
 
                     worksheet.Cells[inStartIndex, 19, (inwrkrow - 1), 20].Style.Fill.PatternType = ExcelFillStyle.Solid;
                     worksheet.Cells[inStartIndex, 19, (inwrkrow - 1), 20].Style.Fill.BackgroundColor.SetColor(colFromHex_Dis);
-                    worksheet.Cells[inStartIndex, 19, (inwrkrow - 1), 20].Style.Font.Color.SetColor(System.Drawing.Color.Red);
+                    worksheet.Cells[inStartIndex, 19, (inwrkrow - 1), 20].Style.Font.Color.SetColor(Color.Red);
 
                     worksheet.Cells[inStartIndex, 27, (inwrkrow - 1), 31].Style.Numberformat.Format = "0.00";
                     worksheet.Cells[inStartIndex, 39, (inwrkrow - 1), 42].Style.Numberformat.Format = "0.00";
@@ -626,10 +626,10 @@ namespace astute.CoreServices
                     Int64 number_1 = 0;
                     bool success1 = false;
 
-                    Color colFromHex_Pointer = System.Drawing.ColorTranslator.FromHtml("#c6e0b4");
-                    Color colFromHex_Dis = System.Drawing.ColorTranslator.FromHtml("#ccffff");
-                    Color colFromHexTotal = System.Drawing.ColorTranslator.FromHtml("#d9e1f2");
-                    Color tcpg_bg_clr = System.Drawing.ColorTranslator.FromHtml("#fff2cc");
+                    Color colFromHex_Pointer = ColorTranslator.FromHtml("#c6e0b4");
+                    Color colFromHex_Dis = ColorTranslator.FromHtml("#ccffff");
+                    Color colFromHexTotal = ColorTranslator.FromHtml("#d9e1f2");
+                    Color tcpg_bg_clr = ColorTranslator.FromHtml("#fff2cc");
 
                     #region Add header details
                     ep.Workbook.Properties.Author = "SUNRISE DIAMOND";
@@ -653,9 +653,9 @@ namespace astute.CoreServices
                     worksheet.Cells[1, 6].Style.Font.Size = 24;
                     worksheet.Cells[1, 6].Style.Font.Bold = true;
 
-                    Color colFromHex_H1 = System.Drawing.ColorTranslator.FromHtml("#8497b0");
+                    Color colFromHex_H1 = ColorTranslator.FromHtml("#8497b0");
                     worksheet.Cells[1, 6].Style.Font.Color.SetColor(colFromHex_H1);
-                    Color col_color_Red = System.Drawing.ColorTranslator.FromHtml("#ff0000");
+                    Color col_color_Red = ColorTranslator.FromHtml("#ff0000");
 
                     worksheet.Row(5).Height = 40;
                     worksheet.Row(6).Height = 40;
@@ -698,7 +698,7 @@ namespace astute.CoreServices
 
                     var cellBackgroundColor1 = worksheet.Cells[6, 1, 6, 49].Style.Fill;
                     cellBackgroundColor1.PatternType = ExcelFillStyle.Solid;
-                    Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#d3d3d3");
+                    Color colFromHex = ColorTranslator.FromHtml("#d3d3d3");
                     cellBackgroundColor1.BackgroundColor.SetColor(colFromHex);
                     #endregion
 
@@ -1112,7 +1112,7 @@ namespace astute.CoreServices
 
                     worksheet.Cells[inStartIndex, 19, (inwrkrow - 1), 20].Style.Fill.PatternType = ExcelFillStyle.Solid;
                     worksheet.Cells[inStartIndex, 19, (inwrkrow - 1), 20].Style.Fill.BackgroundColor.SetColor(colFromHex_Dis);
-                    worksheet.Cells[inStartIndex, 19, (inwrkrow - 1), 20].Style.Font.Color.SetColor(System.Drawing.Color.Red);
+                    worksheet.Cells[inStartIndex, 19, (inwrkrow - 1), 20].Style.Font.Color.SetColor(Color.Red);
 
                     worksheet.Cells[inStartIndex, 27, (inwrkrow - 1), 31].Style.Numberformat.Format = "0.00";
                     worksheet.Cells[inStartIndex, 39, (inwrkrow - 1), 42].Style.Numberformat.Format = "0.00";
