@@ -5005,6 +5005,23 @@ namespace astute.Repository
             }
             return dataTable;
         }
+
+        public async Task<int> Purchase_QC_Reply_Status_Update(DataTable dataTable, int User_Id)
+        {
+            var Parameter = new SqlParameter("@Purchase_Detail_QC_Reply_Status_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Purchase_Detail_QC_Reply_Status_Table_Type]",
+                Value = dataTable
+            };
+
+            var user_Id = new SqlParameter("@User_Id", User_Id);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Purchase_Detail_QC_Reply_Status_Update @Purchase_Detail_QC_Reply_Status_Table_Type, @User_Id", Parameter, user_Id));
+
+            return result;
+        }
+
         #endregion
 
         #region Transaction

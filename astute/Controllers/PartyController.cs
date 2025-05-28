@@ -16916,6 +16916,50 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("update_purchase_qc_reply_status")]
+        [Authorize]
+        public async Task<IActionResult> Update_Purchase_QC_Reply_Status(IList<Purchase_Detail_QC_Reply> purchase_Detail_QC_Reply)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("Id", typeof(int));
+                dataTable.Columns.Add("QC_Reply_Status", typeof(string));
+
+                foreach (var item in purchase_Detail_QC_Reply)
+                {
+                    dataTable.Rows.Add(
+                        item.Id ?? 0,
+                        item.QC_Reply_Status
+                    );
+                }
+
+                var result = await _supplierService.Purchase_QC_Reply_Status_Update(dataTable, user_Id ?? 0);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.Purchase_QC_Updated
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Purchase_QC_Reply_Status", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Transaction
