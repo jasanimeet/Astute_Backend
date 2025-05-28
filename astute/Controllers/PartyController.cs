@@ -16105,7 +16105,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("get_purchase_pricing")]
         [Authorize]
@@ -17032,6 +17032,38 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("purchase_detail_qc_close_update")]
+        [Authorize]
+        public async Task<IActionResult> Purchase_Detail_QC_Close_Update(Purchase_Detail_QC_List purchase_Detail_QC_List)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Purchase_Detail_QC_Close_Update(purchase_Detail_QC_List.Trans_Id, user_Id ?? 0);
+                if (result != null && result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.Purchase_QC_Closed
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Purchase_Detail_QC_Close_Update", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Transaction

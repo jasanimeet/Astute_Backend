@@ -591,6 +591,7 @@
         public static string Purchase_QC = "Purchase QC";
         public static string Purchase_QC_Updated = Purchase_QC + UpdatedSuccessfully;
         public static string Purchase_QC_Completed = Purchase_QC + " completed successfully";
+        public static string Purchase_QC_Closed = Purchase_QC + " closed successfully";
         #endregion
 
         #region Parcel Ref Master

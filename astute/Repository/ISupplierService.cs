@@ -204,6 +204,7 @@ namespace astute.Repository
         Task<DataTable> Get_Purchase_QC_Approval_Data(Report_Lab_Entry_Filter report_Lab_Entry_Filter);
         Task<int> Purchase_QC_Reply_Status_Update(DataTable dataTable, int User_Id);
         Task<int> Purchase_Detail_QC_Complete_Update(DataTable dataTable, int Trans_Id, int User_Id);
+        Task<int> Purchase_Detail_QC_Close_Update(int Trans_Id, int User_Id);
         #endregion
 
         #region Transaction

@@ -5040,6 +5040,18 @@ namespace astute.Repository
             return result;
         }
 
+        public async Task<int> Purchase_Detail_QC_Close_Update(int Trans_Id, int User_Id)
+        {
+            var _trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
+
+            var _user_Id = new SqlParameter("@User_Id", User_Id);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Purchase_Detail_QC_Close_Update @Trans_Id, @User_Id", _trans_Id, _user_Id));
+
+            return result;
+        }
+
         #endregion
 
         #region Transaction
