@@ -16098,14 +16098,14 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Purchase_Detail_Outward_Update", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Purchase_Detail_QC_Update", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
             }
         }
-
+        
         [HttpGet]
         [Route("get_purchase_pricing")]
         [Authorize]
