@@ -198,6 +198,13 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Qc(int Trans_Id, string Doc_Type);
         #endregion
 
+        #region Purchase QC Approval
+        Task<List<Dictionary<string, object>>> Get_Purchase_QC_Approval(Purchase_Master_Search_Model purchase_Master_Search_Model);
+        Task<DataTable> Get_Purchase_QC_Approval_Data_Dynamic(Report_Lab_Entry_Filter report_Lab_Entry_Filter);
+        Task<DataTable> Get_Purchase_QC_Approval_Data(Report_Lab_Entry_Filter report_Lab_Entry_Filter);
+        Task<int> Purchase_QC_Reply_Status_Update(DataTable dataTable, int User_Id);
+        #endregion
+
         #region Transaction
         Task<List<Dictionary<string, object>>> Get_Transaction_Master(Transaction_Master_Search_Model transaction_Master_Search_Model);
         Task<Dictionary<string, object>> Get_Transaction(int Trans_Id);

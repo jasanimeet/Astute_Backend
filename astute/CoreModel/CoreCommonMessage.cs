@@ -587,6 +587,11 @@
         public static string Purchase_Pricing_Updated = Purchase_Pricing + UpdatedSuccessfully;
         #endregion
 
+        #region Purchase QC
+        public static string Purchase_QC = "Purchase QC";
+        public static string Purchase_QC_Updated = Purchase_QC + UpdatedSuccessfully;
+        #endregion
+
         #region Parcel Ref Master
         public static string ParcelRefMaster = "Parcel Ref Master";
         public static string ParcelRefMasterCreated = ParcelRefMaster + AddedSuccessfully;

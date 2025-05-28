@@ -16098,14 +16098,14 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Purchase_Detail_Outward_Update", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Purchase_Detail_QC_Update", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
             }
         }
-
+        
         [HttpGet]
         [Route("get_purchase_pricing")]
         [Authorize]
@@ -16724,6 +16724,242 @@ namespace astute.Controllers
                 });
             }
         }
+        #endregion
+
+        #region Purchase QC Approval
+
+        [HttpPost]
+        [Route("get_purchase_qc_approval")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_QC_Approval(Purchase_Master_Search_Model purchase_Master_Search_Model)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Purchase_QC_Approval(purchase_Master_Search_Model);
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_QC_Approval", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("purchase_qc_approval_column_wise_excel_download")]
+        [Authorize]
+        public async Task<IActionResult> Purchase_QC_Approval_Column_Wise_Excel_Download(Report_Lab_Entry_Filter report_Lab_Entry_Filter)
+        {
+            try
+            {
+                var dt_Order = await _supplierService.Get_Purchase_QC_Approval_Data_Dynamic(report_Lab_Entry_Filter);
+
+                if (dt_Order != null && dt_Order.Rows.Count > 0)
+                {
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in report_Lab_Entry_Filter.column_Name)
+                    {
+                        if (columnName != "CERTIFICATE LINK")
+                        {
+                            columnNamesTable.Rows.Add(columnName);
+                        }
+                    }
+                    columnNamesTable.Rows.Add("CERTIFICATE LINK");
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/PurchaseQCApprovalExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string filename = string.Empty;
+
+                    filename = "QC_Approval_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    EpExcelExport.Create_Purchase_Detail_QC_Approval_Column_Wise_Excel(dt_Order, columnNamesTable, filePath, filePath + filename);
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.PurchaseQCApprovalExcelFiles + filename;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Lab_Entry_Report_Column_Wise_Excel_Download", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("purchase_qc_approval_excel_export")]
+        [Authorize]
+        public async Task<IActionResult> Purchase_QC_Approval_Excel_Export(Report_Lab_Entry_Filter report_Lab_Entry_Filter)
+        {
+            try
+            {
+                var dt_Order = await _supplierService.Get_Purchase_QC_Approval_Data(report_Lab_Entry_Filter);
+
+                if (dt_Order != null && dt_Order.Rows.Count > 0)
+                {
+                    var excelPath = string.Empty;
+
+                    string filename = string.Empty;
+
+                    report_Lab_Entry_Filter.column_Name = new List<string>{
+                                        "Stock Id",
+                                        "Lab",
+                                        "IMAGE LINK",
+                                        "VIDEO LINK",
+                                        "Cert No",
+                                        "Status",
+                                        "QC Remarks",
+                                        "Shape",
+                                        "Pointer",
+                                        "BGM",
+                                        "Color",
+                                        "Clarity",
+                                        "Cts",
+                                        "Rap Rate",
+                                        "Rap Amount",
+                                        "Final Disc%",
+                                        "Final Amount",
+                                        "Cut",
+                                        "Polish",
+                                        "Symm",
+                                        "Fls",
+                                        "Length",
+                                        "Width",
+                                        "Depth",
+                                        "Depth%",
+                                        "Table%",
+                                        "Key To Symbol",
+                                        "Comment",
+                                        "Girdle%",
+                                        "Crown Angle",
+                                        "Crown Height",
+                                        "Pavilion Angle",
+                                        "Pavilion Height",
+                                        "Table White",
+                                        "Crown White",
+                                        "Table Black",
+                                        "Crown Black",
+                                        "Culet",
+                                        "Table Open",
+                                        "Crown Open",
+                                        "Pavilion Open",
+                                        "Girdle Open"
+                    };
+
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in report_Lab_Entry_Filter.column_Name)
+                    {
+                        if (columnName != "CERTIFICATE LINK")
+                        {
+                            columnNamesTable.Rows.Add(columnName);
+                        }
+                    }
+                    columnNamesTable.Rows.Add("CERTIFICATE LINK");
+
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/PurchaseQCApprovalExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+
+                    filename = "D_QC_Approval_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+
+                    EpExcelExport.Create_Purchase_Detail_QC_Approval_Excel(dt_Order, columnNamesTable, filePath, filePath + filename);
+
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.PurchaseQCApprovalExcelFiles + filename;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Purchase_QC_Approval_Excel_Export", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("update_purchase_qc_reply_status")]
+        [Authorize]
+        public async Task<IActionResult> Update_Purchase_QC_Reply_Status(IList<Purchase_Detail_QC_Reply> purchase_Detail_QC_Reply)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("Id", typeof(int));
+                dataTable.Columns.Add("QC_Reply_Status", typeof(string));
+
+                foreach (var item in purchase_Detail_QC_Reply)
+                {
+                    dataTable.Rows.Add(
+                        item.Id ?? 0,
+                        item.QC_Reply_Status
+                    );
+                }
+
+                var result = await _supplierService.Purchase_QC_Reply_Status_Update(dataTable, user_Id ?? 0);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.Purchase_QC_Updated
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Purchase_QC_Reply_Status", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Transaction
