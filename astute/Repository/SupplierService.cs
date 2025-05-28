@@ -4982,6 +4982,29 @@ namespace astute.Repository
             }
             return dataTable;
         }
+
+        public async Task<DataTable> Get_Purchase_QC_Approval_Data(Report_Lab_Entry_Filter report_Lab_Entry_Filter)
+        {
+            DataTable dataTable = new DataTable();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Purchase_Detail_Qc_Approval_Select_Excel", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(report_Lab_Entry_Filter.Stock_Id) ? new SqlParameter("@Ids", report_Lab_Entry_Filter.Stock_Id) : new SqlParameter("@Ids", DBNull.Value));
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    dataTable = ds.Tables[ds.Tables.Count - 1];
+                }
+            }
+            return dataTable;
+        }
         #endregion
 
         #region Transaction

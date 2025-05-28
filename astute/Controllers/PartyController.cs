@@ -16813,6 +16813,109 @@ namespace astute.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("purchase_qc_approval_excel_export")]
+        [Authorize]
+        public async Task<IActionResult> Purchase_QC_Approval_Excel_Export(Report_Lab_Entry_Filter report_Lab_Entry_Filter)
+        {
+            try
+            {
+                var dt_Order = await _supplierService.Get_Purchase_QC_Approval_Data(report_Lab_Entry_Filter);
+
+                if (dt_Order != null && dt_Order.Rows.Count > 0)
+                {
+                    var excelPath = string.Empty;
+
+                    string filename = string.Empty;
+
+                    report_Lab_Entry_Filter.column_Name = new List<string>{
+                                        "Stock Id",
+                                        "Lab",
+                                        "IMAGE LINK",
+                                        "VIDEO LINK",
+                                        "Cert No",
+                                        "Status",
+                                        "QC Remarks",
+                                        "Shape",
+                                        "Pointer",
+                                        "BGM",
+                                        "Color",
+                                        "Clarity",
+                                        "Cts",
+                                        "Rap Rate",
+                                        "Rap Amount",
+                                        "Final Disc%",
+                                        "Final Amount",
+                                        "Cut",
+                                        "Polish",
+                                        "Symm",
+                                        "Fls",
+                                        "Length",
+                                        "Width",
+                                        "Depth",
+                                        "Depth%",
+                                        "Table%",
+                                        "Key To Symbol",
+                                        "Comment",
+                                        "Girdle%",
+                                        "Crown Angle",
+                                        "Crown Height",
+                                        "Pavilion Angle",
+                                        "Pavilion Height",
+                                        "Table White",
+                                        "Crown White",
+                                        "Table Black",
+                                        "Crown Black",
+                                        "Culet",
+                                        "Table Open",
+                                        "Crown Open",
+                                        "Pavilion Open",
+                                        "Girdle Open"
+                    };
+
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in report_Lab_Entry_Filter.column_Name)
+                    {
+                        if (columnName != "CERTIFICATE LINK")
+                        {
+                            columnNamesTable.Rows.Add(columnName);
+                        }
+                    }
+                    columnNamesTable.Rows.Add("CERTIFICATE LINK");
+
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/PurchaseQCApprovalExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+
+                    filename = "D_QC_Approval_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+
+                    EpExcelExport.Create_Purchase_Detail_QC_Approval_Excel(dt_Order, columnNamesTable, filePath, filePath + filename);
+
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.PurchaseQCApprovalExcelFiles + filename;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Purchase_QC_Approval_Excel_Export", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Transaction
