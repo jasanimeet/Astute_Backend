@@ -21294,7 +21294,7 @@ namespace astute.Controllers
             }
         }
         #endregion
-        
+
         #region QC Pricing Skip
         /*
          * Date: 2025/05/27 By Jashmin Patel
@@ -21342,7 +21342,7 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_purchase_master_with_pending_upcoming_qc_pricing")]
         [Authorize]
-        public async Task<IActionResult> Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing(int trans_id)
+        public async Task<IActionResult> Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing(int Trans_Id)
         {
             try
             {
@@ -21350,7 +21350,45 @@ namespace astute.Controllers
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                 if ((user_Id ?? 0) > 0)
                 {
-                    var result = await _supplierService.Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing(trans_id);
+                    var result = await _supplierService.Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing(Trans_Id);
+                    if (result != null)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = result,
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("get_purchase_detail_with_pending_upcoming_qc_pricing")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing(int Trans_Id, string Doc_Type)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                if ((user_Id ?? 0) > 0)
+                {
+                    var result = await _supplierService.Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing(Trans_Id, Doc_Type);
                     if (result != null)
                     {
                         return Ok(new
