@@ -6186,7 +6186,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing(int Trans_Id, string Doc_Type)
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing(int Trans_Id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -6196,7 +6196,6 @@ namespace astute.Repository
                     command.CommandType = CommandType.StoredProcedure;
 
                     command.Parameters.Add(Trans_Id > 0 ? new SqlParameter("@Trans_Id", Trans_Id) : new SqlParameter("@Trans_Id", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(Doc_Type) ? new SqlParameter("@Doc_Type", Doc_Type) : new SqlParameter("@Doc_Type", DBNull.Value));
 
                     await connection.OpenAsync();
 
@@ -6220,6 +6219,26 @@ namespace astute.Repository
                 }
             }
             return result;
+        }
+        public async Task<DataTable> Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Excel(string Id)
+        {
+            var dataTable = new DataTable();
+
+            var connectionString = _configuration["ConnectionStrings:AstuteConnection"];
+            using (var connection = new SqlConnection(connectionString))
+            using (var command = new SqlCommand("Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Select_Excel", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.Add(!string.IsNullOrEmpty(Id) ? new SqlParameter("@Id", Id) : new SqlParameter("@Id", DBNull.Value));
+
+                await connection.OpenAsync();
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    dataTable.Load(reader);
+                }
+            }
+            return dataTable;
         }
         #endregion
     }

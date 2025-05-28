@@ -21616,7 +21616,7 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_purchase_detail_with_pending_upcoming_qc_pricing")]
         [Authorize]
-        public async Task<IActionResult> Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing(int Trans_Id, string Doc_Type)
+        public async Task<IActionResult> Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing(int Trans_Id)
         {
             try
             {
@@ -21624,7 +21624,7 @@ namespace astute.Controllers
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                 if ((user_Id ?? 0) > 0)
                 {
-                    var result = await _supplierService.Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing(Trans_Id, Doc_Type);
+                    var result = await _supplierService.Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing(Trans_Id);
                     if (result != null)
                     {
                         return Ok(new
@@ -21644,7 +21644,67 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPost]
+        [Route("get_purchase_detail_with_pending_upcoming_qc_pricing_excel")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Excel(Purchase_Search_Model purchase_Search_Model)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Excel(purchase_Search_Model.Id);
+
+                if (result != null && result.Rows.Count > 0)
+                {
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/PurchaseQCSkipExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string filename = string.Empty;
+
+                    filename = "QC_Skip_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".xlsx";
+
+                    List<string> columnNames = new List<string>();
+                    foreach (DataColumn column in result.Columns)
+                    {
+                        columnNames.Add(column.ColumnName);
+                    }
+
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in columnNames)
+                    {
+                        columnNamesTable.Rows.Add(columnName);
+                    }
+
+                    EpExcelExport.Create_Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Excel(result, columnNamesTable, filePath, filePath + filename);
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.PurchaseQCExcelFiles + filename;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+                else
+                {
+                    return NoContent();
+                }
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Excel", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
