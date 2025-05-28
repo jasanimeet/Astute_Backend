@@ -16726,6 +16726,42 @@ namespace astute.Controllers
         }
         #endregion
 
+        #region Purchase QC Approval
+
+        [HttpPost]
+        [Route("get_purchase_qc_approval")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_QC_Approval(Purchase_Master_Search_Model purchase_Master_Search_Model)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Purchase_QC_Approval(purchase_Master_Search_Model);
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_QC_Approval", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+
+        #endregion
+
         #region Transaction
 
         [HttpPost]
