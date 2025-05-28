@@ -200,6 +200,7 @@ namespace astute.Repository
 
         #region Purchase QC Approval
         Task<List<Dictionary<string, object>>> Get_Purchase_QC_Approval(Purchase_Master_Search_Model purchase_Master_Search_Model);
+        Task<DataTable> Get_Purchase_QC_Approval_Data_Dynamic(Report_Lab_Entry_Filter report_Lab_Entry_Filter);
         #endregion
 
         #region Transaction

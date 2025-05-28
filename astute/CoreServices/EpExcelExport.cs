@@ -12756,6 +12756,474 @@ namespace astute.CoreServices
             }
         }
 
+        public static void Create_Purchase_Detail_QC_Approval_Column_Wise_Excel(DataTable dtStock, DataTable column_dt, string _strFolderPath, string _strFilePath)
+        {
+            try
+            {
+                DataTable s_dt = new DataTable();
+
+                foreach (var columnName in column_dt.AsEnumerable().Select(row => Convert.ToString(row["Column_Name"])))
+                {
+                    DataColumn existingColumn = dtStock.Columns[columnName];
+                    s_dt.Columns.Add(columnName, existingColumn.DataType);
+
+                }
+
+                foreach (DataRow row in dtStock.AsEnumerable())
+                {
+                    DataRow newRow = s_dt.Rows.Add();
+                    foreach (var columnName in column_dt.AsEnumerable().Select(row => Convert.ToString(row["Column_Name"])))
+                    {
+                        newRow[columnName] = row[columnName];
+                    }
+                }
+
+                using (ExcelPackage ep = new ExcelPackage())
+                {
+                    int Row_Count = column_dt.Rows.Count;
+                    int inStartIndex = 3;
+                    int inwrkrow = 3;
+                    int inEndCounter = s_dt.Rows.Count + inStartIndex;
+                    int TotalRow = s_dt.Rows.Count;
+                    int i;
+
+                    Color colFromHex = ColorTranslator.FromHtml("#d3d3d3");
+                    Color colFromHex_Pointer = ColorTranslator.FromHtml("#c6e0b4");
+                    Color colFromHexTotal = ColorTranslator.FromHtml("#d9e1f2");
+
+                    Color gold = ColorTranslator.FromHtml("#FFF2CC");
+                    Color pink = ColorTranslator.FromHtml("#FF99CC");
+                    Color blue = ColorTranslator.FromHtml("#93C5F7");
+
+                    #region Company Detail on Header
+                    ep.Workbook.Worksheets.Add("QC Approval");
+
+                    ExcelWorksheet worksheet = ep.Workbook.Worksheets[0];
+
+                    worksheet.Name = DateTime.Now.ToString("dd-MM-yyyy");
+                    worksheet.Cells.Style.Font.Size = 11;
+                    worksheet.Cells.Style.Font.Name = "Calibri";
+
+                    worksheet.Row(1).Height = 40;
+                    worksheet.Row(2).Height = 40;
+                    worksheet.Row(2).Style.WrapText = true;
+                    #endregion
+
+                    #region Header Name Declaration
+                    Dictionary<string, int> columnPixelWidths = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+                    {
+                        ["Image"] = 57,
+                        ["Video"] = 57,
+                        ["Stock Id"] = 57,
+                        ["Type"] = 64,
+                        ["Order No"] = 64,
+                        ["Order Date"] = 64,
+                        ["Lab"] = 64,
+                        ["Cert No"] = 81,
+                        ["Supplier Name"] = 131,
+                        ["Supplier Short Name"] = 87,
+                        ["Company"] = 131,
+                        ["Shape"] = 64,
+                        ["QC Remarks"] = 131,
+                        ["Final Status"] = 64,
+                        ["BGM"] = 64,
+                        ["Color"] = 51,
+                        ["Clarity"] = 51,
+                        ["Cts"] = 51,
+                        ["Rap Rate"] = 64,
+                        ["Rap Amount"] = 64,
+                        ["Supplier Cost Disc(%)"] = 64,
+                        ["Supplier Cost Value($)"] = 64,
+                        ["Final Disc(%)"] = 64,
+                        ["Final Amt US($)"] = 64,
+                        ["Profit(%)"] = 64,
+                        ["Profit"] = 64,
+                        ["Cut"] = 51,
+                        ["Polish"] = 51,
+                        ["Symm"] = 51,
+                        ["Fls"] = 51,
+                        ["Length"] = 51,
+                        ["Width"] = 51,
+                        ["Depth"] = 51,
+                        ["Depth (%)"] = 51,
+                        ["Table (%)"] = 51,
+                        ["Key To Symbol"] = 154,
+                        ["Supplier Comment"] = 154,
+                        ["Girdle(%)"] = 51,
+                        ["Crown Angle"] = 51,
+                        ["Crown Height"] = 51,
+                        ["Pavilion Angle"] = 51,
+                        ["Pavilion Height"] = 51,
+                        ["Table Black"] = 51,
+                        ["Crown Black"] = 51,
+                        ["Table White"] = 51,
+                        ["Crown White"] = 51,
+                        ["Culet"] = 51,
+                        ["Table Open"] = 51,
+                        ["Crown Open"] = 51,
+                        ["Pavilion Open"] = 51,
+                        ["Girdle Open"] = 51,
+                        ["Customer Remarks"] = 131,
+                        ["Order Remarks"] = 131,
+                        ["Supplier No"] = 76,
+                    };
+
+                    int k = 0;
+                    for (int j = 0; j < column_dt.Rows.Count; j++)
+                    {
+                        string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
+                        k++;
+
+                        worksheet.Cells[2, k].Value = Column_Name;
+
+                        int pixelWidth = columnPixelWidths.TryGetValue(Column_Name, out int value) ? value : 0;
+                        double excelWidth = GetExcelWidth(pixelWidth);
+
+                        if (Column_Name.Equals("IMAGE LINK", StringComparison.OrdinalIgnoreCase))
+                        {
+                            worksheet.Cells[2, k].Value = "Image";
+
+                            pixelWidth = columnPixelWidths.TryGetValue("Image", out value) ? value : 0;
+                            excelWidth = GetExcelWidth(pixelWidth);
+                            worksheet.Column(k).Width = excelWidth;
+                        }
+                        else if (Column_Name.Equals("VIDEO LINK", StringComparison.OrdinalIgnoreCase))
+                        {
+                            worksheet.Cells[2, k].Value = "Video";
+
+                            pixelWidth = columnPixelWidths.TryGetValue("Video", out value) ? value : 0;
+                            excelWidth = GetExcelWidth(pixelWidth);
+                            worksheet.Column(k).Width = excelWidth;
+                        }
+
+                        worksheet.Column(k).Width = excelWidth;
+                    }
+
+                    worksheet.Cells[1, 1, 1, Row_Count].Style.Font.Bold = true;
+                    worksheet.Cells[1, 1, 1, Row_Count].Style.Font.Size = 11;
+                    worksheet.Cells[1, 1, 1, Row_Count].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[1, 1, 1, Row_Count].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    worksheet.Cells[1, 1, 1, Row_Count].Style.Font.Size = 11;
+
+                    worksheet.Cells[2, 1, 2, Row_Count].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[2, 1, 2, Row_Count].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+                    worksheet.Cells[2, 1, 2, Row_Count].Style.Font.Size = 10;
+                    worksheet.Cells[2, 1, 2, Row_Count].Style.Font.Bold = true;
+
+                    worksheet.Cells[2, 1, 2, Row_Count].AutoFilter = true;
+
+                    var pcellBackgroundColor1 = worksheet.Cells[2, 1, 2, Row_Count].Style.Fill;
+                    pcellBackgroundColor1.PatternType = ExcelFillStyle.Solid;
+                    pcellBackgroundColor1.BackgroundColor.SetColor(colFromHex);
+
+                    ExcelStyle cellStyleHeader1 = worksheet.Cells[2, 1, 2, Row_Count].Style;
+                    cellStyleHeader1.Border.Left.Style = cellStyleHeader1.Border.Right.Style
+                            = cellStyleHeader1.Border.Top.Style = cellStyleHeader1.Border.Bottom.Style
+                            = ExcelBorderStyle.Medium;
+                    #endregion
+
+                    #region Set AutoFit and Decimal Number Format
+                    worksheet.View.FreezePanes(3, 1);
+                    worksheet.Cells[inStartIndex, 1, inEndCounter, Row_Count].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    #endregion
+
+                    var asTitleCase = Thread.CurrentThread.CurrentCulture.TextInfo;
+
+                    for (i = inStartIndex; i < inEndCounter; i++)
+                    {
+                        #region Assigns Value to Cell
+                        int kk = 0;
+
+                        string cutValue = Convert.ToString(dtStock.Rows[i - inStartIndex]["CUT"]);
+                        for (int j = 0; j < column_dt.Rows.Count; j++)
+                        {
+                            kk += 1;
+                            string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
+
+                            if (Column_Name == "IMAGE LINK")
+                            {
+                                string Image_URL = Convert.ToString(s_dt.Rows[i - inStartIndex]["IMAGE LINK"]);
+                                if (!string.IsNullOrEmpty(Image_URL))
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Formula = "=HYPERLINK(\"" + Image_URL + "\",\" Image \")";
+                                    worksheet.Cells[inwrkrow, kk].Style.Font.UnderLine = true;
+                                    worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Blue);
+                                }
+                            }
+                            else if (Column_Name == "VIDEO LINK")
+                            {
+                                string Video_URL = Convert.ToString(s_dt.Rows[i - inStartIndex]["VIDEO LINK"]);
+                                if (!string.IsNullOrEmpty(Video_URL))
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Formula = "=HYPERLINK(\"" + Video_URL + "\",\" Video \")";
+                                    worksheet.Cells[inwrkrow, kk].Style.Font.UnderLine = true;
+                                    worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Blue);
+                                }
+                            }
+                            else
+                            {
+                                if (Column_Name == "Lab")
+                                {
+                                    string Lab_Value = Convert.ToString(s_dt.Rows[i - inStartIndex]["LAB"]);
+                                    worksheet.Cells[inwrkrow, kk].Value = Lab_Value;
+                                    string Certificate_URL = Convert.ToString(s_dt.Rows[i - inStartIndex]["CERTIFICATE LINK"]);
+
+                                    if (!string.IsNullOrEmpty(Certificate_URL) && !string.IsNullOrEmpty(Lab_Value))
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Formula = "=HYPERLINK(\"" + Convert.ToString(Certificate_URL) + "\",\" " + Convert.ToString(dtStock.Rows[i - inStartIndex]["LAB"]) + " \")";
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.UnderLine = true;
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Blue);
+                                    }
+                                }
+                                else if (Column_Name == "BGM")
+                                {
+                                    string BGM = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name].ToString());
+
+                                    worksheet.Cells[inwrkrow, kk].Value = BGM;
+
+                                    if (!string.Equals(BGM, "NO BGM", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Red);
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
+                                }
+                                else if (Column_Name == "Cts" || Column_Name == "Rap Rate" || Column_Name == "Rap Amount")
+                                {
+                                    string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
+                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+                                }
+                                else if (Column_Name == "Supplier Cost Disc(%)" || Column_Name == "Supplier Cost Value($)")
+                                {
+                                    string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
+                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(pink);
+                                }
+                                else if (Column_Name == "Final Disc(%)" || Column_Name == "Final Amt US($)")
+                                {
+                                    string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
+                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(blue);
+                                }
+                                else if (Column_Name == "Profit(%)" || Column_Name == "Profit")
+                                {
+                                    string pav_Height = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
+                                    worksheet.Cells[inwrkrow, kk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(s_dt.Rows[i - inStartIndex][Column_Name]) : 0;
+                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "#,##0.00";
+
+                                    if (pav_Height.Contains("-"))
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Red);
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
+                                }
+                                else if (Column_Name == "Cut")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = cutValue;
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
+                                }
+                                else if (Column_Name == "Polish")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
+
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
+                                }
+                                else if (Column_Name == "Symm")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
+                                    if (cutValue == "3EX")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
+                                }
+                                else if (Column_Name == "Length" || Column_Name == "Width" || Column_Name == "Depth" || Column_Name == "Depth (%)" || Column_Name == "Table (%)" || Column_Name == "Girdle(%)" || Column_Name == "Crown Angle" || Column_Name == "Crown Height" || Column_Name == "Pavilion Angle" || Column_Name == "Pavilion Height")
+                                {
+                                    string value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
+                                    if (!string.IsNullOrEmpty(value))
+                                    {
+                                        double rounded = Math.Round(Convert.ToDouble(value), 2);
+                                        worksheet.Cells[inwrkrow, kk].Value = rounded;
+                                    }
+                                    else
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Value = null;
+                                    }
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
+                                }
+                                else if (Column_Name == "Customer Remarks" || Column_Name == "Order Remarks" || Column_Name == "QC Remarks" || Column_Name == "Final Status")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(gold);
+                                }
+                                else
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
+                                }
+                            }
+                        }
+
+                        inwrkrow++;
+                        #endregion
+                    }
+
+                    worksheet.Cells[inStartIndex, 1, inwrkrow, Row_Count].Style.Font.Size = 9;
+
+                    int kkk = 0;
+                    for (int j = 0; j < column_dt.Rows.Count; j++)
+                    {
+                        kkk += 1;
+                        string Column_Name = Convert.ToString(column_dt.Rows[j]["Column_Name"]);
+                        if (Column_Name == "Shape")
+                        {
+                            worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(103," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
+                            worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                            worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                            worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##";
+
+                            ExcelStyle cellStyleHeader_Total = worksheet.Cells[1, kkk].Style;
+                            cellStyleHeader_Total.Border.Left.Style = cellStyleHeader_Total.Border.Right.Style
+                                    = cellStyleHeader_Total.Border.Top.Style = cellStyleHeader_Total.Border.Bottom.Style
+                                    = ExcelBorderStyle.Medium;
+                        }
+                        else if (Column_Name == "Cts")
+                        {
+                            worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
+                            worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                            worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                            worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
+
+                            ExcelStyle cellStyleHeader_Totalcarat = worksheet.Cells[1, kkk].Style;
+                            cellStyleHeader_Totalcarat.Border.Left.Style = cellStyleHeader_Totalcarat.Border.Right.Style
+                                    = cellStyleHeader_Totalcarat.Border.Top.Style = cellStyleHeader_Totalcarat.Border.Bottom.Style
+                                    = ExcelBorderStyle.Medium;
+                        }
+                        else if (Column_Name == "Rap Amount")
+                        {
+                            worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
+                            worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                            worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                            worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0";
+
+                            ExcelStyle cellStyleHeader_RapAmt = worksheet.Cells[1, kkk].Style;
+                            cellStyleHeader_RapAmt.Border.Left.Style = cellStyleHeader_RapAmt.Border.Right.Style
+                                    = cellStyleHeader_RapAmt.Border.Top.Style = cellStyleHeader_RapAmt.Border.Bottom.Style
+                                    = ExcelBorderStyle.Medium;
+                        }
+                        else if (Column_Name == "Supplier Cost Disc(%)")
+                        {
+                            int finalColumnIndex = GetColumnIndexByName(worksheet, "Supplier Cost Value($)");
+                            int rapColumnIndex = GetColumnIndexByName(worksheet, "Rap Amount");
+
+                            if (finalColumnIndex > 0 && rapColumnIndex > 0)
+                            {
+                                worksheet.Cells[1, kkk].Formula =
+                                                                    "=IFERROR(ROUND((-100+(SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + inStartIndex +
+                                                                    ":" + GetExcelColumnLetter(finalColumnIndex) + (inwrkrow - 1) +
+                                                                    ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + inStartIndex +
+                                                                    ":" + GetExcelColumnLetter(rapColumnIndex) + (inwrkrow - 1) +
+                                                                    ")) * 100), 2), 0.00)";
+
+                                worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
+
+                                ExcelStyle cellStyleHeader_Profit = worksheet.Cells[1, kkk].Style;
+                                cellStyleHeader_Profit.Border.Left.Style = cellStyleHeader_Profit.Border.Right.Style
+                                        = cellStyleHeader_Profit.Border.Top.Style = cellStyleHeader_Profit.Border.Bottom.Style
+                                        = ExcelBorderStyle.Medium;
+                            }
+                        }
+                        else if (Column_Name == "Supplier Cost Value($)")
+                        {
+                            worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
+                            worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                            worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                            worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0";
+
+                            ExcelStyle cellStyleHeader_TotalAmt = worksheet.Cells[1, kkk].Style;
+                            cellStyleHeader_TotalAmt.Border.Left.Style = cellStyleHeader_TotalAmt.Border.Right.Style
+                                    = cellStyleHeader_TotalAmt.Border.Top.Style = cellStyleHeader_TotalAmt.Border.Bottom.Style
+                                    = ExcelBorderStyle.Medium;
+                        }
+                        else if (Column_Name == "Final Disc(%)")
+                        {
+                            int finalColumnIndex = GetColumnIndexByName(worksheet, "Final Amt US($)");
+                            int rapColumnIndex = GetColumnIndexByName(worksheet, "Rap Amount");
+
+                            if (finalColumnIndex > 0 && rapColumnIndex > 0)
+                            {
+                                worksheet.Cells[1, kkk].Formula =
+                                                                    "=IFERROR(ROUND((-100+(SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + inStartIndex +
+                                                                    ":" + GetExcelColumnLetter(finalColumnIndex) + (inwrkrow - 1) +
+                                                                    ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + inStartIndex +
+                                                                    ":" + GetExcelColumnLetter(rapColumnIndex) + (inwrkrow - 1) +
+                                                                    ")) * 100), 2), 0.00)";
+
+                                worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                                worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0.00";
+
+                                ExcelStyle cellStyleHeader_Profit = worksheet.Cells[1, kkk].Style;
+                                cellStyleHeader_Profit.Border.Left.Style = cellStyleHeader_Profit.Border.Right.Style
+                                        = cellStyleHeader_Profit.Border.Top.Style = cellStyleHeader_Profit.Border.Bottom.Style
+                                        = ExcelBorderStyle.Medium;
+                            }
+                        }
+                        else if (Column_Name == "Final Amt US($)")
+                        {
+                            worksheet.Cells[1, kkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(kkk) + "" + inStartIndex + ":" + GetExcelColumnLetter(kkk) + "" + (inwrkrow - 1) + "),2)";
+                            worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                            worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                            worksheet.Cells[1, kkk].Style.Numberformat.Format = "#,##0";
+
+                            ExcelStyle cellStyleHeader_TotalAmt = worksheet.Cells[1, kkk].Style;
+                            cellStyleHeader_TotalAmt.Border.Left.Style = cellStyleHeader_TotalAmt.Border.Right.Style
+                                    = cellStyleHeader_TotalAmt.Border.Top.Style = cellStyleHeader_TotalAmt.Border.Bottom.Style
+                                    = ExcelBorderStyle.Medium;
+                        }
+                    }
+
+                    int rowEnd = worksheet.Dimension.End.Row;
+                    removingGreenTagWarning(worksheet, worksheet.Cells[1, 1, rowEnd, 100].Address);
+
+                    int totalColumns = worksheet.Dimension.End.Column;
+
+                    if (totalColumns >= 1)
+                    {
+                        worksheet.DeleteColumn(totalColumns, 1);
+                    }
+
+                    Byte[] bin = ep.GetAsByteArray();
+
+                    if (!Directory.Exists(_strFolderPath))
+                    {
+                        Directory.CreateDirectory(_strFolderPath);
+                    }
+
+                    File.WriteAllBytes(_strFilePath, bin);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
         private static double GetExcelWidth(int pixels)
         {
             if (pixels <= 0) return 0;

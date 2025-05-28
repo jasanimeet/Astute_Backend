@@ -16759,6 +16759,59 @@ namespace astute.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("purchase_qc_approval_column_wise_excel_download")]
+        [Authorize]
+        public async Task<IActionResult> Purchase_QC_Approval_Column_Wise_Excel_Download(Report_Lab_Entry_Filter report_Lab_Entry_Filter)
+        {
+            try
+            {
+                var dt_Order = await _supplierService.Get_Purchase_QC_Approval_Data_Dynamic(report_Lab_Entry_Filter);
+
+                if (dt_Order != null && dt_Order.Rows.Count > 0)
+                {
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in report_Lab_Entry_Filter.column_Name)
+                    {
+                        if (columnName != "CERTIFICATE LINK")
+                        {
+                            columnNamesTable.Rows.Add(columnName);
+                        }
+                    }
+                    columnNamesTable.Rows.Add("CERTIFICATE LINK");
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/PurchaseQCApprovalExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string filename = string.Empty;
+
+                    filename = "QC_Approval_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+                    EpExcelExport.Create_Purchase_Detail_QC_Approval_Column_Wise_Excel(dt_Order, columnNamesTable, filePath, filePath + filename);
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.PurchaseQCApprovalExcelFiles + filename;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Lab_Entry_Report_Column_Wise_Excel_Download", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
 
         #endregion
 
