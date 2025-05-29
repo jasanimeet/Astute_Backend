@@ -12866,6 +12866,7 @@ namespace astute.CoreServices
                         ["Customer Remarks"] = 131,
                         ["Order Remarks"] = 131,
                         ["Supplier No"] = 76,
+                        ["Pointer"] = 76
                     };
 
                     int k = 0;
