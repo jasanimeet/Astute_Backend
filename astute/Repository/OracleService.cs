@@ -1684,6 +1684,8 @@ namespace astute.Repository
                 newDataTable.Rows.Add(newRow);
             }
 
+            _dbContext.Database.SetCommandTimeout(600);
+
             var parameter = new SqlParameter("@Fortune_Overseas_Stock_Type", SqlDbType.Structured)
             {
                 TypeName = "dbo.Fortune_Overseas_Stock_Type",
