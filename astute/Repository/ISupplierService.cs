@@ -217,25 +217,21 @@ namespace astute.Repository
         #region Purchase Return
         Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Purchase_Return(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return);
         Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Purchase_Return(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return);
-
         #endregion
 
         #region Consignment Return
         Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Consignment_Return(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return);
         Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Consignment_Return(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return);
-
         #endregion
 
         #region Purchase from Consignment
         Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Consignment_Purchase(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return);
         Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Consignment_Purchase(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return);
-
         #endregion
 
         #region Hold
         Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Hold(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return);
         Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Hold(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return);
-
         #endregion
 
         #region Party Url Format
