@@ -24,5 +24,6 @@
         public static string CertificatesFilePath = "Files/Certificates";
         public static string PurchaseQCExcelFiles = "/Files/PurchaseQCExcelFiles/";
         public static string PurchaseQCApprovalExcelFiles = "/Files/PurchaseQCApprovalExcelFiles/";
+        public static string PurchaseQCSkipExcelFiles = "/Files/PurchaseQCSkipExcelFiles/";
     }
 }

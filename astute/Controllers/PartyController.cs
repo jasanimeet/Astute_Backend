@@ -21791,7 +21791,7 @@ namespace astute.Controllers
                     }
 
                     EpExcelExport.Create_Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Excel(result, columnNamesTable, filePath, filePath + filename);
-                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.PurchaseQCExcelFiles + filename;
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.PurchaseQCSkipExcelFiles + filename;
 
                     return Ok(new
                     {
