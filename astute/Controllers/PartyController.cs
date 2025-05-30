@@ -21816,5 +21816,49 @@ namespace astute.Controllers
             }
         }
         #endregion
+
+        #region Stone Trace Report
+        [HttpGet]
+        [Route("get_stone_trace_report")]
+        [Authorize]
+        public async Task<IActionResult> Get_Stone_Trace_Report(string id)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if ((user_Id ?? 0) > 0)
+                {
+                    var summary = await _supplierService.Get_Stone_Trace_Master_Report(id);
+                    if (summary != null)
+                    {
+                        var transaction = await _supplierService.Get_Stone_Trace_Detail_Report(id);
+
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = new { summary, transaction },
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Stone_Trace_Report", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
     }
 }
