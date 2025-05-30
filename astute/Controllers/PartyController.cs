@@ -16062,6 +16062,8 @@ namespace astute.Controllers
                 dataTable.Columns.Add("Crown_White", typeof(int));
                 dataTable.Columns.Add("Crown_White_C", typeof(string));
                 dataTable.Columns.Add("Outward_Remarks", typeof(string));
+                dataTable.Columns.Add("BGM", typeof(int));
+                dataTable.Columns.Add("BGM_C", typeof(string));
 
                 foreach (var item in purchase_Detail_List)
                 {
@@ -16081,7 +16083,9 @@ namespace astute.Controllers
                         item.Table_White_C,
                         item.Crown_White,
                         item.Crown_White_C,
-                        item.Additional_Remarks
+                        item.Additional_Remarks,
+                        item.BGM,
+                        item.BGM_C
                     );
                 }
 
@@ -16989,6 +16993,8 @@ namespace astute.Controllers
                 dataTable.Columns.Add("Crown_White", typeof(int));
                 dataTable.Columns.Add("Crown_White_C", typeof(string));
                 dataTable.Columns.Add("Outward_Remarks", typeof(string));
+                dataTable.Columns.Add("BGM", typeof(int));
+                dataTable.Columns.Add("BGM_C", typeof(string));
 
                 foreach (var item in purchase_Detail_List)
                 {
@@ -17008,7 +17014,9 @@ namespace astute.Controllers
                         item.Table_White_C,
                         item.Crown_White,
                         item.Crown_White_C,
-                        item.Additional_Remarks
+                        item.Additional_Remarks,
+                        item.BGM,
+                        item.BGM_C
                     );
                 }
 

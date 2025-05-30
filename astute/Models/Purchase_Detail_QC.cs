@@ -51,5 +51,12 @@ namespace astute.Models
 
         [JsonProperty("Additional Remarks")]
         public string? Additional_Remarks { get; set; }
+
+        [JsonProperty("BGM_Id")]
+        public int? BGM { get; set; }
+
+        [JsonProperty("BGM")]
+        public string? BGM_C { get; set; }
+
     }
 }
