@@ -292,7 +292,7 @@ namespace astute.Repository
         Task<DataTable> Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Excel(string Id);
         #endregion
 
-        #region QC Pricing Skip
+        #region Stone Trace Report
         Task<Dictionary<string, object>> Get_Stone_Trace_Master_Report(string id);
         Task<List<Dictionary<string, object>>> Get_Stone_Trace_Detail_Report(string id);
         #endregion
