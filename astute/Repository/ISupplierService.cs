@@ -199,7 +199,7 @@ namespace astute.Repository
         #endregion
 
         #region Purchase QC Approval
-        Task<List<Dictionary<string, object>>> Get_Purchase_QC_Approval(Purchase_Master_Search_Model purchase_Master_Search_Model);
+        Task<List<Dictionary<string, object>>> Get_Purchase_QC_Approval(Purchase_Master_Search_Model purchase_Master_Search_Model, int user_Id);
         Task<DataTable> Get_Purchase_QC_Approval_Data_Dynamic(Report_Lab_Entry_Filter report_Lab_Entry_Filter);
         Task<DataTable> Get_Purchase_QC_Approval_Data(Report_Lab_Entry_Filter report_Lab_Entry_Filter);
         Task<int> Purchase_QC_Reply_Status_Update(DataTable dataTable, int User_Id);

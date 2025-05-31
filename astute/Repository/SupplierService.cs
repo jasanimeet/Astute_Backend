@@ -4924,7 +4924,7 @@ namespace astute.Repository
 
         #region Purchase QC Approval
 
-        public async Task<List<Dictionary<string, object>>> Get_Purchase_QC_Approval(Purchase_Master_Search_Model purchase_Master_Search_Model)
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_QC_Approval(Purchase_Master_Search_Model purchase_Master_Search_Model, int user_Id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -4935,6 +4935,7 @@ namespace astute.Repository
                     command.Parameters.Add(!string.IsNullOrEmpty(purchase_Master_Search_Model.From_Date) ? new SqlParameter("@From_Date", purchase_Master_Search_Model.From_Date) : new SqlParameter("@From_Date", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(purchase_Master_Search_Model.To_Date) ? new SqlParameter("@To_Date", purchase_Master_Search_Model.To_Date) : new SqlParameter("@To_Date", DBNull.Value));
                     command.Parameters.Add(!string.IsNullOrEmpty(purchase_Master_Search_Model.Stock_Certificate_No) ? new SqlParameter("@Stock_Certificate_No", purchase_Master_Search_Model.Stock_Certificate_No) : new SqlParameter("@Stock_Certificate_No", DBNull.Value));
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
 
                     await connection.OpenAsync();
 

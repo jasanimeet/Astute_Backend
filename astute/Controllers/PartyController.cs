@@ -16739,7 +16739,10 @@ namespace astute.Controllers
         {
             try
             {
-                var result = await _supplierService.Get_Purchase_QC_Approval(purchase_Master_Search_Model);
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Get_Purchase_QC_Approval(purchase_Master_Search_Model, user_Id ?? 0);
 
                 if (result != null && result.Count > 0)
                 {
