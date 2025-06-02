@@ -187,7 +187,7 @@ namespace astute.Repository
         Task<int> Lab_Entry_Report_Status_Sunrise_Update(DataTable dataTable);
         Task<List<Dictionary<string, object>>> Get_Fortune_Lab_Entry_Data();
         Task<List<Dictionary<string, object>>> Get_Purchase_Master_Pricing(Purchase_Master_Search_Model purchase_Master_Search_Model);
-        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Pricing(int Trans_Id);
+        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Pricing(int Trans_Id, int User_Id);
         Task<int> Purchase_Pricing_Update(DataTable dataTable, int User_Id);
         Task<int> Update_Purchase_Master_Is_Upcoming_Approval(Purchase_Approval purchase_Approval, int User_Id);
         Task<int> Update_Purchase_Master_Is_Repricing_Approval(Purchase_Approval purchase_Approval, int User_Id);
