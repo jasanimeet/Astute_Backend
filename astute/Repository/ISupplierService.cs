@@ -239,6 +239,11 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Release(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return);
         #endregion
 
+        #region Consignment Issue
+        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Consignment_Issue(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return);
+        Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Consignment_Issue(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return);
+        #endregion
+
         #region Party Url Format
         Task<IList<Party_Url_Format>> Get_Party_Url_Format(int Id);
         Task<int> Create_Update_Party_Url_Format(DataTable dataTable);
