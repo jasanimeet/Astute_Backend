@@ -12866,7 +12866,8 @@ namespace astute.CoreServices
                         ["Customer Remarks"] = 131,
                         ["Order Remarks"] = 131,
                         ["Supplier No"] = 76,
-                        ["Pointer"] = 76
+                        ["Pointer"] = 76,
+                        ["Additional Remarks"] = 131
                     };
 
                     int k = 0;
@@ -13065,7 +13066,7 @@ namespace astute.CoreServices
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
                                 }
-                                else if (Column_Name == "Customer Remarks" || Column_Name == "Order Remarks" || Column_Name == "QC Remarks" || Column_Name == "Final Status")
+                                else if (Column_Name == "Customer Remarks" || Column_Name == "Order Remarks" || Column_Name == "QC Remarks" || Column_Name == "Final Status" || Column_Name == "Additional Remarks")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
 
