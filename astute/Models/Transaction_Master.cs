@@ -73,5 +73,17 @@ namespace astute.Models
 
         [JsonPropertyName("Reserver_Stock")]
         public bool? Reserver_Stock { get; set; }
+
+        [JsonPropertyName("Sub_Process")]
+        public string? Sub_Process { get; set; }
+
+        [JsonPropertyName("Entry_Type")]
+        public string? Entry_Type { get; set; }
+
+        [JsonPropertyName("Release_Days")]
+        public float? Release_Days { get; set; }
+
+        [JsonPropertyName("Release_Hours")]
+        public float? Release_Hours { get; set; }
     }
 }

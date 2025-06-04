@@ -17268,7 +17268,11 @@ namespace astute.Controllers
                 new DataColumn("Customer_Id", typeof(int)),
                 new DataColumn("Due_Date", typeof(DateTime)),
                 new DataColumn("Confirm_Hold", typeof(bool)),
-                new DataColumn("Reserver_Stock", typeof(bool))
+                new DataColumn("Reserver_Stock", typeof(bool)),
+                new DataColumn("Sub_Process", typeof(string)),
+                new DataColumn("Entry_Type", typeof(string)),
+                new DataColumn("Release_Days", typeof(float)),
+                new DataColumn("Release_Hours", typeof(float))
             });
 
             table.Rows.Add(
@@ -17288,7 +17292,11 @@ namespace astute.Controllers
                 m.Customer_Id ?? (object)DBNull.Value,
                 dueDate == DateTime.MinValue ? (object)DBNull.Value : dueDate,
                 m.Confirm_Hold ?? (object)DBNull.Value,
-                m.Reserver_Stock ?? (object)DBNull.Value
+                m.Reserver_Stock ?? (object)DBNull.Value,
+                m.Sub_Process ?? (object)DBNull.Value,
+                m.Entry_Type ?? (object)DBNull.Value,
+                m.Release_Days ?? (object)DBNull.Value,
+                m.Release_Hours ?? (object)DBNull.Value
             );
             return table;
         }
