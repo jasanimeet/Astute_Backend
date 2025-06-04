@@ -4781,6 +4781,7 @@ namespace astute.Repository
 
             return result;
         }
+
         public async Task<int> Purchase_Pricing_With_Grade_Update(DataTable dataTable, int User_Id)
         {
             var Parameter = new SqlParameter("@Purchase_Pricing_With_Grade_Table_Type", SqlDbType.Structured)
@@ -4796,16 +4797,23 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<int> Update_Purchase_Master_Is_Upcoming_Approval(Purchase_Approval purchase_Approval, int User_Id)
+
+        public async Task<string> Update_Purchase_Master_Is_Upcoming_Approval(Purchase_Approval purchase_Approval, int User_Id)
         {
             var trans_Id = new SqlParameter("@Trans_Id", purchase_Approval.Trans_Id);
             var is_Upcoming_Approval = new SqlParameter("@Is_Upcoming_Approval", purchase_Approval.Is_Upcoming_Approval);
             var user_Id = new SqlParameter("@User_Id", User_Id);
+            var message = new SqlParameter("@Message", SqlDbType.NVarChar, 200)
+            {
+                Direction = ParameterDirection.Output
+            };
 
-            var result = await _dbContext.Database
-                                .ExecuteSqlRawAsync("EXEC Purchase_Master_Is_Upcoming_Approval_Update @Trans_Id, @Is_Upcoming_Approval, @User_Id", trans_Id, is_Upcoming_Approval, user_Id);
+            await _dbContext.Database.ExecuteSqlRawAsync(
+                "EXEC Purchase_Master_Is_Upcoming_Approval_Update @Trans_Id, @Is_Upcoming_Approval, @User_Id, @Message OUTPUT",
+                trans_Id, is_Upcoming_Approval, user_Id, message
+            );
 
-            return result;
+            return message.Value.ToString();
         }
 
         public async Task<int> Update_Purchase_Master_Is_Repricing_Approval(Purchase_Approval purchase_Approval, int User_Id)
@@ -6402,6 +6410,7 @@ namespace astute.Repository
             }
             return result;
         }
+
         public async Task<List<Dictionary<string, object>>> Get_Supplier_With_Pending_By_CertOrStockId(string CertORStockId)
         {
             var result = new List<Dictionary<string, object>>();

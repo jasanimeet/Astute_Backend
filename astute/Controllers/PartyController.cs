@@ -16431,6 +16431,7 @@ namespace astute.Controllers
                 });
             }
         }
+
         [HttpPost]
         [Route("update_purchase_pricing_with_grade")]
         [Authorize]
@@ -16481,6 +16482,7 @@ namespace astute.Controllers
                 });
             }
         }
+
         [HttpPost]
         [Route("update_purchase_master_is_upcoming_approval")]
         [Authorize]
@@ -16494,16 +16496,23 @@ namespace astute.Controllers
                 if (purchase_Approval != null)
                 {
                     var result = await _supplierService.Update_Purchase_Master_Is_Upcoming_Approval(purchase_Approval, user_Id ?? 0);
-                    if (result > 0)
+
+                    if (result == "Update successful")
                     {
                         return Ok(new
                         {
-
                             statusCode = HttpStatusCode.OK,
                             message = CoreCommonMessage.Purchase_Updated
                         });
                     }
+
+                    return Conflict(new
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        message = result
+                    });
                 }
+
                 return BadRequest(new
                 {
                     statusCode = HttpStatusCode.BadRequest,
