@@ -17601,6 +17601,40 @@ namespace astute.Controllers
 
         #endregion
 
+        #region Hold Customer DropDown
+
+        [HttpGet]
+        [Route("get_transaction_hold_customer_dropdown")]
+        [Authorize]
+        public async Task<IActionResult> Get_Transaction_Hold_Customer_DropDown()
+        {
+            try
+            {
+                var result = await _supplierService.Get_Transaction_Hold_Customer_DropDown();
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Transaction_Hold_Customer_DropDown", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
         #region Consignment Issue
 
         [HttpPost]
