@@ -189,6 +189,7 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Purchase_Master_Pricing(Purchase_Master_Search_Model purchase_Master_Search_Model);
         Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Pricing(int Trans_Id, int User_Id);
         Task<int> Purchase_Pricing_Update(DataTable dataTable, int User_Id);
+        Task<int> Purchase_Pricing_With_Grade_Update(DataTable dataTable, int User_Id);
         Task<int> Update_Purchase_Master_Is_Upcoming_Approval(Purchase_Approval purchase_Approval, int User_Id);
         Task<int> Update_Purchase_Master_Is_Repricing_Approval(Purchase_Approval purchase_Approval, int User_Id);
         Task<DataTable> Get_Purchase_Detail_Pricing_Excel(int Trans_Id);
@@ -297,6 +298,7 @@ namespace astute.Repository
 
         #region QC Pricing Skip
         Task<List<Dictionary<string, object>>> Get_Supplier_With_Pending_Upcoming_QC_Pricing();
+        Task<List<Dictionary<string, object>>> Get_Supplier_With_Pending_By_CertOrStockId(string CertORStockId);
         Task<List<Dictionary<string, object>>> Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing(int Trans_Id);
         Task<List<Dictionary<string, object>>> Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing(int Trans_Id);
         Task<DataTable> Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Excel(string Id);

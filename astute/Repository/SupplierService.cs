@@ -4781,7 +4781,21 @@ namespace astute.Repository
 
             return result;
         }
+        public async Task<int> Purchase_Pricing_With_Grade_Update(DataTable dataTable, int User_Id)
+        {
+            var Parameter = new SqlParameter("@Purchase_Pricing_With_Grade_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Purchase_Pricing_With_Grade_Table_Type]",
+                Value = dataTable
+            };
 
+            var user_Id = new SqlParameter("@User_Id", User_Id);
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Purchase_Pricing_With_Grade_Update @Purchase_Pricing_With_Grade_Table_Type, @User_Id", Parameter, user_Id));
+
+            return result;
+        }
         public async Task<int> Update_Purchase_Master_Is_Upcoming_Approval(Purchase_Approval purchase_Approval, int User_Id)
         {
             var trans_Id = new SqlParameter("@Trans_Id", purchase_Approval.Trans_Id);
@@ -6364,6 +6378,39 @@ namespace astute.Repository
                 using (var command = new SqlCommand("[dbo].[Party_Master_With_Pending_Upcoming_QC_Pricing_Select]", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Supplier_With_Pending_By_CertOrStockId(string CertORStockId)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("[dbo].[Party_Master_With_Pending_By_CertORStockId_Select]", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(CertORStockId) ? new SqlParameter("@CertORStockId", CertORStockId) : new SqlParameter("@CertORStockId", DBNull.Value));
 
                     await connection.OpenAsync();
 

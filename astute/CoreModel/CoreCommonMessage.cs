@@ -625,5 +625,12 @@
         public static string QCMasterDeleted = QCMaster + " has been deleted successfully";
         public static string QCAlreadyExist = QCMaster + AlreadyExists;
         #endregion
+
+        #region Cash Book
+        public static string CashBook = "Cash book";
+        public static string CashBookCreated = CashBook + AddedSuccessfully;
+        public static string CashBookUpdated = CashBook + UpdatedSuccessfully;
+        public static string CashBookDeleted = CashBook + DeletedSuccessfully;
+        #endregion
     }
 }

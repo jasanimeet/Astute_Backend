@@ -16431,7 +16431,56 @@ namespace astute.Controllers
                 });
             }
         }
+        [HttpPost]
+        [Route("update_purchase_pricing_with_grade")]
+        [Authorize]
+        public async Task<IActionResult> Update_Purchase_Pricing_With_Grade(Purchase_Pricing_With_Grade_List model)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
+                IList<Purchase_Pricing_With_Grade> purchase_Detail_Pricing_List = JsonConvert.DeserializeObject<IList<Purchase_Pricing_With_Grade>>(model.Purchase_Pricing_With_Grade.ToString());
+
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("Id", typeof(int));
+                dataTable.Columns.Add("Final_Disc", typeof(float));
+                dataTable.Columns.Add("Final_Amt", typeof(float));
+                dataTable.Columns.Add("Sunrise_Grade", typeof(string));
+                dataTable.Columns.Add("Is_Repriced", typeof(bool));
+
+                foreach (var item in purchase_Detail_Pricing_List)
+                {
+                    dataTable.Rows.Add(
+                        item.Id ?? 0,
+                        SafeConvertToDouble(item.Final_Disc.ToString()),
+                        SafeConvertToDouble(item.Final_Value.ToString()),
+                        item.Sunrise_Grade.ToString(),
+                        item.Is_Repriced
+                    );
+                }
+
+                var result = await _supplierService.Purchase_Pricing_With_Grade_Update(dataTable, user_Id ?? 0);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.Purchase_Pricing_Updated
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Purchase_Pricing_With_Grade", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         [HttpPost]
         [Route("update_purchase_master_is_upcoming_approval")]
         [Authorize]
@@ -21812,6 +21861,50 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_With_Pending_Upcoming_QC_Pricing", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPost]
+        [Route("get_supplier_with_pending_by_certorstockid")]
+        [Authorize]
+        public async Task<IActionResult> Get_Supplier_With_Pending_By_CertOrStockId(JsonElement json)
+        {
+            try
+            {
+                string CertORStockId = "";
+                if (json.TryGetProperty("CertORStockId", out var certORStockId))
+                {
+                    CertORStockId = certORStockId.GetString();
+                }
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if ((user_Id ?? 0) > 0)
+                {
+                    var result = await _supplierService.Get_Supplier_With_Pending_By_CertOrStockId(CertORStockId);
+                    if (result != null && result.Count > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = result,
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_With_Pending_By_CertOrStockId", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message

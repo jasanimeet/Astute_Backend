@@ -1811,5 +1811,238 @@ namespace astute.Controllers
             }
         }
         #endregion
+
+        #region New Cash Book
+        [HttpGet]
+        [Route("get_account_master_subgroupwise_select")]
+        [Authorize]
+        public async Task<IActionResult> Get_Account_Master_SubGroupWise_Select(string type)
+        {
+            try
+            {
+                var result = await _account_Trans_Master_Service.Get_Account_Master_SubGroupWise_Select(type);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Account_Master_SubGroupWise_Select", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("get_account_master_transtypewise_select")]
+        [Authorize]
+        public async Task<IActionResult> Get_Account_Master_TransTypeWise_Select(string Trans_Type)
+        {
+            try
+            {
+                var result = await _account_Trans_Master_Service.Get_Account_Master_TransTypeWise_Select(Trans_Type);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Account_Master_SubGroupWise_Select", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("get_account_master_active_purchase_select")]
+        [Authorize]
+        public async Task<IActionResult> Get_Account_Master_Active_Purchase_Select(int Party_Id, int Year_Id)
+        {
+            try
+            {
+                var result = await _account_Trans_Master_Service.Get_Account_Master_Active_Purchase_Select(Party_Id, Year_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Account_Master_Active_Purchase_Select", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPost]
+        [Route("create_update_cashbook_account_trans_detail")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Cashbook_Account_Trans_Detail(Terms_Invoice_Adjust_Model model)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                if ((user_Id ?? 0) > 0)
+                {
+                    DateTime transDate;
+                    if (!DateTime.TryParseExact(model.Trans_Date, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out transDate))
+                    {
+                        transDate = DateTime.Now.Date;
+                    }
+
+                    TimeSpan transTime;
+                    if (!TimeSpan.TryParseExact(model.Trans_Time, @"hh\:mm", CultureInfo.InvariantCulture, out transTime))
+                    {
+                        transTime = DateTime.Now.TimeOfDay;
+                    }
+
+                    DataTable dataTable = new DataTable();
+                    if (model.Terms_Invoice_Adjust != null && model.Terms_Invoice_Adjust.Count > 0)
+                    {
+                        dataTable.Columns.Add("Id", typeof(int));
+                        dataTable.Columns.Add("Account_Trans_Detail_Id", typeof(int));
+                        dataTable.Columns.Add("Purchase_Master_Id", typeof(int));
+                        dataTable.Columns.Add("Currency_Id", typeof(int));
+                        dataTable.Columns.Add("Ex_Rate", typeof(float));
+                        dataTable.Columns.Add("Terms_Id", typeof(int));
+                        dataTable.Columns.Add("Terms_Amount", typeof(decimal));
+                        dataTable.Columns.Add("Paid_Amount", typeof(decimal));
+
+                        foreach (var item in model.Terms_Invoice_Adjust)
+                        {
+                            dataTable.Rows.Add(item.Id, item.Account_Trans_Detail_Id, item.Purchase_Master_Id, item.Currency_Id, item.Ex_Rate, item.Terms_Id, item.Terms_Amount, item.Paid_Amount);
+                        }
+                    }
+                    var result = await _account_Trans_Master_Service.Create_Update_Cashbook_Account_Trans_Detail(dataTable, model.Id, model.Trans_Id, model.Process_Id, model.Company_Id, model.Year_Id, transDate, transTime,
+                        model.By_Account, model.By_Type, model.To_Account, model.To_Type, model.Currency_Id, model.Ex_Rate, model.Amount, model.Amount_In_US, model.Remarks, user_Id ?? 0);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = (model.Id == 0) == true ? CoreCommonMessage.CashBookCreated : CoreCommonMessage.CashBookUpdated,
+                            data = result
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Account_Trans_Detail", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("get_cashbook_account_trans_select")]
+        [Authorize]
+        public async Task<IActionResult> Get_Cashbook_Account_Trans_Select(int company_id, int year_id)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                if ((user_Id ?? 0) > 0)
+                {
+                    var result = await _account_Trans_Master_Service.Get_Cashbook_Account_Trans_Select(null, year_id, company_id);
+                    if (result != null && result.Count > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = result,
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Cashbook_Account_Trans_Select", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("get_cashbook_account_trans_detail_select")]
+        [Authorize]
+        public async Task<IActionResult> Get_Cashbook_Account_Trans_Detail_Select(int id, int year_id, int company_id)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                if ((user_Id ?? 0) > 0)
+                {
+                    var result = await _account_Trans_Master_Service.Get_Cashbook_Account_Trans_Select(id, year_id, company_id);
+                    if (result != null && result.Count > 0)
+                    {
+                        var summary = await _account_Trans_Master_Service.Get_Cashbook_Account_Trans_Detail_Select(id);
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = result,
+                            summary
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Cashbook_Account_Trans_Detail_Select", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
     }
 }

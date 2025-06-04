@@ -440,6 +440,203 @@ namespace astute.Repository
             }
         }
 
+
+        public async Task<IList<DropdownModel>> Get_Account_Master_SubGroupWise_Select(string? type)
+        {
+            var _type = !string.IsNullOrEmpty(type) ? new SqlParameter("@Type", type) : new SqlParameter("@Type", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"exec [dbo].[Account_Master_SubGroupWise_Select] @Type", _type).ToListAsync());
+
+            return result;
+        }
+        public async Task<IList<DropdownModel>> Get_Account_Master_TransTypeWise_Select(string? Trans_Type)
+        {
+            var _trans_type = !string.IsNullOrEmpty(Trans_Type) ? new SqlParameter("@Trans_Type", Trans_Type) : new SqlParameter("@Trans_Type", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"exec [dbo].[Account_Master_TransTypeWise_Select] @Trans_Type", _trans_type).ToListAsync());
+
+            return result;
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Account_Master_Active_Purchase_Select(int Party_Id, int Year_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Account_Master_Active_Purchase_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(Party_Id > 0 ? new SqlParameter("@Party_Id", Party_Id) : new SqlParameter("@Party_Id", DBNull.Value));
+                    command.Parameters.Add(Year_Id > 0 ? new SqlParameter("@Year_Id", Year_Id) : new SqlParameter("@Year_Id", DBNull.Value));
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public async Task<int> Create_Update_Cashbook_Account_Trans_Detail(DataTable dataTable, int? id, int? trans_Id, int? process_Id, int? company_Id, int? year_Id, DateTime? trans_Date, TimeSpan? trans_Time,
+            int? by_Account, string by_Type, int? to_Account, string to_Type, int? currency_Id, float? ex_Rate, decimal? amount, decimal? amount_in_us, string remarks, int user_Id)
+        {
+            var _terms_Invoice_Adjust_Table_Type = new SqlParameter("@Terms_Invoice_Adjust_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Terms_Invoice_Adjust_Table_Type",
+                Value = dataTable
+            };
+
+            var _id = new SqlParameter("@Id", ((id ?? 0) > 0) ? id : DBNull.Value);
+            var _company_Id = new SqlParameter("@Company_Id", (company_Id > 0) ? company_Id : DBNull.Value);
+            var _year_Id = new SqlParameter("@Year_Id", (year_Id > 0) ? year_Id : DBNull.Value);
+            var _by_Account = new SqlParameter("@By_Account", (by_Account > 0) ? by_Account : DBNull.Value);
+            var _by_Type = new SqlParameter("@By_Type", by_Type);
+            var _to_Account = new SqlParameter("@To_Account", (to_Account > 0) ? to_Account : DBNull.Value);
+            var _to_Type = new SqlParameter("@To_Type", to_Type);
+            var _currrency_id = new SqlParameter("@Currency_Id", (currency_Id > 0) ? currency_Id : DBNull.Value);
+            var _ex_rate = new SqlParameter("@Ex_Rate", (ex_Rate > 0) ? ex_Rate : DBNull.Value);
+            var _amount = new SqlParameter("@Amount", amount);
+            var _remarks = new SqlParameter("@Remarks", string.IsNullOrEmpty(remarks) ? (object)DBNull.Value : remarks);
+            var _user_Id = new SqlParameter("@User_Id", user_Id);
+
+            var _trans_Date = new SqlParameter("@Trans_Date", SqlDbType.Date)
+            {
+                Value = trans_Date.HasValue ? (object)trans_Date.Value.Date : DBNull.Value
+            };
+
+            var _trans_Time = new SqlParameter("@Trans_Time", SqlDbType.Time)
+            {
+                Value = trans_Time.HasValue ? (object)trans_Time : DBNull.Value
+            };
+
+            try
+            {
+                var result = await _dbContext.Database.ExecuteSqlRawAsync(
+                    @"EXEC [dbo].[Cashbook_Account_Trans_Detail_Insert_Update] 
+                    @Terms_Invoice_Adjust_Table_Type,
+                    @Id,
+                    @Company_Id,
+                    @Year_Id,
+                    @Trans_Date,
+                    @Trans_Time,
+                    @By_Account,
+                    @By_Type,
+                    @To_Account,
+                    @To_Type,
+                    @Currency_Id,
+                    @Ex_Rate,
+                    @Amount,
+                    @Remarks,
+                    @User_Id",
+                    _terms_Invoice_Adjust_Table_Type,
+                    _id,
+                    _company_Id,
+                    _year_Id,
+                    _trans_Date,
+                    _trans_Time,
+                    _by_Account,
+                    _by_Type,
+                    _to_Account,
+                    _to_Type,
+                    _currrency_id,
+                    _ex_rate,
+                    _amount,
+                    _remarks,
+                    _user_Id);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error executing stored procedure: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Cashbook_Account_Trans_Select(int? id, int? year_id, int? company_id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Cashbook_Account_Trans_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(id > 0 ? new SqlParameter("@Id", id) : new SqlParameter("@Id", DBNull.Value));
+                    command.Parameters.Add(year_id > 0 ? new SqlParameter("@Year_Id", year_id) : new SqlParameter("@Year_Id", DBNull.Value));
+                    command.Parameters.Add(company_id > 0 ? new SqlParameter("@Company_Id", company_id) : new SqlParameter("@Company_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Cashbook_Account_Trans_Detail_Select(int id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Cashbook_Account_Trans_Detail_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(id > 0 ? new SqlParameter("@Id", id) : new SqlParameter("@Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
         #endregion
     }
 }
