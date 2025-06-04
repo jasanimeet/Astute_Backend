@@ -19635,8 +19635,18 @@ namespace astute.Controllers
                         if (response1.IsSuccessStatusCode)
                         {
                             var json1 = await response1.Content.ReadAsStringAsync();
-                            string cleanedJson1 = json1.Replace("\\\"", "\"").Trim('"');
-                            List<Suzy_Model> diamondInfos = JsonConvert.DeserializeObject<List<Suzy_Model>>(cleanedJson1);
+
+                            var diamondInfos = new List<Suzy_Model>();
+                            var items = JArray.Parse(json1);
+                            int index = 0;
+
+                            foreach (var item in items)
+                            {
+                                var model = item.ToObject<Suzy_Model>();
+                                diamondInfos.Add(model);
+
+                                index++;
+                            }
 
                             return Ok(new
                             {
