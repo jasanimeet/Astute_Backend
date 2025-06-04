@@ -4816,16 +4816,22 @@ namespace astute.Repository
             return message.Value.ToString();
         }
 
-        public async Task<int> Update_Purchase_Master_Is_Repricing_Approval(Purchase_Approval purchase_Approval, int User_Id)
+        public async Task<string> Update_Purchase_Master_Is_Repricing_Approval(Purchase_Approval purchase_Approval, int User_Id)
         {
             var trans_Id = new SqlParameter("@Trans_Id", purchase_Approval.Trans_Id);
             var is_Repricing_Approval = new SqlParameter("@Is_Repricing_Approval", purchase_Approval.Is_Repricing_Approval);
             var user_Id = new SqlParameter("@User_Id", User_Id);
+            var message = new SqlParameter("@Message", SqlDbType.NVarChar, 200)
+            {
+                Direction = ParameterDirection.Output
+            };
 
-            var result = await _dbContext.Database
-                                .ExecuteSqlRawAsync("EXEC Purchase_Master_Is_Repricing_Approval_Update @Trans_Id, @Is_Repricing_Approval, @User_Id", trans_Id, is_Repricing_Approval, user_Id);
+            await _dbContext.Database.ExecuteSqlRawAsync(
+                "EXEC Purchase_Master_Is_Repricing_Approval_Update @Trans_Id, @Is_Repricing_Approval, @User_Id, @Message OUTPUT",
+                trans_Id, is_Repricing_Approval, user_Id, message
+            );
 
-            return result;
+            return message.Value.ToString();
         }
 
         public async Task<DataTable> Get_Purchase_Detail_Pricing_Excel(int Trans_Id)
