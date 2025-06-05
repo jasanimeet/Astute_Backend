@@ -22022,7 +22022,7 @@ namespace astute.Controllers
                     }
                     string filename = string.Empty;
 
-                    filename = "QC_Skip_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".xlsx";
+                    filename = "QC_Skip_" + model.ExcelType + "_" + DateTime.UtcNow.ToString("ddMMyyyyHHmmss") + ".xlsx";
 
                     List<string> columnNames = new List<string>();
                     foreach (DataColumn column in result.Columns)
