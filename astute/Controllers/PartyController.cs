@@ -22006,11 +22006,11 @@ namespace astute.Controllers
         [HttpPost]
         [Route("get_purchase_detail_with_pending_upcoming_qc_pricing_excel")]
         [Authorize]
-        public async Task<IActionResult> Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Excel(Purchase_Search_Model purchase_Search_Model)
+        public async Task<IActionResult> Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Excel(QC_Skip_Excel_Model model)
         {
             try
             {
-                var result = await _supplierService.Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Excel(purchase_Search_Model.Id);
+                var result = await _supplierService.Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Excel(model.Id, model.ExcelType);
 
                 if (result != null && result.Rows.Count > 0)
                 {
@@ -22037,8 +22037,18 @@ namespace astute.Controllers
                     {
                         columnNamesTable.Rows.Add(columnName);
                     }
-
-                    EpExcelExport.Create_Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Excel(result, columnNamesTable, filePath, filePath + filename);
+                    if (model.ExcelType.ToUpper() == "UPCOMING")
+                    {
+                        EpExcelExport.Create_Purchase_Detail_With_Pending_Upcoming_Excel(result, columnNamesTable, filePath, filePath + filename);
+                    }
+                    else if (model.ExcelType.ToUpper() == "QC")
+                    {
+                        EpExcelExport.Create_Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Excel(result, columnNamesTable, filePath, filePath + filename);
+                    }
+                    else if (model.ExcelType.ToUpper() == "REPRICING")
+                    {
+                        EpExcelExport.Create_Purchase_Detail_With_Pending_Repricing_Excel(result, columnNamesTable, filePath, filePath + filename);
+                    }
                     excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.PurchaseQCSkipExcelFiles + filename;
 
                     return Ok(new

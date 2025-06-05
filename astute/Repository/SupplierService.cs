@@ -6518,7 +6518,7 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<DataTable> Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Excel(string Id)
+        public async Task<DataTable> Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Excel(string Id, string ExcelType)
         {
             var dataTable = new DataTable();
 
@@ -6528,6 +6528,7 @@ namespace astute.Repository
             {
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.Add(!string.IsNullOrEmpty(Id) ? new SqlParameter("@Id", Id) : new SqlParameter("@Id", DBNull.Value));
+                command.Parameters.Add(!string.IsNullOrEmpty(ExcelType) ? new SqlParameter("@ExcelType", ExcelType) : new SqlParameter("@ExcelType", DBNull.Value));
 
                 await connection.OpenAsync();
 
