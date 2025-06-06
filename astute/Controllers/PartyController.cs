@@ -1,11 +1,13 @@
 ﻿using astute.CoreModel;
 using astute.CoreServices;
+using astute.Hubs;
 using astute.Models;
 using astute.Repository;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -50,7 +52,7 @@ namespace astute.Controllers
         private readonly IOracleService _oracleService;
         private readonly ICategoryService _categoryService;
         private readonly ICompanyService _companyService;
-
+        private IHubContext<PrintHub, IPrintHub> _printHub;
         #endregion
 
         #region Ctor
@@ -67,7 +69,9 @@ namespace astute.Controllers
             ILab_User_Login_Activity_Services lab_User_Login_Activity_Services,
             IOracleService oracleService,
             ICategoryService categoryService,
-            ICompanyService companyService)
+            ICompanyService companyService,
+            IHubContext<PrintHub, IPrintHub> printHub
+            )
         {
             _partyService = partyService;
             _configuration = configuration;
@@ -83,6 +87,7 @@ namespace astute.Controllers
             _oracleService = oracleService;
             _categoryService = categoryService;
             _companyService = companyService;
+            _printHub = printHub;
         }
         #endregion
 
@@ -15455,6 +15460,40 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Purchase", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("get_purchase_barcode_print")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Barcode_Print(int? Trans_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Purchase_Barcode_Print(Trans_Id ?? 0);
+                if (result != null && result.Count > 0)
+                {
+
+                    await _printHub.Clients.All.HelloCommand("abcd");
+
+                    await _printHub.Clients.All.SendPrintCommand("a", result);
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Barcode_Print", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
