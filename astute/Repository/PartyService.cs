@@ -6,6 +6,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -1591,6 +1592,89 @@ namespace astute.Repository
                 }
             }
             return result;
+        }
+        #endregion
+
+        #region Process Margin Master
+        public async Task<List<Dictionary<string, object>>> Process_Margin_Master()
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("[dbo].[Process_Margin_Master_List]", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public async Task<int> Delete_Process_Margin_Master(int id)
+        {
+            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"[dbo].[Process_Margin_Master_Delete] {id}"));
+        }
+        public async Task<(string, int)> Insert_Update_Process_Margin_Master(DataTable dataTable, int user_Id)
+        {
+            //var _id = model.Id > 0 ? new SqlParameter("@Id", model.Id) : new SqlParameter("@Id", DBNull.Value);
+            //var _process_Id = model.Process_Id > 0 ? new SqlParameter("@Process_Id", model.Process_Id) : new SqlParameter("@Process_Id", DBNull.Value);
+            //var _assist_Person_Id = model.Assist_Person_Id > 0 ? new SqlParameter("@Assist_Person_Id", model.Assist_Person_Id) : new SqlParameter("@Assist_Person_Id", DBNull.Value);
+            //var _shape_Group = !string.IsNullOrEmpty(model.Shape_Group) ? new SqlParameter("@Shape_Group", model.Shape_Group) : new SqlParameter("@Shape_Group", DBNull.Value);
+            //var _from_Cts = model.From_Cts != 0 ? new SqlParameter("@From_Cts", model.From_Cts) : new SqlParameter("@From_Cts", DBNull.Value);
+            //var _to_Cts = model.To_Cts != 0 ? new SqlParameter("@To_Cts", model.To_Cts) : new SqlParameter("@To_Cts", DBNull.Value);
+            //var _discount = model.Discount != 0 ? new SqlParameter("@Discount", model.Discount) : new SqlParameter("@Discount", DBNull.Value);
+
+            var _process_Margin_Master_Table_Type = new SqlParameter("@Process_Margin_Master_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Process_Margin_Master_Table_Type",
+                Value = dataTable
+            };
+
+            var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
+
+            var _insertedId = new SqlParameter("@InsertedId", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            var _process_Exists = new SqlParameter("@Process_Exists", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC [dbo].[Process_Margin_Master_Insert_Update] @Process_Margin_Master_Table_Type,
+                            @User_Id,@InsertedId OUT,@Process_Exists OUT", _process_Margin_Master_Table_Type,
+                            _user_Id, _insertedId, _process_Exists)
+                        );
+
+            var process_Exists = (bool)_process_Exists.Value;
+            if (process_Exists)
+                return ("_process_exists", 0);
+
+            if (result > 0)
+            {
+                string record_Type = string.Empty;
+                int insertedId = (int)_insertedId.Value;
+                return ("success", insertedId);
+            }
+            return ("error", 0);
         }
         #endregion
     }

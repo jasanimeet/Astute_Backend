@@ -161,5 +161,10 @@ namespace astute.Repository
         #region Quotation Print Detail
         Task<List<Dictionary<string, object>>> Get_Quotation_BillParty_Detail(int party_Id);
         #endregion
+        #region Process Margin Master
+        Task<List<Dictionary<string, object>>> Process_Margin_Master();
+        Task<int> Delete_Process_Margin_Master(int id);
+        Task<(string, int)> Insert_Update_Process_Margin_Master(DataTable dataTable, int user_Id);
+        #endregion
     }
 }

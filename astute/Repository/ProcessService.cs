@@ -174,6 +174,15 @@ namespace astute.Repository
             }
             return 1;
         }
+        public async Task<IList<DropdownModel>> GetProcessByType(string process_Type)
+        {
+            var _process_Type = !string.IsNullOrEmpty(process_Type) ? new SqlParameter("@Process_Type", process_Type) : new SqlParameter("@Process_Type", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"EXEC Process_Master_By_Type_Select @Process_Type", _process_Type).ToListAsync());
+
+            return result;
+        }
         #endregion
     }
 }

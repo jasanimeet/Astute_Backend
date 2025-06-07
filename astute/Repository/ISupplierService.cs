@@ -298,9 +298,7 @@ namespace astute.Repository
         #endregion
 
         #region QC Pricing Skip
-        Task<List<Dictionary<string, object>>> Get_Supplier_With_Pending_Upcoming_QC_Pricing();
-        Task<List<Dictionary<string, object>>> Get_Supplier_With_Pending_By_CertOrStockId(string CertORStockId);
-        Task<List<Dictionary<string, object>>> Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing(int Trans_Id);
+        Task<List<Dictionary<string, object>>> Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing(int? Trans_Id, string? CertOrStockId);
         Task<List<Dictionary<string, object>>> Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing(int Trans_Id);
         Task<DataTable> Get_Purchase_Detail_With_Pending_Upcoming_QC_Pricing_Excel(string Id, string ExcelType);
         #endregion

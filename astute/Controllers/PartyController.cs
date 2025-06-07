@@ -17376,7 +17376,8 @@ namespace astute.Controllers
                 new DataColumn("Sub_Process", typeof(string)),
                 new DataColumn("Entry_Type", typeof(string)),
                 new DataColumn("Release_Days", typeof(float)),
-                new DataColumn("Release_Hours", typeof(float))
+                new DataColumn("Release_Hours", typeof(float)),
+                new DataColumn("Platform", typeof(string))
             });
 
             table.Rows.Add(
@@ -17400,7 +17401,8 @@ namespace astute.Controllers
                 m.Sub_Process ?? (object)DBNull.Value,
                 m.Entry_Type ?? (object)DBNull.Value,
                 m.Release_Days ?? (object)DBNull.Value,
-                m.Release_Hours ?? (object)DBNull.Value
+                m.Release_Hours ?? (object)DBNull.Value,
+                m.Platform ?? (object)DBNull.Value
             );
             return table;
         }
@@ -17420,7 +17422,9 @@ namespace astute.Controllers
                 new DataColumn("Offer_Disc", typeof(float)),
                 new DataColumn("Offer_Amt", typeof(decimal)),
                 new DataColumn("Web_Disc", typeof(float)),
-                new DataColumn("Web_Amt", typeof(decimal))
+                new DataColumn("Web_Amt", typeof(decimal)),
+                new DataColumn("Final_Disc", typeof(float)),
+                new DataColumn("Final_Amt", typeof(decimal))
             });
 
             foreach (var d in details)
@@ -17436,7 +17440,9 @@ namespace astute.Controllers
                     isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Offer_Disc),
                     isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Offer_Amt),
                     isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Web_Disc),
-                    isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Web_Amt)
+                    isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Web_Amt),
+                    isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Final_Disc),
+                    isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Final_Amt)
                 );
             }
             return table;
@@ -21883,93 +21889,10 @@ namespace astute.Controllers
          * Date: 2025/05/27 By Jashmin Patel
          * QC Pricing Skip...
          */
-        [HttpGet]
-        [Route("get_supplier_with_pending_upcoming_qc_pricing")]
-        [Authorize]
-        public async Task<IActionResult> Get_Supplier_With_Pending_Upcoming_QC_Pricing()
-        {
-            try
-            {
-                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-
-                if ((user_Id ?? 0) > 0)
-                {
-                    var result = await _supplierService.Get_Supplier_With_Pending_Upcoming_QC_Pricing();
-                    if (result != null)
-                    {
-                        return Ok(new
-                        {
-                            statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.DataSuccessfullyFound,
-                            data = result,
-                        });
-                    }
-                    return NoContent();
-                }
-                return StatusCode((int)HttpStatusCode.Unauthorized, new
-                {
-                    message = "Unauthorized Access",
-                    statusCode = (int)HttpStatusCode.Unauthorized
-                });
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_With_Pending_Upcoming_QC_Pricing", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
         [HttpPost]
-        [Route("get_supplier_with_pending_by_certorstockid")]
-        [Authorize]
-        public async Task<IActionResult> Get_Supplier_With_Pending_By_CertOrStockId(JsonElement json)
-        {
-            try
-            {
-                string CertORStockId = "";
-                if (json.TryGetProperty("CertORStockId", out var certORStockId))
-                {
-                    CertORStockId = certORStockId.GetString();
-                }
-                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-
-                if ((user_Id ?? 0) > 0)
-                {
-                    var result = await _supplierService.Get_Supplier_With_Pending_By_CertOrStockId(CertORStockId);
-                    if (result != null && result.Count > 0)
-                    {
-                        return Ok(new
-                        {
-                            statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.DataSuccessfullyFound,
-                            data = result,
-                        });
-                    }
-                    return NoContent();
-                }
-                return StatusCode((int)HttpStatusCode.Unauthorized, new
-                {
-                    message = "Unauthorized Access",
-                    statusCode = (int)HttpStatusCode.Unauthorized
-                });
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_With_Pending_By_CertOrStockId", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-        [HttpGet]
         [Route("get_purchase_master_with_pending_upcoming_qc_pricing")]
         [Authorize]
-        public async Task<IActionResult> Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing(int Trans_Id)
+        public async Task<IActionResult> Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing(QC_Skip_Model model)
         {
             try
             {
@@ -21977,7 +21900,7 @@ namespace astute.Controllers
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                 if ((user_Id ?? 0) > 0)
                 {
-                    var result = await _supplierService.Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing(Trans_Id);
+                    var result = await _supplierService.Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing(model.Trans_Id, model.CertORStockId);
                     if (result != null)
                     {
                         return Ok(new
@@ -22042,6 +21965,7 @@ namespace astute.Controllers
                 });
             }
         }
+
         [HttpPost]
         [Route("get_purchase_detail_with_pending_upcoming_qc_pricing_excel")]
         [Authorize]
@@ -22151,6 +22075,148 @@ namespace astute.Controllers
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Stone_Trace_Report", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region Process Margin Master
+        /*
+         * Date: 2025/06/05 By Jashmin Patel
+         * Process Margin Master...
+        */
+        [HttpGet]
+        [Route("get_process_margin_master")]
+        [Authorize]
+        public async Task<IActionResult> Get_Process_Margin_Master()
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if ((user_Id ?? 0) > 0)
+                {
+                    var result = await _partyService.Process_Margin_Master();
+                    if (result != null)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = result,
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_With_Pending_Upcoming_QC_Pricing", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPost]
+        [Route("insert_update_process_margin_master")]
+        [Authorize]
+        public async Task<IActionResult> Insert_Update_Process_Margin_Master(IList<Process_Margin_Master> model)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if ((user_Id ?? 0) > 0)
+                {
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Id", typeof(int));
+                    dataTable.Columns.Add("Process_Id", typeof(int));
+                    dataTable.Columns.Add("Assist_Person_Id", typeof(int));
+                    dataTable.Columns.Add("Shape_Group", typeof(string));
+                    dataTable.Columns.Add("From_Cts", typeof(float));
+                    dataTable.Columns.Add("To_Cts", typeof(float));
+                    dataTable.Columns.Add("Discount", typeof(float));
+                    foreach (var item in model)
+                    {
+                        dataTable.Rows.Add(item.Id, item.Process_Id, item.Assist_Person_Id, item.Shape_Group, item.From_Cts, item.To_Cts, item.Discount);
+                    }
+                    var (message, id) = await _partyService.Insert_Update_Process_Margin_Master(dataTable, user_Id ?? 0);
+                    if (message == "success" && id > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = model.Any(x => x.Id > 0) ? CoreCommonMessage.ProcessMarginMasterUpdated : CoreCommonMessage.ProcessMarginMasterCreated
+                        });
+                    }
+                    else if (message == "_process_exists" && id == 0)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.ProcessMarginMasterAlreadyExist
+                        });
+                    }
+                    else
+                    {
+                        return BadRequest(new
+                        {
+                            statusCode = HttpStatusCode.BadRequest,
+                            message = "parameter mismatched."
+                        });
+                    }
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Insert_Update_Process_Margin_Master", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpDelete]
+        [Route("delete_process_margin_master")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Process_Margin_Master(int id)
+        {
+            try
+            {
+                var result = await _partyService.Delete_Process_Margin_Master(id);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.ProcessMarginMasterDeleted,
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Process_Margin_Master", ex.StackTrace);
+                return Conflict(new
                 {
                     message = ex.Message
                 });
