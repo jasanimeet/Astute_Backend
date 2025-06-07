@@ -5829,6 +5829,43 @@ namespace astute.Repository
 
         #endregion
 
+        #region Consignment Issue Customer DropDown
+
+        public async Task<List<Dictionary<string, object>>> Get_Transaction_Consignment_Issue_Customer_DropDown()
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Transaction_Consignment_Issue_Customer_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        #endregion
+
         #region Party Url Format
 
         public async Task<IList<Party_Url_Format>> Get_Party_Url_Format(int Id)
