@@ -42,5 +42,11 @@ namespace astute.Models
 
         [JsonProperty("WEB AMOUNT")]
         public string? Web_Amt { get; set; }
+
+        [JsonProperty("FINAL DISC")]
+        public string? Final_Disc { get; set; }
+
+        [JsonProperty("FINAL AMOUNT")]
+        public string? Final_Amt { get; set; }
     }
 }

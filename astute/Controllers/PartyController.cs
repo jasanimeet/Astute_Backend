@@ -17383,7 +17383,9 @@ namespace astute.Controllers
                 new DataColumn("Offer_Disc", typeof(float)),
                 new DataColumn("Offer_Amt", typeof(decimal)),
                 new DataColumn("Web_Disc", typeof(float)),
-                new DataColumn("Web_Amt", typeof(decimal))
+                new DataColumn("Web_Amt", typeof(decimal)),
+                new DataColumn("Final_Disc", typeof(float)),
+                new DataColumn("Final_Amt", typeof(decimal))
             });
 
             foreach (var d in details)
@@ -17399,7 +17401,9 @@ namespace astute.Controllers
                     isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Offer_Disc),
                     isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Offer_Amt),
                     isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Web_Disc),
-                    isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Web_Amt)
+                    isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Web_Amt),
+                    isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Final_Disc),
+                    isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Final_Amt)
                 );
             }
             return table;
