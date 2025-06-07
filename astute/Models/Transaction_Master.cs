@@ -85,5 +85,8 @@ namespace astute.Models
 
         [JsonPropertyName("Release_Hours")]
         public float? Release_Hours { get; set; }
+
+        [JsonPropertyName("Platform")]
+        public string? Platform { get; set; }
     }
 }

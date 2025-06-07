@@ -17337,7 +17337,8 @@ namespace astute.Controllers
                 new DataColumn("Sub_Process", typeof(string)),
                 new DataColumn("Entry_Type", typeof(string)),
                 new DataColumn("Release_Days", typeof(float)),
-                new DataColumn("Release_Hours", typeof(float))
+                new DataColumn("Release_Hours", typeof(float)),
+                new DataColumn("Platform", typeof(string))
             });
 
             table.Rows.Add(
@@ -17361,7 +17362,8 @@ namespace astute.Controllers
                 m.Sub_Process ?? (object)DBNull.Value,
                 m.Entry_Type ?? (object)DBNull.Value,
                 m.Release_Days ?? (object)DBNull.Value,
-                m.Release_Hours ?? (object)DBNull.Value
+                m.Release_Hours ?? (object)DBNull.Value,
+                m.Platform ?? (object)DBNull.Value
             );
             return table;
         }
@@ -17381,7 +17383,9 @@ namespace astute.Controllers
                 new DataColumn("Offer_Disc", typeof(float)),
                 new DataColumn("Offer_Amt", typeof(decimal)),
                 new DataColumn("Web_Disc", typeof(float)),
-                new DataColumn("Web_Amt", typeof(decimal))
+                new DataColumn("Web_Amt", typeof(decimal)),
+                new DataColumn("Final_Disc", typeof(float)),
+                new DataColumn("Final_Amt", typeof(decimal))
             });
 
             foreach (var d in details)
@@ -17397,7 +17401,9 @@ namespace astute.Controllers
                     isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Offer_Disc),
                     isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Offer_Amt),
                     isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Web_Disc),
-                    isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Web_Amt)
+                    isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Web_Amt),
+                    isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Final_Disc),
+                    isConsignment ? (object)DBNull.Value : SafeConvertToDouble(d.Final_Amt)
                 );
             }
             return table;
@@ -21920,6 +21926,7 @@ namespace astute.Controllers
                 });
             }
         }
+
         [HttpPost]
         [Route("get_purchase_detail_with_pending_upcoming_qc_pricing_excel")]
         [Authorize]
