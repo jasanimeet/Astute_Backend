@@ -21844,93 +21844,10 @@ namespace astute.Controllers
          * Date: 2025/05/27 By Jashmin Patel
          * QC Pricing Skip...
          */
-        [HttpGet]
-        [Route("get_supplier_with_pending_upcoming_qc_pricing")]
-        [Authorize]
-        public async Task<IActionResult> Get_Supplier_With_Pending_Upcoming_QC_Pricing()
-        {
-            try
-            {
-                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-
-                if ((user_Id ?? 0) > 0)
-                {
-                    var result = await _supplierService.Get_Supplier_With_Pending_Upcoming_QC_Pricing();
-                    if (result != null)
-                    {
-                        return Ok(new
-                        {
-                            statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.DataSuccessfullyFound,
-                            data = result,
-                        });
-                    }
-                    return NoContent();
-                }
-                return StatusCode((int)HttpStatusCode.Unauthorized, new
-                {
-                    message = "Unauthorized Access",
-                    statusCode = (int)HttpStatusCode.Unauthorized
-                });
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_With_Pending_Upcoming_QC_Pricing", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
         [HttpPost]
-        [Route("get_supplier_with_pending_by_certorstockid")]
-        [Authorize]
-        public async Task<IActionResult> Get_Supplier_With_Pending_By_CertOrStockId(JsonElement json)
-        {
-            try
-            {
-                string CertORStockId = "";
-                if (json.TryGetProperty("CertORStockId", out var certORStockId))
-                {
-                    CertORStockId = certORStockId.GetString();
-                }
-                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-
-                if ((user_Id ?? 0) > 0)
-                {
-                    var result = await _supplierService.Get_Supplier_With_Pending_By_CertOrStockId(CertORStockId);
-                    if (result != null && result.Count > 0)
-                    {
-                        return Ok(new
-                        {
-                            statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.DataSuccessfullyFound,
-                            data = result,
-                        });
-                    }
-                    return NoContent();
-                }
-                return StatusCode((int)HttpStatusCode.Unauthorized, new
-                {
-                    message = "Unauthorized Access",
-                    statusCode = (int)HttpStatusCode.Unauthorized
-                });
-            }
-            catch (Exception ex)
-            {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_With_Pending_By_CertOrStockId", ex.StackTrace);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
-                {
-                    message = ex.Message
-                });
-            }
-        }
-        [HttpGet]
         [Route("get_purchase_master_with_pending_upcoming_qc_pricing")]
         [Authorize]
-        public async Task<IActionResult> Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing(int Trans_Id)
+        public async Task<IActionResult> Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing(QC_Skip_Model model)
         {
             try
             {
@@ -21938,7 +21855,7 @@ namespace astute.Controllers
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                 if ((user_Id ?? 0) > 0)
                 {
-                    var result = await _supplierService.Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing(Trans_Id);
+                    var result = await _supplierService.Get_Purchase_Master_With_Pending_Upcoming_QC_Pricing(model.Trans_Id, model.CertORStockId);
                     if (result != null)
                     {
                         return Ok(new
