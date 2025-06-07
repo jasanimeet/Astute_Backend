@@ -632,5 +632,13 @@
         public static string CashBookUpdated = CashBook + UpdatedSuccessfully;
         public static string CashBookDeleted = CashBook + DeletedSuccessfully;
         #endregion
+
+        #region Process Margin Master
+        public static string ProcessMarginMaster = "Process Margin Master";
+        public static string ProcessMarginMasterCreated = ProcessMarginMaster + AddedSuccessfully;
+        public static string ProcessMarginMasterUpdated = ProcessMarginMaster + UpdatedSuccessfully;
+        public static string ProcessMarginMasterDeleted = ProcessMarginMaster + DeletedSuccessfully;
+        public static string ProcessMarginMasterAlreadyExist = ProcessMarginMaster + AlreadyExists;
+        #endregion
     }
 }

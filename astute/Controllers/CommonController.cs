@@ -1646,6 +1646,35 @@ namespace astute.Controllers
                 });
             }
         }
+        
+        [HttpGet]
+        [Route("getprocessbytype")]
+        [Authorize]
+        public async Task<IActionResult> GetProcessByType(string process_Type)
+        {
+            try
+            {
+                var result = await _processService.GetProcessByType(process_Type);
+                if (result != null)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "GetProcessByType", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Currency Master

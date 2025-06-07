@@ -728,6 +728,15 @@ namespace astute.Repository
         }
         #endregion
 
+        public async Task<IList<DropdownModel>> Get_Employee_Master_By_User_Type(string user_Type)
+        {
+            var _user_Type = !string.IsNullOrEmpty(user_Type) ? new SqlParameter("@User_Type", user_Type) : new SqlParameter("@User_Type", DBNull.Value);
+
+            var employees = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"exec [dbo].[Employee_Master_By_User_Type_Select] @User_Type", _user_Type).ToList());
+
+            return employees;
+        }
         #endregion
     }
 }

@@ -22118,5 +22118,147 @@ namespace astute.Controllers
             }
         }
         #endregion
+
+        #region Process Margin Master
+        /*
+         * Date: 2025/06/05 By Jashmin Patel
+         * Process Margin Master...
+        */
+        [HttpGet]
+        [Route("get_process_margin_master")]
+        [Authorize]
+        public async Task<IActionResult> Get_Process_Margin_Master()
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if ((user_Id ?? 0) > 0)
+                {
+                    var result = await _partyService.Process_Margin_Master();
+                    if (result != null)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = result,
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Supplier_With_Pending_Upcoming_QC_Pricing", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPost]
+        [Route("insert_update_process_margin_master")]
+        [Authorize]
+        public async Task<IActionResult> Insert_Update_Process_Margin_Master(IList<Process_Margin_Master> model)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if ((user_Id ?? 0) > 0)
+                {
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Id", typeof(int));
+                    dataTable.Columns.Add("Process_Id", typeof(int));
+                    dataTable.Columns.Add("Assist_Person_Id", typeof(int));
+                    dataTable.Columns.Add("Shape_Group", typeof(string));
+                    dataTable.Columns.Add("From_Cts", typeof(float));
+                    dataTable.Columns.Add("To_Cts", typeof(float));
+                    dataTable.Columns.Add("Discount", typeof(float));
+                    foreach (var item in model)
+                    {
+                        dataTable.Rows.Add(item.Id, item.Process_Id, item.Assist_Person_Id, item.Shape_Group, item.From_Cts, item.To_Cts, item.Discount);
+                    }
+                    var (message, id) = await _partyService.Insert_Update_Process_Margin_Master(dataTable, user_Id ?? 0);
+                    if (message == "success" && id > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = model.Any(x => x.Id > 0) ? CoreCommonMessage.ProcessMarginMasterUpdated : CoreCommonMessage.ProcessMarginMasterCreated
+                        });
+                    }
+                    else if (message == "_process_exists" && id == 0)
+                    {
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.ProcessMarginMasterAlreadyExist
+                        });
+                    }
+                    else
+                    {
+                        return BadRequest(new
+                        {
+                            statusCode = HttpStatusCode.BadRequest,
+                            message = "parameter mismatched."
+                        });
+                    }
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Insert_Update_Process_Margin_Master", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpDelete]
+        [Route("delete_process_margin_master")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Process_Margin_Master(int id)
+        {
+            try
+            {
+                var result = await _partyService.Delete_Process_Margin_Master(id);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.ProcessMarginMasterDeleted,
+                    });
+                }
+                return BadRequest(new
+                {
+                    statusCode = HttpStatusCode.BadRequest,
+                    message = CoreCommonMessage.ParameterMismatched
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Process_Margin_Master", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
     }
 }
