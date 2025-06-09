@@ -15474,13 +15474,13 @@ namespace astute.Controllers
         {
             try
             {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
                 var result = await _supplierService.Get_Purchase_Barcode_Print(Trans_Id ?? 0);
                 if (result != null && result.Count > 0)
                 {
-
-                    await _printHub.Clients.All.HelloCommand("abcd");
-
-                    await _printHub.Clients.All.SendPrintCommand("a", result);
+                    await _printHub.Clients.All.SendPrintCommand(user_Id ?? 0, result);
 
                     return Ok(new
                     {
