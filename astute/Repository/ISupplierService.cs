@@ -256,7 +256,7 @@ namespace astute.Repository
         #endregion
 
         #region Consignment Issue Customer DropDown
-        Task<List<Dictionary<string, object>>> Get_Transaction_Consignment_Issue_Customer_DropDown();
+        Task<List<Dictionary<string, object>>> Get_Transaction_Consignment_Issue_Customer_DropDown(int User_Id);
         #endregion
 
         #region Party Url Format
