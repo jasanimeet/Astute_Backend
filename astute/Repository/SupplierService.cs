@@ -4239,6 +4239,68 @@ namespace astute.Repository
 
             return output;
         }
+        public async Task<Dictionary<string, object>> Get_Purchase_Barcode_Print(int Trans_Id)
+        {
+            var output = new Dictionary<string, object>();
+
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                await connection.OpenAsync();
+
+                //// Fetch Purchase_Master
+                //var Purchase_Master_Result = await ExecuteStoredProcedure(connection, "Purchase_Master_By_Trans_Id_Select", Trans_Id);
+                //if (Purchase_Master_Result != null)
+                //{
+                //    output["Purchase_Master"] = Purchase_Master_Result.FirstOrDefault();
+                //}
+
+                // Fetch Purchase_Detail
+                var Purchase_Detail_Result = await ExecuteStoredProcedure(connection, "Purchase_Detail_By_Trans_Id_Select", Trans_Id);
+                if (Purchase_Detail_Result != null)
+                {
+                    output["Purchase_Detail_List"] = Purchase_Detail_Result;
+                }
+                else
+                {
+                    output["Purchase_Detail_List"] = new List<object>();
+                }
+
+                //// Fetch terms_Trans_Dets
+                //var Purchase_Terms_Result = await ExecuteStoredProcedure(connection, "Purchase_Terms_By_Trans_Id_Select", Trans_Id);
+                //if (Purchase_Terms_Result != null)
+                //{
+                //    output["Purchase_Terms_List"] = Purchase_Terms_Result;
+                //}
+                //else
+                //{
+                //    output["Purchase_Terms_List"] = new List<object>();
+                //}
+
+                //// Fetch expense_Trans_Dets
+                //var expense_Trans_Dets_Result = await ExecuteStoredProcedure(connection, "Purchase_Expenses_By_Trans_Id_Select", Trans_Id);
+                //if (expense_Trans_Dets_Result != null)
+                //{
+                //    output["Purchase_Expenses_List"] = expense_Trans_Dets_Result;
+                //}
+                //else
+                //{
+                //    output["Purchase_Expenses_List"] = new List<object>();
+                //}
+
+                ////Fetch purchase_Detail_Loose_Trans_Dets
+                //var purchase_Detail_Loose_Trans_Dets_Result = await ExecuteStoredProcedure(connection, "Purchase_Detail_Loose_By_Trans_Id_Select", Trans_Id);
+                //if (purchase_Detail_Loose_Trans_Dets_Result != null)
+                //{
+                //    output["Purchase_Detail_Loose_List"] = purchase_Detail_Loose_Trans_Dets_Result;
+                //}
+                //else
+                //{
+                //    output["Purchase_Detail_Loose_List"] = new List<object>();
+                //}
+            }
+
+            return output;
+        }
         private async Task<List<Dictionary<string, object>>> ExecuteStoredProcedure(SqlConnection connection, string storedProcedureName, int Trans_Id)
         {
             var result = new List<Dictionary<string, object>>();

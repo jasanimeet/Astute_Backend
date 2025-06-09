@@ -1,4 +1,5 @@
 using astute.Authorization;
+using astute.Hubs;
 using astute.Models;
 using astute.Repository;
 using astute.TaskScheduler;
@@ -31,6 +32,7 @@ namespace astute
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
             services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
@@ -170,6 +172,7 @@ namespace astute
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<PrintHub>("/barcode_print");
             });
         }
     }
