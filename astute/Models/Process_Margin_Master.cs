@@ -11,12 +11,12 @@ namespace astute.Models
         [JsonProperty("Assist_Person_Id")]
         public int Assist_Person_Id { get; set; }
         [JsonProperty("Shape_Group")]
-        public string Shape_Group { get; set; }
+        public string? Shape_Group { get; set; }
         [JsonProperty("From_Cts")]
-        public float From_Cts { get; set; }
+        public float? From_Cts { get; set; }
         [JsonProperty("To_Cts")]
-        public float To_Cts { get; set; }
+        public float? To_Cts { get; set; }
         [JsonProperty("Discount")]
-        public float Discount { get; set; }
+        public float? Discount { get; set; }
     }
 }
