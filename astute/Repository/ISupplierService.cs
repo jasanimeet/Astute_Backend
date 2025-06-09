@@ -242,7 +242,7 @@ namespace astute.Repository
         #endregion
 
         #region Hold Customer DropDown
-        Task<List<Dictionary<string, object>>> Get_Transaction_Hold_Customer_DropDown();
+        Task<List<Dictionary<string, object>>> Get_Transaction_Hold_Customer_DropDown(int User_Id);
         #endregion
 
         #region Consignment Issue

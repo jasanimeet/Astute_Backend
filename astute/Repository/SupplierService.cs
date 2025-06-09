@@ -5671,7 +5671,7 @@ namespace astute.Repository
 
         #region Hold Customer DropDown
 
-        public async Task<List<Dictionary<string, object>>> Get_Transaction_Hold_Customer_DropDown()
+        public async Task<List<Dictionary<string, object>>> Get_Transaction_Hold_Customer_DropDown(int User_Id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -5679,6 +5679,7 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Transaction_Hold_Customer_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value));
 
                     await connection.OpenAsync();
 
