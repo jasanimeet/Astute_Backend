@@ -17782,6 +17782,76 @@ namespace astute.Controllers
 
         #endregion
 
+        #region Consignment Receive
+
+        [HttpPost]
+        [Route("get_purchase_detail_for_consignment_receive")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Detail_For_Consignment_Receive(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Get_Purchase_Detail_For_Consignment_Receive(purchase_Detail_For_Purchase_Return);
+
+                var result_Message = await _supplierService.Get_Unavailable_Purchase_Detail_For_Consignment_Receive(purchase_Detail_For_Purchase_Return);
+
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    message = CoreCommonMessage.DataSuccessfullyFound,
+                    unavailable_message = result_Message,
+                    data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail_For_Consignment_Receive", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
+        #region Consignment Issue Customer DropDown
+
+        [HttpGet]
+        [Route("get_transaction_consignment_issue_customer_dropdown")]
+        [Authorize]
+        public async Task<IActionResult> Get_Transaction_Consignment_Issue_Customer_DropDown()
+        {
+            try
+            {
+                var result = await _supplierService.Get_Transaction_Consignment_Issue_Customer_DropDown();
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Transaction_Consignment_Issue_Customer_DropDown", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
         #region Lab User Activity
 
         [HttpGet]
