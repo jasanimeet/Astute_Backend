@@ -5129,7 +5129,7 @@ namespace astute.Repository
 
         #region Transaction
 
-        public async Task<List<Dictionary<string, object>>> Get_Transaction_Master(Transaction_Master_Search_Model transaction_Master_Search_Model)
+        public async Task<List<Dictionary<string, object>>> Get_Transaction_Master(Transaction_Master_Search_Model transaction_Master_Search_Model, int User_Id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -5142,6 +5142,7 @@ namespace astute.Repository
                     command.Parameters.Add(!string.IsNullOrEmpty(transaction_Master_Search_Model.Process_Id) ? new SqlParameter("@Process_Id", transaction_Master_Search_Model.Process_Id) : new SqlParameter("@Process_Id", DBNull.Value));
                     command.Parameters.Add(transaction_Master_Search_Model.Company_Id > 0 ? new SqlParameter("@Company_Id", transaction_Master_Search_Model.Company_Id) : new SqlParameter("@Company_Id", DBNull.Value));
                     command.Parameters.Add(transaction_Master_Search_Model.Year_Id > 0 ? new SqlParameter("@Year_Id", transaction_Master_Search_Model.Year_Id) : new SqlParameter("@Year_Id", DBNull.Value));
+                    command.Parameters.Add(User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value));
 
                     await connection.OpenAsync();
 

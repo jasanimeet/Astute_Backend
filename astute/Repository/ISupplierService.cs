@@ -210,7 +210,7 @@ namespace astute.Repository
         #endregion
 
         #region Transaction
-        Task<List<Dictionary<string, object>>> Get_Transaction_Master(Transaction_Master_Search_Model transaction_Master_Search_Model);
+        Task<List<Dictionary<string, object>>> Get_Transaction_Master(Transaction_Master_Search_Model transaction_Master_Search_Model, int User_Id);
         Task<Dictionary<string, object>> Get_Transaction(int Trans_Id);
         Task<(int, bool)> Insert_Update_Transaction(DataTable masterDataTable, DataTable detailDataTable, DataTable termsDataTable, DataTable expensesDataTable, DataTable detailLooseDataTable, int user_Id);
         Task<int> Delete_Transaction(int Trans_Id, int User_Id);
