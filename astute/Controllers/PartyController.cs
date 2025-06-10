@@ -22421,7 +22421,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("get_purchase_detail_for_manual_url_transfer")]
         [Authorize]
-        public async Task<IActionResult> Get_Purchase_Detail_For_Manual_Url_Transfer(Manual_Url_Transfer_Model model)
+        public async Task<IActionResult> Get_Purchase_Detail_For_Manual_Url_Transfer(IList<Manual_Url_Transfer_Model> model)
         {
             try
             {
@@ -22430,9 +22430,19 @@ namespace astute.Controllers
 
                 if ((user_Id ?? 0) > 0)
                 {
-                    var data = await _partyService.Get_Purchase_Detail_For_Manual_Url_Transfer(model.Sunrise_Stock_Id, user_Id ?? 0);
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Id", typeof(int));
+                    dataTable.Columns.Add("Sunrise_Stock_Id", typeof(string));
+                    dataTable.Columns.Add("Image_URL", typeof(string));
+                    dataTable.Columns.Add("Video_URL", typeof(string));
+                    foreach (var item in model)
+                    {
+                        dataTable.Rows.Add(0, item.Sunrise_Stock_Id, item.Image_URL, item.Video_URL);
+                    }
 
-                    var unavailable_message = await _partyService.Get_Unavailable_Purchase_Detail_For_Manual_Url_Transfer(model.Sunrise_Stock_Id);
+                    var data = await _partyService.Get_Purchase_Detail_For_Manual_Url_Transfer(dataTable, user_Id ?? 0);
+
+                    var unavailable_message = await _partyService.Get_Unavailable_Purchase_Detail_For_Manual_Url_Transfer(dataTable);
 
                     return Ok(new
                     {
@@ -22504,6 +22514,49 @@ namespace astute.Controllers
                 });
             }
         }
+        #endregion
+
+        #region RFID_No
+        [HttpPost]
+        [Route("get_purchase_detail_for_rfid_no")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Detail_For_RFId_No(RFID_No_Link_Delink_Model model)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if ((user_Id ?? 0) > 0)
+                {
+                    var data = await _partyService.Get_Purchase_Detail_For_RFID_No(model, user_Id ?? 0);
+
+                    var unavailable_message = await _partyService.Get_Unavailable_Purchase_Detail_For_RFID_No(model);
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        unavailable_message,
+                        data
+                    });
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail_For_RFId_No", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
     }
 }

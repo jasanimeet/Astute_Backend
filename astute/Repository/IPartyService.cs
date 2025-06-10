@@ -168,9 +168,14 @@ namespace astute.Repository
         #endregion
 
         #region Manual Url Transfer
-        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Manual_Url_Transfer(string sunrise_Stock_Id, int user_Id);
-        Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Manual_Url_Transfer(string sunrise_Stock_Id);
+        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Manual_Url_Transfer(DataTable dataTable, int user_Id);
+        Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Manual_Url_Transfer(DataTable dataTable);
         Task<int> Insert_Update_Manual_Url_Transfer(DataTable dataTable, int user_Id);
+        #endregion
+
+        #region RFID No
+        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_RFID_No(RFID_No_Link_Delink_Model model, int user_Id);
+        Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_RFID_No(RFID_No_Link_Delink_Model model);
         #endregion
     }
 }

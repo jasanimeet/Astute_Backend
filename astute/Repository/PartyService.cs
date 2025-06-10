@@ -1679,15 +1679,21 @@ namespace astute.Repository
         #endregion
 
         #region Manual Url Transfer
-        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Manual_Url_Transfer(string sunrise_Stock_Id, int user_Id)
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Manual_Url_Transfer(DataTable dataTable, int user_Id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
+                var _manual_Url_Transfer_Table_Type = new SqlParameter("@Manual_Url_Transfer_Table_Type", SqlDbType.Structured)
+                {
+                    TypeName = "dbo.Manual_Url_Transfer_Table_Type",
+                    Value = dataTable
+                };
+
                 using (var command = new SqlCommand("[dbo].[Purchase_Detail_For_Manual_Url_Transfer_Select]", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(!string.IsNullOrEmpty(sunrise_Stock_Id) ? new SqlParameter("@Sunrise_Stock_Id", sunrise_Stock_Id) : new SqlParameter("@Sunrise_Stock_Id", DBNull.Value));
+                    command.Parameters.Add(_manual_Url_Transfer_Table_Type);
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -1711,15 +1717,20 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Manual_Url_Transfer(string sunrise_Stock_Id)
+        public async Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Manual_Url_Transfer(DataTable dataTable)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
+                var _manual_Url_Transfer_Table_Type = new SqlParameter("@Manual_Url_Transfer_Table_Type", SqlDbType.Structured)
+                {
+                    TypeName = "dbo.Manual_Url_Transfer_Table_Type",
+                    Value = dataTable
+                };
                 using (var command = new SqlCommand("[dbo].[Purchase_Detail_Unavailable_For_Manual_Url_Transfer_Select]", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(!string.IsNullOrEmpty(sunrise_Stock_Id) ? new SqlParameter("@Sunrise_Stock_Id", sunrise_Stock_Id) : new SqlParameter("@Sunrise_Stock_Id", DBNull.Value));
+                    command.Parameters.Add(_manual_Url_Transfer_Table_Type);
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -1757,6 +1768,79 @@ namespace astute.Repository
                         .ExecuteSqlRawAsync(@"EXEC [dbo].[Manual_Url_Transfer_Insert_Update] @Manual_Url_Transfer_Table_Type, @User_Id",
                         _manual_Url_Transfer_Table_Type, _user_Id));
 
+            return result;
+        }
+        #endregion
+
+        #region RFID No
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_RFID_No(RFID_No_Link_Delink_Model model, int user_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("[dbo].[Purchase_Detail_For_RFID_No_Select]", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(model.Barcode) ? new SqlParameter("@Barcode", model.Barcode) : new SqlParameter("@Barcode", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(model.Sunrise_Stock_Id) ? new SqlParameter("@Sunrise_Stock_Id", model.Sunrise_Stock_Id) : new SqlParameter("@Sunrise_Stock_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(model.Cert_No) ? new SqlParameter("@Cert_No", model.Cert_No) : new SqlParameter("@Cert_No", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(model.RFID_No) ? new SqlParameter("@RFID_No", model.RFID_No) : new SqlParameter("@RFID_No", DBNull.Value));
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_RFID_No(RFID_No_Link_Delink_Model model)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("[dbo].[Purchase_Detail_Unavailable_For_RFID_No_Select]", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(model.Barcode) ? new SqlParameter("@Barcode", model.Barcode) : new SqlParameter("@Barcode", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(model.Sunrise_Stock_Id) ? new SqlParameter("@Sunrise_Stock_Id", model.Sunrise_Stock_Id) : new SqlParameter("@Sunrise_Stock_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(model.Cert_No) ? new SqlParameter("@Cert_No", model.Cert_No) : new SqlParameter("@Cert_No", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(model.RFID_No) ? new SqlParameter("@RFID_No", model.RFID_No) : new SqlParameter("@RFID_No", DBNull.Value));
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
             return result;
         }
         #endregion
