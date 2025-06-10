@@ -166,5 +166,11 @@ namespace astute.Repository
         Task<int> Delete_Process_Margin_Master(int id);
         Task<(string, int)> Insert_Update_Process_Margin_Master(DataTable dataTable, int user_Id);
         #endregion
+
+        #region Manual Url Transfer
+        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Manual_Url_Transfer(string sunrise_Stock_Id, int user_Id);
+        Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Manual_Url_Transfer(string sunrise_Stock_Id);
+        Task<int> Insert_Update_Manual_Url_Transfer(DataTable dataTable, int user_Id);
+        #endregion
     }
 }

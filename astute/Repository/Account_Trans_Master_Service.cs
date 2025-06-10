@@ -637,6 +637,10 @@ namespace astute.Repository
             }
             return result;
         }
+        public async Task<int> Delete_Cashbook_Account_Trans(int Id, int User_Id)
+        {
+            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"[dbo].[Cashbook_Account_Trans_Detail_Delete] {Id}, {User_Id}"));
+        }
         #endregion
     }
 }

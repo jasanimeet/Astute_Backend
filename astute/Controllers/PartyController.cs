@@ -22412,5 +22412,98 @@ namespace astute.Controllers
             }
         }
         #endregion
+
+        #region Manual Url Transfer
+        /*
+         * Date: 2025/06/09 By Jashmin Patel
+         * Process Margin Master...
+        */
+        [HttpPost]
+        [Route("get_purchase_detail_for_manual_url_transfer")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Detail_For_Manual_Url_Transfer(Manual_Url_Transfer_Model model)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if ((user_Id ?? 0) > 0)
+                {
+                    var data = await _partyService.Get_Purchase_Detail_For_Manual_Url_Transfer(model.Sunrise_Stock_Id, user_Id ?? 0);
+
+                    var unavailable_message = await _partyService.Get_Unavailable_Purchase_Detail_For_Manual_Url_Transfer(model.Sunrise_Stock_Id);
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        unavailable_message,
+                        data
+                    });
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail_For_Manual_Url_Transfer", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPost]
+        [Route("insert_update_manual_url_transfer")]
+        [Authorize]
+        public async Task<IActionResult> Insert_Update_Manual_Url_Transfer(IList<Manual_Url_Transfer> model)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if ((user_Id ?? 0) > 0)
+                {
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Id", typeof(int));
+                    dataTable.Columns.Add("Sunrise_Stock_Id", typeof(string));
+                    dataTable.Columns.Add("Image_URL", typeof(string));
+                    dataTable.Columns.Add("Video_URL", typeof(string));
+                    foreach (var item in model)
+                    {
+                        dataTable.Rows.Add(item.Id, item.Sunrise_Stock_Id, item.Image_URL, item.Video_URL);
+                    }
+                    var result = await _partyService.Insert_Update_Manual_Url_Transfer(dataTable, user_Id ?? 0);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = model.Any(x => x.Id > 0) ? CoreCommonMessage.ManualUrlTransferUpdated : CoreCommonMessage.ManualUrlTransferCreated,
+                        });
+                    }
+                    return BadRequest(ModelState);
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Insert_Update_Manual_Url_Transfer", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
     }
 }

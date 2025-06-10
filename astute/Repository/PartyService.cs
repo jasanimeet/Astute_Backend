@@ -1677,5 +1677,88 @@ namespace astute.Repository
             return ("error", 0);
         }
         #endregion
+
+        #region Manual Url Transfer
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Manual_Url_Transfer(string sunrise_Stock_Id, int user_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("[dbo].[Purchase_Detail_For_Manual_Url_Transfer_Select]", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(sunrise_Stock_Id) ? new SqlParameter("@Sunrise_Stock_Id", sunrise_Stock_Id) : new SqlParameter("@Sunrise_Stock_Id", DBNull.Value));
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Manual_Url_Transfer(string sunrise_Stock_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("[dbo].[Purchase_Detail_Unavailable_For_Manual_Url_Transfer_Select]", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(sunrise_Stock_Id) ? new SqlParameter("@Sunrise_Stock_Id", sunrise_Stock_Id) : new SqlParameter("@Sunrise_Stock_Id", DBNull.Value));
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public async Task<int> Insert_Update_Manual_Url_Transfer(DataTable dataTable, int user_Id)
+        {
+            var _manual_Url_Transfer_Table_Type = new SqlParameter("@Manual_Url_Transfer_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Manual_Url_Transfer_Table_Type",
+                Value = dataTable
+            };
+
+            var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC [dbo].[Manual_Url_Transfer_Insert_Update] @Manual_Url_Transfer_Table_Type, @User_Id",
+                        _manual_Url_Transfer_Table_Type, _user_Id));
+
+            return result;
+        }
+        #endregion
     }
 }

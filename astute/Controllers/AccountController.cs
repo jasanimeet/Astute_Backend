@@ -2043,6 +2043,47 @@ namespace astute.Controllers
                 });
             }
         }
+        [HttpDelete]
+        [Route("delete_cashbook_account_trans_detail")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Cashbook_Account_Trans_Detail(int id)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                if ((user_Id ?? 0) > 0)
+                {
+                    var result = await _account_Trans_Master_Service.Delete_Cashbook_Account_Trans(id, user_Id ?? 0);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.CashBookDeleted
+                        });
+                    }
+                    return BadRequest(new
+                    {
+                        statusCode = HttpStatusCode.BadRequest,
+                        message = CoreCommonMessage.ParameterMismatched
+                    });
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Cashbook_Account_Trans_Detail", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }

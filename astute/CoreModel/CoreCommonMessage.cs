@@ -640,5 +640,13 @@
         public static string ProcessMarginMasterDeleted = ProcessMarginMaster + DeletedSuccessfully;
         public static string ProcessMarginMasterAlreadyExist = ProcessMarginMaster + AlreadyExists;
         #endregion
+       
+        #region Manual Url Transfer
+        public static string ManualUrlTransfer = "Manual Url Transfer";
+        public static string ManualUrlTransferCreated = ManualUrlTransfer + AddedSuccessfully;
+        public static string ManualUrlTransferUpdated = ManualUrlTransfer + UpdatedSuccessfully;
+        public static string ManualUrlTransferDeleted = ManualUrlTransfer + DeletedSuccessfully;
+        public static string ManualUrlTransferAlreadyExist = ManualUrlTransfer + AlreadyExists;
+        #endregion
     }
 }
