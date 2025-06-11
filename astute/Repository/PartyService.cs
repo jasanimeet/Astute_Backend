@@ -1773,18 +1773,20 @@ namespace astute.Repository
         #endregion
 
         #region RFID No
-        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_RFID_No(RFID_No_Link_Delink_Model model, int user_Id)
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_RFID_No(DataTable dataTable, int user_Id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
                 using (var command = new SqlCommand("[dbo].[Purchase_Detail_For_RFID_No_Select]", connection))
                 {
+                    var _purchase_Detail_For_RFID_No_Table_Type = new SqlParameter("@Purchase_Detail_For_RFID_No_Table_Type", SqlDbType.Structured)
+                    {
+                        TypeName = "dbo.Purchase_Detail_For_RFID_No_Table_Type",
+                        Value = dataTable
+                    };
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(!string.IsNullOrEmpty(model.Barcode) ? new SqlParameter("@Barcode", model.Barcode) : new SqlParameter("@Barcode", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(model.Sunrise_Stock_Id) ? new SqlParameter("@Sunrise_Stock_Id", model.Sunrise_Stock_Id) : new SqlParameter("@Sunrise_Stock_Id", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(model.Cert_No) ? new SqlParameter("@Cert_No", model.Cert_No) : new SqlParameter("@Cert_No", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(model.RFID_No) ? new SqlParameter("@RFID_No", model.RFID_No) : new SqlParameter("@RFID_No", DBNull.Value));
+                    command.Parameters.Add(_purchase_Detail_For_RFID_No_Table_Type);
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -1808,18 +1810,20 @@ namespace astute.Repository
             }
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_RFID_No(RFID_No_Link_Delink_Model model)
+        public async Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_RFID_No(DataTable dataTable)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
                 using (var command = new SqlCommand("[dbo].[Purchase_Detail_Unavailable_For_RFID_No_Select]", connection))
                 {
+                    var _purchase_Detail_For_RFID_No_Table_Type = new SqlParameter("@Purchase_Detail_For_RFID_No_Table_Type", SqlDbType.Structured)
+                    {
+                        TypeName = "dbo.Purchase_Detail_For_RFID_No_Table_Type",
+                        Value = dataTable
+                    };
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(!string.IsNullOrEmpty(model.Barcode) ? new SqlParameter("@Barcode", model.Barcode) : new SqlParameter("@Barcode", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(model.Sunrise_Stock_Id) ? new SqlParameter("@Sunrise_Stock_Id", model.Sunrise_Stock_Id) : new SqlParameter("@Sunrise_Stock_Id", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(model.Cert_No) ? new SqlParameter("@Cert_No", model.Cert_No) : new SqlParameter("@Cert_No", DBNull.Value));
-                    command.Parameters.Add(!string.IsNullOrEmpty(model.RFID_No) ? new SqlParameter("@RFID_No", model.RFID_No) : new SqlParameter("@RFID_No", DBNull.Value));
+                    command.Parameters.Add(_purchase_Detail_For_RFID_No_Table_Type);
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -1841,6 +1845,22 @@ namespace astute.Repository
                     }
                 }
             }
+            return result;
+        }
+        public async Task<int> Update_Purchase_Detail_RFID_No(DataTable dataTable, int user_Id)
+        {
+            var _purchase_Detail_For_RFID_No_Table_Type = new SqlParameter("@Purchase_Detail_For_RFID_No_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Purchase_Detail_For_RFID_No_Table_Type",
+                Value = dataTable
+            };
+
+            var _user_Id = user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.Database
+                        .ExecuteSqlRawAsync(@"EXEC [dbo].[Purchase_Detail_RFID_No_Update] @Purchase_Detail_For_RFID_No_Table_Type, @User_Id",
+                        _purchase_Detail_For_RFID_No_Table_Type, _user_Id));
+
             return result;
         }
         #endregion

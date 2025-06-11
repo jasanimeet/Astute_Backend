@@ -22520,7 +22520,7 @@ namespace astute.Controllers
         [HttpPost]
         [Route("get_purchase_detail_for_rfid_no")]
         [Authorize]
-        public async Task<IActionResult> Get_Purchase_Detail_For_RFId_No(RFID_No_Link_Delink_Model model)
+        public async Task<IActionResult> Get_Purchase_Detail_For_RFId_No(IList<RFID_No_Link_Delink_Model> model)
         {
             try
             {
@@ -22529,9 +22529,19 @@ namespace astute.Controllers
 
                 if ((user_Id ?? 0) > 0)
                 {
-                    var data = await _partyService.Get_Purchase_Detail_For_RFID_No(model, user_Id ?? 0);
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Barcode_Id", typeof(int));
+                    dataTable.Columns.Add("Sunrise_Stock_Id", typeof(string));
+                    dataTable.Columns.Add("Cert_No", typeof(string));
+                    dataTable.Columns.Add("RFID_No", typeof(string));
+                    foreach (var item in model)
+                    {
+                        dataTable.Rows.Add(item.Barcode_Id, item.Sunrise_Stock_Id, item.Cert_No, item.RFID_No);
+                    }
 
-                    var unavailable_message = await _partyService.Get_Unavailable_Purchase_Detail_For_RFID_No(model);
+                    var data = await _partyService.Get_Purchase_Detail_For_RFID_No(dataTable, user_Id ?? 0);
+
+                    var unavailable_message = await _partyService.Get_Unavailable_Purchase_Detail_For_RFID_No(dataTable);
 
                     return Ok(new
                     {
@@ -22556,7 +22566,53 @@ namespace astute.Controllers
                 });
             }
         }
+        [HttpPost]
+        [Route("update_purchase_detail_rfid_no")]
+        [Authorize]
+        public async Task<IActionResult> Update_Purchase_Detail_RFId_No(IList<RFID_No_Link_Delink_Model> model)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
+                if ((user_Id ?? 0) > 0)
+                {
+                    DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Barcode_Id", typeof(int));
+                    dataTable.Columns.Add("Sunrise_Stock_Id", typeof(string));
+                    dataTable.Columns.Add("Cert_No", typeof(string));
+                    dataTable.Columns.Add("RFID_No", typeof(string));
+                    foreach (var item in model)
+                    {
+                        dataTable.Rows.Add(item.Barcode_Id, item.Sunrise_Stock_Id, item.Cert_No, item.RFID_No);
+                    }
+                    var result = await _partyService.Update_Purchase_Detail_RFID_No(dataTable, user_Id ?? 0);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.RFIDSuccessMessage,
+                        });
+                    }
+                    return BadRequest(ModelState);
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Update_Purchase_Detail_RFId_No", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }

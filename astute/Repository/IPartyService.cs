@@ -174,8 +174,9 @@ namespace astute.Repository
         #endregion
 
         #region RFID No
-        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_RFID_No(RFID_No_Link_Delink_Model model, int user_Id);
-        Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_RFID_No(RFID_No_Link_Delink_Model model);
+        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_RFID_No(DataTable dataTable, int user_Id);
+        Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_RFID_No(DataTable dataTable);
+        Task<int> Update_Purchase_Detail_RFID_No(DataTable dataTable, int user_Id);
         #endregion
     }
 }
