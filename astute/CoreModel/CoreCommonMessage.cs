@@ -581,6 +581,7 @@
         public static string Purchase_Shipment_Receive_Updated = Purchase + Shipment_Receive + UpdatedSuccessfully;
         public static string QCSuccessMessage = Purchase + " stones QC" + UpdatedSuccessfully;
         public static string RFIDSuccessMessage = Purchase + " stones RFID No" + UpdatedSuccessfully;
+        public static string Purchase_Cannot_Deleted = "Further Transaction exists cannot delete purchase.";
         #endregion
 
         #region Purchase Pricing
@@ -641,7 +642,7 @@
         public static string ProcessMarginMasterDeleted = ProcessMarginMaster + DeletedSuccessfully;
         public static string ProcessMarginMasterAlreadyExist = ProcessMarginMaster + AlreadyExists;
         #endregion
-       
+
         #region Manual Url Transfer
         public static string ManualUrlTransfer = "Manual Url Transfer";
         public static string ManualUrlTransferCreated = ManualUrlTransfer + AddedSuccessfully;

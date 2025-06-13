@@ -4292,18 +4292,28 @@ namespace astute.Repository
             return result.Count > 0 ? result : null;
         }
 
-        public async Task<int> Delete_Purchase(int Trans_Id, int User_Id)
+        public async Task<(int, bool)> Delete_Purchase(int Trans_Id, int User_Id)
         {
             var trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
 
             var user_Id = new SqlParameter("@User_Id", User_Id);
 
-            var result = await _dbContext.Database
-                                .ExecuteSqlRawAsync("EXEC Purchase_Delete @Trans_Id, @User_Id", trans_Id, user_Id);
+            var is_Exists = new SqlParameter("@Is_Exists", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
 
-            return result;
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Purchase_Delete @Trans_Id, @User_Id, @Is_Exists OUT", trans_Id, user_Id, is_Exists));
+
+            var _is_Exist = (bool)is_Exists.Value;
+
+            if (_is_Exist)
+                return (409, _is_Exist);
+
+            return (result, _is_Exist);
         }
-
+        
         public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Status_Summary(string Stock_Id)
         {
             var result = new List<Dictionary<string, object>>();
@@ -6068,7 +6078,7 @@ namespace astute.Repository
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value));
-                 
+
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())

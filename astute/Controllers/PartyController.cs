@@ -15508,23 +15508,37 @@ namespace astute.Controllers
         {
             try
             {
-                if (Trans_Id > 0)
+                if (Trans_Id <= 0)
                 {
-                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
-                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-
-                    var result = await _supplierService.Delete_Purchase(Trans_Id, user_Id ?? 0);
-
-                    if (result > 0)
+                    return BadRequest(new
                     {
-                        return Ok(new
-                        {
-
-                            statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.Purchase_Deleted
-                        });
-                    }
+                        statusCode = HttpStatusCode.BadRequest,
+                        message = CoreCommonMessage.ParameterMismatched
+                    });
                 }
+
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var (result, isExist) = await _supplierService.Delete_Purchase(Trans_Id, user_Id ?? 0);
+
+                if (result == 409 && isExist)
+                {
+                    return Conflict(new
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        message = CoreCommonMessage.Purchase_Cannot_Deleted
+                    });
+                }
+                else if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.Purchase_Deleted
+                    });
+                }
+
                 return BadRequest(new
                 {
                     statusCode = HttpStatusCode.BadRequest,
