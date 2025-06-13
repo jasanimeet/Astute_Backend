@@ -1646,7 +1646,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("getprocessbytype")]
         [Authorize]
