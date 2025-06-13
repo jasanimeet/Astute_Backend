@@ -41,7 +41,8 @@ namespace astute.Controllers
                     {
                         StatusCode = HttpStatusCode.OK,
                         message = CoreCommonMessage.DataSuccessfullyFound,
-                        data = result
+                        date = DateTime.Now.ToString("dd-MM-yyyy"),
+                        data = result,
                     });
                 }
                 return NoContent();
