@@ -10,5 +10,6 @@
         public bool? IsFortune { get; set; }
         public string? NewImageUrl { get; set; }
         public string? NewVideoUrl { get; set; }
+        public string? NewCertificateUrl { get; set; }
     }
 }
