@@ -4951,9 +4951,11 @@ namespace astute.Repository
             var Image_Status = new SqlParameter("@Image_Status", purchase_Media_Upload_Model.Image_Status ?? (object)DBNull.Value);
             var Video_Status = new SqlParameter("@Video_Status", purchase_Media_Upload_Model.Video_Status ?? (object)DBNull.Value);
             var Certificate_Status = new SqlParameter("@Certificate_Status", purchase_Media_Upload_Model.Certificate_Status ?? (object)DBNull.Value);
-
+            var A_Image = new SqlParameter("@A_Image", purchase_Media_Upload_Model.NewImageUrl ?? (object)DBNull.Value);
+            var A_Video = new SqlParameter("@A_Video", purchase_Media_Upload_Model.NewVideoUrl ?? (object)DBNull.Value);
+            var A_Cert_Link = new SqlParameter("@A_Cert_Link", purchase_Media_Upload_Model.NewCertificateUrl ?? (object)DBNull.Value);
             var result = await _dbContext.Database
-                                .ExecuteSqlRawAsync("EXEC Purchase_Media_Upload_Update @Id, @Image_Status, @Video_Status, @Certificate_Status", Id, Image_Status, Video_Status, Certificate_Status);
+                                .ExecuteSqlRawAsync("EXEC Purchase_Media_Upload_Update @Id, @Image_Status, @Video_Status, @Certificate_Status, @A_Image, @A_Video, @A_Cert_Link", Id, Image_Status, Video_Status, Certificate_Status, A_Image, A_Video, A_Cert_Link);
 
             return result;
         }
