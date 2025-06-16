@@ -198,6 +198,7 @@ namespace astute.Repository
         Task<int> Update_Purchase_Media_Upload(Purchase_Media_Upload_Model purchase_Media_Upload_Model);
         Task<int> Update_Purchase_Shipment_Receive(string Trans_Id);
         Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Qc(int Trans_Id, string Doc_Type);
+        Task<List<Dictionary<string, object>>> Get_Purchase_Manual_Media_Upload(Purchase_Media_Upload_Search_Model purchase_Media_Upload_Search_Model, DataTable dt);
         #endregion
 
         #region Purchase QC Approval

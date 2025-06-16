@@ -4944,7 +4944,7 @@ namespace astute.Repository
             }
             return result;
         }
-
+        
         public async Task<int> Update_Purchase_Media_Upload(Purchase_Media_Upload_Model purchase_Media_Upload_Model)
         {
             var Id = new SqlParameter("@Id", purchase_Media_Upload_Model.Id ?? (object)DBNull.Value);
@@ -5004,6 +5004,65 @@ namespace astute.Repository
             }
             return result;
         }
+
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Manual_Media_Upload(Purchase_Media_Upload_Search_Model purchase_Media_Upload_Search_Model, DataTable dt)
+        {
+            var result = new List<Dictionary<string, object>>();
+
+            if (dt != null)
+            {
+                using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+                {
+                    using (var command = new SqlCommand("Purchase_Manual_Media_Upload_Select", connection))
+                    {
+                        DataTable dataTable = new DataTable();
+                        dataTable.Columns.Add("Sunrise_Stock_Id", typeof(string));
+
+                        foreach (DataRow item in dt.Rows)
+                        {
+                            dataTable.Rows.Add(item["REF_NO"]);
+                        }
+
+                        var parameter = new SqlParameter("@Media_Inward_Table_Type", SqlDbType.Structured)
+                        {
+                            TypeName = "[dbo].[Media_Inward_Table_Type]",
+                            Value = dataTable
+                        };
+
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.Add(!string.IsNullOrEmpty(purchase_Media_Upload_Search_Model.From_Date) ? new SqlParameter("@From_Date", purchase_Media_Upload_Search_Model.From_Date) : new SqlParameter("@From_Date", DBNull.Value));
+                        command.Parameters.Add(!string.IsNullOrEmpty(purchase_Media_Upload_Search_Model.To_Date) ? new SqlParameter("@To_Date", purchase_Media_Upload_Search_Model.To_Date) : new SqlParameter("@To_Date", DBNull.Value));
+                        command.Parameters.Add(!string.IsNullOrEmpty(purchase_Media_Upload_Search_Model.Image_Status.ToString()) ? new SqlParameter("@Image_Status", purchase_Media_Upload_Search_Model.Image_Status) : new SqlParameter("@Image_Status", DBNull.Value));
+                        command.Parameters.Add(!string.IsNullOrEmpty(purchase_Media_Upload_Search_Model.Video_Status.ToString()) ? new SqlParameter("@Video_Status", purchase_Media_Upload_Search_Model.Video_Status) : new SqlParameter("@Video_Status", DBNull.Value));
+                        command.Parameters.Add(!string.IsNullOrEmpty(purchase_Media_Upload_Search_Model.Certificate_Status.ToString()) ? new SqlParameter("@Certificate_Status", purchase_Media_Upload_Search_Model.Certificate_Status) : new SqlParameter("@Certificate_Status", DBNull.Value));
+                        command.Parameters.Add(purchase_Media_Upload_Search_Model.PreSold != null ? new SqlParameter("@PreSold", purchase_Media_Upload_Search_Model.PreSold) : new SqlParameter("@PreSold", DBNull.Value));
+                        command.Parameters.Add(parameter);
+
+                        await connection.OpenAsync();
+
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var dict = new Dictionary<string, object>();
+
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
+                                    var columnName = reader.GetName(i);
+                                    var columnValue = reader.GetValue(i);
+
+                                    dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                                }
+
+                                result.Add(dict);
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
         #endregion
 
         #region Purchase QC Approval
