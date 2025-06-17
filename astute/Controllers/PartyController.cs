@@ -16849,6 +16849,38 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("get_purchase_manual_media_upload")]
+        public async Task<IActionResult> Get_Purchase_Manual_Media_Upload(Purchase_Media_Upload_Search_Model purchase_Media_Upload_Search_Model)
+        {
+            try
+            {
+                DataTable dt = await _oracleService.Get_Media_Inward();
+                var result = await _supplierService.Get_Purchase_Manual_Media_Upload(purchase_Media_Upload_Search_Model, dt);
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Manual_Media_Upload", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Purchase QC Approval
