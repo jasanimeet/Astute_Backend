@@ -207,6 +207,7 @@ namespace astute.Repository
         Task<int> Purchase_QC_Reply_Status_Update(DataTable dataTable, int User_Id);
         Task<int> Purchase_Detail_QC_Complete_Update(DataTable dataTable, int Trans_Id, int User_Id);
         Task<int> Purchase_Detail_QC_Close_Update(int Trans_Id, int User_Id);
+        Task<List<Dictionary<string, object>>> Purchase_Detail_QC_Pending();
         #endregion
 
         #region Transaction

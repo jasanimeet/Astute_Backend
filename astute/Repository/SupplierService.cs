@@ -5135,6 +5135,45 @@ namespace astute.Repository
             return result;
         }
 
+        public async Task<List<Dictionary<string, object>>> Purchase_Detail_QC_Pending()
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Purchase_Detail_QC_Pending", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    await connection.OpenAsync();
+
+                    using var da = new SqlDataAdapter();
+                    da.SelectCommand = command;
+
+                    using var ds = new DataSet();
+                    da.Fill(ds);
+
+                    var dataTable = ds.Tables[ds.Tables.Count - 1];
+
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        var dict = new Dictionary<string, object>();
+                        foreach (DataColumn col in dataTable.Columns)
+                        {
+                            if (row[col] == DBNull.Value)
+                            {
+                                dict[col.ColumnName] = "Blank";
+                            }
+                            else
+                            {
+                                dict[col.ColumnName] = row[col];
+                            }
+                        }
+                        result.Add(dict);
+                    }
+                }
+            }
+            return result;
+        }
         #endregion
 
         #region Transaction

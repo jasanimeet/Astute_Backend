@@ -17196,6 +17196,61 @@ namespace astute.Controllers
             }
         }
 
+        /*
+         * Date: 2025/06/17 By Jashmin Patel
+         * Aded for sending mail daily for reminder qc received but not completed.
+         */
+        [HttpGet]
+        [Route("purchase_detail_qc_pending_mail")]
+        public async Task<IActionResult> Purchase_Detail_QC_Pending_Mail()
+        {
+            try
+            {
+                var result = await _supplierService.Purchase_Detail_QC_Pending();
+
+                if (result != null && result.Count > 0)
+                {
+                    List<string> to_Emails = new List<string>() { "list@sunrisediam.com", "ujjval@sunrisediam.com" };
+
+                    string subject = "Action Required: Review of QC Remarks Responses Pending";
+
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine(@"Hi," + "<br/>");
+                    sb.AppendLine($"Below Trans id's QC Remarks Responses Pending Till Date" + "<br/>" + "<br/>");
+
+                    sb.AppendLine(@"<table border='1' cellspacing='2' cellpadding='3'>");
+                    sb.AppendLine(@"<thead><tr><td>Trans Id</td><td>Supplier</td></tr></thead>");
+                    sb.AppendLine(@"<tbody>");
+
+                    foreach (var item in result)
+                    {
+                        sb.AppendLine($"<tr><td>{item["Trans_Id"]}</td><td>{item["Supplier"]}</td></tr>");
+                    }
+                    sb.AppendLine(@"</tbody>");
+                    sb.AppendLine(@"</table>");
+
+                    foreach (var to_Email in to_Emails)
+                    {
+                        _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
+                    }
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Purchase_Detail_QC_Pending_Mail", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Transaction
