@@ -6,5 +6,6 @@
         public string? Certificate_No { get; set; }
         public string? Trans_Date { get; set; }
         public int? Customer_Id { get; set; }
+        public int? Assist_Person_Id { get; set; }
     }
 }

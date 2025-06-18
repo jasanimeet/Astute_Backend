@@ -4313,7 +4313,7 @@ namespace astute.Repository
 
             return (result, _is_Exist);
         }
-        
+
         public async Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Status_Summary(string Stock_Id)
         {
             var result = new List<Dictionary<string, object>>();
@@ -4944,7 +4944,7 @@ namespace astute.Repository
             }
             return result;
         }
-        
+
         public async Task<int> Update_Purchase_Media_Upload(Purchase_Media_Upload_Model purchase_Media_Upload_Model)
         {
             var Id = new SqlParameter("@Id", purchase_Media_Upload_Model.Id ?? (object)DBNull.Value);
@@ -5664,6 +5664,7 @@ namespace astute.Repository
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Certificate_No) ? new SqlParameter("@Certificate_No", purchase_Detail_For_Purchase_Return.Certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(purchase_Detail_For_Purchase_Return.Assist_Person_Id > 0 ? new SqlParameter("@Assist_Person_Id", purchase_Detail_For_Purchase_Return.Assist_Person_Id) : new SqlParameter("@Assist_Person_Id", DBNull.Value));
 
                     await connection.OpenAsync();
 
@@ -5848,6 +5849,7 @@ namespace astute.Repository
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Certificate_No) ? new SqlParameter("@Certificate_No", purchase_Detail_For_Purchase_Return.Certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(purchase_Detail_For_Purchase_Return.Assist_Person_Id > 0 ? new SqlParameter("@Assist_Person_Id", purchase_Detail_For_Purchase_Return.Assist_Person_Id) : new SqlParameter("@Assist_Person_Id", DBNull.Value));
 
                     await connection.OpenAsync();
 
@@ -6032,6 +6034,7 @@ namespace astute.Repository
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Certificate_No) ? new SqlParameter("@Certificate_No", purchase_Detail_For_Purchase_Return.Certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(purchase_Detail_For_Purchase_Return.Assist_Person_Id > 0 ? new SqlParameter("@Assist_Person_Id", purchase_Detail_For_Purchase_Return.Assist_Person_Id) : new SqlParameter("@Assist_Person_Id", DBNull.Value));
 
                     await connection.OpenAsync();
 
