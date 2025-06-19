@@ -32,6 +32,8 @@ namespace astute.Models
         public string? Sunrise_Grade { get; set; }
         [JsonProperty("Is Repriced")]
         public bool? Is_Repriced { get; set; }
+        [JsonProperty("Is Offer")]
+        public bool? Is_Offer { get; set; }
     }
     public class Purchase_Pricing_With_Grade_List
     {

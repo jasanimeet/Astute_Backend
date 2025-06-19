@@ -16503,6 +16503,7 @@ namespace astute.Controllers
                 dataTable.Columns.Add("Final_Amt", typeof(float));
                 dataTable.Columns.Add("Sunrise_Grade", typeof(string));
                 dataTable.Columns.Add("Is_Repriced", typeof(bool));
+                dataTable.Columns.Add("Is_Offer", typeof(bool));
 
                 foreach (var item in purchase_Detail_Pricing_List)
                 {
@@ -16511,7 +16512,8 @@ namespace astute.Controllers
                         SafeConvertToDouble(item.Final_Disc.ToString()),
                         SafeConvertToDouble(item.Final_Value.ToString()),
                         item.Sunrise_Grade.ToString(),
-                        item.Is_Repriced
+                        item.Is_Repriced,
+                        item.Is_Offer
                     );
                 }
 
