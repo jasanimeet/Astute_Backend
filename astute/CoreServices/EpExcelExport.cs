@@ -14069,7 +14069,7 @@ namespace astute.CoreServices
                             if (finalColumnIndex > 0 && rapColumnIndex > 0)
                             {
                                 worksheet.Cells[1, kkk].Formula =
-                                                                    "=IFERROR(ROUND((100-(SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + inStartIndex +
+                                                                    "=IFERROR(ROUND((-100+(SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + inStartIndex +
                                                                     ":" + GetExcelColumnLetter(finalColumnIndex) + (inwrkrow - 1) +
                                                                     ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + inStartIndex +
                                                                     ":" + GetExcelColumnLetter(rapColumnIndex) + (inwrkrow - 1) +
@@ -14348,7 +14348,7 @@ namespace astute.CoreServices
                             if (finalColumnIndex > 0 && rapColumnIndex > 0)
                             {
                                 worksheet.Cells[1, kkk].Formula =
-                                                                    "=IFERROR(ROUND((100-(SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + inStartIndex +
+                                                                    "=IFERROR(ROUND((-100+(SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + inStartIndex +
                                                                     ":" + GetExcelColumnLetter(finalColumnIndex) + (inwrkrow - 1) +
                                                                     ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + inStartIndex +
                                                                     ":" + GetExcelColumnLetter(rapColumnIndex) + (inwrkrow - 1) +
