@@ -13975,7 +13975,7 @@ namespace astute.CoreServices
 
                                     if (FinalColumnIndex > 0 && RapColumnIndex > 0)
                                     {
-                                        worksheet.Cells[inwrkrow, pkk].Formula = "IFERROR(((100 - " + GetExcelColumnLetter(FinalColumnIndex) + i + ") * " + GetExcelColumnLetter(RapColumnIndex) + i + ")/100,0)";
+                                        worksheet.Cells[inwrkrow, pkk].Formula = "IFERROR(((100 + " + GetExcelColumnLetter(FinalColumnIndex) + i + ") * " + GetExcelColumnLetter(RapColumnIndex) + i + ")/100,0)";
                                         worksheet.Cells[inwrkrow, pkk].Style.Numberformat.Format = "#,##0.00";
                                     }
 
@@ -14254,7 +14254,7 @@ namespace astute.CoreServices
 
                                     if (FinalColumnIndex > 0 && RapColumnIndex > 0)
                                     {
-                                        worksheet.Cells[inwrkrow, pkk].Formula = "IFERROR(((100 - " + GetExcelColumnLetter(FinalColumnIndex) + i + ") * " + GetExcelColumnLetter(RapColumnIndex) + i + ")/100,0)";
+                                        worksheet.Cells[inwrkrow, pkk].Formula = "IFERROR(((100 + " + GetExcelColumnLetter(FinalColumnIndex) + i + ") * " + GetExcelColumnLetter(RapColumnIndex) + i + ")/100,0)";
                                         worksheet.Cells[inwrkrow, pkk].Style.Numberformat.Format = "#,##0.00";
                                     }
 
