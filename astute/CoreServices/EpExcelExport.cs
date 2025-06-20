@@ -14069,11 +14069,11 @@ namespace astute.CoreServices
                             if (finalColumnIndex > 0 && rapColumnIndex > 0)
                             {
                                 worksheet.Cells[1, kkk].Formula =
-                                                                    "=IFERROR(ROUND((-100+(SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + inStartIndex +
-                                                                    ":" + GetExcelColumnLetter(finalColumnIndex) + (inwrkrow - 1) +
-                                                                    ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + inStartIndex +
-                                                                    ":" + GetExcelColumnLetter(rapColumnIndex) + (inwrkrow - 1) +
-                                                                    ")) * 100), 2), 0.00)";
+                                                                        "=IFERROR(ROUND(((SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + inStartIndex +
+                                                                        ":" + GetExcelColumnLetter(finalColumnIndex) + (inwrkrow - 1) +
+                                                                        ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + inStartIndex +
+                                                                        ":" + GetExcelColumnLetter(rapColumnIndex) + (inwrkrow - 1) +
+                                                                        ")) * 100)-100, 2), 0.00)";
 
                                 worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                 worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
@@ -14348,11 +14348,11 @@ namespace astute.CoreServices
                             if (finalColumnIndex > 0 && rapColumnIndex > 0)
                             {
                                 worksheet.Cells[1, kkk].Formula =
-                                                                    "=IFERROR(ROUND((-100+(SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + inStartIndex +
+                                                                    "=IFERROR(ROUND(((SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + inStartIndex +
                                                                     ":" + GetExcelColumnLetter(finalColumnIndex) + (inwrkrow - 1) +
                                                                     ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + inStartIndex +
                                                                     ":" + GetExcelColumnLetter(rapColumnIndex) + (inwrkrow - 1) +
-                                                                    ")) * 100), 2), 0.00)";
+                                                                    ")) * 100)-100, 2), 0.00)";
 
                                 worksheet.Cells[1, kkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                 worksheet.Cells[1, kkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
