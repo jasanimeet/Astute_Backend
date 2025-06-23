@@ -217,6 +217,7 @@ namespace astute.Repository
         Task<(int, bool)> Insert_Update_Transaction(DataTable masterDataTable, DataTable detailDataTable, DataTable termsDataTable, DataTable expensesDataTable, DataTable detailLooseDataTable, int user_Id);
         Task<int> Delete_Transaction(int Trans_Id, int User_Id);
         Task<DataTable> Get_Transaction_Excel(int Trans_Id);
+        Task<int> Transaction_Auto_Release_Insert_Update();
         #endregion
 
         #region Purchase Return

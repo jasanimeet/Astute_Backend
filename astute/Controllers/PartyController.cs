@@ -3530,8 +3530,9 @@ namespace astute.Controllers
 
                 if (result != null && result.Count > 0)
                 {
-                    List<string> to_Emails = new List<string>() { "list@sunrisediam.com", "tejash@brainwaves.co.in", "samit@sunrisediam.com" };
-                    //string to_Email = "list@sunrisediam.com";
+                    List<string> to_Emails = new List<string>() { "samit@sunrisediam.com" };
+                    List<string> cc_Emails = new List<string>() { "list@sunrisediam.com" };
+                    List<string> bcc_Emails = new List<string>() { "tejash@brainwaves.co.in" };
 
                     string subject = "Alert - Stock No is going to expire";
 
@@ -3550,10 +3551,8 @@ namespace astute.Controllers
                     sb.AppendLine(@"</tbody>");
                     sb.AppendLine(@"</table>");
 
-                    foreach (var to_Email in to_Emails)
-                    {
-                        _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
-                    }
+                    _emailSender.SendEmail(toEmails: to_Emails, subject: subject, body: sb.ToString(), ccEmails: cc_Emails, bccEmails: bcc_Emails);
+
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
@@ -17244,7 +17243,8 @@ namespace astute.Controllers
 
                 if (result != null && result.Count > 0)
                 {
-                    List<string> to_Emails = new List<string>() { "list@sunrisediam.com", "ujjval@sunrisediam.com" };
+                    List<string> to_Emails = new List<string>() { "ujjval@sunrisediam.com" };
+                    List<string> cc_Emails = new List<string>() { "list@sunrisediam.com" };
 
                     string subject = "Action Required: Review of QC Remarks Responses Pending";
 
@@ -17264,10 +17264,8 @@ namespace astute.Controllers
                     sb.AppendLine(@"</tbody>");
                     sb.AppendLine(@"</table>");
 
-                    foreach (var to_Email in to_Emails)
-                    {
-                        _emailSender.SendEmail(toEmail: to_Email, externalLink: "", subject: subject, formFile: null, strBody: sb.ToString());
-                    }
+                    _emailSender.SendEmail(toEmails: to_Emails, subject: subject, body: sb.ToString(), ccEmails: cc_Emails);
+
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
@@ -17728,6 +17726,33 @@ namespace astute.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("transaction_auto_release")]
+        public async Task<IActionResult> Transaction_Auto_Release()
+        {
+            try
+            {
+                var result = await _supplierService.Transaction_Auto_Release_Insert_Update();
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Transaction", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Consignment Return
@@ -18563,6 +18588,50 @@ namespace astute.Controllers
                             statusCode = HttpStatusCode.OK,
                             message = CoreCommonMessage.DataSuccessfullyFound,
                             total_Records = totalRecordr,
+                            data = result
+                        });
+                    }
+                    return NoContent();
+                }
+
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Notification_Menu", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        /*
+         * Date: 2025/06/23 By Jashmin Patel
+         * Aded for notification of new qc reply pending - with counts
+         * qc remarks should have, presold stone(company name require), and selection/rejection not entered such stones should sent notification to assist by
+         * Pricing notification
+         */
+        [HttpGet]
+        [Route("get_notification_menu_qc_reply_pending")]
+        public async Task<IActionResult> Get_Notification_Menu_QC_Reply_Pending()
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                if (user_Id > 0)
+                {
+                    var result = await _partyService.Get_Notification_Menu_QC_Reply_Pending(user_Id ?? 0);
+                    if (result != null && result.Count > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
                             data = result
                         });
                     }

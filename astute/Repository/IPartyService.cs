@@ -127,6 +127,7 @@ namespace astute.Repository
         Task<(List<Dictionary<string, object>>, string)> Get_Notification(int? User_Id);
         Task<int> Notification_Master_Update_Read_By(int? Notification_Id, bool? Is_Read, int? User_Id);
         Task<(List<Dictionary<string, object>>, string)> Get_Notification_Menu(int? User_Id);
+        Task<List<Dictionary<string, object>>> Get_Notification_Menu_QC_Reply_Pending(int? User_Id);
         Task<List<Dictionary<string, object>>> Get_Notification_Menu_Select(int? User_Id);
         Task<int> Set_Notification_Menu(DataTable dataTable);
         Task<IList<Supplier_Price_List>> Get_Supplier_Price_List();

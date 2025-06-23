@@ -1,8 +1,10 @@
 ﻿using astute.CoreServices;
 using astute.Models;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -128,6 +130,63 @@ namespace astute.Repository
                 smptClient.UseDefaultCredentials = false;
                 smptClient.Credentials = new NetworkCredential(fromEmail, authPassword);
                 smptClient.Port = smtpPort;
+                smptClient.Send(mailMessage);
+            }
+        }
+        public void SendEmail(List<string> toEmails, string subject, string body, List<string> ccEmails = null, List<string> bccEmails = null, List<IFormFile> formFiles = null)
+        {
+            MailMessage mailMessage = new MailMessage();
+            mailMessage.From = new MailAddress(_configuration["EmailSetting:FromEmail"]);
+            foreach (string to in toEmails)
+            {
+                if (to != null && to.Length > 0)
+                {
+                    mailMessage.To.Add(to);
+                }
+            }
+            if (ccEmails != null && ccEmails.Count > 0)
+            {
+                foreach (string ccEmail in ccEmails)
+                {
+                    if (ccEmail != null && ccEmail.Length > 0)
+                    {
+                        mailMessage.CC.Add(ccEmail);
+                    }
+                }
+            }
+            if (bccEmails != null && bccEmails.Count > 0)
+            {
+                foreach (string bccEmail in bccEmails)
+                {
+                    if (bccEmail != null && bccEmail.Length > 0)
+                    {
+                        mailMessage.Bcc.Add(bccEmail);
+                    }
+                }
+            }
+            mailMessage.Subject = subject;
+            mailMessage.Body = body;
+            if (formFiles != null && formFiles.Count > 0)
+            {
+                foreach (IFormFile formFile in formFiles)
+                {
+                    if (formFile != null && formFile.Length > 0)
+                    {
+                        string fileName = Path.GetFileName(formFile.FileName);
+                        mailMessage.Attachments.Add(new Attachment(formFile.OpenReadStream(), fileName));
+                    }
+                }
+            }
+
+            mailMessage.IsBodyHtml = true;
+
+            using (SmtpClient smptClient = new SmtpClient())
+            {
+                smptClient.Host = _configuration["EmailSetting:SmtpHost"];
+                smptClient.EnableSsl = true;
+                smptClient.UseDefaultCredentials = false;
+                smptClient.Credentials = new NetworkCredential(_configuration["EmailSetting:FromEmail"], _configuration["EmailSetting:FromPassword"]);
+                smptClient.Port = Convert.ToInt32(_configuration["EmailSetting:SmtpPort"]);
                 smptClient.Send(mailMessage);
             }
         }

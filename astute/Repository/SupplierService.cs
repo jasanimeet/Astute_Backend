@@ -5423,6 +5423,16 @@ namespace astute.Repository
             }
             return dataTable;
         }
+
+        public async Task<int> Transaction_Auto_Release_Insert_Update()
+        {
+            var _user_Id = new SqlParameter("@User_Id", 73);
+
+            var result = await _dbContext.Database
+                                .ExecuteSqlRawAsync("EXEC [dbo].[Transaction_Auto_Release_Insert_Update] @User_Id", _user_Id);
+
+            return result;
+        }
         #endregion
 
         #region Purchase Return
