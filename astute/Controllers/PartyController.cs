@@ -18236,6 +18236,43 @@ namespace astute.Controllers
 
         #endregion
 
+        #region Sales Customer DropDown
+
+        [HttpGet]
+        [Route("get_transaction_sales_customer_dropdown")]
+        [Authorize]
+        public async Task<IActionResult> Get_Transaction_Sales_Customer_DropDown()
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Get_Transaction_Sales_Customer_DropDown(user_Id ?? 0);
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Transaction_Sales_Customer_DropDown", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
         #region Lab User Activity
 
         [HttpGet]
