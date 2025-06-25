@@ -18273,6 +18273,40 @@ namespace astute.Controllers
 
         #endregion
 
+        #region Sales Invoice DropDown
+
+        [HttpGet]
+        [Route("get_transaction_sales_invoice_dropdown")]
+        [Authorize]
+        public async Task<IActionResult> Get_Transaction_Sales_Invoice_DropDown(int Customer_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Transaction_Sales_Invoice_DropDown(Customer_Id);
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Transaction_Sales_Invoice_DropDown", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
         #region Lab User Activity
 
         [HttpGet]

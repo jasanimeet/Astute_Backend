@@ -291,6 +291,10 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Transaction_Sales_Customer_DropDown(int? User_Id);
         #endregion
 
+        #region Sales Invoice DropDown
+        Task<List<Dictionary<string, object>>> Get_Transaction_Sales_Invoice_DropDown(int Customer_Id);
+        #endregion
+
         #region Party Url Format
         Task<IList<Party_Url_Format>> Get_Party_Url_Format(int Id);
         Task<int> Create_Update_Party_Url_Format(DataTable dataTable);
