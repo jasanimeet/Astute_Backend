@@ -17538,7 +17538,11 @@ namespace astute.Controllers
                 new DataColumn("Entry_Type", typeof(string)),
                 new DataColumn("Release_Days", typeof(float)),
                 new DataColumn("Release_Hours", typeof(float)),
-                new DataColumn("Platform", typeof(string))
+                new DataColumn("Platform", typeof(string)),
+                new DataColumn("Country_Of_Origin", typeof(int)),
+                new DataColumn("Is_Consignment_Auto_Receive", typeof(bool)),
+                new DataColumn("Pre_Carrige_By", typeof(string)),
+                new DataColumn("Sales_Invoice_No", typeof(string))
             });
 
             table.Rows.Add(
@@ -17563,7 +17567,11 @@ namespace astute.Controllers
                 m.Entry_Type ?? (object)DBNull.Value,
                 m.Release_Days ?? (object)DBNull.Value,
                 m.Release_Hours ?? (object)DBNull.Value,
-                m.Platform ?? (object)DBNull.Value
+                m.Platform ?? (object)DBNull.Value,
+                m.Country_Of_Origin ?? (object)DBNull.Value,
+                m.Is_Consignment_Auto_Receive ?? (object)DBNull.Value,
+                m.Pre_Carrige_By ?? (object)DBNull.Value,
+                m.Sales_Invoice_No ?? (object)DBNull.Value
             );
             return table;
         }
