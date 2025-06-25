@@ -17746,7 +17746,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Transaction", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Transaction_Auto_Release", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
