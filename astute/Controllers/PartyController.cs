@@ -18164,6 +18164,42 @@ namespace astute.Controllers
 
         #endregion
 
+        #region Sales
+
+        [HttpPost]
+        [Route("get_purchase_detail_for_sales")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Detail_For_Sales(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Get_Purchase_Detail_For_Sales(purchase_Detail_For_Purchase_Return);
+
+                var result_Message = await _supplierService.Get_Unavailable_Purchase_Detail_For_Sales(purchase_Detail_For_Purchase_Return);
+
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    message = CoreCommonMessage.DataSuccessfullyFound,
+                    unavailable_message = result_Message,
+                    data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail_For_Sales", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
         #region Lab User Activity
 
         [HttpGet]
