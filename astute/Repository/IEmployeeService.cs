@@ -65,6 +65,10 @@ namespace astute.Repository
         #region Employee Secretary
         Task<int> Insert_Update_Delete_Employee_Secretary(DataTable dataTable);
         #endregion
+
+        #region Employee Master User Type
         Task<IList<DropdownModel>> Get_Employee_Master_By_User_Type(string user_Type);
+        Task<List<Dictionary<string, object>>> Get_Employees_By_User_Type(string? User_Type);
+        #endregion
     }
 }

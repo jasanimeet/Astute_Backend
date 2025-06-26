@@ -1297,6 +1297,7 @@ namespace astute.Controllers
         }
         #endregion
 
+        #region Employee Master User Type
         [HttpGet]
         [Route("getemployeesbyusertype")]
         [Authorize]
@@ -1326,6 +1327,38 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("get_employees_by_user_type")]
+        [Authorize]
+        public async Task<IActionResult> Get_Employees_By_User_Type(string? User_Type)
+        {
+            try
+            {
+                var employees = await _employeeService.Get_Employees_By_User_Type(User_Type);
+
+                if (employees != null && employees.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = employees
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Employees_By_User_Type", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
         #endregion
     }
 }

@@ -728,6 +728,7 @@ namespace astute.Repository
         }
         #endregion
 
+        #region Employee Master User Type
         public async Task<IList<DropdownModel>> Get_Employee_Master_By_User_Type(string user_Type)
         {
             var _user_Type = !string.IsNullOrEmpty(user_Type) ? new SqlParameter("@User_Type", user_Type) : new SqlParameter("@User_Type", DBNull.Value);
@@ -737,6 +738,42 @@ namespace astute.Repository
 
             return employees;
         }
+
+        public async Task<List<Dictionary<string, object>>> Get_Employees_By_User_Type(string? User_Type)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Employee_Master_Select_By_User_Type", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(User_Type) ? new SqlParameter("@User_Type", User_Type) : new SqlParameter("@User_Type", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        #endregion
+
         #endregion
     }
 }
