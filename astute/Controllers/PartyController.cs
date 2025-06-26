@@ -12406,6 +12406,35 @@ namespace astute.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("get_order_request_status")]
+        [Authorize]
+        public async Task<IActionResult> Get_Order_Request_Status(Order_Process_Detail order_Process_Detail)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Order_Request_Status(order_Process_Detail);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Order_Request_Status", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         [HttpDelete]
         [Route("order_processing_delete")]
         [Authorize]

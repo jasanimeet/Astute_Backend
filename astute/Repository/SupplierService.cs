@@ -3214,6 +3214,42 @@ namespace astute.Repository
             }
             return result;
         }
+
+        public async Task<List<Dictionary<string, object>>> Get_Order_Request_Status(Order_Process_Detail order_Process_Detail)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Order_Processing_Request_Status", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Process_Detail.Order_No) ? new SqlParameter("@Order_No", order_Process_Detail.Order_No) : new SqlParameter("@Order_No", DBNull.Value));
+                    command.Parameters.Add(order_Process_Detail.Sub_Order_Id > 0 ? new SqlParameter("@Sub_Order_Id", order_Process_Detail.Sub_Order_Id) : new SqlParameter("@Sub_Order_Id", DBNull.Value));
+                    
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
         public async Task<int> Delete_Order_Process(string order_No, int sub_Order_Id, int user_Id)
         {
             var _order_No = !string.IsNullOrEmpty(order_No) ? new SqlParameter("@Order_No", order_No) : new SqlParameter("@Order_No", DBNull.Value);
