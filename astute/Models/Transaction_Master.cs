@@ -100,5 +100,8 @@ namespace astute.Models
 
         [JsonPropertyName("Sales_Invoice_No")]
         public string? Sales_Invoice_No { get; set; }
+
+        [JsonPropertyName("Source_Customer_Id")]
+        public int? Source_Customer_Id { get; set; }
     }
 }

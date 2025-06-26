@@ -12405,7 +12405,7 @@ namespace astute.Controllers
                 });
             }
         }
-
+        
         [HttpPost]
         [Route("get_order_request_status")]
         [Authorize]
@@ -17571,7 +17571,8 @@ namespace astute.Controllers
                 new DataColumn("Country_Of_Origin", typeof(int)),
                 new DataColumn("Is_Consignment_Auto_Receive", typeof(bool)),
                 new DataColumn("Pre_Carrige_By", typeof(string)),
-                new DataColumn("Sales_Invoice_No", typeof(string))
+                new DataColumn("Sales_Invoice_No", typeof(string)),
+                new DataColumn("Source_Customer_Id", typeof(int))
             });
 
             table.Rows.Add(
@@ -17600,7 +17601,8 @@ namespace astute.Controllers
                 m.Country_Of_Origin ?? (object)DBNull.Value,
                 m.Is_Consignment_Auto_Receive ?? (object)DBNull.Value,
                 m.Pre_Carrige_By ?? (object)DBNull.Value,
-                m.Sales_Invoice_No ?? (object)DBNull.Value
+                m.Sales_Invoice_No ?? (object)DBNull.Value,
+                m.Source_Customer_Id ?? (object)DBNull.Value
             );
             return table;
         }
