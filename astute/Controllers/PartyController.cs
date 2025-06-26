@@ -7352,6 +7352,36 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("get_purchase_detail_search_report")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Detail_Search_Report(Purchase_Detail_Stock_Report_Model model)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Purchase_Detail_Search_Report(model.StockType, model.Contract, model.Upcoming, model.Offer);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        totalRecord = result.Count,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail_Search_Report", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Cart/Approval Management        

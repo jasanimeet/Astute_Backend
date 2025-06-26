@@ -2814,6 +2814,44 @@ namespace astute.Repository
                             .ToListAsync());
             return result;
         }
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Search_Report(string? StockType, bool? Contract, bool? Upcoming, bool? Offer)
+        {
+            var result = new List<Dictionary<string, object>>();
+
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("[dbo].[Purchase_Detail_Stock_Report]", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(!string.IsNullOrEmpty(StockType) ? new SqlParameter("@StockType", StockType) : new SqlParameter("@StockType", DBNull.Value));
+                    command.Parameters.Add(Contract.HasValue ? new SqlParameter("@Contract", Contract) : new SqlParameter("@Contract", DBNull.Value));
+                    command.Parameters.Add(Upcoming.HasValue ? new SqlParameter("@Upcoming", Upcoming) : new SqlParameter("@Upcoming", DBNull.Value));
+                    command.Parameters.Add(Offer.HasValue ? new SqlParameter("@Offer", Offer) : new SqlParameter("@Offer", DBNull.Value));
+
+                    command.CommandTimeout = 1800;
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
         #endregion
 
         #region GIA Lap Parameter
