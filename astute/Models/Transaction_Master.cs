@@ -88,5 +88,20 @@ namespace astute.Models
 
         [JsonPropertyName("Platform")]
         public string? Platform { get; set; }
+
+        [JsonPropertyName("Country_Of_Origin")]
+        public int? Country_Of_Origin { get; set; }
+
+        [JsonPropertyName("Is_Consignment_Auto_Receive")]
+        public bool? Is_Consignment_Auto_Receive { get; set; }
+
+        [JsonPropertyName("Pre_Carrige_By")]
+        public string? Pre_Carrige_By { get; set; }
+
+        [JsonPropertyName("Sales_Invoice_No")]
+        public string? Sales_Invoice_No { get; set; }
+
+        [JsonPropertyName("Source_Customer_Id")]
+        public int? Source_Customer_Id { get; set; }
     }
 }

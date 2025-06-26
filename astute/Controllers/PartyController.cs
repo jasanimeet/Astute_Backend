@@ -12435,6 +12435,35 @@ namespace astute.Controllers
                 });
             }
         }
+        
+        [HttpPost]
+        [Route("get_order_request_status")]
+        [Authorize]
+        public async Task<IActionResult> Get_Order_Request_Status(Order_Process_Detail order_Process_Detail)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Order_Request_Status(order_Process_Detail);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Order_Request_Status", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
 
         [HttpDelete]
         [Route("order_processing_delete")]
@@ -17568,7 +17597,12 @@ namespace astute.Controllers
                 new DataColumn("Entry_Type", typeof(string)),
                 new DataColumn("Release_Days", typeof(float)),
                 new DataColumn("Release_Hours", typeof(float)),
-                new DataColumn("Platform", typeof(string))
+                new DataColumn("Platform", typeof(string)),
+                new DataColumn("Country_Of_Origin", typeof(int)),
+                new DataColumn("Is_Consignment_Auto_Receive", typeof(bool)),
+                new DataColumn("Pre_Carrige_By", typeof(string)),
+                new DataColumn("Sales_Invoice_No", typeof(string)),
+                new DataColumn("Source_Customer_Id", typeof(int))
             });
 
             table.Rows.Add(
@@ -17593,7 +17627,12 @@ namespace astute.Controllers
                 m.Entry_Type ?? (object)DBNull.Value,
                 m.Release_Days ?? (object)DBNull.Value,
                 m.Release_Hours ?? (object)DBNull.Value,
-                m.Platform ?? (object)DBNull.Value
+                m.Platform ?? (object)DBNull.Value,
+                m.Country_Of_Origin ?? (object)DBNull.Value,
+                m.Is_Consignment_Auto_Receive ?? (object)DBNull.Value,
+                m.Pre_Carrige_By ?? (object)DBNull.Value,
+                m.Sales_Invoice_No ?? (object)DBNull.Value,
+                m.Source_Customer_Id ?? (object)DBNull.Value
             );
             return table;
         }
@@ -18177,6 +18216,149 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Get_Transaction_Internal_Issue_Customer_DropDown", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
+        #region Sales
+
+        [HttpPost]
+        [Route("get_purchase_detail_for_sales")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Detail_For_Sales(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Get_Purchase_Detail_For_Sales(purchase_Detail_For_Purchase_Return);
+
+                var result_Message = await _supplierService.Get_Unavailable_Purchase_Detail_For_Sales(purchase_Detail_For_Purchase_Return);
+
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    message = CoreCommonMessage.DataSuccessfullyFound,
+                    unavailable_message = result_Message,
+                    data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail_For_Sales", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
+        #region Sales Return
+
+        [HttpPost]
+        [Route("get_purchase_detail_for_sales_return")]
+        [Authorize]
+        public async Task<IActionResult> Get_Purchase_Detail_For_Sales_Return(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Get_Purchase_Detail_For_Sales_Return(purchase_Detail_For_Purchase_Return);
+
+                var result_Message = await _supplierService.Get_Unavailable_Purchase_Detail_For_Sales_Return(purchase_Detail_For_Purchase_Return);
+
+                return Ok(new
+                {
+                    statusCode = HttpStatusCode.OK,
+                    message = CoreCommonMessage.DataSuccessfullyFound,
+                    unavailable_message = result_Message,
+                    data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Purchase_Detail_For_Sales_Return", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
+        #region Sales Customer DropDown
+
+        [HttpGet]
+        [Route("get_transaction_sales_customer_dropdown")]
+        [Authorize]
+        public async Task<IActionResult> Get_Transaction_Sales_Customer_DropDown()
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _supplierService.Get_Transaction_Sales_Customer_DropDown(user_Id ?? 0);
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Transaction_Sales_Customer_DropDown", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
+        #region Sales Invoice DropDown
+
+        [HttpGet]
+        [Route("get_transaction_sales_invoice_dropdown")]
+        [Authorize]
+        public async Task<IActionResult> Get_Transaction_Sales_Invoice_DropDown(int Customer_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Transaction_Sales_Invoice_DropDown(Customer_Id);
+
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Transaction_Sales_Invoice_DropDown", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message

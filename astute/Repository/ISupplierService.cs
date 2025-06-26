@@ -132,6 +132,7 @@ namespace astute.Repository
         Task<DataTable> Get_Order_Summary_Pre_Post_Excel(int user_Id, Order_Processing_Summary order_Processing_Summary);
         Task<int> Create_Stone_Order_Process(Order_Stone_Process order_Stone_Processing, int user_Id);
         Task<List<Dictionary<string, object>>> Get_Order_Detail(int user_Id, Order_Process_Detail order_Process_Detail);
+        Task<List<Dictionary<string, object>>> Get_Order_Request_Status(Order_Process_Detail order_Process_Detail);
         Task<int> Delete_Order_Process(string order_No, int sub_Order_Id, int user_Id);
         Task<(string, int)> Delete_Entire_Order_Process(string order_No, int user_Id);
         Task<int> Accept_Request_Order_Process(Order_Process_Detail order_Process_Detail, int user_Id);
@@ -276,6 +277,24 @@ namespace astute.Repository
 
         #region Internal Issue Customer DropDown
         Task<List<Dictionary<string, object>>> Get_Transaction_Internal_Issue_Customer_DropDown(int User_Id);
+        #endregion
+
+        #region Sales
+        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Sales(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return);
+        Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Sales(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return);
+        #endregion
+
+        #region Sales Return
+        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Sales_Return(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return);
+        Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Sales_Return(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return);
+        #endregion
+
+        #region Sales Customer DropDown
+        Task<List<Dictionary<string, object>>> Get_Transaction_Sales_Customer_DropDown(int? User_Id);
+        #endregion
+
+        #region Sales Invoice DropDown
+        Task<List<Dictionary<string, object>>> Get_Transaction_Sales_Invoice_DropDown(int Customer_Id);
         #endregion
 
         #region Party Url Format

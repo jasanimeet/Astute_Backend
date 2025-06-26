@@ -3252,6 +3252,42 @@ namespace astute.Repository
             }
             return result;
         }
+
+        public async Task<List<Dictionary<string, object>>> Get_Order_Request_Status(Order_Process_Detail order_Process_Detail)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Order_Processing_Request_Status", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(order_Process_Detail.Order_No) ? new SqlParameter("@Order_No", order_Process_Detail.Order_No) : new SqlParameter("@Order_No", DBNull.Value));
+                    command.Parameters.Add(order_Process_Detail.Sub_Order_Id > 0 ? new SqlParameter("@Sub_Order_Id", order_Process_Detail.Sub_Order_Id) : new SqlParameter("@Sub_Order_Id", DBNull.Value));
+                    
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
         public async Task<int> Delete_Order_Process(string order_No, int sub_Order_Id, int user_Id)
         {
             var _order_No = !string.IsNullOrEmpty(order_No) ? new SqlParameter("@Order_No", order_No) : new SqlParameter("@Order_No", DBNull.Value);
@@ -6229,6 +6265,231 @@ namespace astute.Repository
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region Sales
+
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Sales(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Purchase_Detail_For_Sales_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Certificate_No) ? new SqlParameter("@Certificate_No", purchase_Detail_For_Purchase_Return.Certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+                    command.Parameters.Add(purchase_Detail_For_Purchase_Return.Customer_Id > 0 ? new SqlParameter("@Customer_Id", purchase_Detail_For_Purchase_Return.Customer_Id) : new SqlParameter("@Customer_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public async Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Sales(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Purchase_Detail_Unavailable_For_Sales_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Certificate_No) ? new SqlParameter("@Certificate_No", purchase_Detail_For_Purchase_Return.Certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region Sales_Return
+
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_For_Sales_Return(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Purchase_Detail_For_Sales_Return_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(purchase_Detail_For_Purchase_Return.Customer_Id > 0 ? new SqlParameter("@Customer_Id", purchase_Detail_For_Purchase_Return.Customer_Id) : new SqlParameter("@Customer_Id", DBNull.Value));
+                    command.Parameters.Add(purchase_Detail_For_Purchase_Return.Trans_Id > 0 ? new SqlParameter("@Trans_Id", purchase_Detail_For_Purchase_Return.Trans_Id) : new SqlParameter("@Trans_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Certificate_No) ? new SqlParameter("@Certificate_No", purchase_Detail_For_Purchase_Return.Certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public async Task<List<Dictionary<string, object>>> Get_Unavailable_Purchase_Detail_For_Sales_Return(Purchase_Detail_For_Purchase_Return purchase_Detail_For_Purchase_Return)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Purchase_Detail_Unavailable_For_Sales_Return_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(purchase_Detail_For_Purchase_Return.Customer_Id > 0 ? new SqlParameter("@Customer_Id", purchase_Detail_For_Purchase_Return.Customer_Id) : new SqlParameter("@Customer_Id", DBNull.Value));
+                    command.Parameters.Add(purchase_Detail_For_Purchase_Return.Trans_Id > 0 ? new SqlParameter("@Trans_Id", purchase_Detail_For_Purchase_Return.Trans_Id) : new SqlParameter("@Trans_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Certificate_No) ? new SqlParameter("@Certificate_No", purchase_Detail_For_Purchase_Return.Certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region Sales Customer DropDown
+
+        public async Task<List<Dictionary<string, object>>> Get_Transaction_Sales_Customer_DropDown(int? User_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Transaction_Sales_Customer_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(User_Id > 0 ? new SqlParameter("@User_Id", User_Id) : new SqlParameter("@User_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region Sales Invoice DropDown
+
+        public async Task<List<Dictionary<string, object>>> Get_Transaction_Sales_Invoice_DropDown(int Customer_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Transaction_Sales_Invoice_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(Customer_Id > 0 ? new SqlParameter("@Customer_Id", Customer_Id) : new SqlParameter("@Customer_Id", DBNull.Value));
 
                     await connection.OpenAsync();
 

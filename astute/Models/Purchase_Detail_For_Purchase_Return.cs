@@ -7,5 +7,6 @@
         public string? Trans_Date { get; set; }
         public int? Customer_Id { get; set; }
         public int? Assist_Person_Id { get; set; }
+        public int? Trans_Id { get; set; }
     }
 }
