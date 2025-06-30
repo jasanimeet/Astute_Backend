@@ -1187,13 +1187,40 @@ namespace astute.Repository
                             .ToListAsync());
             return result;
         }
-        public async Task<IList<DropdownModel>> Get_Party_Type_Customer()
+
+        public async Task<List<Dictionary<string, object>>> Get_Party_Type_Customer(int user_Id)
         {
-            var result = await Task.Run(() => _dbContext.DropdownModel
-                            .FromSqlRaw(@"exec Get_Party_Type_Customer")
-                            .ToListAsync());
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Get_Party_Type_Customer", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(user_Id > 0 ? new SqlParameter("@User_Id", user_Id) : new SqlParameter("@User_Id", DBNull.Value));
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
             return result;
         }
+
         public async Task<List<Dictionary<string, object>>> Get_Party_Search_Select(string common_Search, int user_Id)
         {
             var result = new List<Dictionary<string, object>>();

@@ -1814,7 +1814,10 @@ namespace astute.Controllers
         {
             try
             {
-                var result = await _partyService.Get_Party_Type_Customer();
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var result = await _partyService.Get_Party_Type_Customer(user_Id ?? 0);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
