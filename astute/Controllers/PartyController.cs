@@ -8348,7 +8348,7 @@ namespace astute.Controllers
                     using (MemoryStream memoryStream = new MemoryStream(fileBytes))
                     {
                         IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
-                        _emailSender.SendEmail(toEmail: "tejash@brainwaves.co.in, farhan@sunrisediam.com, list@sunrisediam.com, samit@sunrisediam.com", externalLink: "", subject: CoreCommonMessage.Lab_Entry_Overseas_Not_Uploaded_Subject_Email, formFile: formFile, strBody: CoreCommonMessage.Lab_Entry_Overseas_Not_Uploaded_Body_Email);
+                        _emailSender.SendEmail(toEmail: "tejash@brainwaves.co.in, jignesh@sunrisediam.com, list@sunrisediam.com, samit@sunrisediam.com", externalLink: "", subject: CoreCommonMessage.Lab_Entry_Overseas_Not_Uploaded_Subject_Email, formFile: formFile, strBody: CoreCommonMessage.Lab_Entry_Overseas_Not_Uploaded_Body_Email);
 
                         return Ok(new
                         {
@@ -20533,7 +20533,7 @@ namespace astute.Controllers
                     using (MemoryStream memoryStream = new MemoryStream(fileBytes))
                     {
                         IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, "excelFile", Path.GetFileName(excelPath));
-                        _emailSender.SendEmail(toEmail: "tejash@brainwaves.co.in, farhan@sunrisediam.com, list@sunrisediam.com", externalLink: "", subject: CoreCommonMessage.Supplier_Stock_Upload_Status_Email, formFile: formFile, strBody: CoreCommonMessage.Supplier_Stock_Upload_Status_Email);
+                        _emailSender.SendEmail(toEmail: "tejash@brainwaves.co.in, jignesh@sunrisediam.com, list@sunrisediam.com", externalLink: "", subject: CoreCommonMessage.Supplier_Stock_Upload_Status_Email, formFile: formFile, strBody: CoreCommonMessage.Supplier_Stock_Upload_Status_Email);
 
                         return Ok(new
                         {
