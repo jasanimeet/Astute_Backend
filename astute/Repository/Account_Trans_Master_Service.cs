@@ -641,6 +641,50 @@ namespace astute.Repository
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"[dbo].[Cashbook_Account_Trans_Detail_Delete] {Id}, {User_Id}"));
         }
+        public async Task<List<Dictionary<string, object>>> Get_Account_Trans_Detail_Ledger_Select(int? Account_Id, DateTime? fromDate, DateTime? toDate, int? Year_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("dbo.Account_Trans_Detail_Ledger_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(Account_Id > 0 ? new SqlParameter("@Account_Id", Account_Id) : new SqlParameter("@Account_Id", DBNull.Value));
+                    var _from_Date = new SqlParameter("@From_Date", SqlDbType.Date)
+                    {
+                        Value = fromDate.HasValue ? (object)fromDate.Value.Date : DBNull.Value
+                    };
+                    command.Parameters.Add(_from_Date);
+                    var _to_Date = new SqlParameter("@To_Date", SqlDbType.Date)
+                    {
+                        Value = toDate.HasValue ? (object)toDate.Value.Date : DBNull.Value
+                    };
+                    command.Parameters.Add(_to_Date);
+                    command.Parameters.Add(Year_Id > 0 ? new SqlParameter("@Year_Id", Year_Id) : new SqlParameter("@Year_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
         #endregion
     }
 }
