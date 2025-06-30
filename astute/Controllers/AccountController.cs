@@ -1921,17 +1921,16 @@ namespace astute.Controllers
                     }
 
                     DataTable dataTable = new DataTable();
+                    dataTable.Columns.Add("Id", typeof(int));
+                    dataTable.Columns.Add("Account_Trans_Detail_Id", typeof(int));
+                    dataTable.Columns.Add("Purchase_Master_Id", typeof(int));
+                    dataTable.Columns.Add("Currency_Id", typeof(int));
+                    dataTable.Columns.Add("Ex_Rate", typeof(float));
+                    dataTable.Columns.Add("Terms_Id", typeof(int));
+                    dataTable.Columns.Add("Terms_Amount", typeof(decimal));
+                    dataTable.Columns.Add("Paid_Amount", typeof(decimal));
                     if (model.Terms_Invoice_Adjust != null && model.Terms_Invoice_Adjust.Count > 0)
                     {
-                        dataTable.Columns.Add("Id", typeof(int));
-                        dataTable.Columns.Add("Account_Trans_Detail_Id", typeof(int));
-                        dataTable.Columns.Add("Purchase_Master_Id", typeof(int));
-                        dataTable.Columns.Add("Currency_Id", typeof(int));
-                        dataTable.Columns.Add("Ex_Rate", typeof(float));
-                        dataTable.Columns.Add("Terms_Id", typeof(int));
-                        dataTable.Columns.Add("Terms_Amount", typeof(decimal));
-                        dataTable.Columns.Add("Paid_Amount", typeof(decimal));
-
                         foreach (var item in model.Terms_Invoice_Adjust)
                         {
                             dataTable.Rows.Add(item.Id, item.Account_Trans_Detail_Id, item.Purchase_Master_Id, item.Currency_Id, item.Ex_Rate, item.Terms_Id, item.Terms_Amount, item.Paid_Amount);

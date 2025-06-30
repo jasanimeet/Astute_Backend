@@ -9,6 +9,6 @@
         public float Ex_Rate { get; set; }
         public int Terms_Id { get; set; }
         public decimal Terms_Amount { get; set; }
-        public decimal Paid_Amount { get; set; }
+        public decimal? Paid_Amount { get; set; }
     }
 }
