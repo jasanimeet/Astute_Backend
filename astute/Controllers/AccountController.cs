@@ -2084,5 +2084,61 @@ namespace astute.Controllers
             }
         }
         #endregion
+
+        #region Ledger - Account_Trans_Detail
+        [HttpGet]
+        [Route("get_account_trans_detail_ledger")]
+        [Authorize]
+        public async Task<IActionResult> Get_Account_Trans_Detail_Ledger(int Account_Id, string From_Date, string To_Date, int Year_Id)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                    if ((user_Id ?? 0) > 0)
+                    {
+                        DateTime fromDate, toDate;
+                        if (!DateTime.TryParseExact(From_Date, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fromDate))
+                        {
+                            fromDate = DateTime.Now.Date;
+                        }
+                        if (!DateTime.TryParseExact(To_Date, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out toDate))
+                        {
+                            toDate = DateTime.Now.Date;
+                        }
+
+                        var result = await _account_Trans_Master_Service.Get_Account_Trans_Detail_Ledger_Select(Account_Id, fromDate, toDate, Year_Id);
+
+                        if (result != null && result.Count > 0)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.DataSuccessfullyFound,
+                                data = result,
+                            });
+                        }
+                        return NoContent();
+                    }
+                    return StatusCode((int)HttpStatusCode.Unauthorized, new
+                    {
+                        message = "Unauthorized Access",
+                        statusCode = (int)HttpStatusCode.Unauthorized
+                    });
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Account_Trans_Detail_Ledger", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
     }
 }
