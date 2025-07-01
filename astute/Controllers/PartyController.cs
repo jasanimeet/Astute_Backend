@@ -5096,11 +5096,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_report_users_role")]
         [Authorize]
-        public async Task<IActionResult> Get_Report_Users_Role(int id, int user_Id, string user_Type)
+        public async Task<IActionResult> Get_Report_Users_Role(int id, int user_Id, string user_Type, bool? Is_Display)
         {
             try
             {
-                var result = await _supplierService.Get_Report_Users_Role(id, user_Id, user_Type);
+                var result = await _supplierService.Get_Report_Users_Role(id, user_Id, user_Type, Is_Display);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -5280,8 +5280,13 @@ namespace astute.Controllers
             try
             {
                 var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr, dt_stock) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo ?? 0, report_Filter.iPgSize ?? 0, report_Filter.iSort, report_Filter.Is_Selected_Supp_Stock_Id, report_Filter.Act_Mod_Id);
+
+                var report_Filter_Id = new HashSet<int> { 1, 2, 3, 4, 5, 6, 7 };
+
                 if (result != null && result.Count > 0)
                 {
+                    if (report_Filter_Id.Contains(report_Filter.id))
+                    {
                     return Ok(new
                     {
                         statusCode = HttpStatusCode.OK,
@@ -5297,6 +5302,17 @@ namespace astute.Controllers
                         data = result
                     });
                 }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = result
+                        });
+                    }
+                }
+
                 return NoContent();
             }
             catch (Exception ex)
@@ -7928,7 +7944,7 @@ namespace astute.Controllers
                 {
                     var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                     int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-                    var result = await _supplierService.Get_Report_Users_Role(report_Filter.id, (int)user_Id, null);
+                    var result = await _supplierService.Get_Report_Users_Role(report_Filter.id, (int)user_Id, null, null);
                     List<string> columnNames = new List<string>();
                     if (result != null && result.Count > 0)
                     {
@@ -8024,7 +8040,7 @@ namespace astute.Controllers
                     {
                         var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                         int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
-                        var color_dt = await _supplierService.Get_Report_Users_Role(report_Filter.id, (int)user_Id, null);
+                        var color_dt = await _supplierService.Get_Report_Users_Role(report_Filter.id, (int)user_Id, null, null);
 
                         filename = "Cart_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
                         EpExcelExport.Create_Cart_Column_Wise_Excel(dt_stock, columnNamesTable, color_dt, filePath, filePath + filename);
@@ -11028,7 +11044,7 @@ namespace astute.Controllers
                 var dt_stock = await _supplierService.Get_Report_Search_Excel(cart_Approval_Order_Email_Model.id, cart_Approval_Order_Email_Model.Report_Filter_Parameter);
                 if (dt_stock != null && dt_stock.Rows.Count > 0)
                 {
-                    var result = await _supplierService.Get_Report_Users_Role(cart_Approval_Order_Email_Model.id, (int)user_Id, null);
+                    var result = await _supplierService.Get_Report_Users_Role(cart_Approval_Order_Email_Model.id, (int)user_Id, null, null);
                     List<string> columnNames = new List<string>();
                     if (result != null && result.Count > 0)
                     {
