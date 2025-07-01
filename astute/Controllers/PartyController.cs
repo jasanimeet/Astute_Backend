@@ -5279,6 +5279,18 @@ namespace astute.Controllers
         {
             try
             {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? userId = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if (!report_Filter.Report_Filter_Parameter.Any(x => x.Column_Name == "USER_ID"))
+                {
+                    report_Filter.Report_Filter_Parameter.Add(new Report_Filter_Parameter
+                    {
+                        Column_Name = "USER_ID",
+                        Category_Value = userId.ToString()
+                    });
+                }
+
                 var (result, totalRecordr, totalCtsr, totalAmtr, totalDiscr, totalBaseAmtr, totalBaseDiscr, totalOfferAmtr, totalOfferDiscr, dt_stock) = await _supplierService.Get_Report_Search(report_Filter.id, report_Filter.Report_Filter_Parameter, report_Filter.iPgNo ?? 0, report_Filter.iPgSize ?? 0, report_Filter.iSort, report_Filter.Is_Selected_Supp_Stock_Id, report_Filter.Act_Mod_Id);
 
                 var report_Filter_Id = new HashSet<int> { 1, 2, 3, 4, 5, 6, 7 };
