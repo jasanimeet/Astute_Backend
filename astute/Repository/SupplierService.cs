@@ -2055,65 +2055,73 @@ namespace astute.Repository
                             }
                             command.Parameters.Add(!string.IsNullOrEmpty(iSorting) ? new SqlParameter("@iSort", iSorting) : new SqlParameter("@iSort", DBNull.Value));
                         }
-                        var totalRecordParameter = new SqlParameter("@iTotalRec", SqlDbType.Int);
-                        totalRecordParameter.Direction = ParameterDirection.Output;
-                        command.Parameters.Add(totalRecordParameter);
 
-                        var totalCtsParameter = new SqlParameter("@iTotalCts", SqlDbType.NVarChar)
+                        SqlParameter totalRecordParameter = null, totalCtsParameter = null, totalAmtParameter = null, totalDiscParameter = null, totalBaseDiscParameter = null, totalBaseAmtParameter = null, totalOfferDiscParameter = null, totalOfferAmtParameter = null, totalMaxSlabDiscParameter = null, totalMaxSlabAmtParameter = null;
+
+                        var report_Filter_Id = new HashSet<int> { 1, 2, 3, 4, 5, 6, 7 }; 
+
+                        if (report_Filter_Id.Contains(id))
                         {
+                            totalRecordParameter = new SqlParameter("@iTotalRec", SqlDbType.Int);
+                            totalRecordParameter.Direction = ParameterDirection.Output;
+                            command.Parameters.Add(totalRecordParameter);
+
+                            totalCtsParameter = new SqlParameter("@iTotalCts", SqlDbType.NVarChar)
+                            {
+                                Size = -1, // -1 is used for max size
+                                Direction = ParameterDirection.Output
+                            };
+                            command.Parameters.Add(totalCtsParameter);
+
+                            totalAmtParameter = new SqlParameter("@iTotalAmt", SqlDbType.NVarChar)
+                            {
+                                Size = -1, // -1 is used for max size
+                                Direction = ParameterDirection.Output
+                            };
+                            command.Parameters.Add(totalAmtParameter);
+
+                            totalDiscParameter = new SqlParameter("@iTotalDisc", SqlDbType.NVarChar)
+                            {
+                                Size = -1, // -1 is used for max size
+                                Direction = ParameterDirection.Output
+                            };
+                            command.Parameters.Add(totalDiscParameter);
+
+                            totalBaseAmtParameter = new SqlParameter("@iTotalBaseAmt", SqlDbType.NVarChar)
+                            {
+                                Size = -1, // -1 is used for max size
+                                Direction = ParameterDirection.Output
+                            };
+                            command.Parameters.Add(totalBaseAmtParameter);
+
+                            totalBaseDiscParameter = new SqlParameter("@iTotalBaseDisc", SqlDbType.NVarChar)
+                            {
+                                Size = -1, // -1 is used for max size
+                                Direction = ParameterDirection.Output
+                            };
+                            command.Parameters.Add(totalBaseDiscParameter);
+
+                            totalOfferAmtParameter = new SqlParameter("@iTotalOfferAmt", SqlDbType.NVarChar)
+                            {
                             Size = -1, // -1 is used for max size
-                            Direction = ParameterDirection.Output
-                        };
-                        command.Parameters.Add(totalCtsParameter);
+                                Direction = ParameterDirection.Output
+                            };
+                            command.Parameters.Add(totalOfferAmtParameter);
 
-                        var totalAmtParameter = new SqlParameter("@iTotalAmt", SqlDbType.NVarChar)
-                        {
+                            totalOfferDiscParameter = new SqlParameter("@iTotalOfferDisc", SqlDbType.NVarChar)
+                            {
                             Size = -1, // -1 is used for max size
-                            Direction = ParameterDirection.Output
-                        };
-                        command.Parameters.Add(totalAmtParameter);
+                                Direction = ParameterDirection.Output
+                            };
+                            command.Parameters.Add(totalOfferDiscParameter);
 
-                        var totalDiscParameter = new SqlParameter("@iTotalDisc", SqlDbType.NVarChar)
-                        {
-                            Size = -1, // -1 is used for max size
-                            Direction = ParameterDirection.Output
-                        };
-                        command.Parameters.Add(totalDiscParameter);
-
-                        var totalBaseAmtParameter = new SqlParameter("@iTotalBaseAmt", SqlDbType.NVarChar)
-                        {
-                            Size = -1, // -1 is used for max size
-                            Direction = ParameterDirection.Output
-                        };
-                        command.Parameters.Add(totalBaseAmtParameter);
-
-                        var totalBaseDiscParameter = new SqlParameter("@iTotalBaseDisc", SqlDbType.NVarChar)
-                        {
-                            Size = -1, // -1 is used for max size
-                            Direction = ParameterDirection.Output
-                        };
-                        command.Parameters.Add(totalBaseDiscParameter);
-
-                        var totalOfferAmtParameter = new SqlParameter("@iTotalOfferAmt", SqlDbType.NVarChar)
-                        {
-                            Size = -1, // -1 is used for max size
-                            Direction = ParameterDirection.Output
-                        };
-                        command.Parameters.Add(totalOfferAmtParameter);
-
-                        var totalOfferDiscParameter = new SqlParameter("@iTotalOfferDisc", SqlDbType.NVarChar)
-                        {
-                            Size = -1, // -1 is used for max size
-                            Direction = ParameterDirection.Output
-                        };
-                        command.Parameters.Add(totalOfferDiscParameter);
-
-                        command.Parameters.Add(iPgNo > 0 ? new SqlParameter("@iPgNo", iPgNo) : new SqlParameter("@iPgNo", DBNull.Value));
-                        command.Parameters.Add(iPgSize > 0 ? new SqlParameter("@iPgSize", iPgSize) : new SqlParameter("@iPgSize", DBNull.Value));
-                        command.Parameters.Add(!string.IsNullOrEmpty(is_Selected_Supp_Stock_Id) ? new SqlParameter("@Is_Selected_Supp_Stock_Id", is_Selected_Supp_Stock_Id) : new SqlParameter("@Is_Selected_Supp_Stock_Id", DBNull.Value));
-                        if (!string.IsNullOrEmpty(act_Mod_Id))
-                        {
-                            command.Parameters.Add(!string.IsNullOrEmpty(act_Mod_Id) ? new SqlParameter("@Act_Mod_Id", act_Mod_Id) : new SqlParameter("@Act_Mod_Id", DBNull.Value));
+                            command.Parameters.Add(iPgNo > 0 ? new SqlParameter("@iPgNo", iPgNo) : new SqlParameter("@iPgNo", DBNull.Value));
+                            command.Parameters.Add(iPgSize > 0 ? new SqlParameter("@iPgSize", iPgSize) : new SqlParameter("@iPgSize", DBNull.Value));
+                            command.Parameters.Add(!string.IsNullOrEmpty(is_Selected_Supp_Stock_Id) ? new SqlParameter("@Is_Selected_Supp_Stock_Id", is_Selected_Supp_Stock_Id) : new SqlParameter("@Is_Selected_Supp_Stock_Id", DBNull.Value));
+                            if (!string.IsNullOrEmpty(act_Mod_Id))
+                            {
+                                command.Parameters.Add(!string.IsNullOrEmpty(act_Mod_Id) ? new SqlParameter("@Act_Mod_Id", act_Mod_Id) : new SqlParameter("@Act_Mod_Id", DBNull.Value));
+                            }
                         }
                         command.CommandTimeout = 1800;
                         await connection.OpenAsync();
@@ -2144,14 +2152,17 @@ namespace astute.Repository
                             }
                         }
 
-                        totalRecordr = Convert.ToString(totalRecordParameter.Value);
-                        totalCtsr = Convert.ToString(totalCtsParameter.Value);
-                        totalAmtr = Convert.ToString(totalAmtParameter.Value);
-                        totalDiscr = Convert.ToString(totalDiscParameter.Value);
-                        totalBaseAmtr = Convert.ToString(totalBaseAmtParameter.Value);
-                        totalBaseDiscr = Convert.ToString(totalBaseDiscParameter.Value);
-                        totalOfferAmtr = Convert.ToString(totalOfferAmtParameter.Value);
-                        totalOfferDiscr = Convert.ToString(totalOfferDiscParameter.Value);
+                        if (report_Filter_Id.Contains(id))
+                        {
+                            totalRecordr = Convert.ToString(totalRecordParameter.Value);
+                            totalCtsr = Convert.ToString(totalCtsParameter.Value);
+                            totalAmtr = Convert.ToString(totalAmtParameter.Value);
+                            totalDiscr = Convert.ToString(totalDiscParameter.Value);
+                            totalBaseAmtr = Convert.ToString(totalBaseAmtParameter.Value);
+                            totalBaseDiscr = Convert.ToString(totalBaseDiscParameter.Value);
+                            totalOfferAmtr = Convert.ToString(totalOfferAmtParameter.Value);
+                            totalOfferDiscr = Convert.ToString(totalOfferDiscParameter.Value);
+                        }
                     }
                 }
             }
