@@ -17550,11 +17550,12 @@ namespace astute.Controllers
 
                 DateTime.TryParseExact(master.Trans_Date, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime transDate);
                 DateTime.TryParseExact(master.Due_Date, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dueDate);
+                DateTime.TryParseExact(master.Invoice_Date, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime invoiceDate);
 
                 if (master.Process_Id == "27" && (master.Trans_Id ?? 0) == 0)
                 {
                     var purchaseResult = await _supplierService.Insert_Update_Transaction(
-                        Build_Transaction_Master_Table(master, transDate, dueDate, true),
+                        Build_Transaction_Master_Table(master, transDate, dueDate, invoiceDate, true),
                         Build_Transaction_Detail_Table(details, true),
                         Build_Transaction_Terms_Table(terms),
                         Build_Transaction_Expenses_Table(expenses),
@@ -17564,7 +17565,7 @@ namespace astute.Controllers
                 }
 
                 var (result, isExist) = await _supplierService.Insert_Update_Transaction(
-                    Build_Transaction_Master_Table(master, transDate, dueDate),
+                    Build_Transaction_Master_Table(master, transDate, dueDate, invoiceDate),
                     Build_Transaction_Detail_Table(details),
                     Build_Transaction_Terms_Table(terms),
                     Build_Transaction_Expenses_Table(expenses),
@@ -17590,7 +17591,7 @@ namespace astute.Controllers
             }
         }
 
-        private DataTable Build_Transaction_Master_Table(Transaction_Master m, DateTime transDate, DateTime dueDate, bool isConsignment = false)
+        private DataTable Build_Transaction_Master_Table(Transaction_Master m, DateTime transDate, DateTime dueDate, DateTime invoiceDate, bool isConsignment = false)
         {
             var table = new DataTable();
             table.Columns.AddRange(new[]
@@ -17621,7 +17622,8 @@ namespace astute.Controllers
                 new DataColumn("Is_Consignment_Auto_Receive", typeof(bool)),
                 new DataColumn("Pre_Carrige_By", typeof(string)),
                 new DataColumn("Sales_Invoice_No", typeof(string)),
-                new DataColumn("Source_Customer_Id", typeof(int))
+                new DataColumn("Source_Customer_Id", typeof(int)),
+                new DataColumn("Invoice_Date", typeof(DateTime)),
             });
 
             table.Rows.Add(
@@ -17651,7 +17653,8 @@ namespace astute.Controllers
                 m.Is_Consignment_Auto_Receive ?? (object)DBNull.Value,
                 m.Pre_Carrige_By ?? (object)DBNull.Value,
                 m.Sales_Invoice_No ?? (object)DBNull.Value,
-                m.Source_Customer_Id ?? (object)DBNull.Value
+                m.Source_Customer_Id ?? (object)DBNull.Value,
+                invoiceDate == DateTime.MinValue ? (object)DBNull.Value : invoiceDate
             );
             return table;
         }

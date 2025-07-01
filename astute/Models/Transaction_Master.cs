@@ -103,5 +103,8 @@ namespace astute.Models
 
         [JsonPropertyName("Source_Customer_Id")]
         public int? Source_Customer_Id { get; set; }
+
+        [JsonPropertyName("Invoice_Date")]
+        public string? Invoice_Date { get; set; }
     }
 }
