@@ -2814,13 +2814,13 @@ namespace astute.Repository
                             .ToListAsync());
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Search_Report(string? StockType, bool? Contract, bool? Upcoming, bool? Offer)
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Stock_Report(string? StockType, bool? Contract, bool? Upcoming, bool? Offer)
         {
             var result = new List<Dictionary<string, object>>();
 
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
             {
-                using (var command = new SqlCommand("[dbo].[Purchase_Detail_Stock_Report]", connection))
+                using (var command = new SqlCommand("[dbo].[Purchase_Detail_Stock_Report_Select]", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 

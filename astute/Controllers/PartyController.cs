@@ -7357,13 +7357,13 @@ namespace astute.Controllers
         }
 
         [HttpPost]
-        [Route("get_purchase_detail_search_report")]
+        [Route("get_stock_report")]
         [Authorize]
-        public async Task<IActionResult> Get_Purchase_Detail_Search_Report(Purchase_Detail_Stock_Report_Model model)
+        public async Task<IActionResult> Get_Stock_Report(Purchase_Detail_Stock_Report_Model model)
         {
             try
             {
-                var result = await _supplierService.Get_Purchase_Detail_Search_Report(model.StockType, model.Contract, model.Upcoming, model.Offer);
+                var result = await _supplierService.Get_Purchase_Detail_Stock_Report(model.StockType, model.Contract, model.Upcoming, model.Offer);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new

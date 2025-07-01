@@ -110,7 +110,7 @@ namespace astute.Repository
         Task<DataTable> Get_Report_Search_Excel(int id, IList<Report_Filter_Parameter> report_Filter_Parameters);
         Task<DataTable> Get_Stock_Availability_Report_Excel(DataTable dataTable, string stock_Id, string stock_Type, int party_Id, string excel_Format);
         Task<IList<Report_Image_Video_Certificate>> Download_Image_Video_Certificate_Stock(string? Ids, string? document_Type);
-        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Search_Report(string? StockType, bool? Contract, bool? Upcoming, bool? Offer);
+        Task<List<Dictionary<string, object>>> Get_Purchase_Detail_Stock_Report(string? StockType, bool? Contract, bool? Upcoming, bool? Offer);
         #endregion
 
         #region GIA Lap Parameter
