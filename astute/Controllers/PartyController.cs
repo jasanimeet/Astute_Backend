@@ -5287,21 +5287,21 @@ namespace astute.Controllers
                 {
                     if (report_Filter_Id.Contains(report_Filter.id))
                     {
-                    return Ok(new
-                    {
-                        statusCode = HttpStatusCode.OK,
-                        message = CoreCommonMessage.DataSuccessfullyFound,
-                        total_Records = totalRecordr,
-                        total_Cts = totalCtsr,
-                        total_Amt = totalAmtr,
-                        total_Disc = totalDiscr,
-                        total_Base_Amt = totalBaseAmtr,
-                        total_Base_Disc = totalBaseDiscr,
-                        total_Offer_Amt = totalOfferAmtr,
-                        total_Offer_Disc = totalOfferDiscr,
-                        data = result
-                    });
-                }
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            total_Records = totalRecordr,
+                            total_Cts = totalCtsr,
+                            total_Amt = totalAmtr,
+                            total_Disc = totalDiscr,
+                            total_Base_Amt = totalBaseAmtr,
+                            total_Base_Disc = totalBaseDiscr,
+                            total_Offer_Amt = totalOfferAmtr,
+                            total_Offer_Disc = totalOfferDiscr,
+                            data = result
+                        });
+                    }
                     else
                     {
                         return Ok(new
@@ -12454,7 +12454,7 @@ namespace astute.Controllers
                 });
             }
         }
-        
+
         [HttpPost]
         [Route("get_order_request_status")]
         [Authorize]
