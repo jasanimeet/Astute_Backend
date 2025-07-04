@@ -4211,15 +4211,28 @@ namespace astute.Repository
                 Direction = ParameterDirection.Output
             };
 
-            var result = await Task.Run(() => _dbContext.Database
-                   .ExecuteSqlRawAsync(@"EXEC Purchase_Insert_Update @Purchase_Master_Table_Type, @Purchase_Detail_Table_Type, @Purchase_Terms_Table_Type, @Purchase_Expenses_Table_Type, @Purchase_Detail_Loose_Table_Type, @User_Id, @Is_Exists OUT", masterParameter, detailParameter, termsParameter, expensesParameter, purchaseDetailLooseParameter, _user_Id, is_Exists));
+            _dbContext.Database.SetCommandTimeout(3600);
+
+            var result = await _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Purchase_Insert_Update 
+                                                                        @Purchase_Master_Table_Type, 
+                                                                        @Purchase_Detail_Table_Type, 
+                                                                        @Purchase_Terms_Table_Type, 
+                                                                        @Purchase_Expenses_Table_Type, 
+                                                                        @Purchase_Detail_Loose_Table_Type, 
+                                                                        @User_Id, 
+                                                                        @Is_Exists OUT",
+                                                                            masterParameter,
+                                                                            detailParameter,
+                                                                            termsParameter,
+                                                                            expensesParameter,
+                                                                            purchaseDetailLooseParameter,
+                                                                            _user_Id,
+                                                                            is_Exists
+                                                                        );
 
             var _is_Exist = (bool)is_Exists.Value;
 
-            if (_is_Exist)
-                return (409, _is_Exist);
-
-            return (result, _is_Exist);
+            return _is_Exist ? (409, true) : (result, false);
         }
 
         public async Task<List<Dictionary<string, object>>> Get_Purchase_Master(Purchase_Master_Search_Model purchase_Master_Search_Model)
