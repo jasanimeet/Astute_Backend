@@ -641,6 +641,22 @@ namespace astute.Repository
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"[dbo].[Cashbook_Account_Trans_Detail_Delete] {Id}, {User_Id}"));
         }
+        public async Task<IList<DropdownModel>> Get_Account_Master_Select(string? group, string? subGroup, int? mainCompany,  string? purchaseExpense, string? salesExpense, bool? isParty,int? accountId)
+        {
+            var _account_Id = accountId > 0 ? new SqlParameter("@Account_Id", accountId) : new SqlParameter("@Account_Id", DBNull.Value);
+            var _group = !string.IsNullOrEmpty(group) ? new SqlParameter("@Group", group) : new SqlParameter("@Group", DBNull.Value);
+            var _sub_group = !string.IsNullOrEmpty(subGroup) ? new SqlParameter("@Sub_Group", subGroup) : new SqlParameter("@Sub_Group", DBNull.Value);
+            var _main_company = accountId > 0 ? new SqlParameter("@Main_Company", mainCompany) : new SqlParameter("@Main_Company", DBNull.Value);
+            var _purchase_expense = !string.IsNullOrEmpty(purchaseExpense) ? new SqlParameter("@Purchase_Expence", purchaseExpense) : new SqlParameter("@Purchase_Expence", DBNull.Value);
+            var _sales_expense = !string.IsNullOrEmpty(salesExpense) ? new SqlParameter("@Sales_Expence", salesExpense) : new SqlParameter("@Sales_Expence", DBNull.Value);
+            var _is_party = isParty.HasValue ? new SqlParameter("@Is_Party", isParty) : new SqlParameter("@Is_Party", DBNull.Value);
+
+            var result = await Task.Run(() => _dbContext.DropdownModel
+                            .FromSqlRaw(@"exec [dbo].[Account_Master_By_Types_Select] @Account_Id,@Group,@Sub_Group,@Main_Company,@Purchase_Expence,@Sales_Expence,@Is_Party", 
+                            _account_Id,_group,_sub_group,_main_company,_purchase_expense,_sales_expense,_is_party).ToListAsync());
+
+            return result;
+        }
         public async Task<List<Dictionary<string, object>>> Get_Account_Trans_Detail_Ledger_Select(int? Account_Id, DateTime? fromDate, DateTime? toDate, int? Year_Id)
         {
             var result = new List<Dictionary<string, object>>();

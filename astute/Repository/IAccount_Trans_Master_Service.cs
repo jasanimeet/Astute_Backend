@@ -27,6 +27,7 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Cashbook_Account_Trans_Select(int? id, int? year_id, int? company_id);
         Task<List<Dictionary<string, object>>> Get_Cashbook_Account_Trans_Detail_Select(int id);
         Task<int> Delete_Cashbook_Account_Trans(int id, int user_Id);
+        Task<IList<DropdownModel>> Get_Account_Master_Select(string? group, string? subGroup, int? mainCompany, string? purchaseExpense, string? salesExpense, bool? isParty, int? accountId);
         Task<List<Dictionary<string, object>>> Get_Account_Trans_Detail_Ledger_Select(int? Account_Id, DateTime? fromDate, DateTime? toDate, int? Year_Id);
     }
 }

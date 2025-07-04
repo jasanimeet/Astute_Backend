@@ -2087,6 +2087,49 @@ namespace astute.Controllers
 
         #region Ledger - Account_Trans_Detail
         [HttpGet]
+        [Route("get_account_master_select")]
+        [Authorize]
+        public async Task<IActionResult> Get_Account_Master_Select(string? Group, string? Sub_Group, int? Main_Company, string? Purchase_Expense, string? Sales_Expense, bool? Is_Party, int? Account_Id)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                    int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                    if ((user_Id ?? 0) > 0)
+                    {
+                        var result = await _account_Trans_Master_Service.Get_Account_Master_Select(Group, Sub_Group, Main_Company, Purchase_Expense, Sales_Expense, Is_Party, Account_Id);
+
+                        if (result != null && result.Count > 0)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.DataSuccessfullyFound,
+                                data = result,
+                            });
+                        }
+                        return NoContent();
+                    }
+                    return StatusCode((int)HttpStatusCode.Unauthorized, new
+                    {
+                        message = "Unauthorized Access",
+                        statusCode = (int)HttpStatusCode.Unauthorized
+                    });
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Account_Trans_Detail_Ledger", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
         [Route("get_account_trans_detail_ledger")]
         [Authorize]
         public async Task<IActionResult> Get_Account_Trans_Detail_Ledger(int Account_Id, string From_Date, string To_Date, int Year_Id)
