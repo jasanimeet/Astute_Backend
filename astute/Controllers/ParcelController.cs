@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -331,6 +333,139 @@ namespace astute.Controllers
         }
 
         #endregion
+
+        #region Stock Allocation
+
+        [HttpGet]
+        [Route("get_stock_allocation")]
+        [Authorize]
+        public async Task<IActionResult> Get_Stock_Allocation(int ac_Grp_Code, int company_Id, int year_Id)
+        {
+            try
+            {
+                var result = await _parcel_Master_Service.Get_Stock_Allocation(ac_Grp_Code, company_Id, year_Id);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Stock_Allocation", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("create_update_stock_allocation")]
+        [Authorize]
+        public async Task<IActionResult> Create_Update_Stock_Allocation(IList<Stock_Allocation> stock_Allocation)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    DataTable table = new DataTable();
+
+                    table.Columns.Add("Id", typeof(int));
+                    table.Columns.Add("Parcel_Id", typeof(int));
+                    table.Columns.Add("Parcel_Ref_Id", typeof(int));
+                    table.Columns.Add("Ac_Grp_Code", typeof(int));
+                    table.Columns.Add("Trans_Type", typeof(string));
+                    table.Columns.Add("PCS", typeof(decimal));
+                    table.Columns.Add("CTS", typeof(decimal));
+                    table.Columns.Add("Amount_In_US($)", typeof(decimal));
+                    table.Columns.Add("Company_Id", typeof(int));
+                    table.Columns.Add("Year_Id", typeof(int));
+
+                    foreach (var item in stock_Allocation)
+                    {
+                        table.Rows.Add(
+                            item.Id ?? (object)DBNull.Value,
+                            item.Parcel_Id ?? (object)DBNull.Value,
+                            item.Parcel_Ref_Id ?? (object)DBNull.Value,
+                            item.Ac_Grp_Code ?? (object)DBNull.Value,
+                            item.Trans_Type ?? (object)DBNull.Value,
+                            SafeConvertToDouble(item.PCS) ?? (object)DBNull.Value,
+                            SafeConvertToDouble(item.CTS) ?? (object)DBNull.Value,
+                            SafeConvertToDouble(item.Amount_In_US) ?? (object)DBNull.Value,
+                            item.Company_Id ?? (object)DBNull.Value,
+                            item.Year_Id ?? (object)DBNull.Value
+                        );
+                    }
+
+                    var result = await _parcel_Master_Service.Insert_Update_Stock_Allocation(table);
+
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.Stock_Allocation_Saved
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Create_Update_Stock_Allocation", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete_stock_allocation")]
+        [Authorize]
+        public async Task<IActionResult> Delete_Stock_Allocation(int Id)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _parcel_Master_Service.Delete_Stock_Allocation(Id);
+                    if (result > 0)
+                    {
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.Stock_Allocation_Deleted
+                        });
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Delete_Stock_Allocation", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        public static double? SafeConvertToDouble(string value)
+        {
+            if (double.TryParse(value, out double result))
+            {
+                return result;
+            }
+            return null;
+        }
+        #endregion
+
         #endregion
     }
 }

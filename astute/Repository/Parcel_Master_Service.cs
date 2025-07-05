@@ -229,5 +229,63 @@ namespace astute.Repository
         }
 
         #endregion
+
+        #region Stock Allocation
+
+        public async Task<int> Insert_Update_Stock_Allocation(DataTable dataTable)
+        {
+            var param = new SqlParameter("@Stock_Allocation_Type", SqlDbType.Structured)
+            {
+                TypeName = "dbo.Stock_Allocation_Type",
+                Value = dataTable
+            };
+
+            var result = await _dbContext.Database.ExecuteSqlRawAsync("EXEC Stock_Allocation_Insert_Update @Stock_Allocation_Type", param);
+
+            return result;
+        }
+
+        public async Task<int> Delete_Stock_Allocation(int Id)
+        {
+            return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"Stock_Allocation_Delete {Id}"));
+        }
+
+        public async Task<List<Dictionary<string, object>>> Get_Stock_Allocation(int ac_Grp_Code, int company_Id, int year_Id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Stock_Allocation_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(ac_Grp_Code > 0 ? new SqlParameter("@Ac_Grp_Code", ac_Grp_Code) : new SqlParameter("@Ac_Grp_Code", DBNull.Value));
+                    command.Parameters.Add(company_Id > 0 ? new SqlParameter("@Company_Id", company_Id) : new SqlParameter("@Company_Id", DBNull.Value));
+                    command.Parameters.Add(year_Id > 0 ? new SqlParameter("@Year_Id", year_Id) : new SqlParameter("@Year_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        #endregion
     }
 }

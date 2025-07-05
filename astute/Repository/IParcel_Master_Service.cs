@@ -1,5 +1,6 @@
 ﻿using astute.Models;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace astute.Repository
@@ -14,5 +15,8 @@ namespace astute.Repository
         Task<int> Delete_Parcel_Ref_Master(int parcel_Ref_Id, int user_Id);
         Task<List<Dictionary<string, object>>> Get_Parcel_Ref_Master(int parcel_Ref_Id);
         Task<List<Dictionary<string, object>>> Get_Parcel_Ref();
+        Task<int> Insert_Update_Stock_Allocation(DataTable dataTable);
+        Task<int> Delete_Stock_Allocation(int Id);
+        Task<List<Dictionary<string, object>>> Get_Stock_Allocation(int ac_Grp_Code, int company_Id, int year_Id);
     }
 }

@@ -39,6 +39,7 @@
         public static string JobExc = "Job executed successfully.";
         public static string StkUpdate = "Data Update successfully.";
         public static string DataTransfer = "Data transferred successfully.";
+        public static string SavedSuccessfully = " saved successfully.";
 
         #region Email Subjects
         public static string ForgetPasswordSubject = "Forget Password Email";
@@ -603,7 +604,7 @@
         public static string ParcelRefMasterDeleted = ParcelRefMaster + DeletedSuccessfully;
         public static string IsExistParcelRefMaster = ParcelRefMaster + AlreadyExists;
         #endregion
-
+                
         #region Purchase Return
         public static string Purchase_Return = Purchase + " Return";
         public static string Purchase_Return_Created = Purchase_Return + AddedSuccessfully;
@@ -649,6 +650,13 @@
         public static string ManualUrlTransferUpdated = ManualUrlTransfer + UpdatedSuccessfully;
         public static string ManualUrlTransferDeleted = ManualUrlTransfer + DeletedSuccessfully;
         public static string ManualUrlTransferAlreadyExist = ManualUrlTransfer + AlreadyExists;
+        #endregion
+
+        #region Stock Allocation
+        public static string Stock_Allocation = "Stock Allocation";
+        public static string Stock_Allocation_Deleted = Stock_Allocation + DeletedSuccessfully;
+        public static string Stock_Allocation_Saved = Stock_Allocation + SavedSuccessfully;
+        public static string Is_Exist_Stock_Allocation = Stock_Allocation + AlreadyExists;
         #endregion
     }
 }
