@@ -17540,6 +17540,62 @@ namespace astute.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("get_transaction_report_excel")]
+        [Authorize]
+        public async Task<IActionResult> Get_Transaction_Report_Excel(Report_Lab_Entry_Filter report_Filter)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Transaction_Report_Excel(report_Filter.Stock_Id ?? null);
+
+                if (result != null && result.Rows.Count > 0)
+                {
+
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in report_Filter.column_Name)
+                    {
+                        if (columnName != "CERTIFICATE LINK")
+                        {
+                            columnNamesTable.Rows.Add(columnName);
+                        }
+                    }
+                    columnNamesTable.Rows.Add("CERTIFICATE LINK");
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/TransactionReportExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+
+                    string filename = report_Filter.Process_Name + "_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+
+                    EpExcelExport.Create_Transaction_Report_Column_Wise_Excel(result, columnNamesTable, filePath, filePath + filename);
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.TransactionReportExcelFiles + filename;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Transaction_Report_Excel", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Purchase Return

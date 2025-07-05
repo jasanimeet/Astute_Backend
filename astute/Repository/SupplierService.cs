@@ -2058,7 +2058,7 @@ namespace astute.Repository
 
                         SqlParameter totalRecordParameter = null, totalCtsParameter = null, totalAmtParameter = null, totalDiscParameter = null, totalBaseDiscParameter = null, totalBaseAmtParameter = null, totalOfferDiscParameter = null, totalOfferAmtParameter = null, totalMaxSlabDiscParameter = null, totalMaxSlabAmtParameter = null;
 
-                        var report_Filter_Id = new HashSet<int> { 1, 2, 3, 4, 5, 6, 7 }; 
+                        var report_Filter_Id = new HashSet<int> { 1, 2, 3, 4, 5, 6, 7 };
 
                         if (report_Filter_Id.Contains(id))
                         {
@@ -2103,14 +2103,14 @@ namespace astute.Repository
 
                             totalOfferAmtParameter = new SqlParameter("@iTotalOfferAmt", SqlDbType.NVarChar)
                             {
-                            Size = -1, // -1 is used for max size
+                                Size = -1, // -1 is used for max size
                                 Direction = ParameterDirection.Output
                             };
                             command.Parameters.Add(totalOfferAmtParameter);
 
                             totalOfferDiscParameter = new SqlParameter("@iTotalOfferDisc", SqlDbType.NVarChar)
                             {
-                            Size = -1, // -1 is used for max size
+                                Size = -1, // -1 is used for max size
                                 Direction = ParameterDirection.Output
                             };
                             command.Parameters.Add(totalOfferDiscParameter);
@@ -3275,7 +3275,7 @@ namespace astute.Repository
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(!string.IsNullOrEmpty(order_Process_Detail.Order_No) ? new SqlParameter("@Order_No", order_Process_Detail.Order_No) : new SqlParameter("@Order_No", DBNull.Value));
                     command.Parameters.Add(order_Process_Detail.Sub_Order_Id > 0 ? new SqlParameter("@Sub_Order_Id", order_Process_Detail.Sub_Order_Id) : new SqlParameter("@Sub_Order_Id", DBNull.Value));
-                    
+
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -5512,6 +5512,30 @@ namespace astute.Repository
             {
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("@Trans_Id", Trans_Id > 0 ? (object)Trans_Id : DBNull.Value);
+
+                await connection.OpenAsync();
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    dataTable.Load(reader);
+                }
+            }
+            return dataTable;
+        }
+
+        public async Task<DataTable> Get_Transaction_Report_Excel(string Ids)
+        {
+            var dataTable = new DataTable();
+
+            var connectionString = _configuration["ConnectionStrings:AstuteConnection"];
+
+            using (var connection = new SqlConnection(connectionString))
+
+            using (var command = new SqlCommand("Transaction_Detail_Sales_Report_Select_Excel", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.Add(!string.IsNullOrEmpty(Ids) ? new SqlParameter("@Ids", Ids) : new SqlParameter("@Ids", DBNull.Value));
 
                 await connection.OpenAsync();
 

@@ -117,5 +117,6 @@ namespace astute.Models
         public string? From_Date { get; set; }
         public string? To_Date { get; set; }
         public string? Stock_Id { get; set; }
+        public string? Process_Name { get; set; }
     }
 }
