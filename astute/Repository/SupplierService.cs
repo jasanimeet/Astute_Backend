@@ -2864,6 +2864,29 @@ namespace astute.Repository
             }
             return result;
         }
+        public async Task<DataTable> Get_Purchase_Detail_Stock_Report_Excel(string Ids)
+        {
+            var dataTable = new DataTable();
+
+            var connectionString = _configuration["ConnectionStrings:AstuteConnection"];
+
+            using (var connection = new SqlConnection(connectionString))
+
+            using (var command = new SqlCommand("[dbo].[Purchase_Detail_Stock_Report_Select_Excel]", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.Add(!string.IsNullOrEmpty(Ids) ? new SqlParameter("@Ids", Ids) : new SqlParameter("@Ids", DBNull.Value));
+
+                await connection.OpenAsync();
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    dataTable.Load(reader);
+                }
+            }
+            return dataTable;
+        }
         #endregion
 
         #region GIA Lap Parameter
@@ -5490,6 +5513,55 @@ namespace astute.Repository
             return (result, _is_Exist);
         }
 
+        public async Task<(int, bool)> Transaction_Auto_Consignment_Receive_Insert_Update(DataTable masterDataTable, DataTable detailDataTable, DataTable termsDataTable, DataTable expensesDataTable, DataTable detailLooseDataTable, int user_Id)
+        {
+            var masterParameter = new SqlParameter("@Transaction_Master_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Transaction_Master_Table_Type]",
+                Value = masterDataTable
+            };
+
+            var detailParameter = new SqlParameter("@Transaction_Detail_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Transaction_Detail_Table_Type]",
+                Value = detailDataTable
+            };
+
+            var termsParameter = new SqlParameter("@Transaction_Terms_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Transaction_Terms_Table_Type]",
+                Value = termsDataTable
+            };
+
+            var expensesParameter = new SqlParameter("@Transaction_Expenses_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Transaction_Expenses_Table_Type]",
+                Value = expensesDataTable
+            };
+
+            var purchaseDetailLooseParameter = new SqlParameter("@Transaction_Detail_Loose_Table_Type", SqlDbType.Structured)
+            {
+                TypeName = "[dbo].[Transaction_Detail_Loose_Table_Type]",
+                Value = detailLooseDataTable
+            };
+
+            var _user_Id = new SqlParameter("@User_Id", user_Id);
+
+            var is_Exists = new SqlParameter("@Is_Exists", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Transaction_Auto_Consignment_Receive_Insert_Update @Transaction_Master_Table_Type, @Transaction_Detail_Table_Type, @Transaction_Terms_Table_Type, @Transaction_Expenses_Table_Type, @Transaction_Detail_Loose_Table_Type, @User_Id, @Is_Exists OUT", masterParameter, detailParameter, termsParameter, expensesParameter, purchaseDetailLooseParameter, _user_Id, is_Exists));
+
+            var _is_Exist = (bool)is_Exists.Value;
+
+            if (_is_Exist)
+                return (409, _is_Exist);
+
+            return (result, _is_Exist);
+        }
         public async Task<int> Delete_Transaction(int Trans_Id, int User_Id)
         {
             var trans_Id = new SqlParameter("@Trans_Id", Trans_Id);

@@ -7413,6 +7413,61 @@ namespace astute.Controllers
                 });
             }
         }
+        [HttpPost]
+        [Route("get_stock_report_excel")]
+        [Authorize]
+        public async Task<IActionResult> Get_Stock_Report_Excel(Report_Lab_Entry_Filter report_Filter)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Purchase_Detail_Stock_Report_Excel(report_Filter.Stock_Id ?? null);
+
+                if (result != null && result.Rows.Count > 0)
+                {
+
+                    DataTable columnNamesTable = new DataTable();
+                    columnNamesTable.Columns.Add("Column_Name", typeof(string));
+
+                    foreach (string columnName in report_Filter.column_Name)
+                    {
+                        if (columnName != "CERTIFICATE LINK")
+                        {
+                            columnNamesTable.Rows.Add(columnName);
+                        }
+                    }
+                    columnNamesTable.Rows.Add("CERTIFICATE LINK");
+                    var excelPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/StockReportExcelFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+
+                    string filename = report_Filter.Process_Name + "_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".xlsx";
+
+                    EpExcelExport.Create_Transaction_Report_Column_Wise_Excel(result, columnNamesTable, filePath, filePath + filename);
+                    excelPath = _configuration["BaseUrl"] + CoreCommonFilePath.TransactionReportExcelFiles + filename;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = excelPath,
+                        file_name = filename
+                    });
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Stock_Report_Excel", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Cart/Approval Management        
@@ -17625,6 +17680,17 @@ namespace astute.Controllers
                     var purchaseResult = await _supplierService.Insert_Update_Transaction(
                         Build_Transaction_Master_Table(master, transDate, dueDate, invoiceDate, true),
                         Build_Transaction_Detail_Table(details, true),
+                        Build_Transaction_Terms_Table(terms),
+                        Build_Transaction_Expenses_Table(expenses),
+                        Build_Transaction_Loose_Detail_Table(looseDetails),
+                        userId ?? 0
+                    );
+                }
+                if (master.Process_Id == "1" && (master.Is_Consignment_Auto_Receive ?? false) == true)
+                {
+                    var consignmentAutoReceive = await _supplierService.Transaction_Auto_Consignment_Receive_Insert_Update(
+                        Build_Transaction_Master_Table(master, transDate, dueDate, invoiceDate),
+                        Build_Transaction_Detail_Table(details),
                         Build_Transaction_Terms_Table(terms),
                         Build_Transaction_Expenses_Table(expenses),
                         Build_Transaction_Loose_Detail_Table(looseDetails),
