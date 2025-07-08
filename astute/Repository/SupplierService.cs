@@ -1590,6 +1590,28 @@ namespace astute.Repository
             }
             return result;
         }
+        public async Task<DataTable> Get_Supplier_Stock_Count_For_Mail()
+        {
+            var dataTable = new DataTable();
+
+            var connectionString = _configuration["ConnectionStrings:AstuteConnection"];
+
+            using (var connection = new SqlConnection(connectionString))
+
+            using (var command = new SqlCommand("[dbo].[Supplier_Stock_Count]", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+
+
+                await connection.OpenAsync();
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    dataTable.Load(reader);
+                }
+            }
+            return dataTable;
+        }
         #endregion
 
         #region Api/FTP/File Party Name 

@@ -69,6 +69,7 @@ namespace astute.Repository
         Task<int> Delete_Stock_Number_Generation_Overseas(int Id);
         Task<int> Add_Update_Stock_Number_Generation_Overseas_Raplicate(string ids);
         Task<List<Dictionary<string, object>>> Stock_Number_Generation_Replicate_Availability();
+        Task<DataTable> Get_Supplier_Stock_Count_For_Mail();
         #endregion
 
         #region  Api/FTP/File Party Name

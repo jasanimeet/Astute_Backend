@@ -30,6 +30,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace astute.Controllers
 {
@@ -3567,6 +3568,68 @@ namespace astute.Controllers
             catch (Exception ex)
             {
                 await _commonService.InsertErrorLog(ex.Message, "Stock_Number_Generation_Replicate_Availability_Mail", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        /*
+         * Date: 2025/07/08 By Jashmin Patel
+         * Aded for sending mail while Same Stones for First and Last API/Ftp for same day.
+         */
+        [HttpGet]
+        [Route("supplier_stock_count_mail")]
+        public async Task<IActionResult> Supplier_Stock_Count_Mail()
+        {
+            try
+            {
+                DataTable result = await _supplierService.Get_Supplier_Stock_Count_For_Mail();
+
+                if (result != null && result.Rows.Count > 0)
+                {
+                    List<string> to_Emails = new List<string>() { "list@sunrisediam.com" };
+
+                    string subject = "Same Stones for First and Last API/FTP";
+
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine(@"Hi," + "<br/>");
+                    sb.AppendLine(@"Please find below supplier details in which Total stones count remains same for First APi/Ftp and last API/Ftp for the date. So Kindly reconfirm with supplier for the same" + "<br/>" + "<br/>");
+                    sb.AppendLine(@"<table border='1' cellspacing='2' cellpadding='3'>");
+                    sb.AppendLine(@"<thead><tr>");
+                    foreach (DataColumn column in result.Columns)
+                    {
+                        sb.AppendLine(@"<td>" + HttpUtility.HtmlEncode(column.ColumnName) + "</td>");
+                    }
+                    sb.AppendLine(@"</tr></thead>");
+                    sb.AppendLine(@"<tbody>");
+
+                    foreach (DataRow row in result.Rows)
+                    {
+                        sb.AppendLine("<tr>");
+                        foreach (DataColumn column in result.Columns)
+                        {
+                            sb.AppendFormat("<td>{0}</td>", HttpUtility.HtmlEncode(row[column].ToString()));
+                        }
+                        sb.AppendLine("</tr>");
+                    }
+                    sb.AppendLine(@"</tbody>");
+                    sb.AppendLine(@"</table>");
+
+                    _emailSender.SendEmail(toEmails: to_Emails, subject: subject, body: sb.ToString(), ccEmails: null, bccEmails: null);
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Supplier_Stock_Count_Mail", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
