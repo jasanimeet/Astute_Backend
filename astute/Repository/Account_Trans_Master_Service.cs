@@ -450,16 +450,39 @@ namespace astute.Repository
 
             return result;
         }
-        public async Task<IList<DropdownModel>> Get_Account_Master_TransTypeWise_Select(string? Trans_Type)
+        public async Task<List<Dictionary<string, object>>> Get_Account_Master_TransTypeWise_Select(string? Trans_Type)
         {
-            var _trans_type = !string.IsNullOrEmpty(Trans_Type) ? new SqlParameter("@Trans_Type", Trans_Type) : new SqlParameter("@Trans_Type", DBNull.Value);
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("Account_Master_TransTypeWise_Select", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(!string.IsNullOrEmpty(Trans_Type) ? new SqlParameter("@Trans_Type", Trans_Type) : new SqlParameter("@Trans_Type", DBNull.Value));
+                    await connection.OpenAsync();
 
-            var result = await Task.Run(() => _dbContext.DropdownModel
-                            .FromSqlRaw(@"exec [dbo].[Account_Master_TransTypeWise_Select] @Trans_Type", _trans_type).ToListAsync());
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
 
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
             return result;
         }
-        public async Task<List<Dictionary<string, object>>> Get_Account_Master_Active_Purchase_Select(int Party_Id, int Year_Id)
+        public async Task<List<Dictionary<string, object>>> Get_Account_Master_Active_Purchase_Select(int Party_Id, int Year_Id, string Trans_Type)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -469,6 +492,7 @@ namespace astute.Repository
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(Party_Id > 0 ? new SqlParameter("@Party_Id", Party_Id) : new SqlParameter("@Party_Id", DBNull.Value));
                     command.Parameters.Add(Year_Id > 0 ? new SqlParameter("@Year_Id", Year_Id) : new SqlParameter("@Year_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(Trans_Type) ? new SqlParameter("@Trans_Type", Trans_Type) : new SqlParameter("@Trans_Type", DBNull.Value));
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -493,7 +517,7 @@ namespace astute.Repository
             return result;
         }
         public async Task<int> Create_Update_Cashbook_Account_Trans_Detail(DataTable dataTable, int? id, int? trans_Id, int? process_Id, int? company_Id, int? year_Id, DateTime? trans_Date, TimeSpan? trans_Time,
-            int? by_Account, string by_Type, int? to_Account, string to_Type, int? currency_Id, float? ex_Rate, decimal? amount, decimal? amount_in_us, string remarks, int user_Id)
+            int? by_Account, string by_Type, int? to_Account, string to_Type, int? currency_Id, float? ex_Rate, decimal? amount, decimal? amount_in_us, string remarks, string source_party, int user_Id)
         {
             var _terms_Invoice_Adjust_Table_Type = new SqlParameter("@Terms_Invoice_Adjust_Table_Type", SqlDbType.Structured)
             {
@@ -513,6 +537,7 @@ namespace astute.Repository
             var _amount = new SqlParameter("@Amount", amount);
             var _remarks = new SqlParameter("@Remarks", string.IsNullOrEmpty(remarks) ? (object)DBNull.Value : remarks);
             var _user_Id = new SqlParameter("@User_Id", user_Id);
+            var _source_party = new SqlParameter("@Source_Party", source_party);
 
             var _trans_Date = new SqlParameter("@Trans_Date", SqlDbType.Date)
             {
@@ -542,6 +567,7 @@ namespace astute.Repository
                     @Ex_Rate,
                     @Amount,
                     @Remarks,
+                    @Source_Party,
                     @User_Id",
                     _terms_Invoice_Adjust_Table_Type,
                     _id,
@@ -557,6 +583,7 @@ namespace astute.Repository
                     _ex_rate,
                     _amount,
                     _remarks,
+                    _source_party,
                     _user_Id);
 
                 return result;
@@ -641,7 +668,7 @@ namespace astute.Repository
         {
             return await Task.Run(() => _dbContext.Database.ExecuteSqlInterpolatedAsync($"[dbo].[Cashbook_Account_Trans_Detail_Delete] {Id}, {User_Id}"));
         }
-        public async Task<IList<DropdownModel>> Get_Account_Master_Select(string? group, string? subGroup, int? mainCompany,  string? purchaseExpense, string? salesExpense, bool? isParty,int? accountId)
+        public async Task<IList<DropdownModel>> Get_Account_Master_Select(string? group, string? subGroup, int? mainCompany, string? purchaseExpense, string? salesExpense, bool? isParty, int? accountId)
         {
             var _account_Id = accountId > 0 ? new SqlParameter("@Account_Id", accountId) : new SqlParameter("@Account_Id", DBNull.Value);
             var _group = !string.IsNullOrEmpty(group) ? new SqlParameter("@Group", group) : new SqlParameter("@Group", DBNull.Value);
@@ -652,8 +679,8 @@ namespace astute.Repository
             var _is_party = isParty.HasValue ? new SqlParameter("@Is_Party", isParty) : new SqlParameter("@Is_Party", DBNull.Value);
 
             var result = await Task.Run(() => _dbContext.DropdownModel
-                            .FromSqlRaw(@"exec [dbo].[Account_Master_By_Types_Select] @Account_Id,@Group,@Sub_Group,@Main_Company,@Purchase_Expence,@Sales_Expence,@Is_Party", 
-                            _account_Id,_group,_sub_group,_main_company,_purchase_expense,_sales_expense,_is_party).ToListAsync());
+                            .FromSqlRaw(@"exec [dbo].[Account_Master_By_Types_Select] @Account_Id,@Group,@Sub_Group,@Main_Company,@Purchase_Expence,@Sales_Expence,@Is_Party",
+                            _account_Id, _group, _sub_group, _main_company, _purchase_expense, _sales_expense, _is_party).ToListAsync());
 
             return result;
         }

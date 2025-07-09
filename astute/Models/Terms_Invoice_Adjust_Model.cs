@@ -23,6 +23,7 @@ namespace astute.Models
         public decimal Amount_In_US { get; set; }
         public string Voucher_No { get;  set; }
         public string Remarks { get;  set; }
+        public string Source_Party { get; set; }
         public List<Terms_Invoice_Adjust> Terms_Invoice_Adjust { get; set; }
     }
 }

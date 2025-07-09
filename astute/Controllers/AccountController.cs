@@ -1872,11 +1872,11 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_account_master_active_purchase_select")]
         [Authorize]
-        public async Task<IActionResult> Get_Account_Master_Active_Purchase_Select(int Party_Id, int Year_Id)
+        public async Task<IActionResult> Get_Account_Master_Active_Purchase_Select(int Party_Id, int Year_Id, string Trans_Type)
         {
             try
             {
-                var result = await _account_Trans_Master_Service.Get_Account_Master_Active_Purchase_Select(Party_Id, Year_Id);
+                var result = await _account_Trans_Master_Service.Get_Account_Master_Active_Purchase_Select(Party_Id, Year_Id, Trans_Type);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(new
@@ -1937,7 +1937,7 @@ namespace astute.Controllers
                         }
                     }
                     var result = await _account_Trans_Master_Service.Create_Update_Cashbook_Account_Trans_Detail(dataTable, model.Id, model.Trans_Id, model.Process_Id, model.Company_Id, model.Year_Id, transDate, transTime,
-                        model.By_Account, model.By_Type, model.To_Account, model.To_Type, model.Currency_Id, model.Ex_Rate, model.Amount, model.Amount_In_US, model.Remarks, user_Id ?? 0);
+                        model.By_Account, model.By_Type, model.To_Account, model.To_Type, model.Currency_Id, model.Ex_Rate, model.Amount, model.Amount_In_US, model.Remarks, model.Source_Party, user_Id ?? 0);
                     if (result > 0)
                     {
                         return Ok(new
