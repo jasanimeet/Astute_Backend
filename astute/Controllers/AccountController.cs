@@ -1970,7 +1970,7 @@ namespace astute.Controllers
                             });
 
                         }
-                        else if (model.Process_Id == 33)
+                        else if (model.Process_Id == 34)
                         {
                             return Ok(new
                             {
@@ -2085,7 +2085,7 @@ namespace astute.Controllers
         [HttpDelete]
         [Route("delete_cashbook_account_trans_detail")]
         [Authorize]
-        public async Task<IActionResult> Delete_Cashbook_Account_Trans_Detail(int id)
+        public async Task<IActionResult> Delete_Cashbook_Account_Trans_Detail(int id, int process_id)
         {
             try
             {
@@ -2096,11 +2096,38 @@ namespace astute.Controllers
                     var result = await _account_Trans_Master_Service.Delete_Cashbook_Account_Trans(id, user_Id ?? 0);
                     if (result > 0)
                     {
-                        return Ok(new
+                        if (process_id == 31)
                         {
-                            statusCode = HttpStatusCode.OK,
-                            message = CoreCommonMessage.CashBookDeleted
-                        });
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.CashBookDeleted
+                            });
+                        }
+                        else if (process_id == 32)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.BankBookDeleted
+                            });
+                        }
+                        else if (process_id == 33)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.ContraBookDeleted
+                            });
+                        }
+                        else if (process_id == 34)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.PattyCashDeleted
+                            });
+                        }
                     }
                     return BadRequest(new
                     {
