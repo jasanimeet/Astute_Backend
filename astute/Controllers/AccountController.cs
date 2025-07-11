@@ -1938,9 +1938,48 @@ namespace astute.Controllers
                         }
                     }
                     var result = await _account_Trans_Master_Service.Create_Update_Cashbook_Account_Trans_Detail(dataTable, model.Id, model.Trans_Id, model.Process_Id, model.Company_Id, model.Year_Id, transDate, transTime,
-                        model.By_Account, model.By_Type, model.To_Account, model.To_Type, model.Currency_Id, model.Ex_Rate, model.Amount, model.Amount_In_US, model.Remarks, model.Source_Party, user_Id ?? 0);
+                        model.By_Account, model.By_Type, model.To_Account, model.To_Type, model.Currency_Id, model.Ex_Rate, model.Amount, model.Amount_In_US, model.Remarks, model.Source_Party, model.Third_Party, user_Id ?? 0);
                     if (result > 0)
                     {
+                        if (model.Process_Id == 31)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = (model.Id == 0) == true ? CoreCommonMessage.CashBookCreated : CoreCommonMessage.CashBookUpdated,
+                                data = result
+                            });
+                        }
+                        else if (model.Process_Id == 32)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = (model.Id == 0) == true ? CoreCommonMessage.BankBookCreated : CoreCommonMessage.BankBookUpdated,
+                                data = result
+                            });
+
+                        }
+                        else if (model.Process_Id == 33)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = (model.Id == 0) == true ? CoreCommonMessage.ContraBookCreated : CoreCommonMessage.ContraBookUpdated,
+                                data = result
+                            });
+
+                        }
+                        else if (model.Process_Id == 33)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = (model.Id == 0) == true ? CoreCommonMessage.PattyCashCreated : CoreCommonMessage.PattyCashUpdated,
+                                data = result
+                            });
+
+                        }
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,

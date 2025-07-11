@@ -634,6 +634,22 @@
         public static string CashBookCreated = CashBook + AddedSuccessfully;
         public static string CashBookUpdated = CashBook + UpdatedSuccessfully;
         public static string CashBookDeleted = CashBook + DeletedSuccessfully;
+
+        public static string BankBook = "Bank book";
+        public static string BankBookCreated = BankBook + AddedSuccessfully;
+        public static string BankBookUpdated = BankBook + UpdatedSuccessfully;
+        public static string BankBookDeleted = BankBook + DeletedSuccessfully;
+
+        public static string ContraBook = "Contra book";
+        public static string ContraBookCreated = ContraBook + AddedSuccessfully;
+        public static string ContraBookUpdated = ContraBook + UpdatedSuccessfully;
+        public static string ContraBookDeleted = ContraBook + DeletedSuccessfully;
+
+        public static string PattyCash = "Patty Cash";
+        public static string PattyCashCreated = BankBook + AddedSuccessfully;
+        public static string PattyCashUpdated = BankBook + UpdatedSuccessfully;
+        public static string PattyCashDeleted = BankBook + DeletedSuccessfully;
+
         #endregion
 
         #region Process Margin Master

@@ -517,7 +517,7 @@ namespace astute.Repository
             return result;
         }
         public async Task<int> Create_Update_Cashbook_Account_Trans_Detail(DataTable dataTable, int? id, int? trans_Id, int? process_Id, int? company_Id, int? year_Id, DateTime? trans_Date, TimeSpan? trans_Time,
-            int? by_Account, string by_Type, int? to_Account, string to_Type, int? currency_Id, float? ex_Rate, decimal? amount, decimal? amount_in_us, string remarks, string source_party, int user_Id)
+            int? by_Account, string by_Type, int? to_Account, string to_Type, int? currency_Id, float? ex_Rate, decimal? amount, decimal? amount_in_us, string remarks, string source_party,string third_party, int user_Id)
         {
             var _terms_Invoice_Adjust_Table_Type = new SqlParameter("@Terms_Invoice_Adjust_Table_Type", SqlDbType.Structured)
             {
@@ -539,6 +539,7 @@ namespace astute.Repository
             var _remarks = new SqlParameter("@Remarks", string.IsNullOrEmpty(remarks) ? (object)DBNull.Value : remarks);
             var _user_Id = new SqlParameter("@User_Id", user_Id);
             var _source_party = new SqlParameter("@Source_Party", source_party);
+            var _third_party = new SqlParameter("@Third_Party", third_party);
 
             var _trans_Date = new SqlParameter("@Trans_Date", SqlDbType.Date)
             {
@@ -570,6 +571,7 @@ namespace astute.Repository
                     @Amount,
                     @Remarks,
                     @Source_Party,
+                    @Third_Party,
                     @User_Id",
                     _terms_Invoice_Adjust_Table_Type,
                     _id,
@@ -587,6 +589,7 @@ namespace astute.Repository
                     _amount,
                     _remarks,
                     _source_party,
+                    _third_party,
                     _user_Id);
 
                 return result;
