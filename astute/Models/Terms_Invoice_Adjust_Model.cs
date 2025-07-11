@@ -25,6 +25,7 @@ namespace astute.Models
         public string Remarks { get;  set; }
         public string Source_Party { get; set; }
         public string Third_Party { get; set; }
+        public string Mode { get; set; }
         public List<Terms_Invoice_Adjust> Terms_Invoice_Adjust { get; set; }
     }
 }

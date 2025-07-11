@@ -517,7 +517,7 @@ namespace astute.Repository
             return result;
         }
         public async Task<int> Create_Update_Cashbook_Account_Trans_Detail(DataTable dataTable, int? id, int? trans_Id, int? process_Id, int? company_Id, int? year_Id, DateTime? trans_Date, TimeSpan? trans_Time,
-            int? by_Account, string by_Type, int? to_Account, string to_Type, int? currency_Id, float? ex_Rate, decimal? amount, decimal? amount_in_us, string remarks, string source_party,string third_party, int user_Id)
+            int? by_Account, string by_Type, int? to_Account, string to_Type, int? currency_Id, float? ex_Rate, decimal? amount, decimal? amount_in_us, string remarks, string source_party, string third_party, string mode, int user_Id)
         {
             var _terms_Invoice_Adjust_Table_Type = new SqlParameter("@Terms_Invoice_Adjust_Table_Type", SqlDbType.Structured)
             {
@@ -538,8 +538,9 @@ namespace astute.Repository
             var _amount = new SqlParameter("@Amount", amount);
             var _remarks = new SqlParameter("@Remarks", string.IsNullOrEmpty(remarks) ? (object)DBNull.Value : remarks);
             var _user_Id = new SqlParameter("@User_Id", user_Id);
-            var _source_party = new SqlParameter("@Source_Party", source_party);
-            var _third_party = new SqlParameter("@Third_Party", third_party);
+            var _source_party = new SqlParameter("@Source_Party", string.IsNullOrEmpty(source_party) ? (object)DBNull.Value : source_party);
+            var _third_party = new SqlParameter("@Third_Party", string.IsNullOrEmpty(third_party) ? (object)DBNull.Value : third_party);
+            var _mode = new SqlParameter("@Mode", string.IsNullOrEmpty(mode) ? (object)DBNull.Value : mode);
 
             var _trans_Date = new SqlParameter("@Trans_Date", SqlDbType.Date)
             {
@@ -572,6 +573,7 @@ namespace astute.Repository
                     @Remarks,
                     @Source_Party,
                     @Third_Party,
+                    @Mode,
                     @User_Id",
                     _terms_Invoice_Adjust_Table_Type,
                     _id,
@@ -590,6 +592,7 @@ namespace astute.Repository
                     _remarks,
                     _source_party,
                     _third_party,
+                    _mode,
                     _user_Id);
 
                 return result;
@@ -600,7 +603,7 @@ namespace astute.Repository
                 throw;
             }
         }
-        public async Task<List<Dictionary<string, object>>> Get_Cashbook_Account_Trans_Select(int? id, int? year_id, int? company_id,int? process_id)
+        public async Task<List<Dictionary<string, object>>> Get_Cashbook_Account_Trans_Select(int? id, int? year_id, int? company_id, int? process_id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
