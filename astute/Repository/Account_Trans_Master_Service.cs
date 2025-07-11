@@ -527,6 +527,7 @@ namespace astute.Repository
 
             var _id = new SqlParameter("@Id", ((id ?? 0) > 0) ? id : DBNull.Value);
             var _company_Id = new SqlParameter("@Company_Id", (company_Id > 0) ? company_Id : DBNull.Value);
+            var _process_Id = new SqlParameter("@Process_Id", (process_Id > 0) ? process_Id : DBNull.Value);
             var _year_Id = new SqlParameter("@Year_Id", (year_Id > 0) ? year_Id : DBNull.Value);
             var _by_Account = new SqlParameter("@By_Account", (by_Account > 0) ? by_Account : DBNull.Value);
             var _by_Type = new SqlParameter("@By_Type", by_Type);
@@ -556,6 +557,7 @@ namespace astute.Repository
                     @Terms_Invoice_Adjust_Table_Type,
                     @Id,
                     @Company_Id,
+                    @Process_Id,
                     @Year_Id,
                     @Trans_Date,
                     @Trans_Time,
@@ -572,6 +574,7 @@ namespace astute.Repository
                     _terms_Invoice_Adjust_Table_Type,
                     _id,
                     _company_Id,
+                    _process_Id,
                     _year_Id,
                     _trans_Date,
                     _trans_Time,
