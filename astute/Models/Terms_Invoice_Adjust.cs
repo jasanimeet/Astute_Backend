@@ -4,7 +4,8 @@
     {
         public int Id { get; set; }
         public int Account_Trans_Detail_Id { get; set; }
-        public int Purchase_Master_Id { get; set; }
+        public int? Purchase_Master_Id { get; set; }
+        public int? Transaction_Master_Id { get; set; }
         public int Currency_Id { get; set; }
         public float Ex_Rate { get; set; }
         public int Terms_Id { get; set; }

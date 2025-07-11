@@ -3589,6 +3589,7 @@ namespace astute.Controllers
                 if (result != null && result.Rows.Count > 0)
                 {
                     List<string> to_Emails = new List<string>() { "list@sunrisediam.com" };
+                    List<string> cc_Emails = new List<string>() { "jignesh@sunrisediam.com" };
 
                     string subject = "Same Stones for First and Last API/FTP";
 
@@ -3617,7 +3618,7 @@ namespace astute.Controllers
                     sb.AppendLine(@"</tbody>");
                     sb.AppendLine(@"</table>");
 
-                    _emailSender.SendEmail(toEmails: to_Emails, subject: subject, body: sb.ToString(), ccEmails: null, bccEmails: null);
+                    _emailSender.SendEmail(toEmails: to_Emails, subject: subject, body: sb.ToString(), ccEmails: cc_Emails, bccEmails: null);
 
                     return Ok(new
                     {

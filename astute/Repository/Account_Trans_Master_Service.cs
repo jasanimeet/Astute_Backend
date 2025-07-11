@@ -594,7 +594,7 @@ namespace astute.Repository
                 throw;
             }
         }
-        public async Task<List<Dictionary<string, object>>> Get_Cashbook_Account_Trans_Select(int? id, int? year_id, int? company_id)
+        public async Task<List<Dictionary<string, object>>> Get_Cashbook_Account_Trans_Select(int? id, int? year_id, int? company_id,int? process_id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -606,6 +606,7 @@ namespace astute.Repository
                     command.Parameters.Add(id > 0 ? new SqlParameter("@Id", id) : new SqlParameter("@Id", DBNull.Value));
                     command.Parameters.Add(year_id > 0 ? new SqlParameter("@Year_Id", year_id) : new SqlParameter("@Year_Id", DBNull.Value));
                     command.Parameters.Add(company_id > 0 ? new SqlParameter("@Company_Id", company_id) : new SqlParameter("@Company_Id", DBNull.Value));
+                    command.Parameters.Add(process_id > 0 ? new SqlParameter("@Process_Id", process_id) : new SqlParameter("@Process_Id", DBNull.Value));
 
                     await connection.OpenAsync();
 

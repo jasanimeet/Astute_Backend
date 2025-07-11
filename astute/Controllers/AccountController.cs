@@ -1924,6 +1924,7 @@ namespace astute.Controllers
                     dataTable.Columns.Add("Id", typeof(int));
                     dataTable.Columns.Add("Account_Trans_Detail_Id", typeof(int));
                     dataTable.Columns.Add("Purchase_Master_Id", typeof(int));
+                    dataTable.Columns.Add("Transaction_Master_Id", typeof(int));
                     dataTable.Columns.Add("Currency_Id", typeof(int));
                     dataTable.Columns.Add("Ex_Rate", typeof(float));
                     dataTable.Columns.Add("Terms_Id", typeof(int));
@@ -1933,7 +1934,7 @@ namespace astute.Controllers
                     {
                         foreach (var item in model.Terms_Invoice_Adjust)
                         {
-                            dataTable.Rows.Add(item.Id, item.Account_Trans_Detail_Id, item.Purchase_Master_Id, item.Currency_Id, item.Ex_Rate, item.Terms_Id, item.Terms_Amount, item.Paid_Amount);
+                            dataTable.Rows.Add(item.Id, item.Account_Trans_Detail_Id, item.Purchase_Master_Id, item.Transaction_Master_Id, item.Currency_Id, item.Ex_Rate, item.Terms_Id, item.Terms_Amount, item.Paid_Amount);
                         }
                     }
                     var result = await _account_Trans_Master_Service.Create_Update_Cashbook_Account_Trans_Detail(dataTable, model.Id, model.Trans_Id, model.Process_Id, model.Company_Id, model.Year_Id, transDate, transTime,
@@ -1967,7 +1968,7 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_cashbook_account_trans_select")]
         [Authorize]
-        public async Task<IActionResult> Get_Cashbook_Account_Trans_Select(int company_id, int year_id)
+        public async Task<IActionResult> Get_Cashbook_Account_Trans_Select(int company_id, int year_id, int process_id)
         {
             try
             {
@@ -1975,7 +1976,7 @@ namespace astute.Controllers
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                 if ((user_Id ?? 0) > 0)
                 {
-                    var result = await _account_Trans_Master_Service.Get_Cashbook_Account_Trans_Select(null, year_id, company_id);
+                    var result = await _account_Trans_Master_Service.Get_Cashbook_Account_Trans_Select(null, year_id, company_id, process_id);
                     if (result != null && result.Count > 0)
                     {
                         return Ok(new
@@ -2005,7 +2006,7 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_cashbook_account_trans_detail_select")]
         [Authorize]
-        public async Task<IActionResult> Get_Cashbook_Account_Trans_Detail_Select(int id, int year_id, int company_id)
+        public async Task<IActionResult> Get_Cashbook_Account_Trans_Detail_Select(int id, int year_id, int company_id, int process_id)
         {
             try
             {
@@ -2013,7 +2014,7 @@ namespace astute.Controllers
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                 if ((user_Id ?? 0) > 0)
                 {
-                    var result = await _account_Trans_Master_Service.Get_Cashbook_Account_Trans_Select(id, year_id, company_id);
+                    var result = await _account_Trans_Master_Service.Get_Cashbook_Account_Trans_Select(id, year_id, company_id, process_id);
                     if (result != null && result.Count > 0)
                     {
                         var summary = await _account_Trans_Master_Service.Get_Cashbook_Account_Trans_Detail_Select(id);
