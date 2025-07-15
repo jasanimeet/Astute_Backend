@@ -4217,7 +4217,7 @@ namespace astute.Repository
             return result;
         }
 
-        public async Task<(int, bool)> Insert_Update_Purchase(DataTable masterDataTable, DataTable detailDataTable, DataTable termsDataTable, DataTable expensesDataTable, DataTable purchaseDetailLooseDataTable, int user_Id)
+        public async Task<(int, bool, string)> Insert_Update_Purchase(DataTable masterDataTable, DataTable detailDataTable, DataTable termsDataTable, DataTable expensesDataTable, DataTable purchaseDetailLooseDataTable, int user_Id)
         {
             var masterParameter = new SqlParameter("@Purchase_Master_Table_Type", SqlDbType.Structured)
             {
@@ -4256,6 +4256,11 @@ namespace astute.Repository
                 Direction = ParameterDirection.Output
             };
 
+            var exists_Cert_No = new SqlParameter("@Exists_Cert_No", SqlDbType.NVarChar, 1000)
+            {
+                Direction = ParameterDirection.Output
+            };
+
             _dbContext.Database.SetCommandTimeout(3600);
 
             var result = await _dbContext.Database.ExecuteSqlRawAsync(@"EXEC Purchase_Insert_Update 
@@ -4265,19 +4270,21 @@ namespace astute.Repository
                                                                         @Purchase_Expenses_Table_Type, 
                                                                         @Purchase_Detail_Loose_Table_Type, 
                                                                         @User_Id, 
-                                                                        @Is_Exists OUT",
+                                                                        @Is_Exists OUT, @Exists_Cert_No OUT",
                                                                             masterParameter,
                                                                             detailParameter,
                                                                             termsParameter,
                                                                             expensesParameter,
                                                                             purchaseDetailLooseParameter,
                                                                             _user_Id,
-                                                                            is_Exists
+                                                                            is_Exists,
+                                                                            exists_Cert_No
                                                                         );
 
             var _is_Exist = (bool)is_Exists.Value;
+            var _exist_Cert_No = (string)exists_Cert_No.Value;
 
-            return _is_Exist ? (409, true) : (result, false);
+            return _is_Exist ? (409, true, _exist_Cert_No) : (result, false, "");
         }
 
         public async Task<List<Dictionary<string, object>>> Get_Purchase_Master(Purchase_Master_Search_Model purchase_Master_Search_Model)

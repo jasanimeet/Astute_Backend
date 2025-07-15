@@ -15574,7 +15574,7 @@ namespace astute.Controllers
                     );
                 }
 
-                var (purchase_result, Is_Exist) = await _supplierService.Insert_Update_Purchase(masterDataTable, detailDataTable, termsDataTable, expensesDataTable, purchaseDetailLooseDataTable, user_Id ?? 0);
+                var (purchase_result, Is_Exist, Exist_Certi_No) = await _supplierService.Insert_Update_Purchase(masterDataTable, detailDataTable, termsDataTable, expensesDataTable, purchaseDetailLooseDataTable, user_Id ?? 0);
 
                 if (purchase_result == 409 && Is_Exist)
                 {
@@ -15583,7 +15583,7 @@ namespace astute.Controllers
                         return Conflict(new
                         {
                             statusCode = HttpStatusCode.Conflict,
-                            message = CoreCommonMessage.PurchaseAlreadyExists,
+                            message = CoreCommonMessage.PurchaseAlreadyExists + " Exist Certificate is " + Exist_Certi_No,
                         });
                     }
                 }
