@@ -12941,6 +12941,7 @@ namespace astute.CoreServices
                         int kk = 0;
 
                         string cutValue = Convert.ToString(dtStock.Rows[i - inStartIndex]["CUT"]);
+                        string finalStatusValue = Convert.ToString(dtStock.Rows[i - inStartIndex]["Final Status"]);
                         for (int j = 0; j < column_dt.Rows.Count; j++)
                         {
                             kk += 1;
@@ -13070,12 +13071,29 @@ namespace astute.CoreServices
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
                                 }
-                                else if (Column_Name == "Customer Remarks" || Column_Name == "Order Remarks" || Column_Name == "QC Remarks" || Column_Name == "Final Status" || Column_Name == "Additional Remarks")
+                                else if (Column_Name == "Customer Remarks" || Column_Name == "Order Remarks" || Column_Name == "QC Remarks" || Column_Name == "Additional Remarks")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
 
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                     worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(gold);
+                                }
+                                else if (Column_Name == "Final Status")
+                                {
+                                    worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
+
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[inwrkrow, kk].Style.Fill.BackgroundColor.SetColor(gold);
+
+                                    if (finalStatusValue == "SELECTION")
+                                    {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Red);
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
+                                    else if (finalStatusValue == "REJECTION") {
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Green);
+                                        worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
+                                    }
                                 }
                                 else
                                 {
@@ -13089,7 +13107,7 @@ namespace astute.CoreServices
                     }
 
                     worksheet.Cells[inStartIndex, 1, inwrkrow, Row_Count].Style.Font.Size = 9;
-
+                    
                     int kkk = 0;
                     for (int j = 0; j < column_dt.Rows.Count; j++)
                     {
@@ -13271,6 +13289,7 @@ namespace astute.CoreServices
                         ["Video"] = 49,
                         ["Cert No"] = 70,
                         ["Status"] = 70,
+                        ["Additional Remarks"] = 115,
                         ["QC Remarks"] = 151,
                         ["Shape"] = 70,
                         ["Pointer"] = 70,
@@ -13441,7 +13460,7 @@ namespace astute.CoreServices
                                         worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
                                     }
                                 }
-                                else if (Column_Name == "QC Remarks")
+                                else if (Column_Name == "QC Remarks" || Column_Name == "Additional Remarks")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
 
@@ -15378,7 +15397,7 @@ namespace astute.CoreServices
 
                                     worksheet.Cells[inwrkrow, kk].Style.Numberformat.Format = "0.00";
                                 }
-                                else if (Column_Name == "FLS INTENSITY" || Column_Name == "STOCK ID" || Column_Name == "POINTER" || Column_Name == "CLARITY" || Column_Name == "SALES SOURCE PARTY" || Column_Name == "PURCHASE SOURCE PARTY" || Column_Name == "SUPPLIER NO" || Column_Name == "KTS GRADE" || Column_Name == "COMMENT GRADE" || Column_Name == "PARAMETER GRADE" || Column_Name == "ZONE" || Column_Name == "SUB ZONE" || Column_Name == "COUNTRY" || Column_Name == "SHADE" || Column_Name == "LUSTER" || Column_Name == "CERTIFICATE NO" || Column_Name == "SHAPE" || Column_Name == "KEY TO SYMBOL" || Column_Name == "INTERNAL INVOICE NO" || Column_Name == "TRANSACTION DATE" || Column_Name == "INVOICE DATE" || Column_Name == "TIME" || Column_Name == "TRANSACTION ID" || Column_Name == "SUB POINTER" || Column_Name == "STATUS" || Column_Name == "CUSTOMER" || Column_Name == "COMPANY" || Column_Name == "LASER INSCRIPTION" || Column_Name == "TABLE BLACK" || Column_Name == "SIDE BLACK" || Column_Name == "TABLE WHITE" || Column_Name == "SIDE WHITE" || Column_Name == "TABLE OPEN" || Column_Name == "CROWN OPEN" || Column_Name == "PAVILION OPEN" || Column_Name == "GIRDLE OPEN" || Column_Name == "SUNRISE CLARITY GRADE" || Column_Name == "BUYER" || Column_Name == "ASSIST BY" || Column_Name == "CERT TYPE" || Column_Name == "CERTIFICATE DATE" || Column_Name == "ORIGIN" || Column_Name == "CROWN ANGLE" || Column_Name == "CROWN HEIGHT" || Column_Name == "PAVILION ANGLE" || Column_Name == "PAVILION HEIGHT" || Column_Name == "CULET" || Column_Name == "GIRDLE PER" || Column_Name == "LAB COMMENTS" || Column_Name == "STAR LN" || Column_Name == "LR HALF" || Column_Name == "PRE SOLD" || Column_Name == "RF ID" || Column_Name == "UPCOMING FLAG" || Column_Name == "CONTRACT FLAG" || Column_Name == "COLOR" || Column_Name== "SUPPLIER SOURCE PARTY")
+                                else if (Column_Name == "FLS INTENSITY" || Column_Name == "STOCK ID" || Column_Name == "POINTER" || Column_Name == "CLARITY" || Column_Name == "SALES SOURCE PARTY" || Column_Name == "PURCHASE SOURCE PARTY" || Column_Name == "SUPPLIER NO" || Column_Name == "KTS GRADE" || Column_Name == "COMMENT GRADE" || Column_Name == "PARAMETER GRADE" || Column_Name == "ZONE" || Column_Name == "SUB ZONE" || Column_Name == "COUNTRY" || Column_Name == "SHADE" || Column_Name == "LUSTER" || Column_Name == "CERTIFICATE NO" || Column_Name == "SHAPE" || Column_Name == "KEY TO SYMBOL" || Column_Name == "INTERNAL INVOICE NO" || Column_Name == "TRANSACTION DATE" || Column_Name == "INVOICE DATE" || Column_Name == "TIME" || Column_Name == "TRANSACTION ID" || Column_Name == "SUB POINTER" || Column_Name == "STATUS" || Column_Name == "CUSTOMER" || Column_Name == "COMPANY" || Column_Name == "LASER INSCRIPTION" || Column_Name == "TABLE BLACK" || Column_Name == "SIDE BLACK" || Column_Name == "TABLE WHITE" || Column_Name == "SIDE WHITE" || Column_Name == "TABLE OPEN" || Column_Name == "CROWN OPEN" || Column_Name == "PAVILION OPEN" || Column_Name == "GIRDLE OPEN" || Column_Name == "SUNRISE CLARITY GRADE" || Column_Name == "BUYER" || Column_Name == "ASSIST BY" || Column_Name == "CERT TYPE" || Column_Name == "CERTIFICATE DATE" || Column_Name == "ORIGIN" || Column_Name == "CROWN ANGLE" || Column_Name == "CROWN HEIGHT" || Column_Name == "PAVILION ANGLE" || Column_Name == "PAVILION HEIGHT" || Column_Name == "CULET" || Column_Name == "GIRDLE PER" || Column_Name == "LAB COMMENTS" || Column_Name == "STAR LN" || Column_Name == "LR HALF" || Column_Name == "PRE SOLD" || Column_Name == "RF ID" || Column_Name == "UPCOMING FLAG" || Column_Name == "CONTRACT FLAG" || Column_Name == "COLOR" || Column_Name == "SUPPLIER SOURCE PARTY")
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(s_dt.Rows[i - inStartIndex][Column_Name]);
                                 }

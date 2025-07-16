@@ -1930,11 +1930,18 @@ namespace astute.Controllers
                     dataTable.Columns.Add("Terms_Id", typeof(int));
                     dataTable.Columns.Add("Terms_Amount", typeof(decimal));
                     dataTable.Columns.Add("Paid_Amount", typeof(decimal));
+                    dataTable.Columns.Add("Is_Adjust", typeof(bool));
+                    dataTable.Columns.Add("Adjust_Account_Id", typeof(int));
+                    dataTable.Columns.Add("Adjust_Amount", typeof(decimal));
+                    dataTable.Columns.Add("Adjust_Account_Trans_Detail_Id", typeof(int));
+
                     if (model.Terms_Invoice_Adjust != null && model.Terms_Invoice_Adjust.Count > 0)
                     {
                         foreach (var item in model.Terms_Invoice_Adjust)
                         {
-                            dataTable.Rows.Add(item.Id, item.Account_Trans_Detail_Id, item.Purchase_Master_Id, item.Transaction_Master_Id, item.Currency_Id, item.Ex_Rate, item.Terms_Id, item.Terms_Amount, item.Paid_Amount);
+                            dataTable.Rows.Add(item.Id, item.Account_Trans_Detail_Id, item.Purchase_Master_Id, item.Transaction_Master_Id, item.Currency_Id, item.Ex_Rate,
+                                    item.Terms_Id, item.Terms_Amount, item.Paid_Amount,
+                                    item.Is_Adjust, item.Adjust_Account_Id, item.Adjust_Amount, item.Adjust_Account_Trans_Detail_Id);
                         }
                     }
                     var result = await _account_Trans_Master_Service.Create_Update_Cashbook_Account_Trans_Detail(dataTable, model.Id, model.Trans_Id, model.Process_Id, model.Company_Id, model.Year_Id, transDate, transTime,
@@ -1976,6 +1983,16 @@ namespace astute.Controllers
                             {
                                 statusCode = HttpStatusCode.OK,
                                 message = (model.Id == 0) == true ? CoreCommonMessage.PattyCashCreated : CoreCommonMessage.PattyCashUpdated,
+                                data = result
+                            });
+
+                        }
+                        else if (model.Process_Id == 35)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = (model.Id == 0) == true ? CoreCommonMessage.JournalCreated : CoreCommonMessage.JournalUpdated,
                                 data = result
                             });
 
@@ -2126,6 +2143,14 @@ namespace astute.Controllers
                             {
                                 statusCode = HttpStatusCode.OK,
                                 message = CoreCommonMessage.PattyCashDeleted
+                            });
+                        }
+                        else if (process_id == 35)
+                        {
+                            return Ok(new
+                            {
+                                statusCode = HttpStatusCode.OK,
+                                message = CoreCommonMessage.JournalDeleted
                             });
                         }
                     }

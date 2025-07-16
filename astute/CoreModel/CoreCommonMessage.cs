@@ -650,6 +650,11 @@
         public static string PattyCashUpdated = BankBook + UpdatedSuccessfully;
         public static string PattyCashDeleted = BankBook + DeletedSuccessfully;
 
+        public static string Journal = "Journal";
+        public static string JournalCreated = Journal + AddedSuccessfully;
+        public static string JournalUpdated = Journal + UpdatedSuccessfully;
+        public static string JournalDeleted = Journal + DeletedSuccessfully;
+
         #endregion
 
         #region Process Margin Master

@@ -17205,6 +17205,7 @@ namespace astute.Controllers
                                         "VIDEO LINK",
                                         "Cert No",
                                         "Status",
+                                        "Additional Remarks",
                                         "QC Remarks",
                                         "Shape",
                                         "Pointer",
@@ -17240,7 +17241,7 @@ namespace astute.Controllers
                                         "Table Open",
                                         "Crown Open",
                                         "Pavilion Open",
-                                        "Girdle Open"
+                                        "Girdle Open",
                     };
 
                     DataTable columnNamesTable = new DataTable();
