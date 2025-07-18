@@ -106,5 +106,9 @@ namespace astute.Models
 
         [JsonPropertyName("Invoice_Date")]
         public string? Invoice_Date { get; set; }
+        [JsonPropertyName("Consignment_Type")]
+        public string? Consignment_Type { get; set; }
+        [JsonPropertyName("Tracking_Number")]
+        public string? Tracking_Number { get; set; }
     }
 }

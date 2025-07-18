@@ -17823,6 +17823,8 @@ namespace astute.Controllers
                 new DataColumn("Sales_Invoice_No", typeof(string)),
                 new DataColumn("Source_Customer_Id", typeof(int)),
                 new DataColumn("Invoice_Date", typeof(DateTime)),
+                new DataColumn("Consignment_Type", typeof(string)),
+                new DataColumn("Tracking_Number", typeof(string)),
             });
 
             table.Rows.Add(
@@ -17853,7 +17855,9 @@ namespace astute.Controllers
                 m.Pre_Carrige_By ?? (object)DBNull.Value,
                 m.Sales_Invoice_No ?? (object)DBNull.Value,
                 m.Source_Customer_Id ?? (object)DBNull.Value,
-                invoiceDate == DateTime.MinValue ? (object)DBNull.Value : invoiceDate
+                invoiceDate == DateTime.MinValue ? (object)DBNull.Value : invoiceDate,
+                m.Consignment_Type ?? (object)DBNull.Value,
+                m.Tracking_Number ?? (object)DBNull.Value
             );
             return table;
         }
