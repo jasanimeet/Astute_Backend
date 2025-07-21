@@ -110,5 +110,7 @@ namespace astute.Models
         public string? Consignment_Type { get; set; }
         [JsonPropertyName("Tracking_Number")]
         public string? Tracking_Number { get; set; }
+        [JsonPropertyName("Is_Consignment_Receive_Hold")]
+        public bool? Is_Consignment_Receive_Hold { get; set; }
     }
 }
