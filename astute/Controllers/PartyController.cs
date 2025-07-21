@@ -17772,6 +17772,21 @@ namespace astute.Controllers
                     userId ?? 0
                 );
 
+                /*consignment receive time if choose auto hold then*/
+                if (result > 0 && isExist == false)
+                {
+                    if (master.Trans_Id == 0 && master.Process_Id == "3" && (master.Is_Consignment_Receive_Hold ?? false) == true)
+                    {
+                        var consignmentReceiveAutoHold = await _supplierService.Transaction_Auto_Consignment_Receive_Insert_Update(
+                            Build_Transaction_Master_Table(master, transDate, dueDate, invoiceDate),
+                            Build_Transaction_Detail_Table(details),
+                            Build_Transaction_Terms_Table(terms),
+                            Build_Transaction_Expenses_Table(expenses),
+                            Build_Transaction_Loose_Detail_Table(looseDetails),
+                            userId ?? 0
+                        );
+                    }
+                }
                 return result switch
                 {
                     409 when isExist => Conflict(new { statusCode = HttpStatusCode.Conflict, message = CoreCommonMessage.PurchaseAlreadyExists }),
@@ -17825,6 +17840,7 @@ namespace astute.Controllers
                 new DataColumn("Invoice_Date", typeof(DateTime)),
                 new DataColumn("Consignment_Type", typeof(string)),
                 new DataColumn("Tracking_Number", typeof(string)),
+                new DataColumn("Is_Consignment_Receive_Hold", typeof(bool)),
             });
 
             table.Rows.Add(
@@ -17857,7 +17873,8 @@ namespace astute.Controllers
                 m.Source_Customer_Id ?? (object)DBNull.Value,
                 invoiceDate == DateTime.MinValue ? (object)DBNull.Value : invoiceDate,
                 m.Consignment_Type ?? (object)DBNull.Value,
-                m.Tracking_Number ?? (object)DBNull.Value
+                m.Tracking_Number ?? (object)DBNull.Value,
+                m.Is_Consignment_Receive_Hold ?? (object)DBNull.Value
             );
             return table;
         }
