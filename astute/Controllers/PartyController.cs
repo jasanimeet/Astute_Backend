@@ -21673,78 +21673,40 @@ namespace astute.Controllers
          */
         [HttpPost]
         [Route("get_starrays_stock")]
-        public async Task<IActionResult> Get_StarRays_Stock(Diarough_Model model)
+        public async Task<IActionResult> Get_StarRays_Stock(StarRays_Model model)
         {
             try
             {
-                var _client = new HttpClient();
-
-                var _request = new HttpRequestMessage(HttpMethod.Post, model.Login_URL);
-
-                var _credentials = new Dictionary<string, string>
+                using (var client = new HttpClient())
                 {
-                    { model.User_Caption , model.User_Name},
-                    { model.Password_Caption, model.Password }
-                };
+                    string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{model.User_Name}:{model.Password}"));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
 
-                var _content = new StringContent(JsonConvert.SerializeObject(_credentials), Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = await client.PostAsync(model.Stock_Url, null);
 
-                _request.Content = _content;
-
-                var _response = await _client.SendAsync(_request);
-
-                if (_response.IsSuccessStatusCode)
-                {
-                    var json = await _response.Content.ReadAsStringAsync();
-                    string cleanedJson = json.Replace("\\\"", "\"").Trim('"');
-
-                    var jsonObject = JsonConvert.DeserializeObject<JObject>(cleanedJson);
-
-                    var partyId = jsonObject["Data"]?["Party_Id"]?.ToString();
-                    var token = jsonObject["Data"]?["Token"]?.ToString();
-
-                    using (var client = new HttpClient())
+                    if (response.IsSuccessStatusCode)
                     {
-                        var stockUrl = $"{model.Stock_Url}?{model.Action_Caption}={partyId}&{model.Action_Caption1}={token}";
-                        var request = new HttpRequestMessage(HttpMethod.Get, stockUrl);
-                        var response = await client.SendAsync(request);
+                        var responseString = await response.Content.ReadAsStringAsync();
 
-                        if (response.IsSuccessStatusCode)
-                        {
-                            var responseString = await response.Content.ReadAsStringAsync();
-
-                            return StatusCode((int)response.StatusCode, responseString);
-                        }
-                        else
-                        {
-                            var errorDetails = await response.Content.ReadAsStringAsync();
-
-                            await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_Diarough_Stock", errorDetails);
-                            return Conflict(new
-                            {
-                                statusCode = HttpStatusCode.Conflict,
-                                message = CoreCommonMessage.ApiFailed,
-                                error = errorDetails
-                            });
-                        }
+                        return StatusCode((int)response.StatusCode, responseString);
                     }
-                }
-                else
-                {
-                    var errorDetails = await _response.Content.ReadAsStringAsync();
-
-                    await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_Diarough_Stock", errorDetails);
-                    return Conflict(new
+                    else
                     {
-                        statusCode = HttpStatusCode.Conflict,
-                        message = CoreCommonMessage.ApiFailed,
-                        error = errorDetails
-                    });
+                        var errorDetails = await response.Content.ReadAsStringAsync();
+
+                        await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_StarRays_Stock", errorDetails);
+                        return Conflict(new
+                        {
+                            statusCode = HttpStatusCode.Conflict,
+                            message = CoreCommonMessage.ApiFailed,
+                            error = errorDetails
+                        });
+                    }
                 }
             }
             catch (HttpRequestException httpEx)
             {
-                await _commonService.InsertErrorLog(httpEx.Message, "Get_Diarough_Stock", httpEx.StackTrace);
+                await _commonService.InsertErrorLog(httpEx.Message, "Get_StarRays_Stock", httpEx.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     statusCode = HttpStatusCode.InternalServerError,
@@ -21754,7 +21716,7 @@ namespace astute.Controllers
             }
             catch (Exception ex)
             {
-                await _commonService.InsertErrorLog(ex.Message, "Get_Diarough_Stock", ex.StackTrace);
+                await _commonService.InsertErrorLog(ex.Message, "Get_StarRays_Stock", ex.StackTrace);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     statusCode = HttpStatusCode.InternalServerError,
