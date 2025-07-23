@@ -648,6 +648,7 @@ namespace astute.Repository
             var modified_By = party_Master.Modified_By > 0 ? new SqlParameter("@Modified_By", party_Master.Modified_By) : new SqlParameter("@Modified_By", DBNull.Value);
             var company_Code = party_Master.Company_Code > 0 ? new SqlParameter("@Company_Code", party_Master.Company_Code) : new SqlParameter("@Company_Code", DBNull.Value);
             var shipment_Min_Amt = party_Master.Shipment_Min_Amt > 0 ? new SqlParameter("@Shipment_Min_Amt", party_Master.Shipment_Min_Amt) : new SqlParameter("@Shipment_Min_Amt", DBNull.Value);
+            var invoice_Party_Id = party_Master.Invoice_Party_Id > 0 ? new SqlParameter("@Invoice_Party_Id", party_Master.Invoice_Party_Id) : new SqlParameter("@Invoice_Party_Id", DBNull.Value);
             //var status = new SqlParameter("@Status", true);
             var insertedId = new SqlParameter("@InsertedId", SqlDbType.Int)
             {
@@ -661,11 +662,11 @@ namespace astute.Repository
             var result = await Task.Run(() => _dbContext.Database
                         .ExecuteSqlRawAsync(@"EXEC Party_Master_Insert_Update @Party_Id, @Party_Type, @Party_Code, @Adress_1, @Adress_2, @Adress_3, @City_Id, @PinCode, @Mobile_1,
                         @Mobile_1_Country_Code, @Mobile_2, @Mobile_2_Country_Code, @Phone_1, @Phone_1_Country_Code, @Phone_2, @Phone_2_Country_Code, @Fax, @Fax_Country_Code, @Email_1, @Email_2, @Party_Name, @Ship_PartyId, @Final_Customer_Id, @Website,
-                        @Cust_Freight_Account_No, @Alias_Name, @Wechat_ID, @Skype_ID, @Business_Reg_No, @Default_Remarks, @Notification, @Reference_By, @TIN_No,@Invoice_Grp, @Modified_By, @Company_Code, @Shipment_Min_Amt, @InsertedId OUT, @Party_Exists OUT", party_Id,
+                        @Cust_Freight_Account_No, @Alias_Name, @Wechat_ID, @Skype_ID, @Business_Reg_No, @Default_Remarks, @Notification, @Reference_By, @TIN_No,@Invoice_Grp, @Modified_By, @Company_Code, @Shipment_Min_Amt, @Invoice_Party_Id, @InsertedId OUT, @Party_Exists OUT", party_Id,
                         party_Type, party_Code, party_Address1, party_Address2, party_Address3, city_Id, pin_Code, mobile_No1, mobile_1_Country_Code, mobile_No2, mobile_2_Country_Code,
                         phone_No1, phone_1_Country_Code, phone_No2, phone_2_Country_Code, fax, fax_Country_Code, email_1, email_2,
                         party_Name, ship_PartyId, final_Customer_Id, website, cust_Freight_Account_No, alias_Name, wechat_ID, skype_ID, business_Reg_No,
-                        default_Remarks, notification, reference_By, tIN_No, invoice_Grp, modified_By, company_Code, shipment_Min_Amt, insertedId, party_Exists));
+                        default_Remarks, notification, reference_By, tIN_No, invoice_Grp, modified_By, company_Code, shipment_Min_Amt, invoice_Party_Id, insertedId, party_Exists));
 
             var _party_exists = (bool)party_Exists.Value;
             if (_party_exists)

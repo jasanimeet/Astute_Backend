@@ -21666,6 +21666,106 @@ namespace astute.Controllers
 
         #endregion
 
+        #region StarRays Api
+        /*
+         * Added By Jashmin Patel(2025/07/23)
+         * For STARRAYS API.
+         */
+        [HttpPost]
+        [Route("get_starrays_stock")]
+        public async Task<IActionResult> Get_StarRays_Stock(Diarough_Model model)
+        {
+            try
+            {
+                var _client = new HttpClient();
+
+                var _request = new HttpRequestMessage(HttpMethod.Post, model.Login_URL);
+
+                var _credentials = new Dictionary<string, string>
+                {
+                    { model.User_Caption , model.User_Name},
+                    { model.Password_Caption, model.Password }
+                };
+
+                var _content = new StringContent(JsonConvert.SerializeObject(_credentials), Encoding.UTF8, "application/json");
+
+                _request.Content = _content;
+
+                var _response = await _client.SendAsync(_request);
+
+                if (_response.IsSuccessStatusCode)
+                {
+                    var json = await _response.Content.ReadAsStringAsync();
+                    string cleanedJson = json.Replace("\\\"", "\"").Trim('"');
+
+                    var jsonObject = JsonConvert.DeserializeObject<JObject>(cleanedJson);
+
+                    var partyId = jsonObject["Data"]?["Party_Id"]?.ToString();
+                    var token = jsonObject["Data"]?["Token"]?.ToString();
+
+                    using (var client = new HttpClient())
+                    {
+                        var stockUrl = $"{model.Stock_Url}?{model.Action_Caption}={partyId}&{model.Action_Caption1}={token}";
+                        var request = new HttpRequestMessage(HttpMethod.Get, stockUrl);
+                        var response = await client.SendAsync(request);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var responseString = await response.Content.ReadAsStringAsync();
+
+                            return StatusCode((int)response.StatusCode, responseString);
+                        }
+                        else
+                        {
+                            var errorDetails = await response.Content.ReadAsStringAsync();
+
+                            await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_Diarough_Stock", errorDetails);
+                            return Conflict(new
+                            {
+                                statusCode = HttpStatusCode.Conflict,
+                                message = CoreCommonMessage.ApiFailed,
+                                error = errorDetails
+                            });
+                        }
+                    }
+                }
+                else
+                {
+                    var errorDetails = await _response.Content.ReadAsStringAsync();
+
+                    await _commonService.InsertErrorLog(CoreCommonMessage.ApiFailed, "Get_Diarough_Stock", errorDetails);
+                    return Conflict(new
+                    {
+                        statusCode = HttpStatusCode.Conflict,
+                        message = CoreCommonMessage.ApiFailed,
+                        error = errorDetails
+                    });
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                await _commonService.InsertErrorLog(httpEx.Message, "Get_Diarough_Stock", httpEx.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = CoreCommonMessage.ApiError,
+                    error = httpEx.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Diarough_Stock", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    statusCode = HttpStatusCode.InternalServerError,
+                    message = ex.Message,
+                    error = ex.StackTrace
+                });
+            }
+        }
+
+        #endregion
+
         #region Supplier Special Price Validity
         [HttpPost]
         [Route("get_supplier_special_price_validity")]
@@ -23305,7 +23405,7 @@ namespace astute.Controllers
         [HttpGet]
         [Route("consignment_note")]
         [Authorize]
-        public async Task<IActionResult> Get_Consignment_Note(int trans_id, bool is_summary)
+        public async Task<IActionResult> Get_Consignment_Note(int trans_id, bool is_summary, int? company_id)
         {
             try
             {
@@ -23332,11 +23432,24 @@ namespace astute.Controllers
                         {
                             transaction = await _supplierService.Get_Consignment_Note_Transaction_Report(trans_id);
                         }
+
+                        var company_data = await _companyService.Get_Company_Details_By_Id(company_id ?? 0);
+
+                        var report_icons_data = new
+                        {
+                            SHAIRU_Group_LOGO = _configuration["BaseUrl"] + CoreCommonFilePath.RepostIconFilePath + "SHAIRU_Group_LOGO.png",
+                            sightholder = _configuration["BaseUrl"] + CoreCommonFilePath.RepostIconFilePath + "sightholder.png",
+                            chop = _configuration["BaseUrl"] + CoreCommonFilePath.RepostIconFilePath + "chop.png",
+                            sign = _configuration["BaseUrl"] + CoreCommonFilePath.RepostIconFilePath + "sign.png",
+                        };
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
                             message = CoreCommonMessage.DataSuccessfullyFound,
-                            data = new { summary, transaction, terms_condition },
+                            data = new { summary, transaction },
+                            company_detail = company_data,
+                            term_detail = terms_condition,
+                            report_icons = report_icons_data,
                         });
                     }
                     return NoContent();

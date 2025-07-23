@@ -46,6 +46,7 @@ namespace astute.Models
         public int? Default_Remarks { get; set; }
         public string? Default_Remarks_Value { get; set; }
         public string? Notification { get; set; }
+        public int? Invoice_Party_Id { get; set; }
         public string? Reference_By { get; set; }
         public string? TIN_No { get; set; }
         public string? Invoice_Grp { get; set; }
