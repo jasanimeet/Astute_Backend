@@ -7458,5 +7458,110 @@ namespace astute.Repository
             return result;
         }
         #endregion
+
+        #region Consignment Note
+        public async Task<Dictionary<string, object>> Get_Consignment_Note_Master_Report(int trans_id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("[dbo].[Consignment_Note_Master_Report]", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(trans_id > 0 ? new SqlParameter("@Trans_Id", trans_id) : new SqlParameter("@Trans_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result.FirstOrDefault();
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Consignment_Note_Transaction_Report(int trans_id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("[dbo].[Consignment_Note_Transaction_Report]", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(trans_id > 0 ? new SqlParameter("@Trans_Id", trans_id) : new SqlParameter("@Trans_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public async Task<List<Dictionary<string, object>>> Get_Consignment_Note_Transaction_Summary_Report(int trans_id)
+        {
+            var result = new List<Dictionary<string, object>>();
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                using (var command = new SqlCommand("[dbo].[Consignment_Note_Transaction_Summary_Report]", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(trans_id > 0 ? new SqlParameter("@Trans_Id", trans_id) : new SqlParameter("@Trans_Id", DBNull.Value));
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var dict = new Dictionary<string, object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var columnName = reader.GetName(i);
+                                var columnValue = reader.GetValue(i);
+
+                                dict[columnName] = columnValue == DBNull.Value ? null : columnValue;
+                            }
+
+                            result.Add(dict);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        #endregion
     }
 }

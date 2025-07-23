@@ -53,6 +53,7 @@ namespace astute.Controllers
         private readonly IOracleService _oracleService;
         private readonly ICategoryService _categoryService;
         private readonly ICompanyService _companyService;
+        private readonly ITermsAndConditionService _termsAndConditionService;
         private IHubContext<PrintHub, IPrintHub> _printHub;
         #endregion
 
@@ -71,6 +72,7 @@ namespace astute.Controllers
             IOracleService oracleService,
             ICategoryService categoryService,
             ICompanyService companyService,
+            ITermsAndConditionService termsAndConditionService,
             IHubContext<PrintHub, IPrintHub> printHub
             )
         {
@@ -88,6 +90,7 @@ namespace astute.Controllers
             _oracleService = oracleService;
             _categoryService = categoryService;
             _companyService = companyService;
+            _termsAndConditionService = termsAndConditionService;
             _printHub = printHub;
         }
         #endregion
@@ -23291,6 +23294,63 @@ namespace astute.Controllers
             {
                 await _commonService.InsertErrorLog(ex.Message, "Update_Purchase_Detail_RFId_No", ex.StackTrace);
                 return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region Consignment Note Report
+        [HttpGet]
+        [Route("consignment_note")]
+        [Authorize]
+        public async Task<IActionResult> Get_Consignment_Note(int trans_id, bool is_summary)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if ((user_Id ?? 0) > 0)
+                {
+                    var summary = await _supplierService.Get_Consignment_Note_Master_Report(trans_id);
+                    if (summary != null)
+                    {
+                        string trans_date = "";
+                        if (summary.TryGetValue("Trans_Date", out object value) && value is string _trans_date)
+                        {
+                            trans_date = _trans_date;
+                        }
+                        var terms_condition = await _termsAndConditionService.Get_TermsAndCondition_By_Process(2, trans_date);
+                        var transaction = new List<Dictionary<string, object>>();
+                        if (is_summary)
+                        {
+                            transaction = await _supplierService.Get_Consignment_Note_Transaction_Summary_Report(trans_id);
+                        }
+                        else
+                        {
+                            transaction = await _supplierService.Get_Consignment_Note_Transaction_Report(trans_id);
+                        }
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = new { summary, transaction, terms_condition },
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Consignment_Note", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     message = ex.Message
                 });
