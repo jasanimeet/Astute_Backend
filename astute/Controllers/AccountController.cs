@@ -1933,6 +1933,7 @@ namespace astute.Controllers
                     dataTable.Columns.Add("Is_Adjust", typeof(bool));
                     dataTable.Columns.Add("Adjust_Account_Id", typeof(int));
                     dataTable.Columns.Add("Adjust_Amount", typeof(decimal));
+                    dataTable.Columns.Add("OS_Amount", typeof(decimal));
                     dataTable.Columns.Add("Adjust_Account_Trans_Detail_Id", typeof(int));
 
                     if (model.Terms_Invoice_Adjust != null && model.Terms_Invoice_Adjust.Count > 0)
@@ -1941,7 +1942,7 @@ namespace astute.Controllers
                         {
                             dataTable.Rows.Add(item.Id, item.Account_Trans_Detail_Id, item.Purchase_Master_Id, item.Transaction_Master_Id, item.Currency_Id, item.Ex_Rate,
                                     item.Terms_Id, item.Terms_Amount, item.Paid_Amount,
-                                    item.Is_Adjust, item.Adjust_Account_Id, item.Adjust_Amount, item.Adjust_Account_Trans_Detail_Id);
+                                    item.Is_Adjust, item.Adjust_Account_Id, item.Adjust_Amount,item.OS_Amount, item.Adjust_Account_Trans_Detail_Id);
                         }
                     }
                     var result = await _account_Trans_Master_Service.Create_Update_Cashbook_Account_Trans_Detail(dataTable, model.Id, model.Trans_Id, model.Process_Id, model.Company_Id, model.Year_Id, transDate, transTime,
