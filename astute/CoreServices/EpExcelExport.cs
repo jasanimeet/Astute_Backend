@@ -14650,7 +14650,7 @@ namespace astute.CoreServices
                                     worksheet.Cells[pinwrkrow, pkk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dt.Rows[pi - pinStartIndex][Column_Name]) : 0;
                                     worksheet.Cells[pinwrkrow, pkk].Style.Numberformat.Format = "#,##0.00";
 
-                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    //worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                     //worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(sky_blue);
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Font.Bold = true;
@@ -14668,7 +14668,7 @@ namespace astute.CoreServices
                                         worksheet.Cells[pinwrkrow, pkk].Style.Numberformat.Format = "#,##0.00";
                                     }
 
-                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    //worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                     //worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(sky_blue);
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Font.Bold = true;
@@ -14682,7 +14682,7 @@ namespace astute.CoreServices
                                     worksheet.Cells[pinwrkrow, pkk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dt.Rows[pi - pinStartIndex][Column_Name]) : 0;
                                     worksheet.Cells[pinwrkrow, pkk].Style.Numberformat.Format = "#,##0.00";
 
-                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    //worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                     //worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(gold);
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Font.Bold = true;
