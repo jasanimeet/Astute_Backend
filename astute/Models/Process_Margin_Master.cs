@@ -18,5 +18,14 @@ namespace astute.Models
         public float? To_Cts { get; set; }
         [JsonProperty("Discount")]
         public float? Discount { get; set; }
+
+        [JsonProperty("Sub_Process_Id")]
+        public int? Sub_Process_Id { get; set; }
+        [JsonProperty("From_Days")]
+        public int? From_Days { get; set; }
+        [JsonProperty("To_Days")]
+        public int? To_Days { get; set; }
+        [JsonProperty("Amount")]
+        public float? Amount { get; set; }
     }
 }

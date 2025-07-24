@@ -23083,9 +23083,15 @@ namespace astute.Controllers
                     dataTable.Columns.Add("From_Cts", typeof(float));
                     dataTable.Columns.Add("To_Cts", typeof(float));
                     dataTable.Columns.Add("Discount", typeof(float));
+
+                    dataTable.Columns.Add("Sub_Process_Id", typeof(int));
+                    dataTable.Columns.Add("From_Days", typeof(int));
+                    dataTable.Columns.Add("To_Days", typeof(int));
+                    dataTable.Columns.Add("Amount", typeof(float));
                     foreach (var item in model)
                     {
-                        dataTable.Rows.Add(item.Id, item.Process_Id, item.Assist_Person_Id, item.Shape_Group, item.From_Cts, item.To_Cts, item.Discount);
+                        dataTable.Rows.Add(item.Id, item.Process_Id, item.Assist_Person_Id, item.Shape_Group, item.From_Cts, item.To_Cts, item.Discount,
+                            item.Sub_Process_Id, item.From_Days, item.To_Days, item.Amount);
                     }
                     var (message, id) = await _partyService.Insert_Update_Process_Margin_Master(dataTable, user_Id ?? 0);
                     if (message == "success" && id > 0)
