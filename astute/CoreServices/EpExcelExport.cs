@@ -14638,7 +14638,7 @@ namespace astute.CoreServices
                                     worksheet.Cells[pinwrkrow, pkk].Style.Numberformat.Format = "#,##0.00";
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(yellow);
+                                    //worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(yellow);
                                     worksheet.Column(pkk).Hidden = true;
                                 }
                                 else if (Column_Name == "OFFER DISC")
@@ -14651,7 +14651,7 @@ namespace astute.CoreServices
                                     worksheet.Cells[pinwrkrow, pkk].Style.Numberformat.Format = "#,##0.00";
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(sky_blue);
+                                    //worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(sky_blue);
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Font.Bold = true;
                                 }
@@ -14669,7 +14669,7 @@ namespace astute.CoreServices
                                     }
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(sky_blue);
+                                    //worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(sky_blue);
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Font.Bold = true;
                                 }
@@ -14683,7 +14683,7 @@ namespace astute.CoreServices
                                     worksheet.Cells[pinwrkrow, pkk].Style.Numberformat.Format = "#,##0.00";
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(gold);
+                                    //worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(gold);
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Font.Bold = true;
                                 }
@@ -14697,7 +14697,7 @@ namespace astute.CoreServices
                                     worksheet.Cells[pinwrkrow, pkk].Style.Numberformat.Format = "#,##0.00";
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(gold);
+                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(sky_blue);
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Font.Bold = true;
                                 }
@@ -14715,7 +14715,7 @@ namespace astute.CoreServices
                                     }
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(gold);
+                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(sky_blue);
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Font.Bold = true;
                                 }
@@ -14729,7 +14729,7 @@ namespace astute.CoreServices
                                     worksheet.Cells[pinwrkrow, pkk].Style.Numberformat.Format = "#,##0.00";
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(gold);
+                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(sky_blue);
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Font.Bold = true;
                                 }
@@ -14747,7 +14747,7 @@ namespace astute.CoreServices
                                     }
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(gold);
+                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(sky_blue);
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Font.Bold = true;
                                 }
