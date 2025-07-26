@@ -1942,7 +1942,7 @@ namespace astute.Controllers
                         {
                             dataTable.Rows.Add(item.Id, item.Account_Trans_Detail_Id, item.Purchase_Master_Id, item.Transaction_Master_Id, item.Currency_Id, item.Ex_Rate,
                                     item.Terms_Id, item.Terms_Amount, item.Paid_Amount,
-                                    item.Is_Adjust, item.Adjust_Account_Id, item.Adjust_Amount,item.OS_Amount, item.Adjust_Account_Trans_Detail_Id);
+                                    item.Is_Adjust, item.Adjust_Account_Id, item.Adjust_Amount, item.OS_Amount, item.Adjust_Account_Trans_Detail_Id);
                         }
                     }
                     var result = await _account_Trans_Master_Service.Create_Update_Cashbook_Account_Trans_Detail(dataTable, model.Id, model.Trans_Id, model.Process_Id, model.Company_Id, model.Year_Id, transDate, transTime,
@@ -2025,7 +2025,7 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_cashbook_account_trans_select")]
         [Authorize]
-        public async Task<IActionResult> Get_Cashbook_Account_Trans_Select(int company_id, int year_id, int process_id)
+        public async Task<IActionResult> Get_Cashbook_Account_Trans_Select(int company_id, int year_id, int process_id, string From_Date, string To_Date)
         {
             try
             {
@@ -2033,7 +2033,7 @@ namespace astute.Controllers
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                 if ((user_Id ?? 0) > 0)
                 {
-                    var result = await _account_Trans_Master_Service.Get_Cashbook_Account_Trans_Select(null, year_id, company_id, process_id);
+                    var result = await _account_Trans_Master_Service.Get_Cashbook_Account_Trans_Select(null, year_id, company_id, process_id, From_Date, To_Date);
                     if (result != null && result.Count > 0)
                     {
                         return Ok(new
@@ -2071,7 +2071,7 @@ namespace astute.Controllers
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
                 if ((user_Id ?? 0) > 0)
                 {
-                    var result = await _account_Trans_Master_Service.Get_Cashbook_Account_Trans_Select(id, year_id, company_id, process_id);
+                    var result = await _account_Trans_Master_Service.Get_Cashbook_Account_Trans_Select(id, year_id, company_id, process_id, null, null);
                     if (result != null && result.Count > 0)
                     {
                         var summary = await _account_Trans_Master_Service.Get_Cashbook_Account_Trans_Detail_Select(id);

@@ -17844,6 +17844,8 @@ namespace astute.Controllers
                 new DataColumn("Consignment_Type", typeof(string)),
                 new DataColumn("Tracking_Number", typeof(string)),
                 new DataColumn("Is_Consignment_Receive_Hold", typeof(bool)),
+                new DataColumn("Sales_Invoice_Type", typeof(string)),
+                new DataColumn("Is_Offer", typeof(bool)),
             });
 
             table.Rows.Add(
@@ -17877,7 +17879,9 @@ namespace astute.Controllers
                 invoiceDate == DateTime.MinValue ? (object)DBNull.Value : invoiceDate,
                 m.Consignment_Type ?? (object)DBNull.Value,
                 m.Tracking_Number ?? (object)DBNull.Value,
-                m.Is_Consignment_Receive_Hold ?? (object)DBNull.Value
+                m.Is_Consignment_Receive_Hold ?? (object)DBNull.Value,
+                m.Sales_Invoice_Type ?? (object)DBNull.Value,
+                m.Is_Offer ?? (object)DBNull.Value
             );
             return table;
         }
