@@ -17719,6 +17719,35 @@ namespace astute.Controllers
             }
         }
 
+
+        [HttpGet]
+        [Route("get_transaction_for_merge")]
+        [Authorize]
+        public async Task<IActionResult> Get_Transaction_For_Merge(int? Trans_Id)
+        {
+            try
+            {
+                var result = await _supplierService.Get_Transaction_For_Merge(Trans_Id ?? 0);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Transaction_For_Merge", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Purchase Return
