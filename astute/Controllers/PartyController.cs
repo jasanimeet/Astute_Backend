@@ -17748,6 +17748,39 @@ namespace astute.Controllers
                 });
             }
         }
+        [HttpPost]
+        [Route("transaction_merge")]
+        [Authorize]
+        public async Task<IActionResult> Transaction_Merge(Transaction_Merge_Model model)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                var (result, isExist) = await _supplierService.Transaction_Merge(model, user_Id ?? 0);
+
+                return result switch
+                {
+                    409 when isExist => Conflict(new { statusCode = HttpStatusCode.Conflict, message = CoreCommonMessage.PurchaseAlreadyExists }),
+                    > 0 => Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.TransactionMerged,
+                    }),
+                    _ => BadRequest(new { statusCode = HttpStatusCode.BadRequest, message = CoreCommonMessage.ParameterMismatched })
+                };
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Transaction_Master", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         #endregion
 
         #region Purchase Return

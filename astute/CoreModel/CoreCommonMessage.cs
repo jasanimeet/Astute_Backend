@@ -8,6 +8,7 @@
         public static string CopySuccessfully = " copied successfully.";
         public static string UpdatedSuccessfully = " updated successfully.";
         public static string DeletedSuccessfully = " deleted successfully.";
+        public static string MergedSuccessfully = " merged successfully.";
         public static string AlreadyExists = " already exists.";
         public static string ParameterMismatched = "Parameter mismatched!";
         public static string InteralServerError = "Internal server error.";
@@ -528,6 +529,7 @@
         public static string TransactionUpdated = Transaction + UpdatedSuccessfully;
         public static string TransactionDeleted = Transaction + DeletedSuccessfully;
         public static string TransactionlMaster = Transaction + AlreadyExists;
+        public static string TransactionMerged = Transaction + MergedSuccessfully;
         #endregion
 
         #region SupplierPriceUpdate

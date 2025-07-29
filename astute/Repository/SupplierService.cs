@@ -5624,6 +5624,33 @@ namespace astute.Repository
 
             return (result, _is_Exist);
         }
+
+        public async Task<(int, bool)> Transaction_Merge(Transaction_Merge_Model model, int user_Id)
+        {
+            var _source_Trans_Id = (model.Source_Trans_Id > 0 ? new SqlParameter("@Source_Trans_Id", model.Source_Trans_Id) : new SqlParameter("@Source_Trans_Id", DBNull.Value));
+            var _target_Trans_Id = (model.Target_Trans_Id > 0 ? new SqlParameter("@Target_Trans_Id", model.Target_Trans_Id) : new SqlParameter("@Target_Trans_Id", DBNull.Value));
+            var _transaction_Detail_Ids = (!string.IsNullOrEmpty(model.Transaction_Detail_Ids) ? new SqlParameter("@Transaction_Detail_Ids", model.Transaction_Detail_Ids) : new SqlParameter("@Transaction_Detail_Ids", DBNull.Value));
+
+
+            var _user_Id = new SqlParameter("@User_Id", user_Id);
+
+            var is_Exists = new SqlParameter("@Is_Exists", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var result = await Task.Run(() => _dbContext.Database
+                   .ExecuteSqlRawAsync(@"EXEC Transaction_Merge @Source_Trans_Id, @Target_Trans_Id, @Transaction_Detail_Ids, @User_Id, @Is_Exists OUT",
+                   _source_Trans_Id, _target_Trans_Id, _transaction_Detail_Ids, _user_Id, is_Exists));
+
+            var _is_Exist = (bool)is_Exists.Value;
+
+            if (_is_Exist)
+                return (409, _is_Exist);
+
+            return (result, _is_Exist);
+        }
+
         public async Task<int> Delete_Transaction(int Trans_Id, int User_Id)
         {
             var trans_Id = new SqlParameter("@Trans_Id", Trans_Id);

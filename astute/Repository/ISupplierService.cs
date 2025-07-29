@@ -221,6 +221,7 @@ namespace astute.Repository
         Task<Dictionary<string, object>> Get_Transaction_For_Merge(int Trans_Id);
         Task<(int, bool)> Insert_Update_Transaction(DataTable masterDataTable, DataTable detailDataTable, DataTable termsDataTable, DataTable expensesDataTable, DataTable detailLooseDataTable, int user_Id);
         Task<(int, bool)> Transaction_Auto_Consignment_Receive_Insert_Update(DataTable masterDataTable, DataTable detailDataTable, DataTable termsDataTable, DataTable expensesDataTable, DataTable detailLooseDataTable, int user_Id);
+        Task<(int, bool)> Transaction_Merge(Transaction_Merge_Model model, int user_Id);
         Task<int> Delete_Transaction(int Trans_Id, int User_Id);
         Task<DataTable> Get_Transaction_Excel(int Trans_Id);
         Task<DataTable> Get_Transaction_Report_Excel(string Ids);
