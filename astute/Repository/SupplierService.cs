@@ -5491,7 +5491,7 @@ namespace astute.Repository
 
             return output;
         }
-        public async Task<Dictionary<string, object>> Get_Transaction_For_Merge(int Trans_Id)
+        public async Task<List<Dictionary<string, object>>> Get_Transaction_For_Merge(int Trans_Id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -5523,7 +5523,7 @@ namespace astute.Repository
                     }
                 }
             }
-            return result.FirstOrDefault();
+            return result;
         }
         public async Task<(int, bool)> Insert_Update_Transaction(DataTable masterDataTable, DataTable detailDataTable, DataTable termsDataTable, DataTable expensesDataTable, DataTable detailLooseDataTable, int user_Id)
         {
