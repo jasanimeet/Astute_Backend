@@ -8,5 +8,8 @@
         public int? Customer_Id { get; set; }
         public int? Assist_Person_Id { get; set; }
         public int? Trans_Id { get; set; }
+        public string? Sales_Invoice_Type { get; set; }
+        public bool? Is_Offer { get; set; }
+        public bool? Is_Contract { get; set; }
     }
 }

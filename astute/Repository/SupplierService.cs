@@ -6515,6 +6515,10 @@ namespace astute.Repository
                     command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Certificate_No) ? new SqlParameter("@Certificate_No", purchase_Detail_For_Purchase_Return.Certificate_No) : new SqlParameter("@Certificate_No", DBNull.Value));
                     command.Parameters.Add(purchase_Detail_For_Purchase_Return.Customer_Id > 0 ? new SqlParameter("@Customer_Id", purchase_Detail_For_Purchase_Return.Customer_Id) : new SqlParameter("@Customer_Id", DBNull.Value));
 
+                    command.Parameters.Add(purchase_Detail_For_Purchase_Return.Assist_Person_Id > 0 ? new SqlParameter("@Assist_Person_Id", purchase_Detail_For_Purchase_Return.Assist_Person_Id) : new SqlParameter("@Assist_Person_Id", DBNull.Value));
+                    command.Parameters.Add(!string.IsNullOrEmpty(purchase_Detail_For_Purchase_Return.Sales_Invoice_Type) ? new SqlParameter("@Sales_Invoice_Type", purchase_Detail_For_Purchase_Return.Sales_Invoice_Type) : new SqlParameter("@Sales_Invoice_Type", DBNull.Value));
+                    command.Parameters.Add(purchase_Detail_For_Purchase_Return.Is_Contract.HasValue ? new SqlParameter("@Is_Contract", purchase_Detail_For_Purchase_Return.Is_Contract) : new SqlParameter("@Is_Contract", DBNull.Value));
+                    command.Parameters.Add(purchase_Detail_For_Purchase_Return.Is_Offer.HasValue ? new SqlParameter("@Is_Offer", purchase_Detail_For_Purchase_Return.Is_Offer) : new SqlParameter("@Is_Offer", DBNull.Value));
                     await connection.OpenAsync();
 
                     using (var reader = await command.ExecuteReaderAsync())
