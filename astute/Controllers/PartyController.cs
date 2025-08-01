@@ -23518,7 +23518,7 @@ namespace astute.Controllers
 
                 if ((user_Id ?? 0) > 0)
                 {
-                    var result = await _supplierService.Get_Transaction(trans_id);
+                    var result = await _supplierService.Get_Transaction_Report(trans_id);
 
                     if (result != null)
                     {

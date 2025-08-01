@@ -366,5 +366,9 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Consignment_Note_Transaction_Report(int trans_id);
         Task<List<Dictionary<string, object>>> Get_Consignment_Note_Transaction_Summary_Report(int trans_id);
         #endregion
+
+        #region Notification Report
+        Task<Dictionary<string, object>> Get_Transaction_Report(int Trans_Id);
+        #endregion
     }
 }

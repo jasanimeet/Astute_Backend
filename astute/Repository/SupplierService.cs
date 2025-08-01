@@ -7629,5 +7629,70 @@ namespace astute.Repository
             return result;
         }
         #endregion
+
+        #region Transaction Report
+        public async Task<Dictionary<string, object>> Get_Transaction_Report(int Trans_Id)
+        {
+            var output = new Dictionary<string, object>();
+
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
+            {
+                await connection.OpenAsync();
+
+                // Fetch Transaction_Master
+                var Transaction_Master_Result = await ExecuteStoredProcedure(connection, "Transaction_Master_Report_By_Trans_Id_Select", Trans_Id);
+                if (Transaction_Master_Result != null)
+                {
+                    output["Transaction_Master"] = Transaction_Master_Result.FirstOrDefault();
+                }
+
+                // Fetch Transaction_Detail
+                var Transaction_Detail_Result = await ExecuteStoredProcedure(connection, "Transaction_Detail_Report_By_Trans_Id_Select", Trans_Id);
+                if (Transaction_Detail_Result != null)
+                {
+                    output["Transaction_Detail_List"] = Transaction_Detail_Result;
+                }
+                else
+                {
+                    output["Transaction_Detail_List"] = new List<object>();
+                }
+
+                // Fetch terms_Trans_Dets
+                var Transaction_Terms_Result = await ExecuteStoredProcedure(connection, "Transaction_Terms_Report_By_Trans_Id_Select", Trans_Id);
+                if (Transaction_Terms_Result != null)
+                {
+                    output["Transaction_Terms_List"] = Transaction_Terms_Result;
+                }
+                else
+                {
+                    output["Transaction_Terms_List"] = new List<object>();
+                }
+
+                // Fetch expense_Trans_Dets
+                var Transaction_Expense_Trans_Dets_Result = await ExecuteStoredProcedure(connection, "Transaction_Expenses_Report_By_Trans_Id_Select", Trans_Id);
+                if (Transaction_Expense_Trans_Dets_Result != null)
+                {
+                    output["Transaction_Expenses_List"] = Transaction_Expense_Trans_Dets_Result;
+                }
+                else
+                {
+                    output["Transaction_Expenses_List"] = new List<object>();
+                }
+
+                //Fetch Transaction_Detail_Loose_Trans_Dets
+                var Transaction_Detail_Loose_Trans_Dets_Result = await ExecuteStoredProcedure(connection, "Transaction_Detail_Loose_Report_By_Trans_Id_Select", Trans_Id);
+                if (Transaction_Detail_Loose_Trans_Dets_Result != null)
+                {
+                    output["Transaction_Detail_Loose_List"] = Transaction_Detail_Loose_Trans_Dets_Result;
+                }
+                else
+                {
+                    output["Transaction_Detail_Loose_List"] = new List<object>();
+                }
+            }
+
+            return output;
+        }
+        #endregion
     }
 }
