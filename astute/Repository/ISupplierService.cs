@@ -360,6 +360,7 @@ namespace astute.Repository
         Task<Dictionary<string, object>> Get_Stone_Trace_Master_Report(string id);
         Task<List<Dictionary<string, object>>> Get_Stone_Trace_Detail_Report(string id);
         #endregion
+
         #region Consignment Note
         Task<Dictionary<string, object>> Get_Consignment_Note_Master_Report(int trans_id);
         Task<List<Dictionary<string, object>>> Get_Consignment_Note_Transaction_Report(int trans_id);

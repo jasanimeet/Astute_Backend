@@ -23504,5 +23504,63 @@ namespace astute.Controllers
             }
         }
         #endregion
+
+        #region Transaction Report
+        [HttpGet]
+        [Route("get_transaction_report")]
+        [Authorize]
+        public async Task<IActionResult> Get_Transaction_Report(int trans_id, int? company_id)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if ((user_Id ?? 0) > 0)
+                {
+                    var result = await _supplierService.Get_Transaction(trans_id);
+
+                    if (result != null)
+                    {
+                        var terms_condition = await _termsAndConditionService.Get_TermsAndCondition_By_Trans_Id(trans_id);
+
+                        var company_data = await _companyService.Get_Company_Details_By_Id(company_id ?? 0);
+
+                        var report_icons_data = new
+                        {
+                            SHAIRU_Group_LOGO = _configuration["BaseUrl"] + CoreCommonFilePath.RepostIconFilePath + "SHAIRU_Group_LOGO.png",
+                            sightholder = _configuration["BaseUrl"] + CoreCommonFilePath.RepostIconFilePath + "sightholder.png",
+                            chop = _configuration["BaseUrl"] + CoreCommonFilePath.RepostIconFilePath + "chop.png",
+                            sign = _configuration["BaseUrl"] + CoreCommonFilePath.RepostIconFilePath + "sign.png",
+                        };
+
+                        return Ok(new
+                        {
+                            statusCode = HttpStatusCode.OK,
+                            message = CoreCommonMessage.DataSuccessfullyFound,
+                            data = result,
+                            Company_Detail = company_data,
+                            Term_And_Condition = terms_condition,
+                            Report_Icons = report_icons_data,
+                        });
+                    }
+                    return NoContent();
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Transaction_Report", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
     }
 }

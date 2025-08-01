@@ -12,5 +12,6 @@ namespace astute.Repository
         Task<int> TermsAndConditionChangeStatus(int condition_Id, bool status);
         Task<int> Get_TermsAndCondition_Max_Order_No();
         Task<List<Dictionary<string, object>>> Get_TermsAndCondition_By_Process(int process_Id,string trans_Date);
+        Task<List<Dictionary<string, object>>> Get_TermsAndCondition_By_Trans_Id(int Trans_Id);
     }
 }
