@@ -9579,7 +9579,8 @@ namespace astute.CoreServices
                                 {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
                                 }
-                                else if(Column_Name == "QC Done") {
+                                else if (Column_Name == "QC Done")
+                                {
                                     worksheet.Cells[inwrkrow, kk].Value = Convert.ToString(dtStock.Rows[i - inStartIndex][Column_Name]);
                                 }
                             }
@@ -13093,7 +13094,8 @@ namespace astute.CoreServices
                                         worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Red);
                                         worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
                                     }
-                                    else if (finalStatusValue == "REJECTION") {
+                                    else if (finalStatusValue == "REJECTION")
+                                    {
                                         worksheet.Cells[inwrkrow, kk].Style.Font.Color.SetColor(Color.Green);
                                         worksheet.Cells[inwrkrow, kk].Style.Font.Bold = true;
                                     }
@@ -13110,7 +13112,7 @@ namespace astute.CoreServices
                     }
 
                     worksheet.Cells[inStartIndex, 1, inwrkrow, Row_Count].Style.Font.Size = 9;
-                    
+
                     int kkk = 0;
                     for (int j = 0; j < column_dt.Rows.Count; j++)
                     {
@@ -15016,6 +15018,7 @@ namespace astute.CoreServices
                     Color colFromHexTotal = ColorTranslator.FromHtml("#d9e1f2");
                     Color sky_blue = ColorTranslator.FromHtml("#E0FFFF");
                     Color gold = ColorTranslator.FromHtml("#FFF2CC");
+                    Color green = ColorTranslator.FromHtml("#c6e0b4");
 
                     int pRow_Count = column_dt.Rows.Count;
                     int pinStartIndex = 3;
@@ -15043,20 +15046,22 @@ namespace astute.CoreServices
                     {
                         var commonWidths = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
                         {
-                            ["IMAGE"] = 56,
-                            ["VIDEO"] = 52,
-                            ["LAB"] = 36,
-                            ["STOCK ID"] = 43,
-                            ["CERTIFICATE NO"] = 70,
-                            ["SHAPE"] = 54,
-                            ["BGM"] = 54,
+                            ["SR.NO"] = 66,
+                            ["INVOICE DATE"] = 76,
+                            ["INVOICE NUMBER"] = 100,
+                            ["STOCK ID"] = 74,
+                            ["CERTIFICATE NO"] = 80,
+                            ["BGM"] = 75,
+                            ["SHAPE"] = 55,
+                            ["POINTER"] = 75,
                             ["COLOR"] = 50,
-                            ["CLARITY"] = 50,
+                            ["CLARITY"] = 57,
                             ["CTS"] = 50,
-                            ["RAP RATE"] = 56,
+                            ["RAP RATE"] = 70,
                             ["RAP AMOUNT"] = 70,
-                            ["OFFER DISC"] = 56,
-                            ["OFFER AMOUNT"] = 70,
+                            ["FINAL DISC"] = 56,
+                            ["FINAL AMOUNT"] = 70,
+                            ["PRICE PER CTS"] = 70,
                             ["CUT"] = 37,
                             ["POLISH"] = 37,
                             ["SYMM"] = 37,
@@ -15065,7 +15070,24 @@ namespace astute.CoreServices
                             ["WIDTH"] = 37,
                             ["DEPTH"] = 37,
                             ["DEPTH (%)"] = 37,
-                            ["TABLE (%)"] = 37
+                            ["TABLE (%)"] = 37,
+                            ["KEY TO SYMBOL"] = 196,
+                            ["CULET"] = 75,
+                            ["TABLE BLACK"] = 70,
+                            ["CROWN BLACK"] = 67,
+                            ["TABLE WHITE"] = 63,
+                            ["CROWN WHITE"] = 75,
+                            ["CROWN ANGLE"] = 48,
+                            ["CROWN HEIGHT"] = 46,
+                            ["PAVILION ANGLE"] = 64,
+                            ["PAVILION HEIGHT"] = 57,
+                            ["GIRDLE PER"] = 75,
+                            ["LAB COMMENTS"] = 251,
+                            ["ORIGIN"] = 84,
+                            ["LAB"] = 36,
+                            ["DNA"] = 36,
+                            ["IMAGE"] = 56,
+                            ["VIDEO"] = 52,
                         };
 
                         if (processId == 2 || processId == 3)
@@ -15204,6 +15226,24 @@ namespace astute.CoreServices
                                         worksheet.Cells[pinwrkrow, pkk].Style.Font.UnderLine = true;
                                         worksheet.Cells[pinwrkrow, pkk].Style.Font.Color.SetColor(Color.Blue);
                                     }
+                                }
+                                else if (Column_Name == "POINTER")
+                                {
+                                    pkk += 1;
+
+                                    worksheet.Cells[pinwrkrow, pkk].Value = Convert.ToString(dt.Rows[pi - pinStartIndex][Column_Name]);
+                                    
+
+                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(green);
+                                }
+                                else if (Column_Name == "PRICE PER CTS")
+                                {
+                                    pkk += 1;
+
+                                    worksheet.Cells[pinwrkrow, pkk].Value = Convert.ToString(dt.Rows[pi - pinStartIndex][Column_Name]);
+                                    worksheet.Cells[pinwrkrow, pkk].Style.Font.Color.SetColor(Color.Red);
+
                                 }
                                 else if (Column_Name == "CTS")
                                 {
@@ -15368,7 +15408,11 @@ namespace astute.CoreServices
                                     worksheet.Cells[pinwrkrow, pkk].Value = !string.IsNullOrEmpty(value) ? Convert.ToDouble(dt.Rows[pi - pinStartIndex][Column_Name]) : DBNull.Value;
                                     worksheet.Cells[pinwrkrow, pkk].Style.Numberformat.Format = "0.00";
                                 }
-                                else if (Column_Name == "STOCK ID" || Column_Name == "CERTIFICATE NO" || Column_Name == "SHAPE" || Column_Name == "BGM" || Column_Name == "COLOR" || Column_Name == "CLARITY" || Column_Name == "FLS INTENSITY")
+                                else if (Column_Name == "STOCK ID" || Column_Name == "CERTIFICATE NO" || Column_Name == "SHAPE" || Column_Name == "BGM" || Column_Name == "COLOR" || Column_Name == "CLARITY" || Column_Name == "FLS INTENSITY"
+                                    || Column_Name == "SR.NO" || Column_Name == "INVOICE DATE" || Column_Name == "INVOICE NUMBER"  
+                                    || Column_Name == "KEY TO SYMBOL" || Column_Name == "CULET" || Column_Name == "TABLE BLACK" || Column_Name == "CROWN BLACK" || Column_Name == "TABLE WHITE" || Column_Name == "CROWN WHITE" || Column_Name == "CROWN ANGLE" || Column_Name == "CROWN HEIGHT"
+                                    || Column_Name == "PAVILION ANGLE" || Column_Name == "PAVILION HEIGHT" || Column_Name == "GIRDLE PER" || Column_Name == "LAB COMMENTS" || Column_Name == "ORIGIN" || Column_Name == "DNA"
+                                    )
                                 {
                                     pkk += 1;
 
@@ -15429,46 +15473,46 @@ namespace astute.CoreServices
                                     = cellStyleHeader_RapAmt.Border.Top.Style = cellStyleHeader_RapAmt.Border.Bottom.Style
                                     = ExcelBorderStyle.Medium;
                         }
-                        else if (Column_Name == "OFFER DISC")
-                        {
-                            pkkk = GetColumnIndexByName(worksheet, "OFFER DISC");
+                        //else if (Column_Name == "OFFER DISC")
+                        //{
+                        //    pkkk = GetColumnIndexByName(worksheet, "OFFER DISC");
 
-                            int offerColumnIndex = GetColumnIndexByName(worksheet, "OFFER AMOUNT");
-                            int rapColumnIndex = GetColumnIndexByName(worksheet, "RAP AMOUNT");
+                        //    int offerColumnIndex = GetColumnIndexByName(worksheet, "OFFER AMOUNT");
+                        //    int rapColumnIndex = GetColumnIndexByName(worksheet, "RAP AMOUNT");
 
-                            if (offerColumnIndex > 0 && rapColumnIndex > 0)
-                            {
-                                worksheet.Cells[1, pkkk].Formula =
-                                                                    "=IFERROR(ROUND(((SUBTOTAL(109, " + GetExcelColumnLetter(offerColumnIndex) + pinStartIndex +
-                                                                    ":" + GetExcelColumnLetter(offerColumnIndex) + (pinwrkrow - 1) +
-                                                                    ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + pinStartIndex +
-                                                                    ":" + GetExcelColumnLetter(rapColumnIndex) + (pinwrkrow - 1) +
-                                                                    ")) * 100)-100, 2), 0.00)";
+                        //    if (offerColumnIndex > 0 && rapColumnIndex > 0)
+                        //    {
+                        //        worksheet.Cells[1, pkkk].Formula =
+                        //                                            "=IFERROR(ROUND(((SUBTOTAL(109, " + GetExcelColumnLetter(offerColumnIndex) + pinStartIndex +
+                        //                                            ":" + GetExcelColumnLetter(offerColumnIndex) + (pinwrkrow - 1) +
+                        //                                            ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + pinStartIndex +
+                        //                                            ":" + GetExcelColumnLetter(rapColumnIndex) + (pinwrkrow - 1) +
+                        //                                            ")) * 100)-100, 2), 0.00)";
 
-                                worksheet.Cells[1, pkkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                worksheet.Cells[1, pkkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                                worksheet.Cells[1, pkkk].Style.Numberformat.Format = "#,##0.00";
+                        //        worksheet.Cells[1, pkkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        //        worksheet.Cells[1, pkkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                        //        worksheet.Cells[1, pkkk].Style.Numberformat.Format = "#,##0.00";
 
-                                ExcelStyle cellStyleHeader_Profit = worksheet.Cells[1, pkkk].Style;
-                                cellStyleHeader_Profit.Border.Left.Style = cellStyleHeader_Profit.Border.Right.Style
-                                        = cellStyleHeader_Profit.Border.Top.Style = cellStyleHeader_Profit.Border.Bottom.Style
-                                        = ExcelBorderStyle.Medium;
-                            }
-                        }
-                        else if (Column_Name == "OFFER AMOUNT")
-                        {
-                            pkkk = GetColumnIndexByName(worksheet, "OFFER AMOUNT");
+                        //        ExcelStyle cellStyleHeader_Profit = worksheet.Cells[1, pkkk].Style;
+                        //        cellStyleHeader_Profit.Border.Left.Style = cellStyleHeader_Profit.Border.Right.Style
+                        //                = cellStyleHeader_Profit.Border.Top.Style = cellStyleHeader_Profit.Border.Bottom.Style
+                        //                = ExcelBorderStyle.Medium;
+                        //    }
+                        //}
+                        //else if (Column_Name == "OFFER AMOUNT")
+                        //{
+                        //    pkkk = GetColumnIndexByName(worksheet, "OFFER AMOUNT");
 
-                            worksheet.Cells[1, pkkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(pkkk) + "" + pinStartIndex + ":" + GetExcelColumnLetter(pkkk) + "" + (pinwrkrow - 1) + "),2)";
-                            worksheet.Cells[1, pkkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                            worksheet.Cells[1, pkkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                            worksheet.Cells[1, pkkk].Style.Numberformat.Format = "#,##0.00";
+                        //    worksheet.Cells[1, pkkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(pkkk) + "" + pinStartIndex + ":" + GetExcelColumnLetter(pkkk) + "" + (pinwrkrow - 1) + "),2)";
+                        //    worksheet.Cells[1, pkkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        //    worksheet.Cells[1, pkkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                        //    worksheet.Cells[1, pkkk].Style.Numberformat.Format = "#,##0.00";
 
-                            ExcelStyle cellStyleHeader_OfferValue = worksheet.Cells[1, pkkk].Style;
-                            cellStyleHeader_OfferValue.Border.Left.Style = cellStyleHeader_OfferValue.Border.Right.Style
-                                    = cellStyleHeader_OfferValue.Border.Top.Style = cellStyleHeader_OfferValue.Border.Bottom.Style
-                                    = ExcelBorderStyle.Medium;
-                        }
+                        //    ExcelStyle cellStyleHeader_OfferValue = worksheet.Cells[1, pkkk].Style;
+                        //    cellStyleHeader_OfferValue.Border.Left.Style = cellStyleHeader_OfferValue.Border.Right.Style
+                        //            = cellStyleHeader_OfferValue.Border.Top.Style = cellStyleHeader_OfferValue.Border.Bottom.Style
+                        //            = ExcelBorderStyle.Medium;
+                        //}
                         else if (Column_Name == "FINAL DISC" && columnPixelWidths.ContainsKey(Column_Name))
                         {
                             pkkk = GetColumnIndexByName(worksheet, "FINAL DISC");
@@ -15509,60 +15553,60 @@ namespace astute.CoreServices
                                     = cellStyleHeader_FinalValue.Border.Top.Style = cellStyleHeader_FinalValue.Border.Bottom.Style
                                     = ExcelBorderStyle.Medium;
                         }
-                        else if (Column_Name == "WEB DISC AMOUNT" && columnPixelWidths.ContainsKey(Column_Name))
-                        {
-                            pkkk = GetColumnIndexByName(worksheet, "WEB DISC AMOUNT");
+                        //else if (Column_Name == "WEB DISC AMOUNT" && columnPixelWidths.ContainsKey(Column_Name))
+                        //{
+                        //    pkkk = GetColumnIndexByName(worksheet, "WEB DISC AMOUNT");
 
-                            worksheet.Cells[1, pkkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(pkkk) + "" + pinStartIndex + ":" + GetExcelColumnLetter(pkkk) + "" + (pinwrkrow - 1) + "),2)";
-                            worksheet.Cells[1, pkkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                            worksheet.Cells[1, pkkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                            worksheet.Cells[1, pkkk].Style.Numberformat.Format = "#,##0.00";
+                        //    worksheet.Cells[1, pkkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(pkkk) + "" + pinStartIndex + ":" + GetExcelColumnLetter(pkkk) + "" + (pinwrkrow - 1) + "),2)";
+                        //    worksheet.Cells[1, pkkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        //    worksheet.Cells[1, pkkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                        //    worksheet.Cells[1, pkkk].Style.Numberformat.Format = "#,##0.00";
 
-                            ExcelStyle cellStyleHeader_WebDiscValue = worksheet.Cells[1, pkkk].Style;
-                            cellStyleHeader_WebDiscValue.Border.Left.Style = cellStyleHeader_WebDiscValue.Border.Right.Style
-                                    = cellStyleHeader_WebDiscValue.Border.Top.Style = cellStyleHeader_WebDiscValue.Border.Bottom.Style
-                                    = ExcelBorderStyle.Medium;
-                        }
-                        else if (Column_Name == "CONSIGNMENT DISC" && columnPixelWidths.ContainsKey(Column_Name))
-                        {
-                            pkkk = GetColumnIndexByName(worksheet, "CONSIGNMENT DISC");
+                        //    ExcelStyle cellStyleHeader_WebDiscValue = worksheet.Cells[1, pkkk].Style;
+                        //    cellStyleHeader_WebDiscValue.Border.Left.Style = cellStyleHeader_WebDiscValue.Border.Right.Style
+                        //            = cellStyleHeader_WebDiscValue.Border.Top.Style = cellStyleHeader_WebDiscValue.Border.Bottom.Style
+                        //            = ExcelBorderStyle.Medium;
+                        //}
+                        //else if (Column_Name == "CONSIGNMENT DISC" && columnPixelWidths.ContainsKey(Column_Name))
+                        //{
+                        //    pkkk = GetColumnIndexByName(worksheet, "CONSIGNMENT DISC");
 
-                            int finalColumnIndex = GetColumnIndexByName(worksheet, "CONSIGNMENT AMOUNT");
-                            int rapColumnIndex = GetColumnIndexByName(worksheet, "RAP AMOUNT");
+                        //    int finalColumnIndex = GetColumnIndexByName(worksheet, "CONSIGNMENT AMOUNT");
+                        //    int rapColumnIndex = GetColumnIndexByName(worksheet, "RAP AMOUNT");
 
-                            if (finalColumnIndex > 0 && rapColumnIndex > 0)
-                            {
-                                worksheet.Cells[1, pkkk].Formula =
-                                                                    "=IFERROR(ROUND(((SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + pinStartIndex +
-                                                                    ":" + GetExcelColumnLetter(finalColumnIndex) + (pinwrkrow - 1) +
-                                                                    ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + pinStartIndex +
-                                                                    ":" + GetExcelColumnLetter(rapColumnIndex) + (pinwrkrow - 1) +
-                                                                    ")) * 100)-100, 2), 0.00)";
+                        //    if (finalColumnIndex > 0 && rapColumnIndex > 0)
+                        //    {
+                        //        worksheet.Cells[1, pkkk].Formula =
+                        //                                            "=IFERROR(ROUND(((SUBTOTAL(109, " + GetExcelColumnLetter(finalColumnIndex) + pinStartIndex +
+                        //                                            ":" + GetExcelColumnLetter(finalColumnIndex) + (pinwrkrow - 1) +
+                        //                                            ") / SUBTOTAL(109, " + GetExcelColumnLetter(rapColumnIndex) + pinStartIndex +
+                        //                                            ":" + GetExcelColumnLetter(rapColumnIndex) + (pinwrkrow - 1) +
+                        //                                            ")) * 100)-100, 2), 0.00)";
 
-                                worksheet.Cells[1, pkkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                worksheet.Cells[1, pkkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                                worksheet.Cells[1, pkkk].Style.Numberformat.Format = "#,##0.00";
+                        //        worksheet.Cells[1, pkkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        //        worksheet.Cells[1, pkkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                        //        worksheet.Cells[1, pkkk].Style.Numberformat.Format = "#,##0.00";
 
-                                ExcelStyle cellStyleHeader_Profit = worksheet.Cells[1, pkkk].Style;
-                                cellStyleHeader_Profit.Border.Left.Style = cellStyleHeader_Profit.Border.Right.Style
-                                        = cellStyleHeader_Profit.Border.Top.Style = cellStyleHeader_Profit.Border.Bottom.Style
-                                        = ExcelBorderStyle.Medium;
-                            }
-                        }
-                        else if (Column_Name == "CONSIGNMENT AMOUNT" && columnPixelWidths.ContainsKey(Column_Name))
-                        {
-                            pkkk = GetColumnIndexByName(worksheet, "CONSIGNMENT AMOUNT");
+                        //        ExcelStyle cellStyleHeader_Profit = worksheet.Cells[1, pkkk].Style;
+                        //        cellStyleHeader_Profit.Border.Left.Style = cellStyleHeader_Profit.Border.Right.Style
+                        //                = cellStyleHeader_Profit.Border.Top.Style = cellStyleHeader_Profit.Border.Bottom.Style
+                        //                = ExcelBorderStyle.Medium;
+                        //    }
+                        //}
+                        //else if (Column_Name == "CONSIGNMENT AMOUNT" && columnPixelWidths.ContainsKey(Column_Name))
+                        //{
+                        //    pkkk = GetColumnIndexByName(worksheet, "CONSIGNMENT AMOUNT");
 
-                            worksheet.Cells[1, pkkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(pkkk) + "" + pinStartIndex + ":" + GetExcelColumnLetter(pkkk) + "" + (pinwrkrow - 1) + "),2)";
-                            worksheet.Cells[1, pkkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                            worksheet.Cells[1, pkkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
-                            worksheet.Cells[1, pkkk].Style.Numberformat.Format = "#,##0.00";
+                        //    worksheet.Cells[1, pkkk].Formula = "ROUND(SUBTOTAL(109," + GetExcelColumnLetter(pkkk) + "" + pinStartIndex + ":" + GetExcelColumnLetter(pkkk) + "" + (pinwrkrow - 1) + "),2)";
+                        //    worksheet.Cells[1, pkkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        //    worksheet.Cells[1, pkkk].Style.Fill.BackgroundColor.SetColor(colFromHexTotal);
+                        //    worksheet.Cells[1, pkkk].Style.Numberformat.Format = "#,##0.00";
 
-                            ExcelStyle cellStyleHeader_FinalValue = worksheet.Cells[1, pkkk].Style;
-                            cellStyleHeader_FinalValue.Border.Left.Style = cellStyleHeader_FinalValue.Border.Right.Style
-                                    = cellStyleHeader_FinalValue.Border.Top.Style = cellStyleHeader_FinalValue.Border.Bottom.Style
-                                    = ExcelBorderStyle.Medium;
-                        }
+                        //    ExcelStyle cellStyleHeader_FinalValue = worksheet.Cells[1, pkkk].Style;
+                        //    cellStyleHeader_FinalValue.Border.Left.Style = cellStyleHeader_FinalValue.Border.Right.Style
+                        //            = cellStyleHeader_FinalValue.Border.Top.Style = cellStyleHeader_FinalValue.Border.Bottom.Style
+                        //            = ExcelBorderStyle.Medium;
+                        //}
                     }
 
                     int prowEnd = worksheet.Dimension.End.Row;
