@@ -7709,6 +7709,17 @@ namespace astute.Repository
                 {
                     output["Transaction_Detail_Loose_List"] = new List<object>();
                 }
+
+                //Fetch Transaction Default Bank Detail -- If Party Has transaction curruncy wise display setting then those latest band else Company sales bank
+                var Transaction_Payment_Instrucation = await ExecuteStoredProcedure(connection, "Transaction_Payment_Instrucation_Report_By_Trans_Id_Select", Trans_Id);
+                if (Transaction_Payment_Instrucation != null)
+                {
+                    output["Transaction_Payment_Instrucation"] = Transaction_Payment_Instrucation;
+                }
+                else
+                {
+                    output["Transaction_Payment_Instrucation"] = new List<object>();
+                }
             }
 
             return output;
