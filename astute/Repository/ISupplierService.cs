@@ -166,7 +166,7 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Lab_Entry_Detail_For_Shipment_Verification(int supplier_Id, string certificate_No);
         Task<List<Dictionary<string, object>>> Get_Unavailable_Lab_Entry_Detail_For_Shipment_Verification(string certificate_No);
         Task<List<Dictionary<string, object>>> Get_Lab_Entry_Detail_For_Shipment_Verification_By_Id(string Lab_Entry_Detail_Id);
-        Task<List<Dictionary<string, object>>> Get_Purchase_Expenses_DropDown();
+        Task<List<Dictionary<string, object>>> Get_Purchase_Expenses_DropDown(int Process_Id);
         Task<(int, bool, string)> Insert_Update_Purchase(DataTable masterDataTable, DataTable detailDataTable, DataTable termsDataTable, DataTable expensesDataTable, DataTable purchaseDetailLooseDataTable, int user_Id);
         Task<List<Dictionary<string, object>>> Get_Purchase_Master(Purchase_Master_Search_Model purchase_Master_Search_Model);
         Task<Dictionary<string, object>> Get_Purchase(int Trans_Id);

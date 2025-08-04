@@ -4184,7 +4184,7 @@ namespace astute.Repository
             return result;
         }
 
-        public async Task<List<Dictionary<string, object>>> Get_Purchase_Expenses_DropDown()
+        public async Task<List<Dictionary<string, object>>> Get_Purchase_Expenses_DropDown(int Process_Id)
         {
             var result = new List<Dictionary<string, object>>();
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AstuteConnection"].ToString()))
@@ -4192,6 +4192,7 @@ namespace astute.Repository
                 using (var command = new SqlCommand("Purchase_Expenses_DropDown_Select", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(Process_Id > 0 ? new SqlParameter("@Process_Id", Process_Id) : new SqlParameter("@Process_Id", DBNull.Value));
 
                     await connection.OpenAsync();
 

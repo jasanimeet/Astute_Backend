@@ -15148,14 +15148,14 @@ namespace astute.Controllers
         [HttpGet]
         [Route("get_purchase_expenses_dropdown")]
         [Authorize]
-        public async Task<IActionResult> Get_Purchase_Expenses_DropDown()
+        public async Task<IActionResult> Get_Purchase_Expenses_DropDown(int Process_Id)
         {
             try
             {
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                var result = await _supplierService.Get_Purchase_Expenses_DropDown();
+                var result = await _supplierService.Get_Purchase_Expenses_DropDown(Process_Id);
 
                 if (result != null && result.Count > 0)
                 {
