@@ -12,5 +12,6 @@
         public bool? Is_Party { get; set; }
         public int? User_Id { get; set; }
         public decimal? Default_Per { get; set; }
+        public string? Sign { get; set; }
     }
 }

@@ -35,6 +35,7 @@ namespace astute.Repository
             var purchase_Expence = !string.IsNullOrEmpty(account_Master.Purchase_Expence) ? new SqlParameter("@Purchase_Expence", account_Master.Purchase_Expence) : new SqlParameter("@Purchase_Expence", DBNull.Value);
             var sales_Expence = !string.IsNullOrEmpty(account_Master.Sales_Expence) ? new SqlParameter("@Sales_Expence", account_Master.Sales_Expence) : new SqlParameter("@Sales_Expence", DBNull.Value);
             var default_Per = account_Master.Default_Per > 0 ? new SqlParameter("@Default_Per", account_Master.Default_Per) : new SqlParameter("@Default_Per", DBNull.Value);
+            var sign = !string.IsNullOrEmpty(account_Master.Sign) ? new SqlParameter("@Sign", account_Master.Sign) : new SqlParameter("@Sign", DBNull.Value);
             var user_Id = account_Master.User_Id > 0 ? new SqlParameter("@User_Id", account_Master.User_Id) : new SqlParameter("@User_Id", DBNull.Value);
             var is_Exist = new SqlParameter("@Is_Exist", SqlDbType.Bit)
             {
@@ -42,8 +43,8 @@ namespace astute.Repository
             };
 
             var result = await Task.Run(() => _dbContext.Database
-                            .ExecuteSqlRawAsync(@"EXEC Account_Master_Insert_Update @Account_Id, @Account_Name, @Group, @Sub_Group, @Main_Company, @Purchase_Expence, @Sales_Expence, @Default_Per, @User_Id, @Is_Exist OUT",
-                            account_Id, account_Name, group, sub_Group, main_Company, purchase_Expence, sales_Expence, default_Per, user_Id, is_Exist));
+                            .ExecuteSqlRawAsync(@"EXEC Account_Master_Insert_Update @Account_Id, @Account_Name, @Group, @Sub_Group, @Main_Company, @Purchase_Expence, @Sales_Expence, @Default_Per, @Sign, @User_Id, @Is_Exist OUT",
+                            account_Id, account_Name, group, sub_Group, main_Company, purchase_Expence, sales_Expence, default_Per, sign, user_Id, is_Exist));
             bool _is_Exist = (bool)is_Exist.Value;
             if (_is_Exist)
                 return ("exist", 409);
