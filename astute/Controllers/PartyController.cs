@@ -15715,7 +15715,7 @@ namespace astute.Controllers
         [HttpDelete]
         [Route("delete_purchase")]
         [Authorize]
-        public async Task<IActionResult> Delete_Purchase(int Trans_Id)
+        public async Task<IActionResult> Delete_Purchase(int Trans_Id, bool Only_Purchase)
         {
             try
             {
@@ -15731,7 +15731,7 @@ namespace astute.Controllers
                 var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                 int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
 
-                var (result, isExist) = await _supplierService.Delete_Purchase(Trans_Id, user_Id ?? 0);
+                var (result, isExist) = await _supplierService.Delete_Purchase(Trans_Id, Only_Purchase, user_Id ?? 0);
 
                 if (result == 409 && isExist)
                 {

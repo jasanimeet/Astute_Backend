@@ -4444,9 +4444,11 @@ namespace astute.Repository
             return result.Count > 0 ? result : null;
         }
 
-        public async Task<(int, bool)> Delete_Purchase(int Trans_Id, int User_Id)
+        public async Task<(int, bool)> Delete_Purchase(int Trans_Id, bool Only_Purchase, int User_Id)
         {
             var trans_Id = new SqlParameter("@Trans_Id", Trans_Id);
+
+            var only_purhcase = new SqlParameter("@Only_Purchase", Only_Purchase);
 
             var user_Id = new SqlParameter("@User_Id", User_Id);
 
@@ -4456,7 +4458,7 @@ namespace astute.Repository
             };
 
             var result = await Task.Run(() => _dbContext.Database
-                   .ExecuteSqlRawAsync(@"EXEC Purchase_Delete @Trans_Id, @User_Id, @Is_Exists OUT", trans_Id, user_Id, is_Exists));
+                   .ExecuteSqlRawAsync(@"EXEC Purchase_Delete @Trans_Id, @Only_Purchase, @User_Id, @Is_Exists OUT", trans_Id, only_purhcase, user_Id, is_Exists));
 
             var _is_Exist = (bool)is_Exists.Value;
 

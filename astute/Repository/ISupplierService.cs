@@ -171,7 +171,7 @@ namespace astute.Repository
         Task<List<Dictionary<string, object>>> Get_Purchase_Master(Purchase_Master_Search_Model purchase_Master_Search_Model);
         Task<Dictionary<string, object>> Get_Purchase(int Trans_Id);
         Task<Dictionary<string, object>> Get_Purchase_Barcode_Print(int Trans_Id);
-        Task<(int, bool)> Delete_Purchase(int Trans_Id, int User_Id);
+        Task<(int, bool)> Delete_Purchase(int Trans_Id, bool Only_Purchase, int User_Id);
         Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Status_Summary(string Stock_Id);
         Task<List<Dictionary<string, object>>> Get_Lab_Entry_Report_Non_Status_Summary(string Stock_Id);
         Task<int> Lab_Entry_Report_Status_Update(DataTable statusDataTable, int user_Id);
