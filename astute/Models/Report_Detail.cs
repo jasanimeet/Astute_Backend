@@ -119,4 +119,9 @@ namespace astute.Models
         public string? Stock_Id { get; set; }
         public string? Process_Name { get; set; }
     }
+    public class Report_Transaction_PDF_Filter
+    {
+        public string? Process_Name { get; set; }
+        public string? Html_Content { get; set; }
+    }
 }

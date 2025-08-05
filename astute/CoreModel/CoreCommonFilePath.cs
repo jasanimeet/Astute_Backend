@@ -27,5 +27,6 @@
         public static string PurchaseQCSkipExcelFiles = "/Files/PurchaseQCSkipExcelFiles/";
         public static string TransactionExcelFiles = "/Files/TransactionExcelFiles/";
         public static string TransactionReportExcelFiles = "/Files/TransactionReportExcelFiles/";
+        public static string TransactionReportPdfFiles = "/Files/TransactionReportPdfFiles/";
     }
 }

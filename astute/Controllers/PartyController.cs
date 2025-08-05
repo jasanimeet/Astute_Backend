@@ -23618,6 +23618,54 @@ namespace astute.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("transaction_report_pdf_download")]
+        [Authorize]
+        public async Task<IActionResult> Transaction_Report_Pdf_Download([FromForm] Report_Transaction_PDF_Filter model)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+
+                if ((user_Id ?? 0) > 0)
+                {
+                    var pdfPath = string.Empty;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/TransactionReportPdfFiles/");
+                    if (!(Directory.Exists(filePath)))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+
+                    string filename = model.Process_Name + "_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".pdf";
+
+                    PuppeteerSharpExport.CreatePdfWithPuppet(model.Html_Content, filePath, filePath + filename);
+                    pdfPath = _configuration["BaseUrl"] + CoreCommonFilePath.TransactionReportPdfFiles + filename;
+
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        result = pdfPath,
+                        file_name = filename
+                    });
+                }
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    message = "Unauthorized Access",
+                    statusCode = (int)HttpStatusCode.Unauthorized
+                });
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Transaction_Report_Pdf_Download", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }
