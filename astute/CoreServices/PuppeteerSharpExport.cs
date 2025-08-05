@@ -1,12 +1,13 @@
 ﻿using PuppeteerSharp;
 using PuppeteerSharp.Media;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace astute.CoreServices
 {
     public class PuppeteerSharpExport
     {
-        public static async void CreatePdfWithPuppet(string htmlContent, string _strFolderPath, string _strFilePath)
+        public static async Task<string> CreatePdfWithPuppet(string htmlContent, string _strFolderPath, string _strFilePath)
         {
             try
             {
@@ -44,7 +45,6 @@ namespace astute.CoreServices
                 //});
 
                 await browser.CloseAsync();
-
                 // Optionally, return the file as download
                 //byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(outputPdfPath);
             }
@@ -52,6 +52,7 @@ namespace astute.CoreServices
             {
                 throw;
             }
+            return _strFilePath;
         }
     }
 }

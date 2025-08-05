@@ -23640,7 +23640,8 @@ namespace astute.Controllers
 
                     string filename = model.Process_Name + "_" + DateTime.UtcNow.ToString("ddMMyyyy-HHmmss") + ".pdf";
 
-                    PuppeteerSharpExport.CreatePdfWithPuppet(model.Html_Content, filePath, filePath + filename);
+                    string _fileName = await PuppeteerSharpExport.CreatePdfWithPuppet(model.Html_Content, filePath, filePath + filename);
+
                     pdfPath = _configuration["BaseUrl"] + CoreCommonFilePath.TransactionReportPdfFiles + filename;
 
                     return Ok(new
