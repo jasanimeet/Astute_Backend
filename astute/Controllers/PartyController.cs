@@ -7504,7 +7504,7 @@ namespace astute.Controllers
                     }
                     columnNamesTable.Rows.Add("CERTIFICATE LINK");
                     var excelPath = string.Empty;
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/StockReportExcelFiles/");
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files/TransactionReportExcelFiles/");
                     if (!(Directory.Exists(filePath)))
                     {
                         Directory.CreateDirectory(filePath);
