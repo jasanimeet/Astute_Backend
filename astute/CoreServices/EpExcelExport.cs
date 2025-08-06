@@ -15232,7 +15232,7 @@ namespace astute.CoreServices
                                     pkk += 1;
 
                                     worksheet.Cells[pinwrkrow, pkk].Value = Convert.ToString(dt.Rows[pi - pinStartIndex][Column_Name]);
-                                    
+
 
                                     worksheet.Cells[pinwrkrow, pkk].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                     worksheet.Cells[pinwrkrow, pkk].Style.Fill.BackgroundColor.SetColor(green);
@@ -15409,7 +15409,7 @@ namespace astute.CoreServices
                                     worksheet.Cells[pinwrkrow, pkk].Style.Numberformat.Format = "0.00";
                                 }
                                 else if (Column_Name == "STOCK ID" || Column_Name == "CERTIFICATE NO" || Column_Name == "SHAPE" || Column_Name == "BGM" || Column_Name == "COLOR" || Column_Name == "CLARITY" || Column_Name == "FLS INTENSITY"
-                                    || Column_Name == "SR.NO" || Column_Name == "INVOICE DATE" || Column_Name == "INVOICE NUMBER"  
+                                    || Column_Name == "SR.NO" || Column_Name == "INVOICE DATE" || Column_Name == "INVOICE NUMBER"
                                     || Column_Name == "KEY TO SYMBOL" || Column_Name == "CULET" || Column_Name == "TABLE BLACK" || Column_Name == "CROWN BLACK" || Column_Name == "TABLE WHITE" || Column_Name == "CROWN WHITE" || Column_Name == "CROWN ANGLE" || Column_Name == "CROWN HEIGHT"
                                     || Column_Name == "PAVILION ANGLE" || Column_Name == "PAVILION HEIGHT" || Column_Name == "GIRDLE PER" || Column_Name == "LAB COMMENTS" || Column_Name == "ORIGIN" || Column_Name == "DNA"
                                     )
@@ -15780,7 +15780,10 @@ namespace astute.CoreServices
                         ["RF ID"] = 40,
                         ["UPCOMING FLAG"] = 40,
                         ["CONTRACT FLAG"] = 40,
-                        ["SUPPLIER SOURCE PARTY"] = 100
+                        ["SUPPLIER SOURCE PARTY"] = 100,
+                        ["OFFER FLAG"] = 40,
+                        ["ISSUE DATE"] = 100,
+                        ["ISSUE TIME"] = 90
                     };
 
                     int k = 0;
