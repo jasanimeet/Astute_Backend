@@ -371,5 +371,9 @@ namespace astute.Repository
         #region Notification Report
         Task<Dictionary<string, object>> Get_Transaction_Report(int Trans_Id);
         #endregion
+
+        #region Lab Entry Detail Auto Generate Sunrise_Stock_Id
+        Task<Dictionary<string, object>> Lab_Entry_Detail_Auto_Generate_Sunrise_Stock_Id();
+        #endregion
     }
 }

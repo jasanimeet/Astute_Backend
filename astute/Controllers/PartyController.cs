@@ -23668,5 +23668,39 @@ namespace astute.Controllers
             }
         }
         #endregion
+
+        #region Lab Entry Detail Auto Generate Sunrise_Stock_Id
+
+        [HttpGet]
+        [Route("lab_entry_detail_auto_generate_sunrise_stock_id")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Lab_Entry_Detail_Auto_Generate_Sunrise_Stock_Id()
+        {
+            try
+            {
+                var result = await _supplierService.Lab_Entry_Detail_Auto_Generate_Sunrise_Stock_Id();
+
+                if (result != null)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Lab_Entry_Detail_Auto_Generate_Sunrise_Stock_Id", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
     }
 }
