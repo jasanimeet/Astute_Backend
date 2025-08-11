@@ -49,6 +49,7 @@ namespace astute.Controllers
         private readonly IJWTAuthentication _jWTAuthentication;
         private readonly IEmployeeService _employeeService;
         private readonly ILabUserService _labUserService;
+        private readonly IRegistrationService _registrationService;
         private readonly ILab_User_Login_Activity_Services _lab_User_Login_Activity_Services;
         private readonly IOracleService _oracleService;
         private readonly ICategoryService _categoryService;
@@ -68,6 +69,7 @@ namespace astute.Controllers
             IJWTAuthentication jWTAuthentication,
             IEmployeeService employeeService,
             ILabUserService labUserService,
+            IRegistrationService registrationService,
             ILab_User_Login_Activity_Services lab_User_Login_Activity_Services,
             IOracleService oracleService,
             ICategoryService categoryService,
@@ -86,6 +88,7 @@ namespace astute.Controllers
             _jWTAuthentication = jWTAuthentication;
             _employeeService = employeeService;
             _labUserService = labUserService;
+            _registrationService = registrationService;
             _lab_User_Login_Activity_Services = lab_User_Login_Activity_Services;
             _oracleService = oracleService;
             _categoryService = categoryService;
@@ -11973,6 +11976,66 @@ namespace astute.Controllers
             }
         }
 
+        #endregion
+       
+        #region Registration Master Users
+        [HttpGet]
+        [Route("get_registration_master")]
+        [Authorize]
+        public async Task<IActionResult> Get_Registration_Master(int id)
+        {
+            try
+            {
+                var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
+                int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
+                var result = await _registrationService.Get_Registration_Master(id, user_Id ?? 0);
+                if (result != null && result.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.DataSuccessfullyFound,
+                        data = result
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Get_Registration_Master", ex.StackTrace);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPut]
+        [Route("change_registration_master_active_status")]
+        [Authorize]
+        public async Task<IActionResult> Change_Registration_Master_Active_Status(int id, bool active_Status)
+        {
+            try
+            {
+                var result = await _registrationService.Change_Active_Status(id, active_Status);
+                if (result > 0)
+                {
+                    return Ok(new
+                    {
+                        statusCode = HttpStatusCode.OK,
+                        message = CoreCommonMessage.StatusChangedSuccessMessage
+                    });
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await _commonService.InsertErrorLog(ex.Message, "Change_Registration_Master_Active_Status", ex.StackTrace);
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Customer API/FILE/FTP

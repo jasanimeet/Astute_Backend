@@ -109,6 +109,7 @@ namespace astute
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<ILabUserService, LabUserService>();
+            services.AddScoped<IRegistrationService, RegistrationService>();
             services.AddScoped<IAccount_Group_Service, Account_Group_Service>();
             services.AddScoped<IAccount_Master_Service, Account_Master_Service>();
             services.AddScoped<IFirst_Voucher_No, First_Voucher_No>();
