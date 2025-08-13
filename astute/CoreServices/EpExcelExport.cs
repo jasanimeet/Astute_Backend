@@ -15063,25 +15063,25 @@ namespace astute.CoreServices
                             ["FINAL AMOUNT"] = 70,
                             ["PRICE PER CTS"] = 70,
                             ["CUT"] = 37,
-                            ["POLISH"] = 37,
-                            ["SYMM"] = 37,
-                            ["FLS INTENSITY"] = 37,
-                            ["LENGTH"] = 37,
-                            ["WIDTH"] = 37,
-                            ["DEPTH"] = 37,
-                            ["DEPTH (%)"] = 37,
-                            ["TABLE (%)"] = 37,
+                            ["POLISH"] = 47,
+                            ["SYMM"] = 40,
+                            ["FLS INTENSITY"] = 60,
+                            ["LENGTH"] = 48,
+                            ["WIDTH"] = 44,
+                            ["DEPTH"] = 42,
+                            ["DEPTH (%)"] = 42,
+                            ["TABLE (%)"] = 38,
                             ["KEY TO SYMBOL"] = 196,
                             ["CULET"] = 75,
-                            ["TABLE BLACK"] = 70,
-                            ["CROWN BLACK"] = 67,
+                            ["TABLE BLACK"] = 50,
+                            ["CROWN BLACK"] = 50,
                             ["TABLE WHITE"] = 63,
                             ["CROWN WHITE"] = 75,
-                            ["CROWN ANGLE"] = 48,
-                            ["CROWN HEIGHT"] = 46,
+                            ["CROWN ANGLE"] = 52,
+                            ["CROWN HEIGHT"] = 52,
                             ["PAVILION ANGLE"] = 64,
-                            ["PAVILION HEIGHT"] = 57,
-                            ["GIRDLE PER"] = 75,
+                            ["PAVILION HEIGHT"] = 60,
+                            ["GIRDLE PER"] = 50,
                             ["LAB COMMENTS"] = 251,
                             ["ORIGIN"] = 84,
                             ["LAB"] = 36,
@@ -15241,7 +15241,10 @@ namespace astute.CoreServices
                                 {
                                     pkk += 1;
 
-                                    worksheet.Cells[pinwrkrow, pkk].Value = Convert.ToString(dt.Rows[pi - pinStartIndex][Column_Name]);
+                                    //worksheet.Cells[pinwrkrow, pkk].Value = Convert.ToString(dt.Rows[pi - pinStartIndex][Column_Name]);
+                                    string pav_Height = Convert.ToString(dt.Rows[pi - pinStartIndex][Column_Name]);
+                                    worksheet.Cells[pinwrkrow, pkk].Value = !string.IsNullOrEmpty(pav_Height) ? Convert.ToDouble(dt.Rows[pi - pinStartIndex][Column_Name]) : 0;
+                                    worksheet.Cells[pinwrkrow, pkk].Style.Numberformat.Format = "#,##0.00";
                                     worksheet.Cells[pinwrkrow, pkk].Style.Font.Color.SetColor(Color.Red);
 
                                 }
