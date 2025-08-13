@@ -11633,6 +11633,7 @@ namespace astute.Controllers
                     dataTable.Columns.Add("Order_History", typeof(bool));
                     dataTable.Columns.Add("Display_Own_Records", typeof(bool));
                     dataTable.Columns.Add("Sub_User", typeof(bool));
+                    dataTable.Columns.Add("Registration_Master_Id", typeof(int));
 
                     if (lab_User_Detail.Lab_User_Masters != null && lab_User_Detail.Lab_User_Masters.Count > 0)
                     {
@@ -11654,7 +11655,8 @@ namespace astute.Controllers
                                 item.Show_Amount,
                                 item.Order_History,
                                 item.Display_Own_Records,
-                                item.Sub_User);
+                                item.Sub_User,
+                                item.Registration_Master_Id > 0 ? item.Registration_Master_Id : DBNull.Value);
                         }
                         var token = CoreService.Get_Authorization_Token(_httpContextAccessor);
                         int? user_Id = _jWTAuthentication.Validate_Jwt_Token(token);
@@ -11977,7 +11979,7 @@ namespace astute.Controllers
         }
 
         #endregion
-       
+
         #region Registration Master Users
         [HttpGet]
         [Route("get_registration_master")]
