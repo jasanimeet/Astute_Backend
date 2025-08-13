@@ -648,9 +648,9 @@
         public static string ContraBookDeleted = ContraBook + DeletedSuccessfully;
 
         public static string PattyCash = "Patty Cash";
-        public static string PattyCashCreated = BankBook + AddedSuccessfully;
-        public static string PattyCashUpdated = BankBook + UpdatedSuccessfully;
-        public static string PattyCashDeleted = BankBook + DeletedSuccessfully;
+        public static string PattyCashCreated = PattyCash + AddedSuccessfully;
+        public static string PattyCashUpdated = PattyCash + UpdatedSuccessfully;
+        public static string PattyCashDeleted = PattyCash + DeletedSuccessfully;
 
         public static string Journal = "Journal";
         public static string JournalCreated = Journal + AddedSuccessfully;
