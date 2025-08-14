@@ -105,6 +105,7 @@ namespace astute.Repository
             var orderNo = company_Master.Order_No > 0 ? new SqlParameter("@Order_No", company_Master.Order_No) : new SqlParameter("@Order_No", DBNull.Value);
             var sortNo = company_Master.Sort_No > 0 ? new SqlParameter("@Sort_No", company_Master.Sort_No) : new SqlParameter("@Sort_No", DBNull.Value);
             var status = new SqlParameter("@Status", company_Master.Status);
+            var groupValue = company_Master.Group_Value > 0 ? new SqlParameter("@Group_Value", company_Master.Group_Value) : new SqlParameter("@Group_Value", DBNull.Value);
 
             var isExistOrderNo = new SqlParameter("@IsExistOrderNo", SqlDbType.Bit)
             {
@@ -121,8 +122,8 @@ namespace astute.Repository
 
             var result = await Task.Run(() => _dbContext.Database
            .ExecuteSqlRawAsync(@"exec Company_Master_Insert_Update @Company_Id, @Company_Name, @Address_1, @Address_2, @Address_3, @City_Id, @Phone_No, @Fax_No,
-            @Email, @Website, @Order_No, @Sort_No, @Status, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT", companyId, companyName, address1, address2, address3, cityId, phoneNo, faxNo, email, website,
-           orderNo, sortNo, status, isExistOrderNo, isExistSortNo, insertedId));
+            @Email, @Website, @Order_No, @Sort_No, @Status, @Group_Value, @IsExistOrderNo OUT, @IsExistSortNo OUT, @InsertedId OUT", companyId, companyName, address1, address2, address3, cityId, phoneNo, faxNo, email, website,
+           orderNo, sortNo, status, groupValue, isExistOrderNo, isExistSortNo, insertedId));
 
             bool orderNoIsExist = (bool)isExistOrderNo.Value;
             if (orderNoIsExist)

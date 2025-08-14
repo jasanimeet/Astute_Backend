@@ -25,6 +25,7 @@ namespace astute.Models
         public Int16? Order_No { get; set; }
         public Int16? Sort_No { get; set; }
         public bool Status { get; set; }
+        public decimal? Group_Value { get; set; }
         [NotMapped]
         public IList<Company_Document> Company_Document_List { get; set; } = new List<Company_Document>();
         [NotMapped]
