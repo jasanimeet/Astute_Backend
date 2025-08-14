@@ -1428,7 +1428,8 @@ namespace astute.Controllers
                         return Ok(new
                         {
                             statusCode = HttpStatusCode.OK,
-                            message = party_Master.Party_Id > 0 ? CoreCommonMessage.PartyMasterUpdated : CoreCommonMessage.PartyMasterCreated
+                            message = party_Master.Party_Id > 0 ? CoreCommonMessage.PartyMasterUpdated : CoreCommonMessage.PartyMasterCreated,
+                            party_Id
                         });
                     }
                     else if (message == "_party_exists" && party_Id == 0)
